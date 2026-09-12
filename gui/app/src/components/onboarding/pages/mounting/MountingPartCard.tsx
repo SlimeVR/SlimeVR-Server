@@ -48,6 +48,7 @@ export function MountingPartCard({
       type="button"
       id={BodyPart[role]}
       data-connector={connector ? undefined : 'off'}
+      aria-haspopup="dialog"
       onClick={() => selectPart(role)}
       style={velocityGlowStyle(velocity)}
       className={classNames(

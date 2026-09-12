@@ -28,16 +28,16 @@ class CandidateBonesTest {
 				),
 			),
 			TestCase(
-				name = "chest enables upper chest and hip",
-				fineBodyParts = setOf(BodyPart.CHEST),
+				name = "lower chest enables upper chest and hip",
+				fineBodyParts = setOf(BodyPart.LOWER_CHEST),
 				expected = setOf(
 					BodyPart.UPPER_CHEST,
 					BodyPart.HIP,
 				),
 			),
 			TestCase(
-				name = "waist enables hip",
-				fineBodyParts = setOf(BodyPart.WAIST),
+				name = "lower waist enables hip",
+				fineBodyParts = setOf(BodyPart.LOWER_WAIST),
 				expected = setOf(
 					BodyPart.HIP,
 				),

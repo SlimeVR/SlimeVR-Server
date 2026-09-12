@@ -1,9 +1,11 @@
 import { Typography } from './Typography';
+import { Clickable } from './Clickable';
 import { Control, useWatch } from 'react-hook-form';
 import { KeybindForm } from '@/components/settings/pages/KeybindSettings';
 import { NumberSelector } from './NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
 import { Kbd } from './Kbd';
+import { keybindLabel } from './keybind-keys';
 import { RecordIcon } from './icon/RecordIcon';
 import { ResetIcon } from './icon/ResetIcon';
 import { Tooltip } from './Tooltip';
@@ -24,7 +26,7 @@ function KeyBindKeyList({ keybind }: { keybind: string[] }) {
       {keybind.map((key, i) => (
         <div key={i} className="flex items-center gap-1.5">
           <Kbd className="px-2 md:px-4 py-2 min-w-[34px] md:min-w-[40px] group-hover:border-accent-background-40">
-            {key}
+            {keybindLabel(key)}
           </Kbd>
           {i < keybind.length - 1 && (
             <Typography variant="standard" bold textAlign="text-center">
@@ -49,8 +51,7 @@ function ResetButton({
       content={<Typography id="settings-keybinds-reset-single" />}
       preferedDirection="top"
     >
-      <button
-        type="button"
+      <Clickable
         disabled={!isModified}
         className={classNames(
           'w-7 h-7 rounded-xl flex items-center justify-center transition-all',
@@ -63,7 +64,7 @@ function ResetButton({
         onClick={onClick}
       >
         <ResetIcon size={16} />
-      </button>
+      </Clickable>
     </Tooltip>
   );
 }
@@ -75,13 +76,15 @@ export function KeybindsRow({
   openKeybindRecorderModal,
   onResetSingle,
   isModified,
+  bindingEditable = true,
 }: {
   id?: string;
   control: Control<KeybindForm>;
   index: number;
-  openKeybindRecorderModal: (index: number) => void;
+  openKeybindRecorderModal?: (index: number) => void;
   onResetSingle: (index: number) => void;
   isModified?: boolean;
+  bindingEditable?: boolean;
 }) {
   const binding =
     useWatch({
@@ -129,17 +132,27 @@ export function KeybindsRow({
 
       <td className="py-2 md:py-4 px-0 md:px-4 block md:table-cell align-middle">
         <div className="flex justify-start md:justify-center items-center">
-          <Tooltip
-            content={<Typography id="settings-keybinds-change-shortcut" />}
-            preferedDirection="top"
-          >
-            <div
-              className="cursor-pointer rounded-xl transition-all hover:scale-105 active:scale-95"
-              onClick={() => openKeybindRecorderModal(index)}
+          {bindingEditable && openKeybindRecorderModal ? (
+            <Tooltip
+              content={<Typography id="settings-keybinds-change-shortcut" />}
+              preferedDirection="top"
             >
-              <KeyBindKeyList keybind={binding} />
-            </div>
-          </Tooltip>
+              <Clickable
+                className="cursor-pointer rounded-xl transition-all hover:scale-105 active:scale-95"
+                onClick={() => openKeybindRecorderModal(index)}
+              >
+                <KeyBindKeyList keybind={binding} />
+              </Clickable>
+            </Tooltip>
+          ) : (
+            <Typography
+              variant="standard"
+              textAlign="text-center"
+              italic
+              color="secondary"
+              id="settings-keybinds-system-managed-hint"
+            />
+          )}
         </div>
       </td>
 

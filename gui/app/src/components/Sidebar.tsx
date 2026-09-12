@@ -1,4 +1,6 @@
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { NavLink } from 'react-router-dom';
+import { Clickable } from './commons/Clickable';
 import { TrackingChecklist } from './tracking-checklist/TrackingChecklist';
 import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
@@ -21,6 +23,8 @@ import { useConfig } from '@/hooks/config';
 import { useBHV } from '@/hooks/bvh';
 import { usePauseTracking } from '@/hooks/pause-tracking';
 import { PlayIcon } from './commons/icon/PlayIcon';
+import { CubeIcon } from './commons/icon/CubeIcon';
+import { LineIcon } from './commons/icon/LineIcon';
 
 export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
@@ -65,17 +69,19 @@ export function PreviewControls({ open }: { open: boolean }) {
           <Typography id="onboarding-manual_proportions-estimated_height" />
         }
       >
-        <div
+        <NavLink
+          to="/onboarding/body-proportions/scaled"
+          state={{ alonePage: true }}
           className={classNames(
-            'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-help w-fit top-2 left-2 absolute',
+            'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-pointer hover:bg-background-50 w-fit top-2 left-2 absolute',
             {
-              'opacity-0': !open,
+              'opacity-0 pointer-events-none': !open,
               'opacity-100': open,
             }
           )}
         >
           <Typography variant="section-title">{userHeight}</Typography>
-        </div>
+        </NavLink>
       </Tooltip>
       <div className="absolute bottom-0 pb-4 flex justify-center w-full">
         <div className="flex bg-background-80 bg-opacity-70 rounded-lg gap-2 px-4 py-2 items-center fill-background-10">
@@ -93,7 +99,10 @@ export function PreviewControls({ open }: { open: boolean }) {
               }
               preferedDirection="top"
             >
-              <div
+              <Clickable
+                disabled={!open}
+                aria-disabled={!open}
+                pressed={bvhState !== 'idle'}
                 className={classNames(
                   'flex justify-center items-center w-10 h-10 rounded-full hover:bg-background-60 cursor-pointer',
                   { 'bg-background-60': bvhState !== 'idle' }
@@ -104,7 +113,7 @@ export function PreviewControls({ open }: { open: boolean }) {
                 {bvhState !== 'idle' && (
                   <div className="w-5 h-5 rounded-full bg-status-critical animate-pulse" />
                 )}
-              </div>
+              </Clickable>
             </Tooltip>
           )}
           <Tooltip
@@ -116,13 +125,16 @@ export function PreviewControls({ open }: { open: boolean }) {
             }
             preferedDirection="top"
           >
-            <div
+            <Clickable
+              disabled={!open}
+              aria-disabled={!open}
+              pressed={paused}
               className="flex justify-center items-center w-14 h-14 rounded-full bg-background-60 hover:bg-background-50 cursor-pointer"
               onClick={() => toggleTracking()}
             >
               {!paused && <PauseIcon width={25} />}
               {paused && <PlayIcon width={25} />}
-            </div>
+            </Clickable>
           </Tooltip>
           <Tooltip
             content={
@@ -167,7 +179,7 @@ function PreviewSection({ open }: { open: boolean }) {
       )}
     >
       <SkeletonVisualizerWidget
-        disabled={disabledRender}
+        disabled={disabledRender || !open}
         toggleDisabled={() => toggleRender()}
         onInit={(context) => {
           context.addView({
@@ -188,12 +200,34 @@ function PreviewSection({ open }: { open: boolean }) {
         preferedDirection="bottom"
         content={<Typography id="preview-disable_render" />}
       >
-        <div
+        <Clickable
+          disabled={!open}
+          aria-hidden={!open}
+          pressed={!disabledRender}
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
           onClick={() => toggleRender()}
         >
           <EyeIcon width={18} closed={!disabledRender} />
-        </div>
+        </Clickable>
+      </Tooltip>
+      <Tooltip
+        preferedDirection="bottom"
+        content={<Typography id="preview-render_mode" />}
+      >
+        <Clickable
+          disabled={!open}
+          aria-hidden={!open}
+          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-14 top-2 bg-background-60 hover:bg-background-50"
+          onClick={() =>
+            setConfig({
+              skeletonPreviewStyle:
+                config?.skeletonPreviewStyle == 'lines' ? 'mesh' : 'lines',
+            })
+          }
+        >
+          {config?.skeletonPreviewStyle == 'lines' && <CubeIcon width={18} />}
+          {config?.skeletonPreviewStyle == 'mesh' && <LineIcon size={18} />}
+        </Clickable>
       </Tooltip>
       <PreviewControls open={open} />
     </div>
@@ -201,32 +235,11 @@ function PreviewSection({ open }: { open: boolean }) {
 }
 
 export function Sidebar() {
-  const { completion } = useTrackingChecklist();
-  const [closed, setClosed] = useState(true);
-  const [closing, setClosing] = useState(false);
+  const { closed, closing, toggleClosed } = useTrackingChecklist();
 
   const closedHight = '90px';
   const checklistSize = closed ? closedHight : 'calc(100% - 16px)';
   const previewSize = closed ? `calc(100% - ${closedHight} - 24px)` : '0%';
-
-  const toggleClosed = () => setClosed((closed) => !closed);
-
-  useLayoutEffect(() => {
-    setClosing(true);
-    const ref = setTimeout(() => setClosing(false), 1000);
-    return () => {
-      clearTimeout(ref);
-      setClosing(false);
-    };
-  }, [closed]);
-
-  useEffect(() => {
-    if (completion === 'complete') {
-      setClosed(true);
-    } else if (completion === 'incomplete') {
-      setClosed(false);
-    }
-  }, [completion]);
 
   return (
     <>

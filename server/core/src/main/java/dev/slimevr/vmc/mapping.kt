@@ -3,18 +3,18 @@ package dev.slimevr.vmc
 import com.jme3.math.FastMath
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.BodyPartMap
-import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
+// TODO how to handle UPPER_WAIST?
 val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 	mapOf(
 		BodyPart.HEAD to arrayOf("Head"),
 		BodyPart.NECK to arrayOf("Neck"),
 		BodyPart.UPPER_CHEST to arrayOf("UpperChest"),
-		BodyPart.CHEST to arrayOf("Chest"),
-		BodyPart.WAIST to arrayOf("Spine"),
+		BodyPart.LOWER_CHEST to arrayOf("Chest"),
+		BodyPart.UPPER_WAIST to arrayOf("Spine"),
 		BodyPart.HIP to arrayOf("Hips"),
 		BodyPart.LEFT_SHOULDER to arrayOf("LeftShoulder"),
 		BodyPart.RIGHT_SHOULDER to arrayOf("RightShoulder"),
@@ -86,9 +86,16 @@ val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 //  and figure out how to deal with it (check if present in VRM?)
 val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	mapOf(
-		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
-		BodyPart.WAIST to arrayOf(BodyPart.CHEST),
-		BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+		BodyPart.HIP to arrayOf(
+			BodyPart.UPPER_WAIST,
+			BodyPart.LEFT_UPPER_LEG,
+			BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.LEFT_POSTERIOR,
+			BodyPart.RIGHT_POSTERIOR,
+			BodyPart.TAIL,
+		),
+		BodyPart.UPPER_WAIST to arrayOf(BodyPart.LOWER_CHEST),
+		BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 		BodyPart.NECK to arrayOf(BodyPart.HEAD),
 		BodyPart.LEFT_UPPER_LEG to arrayOf(BodyPart.LEFT_LOWER_LEG),
 		BodyPart.RIGHT_UPPER_LEG to arrayOf(BodyPart.RIGHT_LOWER_LEG),
@@ -148,31 +155,48 @@ val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 			BodyPart.RIGHT_RING_TOE,
 			BodyPart.RIGHT_LITTLE_TOE,
 		),
-
-
-
-
-
-
-
-
-		BodyPart.HIP to arrayOf(
-			BodyPart.LEFT_POSTERIOR,
-			BodyPart.RIGHT_POSTERIOR,
-			BodyPart.TAIL
-		),
 	),
 )
 
-private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitVMC(parent: BodyPart?, bone: BodyPart) {
-	yield(parent to bone)
-	VMC_HIERARCHY_MAP[bone]?.forEach { visitVMC(bone, it) }
+
+
+
+
+
+
+
+
+private class VmcBoneTree(hierarchy: BodyPartMap<Array<BodyPart>>) {
+	val order: List<BodyPart>
+	val parents: BodyPartMap<BodyPart?>
+
+	init {
+		fun visit(parent: BodyPart?, bone: BodyPart, into: MutableList<Pair<BodyPart?, BodyPart>>) {
+			into.add(parent to bone)
+			hierarchy[bone]?.forEach { visit(bone, it, into) }
+		}
+		val traversal = buildList { visit(null, BodyPart.HIP, this) }
+		order = traversal.map { (_, bone) -> bone }
+		parents = BodyPartMap(traversal.associate { (parent, child) -> child to parent })
+	}
 }
 
-fun iterateVMCHierarchy() = sequence { visitVMC(null, BodyPart.HIP) }
+val VMC_OUTPUT_BONE_PARENTS: BodyPartMap<BodyPart?> = VmcBoneTree(VMC_HIERARCHY_MAP).parents
 
-val VMC_BONE_PARENTS: BodyPartMap<BodyPart?> =
-	BodyPartMap(iterateVMCHierarchy().associate { (parent, child) -> child to parent })
+val VMC_INPUT_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
+	VMC_HIERARCHY_MAP +
+		mapOf(
+			BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST),
+			BodyPart.UPPER_CHEST to arrayOf(BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+		),
+)
+private val vmcInputTree = VmcBoneTree(VMC_INPUT_HIERARCHY_MAP)
+val VMC_INPUT_BONE_ORDER: List<BodyPart> = vmcInputTree.order
+val VMC_INPUT_BONE_PARENTS: BodyPartMap<BodyPart?> = vmcInputTree.parents
+
+val UNITY_BONE_TO_BODY_PART: Map<String, BodyPart> = BODY_PART_TO_UNITY_BONE.entries
+	.flatMap { (bodyPart, names) -> names.map { name -> name.lowercase() to bodyPart } }
+	.toMap()
 
 val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_SHOULDER to BodyPart.RIGHT_SHOULDER,
@@ -237,36 +261,3 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 fun vmcMirrorPosition(pos: Vector3): Vector3 = Vector3(-pos.x, pos.y, pos.z)
 
 fun vmcMirrorRotation(rot: Quaternion): Quaternion = Quaternion(rot.w, rot.x, -rot.y, -rot.z)
-
-private fun restAdjustedWorld(
-	bone: BoneState,
-	restBodyPart: BodyPart = bone.bodyPart,
-	mirror: Boolean = false,
-): Quaternion {
-	val world = if (mirror) vmcMirrorRotation(bone.rotation) else bone.rotation
-	val rest = VMC_REST_ROTATIONS[restBodyPart] ?: return world
-	return world * rest.inv()
-}
-
-fun vmcLocalRotation(
-	bone: BoneState,
-	parent: BoneState?,
-	restBodyPart: BodyPart,
-	restParentBodyPart: BodyPart?,
-	mirror: Boolean,
-): Quaternion {
-	val adjusted = restAdjustedWorld(bone, restBodyPart, mirror)
-	if (parent == null) return adjusted
-	return restAdjustedWorld(parent, restParentBodyPart ?: parent.bodyPart, mirror).inv() * adjusted
-}
-
-fun vmcLocalPosition(
-	bone: BoneState,
-	parent: BoneState,
-	restParentBodyPart: BodyPart,
-	mirror: Boolean,
-): Vector3 {
-	val parentAdjusted = restAdjustedWorld(parent, restParentBodyPart, mirror)
-	val localPosition = bone.headPosition - parent.headPosition
-	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
-}

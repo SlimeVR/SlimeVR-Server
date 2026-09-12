@@ -1,10 +1,9 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { TopBar } from '@/components/TopBar';
 import { SettingsSidebar } from './SettingsSidebar';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { Dropdown } from '@/components/commons/Dropdown';
-import { useForm } from 'react-hook-form';
+import { DropdownInside } from '@/components/commons/Dropdown';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SettingsLayout.scss';
@@ -58,7 +57,7 @@ export function SettingSelectorMobile() {
         ? [
             {
               label: l10n.getString('settings-sidebar-vrc_warnings'),
-              value: { url: '/vrc-warnings' },
+              value: { url: '/settings/vrc-warnings' },
             },
           ]
         : []),
@@ -72,22 +71,6 @@ export function SettingSelectorMobile() {
       },
     ];
 
-  const { control, watch, handleSubmit, setValue } = useForm<{
-    link: string;
-  }>({
-    defaultValues: { link: links[0].value.url },
-  });
-
-  useEffect(() => {
-    // This works because the component gets mounted/unmounted when switching between desktop or mobile layout
-    setValue('link', pathname, { shouldDirty: false, shouldTouch: false });
-  }, []);
-
-  useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
-    return () => subscription.unsubscribe();
-  }, []);
-
   const onSubmit = ({ link }: { link: string }) => {
     const item = links.find(({ value: { url } }) => url === link);
 
@@ -97,8 +80,8 @@ export function SettingSelectorMobile() {
 
   return (
     <div className="fixed top-12 z-50 px-4 w-full">
-      <Dropdown
-        control={control}
+      <DropdownInside
+        onChange={(value) => onSubmit({ link: value })}
         display="block"
         items={links.map(({ label, value: { url: value } }) => ({
           label,
@@ -109,6 +92,7 @@ export function SettingSelectorMobile() {
         // There is always an option selected; placeholder is not used.
         placeholder=""
         name="link"
+        value={pathname}
       />
     </div>
   );
@@ -119,16 +103,30 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <div className="settings-layout h-full">
-        <div style={{ gridArea: 't' }}>
+        <div
+          data-nav-region="shell"
+          data-nav-area="topbar"
+          style={{ gridArea: 't' }}
+        >
           <TopBar />
         </div>
-        <div style={{ gridArea: 'n' }}>
+        <div
+          data-nav-region="shell"
+          data-nav-area="navbar"
+          style={{ gridArea: 'n' }}
+        >
           <Navbar />
         </div>
-        <div style={{ gridArea: 's' }} className="my-2 mobile:hidden">
+        <div
+          data-nav-region="shell"
+          data-nav-area="settings-nav"
+          style={{ gridArea: 's' }}
+          className="my-2 mobile:hidden"
+        >
           <SettingsSidebar />
         </div>
         <div
+          data-nav-region="page"
           style={{ gridArea: 'c' }}
           className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
         >

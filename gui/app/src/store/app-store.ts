@@ -188,6 +188,12 @@ export const trackerByBodyPartAtom = atom((get) =>
   groupTrackerByBodyPart(get(assignedTrackersAtom))
 );
 
+export const assignedRolesAtom = selectAtom(
+  assignedTrackersAtom,
+  (trackers) => trackers.map(({ tracker }) => tracker.info?.bodyPart ?? BodyPart.NONE),
+  (a, b) => a.length === b.length && a.every((part, i) => part === b[i])
+);
+
 export const unassignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
   return trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE);

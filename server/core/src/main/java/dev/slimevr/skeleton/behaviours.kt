@@ -1,23 +1,31 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.util.MonotonicValueTimeMark
+import dev.slimevr.util.PreciseWaiter
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ResetType
+import java.util.EnumMap
+import java.util.concurrent.Executors
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
@@ -29,6 +37,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
 					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
+					receiver.resetProcessors(ResetType.FULL)
 				}
 			}
 			.launchIn(receiver.context.scope)
@@ -49,9 +58,9 @@ class HeightLogBehaviour : SkeletonBehaviour {
 /**
  * Handles resetting the head position whenever mocap mode gets disabled
  */
-class LocalizerResetBehaviour : SkeletonBehaviour {
+class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
+		settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
 			if (!it.data.skeletonConfig.toggles.mocapMode) receiver.context.dispatch(SkeletonActions.ResetHeadPosition)
 		}.launchIn(receiver.context.scope)
 	}
@@ -69,7 +78,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
-						BodyPart.CHEST,
+						BodyPart.LOWER_CHEST,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
 					),
 				)
@@ -95,38 +104,143 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	}
 }
 
+private class TickTimings(private val hz: Int, private val window: Duration, private val target: Duration) {
+	private val capacity = (hz * window.inWholeSeconds + hz).toInt()
+	private val computeNanos = LongArray(capacity)
+	private val intervalNanos = LongArray(capacity)
+	private var count = 0
+	private var lastStart = timeSource.markNow()
+	private var sinceLastStart = Duration.ZERO
+	private var nextReport = timeSource.markNow() + window
+	private var overruns = 0
+	private var nextOverrunReport = timeSource.markNow() + OVERRUN_WINDOW
+
+	/** Called with the start of a tick, so the gap between two starts is what gets measured */
+	fun started(at: MonotonicValueTimeMark) {
+		sinceLastStart = at - lastStart
+		lastStart = at
+	}
+
+	fun finished(compute: Duration) {
+		if (count == capacity) return
+		computeNanos[count] = compute.inWholeNanoseconds
+		intervalNanos[count] = sinceLastStart.inWholeNanoseconds
+		count++
+	}
+
+	/** The line to log once a window has passed, or null while one is still filling */
+	fun report(): String? {
+		if (!AppLogger.ShouldDebug.skeletonTicks) return null
+		if (!nextReport.hasPassedNow()) return null
+		val compute = computeNanos.copyOf(count).also { it.sort() }
+		val interval = intervalNanos.copyOf(count).also { it.sort() }
+		count = 0
+		nextReport = timeSource.markNow() + window
+		return "Skeleton tick over ${compute.size} frames: " +
+			"compute p50 %.0fus p99 %.0fus max %.0fus | interval p50 %.0fus p99 %.0fus min %.0fus max %.0fus, target ${target.inWholeMicroseconds}us".format(
+				micros(compute, 0.5),
+				micros(compute, 0.99),
+				micros(compute, 1.0),
+				micros(interval, 0.5),
+				micros(interval, 0.99),
+				micros(interval, 0.0),
+				micros(interval, 1.0),
+			)
+	}
+
+	fun missedDeadline(): String? {
+		overruns++
+		if (!nextOverrunReport.hasPassedNow()) return null
+		val line = "Couldn't reach ${hz}Hz $overruns times in the last $OVERRUN_WINDOW".takeIf { overruns >= MINIMUM_OVERRUNS_TO_LOG }
+		overruns = 0
+		nextOverrunReport = timeSource.markNow() + OVERRUN_WINDOW
+		return line
+	}
+
+	private fun micros(sortedNanos: LongArray, percentile: Double): Double = sortedNanos[((sortedNanos.size - 1) * percentile).toInt()] / 1000.0
+
+	companion object {
+		private val OVERRUN_WINDOW = 2.minutes
+		private const val MINIMUM_OVERRUNS_TO_LOG = 100
+	}
+}
+
 class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
+	val fkComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
 	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
+	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
+	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
-	private val minimumDelay = 1.nanoseconds
-	private val logSpamWait = 1.minutes
-	private val minimumFramesToLog = 10
+
+	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
+	private val minimumGap = intervalDuration * 0.75
+
+	/**
+	 * The first slot on the tick grid falling at least [minimumGap] after [tickStart].
+	 *
+	 * Ticks stay on the grid they started on so the rate doesn't drift, and a tick that ran late
+	 * gives up its own slot rather than letting the next one fire early to catch up. The gap is
+	 * measured from when the tick actually ran, which always trails its deadline by the wake
+	 * latency, so only a materially short gap costs a slot.
+	 */
+	private fun slotAfter(slot: MonotonicValueTimeMark, tickStart: MonotonicValueTimeMark): MonotonicValueTimeMark {
+		var next = slot
+		while (next - tickStart < minimumGap) next += intervalDuration
+		return next
+	}
+
+	/**
+	 * Runs [processors] over a copy of [boneInputs].
+	 *
+	 * The processors share one buffer and write into it, so the copy here is what keeps the caller's
+	 * map, and the state it came from, untouched.
+	 */
+	private fun runInputProcessors(processors: List<SkeletonInputProcessor>, boneInputs: InputSkeleton, skeletonHeight: Float): InputSkeleton {
+		val bones = EnumMap(boneInputs)
+		for (processor in processors) processor.process(bones, skeletonHeight)
+		return bones
+	}
 
 	override fun observe(receiver: Skeleton) {
-		var nextLogTime = timeSource.markNow() + logSpamWait
-		var processTooLongCount = 0
+		// The loop parks its thread to hit its interval, so it gets one to itself. Sharing would
+		// starve everything else on the dispatcher, since parking blocks the thread rather than
+		// suspending the coroutine
+		val dispatcher = Executors.newSingleThreadExecutor { runnable ->
+			Thread(runnable, "Skeleton").apply { isDaemon = true }
+		}.asCoroutineDispatcher()
+		receiver.context.scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
 
-		receiver.context.scope.launch {
+		var nextTick = timeSource.markNow()
+		val fkChangedParts = mutableSetOf<BodyPart>()
+		val timings = TickTimings(hz, 10.seconds, intervalDuration)
+
+		receiver.context.scope.launch(dispatcher) {
 			while (true) {
 				try {
+					val tickStart = timeSource.markNow()
+					timings.started(tickStart)
+
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
 
-						// TODO find out a cleaner way to pause tracking that doesn't add 1 frame latency (not a priority)
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
+							// TODO improve pause tracking code
+							//  and also possibly head default position (HeadPositionFallbackProcessor)
 							// Use already-processed paused tracking data except for the head
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
+							val headBone = targetState.boneInputs[BodyPart.HEAD]
+							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
 						} else {
 							// Run pre-FK processors
 							// TODO: Add a constrain processor (maybe not needed)
-							val processedInputs = inputProcessors.fold(targetState.boneInputs) { boneInputs, processor -> processor.process(boneInputs, targetState.skeletonHeight) }
+							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs
-								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(processedInputs))
+								// The buffer keeps being written after this, so state gets a copy
+								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(EnumMap(processedInputs)))
 							}
 							processedInputs
 						}
@@ -134,26 +248,36 @@ class ComputedSkeletonBehaviour(
 						// Run initial FK
 						var fk = buildBones(boneInputs)
 
-						// Run FK processors
-						fkProcessors.fold((boneInputs)) { inputs, processor ->
-							// Process new inputs from
-							val newInputs = processor.process(inputs, fk, targetState.floorLevel)
-							if (newInputs != inputs) {
-								// Inputs changed; re-run FK
-								val changedInputs = newInputs.filter { (part, boneInput) -> boneInput != inputs[part] }
-								fk = buildBones(newInputs, changedInputs.keys, fk)
+						// These write into fk, not the inputs, and the rebuilds below carry their values forward
+						for (processor in fkComputedProcessors) processor.process(fk)
+
+						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
+						// which bones changed.
+						val beforeFk = BodyPartMap(boneInputs)
+						for (processor in fkProcessors) {
+							processor.process(boneInputs, fk, targetState.floorLevel)
+
+							// Comparing and filtering the maps allocates an entry per bone each time, so
+							// the changed set is collected in one walk instead
+							fkChangedParts.clear()
+							boneInputs.forEachBone { bodyPart, boneInput ->
+								val previous = beforeFk[bodyPart]
+								if (boneInput == previous) return@forEachBone
+								fkChangedParts.add(bodyPart)
+								beforeFk[bodyPart] = boneInput
 
 								// For changed bones with inactive positions, update their input's position in state (needed for Localizer)
-								val changedPositionInputs = changedInputs.filter { (part, boneInput) -> !boneInput.isPositionActive && boneInput.position != inputs[part]?.position }
-								for (input in changedPositionInputs) {
-									receiver.context.dispatch(SkeletonActions.SetBonePosition(input.key, input.value.position, false))
+								if (!boneInput.isPositionActive && boneInput.position != previous?.position) {
+									receiver.context.dispatch(SkeletonActions.SetBonePosition(bodyPart, boneInput.position, false))
 								}
 							}
-							newInputs
+							// Inputs changed; re-run FK
+							if (fkChangedParts.isNotEmpty()) fk = buildBones(boneInputs, fkChangedParts, fk)
 						}
 
 						// Run IK processors
-						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets, targetState.floorLevel) }
+						val ikTargets = bodyPartMap<Vector3>()
+						for (processor in targetProcessors) processor.process(ikTargets, fk, targetState.floorLevel)
 
 						// Run IK
 						val ikOutput = ccdIk(
@@ -170,24 +294,30 @@ class ComputedSkeletonBehaviour(
 							100,
 						)
 
+						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
+						for (processor in ikComputedProcessors) processor.process(ikOutput.bones)
+
 						// Updated the computed skeleton with the result
 						receiver.computed.tryEmit(ikOutput.bones)
 					}
 
-					// Wait the remainder of last process
-					val delayDuration = intervalDuration - processTime
-					if (delayDuration <= Duration.ZERO) {
-						// Skeleton took to long to compute this frame
-						processTooLongCount++
-						if (nextLogTime.hasPassedNow()) {
-							if (processTooLongCount >= minimumFramesToLog) {
-								AppLogger.skeleton.warn("Couldn't reach ${hz}Hz $processTooLongCount times in the last $logSpamWait")
-							}
-							processTooLongCount = 0
-							nextLogTime = timeSource.markNow() + logSpamWait
-						}
+					timings.finished(processTime)
+					timings.report()?.let { AppLogger.skeleton.info(it) }
+
+					// Sleep to an absolute deadline, so timer granularity and dispatch latency come out
+					// of the interval rather than being added on top of it
+					nextTick += intervalDuration
+					// Skeleton took to long to compute this frame
+					if (nextTick.elapsedNow() >= Duration.ZERO) {
+						timings.missedDeadline()?.let { AppLogger.skeleton.warn(it) }
 					}
-					delay(delayDuration.coerceAtLeast(minimumDelay))
+					nextTick = slotAfter(nextTick, tickStart)
+					var remaining = -nextTick.elapsedNow()
+					while (remaining > Duration.ZERO) {
+						waiter.sleep(remaining)
+						coroutineContext.ensureActive()
+						remaining = -nextTick.elapsedNow()
+					}
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {

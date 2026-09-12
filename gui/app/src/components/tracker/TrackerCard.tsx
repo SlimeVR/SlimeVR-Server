@@ -1,4 +1,5 @@
 import { useConfig } from '@/hooks/config';
+import { Clickable } from '@/components/commons/Clickable';
 import { MouseEventHandler } from 'react';
 import {
   DeviceDataT,
@@ -25,8 +26,6 @@ function TrackerBig({
   tracker: TrackerDataT;
   device?: DeviceDataT;
 }) {
-  const { config } = useConfig();
-
   const { useName } = useTracker(tracker);
 
   const trackerName = useName();
@@ -57,7 +56,6 @@ function TrackerBig({
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 runtime={device.hardwareStatus.batteryRuntimeEstimate}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                moreInfo={config?.debug && config?.devSettings.moreInfo}
               />
             )}
             <div className="flex gap-2">
@@ -142,7 +140,7 @@ function TrackerSmol({
               device.hardwareStatus.ping != null) && (
               <TrackerWifi
                 rssi={device.hardwareStatus.rssi}
-                rssiShowNumeric={config?.debug && config?.devSettings.moreInfo}
+                rssiShowNumeric={config?.trackerDisplay?.showNumericSignal}
                 ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
@@ -173,44 +171,51 @@ export function TrackerCard({
   outlined?: boolean;
   bg?: string;
   shakeHighlight?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLElement>;
   warning?: TrackingChecklistStepT | boolean;
   showUpdates?: boolean;
 }) {
   const { useVelocity } = useTracker(tracker);
   const velocity = useVelocity();
 
+  const cardClass = classNames(
+    'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
+    interactable && 'w-full text-left hover:bg-background-50 cursor-pointer',
+    outlined && 'outline outline-2 outline-accent-background-40',
+    bg
+  );
+  const cardStyle = shakeHighlight ? velocityGlowStyle(velocity) : {};
+  const content = smol ? (
+    <Tooltip
+      preferedDirection="top"
+      disabled={!warning}
+      spacing={5}
+      content={
+        typeof warning === 'object' && (
+          <div className="flex gap-1 items-center text-status-warning">
+            <WarningIcon width={20} />
+            <Typography id={trackingchecklistIdtoLabel[warning.id]} />
+          </div>
+        )
+      }
+    >
+      <TrackerSmol tracker={tracker} device={device} warning={warning} />
+    </Tooltip>
+  ) : (
+    <TrackerBig tracker={tracker} device={device} />
+  );
+
   return (
     <div className="relative">
-      <div
-        onClick={onClick}
-        className={classNames(
-          'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
-          interactable && 'hover:bg-background-50 cursor-pointer',
-          outlined && 'outline outline-2 outline-accent-background-40',
-          bg
-        )}
-        style={shakeHighlight ? velocityGlowStyle(velocity) : {}}
-      >
-        {smol && (
-          <Tooltip
-            preferedDirection="top"
-            disabled={!warning}
-            spacing={5}
-            content={
-              typeof warning === 'object' && (
-                <div className="flex gap-1 items-center text-status-warning">
-                  <WarningIcon width={20} />
-                  <Typography id={trackingchecklistIdtoLabel[warning.id]} />
-                </div>
-              )
-            }
-          >
-            <TrackerSmol tracker={tracker} device={device} warning={warning} />
-          </Tooltip>
-        )}
-        {!smol && <TrackerBig tracker={tracker} device={device} />}
-      </div>
+      {interactable ? (
+        <Clickable onClick={onClick} className={cardClass} style={cardStyle}>
+          {content}
+        </Clickable>
+      ) : (
+        <div className={cardClass} style={cardStyle}>
+          {content}
+        </div>
+      )}
       {showUpdates && <FirmwareIcon tracker={tracker} device={device} />}
     </div>
   );

@@ -2,6 +2,7 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -64,7 +65,7 @@ data class BoneRoutingConfig(
 @Serializable
 data class DriverConfig(
 	val enabled: Boolean = true,
-	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
+	val sendVelocity: Boolean = true,
 )
 
 @Serializable
@@ -76,7 +77,7 @@ data class TapDetectionConfig(
 	var fullResetEnabled: Boolean = true,
 	var mountingResetEnabled: Boolean = true,
 	@Serializable(with = BodyPartSerializer::class)
-	var yawResetBodyPart: BodyPart? = BodyPart.CHEST,
+	var yawResetBodyPart: BodyPart? = BodyPart.UPPER_CHEST,
 	@Serializable(with = BodyPartSerializer::class)
 	var mountingResetBodyPart: BodyPart? = BodyPart.RIGHT_UPPER_LEG,
 	@Serializable(with = BodyPartSerializer::class)
@@ -91,8 +92,6 @@ data class TapDetectionConfig(
 data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
-	/** Always reset mounting for fingers */
-	val resetMountingFingers: Boolean = false,
 	/** Reset mode used for the arms */
 	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
@@ -100,7 +99,7 @@ data class ResetsConfig(
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
 	/** Reset a positional tracker's attitude full reset */
-	val resetPositionalHeadAttitude: Boolean = false, // TODO
+	val resetPositionalHeadAttitude: Boolean = false,
 	/** Used as preferred mounting method and tracking checklist */
 	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
@@ -128,7 +127,7 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 data class SkeletonTogglesConfig(
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
-	val toeSnap: Boolean = true, // TODO this was false in main
+	val toeSnap: Boolean = true, // TODO this was false in main, evaluate if we want it on by default
 	val footPlant: Boolean = true,
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,
@@ -139,8 +138,8 @@ data class SkeletonTogglesConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonRatiosConfig(
-	val imputeSpineFromUpperToLower: Float = 0.5f,
-	val imputeSpineCurvature: Float = 0.5f,
+	val imputeSpineFromUpperToLower: Float = DEFAULT_SPINE_UPPER_LOWER,
+	val imputeSpineCurvature: Float = 0.75f,
 	val interpolateHipWithUpperLegs: Float = 0.25f,
 	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.3f,
@@ -149,8 +148,8 @@ data class SkeletonRatiosConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonFilteringConfig(
-	val type: FilteringType = FilteringType.NONE,
-	val amount: Float = 0.2f,
+	val type: FilteringType = FilteringType.SMOOTHING,
+	val amount: Float = 0.1f,
 )
 
 @Serializable

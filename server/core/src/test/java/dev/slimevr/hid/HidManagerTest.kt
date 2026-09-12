@@ -40,6 +40,7 @@ private fun registerFrame(hidId: Int, address: Long): ByteArray {
 
 private class FakeHidConnection(private val onClose: () -> Unit) : HidConnection {
 	val frames = ArrayDeque<ByteArray>()
+	val writes = mutableListOf<ByteArray>()
 
 	override suspend fun read(buffer: ByteArray, timeoutMs: Int): Int {
 		val frame = frames.removeFirstOrNull()
@@ -51,9 +52,21 @@ private class FakeHidConnection(private val onClose: () -> Unit) : HidConnection
 		return frame.size
 	}
 
-	override suspend fun write(data: ByteArray): Int = data.size
+	override suspend fun write(data: ByteArray): Int {
+		writes += data
+		return data.size
+	}
 
 	override suspend fun close() = onClose()
+}
+
+private fun dongleInfoFrame(dataType: Int, payload: ByteArray = ByteArray(0)): ByteArray {
+	val frame = ByteArray(16)
+	frame[1] = HIDPacketIdV3.DONGLE_INFO.id.toByte()
+	frame[2] = dataType.toByte()
+	frame[3] = payload.size.toByte()
+	payload.copyInto(frame, 4)
+	return frame
 }
 
 private class FakeHidTransport : HidTransport {
@@ -182,6 +195,69 @@ class HidManagerTest {
 
 		assertEquals(1, fake.openCount)
 		assertTrue(dongles(harness.server).single().context.state.value.isDirect)
+	}
+
+	@Test
+	fun `writes server hello on open and wires the v3 behaviours from a 205 frame`() = runTest {
+		val fake = FakeHidTransport()
+		fake.present[PATH] = descriptor(PATH, RECEIVER_PID, "DONGLE1")
+
+		val harness = startHidManager(fake, backgroundScope)
+		advanceTimeBy(100)
+
+		val connection = fake.connections.getValue(PATH)
+		assertEquals(HIDPacketIdV3.SERVER_HELLO.id, connection.writes.first()[1].toUByte().toInt())
+
+		connection.frames += dongleInfoFrame(dataType = 2, payload = "Butterfly".encodeToByteArray())
+		advanceTimeBy(300)
+
+		val dongle = dongles(harness.server).single()
+		assertEquals(HID_PROTOCOL_V3, dongle.context.state.value.protocolVersion)
+		// v3Behaviours() got observed: HIDDongleInfoBehaviour handled the 205
+		assertEquals("Butterfly", dongle.context.state.value.model)
+	}
+
+	@Test
+	fun `wires the legacy behaviours when the first frame is not a 205`() = runTest {
+		val fake = FakeHidTransport()
+		fake.present[PATH] = descriptor(PATH, RECEIVER_PID, "DONGLE1")
+
+		val harness = startHidManager(fake, backgroundScope)
+		advanceTimeBy(100)
+
+		fake.connections.getValue(PATH).frames += registerFrame(3, 0xAABBCCDDEEFFL)
+		advanceTimeBy(300)
+
+		val dongle = dongles(harness.server).single()
+		assertEquals(HID_PROTOCOL_LEGACY, dongle.context.state.value.protocolVersion)
+		// legacyBehaviours() got observed: HIDRegistrationBehaviour handled the type-255 frame
+		assertEquals("AABBCCDDEEFF", dongle.context.state.value.trackers[3]?.address)
+	}
+
+	@Test
+	fun `does not re-wire the protocol behaviours on reconnect`() = runTest {
+		val fake = FakeHidTransport()
+		fake.present[PATH] = descriptor(PATH, RECEIVER_PID, "DONGLE1")
+
+		val harness = startHidManager(fake, backgroundScope)
+		advanceTimeBy(100)
+
+		fake.connections.getValue(PATH).frames += dongleInfoFrame(dataType = 2, payload = "First".encodeToByteArray())
+		advanceTimeBy(300)
+		val dongle = dongles(harness.server).single()
+		val behaviourCount = dongle.context.behaviours.snapshot().size
+
+		fake.present.remove(PATH)
+		advanceTimeBy(4_000)
+		fake.present["/dev/hidraw1"] = descriptor("/dev/hidraw1", RECEIVER_PID, "DONGLE1")
+		advanceTimeBy(4_000)
+
+		fake.connections.getValue("/dev/hidraw1").frames += dongleInfoFrame(dataType = 2, payload = "Second".encodeToByteArray())
+		advanceTimeBy(300)
+
+		// Same behaviour list, still handling packets — observeProtocol was a no-op the second time
+		assertEquals(behaviourCount, dongle.context.behaviours.snapshot().size)
+		assertEquals("Second", dongle.context.state.value.model)
 	}
 
 	@Test

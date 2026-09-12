@@ -163,7 +163,7 @@ class VRCOSCInputBehaviour(
 		message: String,
 		throwable: Throwable,
 	) {
-		AppLogger.vrc.error(message, throwable)
+		AppLogger.vrc.error(throwable, message)
 		receiver.context.dispatch(
 			VRCOSCActions.SetInput(
 				state = VRCOSCInputState.ERROR,
@@ -190,8 +190,12 @@ class VRCOSCInputBehaviour(
 		val position = parsePosition(message.args) ?: return
 		val rotation = parseVrcEulerRotation(message.args, startIndex = 3) ?: return
 		val runtimeTracker = registry.trackerFor(tracker)
-		runtimeTracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-		runtimeTracker.setRotation(rotation = rotation, position = position)
+		runtimeTracker.context.dispatchAll(
+			listOf(
+				TrackerActions.SetStatus(TrackerStatus.OK),
+				TrackerActions.SetRotation(rotation = rotation, position = position),
+			),
+		)
 		registry.setStatus(TrackerStatus.OK)
 		receiver.context.dispatchAll(
 			listOf(

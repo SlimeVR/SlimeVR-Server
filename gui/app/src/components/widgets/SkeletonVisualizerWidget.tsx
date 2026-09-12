@@ -1,18 +1,18 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Clickable } from '@/components/commons/Clickable';
 
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
 import {
-  BoneKind,
-  createChildren,
   BasedSkeletonHelper,
+  TrackerPreviewData,
 } from '@/utils/skeletonHelper';
 import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
+import { getTrackerBoneOffset } from '@/utils/skeletonParts';
 import {
   computeHeadYOffset,
   deriveSkeletonProportions,
 } from '@/utils/skeletonProportions';
 import {
-  Bone,
   Color,
   DirectionalLight,
   Group,
@@ -27,14 +27,15 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
-import { BodyPart, BoneT } from 'solarxr-protocol';
+import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
+import { Vector3FromVec3fT } from '@/maths/vector3';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
-import { bonesAtom } from '@/store/app-store';
+import { assignedTrackersAtom, bonesAtom } from '@/store/app-store';
 import { Config, useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
 import { EyeIcon } from '@/components/commons/icon/EyeIcon';
@@ -145,9 +146,10 @@ function createRadialFloorMesh(size = 8.0): Mesh {
 
 function initializePreview(
   canvas: HTMLCanvasElement,
-  skeleton: (BoneKind | Bone)[],
-  style: Config['skeletonPreviewStyle']
+  bones: Map<BodyPart, BoneT>,
+  initialStyle: Config['skeletonPreviewStyle']
 ) {
+  let style = initialStyle;
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
 
@@ -174,43 +176,53 @@ function initializePreview(
   const floor = createRadialFloorMesh(6.0);
   scene.add(floor);
 
-  const makeHelper = (root: Bone | BoneKind): SkeletonHelper => {
+  const makeHelper = (bones: Map<BodyPart, BoneT>): SkeletonHelper => {
     if (style === 'lines') {
-      const helper = new BasedSkeletonHelper(root);
+      const helper = new BasedSkeletonHelper(bones);
       helper.resolution.copy(resolution);
       return helper;
     }
-    return new BasedSkeletonMeshHelper(root);
+    return new BasedSkeletonMeshHelper(bones);
   };
 
   const skeletonGroup = new Group();
-  let skeletonHelper = makeHelper(skeleton[0]);
+  let skeletonHelper = makeHelper(bones);
   skeletonGroup.add(skeletonHelper);
 
   scene.add(skeletonGroup);
-  scene.add(skeleton[0]);
 
   let heightOffset = 0;
 
-  const rebuildSkeleton = (
-    newSkeleton: (BoneKind | Bone)[],
-    bones: Map<BodyPart, BoneT>
-  ) => {
+  const followOffset = new Vector3();
+  const desiredFollow = new Vector3();
+  const followDelta = new Vector3();
+
+  const computeFollow = (out: Vector3) => {
+    const root =
+      bones.get(BodyPart.HEAD) ??
+      bones.get(BodyPart.HIP) ??
+      bones.get(BodyPart.LOWER_WAIST);
+    if (!root) return out.copy(followOffset);
+    out.copy(Vector3FromVec3fT(root.headPosition));
+    skeletonGroup.updateWorldMatrix(true, false);
+    skeletonGroup.localToWorld(out);
+    out.y = 0;
+    return out;
+  };
+
+  const rebuildSkeleton = (newBones: Map<BodyPart, BoneT>) => {
     skeletonGroup.remove(skeletonHelper);
     skeletonHelper.dispose();
-    scene.remove(skeleton[0]);
+    bones = newBones;
 
-    skeleton = newSkeleton;
-
-    skeletonHelper = makeHelper(newSkeleton[0]);
+    skeletonHelper = makeHelper(bones);
     if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
       skeletonHelper.setProportions(deriveSkeletonProportions(bones));
     }
     skeletonGroup.add(skeletonHelper);
-    scene.add(newSkeleton[0]);
 
     const hmd = bones.get(BodyPart.HEAD);
-    const quat = QuaternionFromQuatT(hmd?.orientationG).normalize().invert();
+    const quat = QuaternionFromQuatT(hmd?.orientation).normalize().invert();
 
     // Project quat to (0x, 1y, 0z)
     const VEC_Y = new Vector3(0, 1, 0);
@@ -222,7 +234,27 @@ function initializePreview(
     skeletonGroup.rotation.setFromQuaternion(yawReset);
   };
 
+  const updateTrackers = (trackers: Map<BodyPart, TrackerPreviewData>) => {
+    skeletonHelper.setTrackers(trackers);
+  };
+
+  const setStyle = (newStyle: Config['skeletonPreviewStyle']) => {
+    if (newStyle === style) return;
+    style = newStyle;
+    rebuildSkeleton(bones);
+  };
+
   const render = (delta: number) => {
+    computeFollow(desiredFollow);
+    followDelta.subVectors(desiredFollow, followOffset);
+    if (followDelta.lengthSq() > 0) {
+      views.forEach((v) => {
+        v.camera.position.add(followDelta);
+        v.controls.target.add(followDelta);
+      });
+      followOffset.copy(desiredFollow);
+    }
+
     views.forEach((v) => {
       if (v.hidden || !renderer) return;
       v.controls.update(delta);
@@ -289,13 +321,10 @@ function initializePreview(
       frameInterval = interval;
     },
     rebuildSkeleton,
-    updatesBones: (bones: Map<BodyPart, BoneT>) => {
-      skeleton.forEach(
-        (bone) => bone instanceof BoneKind && bone.updateData(bones)
-      );
-      // The mesh helper reads bone.matrixWorld alongside the raw orientations,
-      // and the scene traverses it before this tree, so refresh it here.
-      skeleton[0].updateMatrixWorld(true);
+    setStyle,
+    updatesBones: (newBones: Map<BodyPart, BoneT>) => {
+      bones = newBones;
+      skeletonHelper.setBones(bones);
       if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
         skeletonHelper.setProportions(deriveSkeletonProportions(bones));
       }
@@ -304,9 +333,11 @@ function initializePreview(
         heightOffset = newHeight;
         views.forEach((v) => {
           v.onHeightChange(v, heightOffset);
+          v.controls.target.add(followOffset);
         });
       }
     },
+    updateTrackers,
     destroy: () => {
       cancelAnimationFrame(animationFrameId);
       skeletonHelper.dispose();
@@ -349,12 +380,12 @@ function initializePreview(
 
       const tween = new Tween(position)
         .onUpdate(() => {
-          camera.position.copy(position);
+          camera.position.copy(position).add(followOffset);
         })
         .onStart(() => (frameInterval = 0))
         .onComplete(() => (frameInterval = 1000 / LOW_FRAMERATE));
 
-      camera.position.copy(position);
+      camera.position.copy(position).add(followOffset);
 
       const view: SkeletonPreviewView = {
         camera,
@@ -395,24 +426,56 @@ function SkeletonVisualizer({
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
   const bonesList = useAtomValue(bonesAtom);
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const bones = useMemo(() => {
     return new Map(bonesList.map((b) => [b.bodyPart, b]));
   }, [bonesList]);
+  const trackersByPart = useMemo(() => {
+    const trackers = new Map<BodyPart, TrackerPreviewData>();
+    for (const { tracker } of assignedTrackers) {
+      const bodyPart = tracker.info?.bodyPart;
+      if (bodyPart == null || bodyPart === BodyPart.NONE) continue;
+      trackers.set(bodyPart, {
+        trackerId: tracker.trackerId,
+        mountingOrientation: QuaternionFromQuatT(
+          tracker.info?.lastMountingMethod == MountingMethod.MANUAL
+            ? tracker.info?.mountingOrientation
+            : tracker.info?.mountingResetOrientation
+        ).normalize(),
+        boneOffset: getTrackerBoneOffset(bodyPart),
+      });
+    }
+    return trackers;
+  }, [assignedTrackers]);
 
   useEffect(() => {
     if (bones.size === 0) return;
     const context = previewContext.current;
     if (!context || disabled) return;
-    context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
-    console.log('rebuild');
+    context.rebuildSkeleton(bones);
   }, [bones.size, disabled]);
 
   useEffect(() => {
     const context = previewContext.current;
     if (!context || disabled) return;
     context.updatesBones(bones);
+    context.updateTrackers(trackersByPart);
   }, [bones, disabled]);
+
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.updateTrackers(trackersByPart);
+  }, [trackersByPart, disabled]);
+
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.setStyle(style);
+    context.updatesBones(bones);
+    context.updateTrackers(trackersByPart);
+  }, [style, disabled]);
 
   const onResize = (e: ResizeObserverEntry) => {
     const context = previewContext.current;
@@ -440,11 +503,7 @@ function SkeletonVisualizer({
       throw 'invalid state - no canvas or container';
     resizeObserver.current.observe(containerRef.current);
 
-    previewContext.current = initializePreview(
-      canvasRef.current,
-      createChildren(bones, BoneKind.root),
-      style
-    );
+    previewContext.current = initializePreview(canvasRef.current, bones, style);
     if (!config?.devSettings.fastDataFeed)
       previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
 
@@ -465,7 +524,7 @@ function SkeletonVisualizer({
       containerRef.current.removeEventListener('mouseenter', onEnter);
       containerRef.current.removeEventListener('mouseleave', onLeave);
     };
-  }, [disabled, style]);
+  }, [disabled]);
 
   return (
     <div ref={containerRef} className={classNames('w-full h-full')}>
@@ -516,7 +575,9 @@ export function SkeletonVisualizerWidget({
           { 'opacity-0 pointer-events-none': !disabled || error }
         )}
       >
-        <div
+        <Clickable
+          aria-hidden={disabled}
+          disabled={!toggleDisabled}
           className={classNames(
             'bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center',
             {
@@ -528,7 +589,7 @@ export function SkeletonVisualizerWidget({
         >
           <EyeIcon closed width={20} />
           <Typography id="preview-disabled_render" />
-        </div>
+        </Clickable>
       </div>
       <div
         className={classNames(

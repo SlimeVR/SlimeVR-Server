@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import { stepKeys } from '@/utils/a11y';
 
 export function Range<T extends FieldValues = FieldValues>({
   control,
@@ -22,51 +23,70 @@ export function Range<T extends FieldValues = FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, ref, name, value } }) => (
-        <label className="text-standard w-full text-center flex items-center flex-col">
-          <input
-            type="range"
-            className=" text-background-10 border-accent-background-30"
-            style={{
-              width: 'calc(88% - 0.5vw)',
-            }}
-            name={name}
-            ref={ref}
-            value={value}
-            onChange={onChange}
-            list={`${name}-datalist`}
-            min={min}
-            max={max}
-            step={step}
-            {...props}
-          />
-          <datalist id={`${name}-datalist`} className="">
-            {values.map(({ value }, i) => (
-              <option key={i}>{value}</option>
-            ))}
-          </datalist>
-          <div className="w-full flex flex-nowrap overflow-clip">
-            {Array((max - min) / step + 1)
-              .fill(0)
-              .map((_v, i) => {
-                const value = values.find(
-                  ({ value }) => i * step + min === value
-                );
-                return (
-                  <span
-                    key={i}
-                    className={classNames(
-                      'flex-1',
-                      value?.defaultValue && 'text-status-success'
-                    )}
-                  >
-                    {value?.label}
-                  </span>
-                );
-              })}
-          </div>
-        </label>
-      )}
+      render={({ field: { onChange, ref, name, value } }) => {
+        const emit = (v: number) =>
+          onChange(
+            Math.min(
+              max,
+              Math.max(min, min + Math.round((v - min) / step) * step)
+            )
+          );
+
+        const onKeyDown = stepKeys({
+          value: Number(value),
+          min,
+          max,
+          step,
+          onChange: emit,
+        });
+        return (
+          <label className="text-standard w-full text-center flex items-center flex-col">
+            <input
+              type="range"
+              className="text-background-10 border-accent-background-30"
+              style={{
+                width: 'calc(88% - 0.5vw)',
+              }}
+              {...props}
+              data-nav-edit
+              name={name}
+              ref={ref}
+              value={value}
+              onChange={(e) => emit(e.target.valueAsNumber)}
+              onKeyDown={onKeyDown}
+              list={`${name}-datalist`}
+              min={min}
+              max={max}
+              step={step}
+            />
+            <datalist id={`${name}-datalist`} className="">
+              {values.map(({ value }, i) => (
+                <option key={i}>{value}</option>
+              ))}
+            </datalist>
+            <div className="w-full flex flex-nowrap overflow-clip">
+              {Array((max - min) / step + 1)
+                .fill(0)
+                .map((_v, i) => {
+                  const value = values.find(
+                    ({ value }) => i * step + min === value
+                  );
+                  return (
+                    <span
+                      key={i}
+                      className={classNames(
+                        'flex-1',
+                        value?.defaultValue && 'text-status-success'
+                      )}
+                    >
+                      {value?.label}
+                    </span>
+                  );
+                })}
+            </div>
+          </label>
+        );
+      }}
     />
   );
 }

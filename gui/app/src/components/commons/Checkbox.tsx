@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import { forwardRef, useMemo } from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import { FOCUS_RING_PEER, FOCUS_RING_WITHIN } from '@/utils/a11y';
 
-export const CHECKBOX_CLASSES = classNames(
-  'bg-background-50 border-background-50 cursor-pointer rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40 focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent'
-);
+export const CHECKBOX_CLASSES =
+  'bg-background-50 border-background-50 cursor-pointer rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40';
 
 export const CheckboxInternal = forwardRef<
   HTMLInputElement,
@@ -32,24 +32,31 @@ export const CheckboxInternal = forwardRef<
   ref
 ) {
   const classes = useMemo(() => {
+    // Outlined rows carry focus on the card (FOCUS_RING_WITHIN); the control's own
+    // focus outline is suppressed there so it doesn't double up.
     const vriantsMap = {
       checkbox: {
-        checkbox: classNames(CHECKBOX_CLASSES, {
-          'brightness-50 hover:cursor-not-allowed': disabled,
-        }),
+        checkbox: classNames(
+          CHECKBOX_CLASSES,
+          outlined && 'focus-visible:outline-none',
+          { 'brightness-50 hover:cursor-not-allowed': disabled }
+        ),
         toggle: '',
         pin: '',
       },
       toggle: {
-        checkbox: classNames('hidden'),
-        toggle: classNames('w-10 h-4 rounded-full relative transition-colors'),
+        checkbox: classNames('peer sr-only'),
+        toggle: classNames(
+          'w-10 h-4 rounded-full relative transition-colors',
+          !outlined && FOCUS_RING_PEER
+        ),
         pin: classNames(
           'h-2 w-2 bg-background-10 rounded-full absolute m-1 transition-opacity'
         ),
       },
     };
     return vriantsMap[variant];
-  }, [variant, disabled]);
+  }, [variant, disabled, outlined]);
 
   return (
     <div
@@ -62,12 +69,13 @@ export const CheckboxInternal = forwardRef<
           'bg-background-70': outlined && color === 'secondary',
           'bg-background-50': outlined && color === 'tertiary',
         },
+        outlined && FOCUS_RING_WITHIN,
         'flex items-center gap-2 w-full'
       )}
     >
       <label
         className={classNames(
-          'w-full h-[42px] flex gap-2 items-center text-standard-bold',
+          'w-full h-[48px] flex gap-2 items-center text-standard-bold',
           {
             'px-3': outlined,
             'cursor-pointer': !disabled || !loading,
@@ -91,7 +99,8 @@ export const CheckboxInternal = forwardRef<
               'bg-accent-background-50': checked && disabled,
               'bg-accent-background-30 animate-pulse': loading && !disabled,
               'bg-background-50':
-                ((!checked && color == 'primary') || color == 'secondary') &&
+                !checked &&
+                (color == 'primary' || color == 'secondary') &&
                 !loading,
               'bg-background-40': !checked && color == 'tertiary' && !loading,
             })}

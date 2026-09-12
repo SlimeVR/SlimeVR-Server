@@ -2,8 +2,9 @@ import { useLocalization } from '@fluent/react';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { useAtomValue } from 'jotai';
-import { AssignMode, useConfig } from './config';
+import { useConfig } from './config';
 import {
+  assignedRolesAtom,
   assignedTrackersAtom,
   connectedIMUTrackersAtom,
   flatTrackersAtom,
@@ -38,8 +39,9 @@ export const LOWER_BODY = new Set([
 ]);
 export const SPINE_PARTS = [
   BodyPart.UPPER_CHEST,
-  BodyPart.CHEST,
-  BodyPart.WAIST,
+  BodyPart.LOWER_CHEST,
+  BodyPart.UPPER_WAIST,
+  BodyPart.LOWER_WAIST,
   BodyPart.HIP,
 ];
 export const ASSIGNMENT_RULES: Partial<Record<BodyPart, (BodyPart | BodyPart[])[]>> = {
@@ -53,77 +55,75 @@ export const ASSIGNMENT_RULES: Partial<Record<BodyPart, (BodyPart | BodyPart[])[
   [BodyPart.RIGHT_LOWER_LEG]: [BodyPart.RIGHT_UPPER_LEG, SPINE_PARTS],
   [BodyPart.LEFT_UPPER_LEG]: [SPINE_PARTS],
   [BodyPart.RIGHT_UPPER_LEG]: [SPINE_PARTS],
-  [BodyPart.HIP]: [BodyPart.CHEST],
-  [BodyPart.WAIST]: [BodyPart.CHEST],
+  [BodyPart.HIP]: [BodyPart.UPPER_CHEST],
+  [BodyPart.LOWER_WAIST]: [BodyPart.UPPER_CHEST],
+  [BodyPart.UPPER_WAIST]: [BodyPart.UPPER_CHEST],
   // TODO chest OR upperChest.
   //  Also don't warn if no legs.
 };
 
 export const COMMONS = [BodyPart.HEAD, ...HANDS_PARTS];
 
-export const ASSIGNMENT_MODES: Record<AssignMode, BodyPart[]> = {
-  //  x5
-  [AssignMode.LowerBody]: [BodyPart.CHEST, ...LEGS_PARTS],
-  //  x6 (5 + 1)
-  [AssignMode.Core]: [BodyPart.CHEST, BodyPart.HIP, ...LEGS_PARTS],
-  //  x8 (5 + 3)
-  [AssignMode.EnhancedCore]: [
-    BodyPart.CHEST,
-    BodyPart.HIP,
-    ...LEGS_PARTS,
-    BodyPart.LEFT_FOOT,
-    BodyPart.RIGHT_FOOT,
-  ],
-  // x10 (7 + 3)
-  [AssignMode.FullBody]: [
-    BodyPart.CHEST,
-    BodyPart.HIP,
-    BodyPart.LEFT_UPPER_ARM,
-    BodyPart.RIGHT_UPPER_ARM,
-    ...LEGS_PARTS,
-    BodyPart.LEFT_FOOT,
-    BodyPart.RIGHT_FOOT,
-  ],
-  // special case with all body parts
-  [AssignMode.All]: [
-    BodyPart.HEAD,
-    BodyPart.NECK,
-    BodyPart.LEFT_SHOULDER,
-    BodyPart.RIGHT_SHOULDER,
-    BodyPart.LEFT_HAND,
-    BodyPart.RIGHT_HAND,
-    BodyPart.LEFT_FOOT,
-    BodyPart.RIGHT_FOOT,
-    ...SPINE_PARTS,
-    ...ARMS_PARTS,
-    ...LEGS_PARTS,
-  ],
+export const ALL_ASSIGNABLE_PARTS = [
+  BodyPart.HEAD,
+  BodyPart.NECK,
+  BodyPart.LEFT_SHOULDER,
+  BodyPart.RIGHT_SHOULDER,
+  BodyPart.LEFT_HAND,
+  BodyPart.RIGHT_HAND,
+  BodyPart.LEFT_FOOT,
+  BodyPart.RIGHT_FOOT,
+  ...SPINE_PARTS,
+  ...ARMS_PARTS,
+  ...LEGS_PARTS,
+];
+
+export const TAP_DETECTION_BODY_PARTS = [
+  BodyPart.UPPER_CHEST,
+  BodyPart.HIP,
+  BodyPart.LEFT_UPPER_ARM,
+  BodyPart.RIGHT_UPPER_ARM,
+  ...LEGS_PARTS,
+  BodyPart.LEFT_FOOT,
+  BodyPart.RIGHT_FOOT,
+];
+
+const addParts = (parts: Set<BodyPart>, roles: BodyPart[]) => {
+  roles.forEach((role) => parts.add(role));
 };
 
-export const ASSIGN_MODE_OPTIONS: Record<AssignMode, number> = [
-  AssignMode.LowerBody,
-  AssignMode.Core,
-  AssignMode.EnhancedCore,
-  AssignMode.FullBody,
-  AssignMode.All,
-].reduce(
-  (opts, mode) => ({ ...opts, [mode]: ASSIGNMENT_MODES[mode].length }),
-  {} as Record<AssignMode, number>
-);
+export const getSuggestedBodyParts = (
+  connectedIMUTrackersCount: number
+): BodyPart[] => {
+  const parts = new Set<BodyPart>();
 
-export const getPreferredAssignMode = (connectedIMUTrackersCount: number): AssignMode =>
-  (Object.entries(ASSIGN_MODE_OPTIONS).find(
-    ([, count]) => count >= connectedIMUTrackersCount
-  )?.[0] as AssignMode) ?? AssignMode.All;
+  addParts(parts, [BodyPart.UPPER_CHEST, ...LEGS_PARTS]);
+  if (connectedIMUTrackersCount >= 6) parts.add(BodyPart.HIP);
+  if (connectedIMUTrackersCount === 7) parts.add(BodyPart.LOWER_WAIST);
+  if (connectedIMUTrackersCount >= 8) {
+    addParts(parts, [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT]);
+  }
+  if (connectedIMUTrackersCount >= 9) parts.add(BodyPart.LOWER_WAIST);
+  if (connectedIMUTrackersCount >= 10) {
+    addParts(parts, [BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM]);
+  }
+  if (connectedIMUTrackersCount >= 12) {
+    addParts(parts, [BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER]);
+  }
+  if (connectedIMUTrackersCount >= 14) parts.add(BodyPart.UPPER_CHEST);
+  if (connectedIMUTrackersCount >= 15) parts.add(BodyPart.NECK);
 
-/** Which set of body parts to offer: what the user asked for, or a guess from their trackers */
-export function useAssignMode(): AssignMode {
+  return [...parts];
+};
+
+/** Which body parts to offer: what the user asked for, or a guess from their trackers */
+export function useSuggestedBodyParts(): BodyPart[] {
   const { config } = useConfig();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   return config?.assignShowAllBodyParts
-    ? AssignMode.All
-    : getPreferredAssignMode(connectedIMUTrackers.length);
+    ? ALL_ASSIGNABLE_PARTS
+    : getSuggestedBodyParts(connectedIMUTrackers.length);
 }
 
 export type PickerTab = 'body' | 'fingers' | 'toes';
@@ -158,7 +158,31 @@ export const PICKER_TABS: Record<PickerTab, PickerTabSpec> = {
 
 export const PICKER_TAB_ORDER: PickerTab[] = ['body', 'fingers', 'toes'];
 
-export function usePickerShell() {
+export function getPickerSelection(bodyPart?: BodyPart): {
+  tab: PickerTab;
+  side: ExtremitySide;
+} {
+  if (bodyPart == null) return { tab: 'body', side: 'right' };
+
+  for (const tab of PICKER_TAB_ORDER) {
+    const view = PICKER_TABS[tab].view;
+    if (view.kind !== 'extremity') continue;
+
+    for (const side of ['left', 'right'] as ExtremitySide[]) {
+      const extremity = view.descriptor.sides[side];
+      if (
+        extremity.root === bodyPart ||
+        Object.values(extremity.digits).some((parts) => parts.includes(bodyPart))
+      ) {
+        return { tab, side };
+      }
+    }
+  }
+
+  return { tab: 'body', side: 'right' };
+}
+
+export function providePicker() {
   const { l10n } = useLocalization();
 
   const [tab, setTab] = useState<PickerTab>('body');
@@ -167,21 +191,18 @@ export function usePickerShell() {
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
   const trackerByPart = useAtomValue(trackerByBodyPartAtom);
   const flatTrackers = useAtomValue(flatTrackersAtom);
+  const assignedRoles = useAtomValue(assignedRolesAtom);
 
-  const currentAssignMode = useAssignMode();
-  const expectedTrackersCount = ASSIGN_MODE_OPTIONS[currentAssignMode];
+  const suggestedBodyParts = useSuggestedBodyParts();
+  const expectedTrackersCount = flatTrackers.length;
 
   const assignedPartsCount = useMemo(
-    () =>
-      ASSIGNMENT_MODES[currentAssignMode].filter((part) => !!trackerByPart[part])
-        .length,
-    [currentAssignMode, trackerByPart]
+    () => suggestedBodyParts.filter((part) => assignedRoles.includes(part)).length,
+    [suggestedBodyParts, assignedRoles]
   );
 
   const rolesWithErrors = useMemo(() => {
-    const trackerRoles = flatTrackers.map(
-      ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE
-    );
+    const trackerRoles = assignedRoles;
 
     const message = (assignedRole: BodyPart): BodyPartError | undefined => {
       const unassignedRoles: [BodyPart | BodyPart[], boolean][] = (
@@ -195,7 +216,9 @@ export function usePickerShell() {
 
       // Special exception for waist/hip: https://github.com/SlimeVR/SlimeVR-Server/issues/612
       if (
-        (assignedRole === BodyPart.HIP || assignedRole === BodyPart.WAIST) &&
+        (assignedRole === BodyPart.HIP ||
+          assignedRole === BodyPart.LOWER_WAIST ||
+          assignedRole === BodyPart.UPPER_WAIST) &&
         !trackerRoles.some((t) => LOWER_BODY.has(t))
       ) {
         return;
@@ -218,9 +241,9 @@ export function usePickerShell() {
       };
     };
 
-    const assignedRoles = trackerRoles.toSorted((a, b) => a - b);
+    const sortedRoles = trackerRoles.toSorted((a, b) => a - b);
 
-    return assignedRoles.reduce<Partial<Record<BodyPart, BodyPartError>>>(
+    return sortedRoles.reduce<Partial<Record<BodyPart, BodyPartError>>>(
       (errors, role) => {
         const error = message(role);
         if (error) errors[role] = error;
@@ -228,7 +251,7 @@ export function usePickerShell() {
       },
       {}
     );
-  }, [flatTrackers]);
+  }, [assignedRoles]);
 
   const firstError = Object.values(rolesWithErrors).find((r) => !!r);
 
@@ -240,6 +263,7 @@ export function usePickerShell() {
     assignedTrackers,
     trackerByPart,
     flatTrackers,
+    suggestedBodyParts,
     expectedTrackersCount,
     assignedPartsCount,
     rolesWithErrors,
@@ -247,7 +271,7 @@ export function usePickerShell() {
   };
 }
 
-export type PickerShell = ReturnType<typeof usePickerShell>;
+export type PickerShell = ReturnType<typeof providePicker>;
 
 export type Picker = PickerShell & {
   activePart: BodyPart;

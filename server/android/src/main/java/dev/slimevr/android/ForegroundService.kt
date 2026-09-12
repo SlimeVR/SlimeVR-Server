@@ -24,6 +24,7 @@ import dev.slimevr.android.hid.createAndroidHIDManager
 import dev.slimevr.android.ipc.createAndroidSolarXRWebsocketServer
 import dev.slimevr.android.serial.AndroidFirmwareFlasher
 import dev.slimevr.android.serial.createAndroidSerialServer
+import dev.slimevr.android.timing.createAndroidWaiter
 import dev.slimevr.android.udp.resolveAndroidUdpAddress
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
@@ -154,7 +155,7 @@ class ForegroundService : Service() {
 
 		val firmwareManager = FirmwareManager.create(ctx = phase1, scope = scope, flasher = AndroidFirmwareFlasher)
 		val networkProfileManager = NetworkProfileManager.create(scope = scope, isSupported = false)
-		val skeleton = Skeleton.create(scope = scope, ctx = phase1)
+		val skeleton = Skeleton.create(scope = scope, ctx = phase1, waiter = createAndroidWaiter())
 		val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = scope)
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
 		val trackingChecklist = TrackingChecklist.create(scope = scope)

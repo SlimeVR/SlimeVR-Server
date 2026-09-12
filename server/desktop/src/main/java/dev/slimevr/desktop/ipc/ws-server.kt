@@ -28,6 +28,7 @@ suspend fun createSolarXRWebsocketServer(appContext: AppContextProvider) {
 				AppLogger.solarxr.info("[WS] New connection")
 				handleSolarXRBridge(
 					appContext = appContext,
+					transport = "websocket",
 					messages = flow {
 						val buffer = Buffer()
 						for (frame in incoming) {

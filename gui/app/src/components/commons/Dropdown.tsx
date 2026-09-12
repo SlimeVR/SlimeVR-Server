@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from './Clickable';
 import {
   CSSProperties,
   forwardRef,
@@ -23,6 +24,11 @@ import { ProgressBar } from './ProgressBar';
 import { a11yClick } from '@/utils/a11y';
 import './Dropdown.scss';
 import { Typography } from './Typography';
+import {
+  FLOATING_LABEL_PADDING,
+  FieldCaption,
+  FloatingLabel,
+} from './FloatingLabel';
 
 export type DropdownItem = {
   value: string;
@@ -46,6 +52,15 @@ type DropdownProps = {
   alignment?: 'left' | 'right';
   display?: 'fit' | 'block';
   placeholder: ReactNode;
+  // Field label. Rendered as a caption above the box, unless `inside` is 'label'.
+  label?: string;
+  // What fills the box while nothing is selected:
+  //  'placeholder' (default) - the placeholder text (blank if it is empty/null)
+  //  'label'                 - the label, as a floating label inside the box
+  //  'none'                  - nothing
+  inside?: 'placeholder' | 'label' | 'none';
+  // Keep the caption once a value is selected (default). Set false to drop it.
+  persistLabel?: boolean;
   name: string;
   items: DropdownItem[];
   maxHeight?: string | number;
@@ -87,13 +102,13 @@ function DropdownItem({
 }) {
   const variantStyles = {
     primary:
-      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-50 focus:text-background-10 focus:bg-background-50',
+      'text-background-10 checked-hover:text-background-10 checked-hover:bg-background-50 focus:text-background-10 focus:bg-background-50',
     secondary:
-      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-40 focus:text-background-10 focus:bg-background-40',
+      'text-background-10 checked-hover:text-background-10 checked-hover:bg-background-40 focus:text-background-10 focus:bg-background-40',
     tertiary:
       'bg-accent-background-30 checked-hover:bg-accent-background-20 focus:bg-accent-background-20 text-background-10',
     quaternary:
-      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-60 focus:text-background-10 focus:bg-background-60',
+      'text-background-10 checked-hover:text-background-10 checked-hover:bg-background-60 focus:text-background-10 focus:bg-background-60',
   };
 
   const ref = useRef<HTMLDivElement>(null);
@@ -120,9 +135,10 @@ function DropdownItem({
   return (
     <div
       className={classNames(
-        'py-2 px-2 min-w-max cursor-pointer text-standard-bold transition-colors select-none',
+        'py-2 px-2 min-w-max cursor-pointer transition-colors select-none',
         variantStyles[variant],
-        innerFocusValue === item.value && 'ring-inset ring-4'
+        innerFocusValue === item.value &&
+          'ring-inset ring-2 ring-accent-background-10'
       )}
       onClick={(e) => {
         e.stopPropagation();
@@ -153,6 +169,8 @@ function DropdownItem({
   );
 }
 
+export type DropdownAction = 'all' | 'none';
+
 type DropdownListProps = {
   isOpen: boolean;
   onSelect: (item: DropdownItem) => void;
@@ -161,6 +179,7 @@ type DropdownListProps = {
   onSelectAll?: () => void;
   onDeselectAll?: () => void;
   innerFocusValue: string | null;
+  focusedAction: DropdownAction | null;
   anchorName: string;
 } & Pick<
   Required<DropdownProps>,
@@ -182,6 +201,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
     onSelectAll,
     onDeselectAll,
     innerFocusValue,
+    focusedAction,
     display,
     alignment,
     direction,
@@ -244,26 +264,32 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
     >
       {multiple && (onSelectAll || onDeselectAll) && (
         <div className="flex items-center justify-between px-3 py-2 border-b border-background-10/10 text-xs font-bold bg-background-80/60 select-none">
-          <button
-            type="button"
+          <Clickable
+            id={`__dropdownList-${name}-action-all`}
             onClick={(e) => {
               e.stopPropagation();
               onSelectAll?.();
             }}
-            className="text-background-10 hover:text-background-20 transition-colors"
+            className={classNames(
+              'text-background-10 hover:text-background-20 transition-colors rounded',
+              focusedAction === 'all' && 'ring-2 ring-accent-background-10'
+            )}
           >
             <Typography id="dropdown_select-all" />
-          </button>
-          <button
-            type="button"
+          </Clickable>
+          <Clickable
+            id={`__dropdownList-${name}-action-none`}
             onClick={(e) => {
               e.stopPropagation();
               onDeselectAll?.();
             }}
-            className="text-background-30 hover:text-background-10 transition-colors"
+            className={classNames(
+              'text-background-30 hover:text-background-10 transition-colors rounded',
+              focusedAction === 'none' && 'ring-2 ring-accent-background-10'
+            )}
           >
             <Typography id="dropdown_unselect-all" />
-          </button>
+          </Clickable>
         </div>
       )}
       <ul
@@ -298,6 +324,9 @@ export function DropdownInside(
     alignment = 'right',
     display = 'fit',
     placeholder,
+    label,
+    inside = 'placeholder',
+    persistLabel = true,
     name,
     items,
     maxHeight = '50vh',
@@ -320,16 +349,21 @@ export function DropdownInside(
     block: 'w-full',
   };
 
+  const hasValue = props.multiple ? props.value.length > 0 : !!props.value;
+  const labelInside = inside === 'label' && !!label;
+  const showCaption = !!label && !labelInside && (persistLabel || !hasValue);
+  const emptyValue = inside === 'placeholder' ? placeholder : '';
+
   const getShownValue = (): ReactNode => {
     if (renderValue) return renderValue();
     if (props.multiple) {
       return props.value.length > 0
         ? `${props.value.length} selected`
-        : placeholder;
+        : emptyValue;
     }
     return props.value
       ? (items.find((item) => item.value === props.value)?.label ?? placeholder)
-      : placeholder;
+      : emptyValue;
   };
 
   const selectItem = (item: DropdownItem) => {
@@ -346,26 +380,47 @@ export function DropdownInside(
     }
   };
 
+  const selectAll = () =>
+    props.multiple && props.onChange(items.map((i) => i.value));
+  const deselectAll = () => props.multiple && props.onChange([]);
+
+  /**
+   * The header select-all / unselect-all buttons sit before the items in the
+   * roving order, so arrows reach them like any option.
+   */
+  const actionKeys: DropdownAction[] = props.multiple ? ['all', 'none'] : [];
+  const navCount = actionKeys.length + items.length;
+  const resolveNav = (
+    index: number | null
+  ): { action: DropdownAction | null; item: DropdownItem | null } => {
+    if (index === null || index < 0) return { action: null, item: null };
+    if (index < actionKeys.length)
+      return { action: actionKeys[index] ?? null, item: null };
+    return { action: null, item: items[index - actionKeys.length] ?? null };
+  };
+
   const ref = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   const anchorName = `--dropdown-anchor-${useId().replace(/:/g, '')}`;
 
   const [innerFocusIndex, setInnerFocusIndex] = useState<number | null>(null);
+  // Index may point past the range (items changed, empty list) - resolve safely.
+  const { action: focusedAction, item: focusedItem } =
+    resolveNav(innerFocusIndex);
   const getCurrentActiveIndex = () => {
-    return props.multiple
+    const i = props.multiple
       ? items.findIndex((item) => props.value.includes(item.value))
       : items.findIndex((item) => item.value === props.value);
+    return i >= 0 ? i + actionKeys.length : actionKeys.length;
   };
   const innerFocusPrev = () => {
     const current = innerFocusIndex ?? getCurrentActiveIndex();
-
-    setInnerFocusIndex(current > 0 ? current - 1 : current);
+    setInnerFocusIndex(Math.max(0, current - 1));
   };
   const innerFocusNext = () => {
     const current = innerFocusIndex ?? getCurrentActiveIndex();
-
-    setInnerFocusIndex(current < items.length - 1 ? current + 1 : current);
+    setInnerFocusIndex(Math.min(navCount - 1, current + 1));
   };
 
   useEffect(() => {
@@ -393,10 +448,11 @@ export function DropdownInside(
   }, [isOpen]);
 
   return (
-    <>
+    <div className={classNames('flex flex-col gap-1', displayStyles[display])}>
+      {showCaption && <FieldCaption>{label}</FieldCaption>}
       <div
         className={classNames(
-          'min-h-[42px] min-w-0 text-background-10 text-left dropdown',
+          'min-h-[48px] min-w-0 text-background-10 text-left dropdown',
           displayStyles[display]
         )}
         onKeyDown={(e) => {
@@ -411,36 +467,39 @@ export function DropdownInside(
               return;
             }
 
-            if (e.key === 'ArrowDown') {
-              setInnerFocusIndex(0);
+            // Up/Down opens the list (APG combobox pattern).
+            if (
+              items.length > 0 &&
+              (e.key === 'ArrowDown' || e.key === 'ArrowUp')
+            ) {
+              setInnerFocusIndex(
+                e.key === 'ArrowDown' ? actionKeys.length : navCount - 1
+              );
               setIsOpen(true);
               e.preventDefault();
-              return;
             }
-
-            if (e.key === 'ArrowUp') {
-              setInnerFocusIndex(items.length - 1);
-              setIsOpen(true);
-              e.preventDefault();
-              return;
-            }
+            return;
           } else {
             if (a11yClick(e)) {
               e.preventDefault();
-              if (innerFocusIndex === null) {
+              if (focusedAction === 'all') return selectAll();
+              if (focusedAction === 'none') return deselectAll();
+              if (!focusedItem) {
                 setIsOpen(false);
                 return;
               }
 
-              selectItem(items[innerFocusIndex]);
+              selectItem(focusedItem);
               if (!props.multiple) setIsOpen(false);
             }
             switch (e.key) {
               case 'ArrowUp':
+              case 'ArrowLeft':
                 innerFocusPrev();
                 e.preventDefault();
                 return;
               case 'ArrowDown':
+              case 'ArrowRight':
                 innerFocusNext();
                 e.preventDefault();
                 return;
@@ -451,7 +510,7 @@ export function DropdownInside(
                 setInnerFocusIndex(0);
                 return;
               case 'End':
-                setInnerFocusIndex(items.length - 1);
+                setInnerFocusIndex(navCount - 1);
                 return;
             }
           }
@@ -470,7 +529,8 @@ export function DropdownInside(
             if (!loading) setIsOpen((o) => !o);
           }}
           className={classNames(
-            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md focus:ring-4 relative min-w-0 overflow-hidden',
+            'flex flex-row items-center gap-2 pl-3 pr-11 rounded-md relative min-h-[48px] min-w-0 overflow-hidden',
+            labelInside ? FLOATING_LABEL_PADDING : 'py-3',
             loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
             variantStyles[variant]
           )}
@@ -479,15 +539,26 @@ export function DropdownInside(
           ref={ref}
           style={{ anchorName } as CSSProperties}
           aria-controls={`__dropdownList-${name}`}
+          aria-expanded={isOpen}
           aria-activedescendant={
-            innerFocusIndex === null
-              ? ''
-              : `__dropdownList-${name}-item-${items[innerFocusIndex].value}`
+            focusedAction
+              ? `__dropdownList-${name}-action-${focusedAction}`
+              : focusedItem
+                ? `__dropdownList-${name}-item-${focusedItem.value}`
+                : ''
           }
           role="combobox"
         >
-          <span className="min-w-0 truncate">{getShownValue()}</span>
-          <div className="fill-background-10 shrink-0">
+          {labelInside && <FloatingLabel label={label} floating={hasValue} />}
+          <span
+            className={classNames(
+              'min-w-0 flex-grow truncate',
+              !hasValue && 'text-background-20 italic'
+            )}
+          >
+            {getShownValue()}
+          </span>
+          <div className="fill-background-10 pointer-events-none absolute inset-y-0 right-5 flex items-center">
             {direction === 'up' ? (
               <ArrowUpIcon size={16} />
             ) : (
@@ -510,10 +581,8 @@ export function DropdownInside(
           isOpen={isOpen}
           items={items}
           multiple={props.multiple}
-          onSelectAll={() =>
-            props.multiple && props.onChange(items.map((i) => i.value))
-          }
-          onDeselectAll={() => props.multiple && props.onChange([])}
+          onSelectAll={selectAll}
+          onDeselectAll={deselectAll}
           onSelect={(item: DropdownItem) => {
             ref.current?.focus();
             selectItem(item);
@@ -523,13 +592,12 @@ export function DropdownInside(
           isSelected={(value) => isItemSelected(props, value)}
           ref={listRef}
           anchorName={anchorName}
-          innerFocusValue={
-            innerFocusIndex === null ? null : items[innerFocusIndex].value
-          }
+          innerFocusValue={focusedItem?.value ?? null}
+          focusedAction={focusedAction}
           name={name}
         />
       </div>
-    </>
+    </div>
   );
 }
 

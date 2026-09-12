@@ -4,6 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -28,6 +29,12 @@ private fun fakeFlashingHandler() = object : FlashingHandler {
 	override fun flushIOBuffers() {}
 }
 
+private fun throwingCloseFlashingHandler() = object : FlashingHandler by fakeFlashingHandler() {
+	override fun closeSerial() {
+		error("close failed")
+	}
+}
+
 private fun fakePort() = SerialPortInfo("COM1", "Fake COM1", 0x1A86, 0x7523)
 
 class SerialServerTest {
@@ -47,7 +54,7 @@ class SerialServerTest {
 	}
 
 	@Test
-	fun `openForFlashing returns null when port has an existing connection`() = runTest {
+	fun `openForFlashing closes existing console connection`() = runTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
@@ -58,7 +65,8 @@ class SerialServerTest {
 
 		val handler = server.openForFlashing("COM1")
 
-		assertNull(handler)
+		assertNotNull(handler)
+		assertIs<SerialConnection.Flashing>(server.context.state.value.connections["COM1"])
 	}
 
 	@Test
@@ -77,7 +85,7 @@ class SerialServerTest {
 
 	@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 	@Test
-	fun `closeSerial removes Flashing connection asynchronously`() = runTest {
+	fun `closeSerial removes Flashing connection synchronously`() = runTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
@@ -88,12 +96,21 @@ class SerialServerTest {
 
 		handler.closeSerial()
 
-		// The scope.launch inside closeSerial has not run yet
-		assertIs<SerialConnection.Flashing>(server.context.state.value.connections["COM1"])
+		assertNull(server.context.state.value.connections["COM1"])
+	}
 
-		advanceTimeBy(1)
+	@Test
+	fun `closeSerial removes Flashing connection when platform close fails`() = runTest {
+		val server = SerialServer.create(
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
+			openFlashingPort = ::throwingCloseFlashingHandler,
+			scope = backgroundScope,
+		)
+		server.onPortDetected(fakePort())
+		val handler = server.openForFlashing("COM1")!!
 
-		// Now the dispatched RemoveConnection has run
+		assertFailsWith<IllegalStateException> { handler.closeSerial() }
+
 		assertNull(server.context.state.value.connections["COM1"])
 	}
 

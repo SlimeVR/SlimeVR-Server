@@ -26,7 +26,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
 					rotation = Quaternion.IDENTITY,
-					acceleration = Vector3.NULL,
+					acceleration = Vector3.ZERO,
 					position = null,
 					isRotationActive = false,
 					isAccelerationActive = false,
@@ -37,9 +37,12 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 	}
 
 	is SkeletonActions.SetProportions -> {
-		val bones = action.lengths.toBoneOffsets()
+		val offsets = toBoneOffsets(action.lengths)
 		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
-			bone.copy(offset = bones[bodyPart] ?: bone.offset)
+			bone.copy(
+				headOffset = offsets.head[bodyPart] ?: bone.headOffset,
+				offset = offsets.tail[bodyPart] ?: bone.offset,
+			)
 		}
 		state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
 	}

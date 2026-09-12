@@ -1,4 +1,5 @@
 import { Control, Controller, useForm } from 'react-hook-form';
+import { Clickable } from '@/components/commons/Clickable';
 import {
   BodyPart,
   ChangeSkeletonProportionsRequestT,
@@ -37,7 +38,7 @@ import { ResetButton } from '@/components/home/ResetButton';
 import { Vector3 } from 'three';
 import { ArrowLink } from '@/components/commons/ArrowLink';
 
-function IconButton({
+function ActionButton({
   onClick,
   children,
   className,
@@ -64,11 +65,11 @@ function IconButton({
       preferedDirection="bottom"
       content={tooltip ?? children}
     >
-      <button
+      <Clickable
         onClick={onClick}
         disabled={disabled}
         className={classNames(
-          'flex flex-col rounded-md p-2 justify-between gap-1 items-center text-standard fill-background-10',
+          'flex flex-col rounded-md p-2 justify-between gap-1 items-center text-standard fill-background-10 text-center',
           disabled
             ? 'cursor-not-allowed opacity-30'
             : 'hover:bg-background-50 cursor-pointer',
@@ -79,7 +80,7 @@ function IconButton({
           {icon}
         </div>
         <div className={classNames('mobile:hidden')}>{children}</div>
-      </button>
+      </Clickable>
     </Tooltip>
   );
 }
@@ -199,7 +200,7 @@ function ImportExportButtons() {
   return (
     <>
       <div className="flex">
-        <IconButton
+        <ActionButton
           icon={<UploadFileIcon width={25} />}
           onClick={onImport}
           className={classNames(
@@ -211,10 +212,10 @@ function ImportExportButtons() {
           <Localized id="onboarding-manual_proportions-import">
             <Typography variant="standard" />
           </Localized>
-        </IconButton>
+        </ActionButton>
       </div>
       <div className="flex">
-        <IconButton
+        <ActionButton
           icon={<ImportIcon size={25} />}
           onClick={() => {
             exporting.current = true;
@@ -228,7 +229,7 @@ function ImportExportButtons() {
           <Localized id="onboarding-manual_proportions-export">
             <Typography variant="standard" />
           </Localized>
-        </IconButton>
+        </ActionButton>
       </div>
     </>
   );
@@ -247,23 +248,23 @@ function LinearRatioToggle({ control }: { control: ManualProportionControls }) {
       render={({ field: { onChange, value } }) => (
         <>
           {value ? (
-            <IconButton
+            <ActionButton
               icon={<PercentIcon size={25} />}
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-grouped_proportions">
                 <Typography variant="standard" />
               </Localized>
-            </IconButton>
+            </ActionButton>
           ) : (
-            <IconButton
+            <ActionButton
               icon={<RulerIcon width={25} />}
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-all_proportions">
                 <Typography variant="standard" />
               </Localized>
-            </IconButton>
+            </ActionButton>
           )}
         </>
       )}
@@ -279,23 +280,23 @@ function PreciseToggle({ control }: { control: ManualProportionControls }) {
       render={({ field: { onChange, value } }) => (
         <>
           {!value ? (
-            <IconButton
+            <ActionButton
               icon={<div className="text-xl font-bold">+1</div>}
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-normal_increment">
                 <Typography variant="standard" />
               </Localized>
-            </IconButton>
+            </ActionButton>
           ) : (
-            <IconButton
+            <ActionButton
               icon={<div className="text-xl font-bold">+0.5</div>}
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-precise_increment">
                 <Typography variant="standard" />
               </Localized>
-            </IconButton>
+            </ActionButton>
           )}
         </>
       )}
@@ -318,7 +319,7 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
   };
   const beneathFloor = useMemo(() => {
     const head = bones.find((bone) => bone.bodyPart === BodyPart.HEAD);
-    return !(head?.headPositionG && head.headPositionG.y >= MIN_HEIGHT);
+    return !(head?.headPosition && head.headPosition.y >= MIN_HEIGHT);
   }, [bones]);
 
   const canUseFineTuning = !beneathFloor || import.meta.env.DEV;
@@ -332,17 +333,17 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
         <PreciseToggle control={control} />
       </div>
       <div className="flex">
-        <IconButton
+        <ActionButton
           icon={<FullResetIcon width={20} />}
           onClick={() => setShowWarning(true)}
         >
           <Localized id="reset-reset_all">
             <Typography variant="standard" />
           </Localized>
-        </IconButton>
+        </ActionButton>
       </div>
       <div className="flex">
-        <IconButton
+        <ActionButton
           showTooltip={!canUseFineTuning}
           tooltip={
             <Localized
@@ -366,7 +367,7 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
           <Localized id={'onboarding-manual_proportions-fine_tuning_button'}>
             <Typography variant="standard" />
           </Localized>
-        </IconButton>
+        </ActionButton>
       </div>
       <div className="flex flex-grow" />
       <ImportExportButtons />

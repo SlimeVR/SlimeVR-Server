@@ -65,6 +65,14 @@ protocol.registerSchemesAsPrivileged([
 
 let mainWindow: BrowserWindow | null = null;
 
+// While the keybind recorder is open, F3/F5/F7/F12/Ctrl+R must reach the renderer as
+// ordinary keydowns instead of being eaten by hardenWindow's reload/devtools guards below,
+// otherwise those keys can never be captured into a shortcut at all.
+let recordingKeybind = false;
+handleIpc(IPC_CHANNELS.SET_KEYBIND_RECORDING, (e, recording) => {
+  recordingKeybind = recording;
+});
+
 handleIpc(
   IPC_CHANNELS.GH_FETCH,
   async <T extends GHGet>(_e: unknown, options: T): Promise<GHReturn[T['type']]> => {
@@ -135,17 +143,20 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
   }
 });
 
-handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
-  const allowedUrls = [
-    /^steam:\/\//,
-    /^ms-settings:network$/,
-    /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
-    /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
-    /^https:\/\/discord\.gg\/slimevr$/,
-  ];
-  if (allowedUrls.find((a) => url.match(a))) open(url);
+const EXTERNAL_URL_ALLOWLIST = [
+  /^steam:\/\//,
+  /^ms-settings:network$/,
+  /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
+  /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
+  /^https:\/\/discord\.gg\/slimevr$/,
+];
+
+const openExternalUrl = (url: string) => {
+  if (EXTERNAL_URL_ALLOWLIST.some((a) => url.match(a))) open(url);
   else logger.error({ url }, 'attempted to open non-whitelisted URL');
-});
+};
+
+handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => openExternalUrl(url));
 
 handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
   const store = stores[type];
@@ -262,6 +273,41 @@ const saveWindowState = async () => {
   });
 };
 
+/**
+ * The renderer is our whole UI, not a web page: it should not spawn a second
+ * window, reload, or fire Chromium's page shortcuts. Shut that off here so the
+ * renderer never has to fight the browser. Dev tools stay reachable.
+ */
+function hardenWindow(win: BrowserWindow) {
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    openExternalUrl(url);
+    return { action: 'deny' };
+  });
+
+  const devMode = !!process.env.ELECTRON_RENDERER_URL;
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.type !== 'keyDown') return;
+    if (recordingKeybind) return;
+    const key = input.key.toLowerCase();
+    const mod = input.control || input.meta;
+
+    // Ctrl/Cmd+Shift+I, Cmd+Alt+I, F12 -> dev tools.
+    if (key === 'f12' || (key === 'i' && mod && (input.shift || input.alt))) {
+      event.preventDefault();
+      win.webContents.toggleDevTools();
+      return;
+    }
+
+    const blocked =
+      (input.alt && key === 'enter') || // "save page" / properties
+      key === 'f3' || // find next
+      key === 'f7' || // caret browsing
+      (!devMode && (key === 'f5' || (mod && key === 'r')));
+
+    if (blocked) event.preventDefault();
+  });
+}
+
 function createWindow() {
   const validatedState = validateWindowState(windowState);
 
@@ -282,6 +328,8 @@ function createWindow() {
       devTools: true,
     },
   });
+
+  hardenWindow(mainWindow);
 
   if (process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
@@ -505,6 +553,18 @@ app.whenReady().then(async () => {
   stores = await initStores();
   checkEnvironmentVariables();
   const server = await spawnServer();
+
+  // No app menu on Windows/Linux (the frame is custom and every default
+  // accelerator is unwanted). macOS keeps a minimal one so Cmd+C/V/Q work.
+  Menu.setApplicationMenu(
+    getPlatform() === 'macos'
+      ? Menu.buildFromTemplate([
+          { role: 'appMenu' },
+          { role: 'editMenu' },
+          { role: 'windowMenu' },
+        ])
+      : null
+  );
 
   createWindow();
 

@@ -11,7 +11,7 @@ import {
   velocityGlowStyle,
 } from '@/hooks/tracker';
 import { FlatDeviceTracker } from '@/store/app-store';
-import { ExtremityRow } from '@/components/onboarding/ExtremityAssignment';
+import type { ExtremityRow } from '@/components/onboarding/BodyPartAssignment';
 import { DigitFlow } from '@/components/onboarding/extremities/ExtremityLayout';
 
 export type PartCardProps = {
@@ -26,6 +26,59 @@ export type PartCardProps = {
 };
 
 export type PartCardRenderer = (props: PartCardProps) => ReactNode;
+
+export function AssignmentPartCard({
+  onClick,
+  td,
+  role,
+  direction,
+  roleError,
+  labelId,
+  compact = false,
+  number,
+  connector = true,
+  pressed,
+}: PartCardProps & { onClick?: () => void; pressed?: boolean }) {
+  const velocity = useVelocity(td?.tracker);
+
+  return (
+    <button
+      type="button"
+      id={BodyPart[role]}
+      data-connector={connector ? undefined : 'off'}
+      aria-pressed={pressed}
+      onClick={onClick}
+      style={velocityGlowStyle(velocity)}
+      className={classNames(
+        'flex flex-col control rounded-md relative overflow-hidden transition-colors duration-150 ease-linear',
+        compact
+          ? 'gap-0 w-full px-1.5 py-0.5'
+          : 'gap-1 w-[88px] smol:w-[120px] sm:w-[150px] px-2 py-1',
+        direction === 'left' ? 'text-left' : 'text-right',
+        pressed && 'bg-accent-background-30/40'
+      )}
+    >
+      <PartCardWarning error={roleError} direction={direction} />
+      <PartCardLabel
+        role={role}
+        direction={direction}
+        number={number}
+        labelId={labelId}
+      />
+      {td ? (
+        <Typography variant="standard">
+          {getTrackerName(td.tracker.info)}
+        </Typography>
+      ) : (
+        <Typography
+          variant="standard"
+          color="text-background-30"
+          id="body_part-NONE"
+        />
+      )}
+    </button>
+  );
+}
 
 const CARD_WIDTH = 'w-32 smol:w-40 xsAssign:w-44';
 const WIDE_CARD_WIDTH =
@@ -122,7 +175,7 @@ export function PartCardLabel({
   return (
     <div
       className={classNames(
-        'flex items-center gap-1.5 max-w-full min-w-0 overflow-hidden',
+        'flex items-start gap-1.5 max-w-full min-w-0 break-words',
         direction === 'right' && 'flex-row-reverse'
       )}
     >
@@ -130,8 +183,7 @@ export function PartCardLabel({
       <Typography
         variant="standard"
         bold
-        truncate
-        whitespace="whitespace-nowrap"
+        whitespace="whitespace-normal"
         id={labelId ?? 'body_part-' + BodyPart[role]}
       />
     </div>

@@ -185,6 +185,7 @@ const config = {
       lg: '1300px',
       xl: '1600px',
       tall: { raw: '(min-height: 860px)' },
+      short: { raw: 'not (min-height: 860px)' },
       'keybinds-small': { raw: 'not (min-width: 1230px)' },
     },
     extend: {
@@ -352,6 +353,43 @@ const config = {
     }),
     plugin(function ({ addVariant }) {
       addVariant('checked-hover', ['&:hover', '&[data-checked=true]']);
+    }),
+    plugin(function ({ addBase }) {
+      // One focus style for the whole app. `outline` (not a box-shadow ring) so
+      // it never fights an element's own shadow and follows border-radius.
+      const formEls =
+        "[type='text'],[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[type='checkbox'],[type='radio'],[multiple],textarea,select";
+      addBase({
+        // Neutralise the @tailwindcss/forms per-type :focus ring.
+        [`:is(${formEls}):focus`]: {
+          boxShadow: 'none',
+          outline: '2px solid transparent',
+          outlineOffset: '2px',
+        },
+        // Keyboard focus only.
+        [`:focus-visible, :is(${formEls}):focus-visible`]: {
+          outline: '2px solid rgb(var(--accent-background-10))',
+          outlineOffset: '2px',
+        },
+        // Gamepad navigation: programmatic .focus() doesn't trigger
+        // :focus-visible, so force the same ring while a controller is driving.
+        'html.controller-active :focus': {
+          outline: '2px solid rgb(var(--accent-background-10))',
+          outlineOffset: '2px',
+        },
+        [`html.controller-active :is(${formEls}):focus`]: {
+          boxShadow: 'none',
+          outline: '2px solid rgb(var(--accent-background-10))',
+          outlineOffset: '2px',
+        },
+        // "Edit mode": the cursor has stepped into a value widget and arrows
+        // now change its value. The extra `:focus` keeps this ahead of the
+        // plain focus rule above.
+        'html.controller-active .nav-editing:focus': {
+          outline: '3px solid rgb(var(--accent-background-10))',
+          outlineOffset: '3px',
+        },
+      });
     }),
   ],
 } satisfies Config;

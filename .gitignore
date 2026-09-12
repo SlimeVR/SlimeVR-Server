@@ -45,6 +45,9 @@ build/
 .direnv/
 .devenv
 
+# Git worktrees
+.worktree/
+
 # Ignore Android local properties
 local.properties
 
@@ -54,3 +57,4 @@ vrconfig.yml.tmp
 
 # Nixos
 .bin/
+CLAUDE.md

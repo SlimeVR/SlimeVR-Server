@@ -31,7 +31,6 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 
 		routing {
 			webSocket {
-				AppLogger.ipc.info("New connection")
 				coroutineScope {
 					val bridge = SolarXRBridge.create(
 						id = appContext.server.nextHandle(),
@@ -39,6 +38,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 						scope = this,
 					)
 
+					AppLogger.ipc.info("SolarXR[${bridge.id}] connected (websocket)")
 					appContext.server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
 
 					bridge.outbound.on<MessageBundle> { bundle ->
@@ -54,7 +54,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 							for (frame in incoming) {
 								when (frame) {
 									is Frame.Binary -> emit(frame.data)
-									is Frame.Close -> AppLogger.ipc.info("Connection closed")
+									is Frame.Close -> AppLogger.ipc.info("SolarXR[${bridge.id}] connection closed")
 									else -> {}
 								}
 							}
@@ -63,6 +63,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 							onSolarXRMessage(MessageBundle.decode(reader, reader.getInt(0)), bridge)
 						}
 					} finally {
+						AppLogger.ipc.info("SolarXR[${bridge.id}] disconnected (websocket)")
 						bridge.disconnect()
 					}
 				}

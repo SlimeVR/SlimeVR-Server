@@ -1,6 +1,7 @@
 package dev.slimevr.tracker.behaviours
 
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -16,7 +17,7 @@ class TrackerCalibrationRefreshBehaviour : TrackerBehaviour {
 			}
 			.onEach {
 				// Make sure to send the raw data to have calibration re-apply
-				receiver.setRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, newData = false)
+				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, newData = false))
 			}.launchIn(receiver.context.scope)
 	}
 }

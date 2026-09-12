@@ -4,7 +4,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.skeleton.iterateBodyPartHierarchy
-import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import kotlin.collections.set
 
@@ -13,16 +12,17 @@ import kotlin.collections.set
  * falling back to their parent's yaw.
  */
 class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
-		inputSkeleton.forEachBone { parentPart, parentBone ->
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		mutableInputSkeleton.forEachBone { parentPart, parentBone ->
 			if (!parentBone.isRotationActive) return@forEachBone // Parent needs to be active
-			val children = iterateBodyPartHierarchy(parentPart, true)
 
-			for (childPart in children) {
-				val childBone = inputSkeleton[childPart.second] ?: continue
+			val parentYaw = parentBone.rotation.project(Vector3.POS_Y).unit()
+			for (childPart in iterateBodyPartHierarchy(parentPart, true)) {
+				val childBone = mutableInputSkeleton[childPart.second] ?: continue
 				if (childBone.isRotationActive) continue // Child needs to be inactive
+				if (parentYaw == childBone.rotation) continue
 
-				updated[childPart.second] = childBone.copy(rotation = parentBone.rotation.project(Vector3.POS_Y).unit())
+				mutableInputSkeleton[childPart.second] = childBone.copy(rotation = parentYaw)
 			}
 		}
 	}

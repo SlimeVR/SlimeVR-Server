@@ -34,9 +34,9 @@ interface InterfaceSettingsForm {
     errorTracking: boolean;
     bvhDirectory: string | null;
     skeletonMesh: boolean;
+    controllerNav: boolean;
   };
   notifications: {
-    watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
     connectedTrackersWarning: boolean;
@@ -59,8 +59,6 @@ export function InterfaceSettings() {
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
       },
       notifications: {
-        watchNewDevices:
-          config?.watchNewDevices ?? defaultConfig.watchNewDevices,
         feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
         feedbackSoundVolume:
           config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
@@ -77,6 +75,7 @@ export function InterfaceSettings() {
         skeletonMesh:
           (config?.skeletonPreviewStyle ??
             defaultConfig.skeletonPreviewStyle) === 'mesh',
+        controllerNav: config?.controllerNav ?? defaultConfig.controllerNav,
       },
       developer: {
         enabled: config?.debug ?? defaultConfig.debug,
@@ -89,14 +88,9 @@ export function InterfaceSettings() {
         fastDataFeed:
           config?.devSettings?.fastDataFeed ??
           defaultConfig.devSettings.fastDataFeed,
-        sortByName:
-          config?.devSettings?.sortByName ??
-          defaultConfig.devSettings.sortByName,
         rawSlimeRotation:
           config?.devSettings?.rawSlimeRotation ??
           defaultConfig.devSettings.rawSlimeRotation,
-        moreInfo:
-          config?.devSettings?.moreInfo ?? defaultConfig.devSettings.moreInfo,
       },
     },
   });
@@ -137,8 +131,8 @@ export function InterfaceSettings() {
         duration: 0,
       });
     }
+
     setConfig({
-      watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
@@ -152,6 +146,7 @@ export function InterfaceSettings() {
       errorTracking: values.behavior.errorTracking,
       bvhDirectory: values.behavior.bvhDirectory,
       skeletonPreviewStyle: values.behavior.skeletonMesh ? 'mesh' : 'lines',
+      controllerNav: values.behavior.controllerNav,
 
       debug: values.developer.enabled,
       devSettings: values.developer,
@@ -166,15 +161,13 @@ export function InterfaceSettings() {
   useEffect(() => {
     const subscription = watch(() => handleSubmit(onSubmit)());
     return () => subscription.unsubscribe();
-  }, []);
+  }, [onSubmit]);
 
   const devToggles = {
     highContrast: 'high_contrast',
     preciseRotation: 'precise_rotation',
     fastDataFeed: 'fast_data_feed',
-    sortByName: 'sort_by_name',
     rawSlimeRotation: 'raw_slime_rotation',
-    moreInfo: 'more_info',
   };
 
   return (
@@ -196,31 +189,6 @@ export function InterfaceSettings() {
             <Typography variant="main-title">
               {l10n.getString('settings-interface-notifications')}
             </Typography>
-
-            <div className="pt-2">
-              <Typography variant="section-title">
-                {l10n.getString('settings-general-interface-serial_detection')}
-              </Typography>
-            </div>
-
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography>
-                {l10n.getString(
-                  'settings-general-interface-serial_detection-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="notifications.watchNewDevices"
-                label={l10n.getString(
-                  'settings-general-interface-serial_detection-label'
-                )}
-              />
-            </div>
 
             <Typography variant="section-title">
               {l10n.getString('settings-general-interface-feedback_sound')}
@@ -355,6 +323,28 @@ export function InterfaceSettings() {
                   name="behavior.skeletonMesh"
                   label={l10n.getString(
                     'settings-interface-behavior-skeleton_mesh-label'
+                  )}
+                />
+              </div>
+
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-behavior-controller_nav')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-interface-behavior-controller_nav-description'
+                  )}
+                </Typography>
+              </div>
+              <div className="grid sm:grid-cols-2 pb-4">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.controllerNav"
+                  label={l10n.getString(
+                    'settings-interface-behavior-controller_nav-label'
                   )}
                 />
               </div>

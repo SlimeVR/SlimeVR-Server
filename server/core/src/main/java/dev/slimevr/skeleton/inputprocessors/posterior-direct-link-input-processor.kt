@@ -2,7 +2,6 @@ package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutateCopy
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -11,31 +10,31 @@ import solarxr_protocol.datatypes.BodyPart
 class PosteriorDirectLinkInputProcessor : SkeletonInputProcessor {
 
 	private val posteriorToSource = arrayOf(
-		BodyPart.LEFT_POSTERIOR to BodyPart.LEFT_HIP,
-		BodyPart.RIGHT_POSTERIOR to BodyPart.RIGHT_HIP,
+		BodyPart.LEFT_POSTERIOR to BodyPart.HIP,
+		BodyPart.RIGHT_POSTERIOR to BodyPart.HIP,
 	)
 
 	override fun process(
-		inputSkeleton: InputSkeleton,
+		mutableInputSkeleton: InputSkeleton,
 		skeletonHeight: Float
-	): InputSkeleton = inputSkeleton.mutateCopy { updated ->
+	) {
 		for ((bodyPart, source) in posteriorToSource) {
-			val bone = updated[bodyPart] ?: continue
+			val bone = mutableInputSkeleton[bodyPart] ?: continue
 			if (bone.isRotationActive) continue
 
-			val sourceBone = updated[source]
+			val sourceBone = mutableInputSkeleton[source]
 
-			updated[bodyPart] =
+			mutableInputSkeleton[bodyPart] =
 				bone.copy(
 					rotation = sourceBone?.rotation ?: bone.rotation
 				)
 		}
 
 		// Tail gets the average of left + right posterior
-		val tail = updated[BodyPart.TAIL]
+		val tail = mutableInputSkeleton[BodyPart.TAIL]
 		if (tail != null && !tail.isRotationActive) {
-			val left = updated[BodyPart.LEFT_POSTERIOR]
-			val right = updated[BodyPart.RIGHT_POSTERIOR]
+			val left = mutableInputSkeleton[BodyPart.LEFT_POSTERIOR]
+			val right = mutableInputSkeleton[BodyPart.RIGHT_POSTERIOR]
 
 			val rotation = when {
 				left != null && right != null ->
@@ -51,7 +50,7 @@ class PosteriorDirectLinkInputProcessor : SkeletonInputProcessor {
 					tail.rotation
 			}
 
-			updated[BodyPart.TAIL] =
+			mutableInputSkeleton[BodyPart.TAIL] =
 				tail.copy(rotation = rotation)
 		}
 	}

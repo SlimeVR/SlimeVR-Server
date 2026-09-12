@@ -8,7 +8,7 @@ import kotlin.math.*
 @Serializable
 class Vector3(val x: Float, val y: Float, val z: Float) {
 	companion object {
-		val NULL = Vector3(0f, 0f, 0f)
+		val ZERO = Vector3(0f, 0f, 0f)
 		val POS_X = Vector3(1f, 0f, 0f)
 		val POS_Y = Vector3(0f, 1f, 0f)
 		val POS_Z = Vector3(0f, 0f, 1f)
@@ -76,7 +76,7 @@ class Vector3(val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun unit(): Vector3 {
 		val m = len()
-		return if (m == 0f) NULL else this / m
+		return if (m == 0f) ZERO else this / m
 	}
 
 	operator fun times(that: Float) = Vector3(
@@ -100,6 +100,10 @@ class Vector3(val x: Float, val y: Float, val z: Float) {
 	fun angleTo(that: Vector3): Float = atan2(this.cross(that).len(), this.dot(that))
 
 	fun isNear(other: Vector3, maxError: Float = 1e-6f) = abs(x - other.x) <= maxError && abs(y - other.y) <= maxError && abs(z - other.z) <= maxError
+
+	fun lerp(other: Vector3, t: Float): Vector3 = this + ((other - this) * t)
+
+	fun nlerp(other: Vector3, t: Float): Vector3 = (this + ((other - this) * t)).unit()
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true

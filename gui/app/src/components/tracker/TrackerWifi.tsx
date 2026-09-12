@@ -40,15 +40,20 @@ export function TrackerWifi({
               {rssi} dBm
             </Typography>
           )}
-          {showPacketLoss && packetsReceived != null && (
+          {showPacketLoss && (
             <Tooltip
               preferedDirection="top"
               content={<Typography id="tracker-infos-packet_loss" />}
             >
-              <Typography
-                color={textColor}
-                whitespace="whitespace-nowrap"
-              >{`${((packetLoss ?? 0) * 100).toFixed(0)}% (${packetsLost ?? 0} / ${packetsReceived})`}</Typography>
+              <Typography color={textColor} whitespace="whitespace-nowrap">
+                {packetLoss == null
+                  ? '--'
+                  : `${(packetLoss * 100).toFixed(0)}%${
+                      packetsLost != null && packetsReceived != null
+                        ? ` (${packetsLost} / ${packetsReceived})`
+                        : ''
+                    }`}
+              </Typography>
             </Tooltip>
           )}
         </div>

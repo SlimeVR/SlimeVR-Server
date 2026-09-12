@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { IconButton } from '@/components/commons/IconButton';
 import { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useConfig } from '@/hooks/config';
@@ -113,26 +114,25 @@ function TrackerConnectionGroupToolboxButton({
   children,
   onClick,
   to,
+  labelId,
 }: {
   children: ReactNode;
   onClick?: () => void;
   to?: string;
+  labelId: string;
 }) {
   const className =
     'flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9';
 
-  if (to) {
-    return (
-      <NavLink to={to} className={className}>
-        {children}
-      </NavLink>
-    );
-  }
-
   return (
-    <div className={className} onClick={onClick}>
+    <IconButton
+      labelId={labelId}
+      className={className}
+      tooltipDirection="top"
+      {...(to ? { to } : { onClick })}
+    >
       {children}
-    </div>
+    </IconButton>
   );
 }
 
@@ -145,7 +145,14 @@ export function TrackerConnectionGroupCollapseToolbox({
 
   return (
     <TrackerConnectionGroupToolboxContainer>
-      <TrackerConnectionGroupToolboxButton onClick={toggleCollapse}>
+      <TrackerConnectionGroupToolboxButton
+        labelId={
+          collapsed
+            ? 'tracker-connection-expand'
+            : 'tracker-connection-collapse'
+        }
+        onClick={toggleCollapse}
+      >
         {collapsed ? <ArrowDownIcon size={30} /> : <ArrowUpIcon size={30} />}
       </TrackerConnectionGroupToolboxButton>
     </TrackerConnectionGroupToolboxContainer>
@@ -165,17 +172,28 @@ export function TrackerConnectionGroupDefaultToolbox({
     <TrackerConnectionGroupToolboxContainer>
       {group.kind !== 'driver' && onOpenMetrics && (
         <TrackerConnectionGroupToolboxButton
+          labelId="tracker-connection-metrics"
           onClick={() => onOpenMetrics(group)}
         >
           <MetricsIcon size={16} />
         </TrackerConnectionGroupToolboxButton>
       )}
       {group.kind === 'dongle' && (
-        <TrackerConnectionGroupToolboxButton to={`/dongle/${group.dongleId}`}>
+        <TrackerConnectionGroupToolboxButton
+          labelId="tracker-connection-dongle_settings"
+          to={`/dongle/${group.dongleId}`}
+        >
           <WrenchIcon width={15} />
         </TrackerConnectionGroupToolboxButton>
       )}
-      <TrackerConnectionGroupToolboxButton onClick={toggleCollapse}>
+      <TrackerConnectionGroupToolboxButton
+        labelId={
+          collapsed
+            ? 'tracker-connection-expand'
+            : 'tracker-connection-collapse'
+        }
+        onClick={toggleCollapse}
+      >
         {collapsed ? <ArrowDownIcon size={30} /> : <ArrowUpIcon size={30} />}
       </TrackerConnectionGroupToolboxButton>
     </TrackerConnectionGroupToolboxContainer>

@@ -163,6 +163,7 @@ class TrackerErrorCheckBehaviour(private val trackerStates: StateFlow<List<Check
 		return TrackingChecklistStep(
 			valid = errorTrackers.isEmpty(),
 			enabled = trackers.isNotEmpty(),
+			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 			extraData = if (errorTrackers.isNotEmpty()) {
 				TrackingChecklistTrackerError(
 					trackersId = errorTrackers.map { tracker -> tracker.id.toUShort() },
@@ -265,6 +266,8 @@ class NetworkProfileCheckBehaviour(
 				TrackingChecklistStep(
 					valid = state.publicNetworks.isEmpty(),
 					enabled = state.isSupported,
+					ignorable = true,
+					visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 					extraData = if (state.publicNetworks.isNotEmpty()) {
 						TrackingChecklistPublicNetworks(
 							adapters = state.publicNetworks.map {

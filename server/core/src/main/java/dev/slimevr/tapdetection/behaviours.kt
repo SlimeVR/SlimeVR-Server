@@ -33,11 +33,12 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		var waitForLowAccel: Boolean = false,
 	)
 
-	// This vvv + the assigned tap body parts are used.
+	// This + the assigned tap body parts are used.
 	private val falsePositiveBodyParts = setOf(
 		BodyPart.UPPER_CHEST,
-		BodyPart.CHEST,
-		BodyPart.WAIST,
+		BodyPart.LOWER_CHEST,
+		BodyPart.UPPER_WAIST,
+		BodyPart.LOWER_WAIST,
 		BodyPart.HIP,
 		BodyPart.LEFT_UPPER_LEG,
 		BodyPart.RIGHT_UPPER_LEG,
@@ -79,11 +80,11 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 			.flatMapLatest { (tapDetectionConfig, setupMode, trackers) ->
 				// Computed once per outer-flow refresh for all trackers
 				val trackersBodyParts = trackers.map { it.context.state.value.bodyPart }.toSet()
-				val yawResetBodyPart = listOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.HIP, BodyPart.WAIST)
+				val yawResetBodyPart = arrayOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST)
 					.firstOrNull { it in trackersBodyParts } ?: BodyPart.UPPER_CHEST
-				val fullResetBodyPart = listOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
+				val fullResetBodyPart = arrayOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
 					.firstOrNull { it in trackersBodyParts } ?: BodyPart.LEFT_UPPER_LEG
-				val mountingResetBodyPart = listOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
+				val mountingResetBodyPart = arrayOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
 					.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
 
 				// To keep track of which trackers are moving
@@ -203,6 +204,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		trackerAcceleration: Vector3,
 		trackerMotion: Motion,
 	): Boolean {
+		// TODO check logic against main since taps seem harder to trigger
+
 		// Remove old stored accelerations (if they are too old)
 		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
 			trackerTapDetectionState.accelList.removeFirst()

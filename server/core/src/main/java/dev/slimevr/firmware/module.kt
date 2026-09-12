@@ -5,6 +5,9 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.debug.DiffStyle
+import dev.slimevr.context.debug.LoggingMiddleware
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -61,31 +64,35 @@ class FirmwareManager(
 	) {
 		runningJobs[portLocation]?.cancelAndJoin()
 		runningJobs[portLocation] = scope.launch {
-			doSerialFlash(
-				portLocation = portLocation,
-				parts = parts,
-				needManualReboot = needManualReboot,
-				ssid = ssid,
-				password = password,
-				serialServer = serialServer,
-				settings = settings,
-				server = server,
-				flasher = flasher,
-				onStatus = { status, progress ->
-					context.dispatch(
-						FirmwareManagerActions.UpdateJob(
-							FirmwareJobStatus(
-								portLocation = portLocation,
-								firmwareDeviceId = SerialDevicePort(port = portLocation),
-								status = status,
-								progress = progress,
+			try {
+				doSerialFlash(
+					portLocation = portLocation,
+					parts = parts,
+					needManualReboot = needManualReboot,
+					ssid = ssid,
+					password = password,
+					serialServer = serialServer,
+					settings = settings,
+					server = server,
+					flasher = flasher,
+					onStatus = { status, progress ->
+						context.dispatch(
+							FirmwareManagerActions.UpdateJob(
+								FirmwareJobStatus(
+									portLocation = portLocation,
+									firmwareDeviceId = SerialDevicePort(port = portLocation),
+									status = status,
+									progress = progress,
+								),
 							),
-						),
-					)
-				},
-				scope = scope,
-			)
-			context.dispatch(FirmwareManagerActions.RemoveJob(portLocation))
+						)
+					},
+					scope = scope,
+				)
+			} finally {
+				runningJobs.remove(portLocation)
+				context.dispatch(FirmwareManagerActions.RemoveJob(portLocation))
+			}
 		}
 	}
 
@@ -103,6 +110,7 @@ class FirmwareManager(
 				part = part,
 				server = server,
 				onStatus = { status, progress ->
+					AppLogger.firmware.debug("OTA status changed to $status, progress=$progress")
 					context.dispatch(
 						FirmwareManagerActions.UpdateJob(
 							FirmwareJobStatus(
@@ -131,6 +139,10 @@ class FirmwareManager(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,
 				reducer = ::reduce,
+				debugMiddleware = LoggingMiddleware(
+					diffStyle = DiffStyle.INLINE,
+					logNoOps = true,
+				),
 				name = "FirmwareManager",
 			)
 			return FirmwareManager(

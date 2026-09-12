@@ -48,7 +48,10 @@ function ButtonProgress({
   );
 }
 
-function BasicResetButton(options: UseResetOptions & { customName?: string }) {
+function BasicResetButton({
+  customName,
+  ...options
+}: UseResetOptions & { customName?: string }) {
   const { isMd } = useBreakpoint('md');
   const {
     triggerReset,
@@ -63,7 +66,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
 
   const progress = status === 'counting' ? resetProress / duration : 0;
 
-  const name = options.customName || resetName;
+  const name = customName || resetName;
 
   const skiReset =
     options.type === ResetType.POSE_MOUNTING && options.group === 'default';

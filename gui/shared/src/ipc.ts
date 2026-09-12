@@ -21,6 +21,7 @@ export const IPC_CHANNELS = {
   GH_FETCH: 'gh-fetch',
   DISCORD_PRESENCE: 'discord-presence',
   IS_STEAM: 'is-steam',
+  SET_KEYBIND_RECORDING: 'set-keybind-recording',
 } as const;
 
 export interface IpcInvokeMap {
@@ -50,4 +51,5 @@ export interface IpcInvokeMap {
   ) => Promise<GHReturn[T['type']]>;
   [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
   [IPC_CHANNELS.IS_STEAM]: () => boolean;
+  [IPC_CHANNELS.SET_KEYBIND_RECORDING]: (recording: boolean) => void;
 }

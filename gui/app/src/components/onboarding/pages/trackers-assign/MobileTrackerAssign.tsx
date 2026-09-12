@@ -1,7 +1,7 @@
 import type { FluentVariable } from '@fluent/bundle';
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { ReactNode, useMemo } from 'react';
+import { CSSProperties, ReactNode, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { ProgressBar } from '@/components/commons/ProgressBar';
@@ -10,9 +10,14 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
+import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { ShowAllPartsToggle } from '@/components/onboarding/BodyAssignment';
 import { useOnboarding } from '@/hooks/onboarding';
-import { getTrackerName } from '@/hooks/tracker';
+import {
+  getTrackerName,
+  useTrackersVelocity,
+  velocityGlowStyle,
+} from '@/hooks/tracker';
 import {
   FlatDeviceTracker,
   groupTrackersByConnection,
@@ -33,9 +38,11 @@ function MobileAssignPanel({
   onBackdropPress,
   title,
   description,
+  warning,
   headerAction,
   progress,
   footer,
+  style,
   children,
 }: {
   open: boolean;
@@ -44,9 +51,11 @@ function MobileAssignPanel({
   onBackdropPress: () => void;
   title: ReactNode;
   description: ReactNode;
+  warning?: ReactNode;
   headerAction?: ReactNode;
   progress: number;
   footer?: ReactNode;
+  style?: CSSProperties;
   children: ReactNode;
 }) {
   const headerRow = (
@@ -58,6 +67,16 @@ function MobileAssignPanel({
       >
         {title}
         {description}
+        {warning && (
+          <div className="mt-1 flex items-start gap-1 fill-status-warning text-status-warning">
+            <div className="shrink-0 scale-75 -mt-0.5">
+              <WarningIcon />
+            </div>
+            <Typography variant="standard" color="text-status-warning">
+              {warning}
+            </Typography>
+          </div>
+        )}
       </button>
       {headerAction}
       <button
@@ -96,6 +115,7 @@ function MobileAssignPanel({
             ? 'w-[calc(100%-var(--navbar-w)-var(--page-margin)*3)] left-[calc(var(--navbar-w)+var(--page-margin))] bottom-[calc(var(--navbar-h)+var(--page-margin))] -mb-1'
             : 'bottom-1 w-full'
         )}
+        style={style}
       >
         {headerRow}
 
@@ -139,7 +159,21 @@ export function MobileTrackerAssign() {
     () => groupTrackersByConnection(flatTrackers, dongles),
     [flatTrackers, dongles]
   );
+  const unassignedTrackers = useMemo(
+    () =>
+      flatTrackers.filter(
+        ({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE
+      ),
+    [flatTrackers]
+  );
+  const unassignedTrackerData = useMemo(
+    () => unassignedTrackers.map(({ tracker }) => tracker),
+    [unassignedTrackers]
+  );
   const unassignedCount = flatTrackers.length - assignedTrackers.length;
+  const panelVelocity = useTrackersVelocity(unassignedTrackerData);
+  const panelStyle =
+    panelVelocity > 0 ? velocityGlowStyle(panelVelocity) : undefined;
 
   const selectedTracker =
     pendingTrackerId != null
@@ -248,6 +282,7 @@ export function MobileTrackerAssign() {
             vars={header.descVars}
           />
         }
+        warning={assignment.firstError?.label}
         headerAction={
           armedPart !== BodyPart.NONE && armedTracker ? (
             <Button
@@ -258,6 +293,7 @@ export function MobileTrackerAssign() {
             />
           ) : undefined
         }
+        style={panelStyle}
         progress={
           assignment.expectedTrackersCount
             ? assignment.assignedPartsCount / assignment.expectedTrackersCount

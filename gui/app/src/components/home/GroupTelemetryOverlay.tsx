@@ -5,7 +5,8 @@ import { useLocalization } from '@fluent/react';
 import { ConnectionGroupIcon } from '@/components/tracker/TrackerConnectionGroup';
 import { DongleStatus } from 'solarxr-protocol';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { collectFocusables } from '@/utils/focus-nav';
 
 export function GroupTelemetryOverlay({
   group,
@@ -15,6 +16,8 @@ export function GroupTelemetryOverlay({
   onClose: () => void;
 }) {
   const { l10n } = useLocalization();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const isOpen = !!group;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -25,6 +28,14 @@ export function GroupTelemetryOverlay({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const restoreTo = document.activeElement as HTMLElement | null;
+    const panel = panelRef.current;
+    if (panel) (collectFocusables(panel)[0] ?? panel).focus();
+    return () => restoreTo?.focus();
+  }, [isOpen]);
 
   if (!group) return null;
 
@@ -44,7 +55,14 @@ export function GroupTelemetryOverlay({
         onClick={onClose}
       />
 
-      <div className="relative z-50 w-full max-h-full bg-background-70 p-6 rounded-lg text-background-10 border border-background-50/50 overflow-y-auto flex flex-col gap-4">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={groupName}
+        tabIndex={-1}
+        className="relative z-50 w-full max-h-full bg-background-70 p-6 rounded-lg text-background-10 border border-background-50/50 overflow-y-auto flex flex-col gap-4"
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <ConnectionGroupIcon

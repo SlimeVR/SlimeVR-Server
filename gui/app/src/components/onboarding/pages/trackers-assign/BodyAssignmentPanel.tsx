@@ -1,15 +1,13 @@
 import classNames from 'classnames';
-import { MouseEvent, ReactNode, useCallback } from 'react';
+import { useLocalization } from '@fluent/react';
+import { Clickable } from '@/components/commons/Clickable';
+import { HTMLAttributes, ReactNode, useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
-import { BodySlotStyler } from '@/components/commons/BodyInteractions';
+import { MirrorLegend } from '@/components/onboarding/BodyAssignment';
 import {
-  BodyAssignment,
-  MirrorLegend,
-} from '@/components/onboarding/BodyAssignment';
-import {
-  ExtremityAssignment,
+  BodyPartAssignment,
   ExtremityGroupRenderer,
-} from '@/components/onboarding/ExtremityAssignment';
+} from '@/components/onboarding/BodyPartAssignment';
 import {
   AssignedTrackerLabel,
   ExtremityGroupCard,
@@ -37,18 +35,6 @@ import {
   usePicker,
 } from '@/hooks/tracker-picker';
 
-/** Dots double as drop targets while dragging */
-function useSlotStyle(): BodySlotStyler {
-  const { mode } = useAssignment();
-
-  return useCallback(
-    (part: BodyPart) => ({
-      props: mode === 'drag' ? bodyPartDropProps(part) : undefined,
-    }),
-    [mode]
-  );
-}
-
 /**
  * The figure and its cards, for any flow that picks a body part. What a tap
  * does and what a card shows come from the picker in context and the renderers.
@@ -60,7 +46,7 @@ export function PickerPanel({
   dots,
   renderCard,
   renderGroup,
-  slotStyle,
+  dotProps,
 }: {
   headerAction?: ReactNode;
   legendAction?: ReactNode;
@@ -68,7 +54,7 @@ export function PickerPanel({
   dots: 'drag' | 'tap';
   renderCard?: PartCardRenderer;
   renderGroup: ExtremityGroupRenderer;
-  slotStyle?: BodySlotStyler;
+  dotProps?: (part: BodyPart) => HTMLAttributes<HTMLDivElement>;
 }) {
   const { config } = useConfig();
   const {
@@ -82,16 +68,16 @@ export function PickerPanel({
   } = usePicker();
   const { isMobile: isTight } = useBreakpoint('mobile');
 
-  const dotStyle: BodySlotStyler = useCallback(
-    (part: BodyPart) => ({
-      connected: activePart === part,
-      className:
-        activePart === part
-          ? 'scale-150 ring-3 ring-accent-background-30'
-          : undefined,
-      ...slotStyle?.(part),
-    }),
-    [activePart, slotStyle]
+  const activeParts = useMemo(
+    () => (activePart != null ? [activePart] : []),
+    [activePart]
+  );
+  const dotClass = useCallback(
+    (part: BodyPart) =>
+      part === activePart
+        ? 'scale-150 ring-3 ring-accent-background-30'
+        : undefined,
+    [activePart]
   );
 
   const { view, dotSize } = PICKER_TABS[tab];
@@ -138,8 +124,8 @@ export function PickerPanel({
           )}
         >
           {extremity ? (
-            <ExtremityAssignment
-              descriptor={extremity}
+            <BodyPartAssignment
+              view={{ kind: 'extremity', descriptor: extremity }}
               side={side}
               dotSize={dotSize[dots]}
               compact={isTight}
@@ -148,10 +134,13 @@ export function PickerPanel({
               rolesWithErrors={rolesWithErrors}
               onRoleSelected={selectPart}
               renderGroup={renderGroup}
-              slotStyle={dotStyle}
+              dotClass={dotClass}
+              dotProps={dotProps}
+              activeParts={activeParts}
             />
           ) : (
-            <BodyAssignment
+            <BodyPartAssignment
+              view={{ kind: 'body' }}
               dotSize={dotSize[dots]}
               fillHeight
               highlightedRoles={firstError?.affectedRoles || []}
@@ -159,7 +148,9 @@ export function PickerPanel({
               mirror={config?.mirrorView ?? false}
               onRoleSelected={selectPart}
               renderCard={renderCard}
-              slotStyle={dotStyle}
+              dotClass={dotClass}
+              dotProps={dotProps}
+              activeParts={activeParts}
             />
           )}
         </div>
@@ -178,7 +169,8 @@ export function BodyAssignmentPanel({
   compact?: boolean;
 }) {
   const assignment = useAssignment();
-  const slotStyle = useSlotStyle();
+  /** Dots double as drop targets while dragging */
+  const dotProps = assignment.mode === 'drag' ? bodyPartDropProps : undefined;
 
   const renderCard: PartCardRenderer = (props) => (
     <BodyPartCard key={props.role} {...props} />
@@ -212,20 +204,27 @@ export function BodyAssignmentPanel({
         dots={assignment.mode}
         renderCard={renderCard}
         renderGroup={renderGroup}
-        slotStyle={slotStyle}
+        dotProps={dotProps}
       />
     </PickerContext.Provider>
   );
 }
 
-function PickerTabs({ compact }: { compact?: boolean }) {
+export function PickerTabs({
+  compact,
+  className,
+}: {
+  compact?: boolean;
+  className?: string;
+}) {
   const { tab, setTab } = usePicker();
 
   return (
     <div
       className={classNames(
         'flex items-center bg-background-70 rounded-lg w-fit',
-        compact ? 'gap-0.5 p-0.5' : 'gap-1 p-1'
+        compact ? 'gap-0.5 p-0.5' : 'gap-1 p-1',
+        className
       )}
     >
       {PICKER_TAB_ORDER.map((key) => (
@@ -256,22 +255,29 @@ function Tab({
   onClick?: () => void;
 }) {
   return (
-    <div
-      onClick={disabled || active ? undefined : onClick}
+    <Clickable
+      disabled={disabled}
+      pressed={active}
+      onClick={onClick}
       className={classNames(
-        'rounded-md',
+        'grid place-items-center rounded-md',
         compact ? 'px-3 py-1' : 'px-4 py-2',
         active && 'bg-background-50',
         disabled && 'opacity-40 cursor-not-allowed',
         !disabled && !active && 'cursor-pointer hover:bg-background-60'
       )}
     >
-      <Typography bold={active} id={labelId} />
-    </div>
+      <div aria-hidden className="invisible col-start-1 row-start-1">
+        <Typography bold id={labelId} />
+      </div>
+      <div className="col-start-1 row-start-1">
+        <Typography bold={active} id={labelId} />
+      </div>
+    </Clickable>
   );
 }
 
-function ExtremitySideToggle({
+export function ExtremitySideToggle({
   compact,
   descriptor,
   side,
@@ -282,18 +288,26 @@ function ExtremitySideToggle({
   side: ExtremitySide;
   onChange: (side: ExtremitySide) => void;
 }) {
+  const { l10n } = useLocalization();
+
   const option = (value: ExtremitySide, dotClass: string) => (
     <TogglePillOption
       compact={compact}
       dotClass={dotClass}
       active={side === value}
-      onClick={() => onChange(value)}
       labelId={'body_part-' + BodyPart[descriptor.sides[value].root]}
     />
   );
 
   return (
-    <TogglePill compact={compact}>
+    <TogglePill
+      compact={compact}
+      onClick={() => onChange(side === 'left' ? 'right' : 'left')}
+      label={l10n.getString('onboarding-assign_trackers-side')}
+      value={l10n.getString(
+        'body_part-' + BodyPart[descriptor.sides[side].root]
+      )}
+    >
       {option('left', 'outline-assign-left')}
       {option('right', 'outline-assign-right')}
     </TogglePill>
@@ -320,10 +334,12 @@ function DragBodyPartCard({
   connector = true,
   labelId,
 }: PartCardProps) {
-  const { armedPart, selectPart, handleDropTracker } = useAssignment();
+  const { armedPart, selectPart, handleDropTracker, pendingTrackerId } =
+    useAssignment();
   const isHovering = trackerDrag.useIsDragHovering(role);
-  const isDragActive = trackerDrag.useIsDragActive();
-  const { dragProps, isDragging } = trackerDrag.useDraggable(
+  const isTargeting =
+    trackerDrag.useIsDragActive() || pendingTrackerId !== null;
+  const { dragProps, tapProps, isDragging } = trackerDrag.useDraggable(
     td
       ? {
           trackerId: td.tracker.trackerId,
@@ -333,26 +349,22 @@ function DragBodyPartCard({
     (bodyPart) => {
       if (td)
         handleDropTracker(td.tracker.trackerId, bodyPart ?? BodyPart.NONE);
-    }
+    },
+    () => selectPart(role)
   );
-
-  const onClick = (event: MouseEvent<HTMLDivElement>) => {
-    dragProps.onClick(event);
-    if (event.defaultPrevented) return;
-    selectPart(role);
-  };
 
   return (
     <div
       {...bodyPartDropProps(role)}
       {...dragProps}
+      {...tapProps}
       id={BodyPart[role]}
       data-connector={connector ? undefined : 'off'}
-      onClick={onClick}
+      aria-pressed={armedPart === role}
       className={classNames(
         'flex flex-col control rounded-md relative touch-none select-none',
         'transition-colors duration-150 ease-linear',
-        compact ? 'gap-0 w-full px-1.5 py-0.5' : 'gap-1 w-40 px-2 py-1',
+        'gap-0 w-full px-1.5 py-2',
         td ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'opacity-40',
         direction === 'left' ? 'items-start' : 'items-end',
@@ -360,7 +372,7 @@ function DragBodyPartCard({
           ? 'bg-background-50'
           : armedPart === role
             ? 'bg-accent-background-30/40'
-            : isDragActive
+            : isTargeting
               ? 'bg-background-50/50'
               : 'hover:bg-background-50'
       )}
@@ -372,21 +384,19 @@ function DragBodyPartCard({
         number={number}
         labelId={labelId}
       />
-      <div className={compact ? 'min-h-6 w-full' : 'min-h-10'}>
-        {td ? (
-          <AssignedTrackerLabel tracker={td} compact={compact} />
-        ) : (
-          <div
-            className={classNames(
-              'flex items-center',
-              compact ? 'h-6' : 'h-8',
-              direction === 'right' && 'justify-end'
-            )}
-          >
-            <Typography color="text-background-30" id="body_part-NONE" />
-          </div>
-        )}
-      </div>
+      {td ? (
+        <AssignedTrackerLabel tracker={td} compact={compact} />
+      ) : (
+        <div
+          className={classNames(
+            'flex items-center',
+            compact ? 'h-6' : 'h-8',
+            direction === 'right' && 'justify-end'
+          )}
+        >
+          <Typography color="text-background-30" id="body_part-NONE" />
+        </div>
+      )}
     </div>
   );
 }
@@ -407,8 +417,7 @@ function TapBodyPartCard({
   const awaitingTracker = pendingTrackerId != null;
 
   return (
-    <button
-      type="button"
+    <Clickable
       id={BodyPart[role]}
       data-connector={connector ? undefined : 'off'}
       onClick={() => selectPart(role)}
@@ -448,6 +457,6 @@ function TapBodyPartCard({
           id="body_part-NONE"
         />
       )}
-    </button>
+    </Clickable>
   );
 }

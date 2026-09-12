@@ -1,4 +1,6 @@
 import classNames from 'classnames';
+import { Clickable } from '@/components/commons/Clickable';
+import { IconButton } from '@/components/commons/IconButton';
 import { useMemo, useRef, useState } from 'react';
 import { useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
@@ -322,9 +324,8 @@ export function DongleTelemetry({
 
           <div className="flex bg-background-80 rounded-md p-2 gap-0.5">
             {WINDOW_OPTIONS.map((w) => (
-              <button
+              <Clickable
                 key={w.sec}
-                type="button"
                 onClick={() => handleSetWindowSec(w.sec)}
                 className={classNames(
                   'text-standard-bold px-2.5 py-1.5 rounded',
@@ -334,16 +335,22 @@ export function DongleTelemetry({
                 )}
               >
                 {w.label}
-              </button>
+              </Clickable>
             ))}
           </div>
 
-          <div
+          <IconButton
+            labelId={
+              live
+                ? 'dongle-settings-telemetry-live-pause'
+                : 'dongle-settings-telemetry-live-resume'
+            }
+            pressed={live}
             className="bg-background-50 hover:bg-background-40 rounded-full cursor-pointer w-10 h-10 flex items-center justify-center fill-background-10"
             onClick={() => setLive((v) => !v)}
           >
             {live ? <PauseIcon width={12} /> : <PlayIcon width={12} />}
-          </div>
+          </IconButton>
         </div>
       </div>
 

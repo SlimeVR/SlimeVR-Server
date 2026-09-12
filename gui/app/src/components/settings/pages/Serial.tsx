@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
   CloseSerialRequestT,
+  NewSerialDeviceResponseT,
   OpenSerialRequestT,
   RpcMessage,
   SerialDevicesRequestT,
@@ -135,6 +136,16 @@ export function Serial() {
         },
         ...(res.devices || []),
       ]);
+    }
+  );
+
+  useRPCPacket(
+    RpcMessage.NewSerialDeviceResponse,
+    ({ device }: NewSerialDeviceResponseT) => {
+      if (!device?.port) return;
+      setSerialDevices((old) =>
+        old.some((d) => d.port === device.port) ? old : [...old, device]
+      );
     }
   );
 
