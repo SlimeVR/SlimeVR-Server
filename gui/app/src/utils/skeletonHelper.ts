@@ -38,6 +38,20 @@ const BONE_COLOR_GROUPS: [BodyPart[], string][] = [
   ],
   [[BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND], 'fuchsia'],
   [[BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER], '#00ffff'],
+  [
+    [
+      BodyPart.LEFT_POSTERIOR,
+      BodyPart.RIGHT_POSTERIOR,
+      BodyPart.TAIL,
+      BodyPart.TAIL_1,
+      BodyPart.TAIL_2,
+      BodyPart.TAIL_3,
+      BodyPart.TAIL_4,
+      BodyPart.TAIL_5,
+      BodyPart.TAIL_6,
+    ],
+    'violet',
+  ],
 ];
 
 export function getBoneColor(bodyPart: BodyPart) {

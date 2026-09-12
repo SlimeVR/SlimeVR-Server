@@ -13,9 +13,11 @@ import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.PosteriorDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.RelaxedSpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
+import dev.slimevr.skeleton.inputprocessors.TailChainInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
@@ -227,6 +229,8 @@ class Skeleton(
 						HipYawRollAlignInputProcessor(settings),
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
+						PosteriorDirectLinkInputProcessor(),
+						TailChainInputProcessor(),
 						FingerImputeInputProcessor(),
 						ToeActiveLinkInputProcessor(),
 						ConstraintInputProcessor(settings),
