@@ -127,11 +127,8 @@ fun reduce(
 	is TrackerActions.YawReset -> {
 		val cal = state.sessionCalibration
 
-		// Use the shortest rotation to our full reset raw rotation
-		val shortestRawRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
-
 		val newHeading = estimateHeadingCorrect(
-			applyCalibration(shortestRawRotation, attitudeAlign = cal.attitudeAlignment, headingAlign = cal.headingAlignment),
+			applyCalibration(state.rawRotation, attitudeAlign = cal.attitudeAlignment, headingAlign = cal.headingAlignment),
 			action.referenceRotation,
 		)
 
@@ -145,14 +142,12 @@ fun reduce(
 					to = newHeading,
 					duration = action.smoothTime,
 				),
-				rawRotation = shortestRawRotation,
 			)
 		} else {
 			// Snap: apply the new heading immediately (default, no smoothing configured).
 			state.copy(
 				sessionCalibration = cal.copy(headingCorrection = newHeading),
 				yawResetSmoothing = null,
-				rawRotation = shortestRawRotation,
 			)
 		}
 	}
@@ -160,11 +155,8 @@ fun reduce(
 	is TrackerActions.PoseMountingReset -> {
 		val cal = state.sessionCalibration
 
-		// Use the shortest rotation to our full reset raw rotation
-		val shortestRawRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
-
 		val headingAlignment = estimateHeadingAlign(
-			shortestRawRotation,
+			state.rawRotation,
 			action.referenceRotation,
 			cal.headingCorrection,
 			cal.attitudeAlignment,
@@ -176,7 +168,6 @@ fun reduce(
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = headingAlignment),
 			lastMountingMethod = MountingMethod.POSE,
-			rawRotation = shortestRawRotation,
 		)
 	}
 
