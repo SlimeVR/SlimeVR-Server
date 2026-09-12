@@ -64,6 +64,12 @@ export const RIGHT_FINGER_BODY_PARTS = [
   BodyPart.RIGHT_LITTLE_DISTAL,
 ];
 
+export const POSTERIOR_BODY_PARTS = [
+  BodyPart.LEFT_POSTERIOR,
+  BodyPart.RIGHT_POSTERIOR,
+  BodyPart.TAIL,
+];
+
 export const TOE_BODY_PARTS = [
   BodyPart.LEFT_BIG_TOE,
   BodyPart.LEFT_INDEX_TOE,
@@ -83,6 +89,7 @@ export const FINGER_BODY_PARTS = [
 export const ALL_BODY_PARTS = [
   BodyPart.NONE,
   ...SPINE_BODY_PARTS,
+  ...POSTERIOR_BODY_PARTS,
   ...LEG_BODY_PARTS,
   ...ARM_BODY_PARTS,
   ...FINGER_BODY_PARTS,

@@ -399,6 +399,18 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.RIGHT_MIDDLE_TOE]: toeRight('middle_toe'),
   [BodyPart.RIGHT_RING_TOE]: toeRight('ring_toe'),
   [BodyPart.RIGHT_LITTLE_TOE]: toeRight('little_toe'),
+
+  [BodyPart.LEFT_POSTERIOR]: part(model('upper_leg', { scale: upperLegScale }), {
+    trackerOffset: UPPER_LEG_TRACKER_OFFSET,
+  }),
+  [BodyPart.RIGHT_POSTERIOR]: part(
+    model('upper_leg', { scale: otherSide(upperLegScale) }),
+    { trackerOffset: UPPER_LEG_TRACKER_OFFSET }
+  ),
+  [BodyPart.TAIL]: part(
+    model('hip', { scale: spanBone({ girthFrom: 'hips', width: 1, depth: 1, length: 1 }) }),
+    { trackerOffset: HIP_TRACKER_OFFSET }
+  ),
 };
 
 export function getTrackerBoneOffset(bodyPart: BodyPart) {
