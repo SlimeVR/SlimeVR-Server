@@ -2,7 +2,6 @@ import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
 import { ReactLocalization, useLocalization } from '@fluent/react';
-import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { useAtomValue } from 'jotai';
@@ -61,14 +60,13 @@ export const useVelocity = (tracker?: TrackerDataT): number => {
 };
 
 export const useTrackersVelocity = (trackers: TrackerDataT[]): number => {
-  const { feedMaxTps } = useDataFeedConfig();
   const previous = useRef<
     Record<
       number,
       {
         rot: Quaternion;
         acc: Vector3;
-        deltas: number[];
+        deltas: { time: number; value: number }[];
       }
     >
   >({});
@@ -82,8 +80,8 @@ export const useTrackersVelocity = (trackers: TrackerDataT[]): number => {
       }
     });
 
-    const velocities = trackers.map((tracker) => {
-      if (!tracker.rotation) return 0;
+    trackers.forEach((tracker) => {
+      if (!tracker.rotation) return;
 
       const trackerId = tracker.trackerId;
       previous.current[trackerId] ??= {
@@ -104,26 +102,46 @@ export const useTrackersVelocity = (trackers: TrackerDataT[]): number => {
         (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 50 +
           (acc.x ** 2 + acc.y ** 2 + acc.z ** 2) / 1000
       );
-      // Use sum of the rotation and acceleration delta vector lengths over 0.3sec
-      // for smoother movement and better detection of slow movement.
-      if (trackerPrevious.deltas.length >= 0.5 * feedMaxTps) {
-        trackerPrevious.deltas.shift();
+      if (dif > 0) {
+        trackerPrevious.deltas.push({ time: performance.now(), value: dif });
       }
-      trackerPrevious.deltas.push(dif);
       trackerPrevious.rot = QuaternionFromQuatT(tracker.rotation);
       trackerPrevious.acc = Vector3FromVec3fT(tracker.linearAcceleration);
-
-      return Math.min(
-        1,
-        Math.max(
-          0,
-          trackerPrevious.deltas.reduce((a, b) => a + b, 0)
-        )
-      );
     });
 
-    setVelocity(Math.max(0, ...velocities));
-  }, [trackers, feedMaxTps]);
+    let timeout: ReturnType<typeof setTimeout>;
+    const updateVelocity = () => {
+      const now = performance.now();
+      let nextExpiration = Infinity;
+      const velocities = trackers.map((tracker) => {
+        if (!tracker.rotation) return 0;
+
+        const trackerPrevious = previous.current[tracker.trackerId];
+        // Keep half a second of motion, even when the data feed stops changing.
+        trackerPrevious.deltas = trackerPrevious.deltas.filter(
+          ({ time }) => now - time < 500
+        );
+        if (trackerPrevious.deltas.length > 0) {
+          nextExpiration = Math.min(
+            nextExpiration,
+            trackerPrevious.deltas[0].time + 500
+          );
+        }
+        return Math.min(
+          1,
+          trackerPrevious.deltas.reduce((sum, { value }) => sum + value, 0)
+        );
+      });
+
+      setVelocity(Math.max(0, ...velocities));
+      if (nextExpiration !== Infinity) {
+        timeout = setTimeout(updateVelocity, Math.max(1, nextExpiration - now));
+      }
+    };
+    updateVelocity();
+
+    return () => clearTimeout(timeout);
+  }, [trackers]);
 
   return velocity;
 };
