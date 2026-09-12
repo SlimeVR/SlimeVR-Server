@@ -56,13 +56,15 @@ class ToeSnapFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 		for (bodyPart in bodyParts) {
 			val input = mutableInputSkeleton[bodyPart] ?: continue
 			if (input.isRotationActive) continue
+			val length = input.offset.len()
+			if (length <= 0f) continue
 			val output = fk[bodyPart] ?: continue
 			mutableInputSkeleton[bodyPart] = input.copy(
 				rotation = snapToes(
 					input.rotation,
 					computeToeSnapRatio(
 						output.headPosition.y,
-						input.offset.len(),
+						length,
 						floorLevel,
 					),
 				),
