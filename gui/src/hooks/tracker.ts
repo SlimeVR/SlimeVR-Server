@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
 import { ReactLocalization, useLocalization } from '@fluent/react';
-import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { useAtomValue } from 'jotai';
@@ -16,7 +15,6 @@ export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | nul
 
 export function useTracker(tracker: TrackerDataT) {
   const { l10n } = useLocalization();
-  const { feedMaxTps } = useDataFeedConfig();
 
   return {
     useName: () =>
@@ -43,7 +41,7 @@ export function useTracker(tracker: TrackerDataT) {
         Vector3FromVec3fT(tracker.linearAcceleration)
       );
       const [velocity, setVelocity] = useState<number>(0);
-      const [deltas] = useState<number[]>([]);
+      const deltas = useRef<{ time: number; value: number }[]>([]);
 
       useEffect(() => {
         if (tracker.rotation) {
@@ -58,25 +56,35 @@ export function useTracker(tracker: TrackerDataT) {
             (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 50 +
               (acc.x ** 2 + acc.y ** 2 + acc.z ** 2) / 1000
           );
-          // Use sum of the rotation and acceleration delta vector lengths over 0.3sec
-          // for smoother movement and better detection of slow movement.
-          if (deltas.length >= 0.5 * feedMaxTps) {
-            deltas.shift();
+          if (dif > 0) {
+            deltas.current.push({ time: performance.now(), value: dif });
           }
-          deltas.push(dif);
-          setVelocity(
-            Math.min(
-              1,
-              Math.max(
-                0,
-                deltas.reduce((a, b) => a + b)
-              )
-            )
-          );
           previousRot.current = QuaternionFromQuatT(tracker.rotation);
           previousAcc.current = Vector3FromVec3fT(tracker.linearAcceleration);
         }
-      }, [tracker.rotation]);
+
+        let timeout: ReturnType<typeof setTimeout>;
+        const updateVelocity = () => {
+          const now = performance.now();
+          // Keep half a second of motion, even when the data feed stops changing.
+          deltas.current = deltas.current.filter(({ time }) => now - time < 500);
+          setVelocity(
+            Math.min(
+              1,
+              deltas.current.reduce((sum, { value }) => sum + value, 0)
+            )
+          );
+          if (deltas.current.length > 0) {
+            timeout = setTimeout(
+              updateVelocity,
+              Math.max(1, deltas.current[0].time + 500 - now)
+            );
+          }
+        };
+        updateVelocity();
+
+        return () => clearTimeout(timeout);
+      }, [tracker.rotation, tracker.linearAcceleration]);
 
       return velocity;
     },
