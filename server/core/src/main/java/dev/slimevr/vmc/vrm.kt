@@ -109,7 +109,7 @@ fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 
 	val vrmHeight = (
 		offset(BodyPart.HIP) +
-			offset(BodyPart.LOWER_WAIST) +
+			offset(BodyPart.UPPER_WAIST) +
 			offset(BodyPart.LOWER_CHEST) +
 			offset(BodyPart.UPPER_CHEST) +
 			offset(BodyPart.NECK)

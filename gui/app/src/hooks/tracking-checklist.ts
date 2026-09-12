@@ -8,7 +8,14 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import * as Sentry from '@sentry/react';
 
 export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string> = {
@@ -172,6 +179,27 @@ export function provideTrackingChecklist() {
     [steps]
   );
 
+  const [closed, setClosed] = useState(true);
+  const [closing, setClosing] = useState(false);
+  const toggleClosed = () => setClosed((closed) => !closed);
+
+  useLayoutEffect(() => {
+    setClosing(true);
+    const ref = setTimeout(() => setClosing(false), 1000);
+    return () => {
+      clearTimeout(ref);
+      setClosing(false);
+    };
+  }, [closed]);
+
+  useEffect(() => {
+    if (completion === 'complete') {
+      setClosed(true);
+    } else if (completion === 'incomplete') {
+      setClosed(false);
+    }
+  }, [completion]);
+
   const ignoreStep = (
     step: TrackingChecklistStepId,
     ignore: boolean,
@@ -211,6 +239,9 @@ export function provideTrackingChecklist() {
     progress,
     completion,
     warnings,
+    closed,
+    closing,
+    toggleClosed,
     ignoreStep,
     toggleSession: (step: TrackingChecklistStepId) =>
       ignoreStep(step, !sessionIgnoredSteps.includes(step)),
