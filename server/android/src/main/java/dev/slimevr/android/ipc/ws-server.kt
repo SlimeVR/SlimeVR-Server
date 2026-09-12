@@ -6,7 +6,6 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.solarxr.OutboundProbe
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.server.application.install
@@ -42,15 +41,10 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 					AppLogger.ipc.info("SolarXR[${bridge.id}] connected (websocket)")
 					appContext.server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
 
-					val probe = OutboundProbe(bridge.id, "websocket")
-
 					bridge.outbound.on<MessageBundle> { bundle ->
 						val fbb = FlatBufferBuilder(256)
 						fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
-						val data = fbb.dataBuffer().moveToByteArray()
-						val sendStartNanos = System.nanoTime()
-						send(Frame.Binary(fin = true, data = data))
-						probe.record(bundle, data.size, System.nanoTime() - sendStartNanos)
+						send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
 					}.launchIn(this)
 
 					bridge.startObserving()
