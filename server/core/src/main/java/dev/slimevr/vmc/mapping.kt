@@ -70,8 +70,6 @@ val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 		BodyPart.RIGHT_MIDDLE_TOE to arrayOf("RightMiddleToe"),
 		BodyPart.RIGHT_RING_TOE to arrayOf("RightRingToe"),
 		BodyPart.RIGHT_LITTLE_TOE to arrayOf("RightLittleToe"),
-
-
 		BodyPart.LEFT_POSTERIOR to arrayOf("LeftPosterior"),
 		BodyPart.RIGHT_POSTERIOR to arrayOf("RightPosterior"),
 		BodyPart.TAIL to arrayOf("Tail", "Tail1"),
@@ -81,6 +79,8 @@ val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 		BodyPart.TAIL_4 to arrayOf("Tail4"),
 		BodyPart.TAIL_5 to arrayOf("Tail5"),
 		BodyPart.TAIL_6 to arrayOf("Tail6"),
+		BodyPart.LEFT_BUST to arrayOf("LeftBust"),
+		BodyPart.RIGHT_BUST to arrayOf("RightBust"),
 	),
 )
 
@@ -168,6 +168,10 @@ val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 			BodyPart.RIGHT_RING_TOE,
 			BodyPart.RIGHT_LITTLE_TOE,
 		),
+		BodyPart.UPPER_CHEST to arrayOf(
+			BodyPart.LEFT_BUST,
+			BodyPart.RIGHT_BUST
+		),
 	),
 )
 
@@ -240,8 +244,12 @@ val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
 	BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
 	BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
+<<<<<<< HEAD
 
 	BodyPart.LEFT_POSTERIOR to BodyPart.RIGHT_POSTERIOR,
+=======
+	BodyPart.LEFT_BUST to BodyPart.RIGHT_BUST,
+>>>>>>> Left-And-Right-Bust-Tracking
 )
 
 val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
