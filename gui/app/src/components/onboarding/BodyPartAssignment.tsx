@@ -44,7 +44,7 @@ const LEFT_GROUPS = (side: BodySide): BodyPart[][] => [
   [BodyPart.HEAD, BodyPart.NECK],
   [side.shoulder, side.upperArm],
   [side.lowerArm, side.hand],
-  [BodyPart.HIP],
+  [BodyPart.HIP, side.posterior, BodyPart.TAIL],
   [side.upperLeg, side.lowerLeg, side.foot],
 ];
 
@@ -52,7 +52,7 @@ const RIGHT_GROUPS = (side: BodySide): BodyPart[][] => [
   [BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST],
   [side.shoulder, side.upperArm],
   [side.lowerArm, side.hand],
-  [BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST],
+  [BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST, side.posterior],
   [side.upperLeg, side.lowerLeg, side.foot],
 ];
 

@@ -177,6 +177,9 @@ export const mapPart: Record<
   [BodyPart.RIGHT_MIDDLE_TOE]: renderFootRight,
   [BodyPart.RIGHT_RING_TOE]: renderFootRight,
   [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
+  [BodyPart.LEFT_POSTERIOR]: ({ width }) => <HipIcon width={width} />,
+  [BodyPart.RIGHT_POSTERIOR]: ({ width }) => <HipIcon width={width} flipped />,
+  [BodyPart.TAIL]: ({ width }) => <HipIcon width={width} />,
 };
 export function renderFootLeft({
   width,

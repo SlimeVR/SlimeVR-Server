@@ -12,6 +12,7 @@ export const SIDES = [
     bigToe: BodyPart.LEFT_BIG_TOE,
     indexToe: BodyPart.LEFT_INDEX_TOE,
     littleToe: BodyPart.LEFT_LITTLE_TOE,
+    posterior: BodyPart.LEFT_POSTERIOR,
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
@@ -24,6 +25,7 @@ export const SIDES = [
     bigToe: BodyPart.RIGHT_BIG_TOE,
     indexToe: BodyPart.RIGHT_INDEX_TOE,
     littleToe: BodyPart.RIGHT_LITTLE_TOE,
+    posterior: BodyPart.RIGHT_POSTERIOR,
   },
 ];
 
@@ -70,6 +72,27 @@ export function PersonFrontIcon({
         cy="181"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.HIP]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="82"
+        cy="205"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.TAIL]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="63"
+        cy="205"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].posterior]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="101"
+        cy="205"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[right].posterior]}
       />
       <circle
         className="body-part-circle"
