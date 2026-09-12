@@ -27,13 +27,17 @@ import solarxr_protocol.rpc.SkeletonProportionsResponse
 
 private const val MIN_HEIGHT = 0.9f
 
+// Bones whose value is a signed offset rather than a length, so negatives are valid.
+private val SIGNED_BONES = setOf(SkeletonBone.FOOT_SHIFT)
+
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
 ) : SolarXRBridgeBehaviour {
 	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
-		val boneOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
-		val boneValues = boneOffsets.toBoneValues()
+		val tailOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
+		val headOffsets = BodyPartMap(boneInputs.mapValues { it.value.headOffset })
+		val boneValues = toBoneValues(tailOffsets, headOffsets)
 		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
 		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
 	}
@@ -41,7 +45,11 @@ class SkeletonProportionsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		skeleton.context.state
 			.map { it.boneInputs }
-			.distinctUntilChanged { old, new -> ALL_BODY_PARTS.all { part -> old[part]?.offset == new[part]?.offset } }
+			.distinctUntilChanged { old, new ->
+				ALL_BODY_PARTS.all { part ->
+					old[part]?.offset == new[part]?.offset && old[part]?.headOffset == new[part]?.headOffset
+				}
+			}
 			.drop(1)
 			.onEach { boneInputs ->
 				val configResponse = buildConfigResponse(boneInputs)
@@ -77,7 +85,7 @@ class SkeletonProportionsBehaviour(
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone
 			if (bone == SkeletonBone.NONE) return@on
-			val value = req.value.coerceAtLeast(0f)
+			val value = if (bone in SIGNED_BONES) req.value else req.value.coerceAtLeast(0f)
 
 			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
 		}.launchIn(receiver.context.scope)

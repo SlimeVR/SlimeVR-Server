@@ -1,8 +1,10 @@
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import { Button } from './Button';
+import { Clickable } from './Clickable';
+import { FieldCaption } from './FloatingLabel';
 import { Typography } from './Typography';
 import { useCallback, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
+import { stepKeys } from '@/utils/a11y';
 
 export function NumberSelector<T extends FieldValues = FieldValues>({
   label,
@@ -58,57 +60,86 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field: { onChange, value } }) => {
+        const hasLabel = label !== undefined && label.length !== 0;
+        const shown = valueLabelFormat ? valueLabelFormat(value) : value;
+
+        const clamp = (v: number) => Math.min(max, Math.max(min, v));
+        const bump = (add: boolean, big = false) =>
+          !disabled &&
+          onChange(clamp(big ? doubleStepFn(value, add) : stepFn(value, add)));
+
+        const onKeyDown = stepKeys({
+          value: Number(value),
+          min,
+          max,
+          step: stepFn,
+          bigStep: doubleStep !== undefined ? doubleStepFn : undefined,
+          onChange,
+          disabled,
+        });
+
+        // Flat full-height stepper segments hugging the box edges.
+        const segment =
+          'flex min-w-[3rem] shrink-0 items-center justify-center px-3 text-lg font-bold leading-none text-background-10 fill-background-10 transition-colors enabled:hover:bg-background-50 disabled:opacity-30';
         return (
           <div className="flex flex-col gap-1 w-full">
-            {label?.length != 0 ? <Typography bold>{label}</Typography> : <></>}
-            <div className="flex gap-5 bg-background-60 p-2 rounded-lg">
-              <div className="flex gap-1">
-                {doubleStep !== undefined && (
-                  <Button
-                    variant="tertiary"
-                    rounded
-                    onClick={() => onChange(doubleStepFn(value, false))}
-                    disabled={doubleStepFn(value, false) < min || disabled}
-                  >
-                    {showButtonWithNumber
-                      ? decimalFormat.format(-doubleStep)
-                      : '--'}
-                  </Button>
-                )}
-                <Button
-                  variant="tertiary"
-                  rounded
-                  onClick={() => onChange(stepFn(value, false))}
-                  disabled={stepFn(value, false) < min || disabled}
+            {hasLabel && <FieldCaption>{label}</FieldCaption>}
+            <div
+              role="spinbutton"
+              data-nav-edit
+              tabIndex={disabled ? -1 : 0}
+              aria-label={label}
+              aria-disabled={disabled || undefined}
+              aria-valuenow={typeof value === 'number' ? value : undefined}
+              aria-valuemin={min}
+              aria-valuemax={max}
+              aria-valuetext={typeof shown === 'string' ? shown : undefined}
+              onKeyDown={onKeyDown}
+              className="relative flex items-stretch min-h-[48px] overflow-hidden rounded-md bg-background-60"
+            >
+              {doubleStep !== undefined && (
+                <Clickable
+                  tabIndex={-1}
+                  className={segment}
+                  onClick={() => bump(false, true)}
+                  disabled={doubleStepFn(value, false) < min || disabled}
                 >
-                  -
-                </Button>
+                  {showButtonWithNumber
+                    ? decimalFormat.format(-doubleStep)
+                    : '--'}
+                </Clickable>
+              )}
+              <Clickable
+                tabIndex={-1}
+                className={segment}
+                onClick={() => bump(false)}
+                disabled={stepFn(value, false) < min || disabled}
+              >
+                −
+              </Clickable>
+              <div className="flex flex-grow items-center justify-center px-2 select-none">
+                <Typography variant="standard">{shown}</Typography>
               </div>
-              <div className="flex flex-grow justify-center text-center items-center w-10 text-standard">
-                {valueLabelFormat ? valueLabelFormat(value) : value}
-              </div>
-              <div className="flex gap-1">
-                <Button
-                  variant="tertiary"
-                  rounded
-                  onClick={() => onChange(stepFn(value, true))}
-                  disabled={stepFn(value, true) > max || disabled}
+              <Clickable
+                tabIndex={-1}
+                className={segment}
+                onClick={() => bump(true)}
+                disabled={stepFn(value, true) > max || disabled}
+              >
+                +
+              </Clickable>
+              {doubleStep !== undefined && (
+                <Clickable
+                  tabIndex={-1}
+                  className={segment}
+                  onClick={() => bump(true, true)}
+                  disabled={doubleStepFn(value, true) > max || disabled}
                 >
-                  +
-                </Button>
-                {doubleStep !== undefined && (
-                  <Button
-                    variant="tertiary"
-                    rounded
-                    onClick={() => onChange(doubleStepFn(value, true))}
-                    disabled={doubleStepFn(value, true) > max || disabled}
-                  >
-                    {showButtonWithNumber
-                      ? decimalFormat.format(doubleStep)
-                      : '++'}
-                  </Button>
-                )}
-              </div>
+                  {showButtonWithNumber
+                    ? decimalFormat.format(doubleStep)
+                    : '++'}
+                </Clickable>
+              )}
             </div>
           </div>
         );

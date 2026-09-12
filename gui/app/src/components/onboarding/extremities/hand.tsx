@@ -49,12 +49,12 @@ const JOINT_POSITIONS: Record<HandFinger, [number, number][]> = {
 };
 
 function HandLayout() {
-  const { compact } = useExtremityLayout();
+  const { compact, fitContent } = useExtremityLayout();
 
   if (compact)
     return (
       <ExtremityFrame
-        figureHeight={300}
+        figureHeight={fitContent ? 428 : 300}
         top={
           <DigitRow>
             <Digit name="middle" />
@@ -63,7 +63,9 @@ function HandLayout() {
           </DigitRow>
         }
         near={
-          <DigitColumn className="justify-end">
+          <DigitColumn
+            className={fitContent ? 'justify-end pb-24' : 'justify-end'}
+          >
             <Digit name="index" />
             <Digit name="thumb" />
             <Digit name="root" />

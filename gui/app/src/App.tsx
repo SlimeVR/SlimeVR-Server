@@ -24,7 +24,6 @@ import { ManualMountingPage } from './components/onboarding/pages/mounting/Manua
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
-import { SerialDetectionModal } from './components/SerialDetectionModal';
 import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { BoneRoutingSettings } from './components/settings/pages/BoneRoutingSettings';
 import { DriverSettings } from './components/settings/pages/DriverSettings';
@@ -44,6 +43,8 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+import { useControllerNav } from './hooks/controller-nav';
+import { useInternalLinkGuard } from './hooks/internal-links';
 import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
@@ -74,10 +75,11 @@ const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
   useDiscordPresence();
+  useControllerNav();
+  useInternalLinkGuard();
 
   return (
     <>
-      <SerialDetectionModal />
       <VersionUpdateModal />
       <UnknownDeviceModal />
       <UdevRulesModal />
@@ -132,14 +134,6 @@ function Layout() {
             }
           />
           <Route
-            path="/vrc-warnings"
-            element={
-              <MainLayout isMobile={isMobile}>
-                <VRCWarningsPage />
-              </MainLayout>
-            }
-          />
-          <Route
             path="/settings"
             element={
               <SettingsLayout>
@@ -158,6 +152,7 @@ function Layout() {
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
             <Route path="keybinds" element={<KeybindSettings />} />
+            <Route path="vrc-warnings" element={<VRCWarningsPage />} />
           </Route>
           <Route
             path="/onboarding"
@@ -241,22 +236,6 @@ export default function App() {
       setUpdateFound(releases[0].tag_name);
     }
   };
-
-  useEffect(() => {
-    const onKeydown: (arg0: KeyboardEvent) => void = function (event) {
-      // prevent search bar keybind
-      if (
-        event.key === 'F3' ||
-        (event.ctrlKey && event.key === 'f') ||
-        (event.metaKey && event.key === 'f')
-      ) {
-        event.preventDefault();
-      }
-    };
-
-    window.addEventListener('keydown', onKeydown);
-    return () => window.removeEventListener('keydown', onKeydown);
-  }, []);
 
   useEffect(() => {
     fetchReleases().catch((e) => error(e, 'failed to fetch releases'));

@@ -9,7 +9,6 @@ export function TrackerBattery({
   voltage,
   runtime,
   disabled,
-  moreInfo = false,
   textColor = 'primary',
 }: {
   /**
@@ -21,7 +20,6 @@ export function TrackerBattery({
   voltage?: number | null;
   runtime?: bigint | null;
   disabled?: boolean;
-  moreInfo?: boolean;
   textColor?: string;
 }) {
   const { currentLocales } = useLocaleConfig();
@@ -35,8 +33,8 @@ export function TrackerBattery({
   });
 
   const charging = (voltage || 0) > 4.3;
-  const debug = config?.debug || config?.devSettings.moreInfo;
-  const showVoltage = moreInfo && voltage && debug;
+  const debug = config?.debug;
+  const showVoltage = voltage && config?.trackerDisplay?.showBatteryVoltage;
 
   const pct = value > 2 ? 0 : Math.min(Math.max(value, 0), 1);
 
@@ -44,7 +42,7 @@ export function TrackerBattery({
     <Tooltip
       disabled={charging || !runtime || debug}
       preferedDirection="left"
-      content=<Typography>{percentFormatter.format(pct)}</Typography>
+      content={<Typography>{percentFormatter.format(pct)}</Typography>}
     >
       <div className="flex gap-2">
         <div className="flex flex-col justify-around">

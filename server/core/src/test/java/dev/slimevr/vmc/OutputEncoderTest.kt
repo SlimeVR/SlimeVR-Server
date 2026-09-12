@@ -7,6 +7,7 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -21,12 +22,13 @@ import kotlin.time.Duration.Companion.seconds
 private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY) = BoneState(
 	parentBone = null,
 	bodyPart = bodyPart,
+	headOffset = Vector3.ZERO,
 	offset = Vector3(0f, -0.1f, 0f),
 	rotation = rotation,
+	acceleration = Vector3.ZERO,
 	headPosition = Vector3(0f, 1f, 0f),
 	tailPosition = Vector3(0f, 0.9f, 0f),
-	angularVelocity = Vector3.NULL,
-	linearVelocity = Vector3.NULL,
+	velocity = Velocity(Vector3.ZERO, Vector3.ZERO),
 )
 
 private fun messages(bundle: OscBundle): List<OscMessage> = bundle.contents.map { (it as OscContent.Message).msg }
@@ -58,7 +60,7 @@ class OutputEncoderTest {
 		val bones = BodyPartMap(
 			mapOf(
 				BodyPart.HIP to bone(BodyPart.HIP),
-				BodyPart.WAIST to bone(BodyPart.WAIST),
+				BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST),
 			),
 		)
 
@@ -78,7 +80,7 @@ class OutputEncoderTest {
 	fun testSkipsRoutedBonesMissingFromTheSkeleton() {
 		val bundle = buildOutgoingBundle(
 			bones = BodyPartMap(mapOf(BodyPart.HIP to bone(BodyPart.HIP))),
-			routedBones = setOf(BodyPart.HIP, BodyPart.WAIST),
+			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST),
 			config = defaultConfig,
 			vrm = null,
 			elapsed = 0.seconds,
@@ -120,10 +122,10 @@ class OutputEncoderTest {
 		val bones = BodyPartMap(
 			mapOf(
 				BodyPart.HIP to bone(BodyPart.HIP),
-				BodyPart.WAIST to bone(BodyPart.WAIST),
+				BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST),
 			),
 		)
-		val routed = setOf(BodyPart.HIP, BodyPart.WAIST)
+		val routed = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST)
 		val vrm = buildVrmGeometry(VrmReader(VRM_JSON))
 
 		val bundle = buildOutgoingBundle(bones, routed, defaultConfig, vrm, 0.seconds)

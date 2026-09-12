@@ -24,6 +24,11 @@ import { useMemo, useState } from 'react';
 import { HomeSettingsModal } from './HomeSettingsModal';
 import { GroupTelemetryOverlay } from './GroupTelemetryOverlay';
 import { LayoutIcon } from '@/components/commons/icon/LayoutIcon';
+import { IconButton } from '@/components/commons/IconButton';
+import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { Button } from '@/components/commons/Button';
+import { ArrowLink } from '@/components/commons/ArrowLink';
+import { DOCS_SITE } from '@/App';
 
 export function Home() {
   const { config } = useConfig();
@@ -74,57 +79,33 @@ export function Home() {
             vars={{ count: trackers.length }}
           />
           <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
-          <div
+          <IconButton
+            labelId="home-settings"
             className="fill-background-30 hover:fill-background-20 cursor-pointer"
             onClick={() => setSettingsOpen(true)}
           >
             <LayoutIcon size={18} />
-          </div>
+          </IconButton>
         </div>
-        {config?.homeLayout == 'default' && groups.length > 0 && (
-          <div className="pl-2 pr-2 flex flex-col gap-4 pb-4">
-            {groups.map((group) => (
-              <TrackerConnectionGroupSection
-                key={group.key}
-                group={group}
-                variant="primary"
-                toolbox={
-                  <TrackerConnectionGroupDefaultToolbox
-                    group={group}
-                    onOpenMetrics={(g) => setTelemetryGroup(g)}
-                  />
-                }
-              >
-                <div className="flex flex-col gap-3 pr-2">
-                  {group.assigned.length > 0 && (
-                    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
-                      {group.assigned.map(({ tracker, device }, index) => (
-                        <TrackerCard
-                          key={index}
-                          tracker={tracker}
-                          device={device}
-                          onClick={() => sendToSettings(tracker)}
-                          smol
-                          showUpdates
-                          interactable
-                          warning={
-                            !!highlightedTrackers?.trackers.find(
-                              (t) => t === tracker.trackerId
-                            ) && highlightedTrackers.step
-                          }
-                        />
-                      ))}
-                    </div>
-                  )}
-                  {group.unassigned.length > 0 && (
-                    <>
-                      {group.assigned.length > 0 && (
-                        <TrackerConnectionGroupUnassignedDivider
-                          count={group.unassigned.length}
-                        />
-                      )}
+        <div className="w-full overflow-x-auto h-full">
+          {config?.homeLayout == 'default' && groups.length > 0 && (
+            <div className="pl-2 pr-2 flex flex-col gap-4 pb-4">
+              {groups.map((group) => (
+                <TrackerConnectionGroupSection
+                  key={group.key}
+                  group={group}
+                  variant="primary"
+                  toolbox={
+                    <TrackerConnectionGroupDefaultToolbox
+                      group={group}
+                      onOpenMetrics={(g) => setTelemetryGroup(g)}
+                    />
+                  }
+                >
+                  <div className="flex flex-col gap-3 pr-2">
+                    {group.assigned.length > 0 && (
                       <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
-                        {group.unassigned.map(({ tracker, device }, index) => (
+                        {group.assigned.map(({ tracker, device }, index) => (
                           <TrackerCard
                             key={index}
                             tracker={tracker}
@@ -141,23 +122,98 @@ export function Home() {
                           />
                         ))}
                       </div>
-                    </>
-                  )}
-                </div>
-              </TrackerConnectionGroupSection>
-            ))}
-          </div>
-        )}
+                    )}
+                    {group.unassigned.length > 0 && (
+                      <>
+                        {group.assigned.length > 0 && (
+                          <TrackerConnectionGroupUnassignedDivider
+                            count={group.unassigned.length}
+                          />
+                        )}
+                        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
+                          {group.unassigned.map(
+                            ({ tracker, device }, index) => (
+                              <TrackerCard
+                                key={index}
+                                tracker={tracker}
+                                device={device}
+                                onClick={() => sendToSettings(tracker)}
+                                smol
+                                showUpdates
+                                interactable
+                                warning={
+                                  !!highlightedTrackers?.trackers.find(
+                                    (t) => t === tracker.trackerId
+                                  ) && highlightedTrackers.step
+                                }
+                              />
+                            )
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </TrackerConnectionGroupSection>
+              ))}
+            </div>
+          )}
 
-        {config?.homeLayout === 'table' && groups.length > 0 && (
-          <div className="mx-2 flex flex-col">
-            <TrackersTable
-              groups={groups}
-              clickedTracker={(tracker) => sendToSettings(tracker)}
-              onOpenMetrics={(g) => setTelemetryGroup(g)}
-            />
-          </div>
-        )}
+          {config?.homeLayout === 'table' && groups.length > 0 && (
+            <div className="mx-2 flex flex-col">
+              <TrackersTable
+                groups={groups}
+                clickedTracker={(tracker) => sendToSettings(tracker)}
+                onOpenMetrics={(g) => setTelemetryGroup(g)}
+              />
+            </div>
+          )}
+
+          {groups.length === 0 && (
+            <div className="flex flex-col items-center justify-center gap-4 text-center p-6 flex-grow">
+              <div className="relative flex items-center justify-center antialiased">
+                <div
+                  className="absolute w-64 h-64 rounded-full pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(circle, rgb(var(--accent-background-30), 0.25) 0%, rgb(var(--accent-background-30), 0) 70%)',
+                  }}
+                />
+                <LoaderIcon
+                  slimeState={SlimeState.CURIOUS}
+                  size={140}
+                  lowPriority
+                />
+              </div>
+              <div className="flex flex-col gap-1 max-w-xs">
+                <Typography
+                  bold
+                  variant="section-title"
+                  id="home-no_trackers-title"
+                />
+                <Typography
+                  variant="standard"
+                  color="secondary"
+                  id="home-no_trackers-description"
+                />
+              </div>
+              <Button
+                variant="primary"
+                to="/onboarding/connect-trackers"
+                state={{ alonePage: true }}
+                id="home-no_trackers-connect"
+              >
+                Connect trackers
+              </Button>
+              <ArrowLink
+                to={`${DOCS_SITE}/quick-setup.html`}
+                direction="right"
+                variant="flat"
+              >
+                <Typography id="home-no_trackers-guide" />
+              </ArrowLink>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

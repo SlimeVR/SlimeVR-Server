@@ -1,49 +1,37 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.skeleton.inputprocessors.ToeDirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.PosteriorDirectLinkInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class PosteriorDirectLinkInputProcessorTest {
 	@Test
 	fun `test missing all posterior trackers`() {
-		val processor = ToeDirectLinkInputProcessor()
-		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutateCopy { map ->
-			map[BodyPart.HIP] = map.getValue(BodyPart.HIP).copy(
-				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
-				isRotationActive = true,
-			)
-			map[BodyPart.LEFT_HIP] = map.getValue(BodyPart.LEFT_HIP).copy(
-				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
-				isRotationActive = true,
-			)
-			map[BodyPart.RIGHT_HIP] = map.getValue(BodyPart.RIGHT_HIP).copy(
-				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
-				isRotationActive = true,
-			)
-		}
-
-		val state = SkeletonState(
-			boneInputs = inputs,
-			skeletonHeight = 1.7f,
-			floorLevel = 0f,
-			paused = false,
-			pausedProcessedBoneInputs = inputs,
+		val processor = PosteriorDirectLinkInputProcessor()
+		val inputs = DEFAULT_SKELETON_STATE.boneInputs.clone()
+		val targetRotation = Quaternion.fromRotationVector(10f, 40f, 15f)
+		inputs[BodyPart.HIP] = inputs.getValue(BodyPart.HIP).copy(
+			rotation = targetRotation,
+			isRotationActive = true,
 		)
+		inputs[BodyPart.LEFT_POSTERIOR] = DEFAULT_BONE_INPUT.copy(bodyPart = BodyPart.LEFT_POSTERIOR)
+		inputs[BodyPart.RIGHT_POSTERIOR] = DEFAULT_BONE_INPUT.copy(bodyPart = BodyPart.RIGHT_POSTERIOR)
+		inputs[BodyPart.TAIL] = DEFAULT_BONE_INPUT.copy(bodyPart = BodyPart.TAIL)
 
-		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
+		processor.process(inputs, 1.7f)
 
-		val leftPosteriorIsSameRotationAsLeftHip =
-			newInputs[BodyPart.LEFT_POSTERIOR]?.rotation == newInputs[BodyPart.LEFT_HIP]?.rotation
-		val rightPosteriorIsSameRotationAsRightHip =
-			newInputs[BodyPart.RIGHT_POSTERIOR]?.rotation == newInputs[BodyPart.RIGHT_HIP]?.rotation
-		val tailIsSameRotationIsHip =
-			newInputs[BodyPart.TAIL]?.rotation == newInputs[BodyPart.HIP]?.rotation
+		val leftPosteriorIsSameRotationAsHip =
+			inputs[BodyPart.LEFT_POSTERIOR]?.rotation == targetRotation
+		val rightPosteriorIsSameRotationAsHip =
+			inputs[BodyPart.RIGHT_POSTERIOR]?.rotation == targetRotation
+		val tailIsSameRotationAsHip =
+			inputs[BodyPart.TAIL]?.rotation == targetRotation
 
-		assertTrue(leftPosteriorIsSameRotationAsLeftHip)
-		assertTrue(rightPosteriorIsSameRotationAsRightHip)
-		assertTrue(tailIsSameRotationIsHip)
+		assertTrue(leftPosteriorIsSameRotationAsHip)
+		assertTrue(rightPosteriorIsSameRotationAsHip)
+		assertTrue(tailIsSameRotationAsHip)
 	}
 }

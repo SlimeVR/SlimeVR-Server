@@ -1,11 +1,12 @@
 import { Input } from '@/components/commons/Input';
+import { Clickable } from '@/components/commons/Clickable';
 import { Typography } from '@/components/commons/Typography';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import convert from 'convert';
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,6 +24,7 @@ function IncrementButton({
   onClick: () => void;
 }) {
   const { isXs } = useBreakpoint('xs');
+  const { isShort } = useBreakpoint('short');
   const { currentLocales } = useLocaleConfig();
 
   const format = useMemo(() => {
@@ -37,18 +39,20 @@ function IncrementButton({
   }, [currentLocales, value]);
 
   return (
-    <div
+    <Clickable
+      disabled={disabled}
       className={classNames(
-        'no-user-drag flex rounded-md items-center justify-center flex-row xs:flex-col w-full gap-1 p-3 xs:p-2 xs:w-[75px] xs:h-[75px]',
+        'no-user-drag flex rounded-md items-center justify-center flex-row xs:flex-col w-full gap-1 p-3 short:p-2 xs:p-2 xs:w-[75px] xs:h-[75px]',
         {
           'cursor-not-allowed bg-background-80 opacity-50': disabled,
           'bg-background-50 hover:bg-background-40 cursor-pointer': !disabled,
         }
       )}
-      onClick={() => !disabled && onClick()}
+      onClick={onClick}
     >
       <Typography
-        variant={isXs ? 'mobile-title' : 'section-title'}
+        variant={isXs ? 'mobile-title' : isShort ? 'standard' : 'section-title'}
+        bold
         color={disabled ? 'text-background-40' : 'primary'}
       >
         {format}
@@ -59,7 +63,7 @@ function IncrementButton({
           color={disabled ? 'text-background-40' : 'primary'}
         />
       )}
-    </div>
+    </Clickable>
   );
 }
 
@@ -73,7 +77,8 @@ function UnitSelector({
   onClick: () => void;
 }) {
   return (
-    <div
+    <Clickable
+      pressed={active}
       className={classNames(
         {
           'bg-accent-background-30': active,
@@ -84,7 +89,7 @@ function UnitSelector({
       onClick={onClick}
     >
       <Typography id={name} />
-    </div>
+    </Clickable>
   );
 }
 
@@ -112,41 +117,52 @@ function formatInFoot(meters: number, locale: string[]) {
 
 const round4Digit = (value: number) => Math.round(value * 10000) / 10000;
 
+export function formatFullHeight(
+  hmdHeight: number,
+  unit: 'meter' | 'foot',
+  locales: string[]
+) {
+  if (!hmdHeight) return '--';
+
+  const displayHeight = round4Digit(hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO);
+
+  if (unit === 'meter') {
+    return new Intl.NumberFormat(locales, {
+      style: 'unit',
+      unit: 'meter',
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    }).format(displayHeight);
+  }
+
+  return formatInFoot(displayHeight, locales);
+}
+
 export function HeightSelectionInput({
   disabled = false,
   hmdHeight,
+  unit,
+  onUnitChange,
   setHmdHeight,
 }: {
   disabled?: boolean;
   hmdHeight: number;
+  unit: 'meter' | 'foot';
+  onUnitChange: (unit: 'meter' | 'foot') => void;
   setHmdHeight: (height: number) => void;
 }) {
   if (!hmdHeight) disabled = true;
 
   const { isXs } = useBreakpoint('xs');
-  const [unit, setUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const isSubmitting = useRef(false);
   const footRegex = /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?[″"”]?)?$/;
 
-  const formattedHeight = useMemo(() => {
-    if (!hmdHeight) return '--';
-
-    const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
-    const displayHeight = round4Digit(fullHeight);
-
-    if (unit === 'meter') {
-      return new Intl.NumberFormat(currentLocales, {
-        style: 'unit',
-        unit: 'meter',
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      }).format(displayHeight);
-    }
-
-    return formatInFoot(displayHeight, currentLocales);
-  }, [hmdHeight, unit]);
+  const formattedHeight = useMemo(
+    () => formatFullHeight(hmdHeight, unit, currentLocales),
+    [hmdHeight, unit, currentLocales]
+  );
 
   const defaultValues: { height: string } = {
     height: formattedHeight,
@@ -281,58 +297,26 @@ export function HeightSelectionInput({
     );
 
     setHmdHeight(newEyeHeight);
-    setUnit(newUnit);
+    onUnitChange(newUnit);
   };
 
   return (
-    <div className="flex gap-2 xs:h-[75px] w-full items-center">
-      <div className="grid grid-rows-2 xs:grid-cols-2 gap-2 h-full">
-        {unit === 'foot' && (
-          <>
-            <IncrementButton
-              value={-1}
-              unit={'foot'}
-              onClick={() => increment('foot', -1)}
-              disabled={disabled || !canIcrement('foot', -1, 0.9)}
-            />
-            <IncrementButton
-              value={-1}
-              unit={'inch'}
-              onClick={() => increment('inch', -1)}
-              disabled={disabled || !canIcrement('inch', -1, 0.9)}
-            />
-          </>
-        )}
-        {unit === 'meter' && (
-          <>
-            <IncrementButton
-              value={-10}
-              unit={'cm'}
-              onClick={() => increment('cm', -10)}
-              disabled={disabled || !canIcrement('cm', -10, 0.9)}
-            />
-            <IncrementButton
-              value={-1}
-              unit={'cm'}
-              onClick={() => increment('cm', -1)}
-              disabled={disabled || !canIcrement('cm', -1, 0.9)}
-            />
-          </>
-        )}
-      </div>
-      <div className="flex w-full xs:w-auto xs:flex-grow bg-background-50 rounded-md px-2 py-2 h-full gap-1 items-center">
-        <Input
-          name="height"
-          control={control}
-          variant="secondary"
-          className="text-center !text-3xl !font-bold !w-[210px]"
-          errorClassName="text-center top-[47px] "
-          onBlur={() => {
-            reset({ height: formattedHeight });
-            isSubmitting.current = false;
-          }}
-        />
-        <div className="w-[70px] xs:w-20 h-full gap-2 grid p-1">
+    <div className="flex flex-col gap-2 xs:flex-row xs:h-[75px] w-full xs:items-center">
+      <div className="flex order-first xs:order-2 w-full xs:w-auto xs:flex-grow bg-background-50 rounded-md px-2 py-2 short:py-1 h-full gap-1 items-center min-w-0">
+        <div className="flex-1 min-w-0 xs:flex-none">
+          <Input
+            name="height"
+            control={control}
+            variant="secondary"
+            className="text-center !text-3xl short:!text-2xl !font-bold !min-h-[48px] short:!min-h-[44px] w-full min-w-0 xs:!w-[210px]"
+            errorClassName="text-center top-[47px] "
+            onBlur={() => {
+              reset({ height: formattedHeight });
+              isSubmitting.current = false;
+            }}
+          />
+        </div>
+        <div className="w-[70px] xs:w-20 h-full gap-2 short:gap-1 grid p-1 shrink-0">
           <UnitSelector
             active={unit === 'meter'}
             name={isXs ? 'unit-meter' : 'unit-cm'}
@@ -345,39 +329,76 @@ export function HeightSelectionInput({
           />
         </div>
       </div>
-      <div className="xs:grid grid-rows-2 grid-cols-2 gap-2 h-full flex flex-col-reverse">
-        {unit === 'foot' && (
-          <>
-            <IncrementButton
-              value={1}
-              unit={'inch'}
-              onClick={() => increment('inch', 1)}
-              disabled={disabled || !canIcrement('inch', 1, 2.4)}
-            />
-            <IncrementButton
-              value={1}
-              unit={'foot'}
-              onClick={() => increment('foot', 1)}
-              disabled={disabled || !canIcrement('foot', 1, 2.4)}
-            />
-          </>
-        )}
-        {unit === 'meter' && (
-          <>
-            <IncrementButton
-              value={1}
-              unit={'cm'}
-              onClick={() => increment('cm', 1)}
-              disabled={disabled || !canIcrement('cm', 1, 2.4)}
-            />
-            <IncrementButton
-              value={10}
-              unit={'cm'}
-              onClick={() => increment('cm', 10)}
-              disabled={disabled || !canIcrement('cm', 10, 2.4)}
-            />
-          </>
-        )}
+
+      <div className="flex gap-2 xs:contents">
+        <div className="grid grid-cols-2 gap-2 h-full flex-1 xs:flex-none xs:order-1 xs:grid-rows-2">
+          {unit === 'foot' && (
+            <>
+              <IncrementButton
+                value={-1}
+                unit={'foot'}
+                onClick={() => increment('foot', -1)}
+                disabled={disabled || !canIcrement('foot', -1, 0.9)}
+              />
+              <IncrementButton
+                value={-1}
+                unit={'inch'}
+                onClick={() => increment('inch', -1)}
+                disabled={disabled || !canIcrement('inch', -1, 0.9)}
+              />
+            </>
+          )}
+          {unit === 'meter' && (
+            <>
+              <IncrementButton
+                value={-10}
+                unit={'cm'}
+                onClick={() => increment('cm', -10)}
+                disabled={disabled || !canIcrement('cm', -10, 0.9)}
+              />
+              <IncrementButton
+                value={-1}
+                unit={'cm'}
+                onClick={() => increment('cm', -1)}
+                disabled={disabled || !canIcrement('cm', -1, 0.9)}
+              />
+            </>
+          )}
+        </div>
+        <div className="grid grid-cols-2 gap-2 h-full flex-1 xs:flex-none xs:order-3 xs:grid-rows-2">
+          {unit === 'foot' && (
+            <>
+              <IncrementButton
+                value={1}
+                unit={'inch'}
+                onClick={() => increment('inch', 1)}
+                disabled={disabled || !canIcrement('inch', 1, 2.4)}
+              />
+              <IncrementButton
+                value={1}
+                unit={'foot'}
+                onClick={() => increment('foot', 1)}
+                disabled={disabled || !canIcrement('foot', 1, 2.4)}
+              />
+            </>
+          )}
+          {unit === 'meter' && (
+            <>
+              <IncrementButton
+                value={1}
+                unit={'cm'}
+                onClick={() => increment('cm', 1)}
+                disabled={disabled || !canIcrement('cm', 1, 2.4)}
+              />
+              <IncrementButton
+                value={10}
+                unit={'cm'}
+                onClick={() => increment('cm', 10)}
+                disabled={disabled || !canIcrement('cm', 10, 2.4)}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

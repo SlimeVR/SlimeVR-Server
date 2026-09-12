@@ -2,8 +2,8 @@ package dev.slimevr.desktop.keybind
 
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.desktop.install.executeShellCommand
+import dev.slimevr.keybind.canonicalKeybind
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.solarxr.rpc.canonicalKeybind
 import solarxr_protocol.rpc.KeybindId
 import java.io.File
 
@@ -15,6 +15,61 @@ private val MODIFIERS = linkedMapOf(
 	"ALT" to "<Alt>",
 	"SUPER" to "<Super>",
 )
+
+// GTK keyval names (gtk_accelerator_name), used both for GNOME's own dconf-stored
+// accelerators and as the preferred_trigger the xdg-desktop-portal GlobalShortcuts
+// implementation parses with gtk_accelerator_parse.
+private val KEY_TO_GTK: Map<String, String> = buildMap {
+	('A'..'Z').forEach { put(it.toString(), it.lowercaseChar().toString()) }
+	('0'..'9').forEach { put(it.toString(), it.toString()) }
+	(1..24).forEach { put("F$it", "F$it") }
+	put("UP", "Up")
+	put("DOWN", "Down")
+	put("LEFT", "Left")
+	put("RIGHT", "Right")
+	put("HOME", "Home")
+	put("END", "End")
+	put("PAGE_UP", "Page_Up")
+	put("PAGE_DOWN", "Page_Down")
+	put("INSERT", "Insert")
+	put("DELETE", "Delete")
+	put("SPACE", "space")
+	put("ENTER", "Return")
+	put("TAB", "Tab")
+	put("BACKSPACE", "BackSpace")
+	put("ESCAPE", "Escape")
+	(0..9).forEach { put("NUMPAD_$it", "KP_$it") }
+	put("NUMPAD_ADD", "KP_Add")
+	put("NUMPAD_SUBTRACT", "KP_Subtract")
+	put("NUMPAD_MULTIPLY", "KP_Multiply")
+	put("NUMPAD_DIVIDE", "KP_Divide")
+	put("NUMPAD_DECIMAL", "KP_Decimal")
+	put("NUMPAD_ENTER", "KP_Enter")
+	put("MINUS", "minus")
+	put("EQUAL", "equal")
+	put("BRACKET_LEFT", "bracketleft")
+	put("BRACKET_RIGHT", "bracketright")
+	put("BACKSLASH", "backslash")
+	put("SEMICOLON", "semicolon")
+	put("QUOTE", "apostrophe")
+	put("BACKQUOTE", "grave")
+	put("COMMA", "comma")
+	put("PERIOD", "period")
+	put("SLASH", "slash")
+	put("PRINT_SCREEN", "Print")
+	put("PAUSE", "Pause")
+	put("SCROLL_LOCK", "Scroll_Lock")
+	put("NUM_LOCK", "Num_Lock")
+	put("CAPS_LOCK", "Caps_Lock")
+	put("MEDIA_PLAY_PAUSE", "AudioPlay")
+	put("MEDIA_STOP", "AudioStop")
+	put("MEDIA_NEXT", "AudioNext")
+	put("MEDIA_PREVIOUS", "AudioPrev")
+	put("VOLUME_UP", "AudioRaiseVolume")
+	put("VOLUME_DOWN", "AudioLowerVolume")
+	put("VOLUME_MUTE", "AudioMute")
+}
+private val GTK_TO_KEY: Map<String, String> = KEY_TO_GTK.entries.associate { (k, v) -> v to k }
 
 fun isGnome(): Boolean = System.getenv("XDG_CURRENT_DESKTOP")?.uppercase()?.contains("GNOME") == true
 
@@ -35,16 +90,18 @@ fun resolveGnomeAppId(): String? {
 }
 
 /** Converts our `CTRL+ALT+SHIFT+Y` form into GTK's `<Shift><Control><Alt>y` form. */
-private fun toGnomeAccelerator(binding: String): String? {
+fun toGnomeAccelerator(binding: String): String? {
 	val parts = binding.split('+').map { it.trim().uppercase() }.filter { it.isNotEmpty() }
 	val key = parts.firstOrNull { it !in MODIFIERS } ?: return null
+	val gtkKey = KEY_TO_GTK[key] ?: return null
 
 	val modifiers = parts.filter { it in MODIFIERS }.toSet()
-	return MODIFIERS.filterKeys { it in modifiers }.values.joinToString("") + key.lowercase()
+	return MODIFIERS.filterKeys { it in modifiers }.values.joinToString("") + gtkKey
 }
 
 private fun fromGnomeAccelerator(accelerator: String): String? {
-	val key = accelerator.substringAfterLast('>').uppercase().ifEmpty { return null }
+	val gtkKey = accelerator.substringAfterLast('>').ifEmpty { return null }
+	val key = GTK_TO_KEY[gtkKey] ?: return null
 	val modifiers = MODIFIERS.filterValues { it in accelerator }.keys
 	return canonicalKeybind((modifiers + key).joinToString("+"))
 }

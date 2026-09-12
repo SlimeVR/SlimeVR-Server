@@ -27,6 +27,7 @@ fun reduce(state: VMCState, action: VMCActions): VMCState = when (action) {
 	)
 
 	is VMCActions.SetVrm -> state.copy(
+		vrm = action.vrm,
 		status = state.status.copy(vrmState = action.state, vrmError = action.error),
 	)
 }

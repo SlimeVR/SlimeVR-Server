@@ -26,6 +26,7 @@ data class VMCStatus(
 
 data class VMCState(
 	val status: VMCStatus = VMCStatus(),
+	val vrm: VrmGeometry? = null,
 )
 
 sealed interface VMCActions {
@@ -46,6 +47,7 @@ sealed interface VMCActions {
 
 	data class SetVrm(
 		val state: VMCOSCVrmState,
+		val vrm: VrmGeometry? = null,
 		val error: String? = null,
 	) : VMCActions
 }
@@ -57,8 +59,9 @@ class VMCManager(val context: VMCContext) {
 	fun startObserving(appContext: AppContextProvider) {
 		val settings = appContext.config.settings
 		val behaviours = listOf(
+			VMCVrmBehaviour(settings),
 			VMCOutputBehaviour(appContext.skeleton, settings, appContext.boneRouting),
-			VMCInputBehaviour(settings),
+			VMCInputBehaviour(appContext, settings),
 		)
 
 		context.behaviours.addAll(behaviours)

@@ -37,6 +37,28 @@ dropdown_select-all = Select All
 dropdown_unselect-all = Unselect All
 
 
+## Text input
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = Show password
+input-password-hide = Hide password
+
+
+## File input
+# Accessible name and tooltip for the icon-only button that clears a picked path
+file_input-clear = Clear file
+file_input-clear_folder = Clear folder
+
+
+## Window controls
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = Open documentation
+titlebar-settings = Open settings
+titlebar-update = Download update
+titlebar-minimize = Minimize
+titlebar-maximize = Maximize
+titlebar-close = Close
+
+
 ## Body parts
 body_part-NONE = Unassigned
 body_part-HEAD = Head
@@ -49,8 +71,9 @@ body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
 body_part-UPPER_CHEST = Upper chest
-body_part-CHEST = Chest
-body_part-WAIST = Waist
+body_part-LOWER_CHEST = Lower chest
+body_part-UPPER_WAIST = Upper waist
+body_part-LOWER_WAIST = Lower waist
 body_part-HIP = Hip
 body_part-LEFT_SHOULDER = Left shoulder
 body_part-LEFT_UPPER_ARM = Left upper arm
@@ -151,19 +174,24 @@ skeleton_bone-UPPER_CHEST-desc =
     This is the distance from the base of your neck to the middle of your chest.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST = Lower Chest Length
+skeleton_bone-LOWER_CHEST-desc =
     This is the distance from the middle of your chest to the middle of your spine.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-WAIST-desc =
-    This is the distance from the middle of your spine to your belly button.
+skeleton_bone-UPPER_WAIST = Upper Waist Length
+skeleton_bone-UPPER_WAIST-desc =
+    This is the distance from the middle of your spine to a bit above your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
+skeleton_bone-LOWER_WAIST = Lower Waist Length
+skeleton_bone-LOWER_WAIST-desc =
+    This is the distance from a bit above your belly button to a bit below it.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
-    This is the distance from your belly button to your hips.
+    This is the distance from a bit bellow your belly button to your hips.
     To adjust it, set your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIPS_WIDTH = Hips Width
@@ -249,15 +277,6 @@ reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
-## Serial detection stuff
-serial_detection-new_device-p0 = New serial device detected!
-serial_detection-new_device-p1 = Enter your Wi-Fi credentials!
-serial_detection-new_device-p2 = Please select what you want to do with it
-serial_detection-open_wifi = Connect to Wi-Fi
-serial_detection-open_serial = Open USB Serial Console
-serial_detection-submit = Submit!
-serial_detection-close = Close
-
 ## Navigation bar
 navbar-home = Home
 navbar-body_proportions = Body Proportions
@@ -282,9 +301,7 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
 
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Tracking data
@@ -412,6 +429,9 @@ dongle-settings-telemetry-chart_rssi = RSSI · dBm
 dongle-settings-telemetry-chart_loss = Packet loss · %
 dongle-settings-telemetry-chart_gaps = Loss gap events · TPS-relative packet gaps
 dongle-settings-telemetry-footnote = Loss gap events mark regions where packet updates were delayed relative to the tracker's TPS rate. Darker and wider marks indicate longer drop durations.
+# Accessible name and tooltip for the icon-only button that pauses/resumes the live telemetry feed
+dongle-settings-telemetry-live-pause = Pause live feed
+dongle-settings-telemetry-live-resume = Resume live feed
 
 
 ## Tracker part card info
@@ -536,6 +556,8 @@ settings-driver-status-connection-unavailable = This output does not exist on th
 settings-driver-bones = Bones sent
 settings-driver-bones-description = Which bones this output sends is configured in Bone Routing.
 settings-driver-bones-link = Open Bone Routing
+settings-driver-velocity = Send velocity
+settings-driver-velocity-description = Send linear and angular velocity data to the driver. Allows SteamVR/Monado tracker pose prediction and compatibility with applications that expect this data.
 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings
@@ -603,6 +625,7 @@ settings-keybinds_pause-tracking = Pause Tracking
 settings-keybinds_reset-all-button = Reset all
 settings-keybinds-system-managed-description = Your desktop manages global shortcuts itself, so they have to be changed from your system settings.
 settings-keybinds-open-system-settings-button = Open system settings
+settings-keybinds-system-managed-hint = Set in system settings
 settings-keybinds-unsupported-description = Global keybinds are not supported on this platform.
 settings-sidebar-keybinds = Keybinds
 settings-keybinds-recorder-modal-title = Assign keybind for
@@ -616,9 +639,9 @@ settings-keybinds-already-assigned = Already used by { $name }
 settings-keybinds-click-to-record = Click to record shortcut
 settings-keybinds-change-shortcut = Click to change shortcut
 settings-keybinds-reset-single = Reset keybind to default
-settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
-settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
-settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
+settings-keybinds-recorder-hint-recording = Hold the keys you want, then release them
+settings-keybinds-error-unsupported-key = That key can't be used in a shortcut
+settings-keybinds-error-add-modifier = Hold Ctrl, Alt, or Super with that key
 
 
 ## FK/Tracking settings
@@ -643,17 +666,12 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotat
 settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
-settings-general-fk_settings-leg_fk-reset_mounting_fingers = Force fingers mounting calibration
-settings-general-fk_settings-leg_fk-reset_mounting_fingers-description = Force fingers mounting calibration during body mounting calibration.
 settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
 settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
-settings-general-fk_settings-velocity_settings = Velocity Settings
-settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
-settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-resets_settings = Resets Settings
 settings-general-fk_settings-reset_settings-reset_positional_head_attitude = Reset positional head attitude
 settings-general-fk_settings-reset_settings-reset_positional_head_attitude-description = Reset a positional head tracker's vertical rotation upon doing a full reset. Useful if wearing a Vive tracker or HMD on the forehead for VTubing or mocap. Do not enable for VR.
@@ -670,7 +688,7 @@ settings-general-fk_settings-arm_fk-forward-description = Expects your arms to b
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
-settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature of adjacent missing spine trackers
+settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode
@@ -727,9 +745,6 @@ settings-interface-appearance-font_size-description = This affects the font size
 
 ## Notification settings
 settings-interface-notifications = Notifications
-settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug in a new serial device that could be a tracker. It helps to improve the setup process of a tracker.
-settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
@@ -769,6 +784,9 @@ settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 settings-interface-behavior-skeleton_mesh = Skeleton preview style
 settings-interface-behavior-skeleton_mesh-description = Draw the body preview with solid 3D shapes instead of simple lines. Turn this off on low-end machines.
 settings-interface-behavior-skeleton_mesh-label = Use 3D shapes
+settings-interface-behavior-controller_nav = Game controller navigation
+settings-interface-behavior-controller_nav-description = Move focus around the interface with a game controller: the D-pad or left stick move between controls, A activates, B goes back, only while a controller is connected. Holding Ctrl or Alt with the arrow keys always moves focus the same way.
+settings-interface-behavior-controller_nav-label = Navigate with a controller
 
 ## Serial settings
 settings-serial = USB Serial Console
@@ -949,6 +967,14 @@ settings-home-list-layout = Trackers list layout
 settings-home-list-layout-desc = Select one of the possible layouts of the home screen
 settings-home-list-layout-grid = Grid
 settings-home-list-layout-table = Table
+
+settings-home-table_columns = Table columns
+settings-home-table_columns-desc = Choose which columns are shown in the trackers table
+
+settings-home-tracker_display = Tracker info
+settings-home-tracker_display-desc = Choose which extra details are shown on trackers
+settings-home-tracker_display-battery_voltage = Battery voltage
+settings-home-tracker_display-numeric_signal = Numeric signal strength
 
 ## Tracking Checklist
 settings-tracking_checklist-active_steps = Active Steps
@@ -1132,6 +1158,10 @@ onboarding-assign_trackers-tab-fingers = Fingers
 onboarding-assign_trackers-tab-toes = Toes
 onboarding-assign_trackers-side-right = Right
 onboarding-assign_trackers-side-left = Left
+# Accessible name for the left/right pill radiogroup in the assignment panel header
+onboarding-assign_trackers-side = Body side
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Mirror view
 onboarding-assign_trackers-finger-thumb = Thumb
 onboarding-assign_trackers-finger-index = Index finger
 onboarding-assign_trackers-finger-middle = Middle finger
@@ -1386,6 +1416,15 @@ home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
 home-connection_group-driver = VR Devices
+home-no_trackers-title = No trackers connected
+home-no_trackers-description = Connect a tracker or turn on your existing trackers to get started
+home-no_trackers-connect = Connect trackers
+home-no_trackers-guide = View setup guide
+# Accessible names and tooltips for the icon-only buttons in a connection group's toolbox
+tracker-connection-metrics = Live telemetry
+tracker-connection-dongle_settings = Dongle settings
+tracker-connection-collapse = Collapse group
+tracker-connection-expand = Expand group
 
 ## Trackers Still On notification
 trackers_still_on-modal-title = Trackers still on
@@ -1418,6 +1457,7 @@ firmware_tool-select_source-firmware = Firmware Source
 firmware_tool-select_source-version = Firmware Version
 firmware_tool-select_source-official = Official
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-latest = Latest
 firmware_tool-select_source-not_selected = No source selected
 firmware_tool-select_source-no_boards = No available boards for this source
 firmware_tool-select_source-no_versions = No available versions for this source
@@ -1425,6 +1465,8 @@ firmware_tool-select_source-no_versions = No available versions for this source
 firmware_tool-board_defaults = Configure your board
 firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
 firmware_tool-board_defaults-add = Add
+# Accessible name for the trash icon that removes a component
+firmware_tool-board_defaults-remove = Remove
 firmware_tool-board_defaults-reset = Reset to Default
 firmware_tool-board_defaults-error-required = Required field
 firmware_tool-board_defaults-error-format = Invalid format
@@ -1595,6 +1637,9 @@ error_collection_modal-cancel = I don't want to
 tracking_checklist = Tracking Checklist
 tracking_checklist-settings = Tracking Checklist Settings
 tracking_checklist-settings-close = Close
+# Accessible name and tooltip for the icon-only button that collapses/expands the checklist panel
+tracking_checklist-collapse = Collapse checklist
+tracking_checklist-expand = Expand checklist
 tracking_checklist-status-incomplete = You are not prepared to use SlimeVR!
 tracking_checklist-status-partial = {$count ->
     [one] You have 1 warning!
@@ -1648,6 +1693,7 @@ tracking_checklist-ignore = Ignore
 preview-mocap_mode_soon = Mocap Mode (Soon™)
 preview-disable_render = Disable rendering
 preview-disabled_render = Rendering disabled
+preview-render_mode = Change rendering mode
 
 toolbar-mounting_calibration = Mounting Calibration
 toolbar-mounting_calibration-default = Body

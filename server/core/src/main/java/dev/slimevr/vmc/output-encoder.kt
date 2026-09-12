@@ -24,18 +24,18 @@ internal fun buildOutgoingBundle(
 		add(OscContent.Message(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1)))))
 
 		// Send the origin (0, 0, 0) as root
-		add(OscContent.Message(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY)))
+		add(OscContent.Message(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.ZERO, Quaternion.IDENTITY)))
 
 		for ((targetBodyPart, unityNames) in BODY_PART_TO_UNITY_BONE) {
 			if (targetBodyPart !in routedBones) continue
 
-			val targetParentBodyPart = VMC_BONE_PARENTS[targetBodyPart]
+			val targetParentBodyPart = VMC_OUTPUT_BONE_PARENTS[targetBodyPart]
 			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
 			val trackingBone = bones[trackingBodyPart] ?: continue
 
 			if (targetParentBodyPart == null) {
 				// TODO anchorHip https://github.com/SlimeVR/SlimeVR-Server/blob/main/server/core/src/main/java/dev/slimevr/osc/VMCHandler.kt#L371
-				val pos = vrm?.hipLocalPosition ?: Vector3.NULL
+				val pos = vrm?.hipLocalPosition ?: Vector3.ZERO
 				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
 				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", unityNames.first(), pos, rot)))
 				continue
@@ -49,7 +49,7 @@ internal fun buildOutgoingBundle(
 			val trackingParent = bones[trackingParentBodyPart] ?: continue
 
 			val pos = if (vrm != null) {
-				vrm.bindOffsets[targetBodyPart] ?: Vector3.NULL
+				vrm.bindOffsets[targetBodyPart] ?: Vector3.ZERO
 			} else {
 				vmcLocalPosition(trackingBone, trackingParent, targetParentBodyPart, config.mirrorTracking)
 			}
@@ -70,6 +70,39 @@ internal fun buildOutgoingBundle(
 }
 
 internal fun buildInitRequestMessage(): OscMessage = OscMessage("/VMC/Ext/Req", emptyList())
+
+private fun restAdjustedWorld(
+	bone: BoneState,
+	restBodyPart: BodyPart = bone.bodyPart,
+	mirror: Boolean = false,
+): Quaternion {
+	val world = if (mirror) vmcMirrorRotation(bone.rotation) else bone.rotation
+	val rest = VMC_REST_ROTATIONS[restBodyPart] ?: return world
+	return world * rest.inv()
+}
+
+internal fun vmcLocalRotation(
+	bone: BoneState,
+	parent: BoneState?,
+	restBodyPart: BodyPart,
+	restParentBodyPart: BodyPart?,
+	mirror: Boolean,
+): Quaternion {
+	val adjusted = restAdjustedWorld(bone, restBodyPart, mirror)
+	if (parent == null) return adjusted
+	return restAdjustedWorld(parent, restParentBodyPart ?: parent.bodyPart, mirror).inv() * adjusted
+}
+
+internal fun vmcLocalPosition(
+	bone: BoneState,
+	parent: BoneState,
+	restParentBodyPart: BodyPart,
+	mirror: Boolean,
+): Vector3 {
+	val parentAdjusted = restAdjustedWorld(parent, restParentBodyPart, mirror)
+	val localPosition = bone.headPosition - parent.headPosition
+	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
+}
 
 private fun transformMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
 	address,

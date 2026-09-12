@@ -39,6 +39,7 @@ import dev.slimevr.solarxr.rpc.VmcBehaviour
 import dev.slimevr.solarxr.rpc.VrcBehaviour
 import dev.slimevr.solarxr.rpc.VrcOscBehaviour
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.timeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
@@ -169,7 +170,7 @@ class SolarXRBridge(
 
 	companion object {
 		fun buildBehaviours(appContext: AppContextProvider): List<SolarXRBridgeBehaviour> = buildList {
-			add(DataFeedInitBehaviour(appContext.server, appContext.skeleton))
+			add(DataFeedInitBehaviour(appContext.server, appContext.skeleton, timeSource))
 			add(SerialBehaviour(appContext.serialServer))
 			add(FirmwareBehaviour(appContext.server, appContext.firmwareManager))
 			appContext.vrcConfigManager?.let { vrc ->

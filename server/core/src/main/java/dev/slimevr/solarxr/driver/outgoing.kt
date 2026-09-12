@@ -11,12 +11,14 @@ import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.BoneMask
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.driver_protocol.BoneBatteryUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate
@@ -43,8 +45,8 @@ class DriverOutgoingTrackersBehaviour(
 	// physical tracker. Bones without an entry just report no battery.
 	val bodyPartToNearest: BodyPartMap<Set<BodyPart>> = BodyPartMap(
 		mapOf(
-			BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
-			BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+			BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST),
+			BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST),
 			BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
 			BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
 			BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
@@ -63,11 +65,11 @@ class DriverOutgoingTrackersBehaviour(
 
 		val boneBatteries = bodyPartMap<BoneBatteryUpdate>()
 
-		combine(settings.context.state.map { it.data.driverConfig.enabled }, receiver.context.state) { enabled, state ->
+		combine(settings.context.state.map { it.data.driverConfig }, receiver.context.state) { driverConfig, state ->
 			Triple(
-				enabled,
+				driverConfig.enabled,
 				state.driverName,
-				state.boneMask,
+				if (!driverConfig.sendVelocity) state.boneMask?.copy(linearVelocity = false, angularVelocity = false) else state.boneMask,
 			)
 		}
 			.distinctUntilChanged()

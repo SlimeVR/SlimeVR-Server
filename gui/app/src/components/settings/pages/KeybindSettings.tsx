@@ -9,10 +9,13 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { Button } from '@/components/commons/Button';
 import { KeybindsRow } from '@/components/commons/KeybindsRow';
+import { useElectron } from '@/hooks/electron';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ChangeKeybindRequestT,
+  KeybindActivatedResponseT,
+  KeybindId,
   KeybindRequestT,
   KeybindResponseT,
   KeybindSupport,
@@ -53,6 +56,7 @@ function areBindingsEqual(a?: string[], b?: string[]): boolean {
 
 export function KeybindSettings() {
   const { l10n } = useLocalization();
+  const electron = useElectron();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [defaultKeybindsState, setDefaultKeybindsState] = useState<KeybindForm>(
@@ -86,26 +90,30 @@ export function KeybindSettings() {
 
   // Snapshot of the edited binding, restored if the modal is cancelled
   const bindingSnapshot = useRef<string[] | null>(null);
+  const [collisionError, setCollisionError] = useState<string | null>(null);
 
   const { fields } = useFieldArray({
     control,
     name: 'keybinds',
   });
 
+  const submitKeybind = (kb: KeybindForm['keybinds'][number]) => {
+    const changeKeybindRequest = new ChangeKeybindRequestT();
+    const keybind = new KeybindT();
+    keybind.keybindId = kb.keybindId;
+    keybind.keybindValue = kb.binding.join('+');
+    keybind.keybindDelay = kb.delay;
+    changeKeybindRequest.keybind = keybind;
+    sendRPCPacket(RpcMessage.ChangeKeybindRequest, changeKeybindRequest);
+  };
+
   const onSubmit = (data?: KeybindForm) => {
     const value = data ?? getValues();
+    value.keybinds.forEach(submitKeybind);
+  };
 
-    value.keybinds.forEach((kb) => {
-      const currentBindingStr = kb.binding.join('+');
-      const changeKeybindRequest = new ChangeKeybindRequestT();
-      const keybind = new KeybindT();
-      keybind.keybindId = kb.keybindId;
-      keybind.keybindValue = currentBindingStr;
-      keybind.keybindDelay = kb.delay;
-      changeKeybindRequest.keybind = keybind;
-      sendRPCPacket(RpcMessage.ChangeKeybindRequest, changeKeybindRequest);
-    });
-
+  const onSubmitIndex = (index: number) => {
+    submitKeybind(getValues(`keybinds.${index}`));
     setIsOpen(false);
   };
 
@@ -125,7 +133,7 @@ export function KeybindSettings() {
     if (defaultKb) {
       setValue(`keybinds.${index}.binding`, defaultKb.binding);
       setValue(`keybinds.${index}.delay`, defaultKb.delay);
-      handleSubmit(onSubmit)();
+      submitKeybind(getValues(`keybinds.${index}`));
     }
   };
 
@@ -155,15 +163,22 @@ export function KeybindSettings() {
     }
   );
 
+  const isFirstRender = useRef(true);
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     const req = new SetKeybindRecordingRequestT();
     req.recording = isOpen;
     sendRPCPacket(RpcMessage.SetKeybindRecordingRequest, req);
+    if (electron.isElectron) electron.api.setKeybindRecording(isOpen);
   }, [isOpen]);
 
   const handleOpenRecorderModal = (index: number) => {
     currentIndex.current = index;
     bindingSnapshot.current = getValues(`keybinds.${index}.binding`);
+    setCollisionError(null);
     setIsOpen(true);
   };
 
@@ -175,10 +190,32 @@ export function KeybindSettings() {
       );
     }
     setIsOpen(false);
+    setCollisionError(null);
     clearErrors('keybinds');
   };
 
   const editedIndex = currentIndex.current;
+
+  useRPCPacket(
+    RpcMessage.KeybindActivatedResponse,
+    ({ keybindId }: KeybindActivatedResponseT) => {
+      if (!isOpen || editedIndex == null || keybindId === KeybindId.NONE)
+        return;
+      const editedId = getValues(`keybinds.${editedIndex}.keybindId`);
+      if (keybindId === editedId) return;
+
+      const clash = getValues('keybinds').find(
+        (kb) => kb.keybindId === keybindId
+      );
+      if (!clash) return;
+
+      setCollisionError(
+        l10n.getString('settings-keybinds-already-assigned', {
+          name: l10n.getString('settings-keybinds_' + clash.name),
+        })
+      );
+    }
+  );
 
   const takenBindings =
     editedIndex != null
@@ -191,7 +228,7 @@ export function KeybindSettings() {
           }))
       : [];
 
-  const createKeybindRows = (): ReactNode => {
+  const createKeybindRows = (bindingEditable: boolean): ReactNode => {
     return fields.map((field, index) => {
       const currentKb = watch(`keybinds.${index}`);
       const defaultKb = currentKb
@@ -210,9 +247,12 @@ export function KeybindSettings() {
           id={field.name}
           control={control}
           index={index}
-          openKeybindRecorderModal={handleOpenRecorderModal}
+          openKeybindRecorderModal={
+            bindingEditable ? handleOpenRecorderModal : undefined
+          }
           onResetSingle={handleResetSingle}
           isModified={isModified}
+          bindingEditable={bindingEditable}
         />
       );
     });
@@ -224,8 +264,9 @@ export function KeybindSettings() {
 
   useEffect(() => {
     const subscription = watch((_, { name, type }) => {
-      if (type === 'change' && name?.endsWith('.delay'))
-        handleSubmit(onSubmit)();
+      if (type !== 'change' || !name?.endsWith('.delay')) return;
+      const match = name.match(/^keybinds\.(\d+)\.delay$/);
+      if (match) submitKeybind(getValues(`keybinds.${Number(match[1])}`));
     });
     return () => subscription.unsubscribe();
   }, [watch]);
@@ -253,21 +294,22 @@ export function KeybindSettings() {
             </div>
           )}
 
-          {support === KeybindSupport.SYSTEM_MANAGED && (
-            <div className="flex flex-col gap-4 p-4 rounded-2xl bg-background-80">
-              <Typography id="settings-keybinds-system-managed-description" />
-              <div>
-                <Button
-                  id="settings-keybinds-open-system-settings-button"
-                  onClick={handleOpenSystemSettingsButton}
-                  variant="primary"
-                />
-              </div>
-            </div>
-          )}
-
-          {support === KeybindSupport.APP_MANAGED && (
+          {(support === KeybindSupport.SYSTEM_MANAGED ||
+            support === KeybindSupport.APP_MANAGED) && (
             <FormProvider {...methods}>
+              {support === KeybindSupport.SYSTEM_MANAGED && (
+                <div className="flex flex-col gap-4 p-4 rounded-2xl bg-background-80">
+                  <Typography id="settings-keybinds-system-managed-description" />
+                  <div>
+                    <Button
+                      id="settings-keybinds-open-system-settings-button"
+                      onClick={handleOpenSystemSettingsButton}
+                      variant="primary"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="rounded-2xl bg-background-80 shadow-sm my-1 overflow-hidden">
                 <table className="w-full text-left border-collapse block md:table">
                   <thead className="hidden md:table-header-group">
@@ -294,7 +336,7 @@ export function KeybindSettings() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-background-60 block md:table-row-group">
-                    {createKeybindRows()}
+                    {createKeybindRows(support === KeybindSupport.APP_MANAGED)}
                   </tbody>
                 </table>
               </div>
@@ -310,22 +352,24 @@ export function KeybindSettings() {
                 />
               </div>
 
-              {editedIndex != null && (
-                <KeybindRecorderModal
-                  id={fields[editedIndex].name}
-                  control={control}
-                  name={`keybinds.${editedIndex}.binding`}
-                  isVisisble={isOpen}
-                  onClose={onClose}
-                  onUnbind={() => {
-                    setValue(`keybinds.${editedIndex}.binding`, []);
-                    handleSubmit(onSubmit)();
-                  }}
-                  onSubmit={() => handleSubmit(onSubmit)()}
-                  onReset={() => handleResetSingle(editedIndex)}
-                  takenBindings={takenBindings}
-                />
-              )}
+              {support === KeybindSupport.APP_MANAGED &&
+                editedIndex != null && (
+                  <KeybindRecorderModal
+                    id={fields[editedIndex].name}
+                    control={control}
+                    name={`keybinds.${editedIndex}.binding`}
+                    isVisisble={isOpen}
+                    onClose={onClose}
+                    onUnbind={() => {
+                      setValue(`keybinds.${editedIndex}.binding`, []);
+                      onSubmitIndex(editedIndex);
+                    }}
+                    onSubmit={() => onSubmitIndex(editedIndex)}
+                    onReset={() => handleResetSingle(editedIndex)}
+                    takenBindings={takenBindings}
+                    activatedError={collisionError}
+                  />
+                )}
             </FormProvider>
           )}
         </div>

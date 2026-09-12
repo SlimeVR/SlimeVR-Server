@@ -252,9 +252,9 @@ export function TrackingSettings() {
               'settings-general-tracker_mechanics-filtering-amount'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.1}
+            min={0.0}
             max={1.0}
-            step={0.1}
+            step={0.05}
           />
         </div>
 

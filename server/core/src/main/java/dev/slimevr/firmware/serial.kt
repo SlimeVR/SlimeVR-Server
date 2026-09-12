@@ -79,6 +79,7 @@ suspend fun doSerialFlash(
 	}
 
 	if (runFlasher.isFailure) {
+		runCatching { handler.closeSerial() }
 		onStatus(FirmwareUpdateStatus.ERROR_UPLOAD_FAILED, 0)
 		return
 	}

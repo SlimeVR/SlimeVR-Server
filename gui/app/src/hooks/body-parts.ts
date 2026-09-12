@@ -4,8 +4,9 @@ export const SPINE_BODY_PARTS = [
   BodyPart.HEAD,
   BodyPart.NECK,
   BodyPart.UPPER_CHEST,
-  BodyPart.CHEST,
-  BodyPart.WAIST,
+  BodyPart.LOWER_CHEST,
+  BodyPart.UPPER_WAIST,
+  BodyPart.LOWER_WAIST,
   BodyPart.HIP,
 ];
 export const LEG_BODY_PARTS = [
@@ -84,7 +85,5 @@ export const ALL_BODY_PARTS = [
   ...SPINE_BODY_PARTS,
   ...LEG_BODY_PARTS,
   ...ARM_BODY_PARTS,
-  BodyPart.LEFT_HIP,
-  BodyPart.RIGHT_HIP,
   ...FINGER_BODY_PARTS,
 ];

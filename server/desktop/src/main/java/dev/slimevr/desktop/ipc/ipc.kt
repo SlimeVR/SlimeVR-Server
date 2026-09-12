@@ -4,13 +4,8 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-const val DRIVER_SOCKET_NAME = "SlimeVRDriver"
-const val FEEDER_SOCKET_NAME = "SlimeVRInput"
 const val SOLARXR_SOCKET_NAME = "SlimeVRRpc"
 
 // Frames larger than this are refused: nothing in either protocol comes close

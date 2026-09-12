@@ -35,9 +35,9 @@ class PacketBehaviour : UDPConnectionBehaviour {
 			val now = System.currentTimeMillis()
 			val num = packet.packetNumber
 			if (num == 0L && now - state.lastPacket > CONNECTION_TIMEOUT_MS) {
-				AppLogger.udp.info("[${state.address}] Reconnecting")
+				AppLogger.udp.info("Reconnecting")
 			} else if (num != null && num != 0L && num <= state.lastPacketNum) {
-				AppLogger.udp.warn("[${state.address}] Received packet with wrong packet number")
+				AppLogger.udp.warn("Received packet with wrong packet number")
 				return@on
 			}
 			receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = num, time = now))
@@ -45,33 +45,33 @@ class PacketBehaviour : UDPConnectionBehaviour {
 	}
 }
 
+/**
+ * Packets missing between [last] and [num]. A number at or below the mark arrived, so it is not
+ * loss, whether it is a duplicate or one that overtook its neighbours.
+ */
+internal fun packetsLostBetween(last: Long?, num: Long): Int = when {
+	last == null || num <= last -> 0
+	else -> (num - last - 1).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+}
+
 class PacketLossBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
-		var totalPacketsReceived = 0L
-		var acceptedPackets = 0L
-		var lastPacketCounterReset = System.currentTimeMillis()
-		var lastPacketNumber = 0L
+		var lastPacketNumber: Long? = null
+
+		// A tracker restarts its counter when it reconnects
+		receiver.context.state
+			.distinctUntilChangedBy { it.lastHandshake }
+			.onEach { lastPacketNumber = null }
+			.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.on<PacketEvent<UDPPacket>> { packet ->
 			val num = packet.packetNumber ?: return@on
-			val now = System.currentTimeMillis()
+			val last = lastPacketNumber
+			val lost = packetsLostBetween(last, num)
+			// Highest number seen wins, so a late arrival cannot drag the mark backwards
+			lastPacketNumber = if (last == null) num else maxOf(last, num)
 
-			if (now - lastPacketCounterReset >= 10_000L) {
-				totalPacketsReceived = 0L
-				acceptedPackets = 0L
-				lastPacketCounterReset = now
-			}
-
-			totalPacketsReceived++
-			val accepted = num == 0L || num > lastPacketNumber
-			if (accepted) {
-				lastPacketNumber = num
-				acceptedPackets++
-			}
-
-			receiver.getDevice()?.context?.dispatch(
-				DeviceActions.PacketStats(packetsReceived = totalPacketsReceived, packetsLost = totalPacketsReceived - acceptedPackets),
-			)
+			receiver.getDevice()?.recordPacketStats(received = 1, lost = lost, at = System.currentTimeMillis())
 		}.launchIn(receiver.context.scope)
 	}
 }
@@ -97,7 +97,7 @@ class PingBehaviour : UDPConnectionBehaviour {
 			val deviceId = state.deviceId ?: return@onPacket
 
 			if (packet.data.pingId != state.lastPing.id) {
-				AppLogger.udp.warn("[${state.address}] Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id}")
+				AppLogger.udp.warn("Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id}")
 				return@onPacket
 			}
 
@@ -150,7 +150,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			if (mac != null) {
 				val settings = receiver.appContext.config.settings.context.state.value.data
 				if (mac !in settings.allowedUdpDevices) {
-					AppLogger.udp.info("[${state.address}] Unknown MAC $mac, notifying solarxr")
+					AppLogger.udp.info("Unknown MAC $mac, notifying solarxr")
 					receiver.appContext.server.context.scope.launch {
 						receiver.appContext.server.sendSolarxrRpc(
 							UnknownDeviceHandshakeNotification(macAddress = mac),
@@ -165,7 +165,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			} else {
 				receiver.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
 				receiver.getDevice() ?: run {
-					AppLogger.udp.warn("[${state.address}] Reconnect handshake but device ${state.deviceId} not found")
+					AppLogger.udp.warn("Reconnect handshake but device ${state.deviceId} not found")
 					receiver.send(Handshake())
 					return@onPacket
 				}
@@ -173,7 +173,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 
 			val previousStatus = device.context.state.value.status
 			if (previousStatus != TrackerStatus.OK) {
-				AppLogger.udp.info("[${state.address}] Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
+				AppLogger.udp.info("Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
 			}
 
 			// Apply handshake fields to device, always, for both first connect and reconnect
@@ -219,7 +219,7 @@ class TimeoutBehaviour : UDPConnectionBehaviour {
 				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
 				if (timeUntilTimeout <= 0) {
 					if (updateConnectionStatus(receiver, TrackerStatus.TIMED_OUT)) {
-						AppLogger.udp.info("[${state.address}] Connection timed out")
+						AppLogger.udp.info("Connection timed out")
 					}
 					delay(500)
 				} else {
@@ -241,7 +241,7 @@ class DisconnectBehaviour : UDPConnectionBehaviour {
 				}
 				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.trackersConfig.timeoutDelay.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
 				if (timeUntilRemoval <= 0.milliseconds) {
-					AppLogger.udp.info("[${state.address}] Connection removed after extended timeout")
+					AppLogger.udp.info("Connection removed after extended timeout")
 					receiver.appContext.udpServer.removeConnection(state.address)
 					updateConnectionStatus(receiver, TrackerStatus.DISCONNECTED)
 					break
@@ -273,6 +273,7 @@ class DeviceStatsBehaviour : UDPConnectionBehaviour {
 		receiver.packetEvents.onPacket<SignalStrength> { event ->
 			val device = receiver.getDevice() ?: return@onPacket
 			device.context.dispatch(DeviceActions.Update { copy(signalStrength = event.data.signal) })
+			device.recordRssi(event.data.signal)
 		}.launchIn(receiver.context.scope)
 	}
 }
@@ -281,7 +282,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 	private suspend fun assignTracker(receiver: UDPConnection, device: Device, event: PacketEvent<SensorInfo>): Pair<Tracker, Boolean> {
 		val deviceState = device.context.state.value
 		val mac = deviceState.macAddress ?: run {
-			AppLogger.udp.warn("[${deviceState.address}] No MAC address available, falling back to IP for hardware ID")
+			AppLogger.udp.warn("No MAC address available, falling back to IP for hardware ID")
 			deviceState.address
 		}
 		val hardwareId = "$mac:${event.data.sensorId}"
@@ -371,22 +372,22 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.setRotation(acceleration = event.data.acceleration)
+			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
 		}.launchIn(receiver.context.scope)
 	}
 }

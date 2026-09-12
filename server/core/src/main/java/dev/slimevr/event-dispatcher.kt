@@ -54,13 +54,16 @@ class Subscription<T : Any, P : Any> @PublishedApi internal constructor(
  * quarter of [capacity], so a dispatcher that is starting to fall behind says so while it is still
  * keeping up. Capacity stays large enough to absorb a GC pause without dropping; the warning
  * threshold is what makes it early, not a small buffer.
+ *
+ * Each report also carries the window's slowest handler run and longest queue wait. A high handler
+ * time means the consumer is stuck inside a handler; a high wait next to a low handler time means
+ * the drain coroutine is not getting scheduled.
  */
 class EventDispatcher<T : Any>(
 	private val name: String,
 	scope: CoroutineScope,
 	private val capacity: Int = 64,
 	onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
-	verboseMetrics: Boolean = false,
 ) {
 	private class Sub<T : Any>(val type: KClass<*>, val action: suspend (T) -> Unit)
 
@@ -80,12 +83,18 @@ class EventDispatcher<T : Any>(
 	private val depth = AtomicInteger()
 	private val peakDepth = AtomicInteger()
 
+	// Windowed maxima surfaced in the saturation report. The drain coroutine is the only writer;
+	// saturationReport reads and clears them. A dropped sample under that race is acceptable here.
+	private val peakHandlerNanos = AtomicLong()
+	private val peakWaitNanos = AtomicLong()
+
 	// Warn on how full the mailbox gets, not on it overflowing. Overflow is the failure; depth is the
 	// leading indicator, and separating the two means the buffer can stay big enough to ride out a GC
 	// pause without that also delaying the warning.
 	private val warnDepth = (capacity / 4).coerceAtLeast(1)
 
-	private val metrics = if (verboseMetrics) DispatcherMetrics(name) else null
+	private val dispatcherMetrics = DispatcherMetrics(name)
+	private val metrics get() = if (AppLogger.ShouldDebug.eventDispatcher) dispatcherMetrics else null
 
 	private val mailbox = Channel<Envelope<T>>(capacity, onBufferOverflow) {
 		dropped.incrementAndGet()
@@ -98,17 +107,22 @@ class EventDispatcher<T : Any>(
 				depth.decrementAndGet()
 				val type = envelope.payload::class
 
+				val waitNanos = System.nanoTime() - envelope.enqueuedAtNanos
+				if (waitNanos > peakWaitNanos.get()) peakWaitNanos.set(waitNanos)
+				metrics?.recordQueueWait(waitNanos, envelope.enqueueDepth)
+
+				val handlersStartNanos = System.nanoTime()
 				if (metrics == null) {
 					for (sub in handlersFor(type)) sub.action(envelope.payload)
-					continue
+				} else {
+					for (sub in handlersFor(type)) {
+						val start = System.nanoTime()
+						sub.action(envelope.payload)
+						metrics?.recordHandler(System.nanoTime() - start, type)
+					}
 				}
-
-				metrics.recordQueueWait(System.nanoTime() - envelope.enqueuedAtNanos, envelope.enqueueDepth)
-				for (sub in handlersFor(type)) {
-					val start = System.nanoTime()
-					sub.action(envelope.payload)
-					metrics.recordHandler(System.nanoTime() - start, type)
-				}
+				val handlersNanos = System.nanoTime() - handlersStartNanos
+				if (handlersNanos > peakHandlerNanos.get()) peakHandlerNanos.set(handlersNanos)
 			}
 		}
 
@@ -176,6 +190,8 @@ class EventDispatcher<T : Any>(
 		val peak = peakDepth.getAndSet(depth.get().coerceAtLeast(0))
 		val drops = dropped.getAndSet(0)
 		val stalls = stalled.getAndSet(0)
+		val slowestHandlerMicros = peakHandlerNanos.getAndSet(0) / 1000
+		val longestWaitMicros = peakWaitNanos.getAndSet(0) / 1000
 		if (drops == 0L && stalls == 0L && peak < warnDepth) return null
 
 		val outcome = when {
@@ -183,7 +199,8 @@ class EventDispatcher<T : Any>(
 			stalls > 0L -> "$stalls producer stalls"
 			else -> "nothing lost yet"
 		}
-		return "$name mailbox peak $peak/$capacity in $SATURATION_REPORT_INTERVAL -> $outcome"
+		return "$name mailbox peak $peak/$capacity in $SATURATION_REPORT_INTERVAL -> $outcome" +
+			" | slowest handler ${slowestHandlerMicros}us, longest queue wait ${longestWaitMicros}us"
 	}
 }
 

@@ -1,4 +1,5 @@
 import { Localized } from '@fluent/react';
+import { Clickable } from '@/components/commons/Clickable';
 import { Typography } from '@/components/commons/Typography';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useFirmwareTool } from '@/hooks/firmware-tool';
@@ -22,23 +23,23 @@ function Selector({
   text: string;
   active: boolean;
   official?: boolean;
-  tag?: 'official' | 'dev';
+  tag?: 'official' | 'dev' | 'latest';
   disabled?: boolean;
   onClick: () => void;
 }) {
   return (
-    <div
+    <Clickable
+      disabled={disabled}
+      pressed={active}
       className={classNames(
-        'p-3 rounded-md hover:bg-background-50 w-full cursor-pointer relative',
+        'p-3 rounded-md hover:bg-background-50 w-full cursor-pointer relative text-left',
         {
           'bg-background-50 text-background-10': active,
           'bg-background-60': !active,
           'bg-background-80 text-background-50': disabled,
         }
       )}
-      onClick={() => {
-        if (!disabled) onClick();
-      }}
+      onClick={onClick}
     >
       {tag === 'official' && (
         <div
@@ -64,8 +65,20 @@ function Selector({
           </Localized>
         </div>
       )}
+      {tag === 'latest' && (
+        <div
+          className={classNames(
+            'absolute px-2 py-0.5 rounded-md bg-accent-background-20 -top-2 -right-2',
+            { 'brightness-20': disabled, 'brightness-50': !active }
+          )}
+        >
+          <Localized id="firmware_tool-select_source-latest">
+            <Typography />
+          </Localized>
+        </div>
+      )}
       {text}
-    </div>
+    </Clickable>
   );
 }
 
@@ -269,7 +282,7 @@ export function SelectSourceSetep({
                     <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
-                    {possibleVersions?.map(({ name, disabled }) => (
+                    {possibleVersions?.map(({ name, disabled }, i) => (
                       <Selector
                         active={partialBoard?.version === name}
                         disabled={disabled}
@@ -278,7 +291,9 @@ export function SelectSourceSetep({
                           partialBoard?.source?.startsWith('SlimeVR/') &&
                           name === 'llelievr/board-defaults'
                             ? 'dev'
-                            : undefined
+                            : i == 0
+                              ? 'latest'
+                              : undefined
                         }
                         onClick={() => {
                           setPartialBoard((curr) => ({

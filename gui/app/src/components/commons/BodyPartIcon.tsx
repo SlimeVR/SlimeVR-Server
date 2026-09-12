@@ -72,11 +72,9 @@ export const mapPart: Record<
   }) => JSX.Element
 > = {
   [BodyPart.UPPER_CHEST]: ({ width }) => <UpperChestIcon width={width} />,
-  [BodyPart.CHEST]: ({ width }) => <ChestIcon width={width} />,
+  [BodyPart.LOWER_CHEST]: ({ width }) => <ChestIcon width={width} />,
   [BodyPart.HEAD]: ({ width }) => <HeadsetIcon width={width} />,
   [BodyPart.HIP]: ({ width }) => <HipIcon width={width} />,
-  [BodyPart.LEFT_HIP]: ({ width }) => <HipIcon width={width} />, // Unused
-  [BodyPart.RIGHT_HIP]: ({ width }) => <HipIcon width={width} />, // Unused
   [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon />
@@ -113,7 +111,8 @@ export const mapPart: Record<
   [BodyPart.RIGHT_UPPER_LEG]: ({ width }) => (
     <UpperLegIcon width={width} flipped />
   ),
-  [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width} />,
+  [BodyPart.UPPER_WAIST]: ({ width }) => <WaistIcon width={width} />,
+  [BodyPart.LOWER_WAIST]: ({ width }) => <WaistIcon width={width} />,
   [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
     <FingersIcon width={width} />
   ),

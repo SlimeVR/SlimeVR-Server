@@ -25,6 +25,7 @@ export function useDataFeedConfig() {
   trackerData.tps = true;
   trackerData.rawMagneticVector = true;
   trackerData.stayAligned = true;
+  trackerData.origin = true;
 
   const dataMask = new DeviceDataMaskT();
   dataMask.deviceData = true;
@@ -48,6 +49,7 @@ export function useDataFeedConfig() {
   dongleMask.manufacturer = true;
   dongleMask.model = true;
   dongleMask.status = true;
+  dongleMask.protocolVersion = true;
   dataFeedConfig.dongleMask = dongleMask;
 
   return {
@@ -65,10 +67,13 @@ export function useBonesDataFeedConfig() {
   const dataFeedConfig = new DataFeedConfigT();
   const boneMask = new BoneMaskT();
   boneMask.bodyPart = true;
-  boneMask.orientationG = true;
-  boneMask.rotationG = false;
   boneMask.boneLength = true;
-  boneMask.headPositionG = true;
+  boneMask.rotation = false;
+  boneMask.orientation = true;
+  boneMask.headPosition = true;
+  boneMask.tailPosition = false;
+  boneMask.angularVelocity = false;
+  boneMask.linearVelocity = false;
   dataFeedConfig.boneMask = boneMask;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   return dataFeedConfig;

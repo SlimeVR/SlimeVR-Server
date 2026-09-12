@@ -95,23 +95,7 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-
-	/**
-	 * Do not instantiate [SetRotation] directly. Use [Tracker.setRotation] instead so `headTrackerRotation` is automatically included.
-	 */
-	data class SetRotation
-	@Deprecated(
-		message = "Do not instantiate SetRotation directly. Use tracker.setRotation(...) instead so headTrackerRotation is automatically included.",
-		level = DeprecationLevel.ERROR,
-	)
-	constructor(
-		val rotation: Quaternion? = null,
-		val acceleration: Vector3? = null,
-		val magnetometer: Vector3? = null,
-		val position: Vector3? = null,
-		val newData: Boolean = true,
-		val headTrackerRotation: Quaternion? = null,
-	) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val newData: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion, val resetPositionalHeadAttitude: Boolean = false) : TrackerActions
@@ -133,29 +117,6 @@ class Tracker(
 	val settings: Settings,
 ) {
 	fun startObserving() = context.observeAll(this)
-
-	fun setRotation(
-		rotation: Quaternion? = null,
-		acceleration: Vector3? = null,
-		magnetometer: Vector3? = null,
-		position: Vector3? = null,
-		newData: Boolean = true,
-	) {
-		val headTrackerRotation = appContext.server.context.state.value.trackers.values
-			.map { it.context.state.value }
-			.getFirstActiveFor(BodyPart.HEAD)?.rotation
-		context.dispatch(
-			@Suppress("DEPRECATION_ERROR")
-			TrackerActions.SetRotation(
-				rotation = rotation,
-				acceleration = acceleration,
-				magnetometer = magnetometer,
-				position = position,
-				newData = newData,
-				headTrackerRotation = headTrackerRotation,
-			),
-		)
-	}
 
 	companion object {
 		fun create(
@@ -209,10 +170,7 @@ class Tracker(
 				scope = scope,
 				reducer = ::reduce,
 				behaviours = behaviours,
-				debugMiddleware = LoggingMiddleware(
-					block = setOf(TrackerActions.SetRotation::class),
-					diffStyle = DiffStyle.MULTILINE,
-				),
+				debugMiddleware = LoggingMiddleware(diffStyle = DiffStyle.MULTILINE),
 				name = "Tracker[$hardwareId]",
 			)
 			val tracker = Tracker(context = context, appContext, settings)
@@ -238,9 +196,9 @@ class Tracker(
 			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,
 			rotation = Quaternion.IDENTITY,
-			rawAcceleration = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			rawMagnetometer = Vector3.NULL,
+			rawAcceleration = Vector3.ZERO,
+			acceleration = Vector3.ZERO,
+			rawMagnetometer = Vector3.ZERO,
 			position = null,
 			imuTemp = null,
 			accumulatedTicks = 0u,

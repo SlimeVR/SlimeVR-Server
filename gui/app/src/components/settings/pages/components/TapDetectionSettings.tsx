@@ -13,7 +13,7 @@ import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Typography } from '@/components/commons/Typography';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Dropdown } from '@/components/commons/Dropdown';
-import { ASSIGNMENT_MODES } from '@/hooks/tracker-picker';
+import { TAP_DETECTION_BODY_PARTS } from '@/hooks/tracker-picker';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
@@ -45,7 +45,7 @@ const defaultValues: TapDetectionForm = {
   yawResetTaps: 2,
   fullResetTaps: 2,
   mountingResetTaps: 2,
-  yawResetTracker: String(BodyPart.CHEST),
+  yawResetTracker: String(BodyPart.UPPER_CHEST),
   fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
   mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
   numberTrackersOverThreshold: 1,
@@ -74,7 +74,7 @@ export function TapDetectionSettings() {
 
   const bodyParts: { value: string; label: string }[] = Object.values(BodyPart)
     .filter((v): v is BodyPart => typeof v === 'number')
-    .filter((v) => ASSIGNMENT_MODES['full-body'].includes(v as BodyPart))
+    .filter((v) => TAP_DETECTION_BODY_PARTS.includes(v as BodyPart))
     .map((value) => ({
       value: String(value),
       label: l10n.getString(`body_part-${BodyPart[value]}`),
@@ -201,48 +201,36 @@ export function TapDetectionSettings() {
           />
         </div>
         <div className="grid sm:grid-cols-3 gap-5 pb-2">
-          <div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-gesture_control-yawResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="yawResetTracker"
-              items={bodyParts}
-            />
-          </div>
-          <div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-gesture_control-fullResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="fullResetTracker"
-              items={bodyParts}
-            />
-          </div>
-          <div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-gesture_control-mountingResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="mountingResetTracker"
-              items={bodyParts}
-            />
-          </div>
+          <Dropdown
+            display="block"
+            control={control}
+            placeholder={''}
+            label={l10n.getString(
+              'settings-general-gesture_control-yawResetTracker'
+            )}
+            name="yawResetTracker"
+            items={bodyParts}
+          />
+          <Dropdown
+            display="block"
+            control={control}
+            placeholder={''}
+            label={l10n.getString(
+              'settings-general-gesture_control-fullResetTracker'
+            )}
+            name="fullResetTracker"
+            items={bodyParts}
+          />
+          <Dropdown
+            display="block"
+            control={control}
+            placeholder={''}
+            label={l10n.getString(
+              'settings-general-gesture_control-mountingResetTracker'
+            )}
+            name="mountingResetTracker"
+            items={bodyParts}
+          />
         </div>
       </div>
       <div className="grid sm:grid-cols-3 gap-5 pb-2">
