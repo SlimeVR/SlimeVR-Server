@@ -399,6 +399,24 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.RIGHT_MIDDLE_TOE]: toeRight('middle_toe'),
   [BodyPart.RIGHT_RING_TOE]: toeRight('ring_toe'),
   [BodyPart.RIGHT_LITTLE_TOE]: toeRight('little_toe'),
+
+  [BodyPart.LEFT_POSTERIOR]: part(model('upper_leg', { scale: upperLegScale }), {
+    trackerOffset: UPPER_LEG_TRACKER_OFFSET,
+  }),
+  [BodyPart.RIGHT_POSTERIOR]: part(
+    model('upper_leg', { scale: otherSide(upperLegScale) }),
+    { trackerOffset: UPPER_LEG_TRACKER_OFFSET }
+  ),
+  [BodyPart.TAIL]: part(
+    model('lower_leg', { scale: spanBone({ girthFrom: 'hips', width: 0.7, depth: 0.7, length: 1 }) }),
+    { trackerOffset: HIP_TRACKER_OFFSET }
+  ),
+  [BodyPart.TAIL_1]: part(model('lower_leg', { scale: spanBone({ width: 0.6, depth: 0.6, length: 1 }) })),
+  [BodyPart.TAIL_2]: part(model('lower_leg', { scale: spanBone({ width: 0.55, depth: 0.55, length: 1 }) })),
+  [BodyPart.TAIL_3]: part(model('lower_leg', { scale: spanBone({ width: 0.5, depth: 0.5, length: 1 }) })),
+  [BodyPart.TAIL_4]: part(model('lower_leg', { scale: spanBone({ width: 0.45, depth: 0.45, length: 1 }) })),
+  [BodyPart.TAIL_5]: part(model('lower_leg', { scale: spanBone({ width: 0.4, depth: 0.4, length: 1 }) })),
+  [BodyPart.TAIL_6]: part(model('lower_leg', { scale: spanBone({ width: 0.35, depth: 0.35, length: 1 }) })),
 };
 
 export function getTrackerBoneOffset(bodyPart: BodyPart) {

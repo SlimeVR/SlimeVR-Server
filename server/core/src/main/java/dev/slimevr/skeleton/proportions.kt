@@ -131,6 +131,15 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 		tail.putAll(getToeOffsets(it))
 		head.putAll(getToeHeadOffsets(it))
 	}
+	// Tail chain segment offsets in rest pose
+	val tailSegmentOffset = Vector3(0f, 0f, 0.1f)
+	tail[BodyPart.TAIL] = tailSegmentOffset
+	tail[BodyPart.TAIL_1] = tailSegmentOffset
+	tail[BodyPart.TAIL_2] = tailSegmentOffset
+	tail[BodyPart.TAIL_3] = tailSegmentOffset
+	tail[BodyPart.TAIL_4] = tailSegmentOffset
+	tail[BodyPart.TAIL_5] = tailSegmentOffset
+	tail[BodyPart.TAIL_6] = tailSegmentOffset
 	return BoneOffsets(tail, head)
 }
 

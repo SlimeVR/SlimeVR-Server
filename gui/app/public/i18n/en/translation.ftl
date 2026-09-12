@@ -123,6 +123,9 @@ body_part-RIGHT_INDEX_TOE = Right Index Toe
 body_part-RIGHT_MIDDLE_TOE = Right Middle Toe
 body_part-RIGHT_RING_TOE = Right Ring Toe
 body_part-RIGHT_LITTLE_TOE = Right Little Toe
+body_part-LEFT_POSTERIOR = Left posterior
+body_part-RIGHT_POSTERIOR = Right posterior
+body_part-TAIL = Tail
 
 ## BoardType
 board_type-UNKNOWN = Unknown

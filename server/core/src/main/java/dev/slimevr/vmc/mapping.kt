@@ -70,6 +70,17 @@ val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 		BodyPart.RIGHT_MIDDLE_TOE to arrayOf("RightMiddleToe"),
 		BodyPart.RIGHT_RING_TOE to arrayOf("RightRingToe"),
 		BodyPart.RIGHT_LITTLE_TOE to arrayOf("RightLittleToe"),
+
+
+		BodyPart.LEFT_POSTERIOR to arrayOf("LeftPosterior"),
+		BodyPart.RIGHT_POSTERIOR to arrayOf("RightPosterior"),
+		BodyPart.TAIL to arrayOf("Tail", "Tail1"),
+		BodyPart.TAIL_1 to arrayOf("Tail1"),
+		BodyPart.TAIL_2 to arrayOf("Tail2"),
+		BodyPart.TAIL_3 to arrayOf("Tail3"),
+		BodyPart.TAIL_4 to arrayOf("Tail4"),
+		BodyPart.TAIL_5 to arrayOf("Tail5"),
+		BodyPart.TAIL_6 to arrayOf("Tail6"),
 	),
 )
 
@@ -81,7 +92,21 @@ val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 //  and figure out how to deal with it (check if present in VRM?)
 val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	mapOf(
-		BodyPart.HIP to arrayOf(BodyPart.UPPER_WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
+		BodyPart.HIP to arrayOf(
+			BodyPart.UPPER_WAIST,
+			BodyPart.LEFT_UPPER_LEG,
+			BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.LEFT_POSTERIOR,
+			BodyPart.RIGHT_POSTERIOR,
+			BodyPart.TAIL,
+			BodyPart.TAIL_1,
+		),
+		BodyPart.TAIL to arrayOf(BodyPart.TAIL_1),
+		BodyPart.TAIL_1 to arrayOf(BodyPart.TAIL_2),
+		BodyPart.TAIL_2 to arrayOf(BodyPart.TAIL_3),
+		BodyPart.TAIL_3 to arrayOf(BodyPart.TAIL_4),
+		BodyPart.TAIL_4 to arrayOf(BodyPart.TAIL_5),
+		BodyPart.TAIL_5 to arrayOf(BodyPart.TAIL_6),
 		BodyPart.UPPER_WAIST to arrayOf(BodyPart.LOWER_CHEST),
 		BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 		BodyPart.NECK to arrayOf(BodyPart.HEAD),
@@ -146,6 +171,14 @@ val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	),
 )
 
+
+
+
+
+
+
+
+
 private class VmcBoneTree(hierarchy: BodyPartMap<Array<BodyPart>>) {
 	val order: List<BodyPart>
 	val parents: BodyPartMap<BodyPart?>
@@ -207,6 +240,8 @@ val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
 	BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
 	BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
+
+	BodyPart.LEFT_POSTERIOR to BodyPart.RIGHT_POSTERIOR,
 )
 
 val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
