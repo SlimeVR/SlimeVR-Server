@@ -7,7 +7,6 @@ import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
-import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
@@ -17,6 +16,7 @@ import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.RelaxedSpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
+import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
@@ -224,13 +224,13 @@ class Skeleton(
 						SmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
-						BoneActiveLinkInputProcessor(),
 						RelaxedSpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),
 						UpperLegsRollAlignInputProcessor(settings),
 						BustInputProcessor(),
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
+						ToeActiveLinkInputProcessor(),
 						ConstraintInputProcessor(settings),
 					),
 					fkComputedProcessors = listOf(

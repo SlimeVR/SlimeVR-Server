@@ -416,6 +416,11 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	}
 
 	/**
+	 * Returns the twist (rotation around the local y-axis of the Quaternion) unitized.
+	 */
+	fun twist() = Quaternion(this.w, 0f, this.y, 0f).unit()
+
+	/**
 	 * applies this quaternion's rotation to that vector
 	 * @param that the vector to be transformed
 	 * @return that vector transformed by this quaternion

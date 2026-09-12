@@ -14,7 +14,7 @@ val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 		BodyPart.NECK to arrayOf("Neck"),
 		BodyPart.UPPER_CHEST to arrayOf("UpperChest"),
 		BodyPart.LOWER_CHEST to arrayOf("Chest"),
-		BodyPart.LOWER_WAIST to arrayOf("Spine"),
+		BodyPart.UPPER_WAIST to arrayOf("Spine"),
 		BodyPart.HIP to arrayOf("Hips"),
 		BodyPart.LEFT_SHOULDER to arrayOf("LeftShoulder"),
 		BodyPart.RIGHT_SHOULDER to arrayOf("RightShoulder"),
@@ -83,8 +83,8 @@ val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 //  and figure out how to deal with it (check if present in VRM?)
 val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	mapOf(
-		BodyPart.HIP to arrayOf(BodyPart.LOWER_WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
-		BodyPart.LOWER_WAIST to arrayOf(BodyPart.LOWER_CHEST),
+		BodyPart.HIP to arrayOf(BodyPart.UPPER_WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
+		BodyPart.UPPER_WAIST to arrayOf(BodyPart.LOWER_CHEST),
 		BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 		BodyPart.NECK to arrayOf(BodyPart.HEAD),
 		BodyPart.LEFT_UPPER_LEG to arrayOf(BodyPart.LEFT_LOWER_LEG),

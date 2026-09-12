@@ -5,7 +5,10 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.defaultKeybinds
 import dev.slimevr.keybind.KeybindActions
+import dev.slimevr.keybind.KeybindEvent
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.keybind.canonicalKeybind
+import dev.slimevr.keybind.isValidKeybind
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeKeybindRequest
 import solarxr_protocol.rpc.Keybind
+import solarxr_protocol.rpc.KeybindActivatedResponse
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.KeybindRequest
 import solarxr_protocol.rpc.KeybindResponse
@@ -29,22 +33,6 @@ private fun keybindConfigToProto(config: KeybindConfig): Keybind = Keybind(
 	keybindDelay = config.delay,
 )
 
-private val MODIFIER_ORDER = listOf("CTRL", "ALT", "SHIFT", "SUPER")
-
-private val NON_SHIFT_MODIFIERS = setOf("CTRL", "ALT", "SUPER")
-
-fun canonicalKeybind(binding: String): String {
-	val parts = binding.split('+').map { it.trim().uppercase() }.filter { it.isNotEmpty() }
-	return (MODIFIER_ORDER.filter { it in parts } + parts.filterNot { it in MODIFIER_ORDER }).joinToString("+")
-}
-
-fun isValidKeybind(binding: String): Boolean {
-	val parts = binding.split('+').map { it.trim().uppercase() }.filter { it.isNotEmpty() }
-	val key = parts.filterNot { it in MODIFIER_ORDER }.singleOrNull() ?: return false
-	if (!key.matches(Regex("[A-Z0-9]"))) return false
-	return parts.any { it in NON_SHIFT_MODIFIERS }
-}
-
 class KeybindsBehaviour(
 	private val settings: Settings,
 	private val keybindManager: KeybindManager,
@@ -52,6 +40,10 @@ class KeybindsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<SetKeybindRecordingRequest> { req ->
 			keybindManager.context.dispatch(KeybindActions.SetRecording(req.recording))
+		}.launchIn(receiver.context.scope)
+
+		keybindManager.events.on<KeybindEvent.Fired> { event ->
+			if (keybindManager.recording) receiver.sendRpc(KeybindActivatedResponse(keybindId = event.id))
 		}.launchIn(receiver.context.scope)
 
 		fun buildResponse(keybinds: List<KeybindConfig>) = KeybindResponse(

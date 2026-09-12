@@ -60,6 +60,7 @@ export interface IElectronAPI {
   setPresence: (options: DiscordPresence) => void;
   getInstallDir: () => Promise<string>;
   isSteam: () => Promise<boolean>;
+  setKeybindRecording: (recording: boolean) => void;
 }
 
 declare global {

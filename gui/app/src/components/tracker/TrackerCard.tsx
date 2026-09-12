@@ -26,8 +26,6 @@ function TrackerBig({
   tracker: TrackerDataT;
   device?: DeviceDataT;
 }) {
-  const { config } = useConfig();
-
   const { useName } = useTracker(tracker);
 
   const trackerName = useName();
@@ -58,7 +56,6 @@ function TrackerBig({
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 runtime={device.hardwareStatus.batteryRuntimeEstimate}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                moreInfo={config?.debug && config?.devSettings.moreInfo}
               />
             )}
             <div className="flex gap-2">
@@ -143,7 +140,7 @@ function TrackerSmol({
               device.hardwareStatus.ping != null) && (
               <TrackerWifi
                 rssi={device.hardwareStatus.rssi}
-                rssiShowNumeric={config?.debug && config?.devSettings.moreInfo}
+                rssiShowNumeric={config?.trackerDisplay?.showNumericSignal}
                 ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />

@@ -279,15 +279,6 @@ reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
-## Serial detection stuff
-serial_detection-new_device-p0 = New serial device detected!
-serial_detection-new_device-p1 = Enter your Wi-Fi credentials!
-serial_detection-new_device-p2 = Please select what you want to do with it
-serial_detection-open_wifi = Connect to Wi-Fi
-serial_detection-open_serial = Open USB Serial Console
-serial_detection-submit = Submit!
-serial_detection-close = Close
-
 ## Navigation bar
 navbar-home = Home
 navbar-body_proportions = Body Proportions
@@ -312,9 +303,7 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
 
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Tracking data
@@ -638,6 +627,7 @@ settings-keybinds_pause-tracking = Pause Tracking
 settings-keybinds_reset-all-button = Reset all
 settings-keybinds-system-managed-description = Your desktop manages global shortcuts itself, so they have to be changed from your system settings.
 settings-keybinds-open-system-settings-button = Open system settings
+settings-keybinds-system-managed-hint = Set in system settings
 settings-keybinds-unsupported-description = Global keybinds are not supported on this platform.
 settings-sidebar-keybinds = Keybinds
 settings-keybinds-recorder-modal-title = Assign keybind for
@@ -651,9 +641,9 @@ settings-keybinds-already-assigned = Already used by { $name }
 settings-keybinds-click-to-record = Click to record shortcut
 settings-keybinds-change-shortcut = Click to change shortcut
 settings-keybinds-reset-single = Reset keybind to default
-settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
-settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
-settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
+settings-keybinds-recorder-hint-recording = Hold the keys you want, then release them
+settings-keybinds-error-unsupported-key = That key can't be used in a shortcut
+settings-keybinds-error-add-modifier = Hold Ctrl, Alt, or Super with that key
 
 
 ## FK/Tracking settings
@@ -757,9 +747,6 @@ settings-interface-appearance-font_size-description = This affects the font size
 
 ## Notification settings
 settings-interface-notifications = Notifications
-settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug in a new serial device that could be a tracker. It helps to improve the setup process of a tracker.
-settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
@@ -982,6 +969,14 @@ settings-home-list-layout = Trackers list layout
 settings-home-list-layout-desc = Select one of the possible layouts of the home screen
 settings-home-list-layout-grid = Grid
 settings-home-list-layout-table = Table
+
+settings-home-table_columns = Table columns
+settings-home-table_columns-desc = Choose which columns are shown in the trackers table
+
+settings-home-tracker_display = Tracker info
+settings-home-tracker_display-desc = Choose which extra details are shown on trackers
+settings-home-tracker_display-battery_voltage = Battery voltage
+settings-home-tracker_display-numeric_signal = Numeric signal strength
 
 ## Tracking Checklist
 settings-tracking_checklist-active_steps = Active Steps
@@ -1423,6 +1418,10 @@ home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
 home-connection_group-driver = VR Devices
+home-no_trackers-title = No trackers connected
+home-no_trackers-description = Connect a tracker or turn on your existing trackers to get started
+home-no_trackers-connect = Connect trackers
+home-no_trackers-guide = View setup guide
 # Accessible names and tooltips for the icon-only buttons in a connection group's toolbox
 tracker-connection-metrics = Live telemetry
 tracker-connection-dongle_settings = Dongle settings

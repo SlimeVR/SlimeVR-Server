@@ -121,7 +121,6 @@ fun reduce(
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
 			rawRotation = shortestRawRotation,
-			polarityReference = shortestRawRotation,
 		)
 	}
 
@@ -129,7 +128,7 @@ fun reduce(
 		val cal = state.sessionCalibration
 
 		// Use the shortest rotation to our full reset raw rotation
-		val shortestRawRotation = state.rawRotation.twinNearest(state.polarityReference)
+		val shortestRawRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
 
 		val newHeading = estimateHeadingCorrect(
 			applyCalibration(shortestRawRotation, attitudeAlign = cal.attitudeAlignment, headingAlign = cal.headingAlignment),
@@ -162,7 +161,7 @@ fun reduce(
 		val cal = state.sessionCalibration
 
 		// Use the shortest rotation to our full reset raw rotation
-		val shortestRawRotation = state.rawRotation.twinNearest(state.polarityReference)
+		val shortestRawRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
 
 		val headingAlignment = estimateHeadingAlign(
 			shortestRawRotation,

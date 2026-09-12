@@ -29,11 +29,13 @@ const BONE_COLOR_GROUPS: [BodyPart[], string][] = [
     'chartreuse',
   ],
   [[BodyPart.LOWER_CHEST], 'purple'],
-  [[BodyPart.UPPER_WAIST], 'pink'],
   [[BodyPart.LOWER_WAIST, BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM], 'red'],
   [[BodyPart.HIP], 'orange'],
   [[BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG], 'teal'],
-  [[BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM], 'indianred'],
+  [
+    [BodyPart.UPPER_WAIST, BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM],
+    'indianred',
+  ],
   [[BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND], 'fuchsia'],
   [[BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER], '#00ffff'],
 ];

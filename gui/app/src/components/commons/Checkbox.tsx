@@ -99,7 +99,8 @@ export const CheckboxInternal = forwardRef<
               'bg-accent-background-50': checked && disabled,
               'bg-accent-background-30 animate-pulse': loading && !disabled,
               'bg-background-50':
-                ((!checked && color == 'primary') || color == 'secondary') &&
+                !checked &&
+                (color == 'primary' || color == 'secondary') &&
                 !loading,
               'bg-background-40': !checked && color == 'tertiary' && !loading,
             })}

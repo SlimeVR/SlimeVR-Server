@@ -17,18 +17,65 @@ export interface DeveloperModeConfig {
   highContrast: boolean;
   preciseRotation: boolean;
   fastDataFeed: boolean;
-  sortByName: boolean;
   rawSlimeRotation: boolean;
-  moreInfo: boolean;
 }
 
 export const defaultDevSettings: DeveloperModeConfig = {
   highContrast: false,
   preciseRotation: false,
   fastDataFeed: false,
-  sortByName: false,
   rawSlimeRotation: false,
-  moreInfo: false,
+};
+
+export interface TrackersTableColumnsConfig {
+  type: boolean;
+  battery: boolean;
+  ping: boolean;
+  tps: boolean;
+  rotation: boolean;
+  temperature: boolean;
+  linearAcceleration: boolean;
+  position: boolean;
+  stayAligned: boolean;
+  url: boolean;
+}
+
+export const defaultTrackersTableColumns: TrackersTableColumnsConfig = {
+  type: true,
+  battery: true,
+  ping: true,
+  tps: true,
+  rotation: true,
+  temperature: true,
+  linearAcceleration: false,
+  position: false,
+  stayAligned: false,
+  url: false,
+};
+
+export const trackersTableColumnOrder = [
+  'type',
+  'battery',
+  'ping',
+  'tps',
+  'rotation',
+  'temperature',
+  'linearAcceleration',
+  'position',
+  'stayAligned',
+  'url',
+] as const satisfies readonly (keyof TrackersTableColumnsConfig)[];
+
+export type TrackersTableOptionalColumn = (typeof trackersTableColumnOrder)[number];
+
+export interface TrackerDisplayConfig {
+  showBatteryVoltage: boolean;
+  showNumericSignal: boolean;
+}
+
+export const defaultTrackerDisplay: TrackerDisplayConfig = {
+  showBatteryVoltage: false,
+  showNumericSignal: false,
 };
 
 export interface DongleTelemetryConfig {
@@ -48,9 +95,10 @@ export interface Config {
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
-  watchNewDevices: boolean;
   devSettings: DeveloperModeConfig;
   dongleTelemetry: DongleTelemetryConfig;
+  trackersTableColumns: TrackersTableColumnsConfig;
+  trackerDisplay: TrackerDisplayConfig;
   feedbackSound: boolean;
   feedbackSoundVolume: number;
   connectedTrackersWarning: boolean;
@@ -84,7 +132,6 @@ export const defaultConfig: Config = {
   lang: 'en',
   debug: false,
   doneOnboarding: false,
-  watchNewDevices: true,
   feedbackSound: true,
   feedbackSoundVolume: 0.5,
   connectedTrackersWarning: true,
@@ -99,6 +146,8 @@ export const defaultConfig: Config = {
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   dongleTelemetry: defaultDongleTelemetryConfig,
+  trackersTableColumns: defaultTrackersTableColumns,
+  trackerDisplay: defaultTrackerDisplay,
   bvhDirectory: null,
   homeLayout: 'default',
   skeletonPreview: true,
@@ -134,6 +183,14 @@ function fallbackToDefaults(loadedConfig: any): Config {
     dongleTelemetry: {
       ...defaultDongleTelemetryConfig,
       ...(loadedConfig?.dongleTelemetry ?? loadedConfig?.telemetry ?? {}),
+    },
+    trackersTableColumns: {
+      ...defaultTrackersTableColumns,
+      ...(loadedConfig?.trackersTableColumns ?? {}),
+    },
+    trackerDisplay: {
+      ...defaultTrackerDisplay,
+      ...(loadedConfig?.trackerDisplay ?? {}),
     },
   };
 }
