@@ -179,7 +179,6 @@ export interface BoneShapeConfig {
   rotation?: Quaternion;
   scale?: ShapeScale;
 }
-
 export interface BonePartConfig {
   visible: boolean;
   shapes: BoneShapeConfig[];
@@ -255,6 +254,19 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
     model('upper_chest', {
       scale: spanBone({ girthFrom: 'shoulders', length: 1, width: 0.95, depth: 0.95 }),
       offset: inBoneLengths({ length: -0.2 }),
+    })
+  ),
+  [BodyPart.LEFT_BUST]: part(
+    model('bust', {
+      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      offset: inMetres({ width: 0.07, length: -0.12 }),
+    })
+  ),
+
+  [BodyPart.RIGHT_BUST]: part(
+    model('bust', {
+      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      offset: inMetres({ width: -0.07, length: -0.12 }),
     })
   ),
   [BodyPart.LOWER_CHEST]: part(

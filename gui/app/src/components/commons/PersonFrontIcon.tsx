@@ -3,6 +3,7 @@ import { BodyPart } from 'solarxr-protocol';
 export const SIDES = [
   {
     shoulder: BodyPart.LEFT_SHOULDER,
+    bust: BodyPart.LEFT_BUST,
     upperArm: BodyPart.LEFT_UPPER_ARM,
     lowerArm: BodyPart.LEFT_LOWER_ARM,
     hand: BodyPart.LEFT_HAND,
@@ -15,6 +16,7 @@ export const SIDES = [
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
+    bust: BodyPart.RIGHT_BUST,
     upperArm: BodyPart.RIGHT_UPPER_ARM,
     lowerArm: BodyPart.RIGHT_LOWER_ARM,
     hand: BodyPart.RIGHT_HAND,
@@ -122,6 +124,13 @@ export function PersonFrontIcon({
       />
       <circle
         className="body-part-circle"
+        cx="99"
+        cy="105"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[right].bust]}
+      />
+      <circle
+        className="body-part-circle"
         cx="144"
         cy="185"
         r={CIRCLE_RADIUS}
@@ -178,6 +187,13 @@ export function PersonFrontIcon({
         cy="90"
         r={CIRCLE_RADIUS}
         id={BodyPart[SIDES[left].shoulder]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="65"
+        cy="105"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].bust]}
       />
       <circle
         className="body-part-circle"
