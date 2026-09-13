@@ -152,14 +152,14 @@ class ForegroundService : Service() {
 		val server = VRServer.create(scope = scope)
 		val serialServer = createAndroidSerialServer(context = this, scope = scope)
 		val bones = BoneRegistryManager.create(scope = scope)
+		// Nothing registers extension bones yet, so this is a no-op today; it exists so the
+		// tracking stack below never observes a registry that could still change under it.
+		bones.freeze()
 
 		val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer, bones = bones)
 
 		val firmwareManager = FirmwareManager.create(ctx = phase1, scope = scope, flasher = AndroidFirmwareFlasher)
 		val networkProfileManager = NetworkProfileManager.create(scope = scope, isSupported = false)
-		// Nothing registers extension bones yet, so this is a no-op today; it exists so the
-		// tracking stack below never observes a registry that could still change under it.
-		bones.freeze()
 		val skeleton = Skeleton.create(scope = scope, ctx = phase1, waiter = createAndroidWaiter())
 		val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = scope)
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
