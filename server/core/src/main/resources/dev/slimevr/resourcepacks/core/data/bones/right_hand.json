@@ -1,0 +1,35 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:right_hand",
+  "nameKey": "slimevr:bone.right_hand",
+  "parent": "slimevr:right_lower_arm",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:hand_y",
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        }
+      },
+      {
+        "proportion": "slimevr:hand_z",
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "copy",
+    "source": "slimevr:right_lower_arm"
+  },
+  "constraint": {
+    "type": "twistSwing",
+    "twistDegrees": 120,
+    "swingDegrees": 120
+  }
+}

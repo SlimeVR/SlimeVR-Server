@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:neck",
+  "nameKey": "slimevr:bone.neck",
+  "parent": "slimevr:head",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:neck",
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "copy",
+    "source": "slimevr:head"
+  }
+}

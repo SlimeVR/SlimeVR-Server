@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:hand_y",
+  "nameKey": "slimevr:proportion.hand_y",
+  "descriptionKey": "slimevr:proportion.hand_y.description",
+  "default": {
+    "type": "heightRatio",
+    "value": 0.05063291
+  },
+  "contributesToHeight": false,
+  "minimum": 0
+}

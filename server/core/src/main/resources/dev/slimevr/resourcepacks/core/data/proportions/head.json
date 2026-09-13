@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:head",
+  "nameKey": "slimevr:proportion.head",
+  "descriptionKey": "slimevr:proportion.head.description",
+  "default": {
+    "type": "fixed",
+    "value": 0.1
+  },
+  "contributesToHeight": false,
+  "minimum": 0
+}

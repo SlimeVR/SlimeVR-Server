@@ -1,0 +1,40 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:right_index_toe",
+  "nameKey": "slimevr:bone.right_index_toe",
+  "parent": "slimevr:right_foot",
+  "headOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:foot_length",
+        "direction": {
+          "x": -0.12,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:foot_length",
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -0.24
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "firstActive",
+    "sources": [
+      "slimevr:right_middle_toe",
+      "slimevr:right_ring_toe",
+      "slimevr:right_little_toe",
+      "slimevr:right_big_toe",
+      "slimevr:right_foot"
+    ]
+  }
+}

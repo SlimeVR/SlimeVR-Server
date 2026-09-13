@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:upper_leg",
+  "nameKey": "slimevr:proportion.upper_leg",
+  "descriptionKey": "slimevr:proportion.upper_leg.description",
+  "default": {
+    "type": "heightRatio",
+    "value": 0.26582278
+  },
+  "contributesToHeight": true,
+  "minimum": 0
+}

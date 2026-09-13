@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:left_upper_arm",
+  "nameKey": "slimevr:bone.left_upper_arm",
+  "parent": "slimevr:left_shoulder",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:upper_arm",
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "copy",
+    "source": "slimevr:left_shoulder"
+  },
+  "constraint": {
+    "type": "twistSwing",
+    "twistDegrees": 120,
+    "swingDegrees": 180
+  }
+}

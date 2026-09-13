@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "key",
+    "nameKey"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "key": {
+      "$ref": "common.schema.json#/$defs/key"
+    },
+    "nameKey": {
+      "$ref": "common.schema.json#/$defs/translationKey"
+    },
+    "parent": {
+      "$ref": "common.schema.json#/$defs/key"
+    },
+    "headOffset": {
+      "$ref": "common.schema.json#/$defs/offset"
+    },
+    "tailOffset": {
+      "$ref": "common.schema.json#/$defs/offset"
+    },
+    "rotationFallback": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "none"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "source"
+          ],
+          "properties": {
+            "type": {
+              "const": "copy"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "const": "parent"
+                },
+                {
+                  "$ref": "common.schema.json#/$defs/key"
+                }
+              ]
+            },
+            "before": {
+              "description": "Run this bone's rotation fallback before the fallbacks owned by these bones.",
+              "$ref": "common.schema.json#/$defs/orderReferences"
+            },
+            "after": {
+              "description": "Run this bone's rotation fallback after the fallbacks owned by these bones.",
+              "$ref": "common.schema.json#/$defs/orderReferences"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "sources"
+          ],
+          "properties": {
+            "type": {
+              "const": "firstActive"
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "The first active source is used; if none are active, the final source is used regardless of activity.",
+              "items": {
+                "anyOf": [
+                  {
+                    "const": "parent"
+                  },
+                  {
+                    "$ref": "common.schema.json#/$defs/key"
+                  }
+                ]
+              }
+            },
+            "before": {
+              "description": "Run this bone's rotation fallback before the fallbacks owned by these bones.",
+              "$ref": "common.schema.json#/$defs/orderReferences"
+            },
+            "after": {
+              "description": "Run this bone's rotation fallback after the fallbacks owned by these bones.",
+              "$ref": "common.schema.json#/$defs/orderReferences"
+            }
+          }
+        }
+      ]
+    },
+    "constraint": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "twistDegrees",
+            "swingDegrees"
+          ],
+          "properties": {
+            "type": {
+              "const": "twistSwing"
+            },
+            "twistDegrees": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180
+            },
+            "swingDegrees": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180
+            },
+            "allowedDeviationDegrees": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "minDegrees",
+            "maxDegrees",
+            "axis"
+          ],
+          "properties": {
+            "type": {
+              "const": "hinge"
+            },
+            "minDegrees": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "maxDegrees": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "axis": {
+              "$ref": "common.schema.json#/$defs/vector"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "minDegrees",
+            "maxDegrees",
+            "allowedDeviationDegrees",
+            "axis"
+          ],
+          "properties": {
+            "type": {
+              "const": "looseHinge"
+            },
+            "minDegrees": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "maxDegrees": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "allowedDeviationDegrees": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180
+            },
+            "axis": {
+              "$ref": "common.schema.json#/$defs/vector"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

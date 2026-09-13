@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:left_index_intermediate",
+  "nameKey": "slimevr:bone.left_index_intermediate",
+  "parent": "slimevr:left_index_proximal",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:hand_y",
+        "direction": {
+          "x": 0,
+          "y": -0.227815,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "none"
+  }
+}

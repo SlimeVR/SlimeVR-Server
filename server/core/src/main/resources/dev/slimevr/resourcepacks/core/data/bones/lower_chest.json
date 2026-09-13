@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:lower_chest",
+  "nameKey": "slimevr:bone.lower_chest",
+  "parent": "slimevr:upper_chest",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:lower_chest",
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "none"
+  },
+  "constraint": {
+    "type": "twistSwing",
+    "twistDegrees": 60,
+    "swingDegrees": 120
+  }
+}

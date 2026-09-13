@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:right_foot",
+  "nameKey": "slimevr:bone.right_foot",
+  "parent": "slimevr:right_lower_leg",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:foot_length",
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "copy",
+    "source": "slimevr:right_lower_leg"
+  },
+  "constraint": {
+    "type": "looseHinge",
+    "minDegrees": -60,
+    "maxDegrees": 90,
+    "allowedDeviationDegrees": 60,
+    "axis": {
+      "x": -1,
+      "y": 0,
+      "z": 0
+    }
+  }
+}

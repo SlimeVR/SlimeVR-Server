@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:neck",
+  "nameKey": "slimevr:proportion.neck",
+  "descriptionKey": "slimevr:proportion.neck.description",
+  "default": {
+    "type": "heightRatio",
+    "value": 0.06329114
+  },
+  "contributesToHeight": true,
+  "minimum": 0
+}

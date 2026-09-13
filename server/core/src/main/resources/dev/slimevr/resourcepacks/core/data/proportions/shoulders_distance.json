@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:shoulders_distance",
+  "nameKey": "slimevr:proportion.shoulders_distance",
+  "descriptionKey": "slimevr:proportion.shoulders_distance.description",
+  "default": {
+    "type": "fixed",
+    "value": 0.06
+  },
+  "contributesToHeight": false,
+  "minimum": 0
+}

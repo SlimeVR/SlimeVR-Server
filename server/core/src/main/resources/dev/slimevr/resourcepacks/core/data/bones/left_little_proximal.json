@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:left_little_proximal",
+  "nameKey": "slimevr:bone.left_little_proximal",
+  "parent": "slimevr:left_hand",
+  "headOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:hand_y",
+        "direction": {
+          "x": 0,
+          "y": 0.1,
+          "z": 0.31
+        }
+      }
+    ]
+  },
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:hand_y",
+        "direction": {
+          "x": 0,
+          "y": -0.345,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "none"
+  }
+}

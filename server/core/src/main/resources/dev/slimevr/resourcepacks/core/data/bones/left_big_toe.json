@@ -1,0 +1,40 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:left_big_toe",
+  "nameKey": "slimevr:bone.left_big_toe",
+  "parent": "slimevr:left_foot",
+  "headOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:foot_length",
+        "direction": {
+          "x": 0.28,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:foot_length",
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -0.27
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "firstActive",
+    "sources": [
+      "slimevr:left_index_toe",
+      "slimevr:left_middle_toe",
+      "slimevr:left_ring_toe",
+      "slimevr:left_little_toe",
+      "slimevr:left_foot"
+    ]
+  }
+}

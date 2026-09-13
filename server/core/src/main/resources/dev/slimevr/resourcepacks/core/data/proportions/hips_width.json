@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:hips_width",
+  "nameKey": "slimevr:proportion.hips_width",
+  "descriptionKey": "slimevr:proportion.hips_width.description",
+  "default": {
+    "type": "fixed",
+    "value": 0.26
+  },
+  "contributesToHeight": false,
+  "minimum": 0
+}

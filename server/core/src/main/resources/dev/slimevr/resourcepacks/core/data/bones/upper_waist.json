@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:upper_waist",
+  "nameKey": "slimevr:bone.upper_waist",
+  "parent": "slimevr:lower_chest",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:upper_waist",
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "none"
+  },
+  "constraint": {
+    "type": "twistSwing",
+    "twistDegrees": 60,
+    "swingDegrees": 120
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "schemas/v1/manifest.schema.json",
+  "formatVersion": 1,
+  "id": "slimevr:core",
+  "nameKey": "slimevr:pack.core.name",
+  "descriptionKey": "slimevr:pack.core.description",
+  "version": [
+    1,
+    0,
+    0
+  ],
+  "authors": [
+    "SlimeVR"
+  ]
+}

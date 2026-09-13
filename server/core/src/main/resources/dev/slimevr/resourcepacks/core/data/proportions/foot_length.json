@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:foot_length",
+  "nameKey": "slimevr:proportion.foot_length",
+  "descriptionKey": "slimevr:proportion.foot_length.description",
+  "default": {
+    "type": "heightRatio",
+    "value": 0.08227848
+  },
+  "contributesToHeight": false,
+  "minimum": 0
+}

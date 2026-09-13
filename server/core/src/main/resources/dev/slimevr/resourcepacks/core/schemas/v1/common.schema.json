@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*:[a-z0-9][a-z0-9_./-]*$"
+    },
+    "translationKey": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*:[a-z0-9][a-z0-9_.-]*$"
+    },
+    "orderReferences": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/key"
+      }
+    },
+    "vector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      }
+    },
+    "offset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "$ref": "#/$defs/vector"
+        },
+        "terms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "proportion",
+              "direction"
+            ],
+            "properties": {
+              "proportion": {
+                "$ref": "#/$defs/key"
+              },
+              "direction": {
+                "$ref": "#/$defs/vector",
+                "description": "Dimensionless coefficient. Generated core coefficients are rounded to eight decimal places."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

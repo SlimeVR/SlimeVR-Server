@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/v1/bone.schema.json",
+  "key": "slimevr:right_thumb_distal",
+  "nameKey": "slimevr:bone.right_thumb_distal",
+  "parent": "slimevr:right_thumb_proximal",
+  "tailOffset": {
+    "terms": [
+      {
+        "proportion": "slimevr:hand_y",
+        "direction": {
+          "x": -0.00639448,
+          "y": -0.12788955,
+          "z": -0.08952269
+        }
+      }
+    ]
+  },
+  "rotationFallback": {
+    "type": "none"
+  }
+}

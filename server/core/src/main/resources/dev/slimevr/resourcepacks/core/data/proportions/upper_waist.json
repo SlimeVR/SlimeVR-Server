@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/v1/proportion.schema.json",
+  "key": "slimevr:upper_waist",
+  "nameKey": "slimevr:proportion.upper_waist",
+  "descriptionKey": "slimevr:proportion.upper_waist.description",
+  "default": {
+    "type": "heightRatio",
+    "value": 0.06329114
+  },
+  "contributesToHeight": true,
+  "minimum": 0
+}
