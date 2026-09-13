@@ -472,7 +472,7 @@ settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
-settings-sidebar-osc_trackers = VRChat OSC Trackers
+settings-sidebar-vrchat_osc = VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
@@ -822,10 +822,10 @@ settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC VRChat settings
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
-    Change settings specific to the OSC Trackers standard used for sending
+    Change settings specific to VRChat OSC and the OSC Trackers standard used to send
     tracking data to applications without SteamVR (ex. Quest standalone).
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
 settings-osc-vrchat-enable = Enable
