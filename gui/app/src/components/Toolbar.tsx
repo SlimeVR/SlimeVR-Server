@@ -10,7 +10,11 @@ import {
 } from '@/hooks/reset';
 import { Tooltip } from './commons/Tooltip';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom } from '@/store/app-store';
+import {
+  assignedTrackersAtom,
+  bodyPartOfBone,
+  boneRegistryAtom,
+} from '@/store/app-store';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useMemo } from 'react';
 import { ResetButtonIcon } from './home/ResetButton';
@@ -147,6 +151,7 @@ function BasicResetButton({
 
 export function Toolbar() {
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
     const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
@@ -154,11 +159,10 @@ export function Toolbar() {
       .reduce(
         (curr, key) => {
           const group = key as MountingResetGroup;
-          curr[group] = assignedTrackers.some(
-            ({ tracker }) =>
-              tracker.info?.bodyPart &&
-              BODY_PARTS_GROUPS[group].includes(tracker.info?.bodyPart)
-          );
+          curr[group] = assignedTrackers.some(({ tracker }) => {
+            const bodyPart = bodyPartOfBone(boneRegistry, tracker.info?.boneId);
+            return bodyPart && BODY_PARTS_GROUPS[group].includes(bodyPart);
+          });
 
           return curr;
         },
@@ -169,7 +173,7 @@ export function Toolbar() {
       groupVisibility,
       visibleGroups: Object.values(groupVisibility).filter((v) => v).length,
     };
-  }, [assignedTrackers]);
+  }, [assignedTrackers, boneRegistry]);
 
   return (
     <>

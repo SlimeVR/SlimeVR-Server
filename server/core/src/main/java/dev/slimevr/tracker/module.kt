@@ -7,6 +7,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
 import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
@@ -21,7 +22,6 @@ import dev.slimevr.util.isActive
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.MountingMethod
@@ -60,9 +60,9 @@ data class TrackerState(
 	val hardwareId: String,
 	val name: String,
 	val imuType: ImuType?,
-	val bodyPart: BodyPart?,
-	/** The default body part given by e.g. driver, VMC, etc. */
-	val intendedBodyPart: BodyPart?,
+	val boneId: BoneId?,
+	/** The default bone given by e.g. driver, VMC, etc. */
+	val intendedBoneId: BoneId?,
 	val customName: String?,
 	val trackerDataType: TrackerDataType, // TODO
 	val lastMountingMethod: MountingMethod,
@@ -86,9 +86,9 @@ data class TrackerState(
 	val stayAlignedData: StayAlignedData,
 )
 
-fun List<TrackerState>.getFirstActiveFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull { it.bodyPart == bodyPart && it.status.isActive() }
+fun List<TrackerState>.getFirstActiveFor(boneId: BoneId): TrackerState? = this.firstOrNull { it.boneId == boneId && it.status.isActive() }
 
-fun List<TrackerState>.getAllActiveFor(bodyParts: List<BodyPart>): List<TrackerState> = this.filter { it.bodyPart in bodyParts && it.status.isActive() }
+fun List<TrackerState>.getAllActiveFor(boneIds: List<BoneId>): List<TrackerState> = this.filter { it.boneId in boneIds && it.status.isActive() }
 
 sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
@@ -123,8 +123,8 @@ class Tracker(
 			scope: CoroutineScope,
 			id: Int,
 			name: String = "Tracker #$id",
-			bodyPart: BodyPart? = null,
-			intendedBodyPart: BodyPart? = null,
+			boneId: BoneId? = null,
+			intendedBoneId: BoneId? = null,
 			deviceId: Int,
 			imuType: ImuType? = null,
 			hardwareId: String,
@@ -133,6 +133,7 @@ class Tracker(
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
+			val registry = appContext.skeleton.registry
 			val trackerConfigs = settings.context.state.value.data.trackers
 			val savedConfig = trackerConfigs[hardwareId]
 			val baseState = DEFAULT_STATE.copy(
@@ -143,12 +144,12 @@ class Tracker(
 				hardwareId = hardwareId,
 				name = name,
 				imuType = imuType,
-				bodyPart = bodyPart,
-				intendedBodyPart = intendedBodyPart,
+				boneId = boneId,
+				intendedBoneId = intendedBoneId,
 				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
 			)
 			val trackerState = if (savedConfig != null) {
-				TrackerConfigBehaviour.restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
+				TrackerConfigBehaviour.restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset, registry)
 			} else {
 				baseState
 			}
@@ -158,12 +159,12 @@ class Tracker(
 				TrackerTpsBehaviour(),
 				TrackerAssignmentConflictBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
-				TrackerDefaultMountingOrientationBehaviour(),
-				TrackerConfigBehaviour(settings, hardwareId),
+				TrackerDefaultMountingOrientationBehaviour(registry),
+				TrackerConfigBehaviour(settings, hardwareId, registry),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
-				TrackerRestOrientationBehaviour(settings),
-				TrackerStayAlignedBehaviour(settings),
+				TrackerRestOrientationBehaviour(settings, registry),
+				TrackerStayAlignedBehaviour(settings, registry),
 			)
 			val context = Context.create(
 				initialState = trackerState,
@@ -186,8 +187,8 @@ class Tracker(
 			hardwareId = "defaultHardwareId",
 			name = "defaultTracker",
 			imuType = ImuType.BNO085,
-			bodyPart = null,
-			intendedBodyPart = null,
+			boneId = null,
+			intendedBoneId = null,
 			customName = null,
 			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,

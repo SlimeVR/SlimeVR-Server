@@ -27,14 +27,15 @@ import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BoneMap
+import dev.slimevr.skeleton.BoneRegistry
+import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
-import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.solarxr.SolarXRBridge
-import dev.slimevr.solarxr.SolarXRBridgeState
-import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
+import dev.slimevr.skeleton.defaultSkeletonState
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
@@ -104,12 +105,12 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	return userConfig
 }
 
-fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
+fun buildTestSkeleton(scope: CoroutineScope, registry: BoneRegistry = BoneRegistry.standard()): Skeleton {
 	val context = Context.create(
-		initialState = DEFAULT_SKELETON_STATE,
+		initialState = defaultSkeletonState(registry),
 		scope = scope,
 		reducer = ::reduceSkeleton,
-		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
+		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope), registry)),
 		name = "TestSkeleton",
 	)
 	val computed = MutableSharedFlow<ComputedSkeleton>(
@@ -120,6 +121,11 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	val skeleton = Skeleton(context, computed, emptySet())
 	skeleton.startObserving()
 	return skeleton
+}
+
+/** Builds a [ComputedSkeleton] from BodyPart-keyed bones, for tests that think in anatomy. */
+fun BoneRegistry.computedSkeletonOf(vararg bones: Pair<BodyPart, BoneState>): ComputedSkeleton = BoneMap.of<BoneState>(this).also { map ->
+	for ((bodyPart, bone) in bones) map[requireNotNull(this[bodyPart]) { "$bodyPart is not in this registry" }] = bone
 }
 
 fun buildTestResetsManager(server: VRServer, settings: Settings, scope: CoroutineScope): ResetsManager {
@@ -144,8 +150,8 @@ fun buildTestTracker(
 	appContext: AppContextProvider,
 	settings: Settings,
 	id: Int,
-	bodyPart: BodyPart? = null,
-	intendedBodyPart: BodyPart? = null,
+	boneId: BoneId? = null,
+	intendedBoneId: BoneId? = null,
 	status: TrackerStatus = TrackerStatus.DISCONNECTED,
 	origin: DeviceOrigin = DeviceOrigin.UDP,
 	imuType: ImuType? = ImuType.BNO085,
@@ -164,8 +170,8 @@ fun buildTestTracker(
 		hardwareId = "test-$id",
 		name = "Tracker $id",
 		imuType = imuType,
-		bodyPart = bodyPart,
-		intendedBodyPart = intendedBodyPart,
+		boneId = boneId,
+		intendedBoneId = intendedBoneId,
 		customName = null,
 		sessionCalibration = sessionCalibration,
 		rawRotation = rawRotation,

@@ -18,6 +18,8 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { trackingchecklistIdtoLabel } from '@/hooks/tracking-checklist';
+import { useAtomValue } from 'jotai';
+import { bodyPartOfBone, boneRegistryAtom } from '@/store/app-store';
 
 function TrackerBig({
   device,
@@ -27,6 +29,7 @@ function TrackerBig({
   device?: DeviceDataT;
 }) {
   const { useName } = useTracker(tracker);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const trackerName = useName();
 
@@ -34,7 +37,7 @@ function TrackerBig({
     <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border my-8 px-6 h-32">
       <div className="flex justify-center fill-background-10">
         <BodyPartIcon
-          bodyPart={tracker.info?.bodyPart}
+          bodyPart={bodyPartOfBone(boneRegistry, tracker.info?.boneId)}
           device={device}
           trackerId={tracker.trackerId}
         />
@@ -88,6 +91,7 @@ function TrackerSmol({
   const { config } = useConfig();
 
   const { useName } = useTracker(tracker);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const trackerName = useName();
 
@@ -109,7 +113,7 @@ function TrackerSmol({
           )}
         >
           <BodyPartIcon
-            bodyPart={tracker.info?.bodyPart}
+            bodyPart={bodyPartOfBone(boneRegistry, tracker.info?.boneId)}
             width={38}
             device={device}
             trackerId={tracker.trackerId}

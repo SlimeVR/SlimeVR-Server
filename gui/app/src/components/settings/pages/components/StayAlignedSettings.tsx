@@ -15,7 +15,11 @@ import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIc
 import { useAtomValue, atom, useSetAtom } from 'jotai';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
-import { connectedIMUTrackersAtom } from '@/store/app-store';
+import {
+  bodyPartOfBone,
+  boneRegistryAtom,
+  connectedIMUTrackersAtom,
+} from '@/store/app-store';
 import { bodypartToString } from '@/utils/formatting';
 import { useLocaleConfig } from '@/i18n/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -75,6 +79,7 @@ function CopySettingsButton({ values }: { values: StayAlignedSettingsForm }) {
   });
 
   const trackers = useAtomValue(connectedIMUTrackersAtom);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const copySettings = () => {
     const config = values;
@@ -100,7 +105,7 @@ ${trackers
     const info = t.tracker.info;
     const stayAligned = t.tracker.stayAligned;
     if (info && stayAligned) {
-      return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked}`;
+      return `${bodypartToString(bodyPartOfBone(boneRegistry, info.boneId))}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked}`;
     }
   })
   .join('\n')}

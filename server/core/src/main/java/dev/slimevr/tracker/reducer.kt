@@ -1,5 +1,6 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
@@ -79,7 +80,7 @@ fun reduce(
 
 	is TrackerActions.FullReset -> {
 		val isPositional = state.position != null
-		val isHead = state.bodyPart == BodyPart.HEAD
+		val isHead = state.boneId == BodyPart.HEAD.boneId
 		val shouldAlignAttitude = !isHead || !isPositional || action.resetPositionalHeadAttitude
 		val shouldAlignHeadingWithReference = !isHead && isPositional
 

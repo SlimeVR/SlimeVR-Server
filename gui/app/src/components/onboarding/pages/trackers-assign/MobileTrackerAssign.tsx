@@ -19,9 +19,12 @@ import {
   velocityGlowStyle,
 } from '@/hooks/tracker';
 import {
+  boneRegistryAtom,
   FlatDeviceTracker,
   groupTrackersByConnection,
+  unassignedTrackersAtom,
 } from '@/store/app-store';
+import { useAtomValue } from 'jotai';
 import { BodyAssignmentPanel } from './BodyAssignmentPanel';
 import {
   AssignmentEmptyState,
@@ -155,17 +158,12 @@ export function MobileTrackerAssign() {
     selectTracker,
   } = assignment;
 
+  const boneRegistry = useAtomValue(boneRegistryAtom);
   const groups = useMemo(
-    () => groupTrackersByConnection(flatTrackers, dongles),
-    [flatTrackers, dongles]
+    () => groupTrackersByConnection(flatTrackers, dongles, boneRegistry),
+    [flatTrackers, dongles, boneRegistry]
   );
-  const unassignedTrackers = useMemo(
-    () =>
-      flatTrackers.filter(
-        ({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE
-      ),
-    [flatTrackers]
-  );
+  const unassignedTrackers = useAtomValue(unassignedTrackersAtom);
   const unassignedTrackerData = useMemo(
     () => unassignedTrackers.map(({ tracker }) => tracker),
     [unassignedTrackers]

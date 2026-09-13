@@ -11,6 +11,8 @@ import dev.slimevr.routing.intendedRoutesFlow
 import dev.slimevr.routing.outputStatesFlow
 import dev.slimevr.routing.overridableBones
 import dev.slimevr.routing.requiredBones
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.combine
@@ -20,7 +22,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.BoneRoute
 import solarxr_protocol.rpc.BoneRoutingSettingsRequest
 import solarxr_protocol.rpc.BoneRoutingSettingsResponse
@@ -37,17 +38,18 @@ private fun buildResponse(
 	automatic: Boolean,
 	routes: Routes,
 	outputStates: OutputStates,
+	registry: BoneRegistry,
 ) = BoneRoutingSettingsResponse(
 	automatic = automatic,
-	routes = ROUTABLE_BONES.map { bone ->
-		BoneRoute(bone = bone, outputs = routes[bone].orEmpty().toList())
+	routes = ROUTABLE_BONES.mapNotNull { bone -> registry[bone] }.map { boneId ->
+		BoneRoute(boneId = boneId.value, outputs = routes[boneId].orEmpty().toList())
 	},
 	outputs = RoutingOutput.entries.map { output ->
 		RoutingOutputStatus(
 			output = output,
-			accepts = acceptedBones(output).toList(),
-			requires = requiredBones(output).toList(),
-			overridable = overridableBones(output).toList(),
+			accepts = acceptedBones(output).mapNotNull { registry[it]?.value },
+			requires = requiredBones(output).mapNotNull { registry[it]?.value },
+			overridable = overridableBones(output).mapNotNull { registry[it]?.value },
 			conflicts = conflictingOutputs(output).toList(),
 			state = outputStates[output] ?: RoutingOutputState.UNSUPPORTED,
 		)
@@ -60,12 +62,13 @@ class BoneRoutingBehaviour(
 	private val settings = appContext.config.settings
 
 	override fun observe(receiver: SolarXRBridge) {
+		val registry = appContext.skeleton.registry
 		val responses = combine(
 			settings.context.state.map { it.data.boneRoutingConfig.automatic }.distinctUntilChanged(),
 			intendedRoutesFlow(appContext),
 			outputStatesFlow(appContext),
-			::buildResponse,
-		).distinctUntilChanged()
+		) { automatic, routes, outputStates -> buildResponse(automatic, routes, outputStates, registry) }
+			.distinctUntilChanged()
 
 		receiver.rpcDispatcher.on<BoneRoutingSettingsRequest> {
 			receiver.sendRpc(responses.first())
@@ -79,8 +82,7 @@ class BoneRoutingBehaviour(
 		receiver.rpcDispatcher.on<ChangeBoneRoutingSettingsRequest> { req ->
 			val requested = req.routes.orEmpty()
 				.mapNotNull { route ->
-					val bone = route.bone
-					if (bone == BodyPart.NONE) return@mapNotNull null
+					val bone = BoneId(route.boneId)
 					val outputs = route.outputs.orEmpty().toSet().ifEmpty { return@mapNotNull null }
 					bone to outputs
 				}
@@ -93,6 +95,7 @@ class BoneRoutingBehaviour(
 							config = boneRoutingConfig,
 							automatic = req.automatic,
 							routes = requested,
+							registry = registry,
 						),
 					)
 				},

@@ -1,13 +1,11 @@
 package dev.slimevr.skeleton.computedprocessors
 
-import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.ZERO_VELOCITY
-import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -46,8 +44,8 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 class VelocityComputedProcessor :
 	SkeletonComputedProcessor,
 	ResettableSkeletonProcessor {
-	private val lastVelocities: BodyPartMap<Velocity> = bodyPartMap()
-	private val lastVelocityData: BodyPartMap<VelocityData> = bodyPartMap()
+	private val lastVelocities: MutableMap<BoneId, Velocity> = mutableMapOf()
+	private val lastVelocityData: MutableMap<BoneId, VelocityData> = mutableMapOf()
 	private var lastProcessTime = timeSource.markNow()
 
 	override fun process(mutableComputedSkeleton: ComputedSkeleton) {
@@ -56,9 +54,9 @@ class VelocityComputedProcessor :
 		val deltaTime = (now - lastProcessTime).inFloatingSeconds
 		lastProcessTime = now
 
-		mutableComputedSkeleton.forEachBone { part, bone ->
-			val lastVelocityData = lastVelocityData[part]
-			val lastVelocity = lastVelocities[part] ?: ZERO_VELOCITY
+		for ((boneId, bone) in mutableComputedSkeleton) {
+			val lastVelocityData = lastVelocityData[boneId]
+			val lastVelocity = lastVelocities[boneId] ?: ZERO_VELOCITY
 
 			// Compute current velocity
 			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
@@ -66,10 +64,10 @@ class VelocityComputedProcessor :
 
 			// Smooth velocity before setting it
 			val newVelocity = smoothVelocity(currentVelocity, lastVelocity, deltaTime)
-			mutableComputedSkeleton[part] = bone.copy(velocity = newVelocity)
+			mutableComputedSkeleton[boneId] = bone.copy(velocity = newVelocity)
 
-			this@VelocityComputedProcessor.lastVelocityData[part] = currentVelocityData
-			lastVelocities[part] = newVelocity
+			this@VelocityComputedProcessor.lastVelocityData[boneId] = currentVelocityData
+			lastVelocities[boneId] = newVelocity
 		}
 	}
 

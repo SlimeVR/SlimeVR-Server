@@ -1,7 +1,10 @@
 package dev.slimevr.resets
 
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.util.timeSource
 import solarxr_protocol.rpc.ResetType
+
+private val FEET_BONE_IDS = ResetBodyParts.FEET.mapTo(mutableSetOf()) { it.boneId }
 
 fun reduce(state: ResetsState, action: ResetsActions): ResetsState = when (action) {
 	// Clear the states of the `canDoXReset`s to false
@@ -21,12 +24,12 @@ fun reduce(state: ResetsState, action: ResetsActions): ResetsState = when (actio
 		)
 
 		ResetType.POSE_MOUNTING -> {
-			val bodyParts = action.bodyParts
-			val feetOnly = !bodyParts.isNullOrEmpty() && bodyParts.all { it in ResetBodyParts.FEET }
+			val boneIds = action.boneIds
+			val feetOnly = !boneIds.isNullOrEmpty() && boneIds.all { it in FEET_BONE_IDS }
 			when {
 				feetOnly -> state.copy(feetMountingResetCompleted = true)
 
-				bodyParts.isNullOrEmpty() -> state.copy(
+				boneIds.isNullOrEmpty() -> state.copy(
 					mountingResetCompleted = true,
 					feetMountingResetCompleted = action.resetMountingFeet || state.feetMountingResetCompleted,
 				)

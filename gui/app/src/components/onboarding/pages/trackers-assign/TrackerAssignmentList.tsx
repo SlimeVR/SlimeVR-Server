@@ -21,6 +21,8 @@ import {
   useIsTrackerBeingDragged,
 } from '@/hooks/tracker-drag';
 import {
+  bodyPartOfBone,
+  boneRegistryAtom,
   FlatDeviceTracker,
   groupTrackersByConnection,
   groupTrackersByDevice,
@@ -28,6 +30,7 @@ import {
 } from '@/store/app-store';
 import { ShowAllPartsToggle } from '@/components/onboarding/BodyAssignment';
 import { useAssignment } from '@/hooks/tracker-assignment';
+import { useAtomValue } from 'jotai';
 
 export function TrackerAssignmentList() {
   const { state } = useOnboarding();
@@ -42,9 +45,10 @@ export function TrackerAssignmentList() {
     pendingTrackerId,
   } = useAssignment();
   const assignedCount = assignedTrackers.length;
+  const boneRegistry = useAtomValue(boneRegistryAtom);
   const groups = useMemo(
-    () => groupTrackersByConnection(trackers, dongles),
-    [trackers, dongles]
+    () => groupTrackersByConnection(trackers, dongles, boneRegistry),
+    [trackers, dongles, boneRegistry]
   );
   const variant = state.alonePage ? 'primary' : 'tertiary';
 
@@ -295,6 +299,7 @@ export function SimpleTrackerRow({
 }) {
   const { useVelocity } = useTracker(tracker);
   const velocity = useVelocity();
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const row = (
     <div
@@ -309,7 +314,7 @@ export function SimpleTrackerRow({
     >
       <div className="fill-background-10">
         <BodyPartIcon
-          bodyPart={tracker.info?.bodyPart}
+          bodyPart={bodyPartOfBone(boneRegistry, tracker.info?.boneId)}
           device={device}
           trackerId={tracker.trackerId}
           width={32}

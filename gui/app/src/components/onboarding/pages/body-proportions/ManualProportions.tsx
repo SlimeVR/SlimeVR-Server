@@ -318,7 +318,7 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
     );
   };
   const beneathFloor = useMemo(() => {
-    const head = bones.find((bone) => bone.bodyPart === BodyPart.HEAD);
+    const head = bones.get(BodyPart.HEAD);
     return !(head?.headPosition && head.headPosition.y >= MIN_HEIGHT);
   }, [bones]);
 

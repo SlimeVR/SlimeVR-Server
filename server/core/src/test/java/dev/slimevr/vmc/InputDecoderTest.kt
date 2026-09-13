@@ -1,5 +1,6 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.computedSkeletonOf
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
@@ -8,9 +9,11 @@ import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.forEachOscMessage
 import dev.slimevr.quaternionApproxEqual
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -32,9 +35,11 @@ private fun assertApprox(expected: Quaternion, actual: Quaternion, message: Stri
 	)
 }
 
+private val registry = BoneRegistry.standard()
+
 private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY, headPosition: Vector3 = Vector3.ZERO) = BoneState(
 	parentBone = null,
-	bodyPart = bodyPart,
+	boneId = bodyPart.boneId,
 	headOffset = Vector3.ZERO,
 	offset = Vector3(0f, -0.1f, 0f),
 	rotation = rotation,
@@ -121,25 +126,24 @@ class InputDecoderTest {
 		val chestRotation = Quaternion.rotationAroundYAxis(0.4f)
 		val chestHead = Vector3(0f, 0.3f, 0f)
 
-		val bones = BodyPartMap(
-			mapOf(
-				BodyPart.HIP to bone(BodyPart.HIP, Quaternion.rotationAroundYAxis(0.1f), Vector3.ZERO),
-				BodyPart.UPPER_WAIST to bone(BodyPart.UPPER_WAIST, Quaternion.rotationAroundXAxis(0.2f), Vector3(0f, 0.15f, 0f)),
-				BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, chestRotation, chestHead),
-				BodyPart.UPPER_CHEST to bone(BodyPart.UPPER_CHEST, chestRotation, chestHead),
-				BodyPart.NECK to bone(BodyPart.NECK, Quaternion.rotationAroundZAxis(0.15f), Vector3(0f, 0.5f, 0f)),
-				BodyPart.HEAD to bone(BodyPart.HEAD, Quaternion.rotationAroundXAxis(-0.1f), Vector3(0f, 0.65f, 0f)),
-				BodyPart.LEFT_SHOULDER to bone(BodyPart.LEFT_SHOULDER, Quaternion.rotationAroundZAxis(0.05f), Vector3(0.05f, 0.45f, 0f)),
-				BodyPart.LEFT_UPPER_ARM to bone(BodyPart.LEFT_UPPER_ARM, Quaternion.rotationAroundZAxis(0.7f), Vector3(0.15f, 0.45f, 0f)),
-				BodyPart.LEFT_LOWER_ARM to bone(BodyPart.LEFT_LOWER_ARM, Quaternion.rotationAroundXAxis(0.9f), Vector3(0.4f, 0.45f, 0f)),
-				BodyPart.LEFT_HAND to bone(BodyPart.LEFT_HAND, Quaternion.rotationAroundYAxis(0.2f), Vector3(0.65f, 0.45f, 0f)),
-				BodyPart.LEFT_UPPER_LEG to bone(BodyPart.LEFT_UPPER_LEG, Quaternion.rotationAroundXAxis(0.5f), Vector3(0.1f, 0f, 0f)),
-				BodyPart.LEFT_LOWER_LEG to bone(BodyPart.LEFT_LOWER_LEG, Quaternion.rotationAroundXAxis(-0.3f), Vector3(0.1f, -0.4f, 0f)),
-				BodyPart.LEFT_FOOT to bone(BodyPart.LEFT_FOOT, Quaternion.rotationAroundYAxis(0.25f), Vector3(0.1f, -0.8f, 0f)),
-			),
+		val bonesByPart = mapOf(
+			BodyPart.HIP to bone(BodyPart.HIP, Quaternion.rotationAroundYAxis(0.1f), Vector3.ZERO),
+			BodyPart.UPPER_WAIST to bone(BodyPart.UPPER_WAIST, Quaternion.rotationAroundXAxis(0.2f), Vector3(0f, 0.15f, 0f)),
+			BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, chestRotation, chestHead),
+			BodyPart.UPPER_CHEST to bone(BodyPart.UPPER_CHEST, chestRotation, chestHead),
+			BodyPart.NECK to bone(BodyPart.NECK, Quaternion.rotationAroundZAxis(0.15f), Vector3(0f, 0.5f, 0f)),
+			BodyPart.HEAD to bone(BodyPart.HEAD, Quaternion.rotationAroundXAxis(-0.1f), Vector3(0f, 0.65f, 0f)),
+			BodyPart.LEFT_SHOULDER to bone(BodyPart.LEFT_SHOULDER, Quaternion.rotationAroundZAxis(0.05f), Vector3(0.05f, 0.45f, 0f)),
+			BodyPart.LEFT_UPPER_ARM to bone(BodyPart.LEFT_UPPER_ARM, Quaternion.rotationAroundZAxis(0.7f), Vector3(0.15f, 0.45f, 0f)),
+			BodyPart.LEFT_LOWER_ARM to bone(BodyPart.LEFT_LOWER_ARM, Quaternion.rotationAroundXAxis(0.9f), Vector3(0.4f, 0.45f, 0f)),
+			BodyPart.LEFT_HAND to bone(BodyPart.LEFT_HAND, Quaternion.rotationAroundYAxis(0.2f), Vector3(0.65f, 0.45f, 0f)),
+			BodyPart.LEFT_UPPER_LEG to bone(BodyPart.LEFT_UPPER_LEG, Quaternion.rotationAroundXAxis(0.5f), Vector3(0.1f, 0f, 0f)),
+			BodyPart.LEFT_LOWER_LEG to bone(BodyPart.LEFT_LOWER_LEG, Quaternion.rotationAroundXAxis(-0.3f), Vector3(0.1f, -0.4f, 0f)),
+			BodyPart.LEFT_FOOT to bone(BodyPart.LEFT_FOOT, Quaternion.rotationAroundYAxis(0.25f), Vector3(0.1f, -0.8f, 0f)),
 		)
+		val bones = registry.computedSkeletonOf(*bonesByPart.toList().toTypedArray())
 
-		val bundle = buildOutgoingBundle(bones, bones.keys, VMCConfig(), vrm = null, elapsed = 0.seconds)
+		val bundle = buildOutgoingBundle(bones, bonesByPart.keys, VMCConfig(), vrm = null, elapsed = 0.seconds)
 		val frame = decodeVmcBundle(bundle, emptyVmcInputFrame())
 		val worldTransforms = vmcWorldTransforms(
 			locals = frame.boneLocalRotations,
@@ -149,7 +153,7 @@ class InputDecoderTest {
 			scale = 1f,
 		)
 
-		for ((bodyPart, originalBone) in bones) {
+		for ((bodyPart, originalBone) in bonesByPart) {
 			val recovered = assertNotNull(worldTransforms[bodyPart], "missing $bodyPart")
 			assertApprox(originalBone.rotation, recovered.rotation, "$bodyPart rotation")
 			assertApprox(originalBone.headPosition, recovered.position, "$bodyPart position")

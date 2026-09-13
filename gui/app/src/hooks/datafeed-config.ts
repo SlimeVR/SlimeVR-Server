@@ -66,7 +66,6 @@ export function useBonesDataFeedConfig() {
 
   const dataFeedConfig = new DataFeedConfigT();
   const boneMask = new BoneMaskT();
-  boneMask.bodyPart = true;
   boneMask.boneLength = true;
   boneMask.rotation = false;
   boneMask.orientation = true;

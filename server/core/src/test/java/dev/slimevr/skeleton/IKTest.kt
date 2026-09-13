@@ -9,29 +9,31 @@ import kotlin.test.Test
 class IKTest {
 	@Test
 	fun testCcdIk() {
-		val boneInputs: InputSkeleton = bodyPartMap()
-		boneInputs[BodyPart.NECK] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.NECK,
+		val registry = BoneRegistry.standard()
+
+		val boneInputs: InputSkeleton = BoneMap.of(registry)
+		boneInputs[BodyPart.NECK.boneId] = DEFAULT_BONE_INPUT.copy(
+			boneId = BodyPart.NECK.boneId,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.UPPER_CHEST] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.UPPER_CHEST,
+		boneInputs[BodyPart.UPPER_CHEST.boneId] = DEFAULT_BONE_INPUT.copy(
+			boneId = BodyPart.UPPER_CHEST.boneId,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.LOWER_CHEST] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.LOWER_CHEST,
+		boneInputs[BodyPart.LOWER_CHEST.boneId] = DEFAULT_BONE_INPUT.copy(
+			boneId = BodyPart.LOWER_CHEST.boneId,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.UPPER_WAIST] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.UPPER_WAIST,
+		boneInputs[BodyPart.UPPER_WAIST.boneId] = DEFAULT_BONE_INPUT.copy(
+			boneId = BodyPart.UPPER_WAIST.boneId,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.LOWER_WAIST] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.LOWER_WAIST,
+		boneInputs[BodyPart.LOWER_WAIST.boneId] = DEFAULT_BONE_INPUT.copy(
+			boneId = BodyPart.LOWER_WAIST.boneId,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.HIP] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.HIP,
+		boneInputs[BodyPart.HIP.boneId] = DEFAULT_BONE_INPUT.copy(
+			boneId = BodyPart.HIP.boneId,
 			offset = Vector3.NEG_Y,
 		)
 
@@ -39,20 +41,20 @@ class IKTest {
 		val target = Vector3.POS_X * 3f
 		val goal = IKChainGoal(
 			listOf(
-				BodyPart.NECK,
-				BodyPart.UPPER_CHEST,
-				BodyPart.LOWER_CHEST,
-				BodyPart.UPPER_WAIST,
-				BodyPart.LOWER_WAIST,
-				BodyPart.HIP,
+				BodyPart.NECK.boneId,
+				BodyPart.UPPER_CHEST.boneId,
+				BodyPart.LOWER_CHEST.boneId,
+				BodyPart.UPPER_WAIST.boneId,
+				BodyPart.LOWER_WAIST.boneId,
+				BodyPart.HIP.boneId,
 			),
 			target,
 		)
 
-		val ikOut = ccdIk(boneInputs, bones, listOf(goal), BODY_PART_CONSTRAINT_MAP, 0.01f, 100)
+		val ikOut = ccdIk(boneInputs, bones, listOf(goal), BODY_PART_CONSTRAINT_MAP.resolveToBoneIds(), 0.01f, 100)
 		assert(ikOut.goalsReached.all { it.value }) {
 			val boneRots = ikOut.bones.values.joinToString {
-				"${it.bodyPart}: ${it.rotation.toEulerAngles(EulerOrder.YZX)}"
+				"${it.boneId}: ${it.rotation.toEulerAngles(EulerOrder.YZX)}"
 			}
 			val targetDist = chainDistanceFromTarget(ikOut.bones, goal.chain, goal.target)
 			"Failed to reach target:\nDistance from target: $targetDist\nBone rotations: $boneRots"

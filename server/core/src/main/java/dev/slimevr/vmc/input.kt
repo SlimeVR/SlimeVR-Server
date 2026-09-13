@@ -9,6 +9,8 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.forEachOscMessage
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.formatExceptionMessage
@@ -27,11 +29,12 @@ internal class VmcTrackerRegistry(
 	private val manager: VMCManager,
 ) {
 	private var deviceId: Int? = null
-	private val boneTrackerIds = mutableMapOf<BodyPart, Int>()
+	private val boneTrackerIds = mutableMapOf<BoneId, Int>()
 	private val poseTrackerIds = mutableMapOf<String, Int>()
 
 	fun boneTracker(bodyPart: BodyPart, unityName: String): Tracker {
-		boneTrackerIds[bodyPart]?.let { id -> appContext.server.getTracker(id)?.let { existing -> return existing } }
+		val boneId = bodyPart.boneId
+		boneTrackerIds[boneId]?.let { id -> appContext.server.getTracker(id)?.let { existing -> return existing } }
 
 		val device = findOrCreateDevice()
 		val trackerId = appContext.server.nextHandle()
@@ -39,8 +42,8 @@ internal class VmcTrackerRegistry(
 			scope = manager.context.scope,
 			id = trackerId,
 			name = "VMC-Bone-$unityName",
-			bodyPart = bodyPart,
-			intendedBodyPart = bodyPart,
+			boneId = boneId,
+			intendedBoneId = boneId,
 			deviceId = device.context.state.value.id,
 			hardwareId = "vmc:bone:$bodyPart",
 			origin = DeviceOrigin.VMC,
@@ -48,7 +51,7 @@ internal class VmcTrackerRegistry(
 		)
 		appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, runtimeTracker))
 		runtimeTracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-		boneTrackerIds[bodyPart] = trackerId
+		boneTrackerIds[boneId] = trackerId
 		return runtimeTracker
 	}
 
@@ -61,8 +64,8 @@ internal class VmcTrackerRegistry(
 			scope = manager.context.scope,
 			id = trackerId,
 			name = "VMC-Tracker-$serial",
-			bodyPart = null,
-			intendedBodyPart = null,
+			boneId = null,
+			intendedBoneId = null,
 			deviceId = device.context.state.value.id,
 			hardwareId = "vmc:tracker:$serial",
 			origin = DeviceOrigin.VMC,

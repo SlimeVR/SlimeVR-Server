@@ -3,6 +3,7 @@ package dev.slimevr.hid.behaviours.v3
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.HIDReceiverBehaviour
 import dev.slimevr.hid.HIDSensorInfo
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerActions
 import solarxr_protocol.datatypes.BodyPart
 
@@ -12,13 +13,14 @@ class HIDSensorInfoBehaviour : HIDReceiverBehaviour {
 			if (packet.sensorId != 0) return@on
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
 			val bodyPart = packet.defaultBodyPosition.takeIf { it != 0 }?.let { BodyPart.fromValue(it.toUByte()) }
+			val boneId = bodyPart?.boneId
 			tracker.context.dispatch(
 				TrackerActions.Update {
 					copy(
 						imuType = packet.imuType,
 						magStatus = packet.magStatus,
 						completedRestCalibration = true,
-						intendedBodyPart = bodyPart ?: intendedBodyPart,
+						intendedBoneId = boneId ?: intendedBoneId,
 					)
 				},
 			)

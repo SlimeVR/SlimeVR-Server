@@ -1,14 +1,13 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
-import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.isActive
 import io.github.axisangles.ktmath.Quaternion
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.AssignTrackerRequest
 import solarxr_protocol.rpc.ResetTrackerAssignments
 
@@ -21,29 +20,29 @@ class AssignTrackerBehaviour(
 			val tracker = server.getTracker(id.toInt())
 				?: return@on
 
-			val bodyPart = req.bodyPosition.takeIf { it != BodyPart.NONE }
-			if (bodyPart != null) {
+			val boneId = BoneId(req.boneId).takeIf { receiver.registry[it] != null }
+			if (boneId != null) {
 				server.context.state.value.trackers.values.filter {
 					val state = it.context.state.value
 					state.id != id.toInt() &&
-						state.bodyPart == bodyPart &&
+						state.boneId == boneId &&
 						state.status.isActive()
 				}.forEach {
 					it.context.dispatch(
-						TrackerActions.Update { copy(bodyPart = null) },
+						TrackerActions.Update { copy(boneId = null) },
 					)
 				}
 			}
 			tracker.context.dispatch(
 				TrackerActions.Update {
 					copy(
-						bodyPart = bodyPart,
+						boneId = boneId,
 						customName = req.displayName ?: customName,
 					)
 				},
 			)
 
-			// Override default mounting orientation set from changing the bodyPart
+			// Override default mounting orientation set from changing the assigned bone
 			val mountingOrientation = req.mountingOrientation?.let { Quaternion(it.w, it.x, it.y, it.z) }
 			if (mountingOrientation != null) {
 				tracker.context.dispatch(
@@ -54,29 +53,29 @@ class AssignTrackerBehaviour(
 
 		receiver.rpcDispatcher.on<ResetTrackerAssignments> {
 			val trackers = server.context.state.value.trackers.values
-			val intendedBodyParts = bodyPartMap<Tracker>()
+			val intendedBoneIds = mutableMapOf<BoneId, Tracker>()
 
 			// First unassign all trackers so that we don't have conflicts.
 			trackers.forEach { tracker ->
-				val intendedBodyPart = tracker.context.state.value.intendedBodyPart
-				if (intendedBodyPart != null) {
-					intendedBodyParts.putIfAbsent(intendedBodyPart, tracker)
+				val intendedBoneId = tracker.context.state.value.intendedBoneId
+				if (intendedBoneId != null) {
+					intendedBoneIds.putIfAbsent(intendedBoneId, tracker)
 				}
 
 				tracker.context.dispatch(
 					TrackerActions.Update {
-						copy(bodyPart = null)
+						copy(boneId = null)
 					},
 				)
 			}
 
-			// Then re-assign trackers with intended body parts, using the map to ensure
-			// we don't try to assign two trackers to the same body part if there were
-			// multiple with the same intended body part.
-			intendedBodyParts.forEach { (bodyPart, tracker) ->
+			// Then re-assign trackers with intended bones, using the map to ensure
+			// we don't try to assign two trackers to the same bone if there were
+			// multiple with the same intended bone.
+			intendedBoneIds.forEach { (boneId, tracker) ->
 				tracker.context.dispatch(
 					TrackerActions.Update {
-						copy(bodyPart = bodyPart)
+						copy(boneId = boneId)
 					},
 				)
 			}
