@@ -1,12 +1,15 @@
 package dev.slimevr.desktop.config
 
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.config.StorageEntry
+import dev.slimevr.config.StorageEntryType
 import dev.slimevr.config.TextFileHandle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.file.Files
+import java.nio.file.LinkOption
 import java.nio.file.StandardCopyOption
 
 class DesktopConfigStorage(
@@ -46,6 +49,22 @@ class DesktopConfigStorage(
 	override suspend fun ensureDirectory(path: String): Boolean = withContext(Dispatchers.IO) {
 		val directory = resolve(path)
 		directory.isDirectory || directory.mkdirs()
+	}
+
+	override suspend fun list(path: String): List<StorageEntry> = withContext(Dispatchers.IO) {
+		val directory = resolve(path).toPath()
+		if (!Files.isDirectory(directory, LinkOption.NOFOLLOW_LINKS)) return@withContext emptyList()
+		Files.list(directory).use { stream ->
+			stream.map { child ->
+				val type = when {
+					Files.isSymbolicLink(child) -> StorageEntryType.SYMLINK
+					Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS) -> StorageEntryType.DIRECTORY
+					Files.isRegularFile(child, LinkOption.NOFOLLOW_LINKS) -> StorageEntryType.FILE
+					else -> StorageEntryType.OTHER
+				}
+				StorageEntry(child.fileName.toString(), type)
+			}.sorted(compareBy { it.name }).toList()
+		}
 	}
 
 	override suspend fun openTextFile(path: String): TextFileHandle = withContext(Dispatchers.IO) {

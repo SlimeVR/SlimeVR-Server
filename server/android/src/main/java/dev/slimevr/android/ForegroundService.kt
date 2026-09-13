@@ -36,6 +36,7 @@ import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.resourcepacks.ResourcePackManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
@@ -149,6 +150,7 @@ class ForegroundService : Service() {
 	private suspend fun startServer(scope: CoroutineScope) {
 		val storage = AndroidConfigStorage(filesDir)
 		val config = AppConfig.create(scope = scope, storage = storage)
+		ResourcePackManager.load(storage, javaClass.classLoader ?: ClassLoader.getSystemClassLoader())
 		val server = VRServer.create(scope = scope)
 		val serialServer = createAndroidSerialServer(context = this, scope = scope)
 		val bones = BoneRegistryManager.create(scope = scope)

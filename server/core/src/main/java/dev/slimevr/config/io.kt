@@ -22,9 +22,19 @@ interface ConfigStorage {
 	suspend fun backup(path: String)
 	suspend fun exists(path: String): Boolean
 	suspend fun ensureDirectory(path: String): Boolean
+
+	/** Lists direct children only. Implementations must not follow symbolic links. */
+	suspend fun list(path: String): List<StorageEntry> = emptyList()
 	suspend fun openTextFile(path: String): TextFileHandle
 	fun displayPath(path: String): String = path
 }
+
+enum class StorageEntryType { FILE, DIRECTORY, SYMLINK, OTHER }
+
+data class StorageEntry(
+	val name: String,
+	val type: StorageEntryType,
+)
 
 interface TextFileHandle {
 	suspend fun write(text: String)

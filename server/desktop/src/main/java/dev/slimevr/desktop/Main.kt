@@ -38,6 +38,7 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
+import dev.slimevr.resourcepacks.ResourcePackManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
@@ -125,6 +126,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
 	val storage = DesktopConfigStorage(configFolder.toFile())
 	val config = AppConfig.create(this, storage = storage)
+	ResourcePackManager.load(storage, javaClass.classLoader)
+
 	val server = VRServer.create(this)
 	val serialServer = createDesktopSerialServer(this)
 	val bones = BoneRegistryManager.create(scope = this)

@@ -15,6 +15,24 @@ tasks.withType<Jar> {
 	from("../../LICENSE-MIT")
 }
 
+val generateCoreResourcePackIndex = tasks.register("generateCoreResourcePackIndex") {
+	val corePack = layout.projectDirectory.dir("src/main/resources/dev/slimevr/resourcepacks/core")
+	val index = layout.buildDirectory.file("generated/resources/dev/slimevr/resourcepacks/core/index.txt")
+	inputs.dir(corePack)
+	outputs.file(index)
+	doLast {
+		val root = corePack.asFile.toPath()
+		val files = corePack.asFile.walkTopDown()
+			.filter { it.isFile && !it.relativeTo(corePack.asFile).invariantSeparatorsPath.startsWith("schemas/") }
+			.map { root.relativize(it.toPath()).toString().replace('\\', '/') }
+			.sorted()
+		index.get().asFile.apply {
+			parentFile.mkdirs()
+			writeText(files.joinToString("\n", postfix = "\n"))
+		}
+	}
+}
+
 allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.
@@ -31,10 +49,15 @@ kotlin {
 	sourceSets {
 		val commonMain = getByName("commonMain") {
 			kotlin.srcDir("src/main/java")
+			resources.srcDir("src/main/resources")
+			resources.srcDir(layout.buildDirectory.dir("generated/resources"))
 			dependencies {
 				api(project(":solarxr-protocol:generated"))
 				api("com.google.flatbuffers:flatbuffers-java:22.10.26")
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+				implementation("com.github.erosb:json-sKema:0.31.0") {
+					exclude(group = "org.yaml", module = "snakeyaml")
+				}
 				implementation("com.mayakapps.kache:kache:2.1.1")
 				implementation("io.klogging:klogging:0.11.7")
 				api("com.appstractive:dns-sd-kt:1.1.0")
@@ -62,6 +85,10 @@ kotlin {
 			}
 		}
 	}
+}
+
+tasks.matching { it.name.endsWith("ProcessResources") }.configureEach {
+	dependsOn(generateCoreResourcePackIndex)
 }
 
 tasks.withType<JavaCompile> {
