@@ -2,6 +2,8 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.TestAppContext
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.buildTestHeightCalibration
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
@@ -9,7 +11,6 @@ import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -38,6 +39,7 @@ private fun TestScope.testConn(onSend: suspend (MessageBundle) -> Unit): SolarXR
 	val appContext = object : TestAppContext() {
 		override val server = server
 		override val skeleton = skeleton
+		override val bones = BoneRegistryManager.create(backgroundScope, skeleton.registry)
 		override val resetsManager = resetsManager
 		override val heightCalibrationManager = heightCalibrationManager
 	}

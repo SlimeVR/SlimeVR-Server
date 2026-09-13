@@ -1,4 +1,4 @@
-package dev.slimevr.skeleton
+package dev.slimevr.bones
 
 import solarxr_protocol.connection.BoneDefinition
 import solarxr_protocol.datatypes.BodyPart

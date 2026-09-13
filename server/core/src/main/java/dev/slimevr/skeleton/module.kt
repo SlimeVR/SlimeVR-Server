@@ -1,6 +1,12 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.BoneSet
+import dev.slimevr.bones.mapValues
+import dev.slimevr.bones.mutateCopy
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
@@ -215,7 +221,7 @@ class Skeleton(
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
-			val registry = BoneRegistry.standard()
+			val registry = ctx.bones.current
 
 			val resettableSkeletonProcessors = mutableSetOf<ResettableSkeletonProcessor>()
 			val behaviours = listOf(
