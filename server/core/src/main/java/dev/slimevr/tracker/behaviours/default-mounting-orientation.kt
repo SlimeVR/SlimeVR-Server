@@ -1,5 +1,6 @@
 package dev.slimevr.tracker.behaviours
 
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 
-class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
+class TrackerDefaultMountingOrientationBehaviour(private val registry: BoneRegistry) : TrackerBehaviour {
 	/**
 	 * Returns the default mounting orientation for the body part
 	 */
@@ -46,12 +47,13 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.map { it.bodyPart }
+			.map { it.boneId }
 			.distinctUntilChanged()
 			.drop(1)
-			.onEach {
+			.onEach { boneId ->
 				if (receiver.context.state.value.lastMountingMethod == MountingMethod.MANUAL) {
-					receiver.context.dispatch(TrackerActions.SetMountingOrientation(defaultMountingForBodyPart(it)))
+					val bodyPart = boneId?.let { registry.bodyPartOf(it) }
+					receiver.context.dispatch(TrackerActions.SetMountingOrientation(defaultMountingForBodyPart(bodyPart)))
 				}
 			}.launchIn(receiver.context.scope)
 	}

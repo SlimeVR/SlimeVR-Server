@@ -16,6 +16,7 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 	override fun observe(receiver: BoneRoutingManager) {
 		val server = appContext.server
 		val settings = appContext.config.settings
+		val registry = appContext.skeleton.registry
 
 		combine(
 			settings.context.state.map { it.data.boneRoutingConfig }.distinctUntilChanged(),
@@ -26,7 +27,7 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 				if (!config.automatic) {
 					receiver.context.dispatch(
 						BoneRoutingActions.SetRoutes(
-							effectiveRoutes(config.manualRoutes.orEmpty(), outputStates),
+							effectiveRoutes(manualRoutesAsBoneIds(config.manualRoutes, registry), outputStates, registry),
 						),
 					)
 				}
@@ -39,13 +40,14 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 					.flatMapLatest { trackers ->
 						if (trackers.isEmpty()) return@flatMapLatest flowOf(emptySet())
 
-						// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
-						// Dedup per tracker first, or combine gets resumed once per packet per tracker.
+						// Tracker state emits on every rotation packet, but only the assigned bone/status
+						// matter here. Dedup per tracker first, or combine gets resumed once per packet
+						// per tracker.
 						combine(
 							trackers.map { tracker ->
-								tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
+								tracker.context.state.distinctUntilChanged { a, b -> a.boneId == b.boneId && a.status == b.status }
 							},
-						) { states -> trackedBodyParts(states.asList()) }
+						) { states -> trackedBodyParts(states.asList(), registry) }
 							.distinctUntilChanged()
 					}
 					.map { fineBodyParts -> Triple(config, outputStates, fineBodyParts) }
@@ -55,8 +57,9 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 				receiver.context.dispatch(
 					BoneRoutingActions.SetRoutes(
 						effectiveRoutes(
-							computeAutomaticRoutes(candidates, outputStates) + overrideRoutes(config),
+							computeAutomaticRoutes(candidates, outputStates, registry) + overrideRoutes(config, registry),
 							outputStates,
+							registry,
 						),
 					),
 				)

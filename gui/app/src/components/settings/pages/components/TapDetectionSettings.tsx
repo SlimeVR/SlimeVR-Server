@@ -18,6 +18,12 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { useLocaleConfig } from '@/i18n/config';
+import {
+  bodyPartOfBone,
+  boneIdOfBodyPart,
+  boneIdRegistryAtom,
+  boneRegistryAtom,
+} from '@/store/app-store';
 
 type TapDetectionForm = {
   yawResetEnabled: boolean;
@@ -64,6 +70,8 @@ export function TapDetectionSettings() {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const boneRegistry = useAtomValue(boneRegistryAtom);
+  const boneIdRegistry = useAtomValue(boneIdRegistryAtom);
 
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -95,9 +103,13 @@ export function TapDetectionSettings() {
     settingsReq.yawResetDelay = values.yawResetDelay;
     settingsReq.yawResetEnabled = values.yawResetEnabled;
     settingsReq.yawResetTaps = values.yawResetTaps;
-    settingsReq.yawResetTracker = Number(values.yawResetTracker);
-    settingsReq.mountingResetTracker = Number(values.mountingResetTracker);
-    settingsReq.fullResetTracker = Number(values.fullResetTracker);
+    settingsReq.yawResetBoneId =
+      boneIdOfBodyPart(boneIdRegistry, Number(values.yawResetTracker)) ?? null;
+    settingsReq.mountingResetBoneId =
+      boneIdOfBodyPart(boneIdRegistry, Number(values.mountingResetTracker)) ??
+      null;
+    settingsReq.fullResetBoneId =
+      boneIdOfBodyPart(boneIdRegistry, Number(values.fullResetTracker)) ?? null;
     settingsReq.mountingResetEnabled = values.mountingResetEnabled;
     settingsReq.mountingResetDelay = values.mountingResetDelay;
     settingsReq.mountingResetTaps = values.mountingResetTaps;
@@ -137,21 +149,24 @@ export function TapDetectionSettings() {
       fullResetTaps: settings.fullResetTaps ?? defaultValues.fullResetTaps,
       mountingResetTaps:
         settings.mountingResetTaps ?? defaultValues.mountingResetTaps,
-      yawResetTracker: String(
-        settings.yawResetTracker ?? defaultValues.yawResetTracker
-      ),
-      fullResetTracker: String(
-        settings.fullResetTracker ?? defaultValues.fullResetTracker
-      ),
-      mountingResetTracker: String(
-        settings.mountingResetTracker ?? defaultValues.mountingResetTracker
-      ),
+      yawResetTracker:
+        settings.yawResetBoneId != null
+          ? String(bodyPartOfBone(boneRegistry, settings.yawResetBoneId))
+          : defaultValues.yawResetTracker,
+      fullResetTracker:
+        settings.fullResetBoneId != null
+          ? String(bodyPartOfBone(boneRegistry, settings.fullResetBoneId))
+          : defaultValues.fullResetTracker,
+      mountingResetTracker:
+        settings.mountingResetBoneId != null
+          ? String(bodyPartOfBone(boneRegistry, settings.mountingResetBoneId))
+          : defaultValues.mountingResetTracker,
       numberTrackersOverThreshold:
         settings.numberTrackersOverThreshold ??
         defaultValues.numberTrackersOverThreshold,
     };
     reset({ ...getValues(), ...formData });
-  }, [settings]);
+  }, [settings, boneRegistry]);
 
   useRPCPacket(
     RpcMessage.TapDetectionSettingsResponse,

@@ -5,13 +5,14 @@ package dev.slimevr.trackingchecklist
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerState
 import dev.slimevr.config.Settings
-import dev.slimevr.device.DeviceState
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.routing.Routes
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.VRCConfigState
@@ -74,8 +75,8 @@ data class ChecklistTracker(
 	val id: Int,
 	val origin: DeviceOrigin,
 	val status: TrackerStatus,
-	val bodyPart: BodyPart?,
-	val intendedBodyPart: BodyPart?,
+	val boneId: BoneId?,
+	val intendedBoneId: BoneId?,
 	val imuType: ImuType?,
 	val completedRestCalibration: Boolean?,
 	// Deliberately not the position itself: the checks only ask whether there is one, and carrying the
@@ -87,8 +88,8 @@ fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	id = tracker.id,
 	origin = tracker.origin,
 	status = tracker.status,
-	bodyPart = tracker.bodyPart,
-	intendedBodyPart = tracker.intendedBodyPart,
+	boneId = tracker.boneId,
+	intendedBoneId = tracker.intendedBoneId,
 	imuType = tracker.imuType,
 	completedRestCalibration = tracker.completedRestCalibration,
 	hasPosition = tracker.position != null,
@@ -100,8 +101,8 @@ internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> =
 
 class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
-		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.intendedBodyPart == BodyPart.HEAD }
-		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
+		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.intendedBoneId == BodyPart.HEAD.boneId }
+		val isAssigned = hmdTracker?.boneId == BodyPart.HEAD.boneId
 		return TrackingChecklistStep(
 			valid = isAssigned,
 			enabled = hmdTracker != null,
@@ -158,7 +159,7 @@ class TrackerRestCheckBehaviour(private val trackerStates: StateFlow<List<Checkl
 class TrackerErrorCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
 		val errorTrackers = trackers
-			.filter { tracker -> tracker.status == TrackerStatus.ERROR && tracker.bodyPart != null }
+			.filter { tracker -> tracker.status == TrackerStatus.ERROR && tracker.boneId != null }
 			.toSet()
 		return TrackingChecklistStep(
 			valid = errorTrackers.isEmpty(),
@@ -189,7 +190,7 @@ class SteamVRHandsCheckBehaviour(
 	private val boneRouting: BoneRoutingManager,
 ) : TrackingChecklistBehaviourType {
 	companion object {
-		private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+		private val HAND_BONES = setOf(BodyPart.LEFT_HAND.boneId, BodyPart.RIGHT_HAND.boneId)
 
 		fun computeStep(
 			trackers: List<ChecklistTracker>,
@@ -199,7 +200,7 @@ class SteamVRHandsCheckBehaviour(
 			// The skeleton computes a hand bone from the arm chain, so routing one sends a hand
 			// tracker to SteamVR whether or not the user wears anything on that hand.
 			val handsSentToDriver = HAND_BONES.any { hand -> routes[hand]?.contains(RoutingOutput.DRIVER) == true }
-			val handTrackers = trackers.filter { tracker -> tracker.bodyPart in HAND_BONES }
+			val handTrackers = trackers.filter { tracker -> tracker.boneId in HAND_BONES }
 			// Controllers reach us back through the driver, anything else on a hand is a
 			// tracker the user actually wears.
 			val hasControllers = handTrackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
@@ -289,13 +290,13 @@ private fun isImuAssigned(tracker: ChecklistTracker): Boolean = (tracker.origin 
 	!tracker.hasPosition &&
 	tracker.imuType !== null &&
 	tracker.status != TrackerStatus.ERROR &&
-	tracker.bodyPart != null
+	tracker.boneId != null
 
 private fun isConnectedAssignedImu(tracker: ChecklistTracker): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
 	!tracker.hasPosition &&
 	tracker.imuType !== null &&
 	(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
-	tracker.bodyPart != null
+	tracker.boneId != null
 
 class FullResetCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
@@ -317,19 +318,19 @@ class FullResetCheckBehaviour(
 			}
 			.launchIn(scope)
 
-		val bodyParts = mutableMapOf<Int, BodyPart>()
+		val boneIds = mutableMapOf<Int, BoneId>()
 		trackerStates
-			.map { trackers -> trackers.mapNotNull { tracker -> tracker.bodyPart?.let { tracker.id to it } }.toMap() }
+			.map { trackers -> trackers.mapNotNull { tracker -> tracker.boneId?.let { tracker.id to it } }.toMap() }
 			.distinctUntilChanged()
 			.onEach { current ->
-				for ((id, bodyPart) in current) {
-					val previous = bodyParts[id]
-					if (previous != null && previous != bodyPart) {
+				for ((id, boneId) in current) {
+					val previous = boneIds[id]
+					if (previous != null && previous != boneId) {
 						needsReset.update { ids -> ids + id }
 					}
 				}
-				bodyParts.clear()
-				bodyParts.putAll(current)
+				boneIds.clear()
+				boneIds.putAll(current)
 			}
 			.launchIn(scope)
 
@@ -386,6 +387,8 @@ class MountingCalibrationCheckBehaviour(
 	}
 }
 
+private val FEET_BONE_IDS = ResetBodyParts.FEET.mapTo(mutableSetOf()) { it.boneId }
+
 class FeetMountingCalibrationCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
 	private val resetsManager: ResetsManager,
@@ -403,7 +406,7 @@ class FeetMountingCalibrationCheckBehaviour(
 				valid = resetsState.feetMountingResetCompleted,
 				enabled = resetsConfig.lastMountingMethod == MountingMethod.POSE &&
 					!resetsConfig.resetMountingFeet &&
-					imuTrackers.any { it.bodyPart in ResetBodyParts.FEET },
+					imuTrackers.any { it.boneId in FEET_BONE_IDS },
 				ignorable = true,
 				visibility = TrackingChecklistStepVisibility.ALWAYS,
 			)

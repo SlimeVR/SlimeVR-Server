@@ -1,7 +1,9 @@
 package dev.slimevr.skeleton.inputprocessors
 
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
+import dev.slimevr.skeleton.boneId
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -9,11 +11,11 @@ import solarxr_protocol.datatypes.BodyPart
  */
 class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
 	/**
-	 * First element is the linked BodyPart.
+	 * First element is the linked bone.
 	 *
-	 * Second element is the BodyPart the first element is linked to.
+	 * Second element is the bone the first element is linked to.
 	 */
-	private val linkedToSource = arrayOf(
+	private val linkedToSource: Array<Pair<BoneId, BoneId>> = arrayOf(
 		BodyPart.HEAD to BodyPart.NECK,
 		BodyPart.NECK to BodyPart.HEAD,
 
@@ -31,17 +33,17 @@ class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
 
 		BodyPart.LEFT_HAND to BodyPart.LEFT_LOWER_ARM,
 		BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
-	)
+	).map { (bodyPart, source) -> bodyPart.boneId to source.boneId }.toTypedArray()
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		for ((bodyPart, source) in linkedToSource) {
-			val bone = mutableInputSkeleton[bodyPart] ?: continue
+		for ((boneId, sourceId) in linkedToSource) {
+			val bone = mutableInputSkeleton[boneId] ?: continue
 			if (bone.isRotationActive) continue
 
-			val rotation = mutableInputSkeleton[source]?.rotation ?: continue
+			val rotation = mutableInputSkeleton[sourceId]?.rotation ?: continue
 			if (rotation == bone.rotation) continue
 
-			mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
+			mutableInputSkeleton[boneId] = bone.copy(rotation = rotation)
 		}
 	}
 }

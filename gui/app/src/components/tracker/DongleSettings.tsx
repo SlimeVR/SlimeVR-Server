@@ -20,6 +20,8 @@ import { DongleTelemetry } from './DongleTelemetry';
 import { TrackerStatus } from './TrackerStatus';
 import { ConnectionGroupIcon } from './TrackerConnectionGroup';
 import {
+  bodyPartOfBone,
+  boneRegistryAtom,
   donglesAtom,
   flatTrackersAtom,
   groupTrackersByConnection,
@@ -69,12 +71,15 @@ export function DongleSettingsPage() {
   );
 
   const flatTrackers = useAtomValue(flatTrackersAtom);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
   const pairedTrackers = useMemo(() => {
-    const group = groupTrackersByConnection(flatTrackers, dongles).find(
-      (g) => g.kind === 'dongle' && g.dongleId === dongleId
-    );
+    const group = groupTrackersByConnection(
+      flatTrackers,
+      dongles,
+      boneRegistry
+    ).find((g) => g.kind === 'dongle' && g.dongleId === dongleId);
     return group ? [...group.assigned, ...group.unassigned] : [];
-  }, [flatTrackers, dongles, dongleId]);
+  }, [flatTrackers, dongles, dongleId, boneRegistry]);
 
   const displayName = dongle?.displayName?.toString();
   const customName = dongle?.customName?.toString();
@@ -234,7 +239,10 @@ export function DongleSettingsPage() {
                   >
                     <div className="flex gap-3 items-center fill-background-10">
                       <BodyPartIcon
-                        bodyPart={tracker.info?.bodyPart}
+                        bodyPart={bodyPartOfBone(
+                          boneRegistry,
+                          tracker.info?.boneId
+                        )}
                         device={device}
                         trackerId={tracker.trackerId}
                         width={32}

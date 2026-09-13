@@ -33,7 +33,6 @@ import solarxr_protocol.data_feed.tracker_data.StayAlignedTracker
 import solarxr_protocol.data_feed.tracker_data.TrackerData
 import solarxr_protocol.data_feed.tracker_data.TrackerDataMask
 import solarxr_protocol.data_feed.tracker_data.TrackerInfo
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
@@ -64,7 +63,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 		TrackerInfo(
 			isImu = tracker.imuType != null,
 			imuType = tracker.imuType ?: ImuType.UNKNOWN,
-			bodyPart = tracker.bodyPart ?: BodyPart.NONE,
+			boneId = tracker.boneId?.value ?: 0u,
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			mountingResetOrientation = tracker.sessionCalibration.headingAlignment.let { Quat(it.x, it.y, it.z, it.w) },
 			displayName = tracker.name,
@@ -178,7 +177,7 @@ fun createDatafeedFrame(
 		null
 	}
 	val bones = datafeedConfig.boneMask?.let { mask ->
-		skeleton.currentComputed.values.map { createBone(it, mask) }
+		skeleton.currentComputed.entries.map { (id, bone) -> createBone(bone, id, mask) }
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask) {
 		createServerGuards(resetsManager, heightCalibrationManager)

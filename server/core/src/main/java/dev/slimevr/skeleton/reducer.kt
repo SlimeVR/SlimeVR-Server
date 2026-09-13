@@ -6,25 +6,25 @@ import solarxr_protocol.datatypes.BodyPart
 
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBoneRotation -> {
-		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(rotation = action.rotation, isRotationActive = action.setActive) })
+		val bone = state.boneInputs[action.boneId] ?: return state
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.boneId] = bone.copy(rotation = action.rotation, isRotationActive = action.setActive) })
 	}
 
 	is SkeletonActions.SetBoneAcceleration -> {
-		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(acceleration = action.acceleration, isAccelerationActive = action.setActive) })
+		val bone = state.boneInputs[action.boneId] ?: return state
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.boneId] = bone.copy(acceleration = action.acceleration, isAccelerationActive = action.setActive) })
 	}
 
 	is SkeletonActions.SetBonePosition -> {
-		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(position = action.position, isPositionActive = action.setActive) })
+		val bone = state.boneInputs[action.boneId] ?: return state
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.boneId] = bone.copy(position = action.position, isPositionActive = action.setActive) })
 	}
 
 	is SkeletonActions.DisableBone -> {
-		val bone = state.boneInputs[action.bodyPart] ?: return state
+		val bone = state.boneInputs[action.boneId] ?: return state
 		state.copy(
 			boneInputs = state.boneInputs.mutateCopy {
-				it[action.bodyPart] = bone.copy(
+				it[action.boneId] = bone.copy(
 					rotation = Quaternion.IDENTITY,
 					acceleration = Vector3.ZERO,
 					position = null,
@@ -37,14 +37,13 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 	}
 
 	is SkeletonActions.SetProportions -> {
-		val offsets = toBoneOffsets(action.lengths)
-		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
+		val newBones = state.boneInputs.mapValues { boneId, bone ->
 			bone.copy(
-				headOffset = offsets.head[bodyPart] ?: bone.headOffset,
-				offset = offsets.tail[bodyPart] ?: bone.offset,
+				headOffset = action.boneOffsets.head[boneId] ?: bone.headOffset,
+				offset = action.boneOffsets.tail[boneId] ?: bone.offset,
 			)
 		}
-		state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
+		state.copy(boneInputs = newBones, skeletonHeight = action.skeletonHeight)
 	}
 
 	is SkeletonActions.PauseTracking -> state.copy(paused = action.pause, pausedProcessedBoneInputs = null)
@@ -53,14 +52,14 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.ResetHeadPosition -> {
 		val boneInputs = state.boneInputs
-		val headBone = boneInputs[BodyPart.HEAD] ?: return state
+		val headBone = boneInputs[BodyPart.HEAD.boneId] ?: return state
 		if (headBone.isPositionActive) return state
-		state.copy(boneInputs = boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = null) })
+		state.copy(boneInputs = boneInputs.mutateCopy { it[BodyPart.HEAD.boneId] = headBone.copy(position = null) })
 	}
 
 	is SkeletonActions.ComputeFloorLevel -> {
 		val skeletonHeight = state.skeletonHeight
-		val headHeight = state.boneInputs[BodyPart.HEAD]?.position?.y ?: skeletonHeight
+		val headHeight = state.boneInputs[BodyPart.HEAD.boneId]?.position?.y ?: skeletonHeight
 		state.copy(floorLevel = headHeight - skeletonHeight)
 	}
 }

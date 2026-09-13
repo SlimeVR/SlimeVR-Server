@@ -22,7 +22,35 @@ export const ignoredTrackersAtom = atom(new Set<string>());
 
 export const datafeedAtom = atom(new DataFeedUpdateT());
 
-export const bonesAtom = atom<BoneT[]>([]);
+// Keyed by BodyPart, resolved from each Bone's registry ID as it arrives (see useProvideAppContext).
+export const bonesAtom = atom<Map<BodyPart, BoneT>>(new Map());
+export const boneRegistryAtom = atom<Map<number, BodyPart>>(new Map());
+
+export function bodyPartOfBone(
+  registry: Map<number, BodyPart>,
+  boneId: number | undefined
+): BodyPart {
+  return (boneId != null ? registry.get(boneId) : undefined) ?? BodyPart.NONE;
+}
+
+// Inverse of boneRegistryAtom, derived so the two can never drift out of sync.
+// BodyPart.NONE is excluded so it never resolves back to a real bone id.
+export const boneIdRegistryAtom = atom((get) => {
+  const registry = get(boneRegistryAtom);
+  const inverse = new Map<BodyPart, number>();
+  for (const [boneId, bodyPart] of registry) {
+    if (bodyPart === BodyPart.NONE) continue;
+    inverse.set(bodyPart, boneId);
+  }
+  return inverse;
+});
+
+export function boneIdOfBodyPart(
+  idRegistry: Map<BodyPart, number>,
+  bodyPart: BodyPart
+): number | undefined {
+  return idRegistry.get(bodyPart);
+}
 
 export const devicesAtom = selectAtom(
   datafeedAtom,
@@ -59,7 +87,8 @@ export type TrackerConnectionGroup = {
 
 export function groupTrackersByConnection(
   trackers: FlatDeviceTracker[],
-  dongles: DongleDataT[]
+  dongles: DongleDataT[],
+  boneRegistry: Map<number, BodyPart>
 ): TrackerConnectionGroup[] {
   const dongleByDeviceId = new Map<number, DongleDataT>(
     dongles.flatMap((dongle) => dongle.devicesIds.map((id) => [id, dongle]))
@@ -117,7 +146,8 @@ export function groupTrackersByConnection(
 
   for (const flatTracker of trackers) {
     const group = getGroup(flatTracker);
-    const isUnassigned = flatTracker.tracker.info?.bodyPart === BodyPart.NONE;
+    const isUnassigned =
+      bodyPartOfBone(boneRegistry, flatTracker.tracker.info?.boneId) === BodyPart.NONE;
     const targetList = isUnassigned ? group.unassigned : group.assigned;
 
     targetList.push(flatTracker);
@@ -162,11 +192,12 @@ export function groupTrackersByDevice(
 }
 
 export function groupTrackerByBodyPart(
-  trackers: FlatDeviceTracker[]
+  trackers: FlatDeviceTracker[],
+  boneRegistry: Map<number, BodyPart>
 ): Partial<Record<BodyPart, FlatDeviceTracker>> {
   const byPart: Partial<Record<BodyPart, FlatDeviceTracker>> = {};
   trackers.forEach((td) => {
-    byPart[td.tracker.info?.bodyPart ?? BodyPart.NONE] = td;
+    byPart[bodyPartOfBone(boneRegistry, td.tracker.info?.boneId)] = td;
   });
   return byPart;
 }
@@ -181,22 +212,37 @@ export const flatTrackersAtom = atom((get) => {
 
 export const assignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
-  return trackers.filter(({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE);
+  const boneRegistry = get(boneRegistryAtom);
+  return trackers.filter(
+    ({ tracker }) =>
+      bodyPartOfBone(boneRegistry, tracker.info?.boneId) !== BodyPart.NONE
+  );
 });
 
 export const trackerByBodyPartAtom = atom((get) =>
-  groupTrackerByBodyPart(get(assignedTrackersAtom))
+  groupTrackerByBodyPart(get(assignedTrackersAtom), get(boneRegistryAtom))
 );
 
+const assignedRolesRawAtom = atom((get) => {
+  const boneRegistry = get(boneRegistryAtom);
+  return get(assignedTrackersAtom).map(({ tracker }) =>
+    bodyPartOfBone(boneRegistry, tracker.info?.boneId)
+  );
+});
+
 export const assignedRolesAtom = selectAtom(
-  assignedTrackersAtom,
-  (trackers) => trackers.map(({ tracker }) => tracker.info?.bodyPart ?? BodyPart.NONE),
+  assignedRolesRawAtom,
+  (parts) => parts,
   (a, b) => a.length === b.length && a.every((part, i) => part === b[i])
 );
 
 export const unassignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
-  return trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE);
+  const boneRegistry = get(boneRegistryAtom);
+  return trackers.filter(
+    ({ tracker }) =>
+      bodyPartOfBone(boneRegistry, tracker.info?.boneId) === BodyPart.NONE
+  );
 });
 
 export const connectedTrackersAtom = atom((get) => {

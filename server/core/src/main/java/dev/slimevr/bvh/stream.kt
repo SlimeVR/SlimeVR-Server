@@ -2,14 +2,13 @@ package dev.slimevr.bvh
 
 import com.jme3.math.FastMath
 import dev.slimevr.config.TextFileHandle
-import dev.slimevr.skeleton.BODY_PART_HIERARCHY_MAP
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import solarxr_protocol.datatypes.BodyPart
 
 private const val FRAME_COUNT_DIGITS = Long.MAX_VALUE.toString().length
 private const val OFFSET_SCALE = 1f
@@ -30,7 +29,7 @@ class BvhStream(
 		mutex.withLock {
 			check(!closed) { "BVH stream is closed" }
 			file.write("HIERARCHY\n")
-			writeBone(BodyPart.HEAD, null, bones, 0)
+			writeBone(bones.registry.root, null, bones, 0)
 			file.write("MOTION\n")
 			file.write("Frames: ")
 			file.flush()
@@ -56,10 +55,10 @@ class BvhStream(
 			}
 			lastFrameTime = now
 
-			val head = bones[BodyPart.HEAD]
+			val head = bones[bones.registry.root]
 			val pos = head?.headPosition ?: Vector3.ZERO
 			file.write("${pos.x * POSITION_SCALE} ${pos.y * POSITION_SCALE} ${pos.z * POSITION_SCALE}")
-			writeRotations(BodyPart.HEAD, bones)
+			writeRotations(bones.registry.root, bones)
 			file.write("\n")
 			frameCount++
 		}
@@ -97,43 +96,44 @@ class BvhStream(
 
 	// A joint's BVH OFFSET is the vector from the parent joint's origin to this joint's, in the
 	// parent's frame: the parent's own head->tail offset plus this bone's head displacement.
-	private fun getBvhOffset(childPart: BodyPart, parentPart: BodyPart, bones: ComputedSkeleton): Vector3 {
-		val parentOffset = bones[parentPart]?.offset ?: Vector3.ZERO
-		val childHeadOffset = bones[childPart]?.headOffset ?: Vector3.ZERO
+	private fun getBvhOffset(childId: BoneId, parentId: BoneId, bones: ComputedSkeleton): Vector3 {
+		val parentOffset = bones[parentId]?.offset ?: Vector3.ZERO
+		val childHeadOffset = bones[childId]?.headOffset ?: Vector3.ZERO
 		return (parentOffset + childHeadOffset) * OFFSET_SCALE
 	}
 
-	private suspend fun writeRotations(part: BodyPart, bones: ComputedSkeleton) {
-		val bone = bones[part]
+	private suspend fun writeRotations(boneId: BoneId, bones: ComputedSkeleton) {
+		val bone = bones[boneId]
 		val rot = bone?.localRotation ?: Quaternion.IDENTITY
 		val angles = rot.toEulerAngles(EulerOrder.ZXY)
 		file.write(" ${angles.z * FastMath.RAD_TO_DEG} ${angles.x * FastMath.RAD_TO_DEG} ${angles.y * FastMath.RAD_TO_DEG}")
-		BODY_PART_HIERARCHY_MAP[part]?.forEach { child -> writeRotations(child, bones) }
+		bones.registry.childrenOf(boneId).forEach { child -> writeRotations(child, bones) }
 	}
 
-	private suspend fun writeBone(part: BodyPart, parent: BodyPart?, bones: ComputedSkeleton, depth: Int) {
+	private suspend fun writeBone(boneId: BoneId, parentId: BoneId?, bones: ComputedSkeleton, depth: Int) {
 		val indent = "\t".repeat(depth)
 		val childIndent = "\t".repeat(depth + 1)
-		file.write("$indent${if (parent == null) "ROOT" else "JOINT"} $part\n")
+		val name = requireNotNull(bones.registry[boneId]) { "$boneId is missing from its own registry" }.key.uppercase()
+		file.write("$indent${if (parentId == null) "ROOT" else "JOINT"} $name\n")
 		file.write("$indent{\n")
 
-		if (parent == null) {
+		if (parentId == null) {
 			file.write("${childIndent}OFFSET 0.0 0.0 0.0\n")
 			file.write("${childIndent}CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n")
 		} else {
-			val offset = getBvhOffset(part, parent, bones)
+			val offset = getBvhOffset(boneId, parentId, bones)
 			file.write("${childIndent}OFFSET ${offset.x} ${offset.y} ${offset.z}\n")
 			file.write("${childIndent}CHANNELS 3 Zrotation Xrotation Yrotation\n")
 		}
 
-		val children = BODY_PART_HIERARCHY_MAP[part]
-		if (children.isNullOrEmpty()) {
+		val children = bones.registry.childrenOf(boneId)
+		if (children.isEmpty()) {
 			file.write("${childIndent}End Site\n")
 			file.write("$childIndent{\n")
 			file.write("${"\t".repeat(depth + 2)}OFFSET 0.0 0.0 0.0\n")
 			file.write("$childIndent}\n")
 		} else {
-			children.forEach { child -> writeBone(child, part, bones, depth + 1) }
+			children.forEach { child -> writeBone(child, boneId, bones, depth + 1) }
 		}
 		file.write("$indent}\n")
 	}

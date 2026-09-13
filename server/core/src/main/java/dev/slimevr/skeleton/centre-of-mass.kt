@@ -30,9 +30,15 @@ data class COMState(
 	val acceleration: Vector3,
 )
 
+/** Resolves [BODY_PART_MASSES] to [BoneId] once. */
+fun resolveMasses(): Map<BoneId, Float> = buildMap {
+	for ((bodyPart, mass) in BODY_PART_MASSES) put(bodyPart.boneId, mass)
+}
+
 fun centreOfMass(
 	bones: ComputedSkeleton,
-): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.ZERO) { acc: Vector3, massEntry ->
+	masses: Map<BoneId, Float>,
+): Vector3 = masses.entries.fold(Vector3.ZERO) { acc: Vector3, massEntry ->
 	val bone = bones[massEntry.key] ?: return@fold acc
 	val boneCentre = (bone.headPosition + bone.tailPosition) / 2f
 	return@fold acc + (boneCentre * massEntry.value)

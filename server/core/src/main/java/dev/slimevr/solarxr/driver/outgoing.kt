@@ -3,7 +3,9 @@ package dev.slimevr.solarxr.driver
 import dev.slimevr.AppContextProvider
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.BodyPartMap
-import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.boneId
+import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.createBone
@@ -11,14 +13,12 @@ import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.BoneMask
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.driver_protocol.BoneBatteryUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate
@@ -58,12 +58,18 @@ class DriverOutgoingTrackersBehaviour(
 		),
 	)
 
+	private val nearestBoneIds: Map<BoneId, Set<BoneId>> = buildMap {
+		bodyPartToNearest.forEachBone { bodyPart, fallbacks ->
+			put(bodyPart.boneId, fallbacks.mapTo(mutableSetOf()) { it.boneId })
+		}
+	}
+
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
 		val settings = appContext.config.settings
 
-		val boneBatteries = bodyPartMap<BoneBatteryUpdate>()
+		val boneBatteries = mutableMapOf<BoneId, BoneBatteryUpdate>()
 
 		combine(settings.context.state.map { it.data.driverConfig }, receiver.context.state) { driverConfig, state ->
 			Triple(
@@ -75,34 +81,34 @@ class DriverOutgoingTrackersBehaviour(
 			.distinctUntilChanged()
 			.flatMapLatest { (enabled, driverName, boneMask) ->
 				if (!enabled || driverName == null || boneMask == null) return@flatMapLatest emptyFlow()
-				// Map the nearest trackers to their body parts
-				val trackerStateByBodyPart = bodyPartMap<TrackerState>()
+				// Map the nearest trackers to their bone
+				val trackerStateByBoneId = mutableMapOf<BoneId, TrackerState>()
 				for (tracker in server.context.state.value.trackers.values) {
 					val trackerState = tracker.context.state.value
 					if (trackerState.origin == DeviceOrigin.DRIVER) continue
-					val bodyPart = trackerState.bodyPart ?: continue
-					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
+					val boneId = trackerState.boneId ?: continue
+					trackerStateByBoneId.putIfAbsent(boneId, trackerState)
 				}
 
 				appContext.skeleton.computed.onEach { computedSkeleton ->
-					val bones = computedSkeleton.values.map { createBone(it, boneMask) }
+					val bones = computedSkeleton.entries.map { (id, bone) -> createBone(bone, id, boneMask) }
 
 					receiver.sendDriverMessage(SkeletonUpdate(bones = bones))
 
-					computedSkeleton.keys.forEach { bodyPart ->
-						val closestTracker = bodyPartToNearest[bodyPart].orEmpty()
-							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
+					for (boneId in computedSkeleton.keys) {
+						val closestTracker = nearestBoneIds[boneId].orEmpty()
+							.firstNotNullOfOrNull { trackerStateByBoneId[it] }
 						val closestDevice =
 							server.context.state.value.devices[closestTracker?.deviceId]?.context?.state?.value
 
 						if (closestDevice?.batteryLevel != null) {
 							val battery = BoneBatteryUpdate(
-								bone = bodyPart,
+								boneId = boneId.value,
 								batteryLevel = (closestDevice.batteryLevel * 100).toUInt().toUByte(),
 								charging = closestDevice.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
 							)
-							if (boneBatteries.put(bodyPart, battery) != battery) {
-								AppLogger.solarxr.debug("Sending BoneBatteryUpdate for $bodyPart")
+							if (boneBatteries.put(boneId, battery) != battery) {
+								AppLogger.solarxr.debug("Sending BoneBatteryUpdate for ${computedSkeleton.registry[boneId]?.key ?: boneId}")
 								receiver.sendDriverMessage(battery)
 							}
 						}

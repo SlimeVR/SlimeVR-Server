@@ -25,7 +25,7 @@ import { useOnboarding } from '@/hooks/onboarding';
 import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ObjectSchema, object, string } from 'yup';
 import { useAtomValue } from 'jotai';
-import { devicesAtom } from '@/store/app-store';
+import { boneRegistryAtom, devicesAtom } from '@/store/app-store';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { TipBox } from '@/components/commons/TipBox';
@@ -230,6 +230,7 @@ function OTADevicesList({
   const { l10n } = useLocalization();
   const { selectDevices } = useFirmwareTool();
   const allDevices = useAtomValue(devicesAtom);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const devices =
     allDevices.filter(({ hardwareInfo, trackers }) => {
@@ -248,7 +249,7 @@ function OTADevicesList({
 
   const deviceNames = ({ trackers }: DeviceDataT) =>
     trackers
-      .map(({ info }) => getLocalizedTrackerName(l10n, info))
+      .map(({ info }) => getLocalizedTrackerName(l10n, info, boneRegistry))
       .filter((i): i is string => !!i);
 
   const selectedDevices = watch('ota.selectedDevices');

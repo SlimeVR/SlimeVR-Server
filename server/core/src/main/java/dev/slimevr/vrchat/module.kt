@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.boneId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -84,7 +85,7 @@ class VRCConfigManager(
 fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigRecommendedValues {
 	val trackers = server.context.state.value.trackers.values
 
-	fun hasTracker(bodyPart: BodyPart) = trackers.any { it.context.state.value.bodyPart == bodyPart }
+	fun hasTracker(bodyPart: BodyPart) = trackers.any { it.context.state.value.boneId == bodyPart.boneId }
 
 	val hasLeftHandWithPosition = hasTracker(BodyPart.LEFT_HAND)
 	val hasRightHandWithPosition = hasTracker(BodyPart.RIGHT_HAND)

@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.ClearMountingResetRequest
@@ -12,7 +13,8 @@ class SessionCalibrationBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		// Reset request
 		receiver.rpcDispatcher.on<ResetRequest> { req ->
-			resetsManager.scheduleReset("SolarXRBridge", req.resetType, req.delay ?: 0f, req.bodyParts)
+			val boneIds = req.boneIds?.map { BoneId(it) }
+			resetsManager.scheduleReset("SolarXRBridge", req.resetType, req.delay ?: 0f, boneIds)
 		}.launchIn(receiver.context.scope)
 
 		// Clear mounting reset request

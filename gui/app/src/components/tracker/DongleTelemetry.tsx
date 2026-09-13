@@ -10,7 +10,8 @@ import { DropdownInside } from '@/components/commons/Dropdown';
 import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { useDongleTelemetryFeed } from '@/hooks/dongle-telemetry-feed';
-import { FlatDeviceTracker } from '@/store/app-store';
+import { boneRegistryAtom, FlatDeviceTracker } from '@/store/app-store';
+import { useAtomValue } from 'jotai';
 import { RssiLossChart } from './RssiLossChart';
 import { GapEventsChart } from './GapEventsChart';
 import { defaultDongleTelemetryConfig, useConfig } from '@/hooks/config';
@@ -141,6 +142,7 @@ export function DongleTelemetry({
   variant?: 'default' | 'modal';
 }) {
   const { l10n } = useLocalization();
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const colorsRef = useRef<Map<number, string>>(new Map());
   const colorFor = (deviceId: number): string => {
@@ -159,10 +161,12 @@ export function DongleTelemetry({
         .filter((t) => t.device)
         .map((t) => ({
           deviceId: t.device!.id,
-          name: String(getLocalizedTrackerName(l10n, t.tracker.info)),
+          name: String(
+            getLocalizedTrackerName(l10n, t.tracker.info, boneRegistry)
+          ),
           color: colorFor(t.device!.id),
         })),
-    [trackers, l10n]
+    [trackers, l10n, boneRegistry]
   );
 
   const trackerKey = list

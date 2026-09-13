@@ -1,12 +1,11 @@
 package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.forEachBone
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -30,17 +29,17 @@ class PredictionInputProcessor(val settings: Settings) :
 		val lastChange: MonotonicValueTimeMark,
 	)
 
-	private var deltas: BodyPartMap<BoneDelta> = bodyPartMap()
+	private var deltas: MutableMap<BoneId, BoneDelta> = mutableMapOf()
 
 	// Used to minimize latency even more for elbow tracking in VR where it is more noticeable.
-	private fun getMultiplier(bodyPart: BodyPart) = when (bodyPart) {
-		BodyPart.LEFT_SHOULDER,
-		BodyPart.RIGHT_SHOULDER,
-		BodyPart.LEFT_UPPER_ARM,
-		BodyPart.RIGHT_UPPER_ARM,
-		BodyPart.LEFT_LOWER_ARM,
-		BodyPart.RIGHT_LOWER_ARM,
-		-> 1.4f
+	private fun getMultiplier(boneId: BoneId) = when (boneId) {
+		BodyPart.LEFT_SHOULDER.boneId,
+		BodyPart.RIGHT_SHOULDER.boneId,
+		BodyPart.LEFT_UPPER_ARM.boneId,
+		BodyPart.RIGHT_UPPER_ARM.boneId,
+		BodyPart.LEFT_LOWER_ARM.boneId,
+		BodyPart.RIGHT_LOWER_ARM.boneId,
+			-> 1.4f
 
 		else -> 1f
 	}
@@ -55,17 +54,17 @@ class PredictionInputProcessor(val settings: Settings) :
 		}
 		val now = timeSource.markNow()
 
-		val newVelocities = bodyPartMap<BoneDelta>()
-		mutableInputSkeleton.forEachBone { bodyPart, bone ->
-			if (!bone.isRotationActive) return@forEachBone
+		val newVelocities = mutableMapOf<BoneId, BoneDelta>()
+		for ((boneId, bone) in mutableInputSkeleton) {
+			if (!bone.isRotationActive) continue
 
-			val prev = deltas[bodyPart]
+			val prev = deltas[boneId]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
-				return@forEachBone
+				newVelocities[boneId] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
+				continue
 			}
 
-			val bonePredictionAmount = filteringAmount * getMultiplier(bodyPart)
+			val bonePredictionAmount = filteringAmount * getMultiplier(boneId)
 
 			val changed = bone.rotation !== prev.lastRotation
 			val rotationDelta = if (changed) {
@@ -75,10 +74,10 @@ class PredictionInputProcessor(val settings: Settings) :
 				prev.rotationDelta
 			}
 
-			newVelocities[bodyPart] = BoneDelta(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
+			newVelocities[boneId] = BoneDelta(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
 			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
 			val predicted = (scaledDelta * bone.rotation).unit()
-			if (predicted != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = predicted)
+			if (predicted != bone.rotation) mutableInputSkeleton[boneId] = bone.copy(rotation = predicted)
 		}
 		deltas = newVelocities
 	}

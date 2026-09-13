@@ -3,6 +3,7 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tapdetection.TapDetectionActions
@@ -20,6 +21,7 @@ class TapDetectionBehaviour(
 		// Send config
 		receiver.rpcDispatcher.on<TapDetectionSettingsRequest> {
 			val config = settings.context.state.value.data.tapDetectionConfig
+			val registry = receiver.registry
 			receiver.sendRpc(
 				TapDetectionSettingsResponse(
 					yawResetDelay = config.yawResetDelay,
@@ -31,9 +33,9 @@ class TapDetectionBehaviour(
 					yawResetTaps = config.yawResetTaps.toUByte(),
 					fullResetTaps = config.fullResetTaps.toUByte(),
 					mountingResetTaps = config.mountingResetTaps.toUByte(),
-					yawResetTracker = config.yawResetBodyPart,
-					fullResetTracker = config.fullResetBodyPart,
-					mountingResetTracker = config.mountingResetBodyPart,
+					yawResetBoneId = config.yawResetBone?.let { registry.byKey(it)?.id },
+					fullResetBoneId = config.fullResetBone?.let { registry.byKey(it)?.id },
+					mountingResetBoneId = config.mountingResetBone?.let { registry.byKey(it)?.id },
 					numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
 				),
 			)
@@ -41,6 +43,7 @@ class TapDetectionBehaviour(
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->
+			val registry = receiver.registry
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
@@ -54,9 +57,9 @@ class TapDetectionBehaviour(
 							yawResetTaps = req.yawResetTaps?.toInt() ?: 2,
 							fullResetTaps = req.fullResetTaps?.toInt() ?: 2,
 							mountingResetTaps = req.mountingResetTaps?.toInt() ?: 2,
-							yawResetBodyPart = req.yawResetTracker,
-							fullResetBodyPart = req.fullResetTracker,
-							mountingResetBodyPart = req.mountingResetTracker,
+							yawResetBone = req.yawResetBoneId?.let { registry[BoneId(it)]?.key },
+							fullResetBone = req.fullResetBoneId?.let { registry[BoneId(it)]?.key },
+							mountingResetBone = req.mountingResetBoneId?.let { registry[BoneId(it)]?.key },
 							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: 1,
 						),
 					)

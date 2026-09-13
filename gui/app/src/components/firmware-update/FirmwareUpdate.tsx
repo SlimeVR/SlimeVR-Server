@@ -3,6 +3,7 @@ import { Typography } from '@/components/commons/Typography';
 import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  BodyPart,
   BoardType,
   DeviceDataT,
   FirmwareDeviceIdTableT,
@@ -33,7 +34,7 @@ import { object } from 'yup';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { A } from '@/components/commons/A';
 import { useAtomValue } from 'jotai';
-import { devicesAtom } from '@/store/app-store';
+import { boneRegistryAtom, devicesAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 
 interface FirmwareUpdateForm {
@@ -49,9 +50,13 @@ interface UpdateStatus {
   deviceNames: string[];
 }
 
-const deviceNames = ({ trackers }: DeviceDataT, l10n: ReactLocalization) =>
+const deviceNames = (
+  { trackers }: DeviceDataT,
+  l10n: ReactLocalization,
+  boneRegistry: Map<number, BodyPart>
+) =>
   trackers
-    .map(({ info }) => getLocalizedTrackerName(l10n, info))
+    .map(({ info }) => getLocalizedTrackerName(l10n, info, boneRegistry))
     .filter((i): i is string => !!i);
 
 const DeviceList = ({
@@ -62,13 +67,14 @@ const DeviceList = ({
   devices: DeviceDataT[];
 }) => {
   const { l10n } = useLocalization();
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   return devices.map((device, index) => (
     <DeviceCardControl
       key={index}
       control={control}
       name={`selectedDevices.${device.id}`}
-      deviceNames={deviceNames(device, l10n)}
+      deviceNames={deviceNames(device, l10n, boneRegistry)}
     />
   ));
 };
@@ -111,6 +117,7 @@ export function FirmwareUpdate() {
   const [status, setStatus] = useState<Record<string, UpdateStatus>>({});
 
   const allDevices = useAtomValue(devicesAtom);
+  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const devices =
     allDevices.filter(
@@ -306,7 +313,7 @@ export function FirmwareUpdate() {
             type: FirmwareUpdateMethod.OTAFirmwareUpdate,
             deviceIdPort: id,
             board: device.hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN,
-            deviceNames: deviceNames(device, l10n),
+            deviceNames: deviceNames(device, l10n, boneRegistry),
           },
         ];
       },

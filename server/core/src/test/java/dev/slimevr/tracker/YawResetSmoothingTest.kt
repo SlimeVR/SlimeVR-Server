@@ -8,6 +8,7 @@ import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.degreeToRadian
 import dev.slimevr.quaternionAssertEquals
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +35,7 @@ class YawResetSmoothingTest {
 			appContext,
 			settings,
 			id = 0,
-			bodyPart = BodyPart.LOWER_CHEST,
+			boneId = BodyPart.LOWER_CHEST.boneId,
 			status = TrackerStatus.OK,
 			rawRotation = raw,
 			additionalBehaviours = listOf(TrackerYawResetSmoothingBehaviour()),
