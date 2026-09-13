@@ -32,6 +32,7 @@ class PredictionInputProcessor(val settings: Settings) :
 
 	private var deltas: BodyPartMap<BoneDelta> = bodyPartMap()
 
+	// Used to minimize latency even more for elbow tracking in VR where it is more noticeable.
 	private fun getMultiplier(bodyPart: BodyPart) = when (bodyPart) {
 		BodyPart.LEFT_SHOULDER,
 		BodyPart.RIGHT_SHOULDER,
