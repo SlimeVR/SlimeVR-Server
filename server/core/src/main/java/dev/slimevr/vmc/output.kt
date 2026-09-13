@@ -1,5 +1,6 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.logging.AppLogger
@@ -27,6 +28,7 @@ private val RECOVERY_CONFIRM_DELAY = 2.seconds
 
 class VMCOutputBehaviour(
 	private val skeleton: Skeleton,
+	private val registry: BoneRegistry,
 	private val settings: Settings,
 	private val boneRouting: BoneRoutingManager,
 ) : VMCBehaviour {
@@ -60,7 +62,7 @@ class VMCOutputBehaviour(
 		val routedBones = boneRouting.context.state
 			.map { state -> state.routes.filterValues { RoutingOutput.VMC in it }.keys }
 			.distinctUntilChanged()
-			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), skeleton.registry::bodyPartOf) }
+			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), registry::bodyPartOf) }
 
 		val config = settings.context.state
 			.map { it.data.vmcConfig }

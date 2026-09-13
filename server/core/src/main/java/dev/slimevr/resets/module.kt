@@ -3,16 +3,17 @@ package dev.slimevr.resets
 import com.jme3.math.FastMath
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.boneId
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.getFirstActiveFor
 import io.github.axisangles.ktmath.Quaternion
@@ -52,11 +53,10 @@ sealed interface ResetsActions {
 typealias ResetsContext = Context<ResetsState, ResetsActions>
 typealias ResetsBehaviour = Behaviour<ResetsManager>
 
-class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings, val skeleton: Skeleton) {
+class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings, val skeleton: Skeleton, private val registry: BoneRegistry) {
 	fun startObserving() = context.observeAll(this)
 
 	private var resetJob: Job = Job()
-	private val registry get() = skeleton.registry
 
 	/**
 	 * Schedules a reset according to the resetType.
@@ -211,7 +211,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton)
+			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton, ctx.bones.current)
 		}
 	}
 }

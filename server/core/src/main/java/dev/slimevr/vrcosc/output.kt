@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.logging.AppLogger
@@ -33,6 +34,7 @@ private val RECOVERY_CONFIRM_DELAY = 2.seconds
 
 class VRCOSCOutputBehaviour(
 	private val skeleton: Skeleton,
+	private val registry: BoneRegistry,
 	private val settings: Settings,
 	private val boneRouting: BoneRoutingManager,
 ) : VRCOSCBehaviour {
@@ -70,7 +72,7 @@ class VRCOSCOutputBehaviour(
 		val routedBones = boneRouting.context.state
 			.map { state -> state.routes.filterValues { RoutingOutput.VRC_OSC in it }.keys }
 			.distinctUntilChanged()
-			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), skeleton.registry::bodyPartOf) }
+			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), registry::bodyPartOf) }
 
 		combine(skeleton.computed, routedBones, ::Pair)
 			.onEach { (computedSkeleton, bones) -> sendFrame(receiver, runtime, computedSkeleton, bones) }

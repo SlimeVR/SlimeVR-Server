@@ -10,6 +10,7 @@ import dev.slimevr.FeatureFlags
 import dev.slimevr.Phase1Context
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
+import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.contextDebugEnabled
@@ -126,12 +127,16 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val config = AppConfig.create(this, storage = storage)
 	val server = VRServer.create(this)
 	val serialServer = createDesktopSerialServer(this)
+	val bones = BoneRegistryManager.create(scope = this)
 
-	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer)
+	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer, bones = bones)
 
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
 	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
+	// Nothing registers extension bones yet, so this is a no-op today; it exists so the
+	// tracking stack below never observes a registry that could still change under it.
+	bones.freeze()
 	val skeleton = Skeleton.create(scope = this, ctx = phase1, waiter = createDesktopWaiter())
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
@@ -159,6 +164,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		server = server,
 		config = config,
 		serialServer = serialServer,
+		bones = bones,
 		serverInfos = serverInfos,
 		featureFlags = featureFlags,
 		keybindManager = keybindManager,

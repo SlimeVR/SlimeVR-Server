@@ -1,6 +1,6 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.skeleton.boneId
+import dev.slimevr.bones.boneId
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod

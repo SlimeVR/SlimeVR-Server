@@ -1,5 +1,9 @@
 package dev.slimevr
 
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
@@ -27,9 +31,6 @@ import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.skeleton.BoneId
-import dev.slimevr.skeleton.BoneMap
-import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.ProportionsBehaviour
@@ -140,7 +141,8 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
-	val resetsManager = ResetsManager(context, server, settings, buildTestSkeleton(scope))
+	val skeleton = buildTestSkeleton(scope)
+	val resetsManager = ResetsManager(context, server, settings, skeleton, skeleton.registry)
 	resetsManager.startObserving()
 	return resetsManager
 }
@@ -271,6 +273,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val featureFlags: FeatureFlags = FeatureFlags()
 	override val keybindManager: KeybindManager get() = error("not used in test")
 	override val skeleton: Skeleton get() = error("not used in test")
+	override val bones: BoneRegistryManager get() = error("not used in test")
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
 	override val serverInfos: ServerInfos get() = error("not used in test")

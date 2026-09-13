@@ -27,6 +27,7 @@ import dev.slimevr.android.serial.createAndroidSerialServer
 import dev.slimevr.android.timing.createAndroidWaiter
 import dev.slimevr.android.udp.resolveAndroidUdpAddress
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
+import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
@@ -150,11 +151,15 @@ class ForegroundService : Service() {
 		val config = AppConfig.create(scope = scope, storage = storage)
 		val server = VRServer.create(scope = scope)
 		val serialServer = createAndroidSerialServer(context = this, scope = scope)
+		val bones = BoneRegistryManager.create(scope = scope)
 
-		val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer)
+		val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer, bones = bones)
 
 		val firmwareManager = FirmwareManager.create(ctx = phase1, scope = scope, flasher = AndroidFirmwareFlasher)
 		val networkProfileManager = NetworkProfileManager.create(scope = scope, isSupported = false)
+		// Nothing registers extension bones yet, so this is a no-op today; it exists so the
+		// tracking stack below never observes a registry that could still change under it.
+		bones.freeze()
 		val skeleton = Skeleton.create(scope = scope, ctx = phase1, waiter = createAndroidWaiter())
 		val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = scope)
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
@@ -178,6 +183,7 @@ class ForegroundService : Service() {
 			server = server,
 			config = config,
 			serialServer = serialServer,
+			bones = bones,
 			serverInfos = serverInfos,
 			featureFlags = FeatureFlags(
 				skipCheckUdev = true,
