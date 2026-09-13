@@ -3,10 +3,7 @@
   "key": "slimevr:hand_z",
   "nameKey": "slimevr:proportion.hand_z",
   "descriptionKey": "slimevr:proportion.hand_z.description",
-  "default": {
-    "type": "fixed",
-    "value": 0
-  },
+  "default": {"type": "fixed", "value": 0},
   "contributesToHeight": false,
   "minimum": 0
 }

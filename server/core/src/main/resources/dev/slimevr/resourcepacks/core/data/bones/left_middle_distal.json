@@ -2,20 +2,16 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_middle_distal",
   "nameKey": "slimevr:bone.left_middle_distal",
+  "mirror": "slimevr:right_middle_distal",
   "parent": "slimevr:left_middle_intermediate",
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:hand_y",
-        "direction": {
-          "x": 0,
-          "y": -0.19964,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:hand_y", "direction": {"x": 0, "y": -0.19964, "z": 0}}]
   },
-  "rotationFallback": {
-    "type": "none"
+  "rotationFallback": {"type": "none"},
+  "outputs": {
+    "vmc": {
+      "name": "LeftMiddleDistal",
+      "restRotation": [{"axis": {"x": 0, "y": 0, "z": 1}, "degrees": -90}]
+    }
   }
 }

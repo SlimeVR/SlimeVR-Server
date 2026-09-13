@@ -2,39 +2,21 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_lower_leg",
   "nameKey": "slimevr:bone.left_lower_leg",
+  "mirror": "slimevr:right_lower_leg",
   "parent": "slimevr:left_upper_leg",
   "tailOffset": {
     "terms": [
-      {
-        "proportion": "slimevr:lower_leg",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
-        }
-      },
-      {
-        "proportion": "slimevr:foot_shift",
-        "direction": {
-          "x": 0,
-          "y": 0,
-          "z": -1
-        }
-      }
+      {"proportion": "slimevr:lower_leg", "direction": {"x": 0, "y": -1, "z": 0}},
+      {"proportion": "slimevr:foot_shift", "direction": {"x": 0, "y": 0, "z": -1}}
     ]
   },
-  "rotationFallback": {
-    "type": "none"
-  },
+  "rotationFallback": {"type": "none"},
   "constraint": {
     "type": "looseHinge",
     "minDegrees": -5,
     "maxDegrees": 180,
     "allowedDeviationDegrees": 10,
-    "axis": {
-      "x": -1,
-      "y": 0,
-      "z": 0
-    }
-  }
+    "axis": {"x": -1, "y": 0, "z": 0}
+  },
+  "outputs": {"vmc": {"name": "LeftLowerLeg"}}
 }

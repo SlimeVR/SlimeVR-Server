@@ -2,30 +2,14 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:right_little_toe",
   "nameKey": "slimevr:bone.right_little_toe",
+  "mirror": "slimevr:left_little_toe",
+  "candidateSources": ["slimevr:right_little_toe"],
   "parent": "slimevr:right_foot",
   "headOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:foot_length",
-        "direction": {
-          "x": 0.26,
-          "y": 0,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:foot_length", "direction": {"x": 0.26, "y": 0, "z": 0}}]
   },
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:foot_length",
-        "direction": {
-          "x": 0,
-          "y": 0,
-          "z": -0.18
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:foot_length", "direction": {"x": 0, "y": 0, "z": -0.18}}]
   },
   "rotationFallback": {
     "type": "firstActive",
@@ -36,5 +20,37 @@
       "slimevr:right_big_toe",
       "slimevr:right_foot"
     ]
+  },
+  "outputs": {
+    "vmc": {"name": "RightLittleToe"},
+    "vrchat": {
+      "emit": {
+        "/avatar/parameters/ToeBentRight5Bool": {
+          "from": "rotation",
+          "relativeTo": "slimevr:right_foot",
+          "value": [{"euler": "x"}, {"greaterThan": 15}]
+        },
+        "/avatar/parameters/ToeSplayRight5": {
+          "from": "rotation",
+          "relativeTo": "slimevr:right_foot",
+          "value": [{"euler": "z"}, {"greaterThan": 7}]
+        },
+        "/avatar/parameters/ToeRight5Float": {
+          "from": "rotation",
+          "relativeTo": "slimevr:right_foot",
+          "value": [{"euler": "x"}, {"divide": 90}, {"clamp": [-1, 1]}]
+        },
+        "/avatar/parameters/ToeSplayRight5Float": {
+          "from": "rotation",
+          "relativeTo": "slimevr:right_foot",
+          "value": [{"euler": "z"}, {"divide": 90}, {"clamp": [-1, 1]}]
+        },
+        "/avatar/parameters/TipToesRight": {
+          "from": "rotation",
+          "relativeTo": "slimevr:right_foot",
+          "value": [{"euler": "x"}, {"lessThan": -14}]
+        }
+      }
+    }
   }
 }

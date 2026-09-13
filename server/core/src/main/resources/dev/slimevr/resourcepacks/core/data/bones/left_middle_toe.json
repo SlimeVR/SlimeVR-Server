@@ -2,30 +2,14 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_middle_toe",
   "nameKey": "slimevr:bone.left_middle_toe",
+  "mirror": "slimevr:right_middle_toe",
+  "candidateSources": ["slimevr:left_middle_toe"],
   "parent": "slimevr:left_foot",
   "headOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:foot_length",
-        "direction": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:foot_length", "direction": {"x": 0, "y": 0, "z": 0}}]
   },
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:foot_length",
-        "direction": {
-          "x": 0,
-          "y": 0,
-          "z": -0.23
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:foot_length", "direction": {"x": 0, "y": 0, "z": -0.23}}]
   },
   "rotationFallback": {
     "type": "firstActive",
@@ -36,5 +20,32 @@
       "slimevr:left_big_toe",
       "slimevr:left_foot"
     ]
+  },
+  "outputs": {
+    "vmc": {"name": "LeftMiddleToe"},
+    "vrchat": {
+      "emit": {
+        "/avatar/parameters/ToeBentLeft3Bool": {
+          "from": "rotation",
+          "relativeTo": "slimevr:left_foot",
+          "value": [{"euler": "x"}, {"greaterThan": 15}]
+        },
+        "/avatar/parameters/ToeSplayLeft3": {
+          "from": "rotation",
+          "relativeTo": "slimevr:left_foot",
+          "value": [{"euler": "z"}, {"lessThan": -7}]
+        },
+        "/avatar/parameters/ToeLeft3Float": {
+          "from": "rotation",
+          "relativeTo": "slimevr:left_foot",
+          "value": [{"euler": "x"}, {"divide": 90}, {"clamp": [-1, 1]}]
+        },
+        "/avatar/parameters/ToeSplayLeft3Float": {
+          "from": "rotation",
+          "relativeTo": "slimevr:left_foot",
+          "value": [{"euler": "z"}, {"divide": 90}, {"clamp": [-1, 1]}]
+        }
+      }
+    }
   }
 }

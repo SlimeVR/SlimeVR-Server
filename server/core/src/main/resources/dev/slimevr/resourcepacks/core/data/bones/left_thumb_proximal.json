@@ -2,20 +2,21 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_thumb_proximal",
   "nameKey": "slimevr:bone.left_thumb_proximal",
+  "mirror": "slimevr:right_thumb_proximal",
   "parent": "slimevr:left_thumb_metacarpal",
   "tailOffset": {
     "terms": [
       {
         "proportion": "slimevr:hand_y",
-        "direction": {
-          "x": 0.00833934,
-          "y": -0.16678683,
-          "z": -0.11675078
-        }
+        "direction": {"x": 0.00833934, "y": -0.16678683, "z": -0.11675078}
       }
     ]
   },
-  "rotationFallback": {
-    "type": "none"
+  "rotationFallback": {"type": "none"},
+  "outputs": {
+    "vmc": {
+      "name": "LeftThumbIntermediate",
+      "restRotation": [{"axis": {"x": 0, "y": 0, "z": 1}, "degrees": -90}]
+    }
   }
 }

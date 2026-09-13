@@ -2,37 +2,29 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:right_upper_leg",
   "nameKey": "slimevr:bone.right_upper_leg",
+  "mirror": "slimevr:left_upper_leg",
+  "batterySources": ["slimevr:right_upper_leg"],
+  "candidateSources": ["slimevr:right_upper_leg"],
   "parent": "slimevr:hip",
   "headOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:hips_width",
-        "direction": {
-          "x": 0.5,
-          "y": 0,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:hips_width", "direction": {"x": 0.5, "y": 0, "z": 0}}]
   },
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:upper_leg",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
+    "terms": [{"proportion": "slimevr:upper_leg", "direction": {"x": 0, "y": -1, "z": 0}}]
+  },
+  "rotationFallback": {"type": "none"},
+  "constraint": {"type": "twistSwing", "twistDegrees": 120, "swingDegrees": 170},
+  "outputs": {
+    "driver": {"supported": true},
+    "vmc": {"name": "RightUpperLeg"},
+    "vrchat": {
+      "emit": {
+        "/tracking/trackers/5/position": {"from": "position", "value": [{"scale": {"z": -1}}]},
+        "/tracking/trackers/5/rotation": {
+          "from": "rotation",
+          "value": [{"scale": {"x": -1, "y": -1}}, {"euler": {"order": "YXZ"}}]
         }
       }
-    ]
-  },
-  "rotationFallback": {
-    "type": "none"
-  },
-  "constraint": {
-    "type": "twistSwing",
-    "twistDegrees": 120,
-    "swingDegrees": 170
+    }
   }
 }

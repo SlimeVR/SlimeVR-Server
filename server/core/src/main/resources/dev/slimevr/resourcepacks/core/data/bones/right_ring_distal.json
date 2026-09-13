@@ -2,20 +2,16 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:right_ring_distal",
   "nameKey": "slimevr:bone.right_ring_distal",
+  "mirror": "slimevr:left_ring_distal",
   "parent": "slimevr:right_ring_intermediate",
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:hand_y",
-        "direction": {
-          "x": 0,
-          "y": -0.174685,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:hand_y", "direction": {"x": 0, "y": -0.174685, "z": 0}}]
   },
-  "rotationFallback": {
-    "type": "none"
+  "rotationFallback": {"type": "none"},
+  "outputs": {
+    "vmc": {
+      "name": "RightRingDistal",
+      "restRotation": [{"axis": {"x": 0, "y": 0, "z": 1}, "degrees": 90}]
+    }
   }
 }

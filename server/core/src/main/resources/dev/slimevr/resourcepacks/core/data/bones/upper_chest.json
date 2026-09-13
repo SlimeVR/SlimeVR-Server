@@ -2,25 +2,25 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:upper_chest",
   "nameKey": "slimevr:bone.upper_chest",
+  "batterySources": ["slimevr:upper_chest", "slimevr:lower_chest"],
+  "candidateSources": ["slimevr:upper_chest", "slimevr:lower_chest"],
   "parent": "slimevr:neck",
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:upper_chest",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
+    "terms": [{"proportion": "slimevr:upper_chest", "direction": {"x": 0, "y": -1, "z": 0}}]
+  },
+  "rotationFallback": {"type": "none"},
+  "constraint": {"type": "twistSwing", "twistDegrees": 90, "swingDegrees": 120},
+  "outputs": {
+    "driver": {"supported": true},
+    "vmc": {"name": "UpperChest"},
+    "vrchat": {
+      "emit": {
+        "/tracking/trackers/6/position": {"from": "position", "value": [{"scale": {"z": -1}}]},
+        "/tracking/trackers/6/rotation": {
+          "from": "rotation",
+          "value": [{"scale": {"x": -1, "y": -1}}, {"euler": {"order": "YXZ"}}]
         }
       }
-    ]
-  },
-  "rotationFallback": {
-    "type": "none"
-  },
-  "constraint": {
-    "type": "twistSwing",
-    "twistDegrees": 90,
-    "swingDegrees": 120
+    }
   }
 }

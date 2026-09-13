@@ -2,32 +2,32 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_foot",
   "nameKey": "slimevr:bone.left_foot",
+  "mirror": "slimevr:right_foot",
+  "batterySources": ["slimevr:left_foot", "slimevr:left_lower_leg"],
+  "candidateSources": ["slimevr:left_foot", "slimevr:left_lower_leg", "slimevr:left_upper_leg"],
   "parent": "slimevr:left_lower_leg",
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:foot_length",
-        "direction": {
-          "x": 0,
-          "y": 0,
-          "z": -1
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:foot_length", "direction": {"x": 0, "y": 0, "z": -1}}]
   },
-  "rotationFallback": {
-    "type": "copy",
-    "source": "slimevr:left_lower_leg"
-  },
+  "rotationFallback": {"type": "copy", "source": "slimevr:left_lower_leg"},
   "constraint": {
     "type": "looseHinge",
     "minDegrees": -60,
     "maxDegrees": 90,
     "allowedDeviationDegrees": 60,
-    "axis": {
-      "x": -1,
-      "y": 0,
-      "z": 0
+    "axis": {"x": -1, "y": 0, "z": 0}
+  },
+  "outputs": {
+    "driver": {"supported": true},
+    "vmc": {"name": "LeftFoot"},
+    "vrchat": {
+      "emit": {
+        "/tracking/trackers/2/position": {"from": "position", "value": [{"scale": {"z": -1}}]},
+        "/tracking/trackers/2/rotation": {
+          "from": "rotation",
+          "value": [{"scale": {"x": -1, "y": -1}}, {"euler": {"order": "YXZ"}}]
+        }
+      }
     }
   }
 }

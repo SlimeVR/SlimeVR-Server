@@ -2,34 +2,24 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_hand",
   "nameKey": "slimevr:bone.left_hand",
+  "mirror": "slimevr:right_hand",
+  "batterySources": ["slimevr:left_hand", "slimevr:left_lower_arm"],
+  "overridable": true,
   "parent": "slimevr:left_lower_arm",
   "tailOffset": {
     "terms": [
-      {
-        "proportion": "slimevr:hand_y",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
-        }
-      },
-      {
-        "proportion": "slimevr:hand_z",
-        "direction": {
-          "x": 0,
-          "y": 0,
-          "z": -1
-        }
-      }
+      {"proportion": "slimevr:hand_y", "direction": {"x": 0, "y": -1, "z": 0}},
+      {"proportion": "slimevr:hand_z", "direction": {"x": 0, "y": 0, "z": -1}}
     ]
   },
-  "rotationFallback": {
-    "type": "copy",
-    "source": "slimevr:left_lower_arm"
+  "rotationFallback": {"type": "copy", "source": "slimevr:left_lower_arm"},
+  "constraint": {"type": "twistSwing", "twistDegrees": 120, "swingDegrees": 120},
+  "outputs": {
+    "driver": {"supported": true},
+    "vmc": {
+      "name": "LeftHand",
+      "restRotation": [{"axis": {"x": 0, "y": 0, "z": 1}, "degrees": -90}]
+    }
   },
-  "constraint": {
-    "type": "twistSwing",
-    "twistDegrees": 120,
-    "swingDegrees": 120
-  }
+  "inputs": {"vrchat": {"address": "/tracking/vrsystem/leftwrist/pose"}}
 }

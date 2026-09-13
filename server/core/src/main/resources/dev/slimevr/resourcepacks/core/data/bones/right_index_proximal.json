@@ -2,32 +2,19 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:right_index_proximal",
   "nameKey": "slimevr:bone.right_index_proximal",
+  "mirror": "slimevr:left_index_proximal",
   "parent": "slimevr:right_hand",
   "headOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:hand_y",
-        "direction": {
-          "x": -0.03,
-          "y": 0.05,
-          "z": -0.34
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:hand_y", "direction": {"x": -0.03, "y": 0.05, "z": -0.34}}]
   },
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:hand_y",
-        "direction": {
-          "x": 0,
-          "y": -0.4025,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:hand_y", "direction": {"x": 0, "y": -0.4025, "z": 0}}]
   },
-  "rotationFallback": {
-    "type": "none"
+  "rotationFallback": {"type": "none"},
+  "outputs": {
+    "vmc": {
+      "name": "RightIndexProximal",
+      "restRotation": [{"axis": {"x": 0, "y": 0, "z": 1}, "degrees": 90}]
+    }
   }
 }

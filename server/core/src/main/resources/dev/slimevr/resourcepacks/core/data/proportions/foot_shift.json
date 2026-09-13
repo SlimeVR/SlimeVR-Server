@@ -3,9 +3,6 @@
   "key": "slimevr:foot_shift",
   "nameKey": "slimevr:proportion.foot_shift",
   "descriptionKey": "slimevr:proportion.foot_shift.description",
-  "default": {
-    "type": "fixed",
-    "value": -0.05
-  },
+  "default": {"type": "fixed", "value": -0.05},
   "contributesToHeight": false
 }

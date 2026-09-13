@@ -2,28 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "key",
-    "nameKey",
-    "default"
-  ],
+  "required": ["key", "nameKey", "default"],
   "properties": {
-    "$schema": {
-      "type": "string"
-    },
-    "key": {
-      "$ref": "common.schema.json#/$defs/key"
-    },
-    "nameKey": {
-      "$ref": "common.schema.json#/$defs/translationKey"
-    },
-    "descriptionKey": {
-      "$ref": "common.schema.json#/$defs/translationKey"
-    },
-    "contributesToHeight": {
-      "type": "boolean",
-      "default": false
-    },
+    "$schema": {"type": "string"},
+    "key": {"$ref": "common.schema.json#/$defs/key"},
+    "nameKey": {"$ref": "common.schema.json#/$defs/translationKey"},
+    "descriptionKey": {"$ref": "common.schema.json#/$defs/translationKey"},
+    "contributesToHeight": {"type": "boolean", "default": false},
     "minimum": {
       "type": "number",
       "description": "Optional inclusive lower bound for user-provided values, in metres."
@@ -37,34 +22,16 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "value"
-          ],
-          "properties": {
-            "type": {
-              "const": "fixed"
-            },
-            "value": {
-              "type": "number"
-            }
-          }
+          "required": ["type", "value"],
+          "properties": {"type": {"const": "fixed"}, "value": {"type": "number"}}
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "value"
-          ],
+          "required": ["type", "value"],
           "properties": {
-            "type": {
-              "const": "heightRatio"
-            },
-            "value": {
-              "type": "number",
-              "minimum": 0
-            }
+            "type": {"const": "heightRatio"},
+            "value": {"type": "number", "minimum": 0}
           }
         }
       ]

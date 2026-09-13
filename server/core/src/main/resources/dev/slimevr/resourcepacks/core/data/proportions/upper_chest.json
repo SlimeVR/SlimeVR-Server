@@ -3,10 +3,7 @@
   "key": "slimevr:upper_chest",
   "nameKey": "slimevr:proportion.upper_chest",
   "descriptionKey": "slimevr:proportion.upper_chest.description",
-  "default": {
-    "type": "heightRatio",
-    "value": 0.10126582
-  },
+  "default": {"type": "heightRatio", "value": 0.10126582},
   "contributesToHeight": true,
   "minimum": 0
 }

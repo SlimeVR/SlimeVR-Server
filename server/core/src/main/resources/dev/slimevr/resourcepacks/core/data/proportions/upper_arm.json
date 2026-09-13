@@ -3,10 +3,7 @@
   "key": "slimevr:upper_arm",
   "nameKey": "slimevr:proportion.upper_arm",
   "descriptionKey": "slimevr:proportion.upper_arm.description",
-  "default": {
-    "type": "heightRatio",
-    "value": 0.16455696
-  },
+  "default": {"type": "heightRatio", "value": 0.16455696},
   "contributesToHeight": false,
   "minimum": 0
 }

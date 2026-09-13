@@ -2,32 +2,23 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:right_lower_arm",
   "nameKey": "slimevr:bone.right_lower_arm",
+  "mirror": "slimevr:left_lower_arm",
   "parent": "slimevr:right_upper_arm",
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:lower_arm",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:lower_arm", "direction": {"x": 0, "y": -1, "z": 0}}]
   },
-  "rotationFallback": {
-    "type": "copy",
-    "source": "slimevr:right_upper_arm"
-  },
+  "rotationFallback": {"type": "copy", "source": "slimevr:right_upper_arm"},
   "constraint": {
     "type": "looseHinge",
     "minDegrees": -180,
     "maxDegrees": 0,
     "allowedDeviationDegrees": 40,
-    "axis": {
-      "x": -1,
-      "y": 0,
-      "z": 0
+    "axis": {"x": -1, "y": 0, "z": 0}
+  },
+  "outputs": {
+    "vmc": {
+      "name": "RightLowerArm",
+      "restRotation": [{"axis": {"x": 0, "y": 0, "z": 1}, "degrees": 90}]
     }
   }
 }

@@ -4,12 +4,6 @@
   "id": "slimevr:core",
   "nameKey": "slimevr:pack.core.name",
   "descriptionKey": "slimevr:pack.core.description",
-  "version": [
-    1,
-    0,
-    0
-  ],
-  "authors": [
-    "SlimeVR"
-  ]
+  "version": [1, 0, 0],
+  "authors": ["SlimeVR"]
 }

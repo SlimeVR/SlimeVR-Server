@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SlimeVR bone override",
+  "description": "Overrides selected properties of an existing bone. Definitions are resolved first, then overrides are applied in pack order before the resulting skeleton is validated. `set` merges where the bone schema declares a keyed map (`outputs` per output key, `emit` per address) and replaces whole everywhere deeper: a `value` pipeline or a `restRotation` list is always swapped atomically.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["target"],
+  "anyOf": [
+    {"properties": {"set": {}}, "required": ["set"]},
+    {"properties": {"remove": {}}, "required": ["remove"]}
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "target": {
+      "$ref": "common.schema.json#/$defs/key",
+      "description": "Key of the bone to override. Overrides cannot rename their target."
+    },
+    "set": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "description": "Property values to set on the target bone. `outputs` and the `emit` map inside each output entry merge per key. Every other property, and everything nested below those two merge points, is replaced atomically.",
+      "properties": {
+        "nameKey": {"$ref": "bone.schema.json#/properties/nameKey"},
+        "mirror": {"$ref": "bone.schema.json#/properties/mirror"},
+        "batterySources": {"$ref": "bone.schema.json#/properties/batterySources"},
+        "candidateSources": {"$ref": "bone.schema.json#/properties/candidateSources"},
+        "overridable": {"$ref": "bone.schema.json#/properties/overridable"},
+        "parent": {"$ref": "bone.schema.json#/properties/parent"},
+        "headOffset": {"$ref": "bone.schema.json#/properties/headOffset"},
+        "tailOffset": {"$ref": "bone.schema.json#/properties/tailOffset"},
+        "rotationFallback": {"$ref": "bone.schema.json#/properties/rotationFallback"},
+        "constraint": {"$ref": "bone.schema.json#/properties/constraint"},
+        "outputs": {"$ref": "bone.schema.json#/properties/outputs"},
+        "inputs": {"$ref": "bone.schema.json#/properties/inputs"}
+      }
+    },
+    "remove": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Property paths to remove. Each path is an array of segments (e.g. [\"outputs\", \"vmc\"], or [\"outputs\", \"vrchat\", \"emit\", \"/avatar/parameters/ToeLeft1Float\"] to remove one message from that bone's emit map). Required identity and display properties cannot be removed.",
+      "items": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+    }
+  }
+}

@@ -2,70 +2,85 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "key",
-    "nameKey"
-  ],
+  "required": ["key", "nameKey"],
   "properties": {
-    "$schema": {
-      "type": "string"
-    },
+    "$schema": {"type": "string"},
     "key": {
-      "$ref": "common.schema.json#/$defs/key"
+      "$ref": "common.schema.json#/$defs/key",
+      "description": "This bone's globally unique identifier, `namespace:name`."
     },
     "nameKey": {
-      "$ref": "common.schema.json#/$defs/translationKey"
+      "$ref": "common.schema.json#/$defs/translationKey",
+      "description": "Translation key for this bone's display name, resolved through the pack's language files."
+    },
+    "mirror": {
+      "$ref": "common.schema.json#/$defs/key",
+      "description": "This bone's anatomical left/right twin. Read today by VMC mirror mode."
+    },
+    "batterySources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Ordered bones whose assigned physical tracker's battery represents this bone's battery. The first bone in the list with a present, live tracker wins. A bone with no entry simply reports no battery.",
+      "items": {"$ref": "common.schema.json#/$defs/key"}
+    },
+    "candidateSources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Bones checked for a live, non-loopback tracker. If any has one, this bone becomes an automatic-routing candidate. Example: `slimevr:upper_chest` lists `slimevr:upper_chest` and `slimevr:lower_chest`. Without this field the bone is still manually routable given an `outputs` entry, but automatic mode never picks it.",
+      "items": {"$ref": "common.schema.json#/$defs/key"}
+    },
+    "overridable": {
+      "type": "boolean",
+      "const": true,
+      "description": "This bone is never chosen by automatic routing on its own. The user's manual choice for it is preserved when switching between automatic and manual routing modes. Reserved for bones a physical controller might otherwise silently claim, such as the hands."
     },
     "parent": {
-      "$ref": "common.schema.json#/$defs/key"
+      "$ref": "common.schema.json#/$defs/key",
+      "description": "This bone's parent in the FK hierarchy. Omit only for the skeleton's root bone."
     },
     "headOffset": {
-      "$ref": "common.schema.json#/$defs/offset"
+      "$ref": "common.schema.json#/$defs/offset",
+      "description": "Offset from the parent bone's tail to this bone's head, as proportion-weighted direction terms."
     },
     "tailOffset": {
-      "$ref": "common.schema.json#/$defs/offset"
+      "$ref": "common.schema.json#/$defs/offset",
+      "description": "Offset from this bone's head to its tail, as proportion-weighted direction terms."
     },
     "rotationFallback": {
+      "description": "How this bone's rotation is derived when it has no live, active tracker of its own. `none` leaves the bone at its computed FK rotation with no substitution. `copy` takes another bone's rotation outright. `firstActive` scans an ordered list and uses the first actively-tracked bone, falling back to the list's last entry regardless of its activity if none are active.",
       "oneOf": [
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "properties": {
             "type": {
-              "const": "none"
+              "const": "none",
+              "description": "No substitution: this bone always uses its own computed rotation."
             }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "source"
-          ],
+          "required": ["type", "source"],
           "properties": {
             "type": {
-              "const": "copy"
+              "const": "copy",
+              "description": "Copy another bone's rotation whenever this bone has no live tracker."
             },
             "source": {
-              "anyOf": [
-                {
-                  "const": "parent"
-                },
-                {
-                  "$ref": "common.schema.json#/$defs/key"
-                }
-              ]
+              "description": "Bone to copy from when this bone is untracked. `parent` refers to this bone's own `parent` field rather than repeating its key.",
+              "anyOf": [{"const": "parent"}, {"$ref": "common.schema.json#/$defs/key"}]
             },
             "before": {
-              "description": "Run this bone's rotation fallback before the fallbacks owned by these bones.",
+              "description": "Run this bone's fallback before the fallbacks owned by these bones, when both participate in the same order-dependent write cycle (e.g. two bones whose fallbacks copy each other).",
               "$ref": "common.schema.json#/$defs/orderReferences"
             },
             "after": {
-              "description": "Run this bone's rotation fallback after the fallbacks owned by these bones.",
+              "description": "Run this bone's fallback after the fallbacks owned by these bones, when both participate in the same order-dependent write cycle.",
               "$ref": "common.schema.json#/$defs/orderReferences"
             }
           }
@@ -73,36 +88,25 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "sources"
-          ],
+          "required": ["type", "sources"],
           "properties": {
             "type": {
-              "const": "firstActive"
+              "const": "firstActive",
+              "description": "Use the first actively-tracked bone in `sources`. If none are active, use the list's last entry regardless of its own activity."
             },
             "sources": {
               "type": "array",
               "minItems": 1,
               "uniqueItems": true,
-              "description": "The first active source is used; if none are active, the final source is used regardless of activity.",
-              "items": {
-                "anyOf": [
-                  {
-                    "const": "parent"
-                  },
-                  {
-                    "$ref": "common.schema.json#/$defs/key"
-                  }
-                ]
-              }
+              "description": "Ordered candidates. The first one with a live, active tracker is used. If none are active, the final entry is used unconditionally, so a bone intended as the ultimate fallback (e.g. the parent foot for a toe) belongs last.",
+              "items": {"anyOf": [{"const": "parent"}, {"$ref": "common.schema.json#/$defs/key"}]}
             },
             "before": {
-              "description": "Run this bone's rotation fallback before the fallbacks owned by these bones.",
+              "description": "Run this bone's fallback before the fallbacks owned by these bones, when both participate in the same order-dependent write cycle.",
               "$ref": "common.schema.json#/$defs/orderReferences"
             },
             "after": {
-              "description": "Run this bone's rotation fallback after the fallbacks owned by these bones.",
+              "description": "Run this bone's fallback after the fallbacks owned by these bones, when both participate in the same order-dependent write cycle.",
               "$ref": "common.schema.json#/$defs/orderReferences"
             }
           }
@@ -110,99 +114,327 @@
       ]
     },
     "constraint": {
+      "description": "Rotation limit applied relative to this bone's parent. `twistSwing` is a cone-and-twist limit. `hinge` is a strict single-axis hinge. `looseHinge` is a hinge with additional off-axis deviation allowed.",
       "oneOf": [
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "twistDegrees",
-            "swingDegrees"
-          ],
+          "required": ["type", "twistDegrees", "swingDegrees"],
           "properties": {
             "type": {
-              "const": "twistSwing"
+              "const": "twistSwing",
+              "description": "Cone-and-twist limit: independent bounds on twist around the bone's own axis and swing away from it."
             },
             "twistDegrees": {
               "type": "number",
               "minimum": 0,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Maximum rotation allowed around the bone's own (twist) axis, in degrees."
             },
             "swingDegrees": {
               "type": "number",
               "minimum": 0,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Maximum rotation allowed away from the bone's rest axis (swing), in degrees."
             },
             "allowedDeviationDegrees": {
               "type": "number",
               "minimum": 0,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Additional swing deviation allowed beyond the cone before the constraint engages. Optional."
             }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "minDegrees",
-            "maxDegrees",
-            "axis"
-          ],
+          "required": ["type", "minDegrees", "maxDegrees", "axis"],
           "properties": {
             "type": {
-              "const": "hinge"
+              "const": "hinge",
+              "description": "Strict single-axis hinge: rotation is limited to a range around one fixed axis, with no other freedom."
             },
             "minDegrees": {
               "type": "number",
               "minimum": -180,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Minimum rotation around `axis`, in degrees."
             },
             "maxDegrees": {
               "type": "number",
               "minimum": -180,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Maximum rotation around `axis`, in degrees."
             },
             "axis": {
-              "$ref": "common.schema.json#/$defs/vector"
+              "$ref": "common.schema.json#/$defs/vector",
+              "description": "Hinge axis, in the bone's local space."
             }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "type",
-            "minDegrees",
-            "maxDegrees",
-            "allowedDeviationDegrees",
-            "axis"
-          ],
+          "required": ["type", "minDegrees", "maxDegrees", "allowedDeviationDegrees", "axis"],
           "properties": {
             "type": {
-              "const": "looseHinge"
+              "const": "looseHinge",
+              "description": "A hinge plus a bounded amount of off-axis deviation, for a joint that is mostly a hinge but not perfectly rigid off-axis."
             },
             "minDegrees": {
               "type": "number",
               "minimum": -180,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Minimum rotation around `axis`, in degrees."
             },
             "maxDegrees": {
               "type": "number",
               "minimum": -180,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Maximum rotation around `axis`, in degrees."
             },
             "allowedDeviationDegrees": {
               "type": "number",
               "minimum": 0,
-              "maximum": 180
+              "maximum": 180,
+              "description": "Maximum rotation allowed off `axis`, in degrees."
             },
             "axis": {
-              "$ref": "common.schema.json#/$defs/vector"
+              "$ref": "common.schema.json#/$defs/vector",
+              "description": "Hinge axis, in the bone's local space."
             }
           }
         }
       ]
+    },
+    "outputs": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "description": "Per-protocol output bindings for this bone. A bone is accepted by an output by declaring an entry here under that output's key. `driver`, `vmc` and `vrchat` are the only valid keys. A pack binds bones to an existing output. It does not declare new ones.",
+      "properties": {
+        "driver": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["supported"],
+          "description": "Makes this bone routable to the SolarXR SteamVR driver. The driver forwards the bone's resolved pose as-is and decides compatibility itself.",
+          "properties": {
+            "supported": {"type": "boolean", "const": true, "description": "Always true."}
+          }
+        },
+        "vmc": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "description": "Retargets this bone into the VMC/VRM humanoid rig. Every VMC bone message rides the same fixed OSC address. The bone name is what disambiguates one bone's data from another's.",
+          "properties": {
+            "name": {
+              "description": "VMC/Unity bone name(s) this bone is emitted and read as. Most bones have exactly one. A bone with more than one alias (e.g. a big toe also standing in for a generic \"toes\" bone) uses an array, and every alias is emitted.",
+              "oneOf": [
+                {"type": "string", "minLength": 1},
+                {
+                  "type": "array",
+                  "minItems": 2,
+                  "uniqueItems": true,
+                  "items": {"type": "string", "minLength": 1}
+                }
+              ]
+            },
+            "outputParent": {
+              "$ref": "common.schema.json#/$defs/key",
+              "description": "VMC parent used when producing this bone's output local transform. Omit to derive it automatically, by re-rooting the skeleton hierarchy at the hip and skipping any bone with no VMC name. Declare it explicitly only when VMC's real hierarchy diverges from that derivation, as it does for the neck and shoulders, which attach directly to the chest rather than following the skeleton's own parent chain."
+            },
+            "inputParent": {
+              "description": "VMC parent used when reconstructing this bone's transform from VMC input. Defaults to `outputParent`. An explicit `null` makes this bone an input root instead of inheriting `outputParent`.",
+              "oneOf": [{"$ref": "common.schema.json#/$defs/key"}, {"type": "null"}]
+            },
+            "restRotation": {
+              "type": "array",
+              "minItems": 1,
+              "description": "Ordered corrections from this bone's SlimeVR rest pose to its VMC/VRM rest pose, composed in sequence (e.g. a hanging-arm rest pose corrected to a VRM T-pose). A fixed constant applied once when the pack loads.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["axis", "degrees"],
+                "properties": {
+                  "axis": {
+                    "$ref": "common.schema.json#/$defs/vector",
+                    "description": "Axis this correction rotates around."
+                  },
+                  "degrees": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Rotation applied around `axis`, in degrees."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "vrchat": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["emit"],
+          "description": "Maps this bone to VRChat OSC: a tracker slot, the head reference position, or one or more avatar parameters, depending on which addresses are declared.",
+          "properties": {
+            "required": {
+              "type": "boolean",
+              "const": true,
+              "description": "Forces this output on regardless of the user's routing choice. Set on VRChat's head reference position. Omit for a bone the user can freely route or unroute, such as a tracker slot or an avatar parameter."
+            },
+            "emit": {
+              "$ref": "#/$defs/emitMap",
+              "description": "OSC messages this bone contributes to VRChat, keyed by address."
+            }
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "description": "Incoming external addresses that assign this bone's tracking data, instead of a physical tracker. The resulting tracker is not gated by `outputs` routing.",
+      "properties": {
+        "vrchat": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["address"],
+          "description": "Assigns this bone from VRChat's VRSystem pose input (the headset or a controller), creating a tracker for it when the address is first received.",
+          "properties": {
+            "address": {
+              "type": "string",
+              "pattern": "^/",
+              "description": "Incoming OSC address that assigns this bone's pose, e.g. `/tracking/vrsystem/head/pose`."
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "emitMap": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"type": "string", "pattern": "^/"},
+      "additionalProperties": {"$ref": "#/$defs/emitEntry"},
+      "description": "OSC messages keyed by their address."
+    },
+    "emitEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from"],
+      "description": "One OSC message derived from this bone's own resolved pose.",
+      "properties": {
+        "from": {
+          "enum": ["position", "rotation"],
+          "description": "This bone's own position or rotation."
+        },
+        "relativeTo": {
+          "$ref": "common.schema.json#/$defs/key",
+          "description": "Bone to compute the value local to, instead of world space. Omit for a world-space value."
+        },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered transform pipeline applied to `from` before it is sent. Each step consumes the previous step's output and its own type decides the result type. Omit entirely to forward the raw value untouched.",
+          "items": {"$ref": "#/$defs/step"}
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "description": "One pipeline transform step. Exactly one of these keys is present.",
+      "properties": {
+        "euler": {
+          "description": "Extract Euler angle(s) from a quaternion, in degrees unless `unit` says otherwise. A bare axis is shorthand for extracting just that component as a number. Omitting `axis` entirely extracts all three components as a vector.",
+          "oneOf": [
+            {"enum": ["x", "y", "z"]},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "axis": {
+                  "enum": ["x", "y", "z"],
+                  "description": "Single component to extract as a number. Omit to extract all three as a vector."
+                },
+                "order": {
+                  "enum": ["XYZ", "XZY", "YXZ", "YZX", "ZXY", "ZYX"],
+                  "description": "Euler decomposition order. Defaults to XYZ."
+                },
+                "unit": {
+                  "enum": ["degrees", "radians"],
+                  "description": "Output unit. Defaults to degrees."
+                }
+              }
+            }
+          ]
+        },
+        "scale": {
+          "description": "Multiply. A bare number scales every component uniformly. A per-axis object scales only the named components, and any axis not listed defaults to a multiplier of 1.",
+          "oneOf": [
+            {"type": "number"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "x": {"type": "number"},
+                "y": {"type": "number"},
+                "z": {"type": "number"}
+              }
+            }
+          ]
+        },
+        "divide": {
+          "description": "Divide. A bare number divides every component uniformly. A per-axis object divides only the named components, and any axis not listed defaults to a divisor of 1.",
+          "oneOf": [
+            {"type": "number"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "x": {"type": "number"},
+                "y": {"type": "number"},
+                "z": {"type": "number"}
+              }
+            }
+          ]
+        },
+        "offset": {
+          "description": "Add. A bare number offsets every component uniformly. A per-axis object offsets only the named components, and any axis not listed defaults to an addend of 0.",
+          "oneOf": [
+            {"type": "number"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "x": {"type": "number"},
+                "y": {"type": "number"},
+                "z": {"type": "number"}
+              }
+            }
+          ]
+        },
+        "clamp": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"type": "number"},
+          "description": "`[min, max]`. Clamps a number, or clamps every component of a vector to the same bounds."
+        },
+        "greaterThan": {
+          "type": "number",
+          "description": "Compares a number against this threshold, producing a bool: true when the value is strictly greater."
+        },
+        "lessThan": {
+          "type": "number",
+          "description": "Compares a number against this threshold, producing a bool: true when the value is strictly less."
+        }
+      }
     }
   }
 }

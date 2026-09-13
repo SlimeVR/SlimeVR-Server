@@ -3,10 +3,7 @@
   "key": "slimevr:hip",
   "nameKey": "slimevr:proportion.hip",
   "descriptionKey": "slimevr:proportion.hip.description",
-  "default": {
-    "type": "heightRatio",
-    "value": 0.02531646
-  },
+  "default": {"type": "heightRatio", "value": 0.02531646},
   "contributesToHeight": true,
   "minimum": 0
 }

@@ -2,34 +2,22 @@
   "$schema": "../../schemas/v1/bone.schema.json",
   "key": "slimevr:left_shoulder",
   "nameKey": "slimevr:bone.left_shoulder",
+  "mirror": "slimevr:right_shoulder",
   "parent": "slimevr:neck",
   "tailOffset": {
     "terms": [
-      {
-        "proportion": "slimevr:shoulders_distance",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
-        }
-      },
-      {
-        "proportion": "slimevr:shoulders_width",
-        "direction": {
-          "x": -0.5,
-          "y": 0,
-          "z": 0
-        }
-      }
+      {"proportion": "slimevr:shoulders_distance", "direction": {"x": 0, "y": -1, "z": 0}},
+      {"proportion": "slimevr:shoulders_width", "direction": {"x": -0.5, "y": 0, "z": 0}}
     ]
   },
-  "rotationFallback": {
-    "type": "copy",
-    "source": "slimevr:upper_chest"
-  },
-  "constraint": {
-    "type": "twistSwing",
-    "twistDegrees": 0,
-    "swingDegrees": 30
+  "rotationFallback": {"type": "copy", "source": "slimevr:upper_chest"},
+  "constraint": {"type": "twistSwing", "twistDegrees": 0, "swingDegrees": 30},
+  "outputs": {
+    "driver": {"supported": true},
+    "vmc": {
+      "name": "LeftShoulder",
+      "outputParent": "slimevr:lower_chest",
+      "inputParent": "slimevr:upper_chest"
+    }
   }
 }

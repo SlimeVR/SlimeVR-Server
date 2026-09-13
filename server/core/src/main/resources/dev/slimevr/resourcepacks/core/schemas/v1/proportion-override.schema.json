@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SlimeVR proportion override",
+  "description": "Overrides selected properties of an existing proportion. Definitions are resolved first, then overrides are applied in pack order before the resulting proportions are validated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["target"],
+  "anyOf": [
+    {"properties": {"set": {}}, "required": ["set"]},
+    {"properties": {"remove": {}}, "required": ["remove"]}
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "target": {
+      "$ref": "common.schema.json#/$defs/key"
+    },
+    "set": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "description": "Complete property values to replace on the target proportion. Objects are replaced atomically rather than recursively merged.",
+      "properties": {
+        "nameKey": {"$ref": "proportion.schema.json#/properties/nameKey"},
+        "descriptionKey": {"$ref": "proportion.schema.json#/properties/descriptionKey"},
+        "contributesToHeight": {"$ref": "proportion.schema.json#/properties/contributesToHeight"},
+        "minimum": {"$ref": "proportion.schema.json#/properties/minimum"},
+        "maximum": {"$ref": "proportion.schema.json#/properties/maximum"},
+        "default": {"$ref": "proportion.schema.json#/properties/default"}
+      }
+    },
+    "remove": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Optional proportion properties to remove. Required identity, display, and default properties cannot be removed.",
+      "items": {"enum": ["descriptionKey", "contributesToHeight", "minimum", "maximum"]}
+    }
+  }
+}

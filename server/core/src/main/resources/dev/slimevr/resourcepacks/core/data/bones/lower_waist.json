@@ -4,23 +4,8 @@
   "nameKey": "slimevr:bone.lower_waist",
   "parent": "slimevr:upper_waist",
   "tailOffset": {
-    "terms": [
-      {
-        "proportion": "slimevr:lower_waist",
-        "direction": {
-          "x": 0,
-          "y": -1,
-          "z": 0
-        }
-      }
-    ]
+    "terms": [{"proportion": "slimevr:lower_waist", "direction": {"x": 0, "y": -1, "z": 0}}]
   },
-  "rotationFallback": {
-    "type": "none"
-  },
-  "constraint": {
-    "type": "twistSwing",
-    "twistDegrees": 60,
-    "swingDegrees": 120
-  }
+  "rotationFallback": {"type": "none"},
+  "constraint": {"type": "twistSwing", "twistDegrees": 60, "swingDegrees": 120}
 }
