@@ -128,15 +128,15 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val server = VRServer.create(this)
 	val serialServer = createDesktopSerialServer(this)
 	val bones = BoneRegistryManager.create(scope = this)
+	// Nothing registers extension bones yet, so this is a no-op today; it exists so nothing
+	// built from phase1 onward ever observes a registry that could still change under it.
+	bones.freeze()
 
 	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer, bones = bones)
 
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
 	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
-	// Nothing registers extension bones yet, so this is a no-op today; it exists so the
-	// tracking stack below never observes a registry that could still change under it.
-	bones.freeze()
 	val skeleton = Skeleton.create(scope = this, ctx = phase1, waiter = createDesktopWaiter())
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
