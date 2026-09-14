@@ -1,10 +1,9 @@
 package dev.slimevr.routing
 
 import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
-import dev.slimevr.vmc.VMC_SUPPORTED_BONES
-import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.boneId
+import dev.slimevr.testCompiledSkeleton
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState
 import kotlin.test.Test
@@ -18,28 +17,31 @@ private fun active(vararg outputs: RoutingOutput): OutputStates = RoutingOutput.
 
 private val NONE_ACTIVE = active()
 
+private val DRIVER_SUPPORTED_BONES = testCompiledSkeleton.acceptedBones(RoutingOutput.DRIVER)
+private val VMC_SUPPORTED_BONES = testCompiledSkeleton.acceptedBones(RoutingOutput.VMC)
+private val VRC_OSC_SUPPORTED_BONES = testCompiledSkeleton.acceptedBones(RoutingOutput.VRC_OSC)
+
 /**
  * Bones a typical full body setup produces. Deliberately includes lower legs, which
  * no output can take, so the tests also cover candidates being dropped.
  */
-private val COMMON_CANDIDATES = setOf(
+private val COMMON_CANDIDATES: Set<BoneId> = setOf(
 	BodyPart.HIP,
-	BodyPart.UPPER_CHEST,
 	BodyPart.UPPER_CHEST,
 	BodyPart.LEFT_UPPER_LEG,
 	BodyPart.RIGHT_UPPER_LEG,
 	BodyPart.LEFT_LOWER_LEG,
 	BodyPart.RIGHT_LOWER_LEG,
-)
+).mapTo(mutableSetOf()) { it.boneId }
 
 class AutomaticRoutesTest {
-	private val registry = BoneRegistry.standard()
+	private val definition = testCompiledSkeleton
 
-	private fun routedTo(routes: Routes, output: RoutingOutput): Set<BodyPart> = routes.filterValues { output in it }.keys.mapNotNullTo(mutableSetOf(), registry::bodyPartOf)
+	private fun routedTo(routes: Routes, output: RoutingOutput): Set<BoneId> = routes.filterValues { output in it }.keys
 
-	private fun computeAutomaticRoutes(candidateBones: Set<BodyPart>, outputStates: OutputStates): Routes = computeAutomaticRoutes(candidateBones, outputStates, registry)
+	private fun computeAutomaticRoutes(candidateBones: Set<BoneId>, outputStates: OutputStates): Routes = computeAutomaticRoutes(candidateBones, outputStates, definition)
 
-	private fun effectiveRoutes(routes: Routes, outputStates: OutputStates): Routes = effectiveRoutes(routes, outputStates, registry)
+	private fun effectiveRoutes(routes: Routes, outputStates: OutputStates): Routes = effectiveRoutes(routes, outputStates, definition)
 
 	@Test
 	fun `the driver alone takes every bone it supports`() {
@@ -78,7 +80,7 @@ class AutomaticRoutesTest {
 	fun `a bone neither can take goes nowhere`() {
 		// NECK is VMC only.
 		val routes = computeAutomaticRoutes(
-			setOf(BodyPart.NECK),
+			setOf(BodyPart.NECK.boneId),
 			active(RoutingOutput.DRIVER, RoutingOutput.VRC_OSC),
 		)
 

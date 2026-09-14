@@ -7,7 +7,7 @@ import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackParser
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
-import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.RoutingOutput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -181,6 +181,99 @@ class ResourcePackCompilerTest {
 		)
 		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
 		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "rotationFallback" in it.message })
+	}
+
+	@Test
+	fun `bundled core pack's driver and VMC accepted sets match the retired hardcoded tables`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+
+		val driverBones = setOf(
+			BodyPart.UPPER_CHEST, BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM, BodyPart.HIP,
+			BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG, BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
+			BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER, BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND,
+		).map { registry[it.key]!! }.toSet()
+		assertEquals(driverBones, definition.acceptedBones(RoutingOutput.DRIVER))
+
+		assertEquals(60, definition.acceptedBones(RoutingOutput.VMC).size)
+		assertEquals(definition.acceptedBones(RoutingOutput.VMC), definition.requiredBones(RoutingOutput.VMC))
+	}
+
+	@Test
+	fun `bundled core pack's VRChat accepted and required sets grow past the retired hardcoded table`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+
+		val oldEight = setOf(
+			BodyPart.HIP,
+			BodyPart.LEFT_FOOT,
+			BodyPart.RIGHT_FOOT,
+			BodyPart.LEFT_UPPER_LEG,
+			BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.UPPER_CHEST,
+			BodyPart.LEFT_UPPER_ARM,
+			BodyPart.RIGHT_UPPER_ARM,
+		).map { registry[it.key]!! }.toSet()
+		val accepted = definition.acceptedBones(RoutingOutput.VRC_OSC)
+		assertEquals(19, accepted.size)
+		assertTrue(accepted.containsAll(oldEight))
+
+		assertEquals(setOf(registry[BodyPart.HEAD.key]!!), definition.requiredBones(RoutingOutput.VRC_OSC))
+	}
+
+	@Test
+	fun `bundled core pack's overridable bones match the retired hardcoded set`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+		assertEquals(setOf(registry[BodyPart.LEFT_HAND.key]!!, registry[BodyPart.RIGHT_HAND.key]!!), definition.overridableBones)
+	}
+
+	@Test
+	fun `bundled core pack's candidate bones include the retired table plus every toe`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+
+		val oldEight = setOf(
+			BodyPart.UPPER_CHEST,
+			BodyPart.LEFT_UPPER_ARM,
+			BodyPart.RIGHT_UPPER_ARM,
+			BodyPart.HIP,
+			BodyPart.LEFT_UPPER_LEG,
+			BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.LEFT_FOOT,
+			BodyPart.RIGHT_FOOT,
+		).map { registry[it.key]!! }.toSet()
+		val toes = setOf(
+			BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE,
+			BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE,
+		).map { registry[it.key]!! }.toSet()
+		assertEquals(oldEight + toes, definition.candidateBones)
+
+		val hip = registry[BodyPart.HIP.key]!!
+		assertEquals(
+			setOf(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST).map { registry[it.key]!! }.toSet(),
+			definition.candidateSourcesOf(hip).toSet(),
+		)
+	}
+
+	@Test
+	fun `compiler reports an unknown bone named in candidateSources`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:extra"),
+					"data/bones/extra.json" to """{"key":"example:extra","nameKey":"example:bone.extra","parent":"slimevr:head","candidateSources":["example:missing"]}""",
+					"assets/lang/en.json" to """{"example:bone.extra":"Extra bone"}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "candidateSources" in it.message })
 	}
 
 	@Test

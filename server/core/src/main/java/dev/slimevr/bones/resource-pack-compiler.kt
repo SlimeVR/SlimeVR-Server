@@ -146,6 +146,12 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	val constraints = BoneMap.of<Constraint>(registry)
 	val copyFallbacksByBoneId = mutableMapOf<BoneId, Pair<BoneContribution, CopyRotationFallback>>()
 	val firstActiveFallbacksByBoneId = mutableMapOf<BoneId, Pair<BoneContribution, FirstActiveRotationFallback>>()
+	val driverOutputs = BoneSet.of(registry)
+	val vmcOutputs = BoneSet.of(registry)
+	val vrchatOutputs = BoneSet.of(registry)
+	val vrchatRequired = BoneSet.of(registry)
+	val overridableBones = BoneSet.of(registry)
+	val candidateSources = BoneMap.of<List<BoneId>>(registry)
 	for (contribution in allContributions) {
 		val definition = contribution.resource.value
 		val boneId = registry[definition.key] ?: continue
@@ -156,6 +162,16 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			null, is NoRotationFallback -> {}
 			is CopyRotationFallback -> copyFallbacksByBoneId[boneId] = contribution to fallback
 			is FirstActiveRotationFallback -> firstActiveFallbacksByBoneId[boneId] = contribution to fallback
+		}
+		definition.outputs?.driver?.let { driverOutputs.add(boneId) }
+		definition.outputs?.vmc?.let { vmcOutputs.add(boneId) }
+		definition.outputs?.vrchat?.let {
+			vrchatOutputs.add(boneId)
+			if (it.required == true) vrchatRequired.add(boneId)
+		}
+		if (definition.overridable == true) overridableBones.add(boneId)
+		definition.candidateSources?.let { sources ->
+			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution, "candidateSources", registry, diagnostics) }
 		}
 	}
 	val hierarchyOrder = registry.hierarchyFrom(registry.root).map { it.second }
@@ -169,7 +185,10 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	}
 	if (diagnostics.isNotEmpty()) throw ResourcePackCompilationException(diagnostics)
 
-	return CompiledSkeleton(registry, proportions, tailOffsets, headOffsets, constraints, copyRotationFallbacks, firstActiveRotationFallbacks)
+	return CompiledSkeleton(
+		registry, proportions, tailOffsets, headOffsets, constraints, copyRotationFallbacks, firstActiveRotationFallbacks,
+		driverOutputs, vmcOutputs, vrchatOutputs, vrchatRequired, overridableBones, candidateSources,
+	)
 }
 
 private fun compileConstraint(constraint: PackConstraint): Constraint = when (constraint) {
@@ -193,6 +212,20 @@ private fun compileConstraint(constraint: PackConstraint): Constraint = when (co
 	)
 }
 
+/** Resolves a bone key referenced from [contribution], reporting [context] on an unknown key. */
+private fun resolveBoneKey(
+	key: String,
+	contribution: BoneContribution,
+	context: String,
+	registry: BoneRegistry,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+): BoneId {
+	val boneId = registry[key]
+	if (boneId != null) return boneId
+	diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown bone '$key' in $context")
+	return BoneId(0u)
+}
+
 /** Resolves one rotation-fallback source key (or the `"parent"` shorthand) to a [BoneId]. */
 private fun resolveFallbackBone(
 	key: String,
@@ -201,10 +234,11 @@ private fun resolveFallbackBone(
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ): BoneId {
 	val target = if (key == "parent") contribution.resource.value.parent else key
-	val boneId = target?.let { registry[it] }
-	if (boneId != null) return boneId
-	diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown bone '$key' in rotationFallback")
-	return BoneId(0u)
+	if (target == null) {
+		diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown bone '$key' in rotationFallback")
+		return BoneId(0u)
+	}
+	return resolveBoneKey(target, contribution, "rotationFallback", registry, diagnostics)
 }
 
 private fun compileOffset(

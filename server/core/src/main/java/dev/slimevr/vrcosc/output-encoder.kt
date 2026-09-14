@@ -23,9 +23,6 @@ private val trackerIdsByBodyPart = mapOf(
 	BodyPart.RIGHT_UPPER_ARM to 8,
 )
 
-/** Bones VRChat OSC can accept. Used by the routing module. */
-val VRC_OSC_SUPPORTED_BONES: Set<BodyPart> = trackerIdsByBodyPart.keys
-
 internal fun buildOutgoingBundle(
 	bones: ComputedSkeleton,
 	routedBones: Set<BodyPart>,

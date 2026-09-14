@@ -2,7 +2,7 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.routing.OutputStates
 import dev.slimevr.routing.Routes
@@ -30,26 +30,21 @@ import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState
 import solarxr_protocol.rpc.RoutingOutputStatus
 
-// Every bone any output can take gets a row, so the GUI can draw the whole table
-// from the response alone.
-private val ROUTABLE_BONES = RoutingOutput.entries.flatMapTo(mutableSetOf()) { acceptedBones(it) }
-
 private fun buildResponse(
 	automatic: Boolean,
 	routes: Routes,
 	outputStates: OutputStates,
-	registry: BoneRegistry,
+	routableBones: Set<BoneId>,
+	definition: CompiledSkeleton,
 ) = BoneRoutingSettingsResponse(
 	automatic = automatic,
-	routes = ROUTABLE_BONES.mapNotNull { bone -> registry[bone] }.map { boneId ->
-		BoneRoute(boneId = boneId.value, outputs = routes[boneId].orEmpty().toList())
-	},
+	routes = routableBones.map { boneId -> BoneRoute(boneId = boneId.value, outputs = routes[boneId].orEmpty().toList()) },
 	outputs = RoutingOutput.entries.map { output ->
 		RoutingOutputStatus(
 			output = output,
-			accepts = acceptedBones(output).mapNotNull { registry[it]?.value },
-			requires = requiredBones(output).mapNotNull { registry[it]?.value },
-			overridable = overridableBones(output).mapNotNull { registry[it]?.value },
+			accepts = acceptedBones(output, definition).map { it.value },
+			requires = requiredBones(output, definition).map { it.value },
+			overridable = overridableBones(output, definition).map { it.value },
 			conflicts = conflictingOutputs(output).toList(),
 			state = outputStates[output] ?: RoutingOutputState.UNSUPPORTED,
 		)
@@ -62,12 +57,15 @@ class BoneRoutingBehaviour(
 	private val settings = appContext.config.settings
 
 	override fun observe(receiver: SolarXRBridge) {
-		val registry = appContext.bones.current
+		val definition = appContext.skeleton.definition
+		// Every bone any output can take gets a row, so the GUI can draw the whole table
+		// from the response alone.
+		val routableBones = RoutingOutput.entries.flatMapTo(mutableSetOf()) { acceptedBones(it, definition) }
 		val responses = combine(
 			settings.context.state.map { it.data.boneRoutingConfig.automatic }.distinctUntilChanged(),
 			intendedRoutesFlow(appContext),
 			outputStatesFlow(appContext),
-		) { automatic, routes, outputStates -> buildResponse(automatic, routes, outputStates, registry) }
+		) { automatic, routes, outputStates -> buildResponse(automatic, routes, outputStates, routableBones, definition) }
 			.distinctUntilChanged()
 
 		receiver.rpcDispatcher.on<BoneRoutingSettingsRequest> {
@@ -95,7 +93,7 @@ class BoneRoutingBehaviour(
 							config = boneRoutingConfig,
 							automatic = req.automatic,
 							routes = requested,
-							registry = registry,
+							definition = definition,
 						),
 					)
 				},

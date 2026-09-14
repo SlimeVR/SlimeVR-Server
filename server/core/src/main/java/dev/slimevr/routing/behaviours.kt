@@ -16,7 +16,7 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 	override fun observe(receiver: BoneRoutingManager) {
 		val server = appContext.server
 		val settings = appContext.config.settings
-		val registry = appContext.bones.current
+		val definition = appContext.skeleton.definition
 
 		combine(
 			settings.context.state.map { it.data.boneRoutingConfig }.distinctUntilChanged(),
@@ -27,7 +27,7 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 				if (!config.automatic) {
 					receiver.context.dispatch(
 						BoneRoutingActions.SetRoutes(
-							effectiveRoutes(manualRoutesAsBoneIds(config.manualRoutes, registry), outputStates, registry),
+							effectiveRoutes(manualRoutesAsBoneIds(config.manualRoutes, definition), outputStates, definition),
 						),
 					)
 				}
@@ -47,19 +47,19 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 							trackers.map { tracker ->
 								tracker.context.state.distinctUntilChanged { a, b -> a.boneId == b.boneId && a.status == b.status }
 							},
-						) { states -> trackedBodyParts(states.asList(), registry) }
+						) { states -> trackedBoneIds(states.asList()) }
 							.distinctUntilChanged()
 					}
-					.map { fineBodyParts -> Triple(config, outputStates, fineBodyParts) }
+					.map { boneIds -> Triple(config, outputStates, boneIds) }
 			}
-			.onEach { (config, outputStates, fineBodyParts) ->
-				val candidates = determineCandidateBones(fineBodyParts)
+			.onEach { (config, outputStates, boneIds) ->
+				val candidates = determineCandidateBones(boneIds, definition)
 				receiver.context.dispatch(
 					BoneRoutingActions.SetRoutes(
 						effectiveRoutes(
-							computeAutomaticRoutes(candidates, outputStates, registry) + overrideRoutes(config, registry),
+							computeAutomaticRoutes(candidates, outputStates, definition) + overrideRoutes(config, definition),
 							outputStates,
-							registry,
+							definition,
 						),
 					),
 				)

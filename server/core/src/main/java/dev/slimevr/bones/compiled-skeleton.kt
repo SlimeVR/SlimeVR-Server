@@ -4,6 +4,7 @@ import dev.slimevr.resourcepacks.FixedProportionDefault
 import dev.slimevr.resourcepacks.HeightRatioProportionDefault
 import dev.slimevr.resourcepacks.ProportionDefault
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.SkeletonBone
 
 private fun resolveDefault(default: ProportionDefault, height: Float): Float = when (default) {
@@ -49,8 +50,8 @@ data class CompiledOffset(val base: Vector3, val terms: List<CompiledOffsetTerm>
 class BoneOffsets(val tail: BoneMap<Vector3>, val head: BoneMap<Vector3>)
 
 /**
- * The compiled bone registry, proportion catalog, and per-bone offset, constraint, and
- * rotation-fallback rule produced by [compileResourcePacks]. [copyRotationFallbacks] (bone to
+ * The compiled bone registry, proportion catalog, per-bone offset, constraint, rotation-fallback
+ * rule, and routing fact produced by [compileResourcePacks]. [copyRotationFallbacks] (bone to
  * source) and [firstActiveRotationFallbacks] (bone to source list) are each in
  * ancestor-before-descendant order on their own; every core bone's `copy` source that itself needs
  * resolving first is its own parent, and a `firstActive` bone's only source that ever needs
@@ -66,7 +67,34 @@ class CompiledSkeleton(
 	val constraints: BoneMap<Constraint>,
 	val copyRotationFallbacks: List<Pair<BoneId, BoneId>>,
 	val firstActiveRotationFallbacks: List<Pair<BoneId, List<BoneId>>>,
+	private val driverOutputs: BoneSet,
+	private val vmcOutputs: BoneSet,
+	private val vrchatOutputs: BoneSet,
+	private val vrchatRequired: BoneSet,
+	val overridableBones: BoneSet,
+	private val candidateSources: BoneMap<List<BoneId>>,
 ) {
+	/** Bones [output] can receive, from each bone's `outputs.driver`/`outputs.vmc`/`outputs.vrchat`. */
+	fun acceptedBones(output: RoutingOutput): Set<BoneId> = when (output) {
+		RoutingOutput.DRIVER -> driverOutputs
+		RoutingOutput.VMC -> vmcOutputs
+		RoutingOutput.VRC_OSC -> vrchatOutputs
+	}
+
+	/**
+	 * Bones [output] that are required and cannot be disabled
+	 */
+	fun requiredBones(output: RoutingOutput): Set<BoneId> = when (output) {
+		RoutingOutput.DRIVER -> emptySet()
+		RoutingOutput.VMC -> vmcOutputs
+		RoutingOutput.VRC_OSC -> vrchatRequired
+	}
+
+	/** Bones with a `candidateSources` list, each naming the bones that make it a routing candidate. */
+	val candidateBones: Set<BoneId> get() = candidateSources.keys
+
+	fun candidateSourcesOf(boneId: BoneId): List<BoneId> = candidateSources[boneId] ?: emptyList()
+
 	/** Every proportion's default value at [height], keyed by proportion key. */
 	fun defaultProportionValues(height: Float = REFERENCE_HEIGHT): Map<String, Float> {
 		val result = mutableMapOf<String, Float>()

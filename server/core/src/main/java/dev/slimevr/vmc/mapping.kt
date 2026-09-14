@@ -73,9 +73,6 @@ val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 	),
 )
 
-// Bones VMC can accept. Used by the routing module.
-val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
-
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
 // TODO Test with a model that has UPPER_CHEST
 //  and figure out how to deal with it (check if present in VRM?)
