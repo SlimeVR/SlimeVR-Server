@@ -16,6 +16,7 @@ import solarxr_protocol.rpc.RoutingOutput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -388,6 +389,101 @@ class ResourcePackCompilerTest {
 		assertTrue("/tracking/trackers/1/position" in definition.emitEntriesOf(hip))
 		assertTrue("/example/first" in definition.emitEntriesOf(hip))
 		assertTrue("/example/second" in definition.emitEntriesOf(hip))
+	}
+
+	@Test
+	fun `a later pack can set a property removed by an earlier pack`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val remove = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:remove"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","remove":[["batterySources"]]}""",
+				),
+			),
+		)
+		val set = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:set"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","set":{"batterySources":["slimevr:lower_chest"]}}""",
+				),
+			),
+		)
+		val definition = compileResourcePacks(catalog(core, remove, set))
+		val hip = definition.registry[BodyPart.HIP.key]!!
+		assertEquals(listOf(definition.registry[BodyPart.LOWER_CHEST.key]!!), definition.batterySourcesOf(hip))
+	}
+
+	@Test
+	fun `one override document applies set before remove`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:set-remove"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","set":{"batterySources":["slimevr:lower_chest"]},"remove":[["batterySources"]]}""",
+				),
+			),
+		)
+		val definition = compileResourcePacks(catalog(core, user))
+		assertEquals(emptyList(), definition.batterySourcesOf(definition.registry[BodyPart.HIP.key]!!))
+	}
+
+	@Test
+	fun `compiler reports unknown bone and proportion override targets even for remove-only overrides`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:unknown-targets"),
+					"data/overrides/bones/missing.json" to """{"target":"example:missing","remove":[["mirror"]]}""",
+					"data/overrides/proportions/missing.json" to """{"target":"example:missing","remove":["descriptionKey"]}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertEquals(2, error.diagnostics.size)
+		assertTrue(error.diagnostics.any { it.path == "data/overrides/bones/missing.json" && "Unknown bone" in it.message })
+		assertTrue(error.diagnostics.any { it.path == "data/overrides/proportions/missing.json" && "Unknown proportion" in it.message })
+	}
+
+	@Test
+	fun `removing the last nested override value removes its empty containers`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:normalize"),
+					"data/overrides/bones/head.json" to """{"target":"slimevr:head","remove":[["outputs","vrchat","emit","/tracking/trackers/head/position"],["inputs","vrchat"]]}""",
+					"data/overrides/bones/upper-waist.json" to """{"target":"slimevr:upper_waist","remove":[["outputs","vmc"]]}""",
+				),
+			),
+		)
+		val definition = compileResourcePacks(catalog(core, user))
+		val head = definition.registry[BodyPart.HEAD.key]!!
+		assertFalse(head in definition.acceptedBones(RoutingOutput.VRC_OSC))
+		assertFalse(head in definition.requiredBones(RoutingOutput.VRC_OSC))
+		assertEquals(emptyMap(), definition.emitEntriesOf(head))
+		assertFalse("/tracking/vrsystem/head/pose" in definition.vrchatInputAddresses)
+		assertFalse(definition.registry[BodyPart.UPPER_WAIST.key]!! in definition.acceptedBones(RoutingOutput.VMC))
+	}
+
+	@Test
+	fun `compiler attributes invalid references introduced by an override to that override`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:invalid-reference"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","set":{"batterySources":["example:missing"]}}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		val diagnostic = error.diagnostics.single { "batterySources" in it.message }
+		assertEquals("example:invalid-reference", diagnostic.packId)
+		assertEquals("data/overrides/bones/hip.json", diagnostic.path)
 	}
 
 	@Test

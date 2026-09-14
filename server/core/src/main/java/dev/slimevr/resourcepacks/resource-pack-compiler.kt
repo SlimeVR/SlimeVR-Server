@@ -1,5 +1,7 @@
 package dev.slimevr.resourcepacks
 
+import com.github.erosb.jsonsKema.JsonParser
+import com.github.erosb.jsonsKema.Validator
 import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
@@ -12,6 +14,7 @@ import dev.slimevr.bones.TwistSwingConstraint
 import dev.slimevr.bones.key
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.serialization.json.Json
 import kotlin.math.cos
 import kotlin.math.sin
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
@@ -29,15 +32,38 @@ class ResourcePackCompilationException(val diagnostics: List<ResourcePackCompila
 		diagnostics.joinToString("\n") { "${it.packId}:${it.path}: ${it.message}" },
 	)
 
+private data class ResourceOrigin(val pack: ParsedResourcePack, val path: String)
+
+private data class BoneFieldOrigins(
+	val mirror: ResourceOrigin? = null,
+	val batterySources: ResourceOrigin? = null,
+	val candidateSources: ResourceOrigin? = null,
+	val parent: ResourceOrigin? = null,
+	val headOffset: ResourceOrigin? = null,
+	val tailOffset: ResourceOrigin? = null,
+	val rotationFallback: ResourceOrigin? = null,
+	val vmcOutput: ResourceOrigin? = null,
+	val vrchatEmit: Map<String, ResourceOrigin> = emptyMap(),
+)
+
 private data class BoneContribution(
 	val pack: ParsedResourcePack,
 	val resource: SourcedResource<dev.slimevr.resourcepacks.BoneDefinition>,
-)
+	val fieldOrigins: BoneFieldOrigins = BoneFieldOrigins(),
+	val latestOverride: ResourceOrigin? = null,
+) {
+	private val definitionOrigin get() = ResourceOrigin(pack, resource.path)
+	fun origin(fieldOrigin: ResourceOrigin?): ResourceOrigin = fieldOrigin ?: definitionOrigin
+	fun validationOrigin(): ResourceOrigin = latestOverride ?: definitionOrigin
+}
 
 private data class ProportionContribution(
 	val pack: ParsedResourcePack,
 	val resource: SourcedResource<ProportionDefinition>,
-)
+	val latestOverride: ResourceOrigin? = null,
+) {
+	fun validationOrigin(): ResourceOrigin = latestOverride ?: ResourceOrigin(pack, resource.path)
+}
 
 /**
  * Compiles the complete, ordered resource-pack stack into the runtime [CompiledSkeleton]: bone
@@ -89,7 +115,8 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			}
 		}
 	}
-	applySetOverrides(packs, bonesByKey, proportionsByKey, diagnostics)
+	applyOverrides(packs, bonesByKey, proportionsByKey, diagnostics)
+	validateMergedDefinitions(bonesByKey, proportionsByKey, diagnostics)
 
 	val standardParts = BodyPart.entries.filter { it != BodyPart.NONE }
 	val standardPartsByKey = standardParts.associateBy(BodyPart::key)
@@ -107,7 +134,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			diagnostics += ResourcePackCompilationDiagnostic(catalog.core.manifest.value.id, contribution.resource.path, "Core pack defines non-standard bone '$key'")
 		}
 		contribution.resource.value.parent?.let { parent ->
-			if (parent !in bonesByKey) diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown parent bone '$parent'")
+			if (parent !in bonesByKey) diagnostics += contribution.origin(contribution.fieldOrigins.parent).diagnostic("Unknown parent bone '$parent'")
 		}
 	}
 	if (diagnostics.isEmpty()) validateHierarchy(catalog.core, bonesByKey, diagnostics)
@@ -165,8 +192,8 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	for (contribution in allContributions) {
 		val definition = contribution.resource.value
 		val boneId = registry[definition.key] ?: continue
-		definition.tailOffset?.let { tailOffsets[boneId] = compileOffset(it, contribution, proportionsByKey, diagnostics) }
-		definition.headOffset?.let { headOffsets[boneId] = compileOffset(it, contribution, proportionsByKey, diagnostics) }
+		definition.tailOffset?.let { tailOffsets[boneId] = compileOffset(it, contribution.origin(contribution.fieldOrigins.tailOffset), proportionsByKey, diagnostics) }
+		definition.headOffset?.let { headOffsets[boneId] = compileOffset(it, contribution.origin(contribution.fieldOrigins.headOffset), proportionsByKey, diagnostics) }
 		definition.constraint?.let { constraints[boneId] = compileConstraint(it) }
 		when (val fallback = definition.rotationFallback) {
 			null, is NoRotationFallback -> {}
@@ -186,12 +213,12 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		definition.inputs?.vrchat?.let { vrchatInputAddresses[it.address] = boneId }
 		if (definition.overridable == true) overridableBones.add(boneId)
 		definition.candidateSources?.let { sources ->
-			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution, "candidateSources", registry, diagnostics) }
+			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.candidateSources), "candidateSources", registry, diagnostics) }
 		}
 		definition.batterySources?.let { sources ->
-			batterySources[boneId] = sources.map { resolveBoneKey(it, contribution, "batterySources", registry, diagnostics) }
+			batterySources[boneId] = sources.map { resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.batterySources), "batterySources", registry, diagnostics) }
 		}
-		definition.mirror?.let { mirrorOf[boneId] = resolveBoneKey(it, contribution, "mirror", registry, diagnostics) }
+		definition.mirror?.let { mirrorOf[boneId] = resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.mirror), "mirror", registry, diagnostics) }
 	}
 	val hierarchyOrder = registry.hierarchyFrom(registry.root).map { it.second }
 	val copyRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
@@ -222,65 +249,112 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	)
 }
 
-private fun applySetOverrides(
+private fun applyOverrides(
 	packs: List<ParsedResourcePack>,
 	bonesByKey: MutableMap<String, BoneContribution>,
 	proportionsByKey: MutableMap<String, ProportionContribution>,
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ) {
 	for (pack in packs) {
-		for (resource in pack.boneOverrides) {
+		for (resource in pack.boneOverrides.sortedBy { it.path }) {
 			val override = resource.value
-			val set = override.set ?: continue
-			val target = bonesByKey[override.target]
-			if (target == null) {
+			if (override.target !in bonesByKey) {
 				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Unknown bone '${override.target}' in override target")
 				continue
 			}
-			bonesByKey[override.target] = target.copy(resource = target.resource.copy(value = target.resource.value.withSet(set)))
+			val existing = bonesByKey.getValue(override.target)
+			val origin = ResourceOrigin(pack, resource.path)
+			var updated = existing
+			override.set?.let { updated = updated.withSet(it, origin) }
+			var definition = updated.resource.value
+			var fieldOrigins = updated.fieldOrigins
+			for (path in override.remove.orEmpty()) {
+				val removed = definition.withRemoved(path)
+				if (removed == null) {
+					diagnostics += origin.diagnostic("Cannot remove bone property ${path.joinToString(".")}")
+				} else {
+					definition = removed
+					if (path == listOf("parent")) fieldOrigins = fieldOrigins.copy(parent = origin)
+				}
+			}
+			bonesByKey[override.target] = updated.copy(
+				resource = updated.resource.copy(value = definition.normalized()),
+				fieldOrigins = fieldOrigins,
+				latestOverride = origin,
+			)
 		}
-		for (resource in pack.proportionOverrides) {
+		for (resource in pack.proportionOverrides.sortedBy { it.path }) {
 			val override = resource.value
-			val set = override.set ?: continue
-			val target = proportionsByKey[override.target]
-			if (target == null) {
+			if (override.target !in proportionsByKey) {
 				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Unknown proportion '${override.target}' in override target")
 				continue
 			}
-			proportionsByKey[override.target] = target.copy(resource = target.resource.copy(value = target.resource.value.withSet(set)))
-		}
-	}
-	for (pack in packs) {
-		for (resource in pack.boneOverrides) {
-			val override = resource.value
-			val target = bonesByKey[override.target] ?: continue
-			var definition = target.resource.value
-			for (path in override.remove.orEmpty()) {
-				val updated = definition.withRemoved(path)
-				if (updated == null) {
-					diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Cannot remove bone property ${path.joinToString(".")}")
-				} else {
-					definition = updated
-					bonesByKey[override.target] = target.copy(resource = target.resource.copy(value = definition))
-				}
-			}
-		}
-		for (resource in pack.proportionOverrides) {
-			val override = resource.value
-			val target = proportionsByKey[override.target] ?: continue
-			var definition = target.resource.value
+			val existing = proportionsByKey.getValue(override.target)
+			val origin = ResourceOrigin(pack, resource.path)
+			var definition = override.set?.let { existing.resource.value.withSet(it) } ?: existing.resource.value
 			for (property in override.remove.orEmpty()) {
-				val updated = definition.withRemoved(property)
-				if (updated == null) {
-					diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Cannot remove proportion property '$property'")
+				val removed = definition.withRemoved(property)
+				if (removed == null) {
+					diagnostics += origin.diagnostic("Cannot remove proportion property '$property'")
 				} else {
-					definition = updated
-					proportionsByKey[override.target] = target.copy(resource = target.resource.copy(value = definition))
+					definition = removed
 				}
 			}
+			proportionsByKey[override.target] = existing.copy(resource = existing.resource.copy(value = definition), latestOverride = origin)
 		}
 	}
 }
+
+private fun BoneContribution.withSet(set: BoneOverrideSet, origin: ResourceOrigin): BoneContribution {
+	val origins = fieldOrigins.copy(
+		mirror = if (set.mirror != null) origin else fieldOrigins.mirror,
+		batterySources = if (set.batterySources != null) origin else fieldOrigins.batterySources,
+		candidateSources = if (set.candidateSources != null) origin else fieldOrigins.candidateSources,
+		parent = if (set.parent != null) origin else fieldOrigins.parent,
+		headOffset = if (set.headOffset != null) origin else fieldOrigins.headOffset,
+		tailOffset = if (set.tailOffset != null) origin else fieldOrigins.tailOffset,
+		rotationFallback = if (set.rotationFallback != null) origin else fieldOrigins.rotationFallback,
+		vmcOutput = if (set.outputs?.vmc != null) origin else fieldOrigins.vmcOutput,
+		vrchatEmit = fieldOrigins.vrchatEmit + set.outputs?.vrchat?.emit.orEmpty().keys.associateWith { origin },
+	)
+	return copy(
+		resource = resource.copy(value = resource.value.withSet(set)),
+		fieldOrigins = origins,
+		latestOverride = origin,
+	)
+}
+
+private fun BoneDefinition.normalized(): BoneDefinition {
+	val normalizedOutputs = outputs?.let { output ->
+		val vrchat = output.vrchat?.takeIf { it.emit.isNotEmpty() }
+		output.copy(vrchat = vrchat).takeIf { it.driver != null || it.vmc != null || it.vrchat != null }
+	}
+	val normalizedInputs = inputs?.takeIf { it.vrchat != null }
+	return copy(outputs = normalizedOutputs, inputs = normalizedInputs)
+}
+
+private val mergedDefinitionJson = Json { encodeDefaults = false }
+
+private fun validateMergedDefinitions(
+	bonesByKey: Map<String, BoneContribution>,
+	proportionsByKey: Map<String, ProportionContribution>,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+) {
+	for (contribution in bonesByKey.values) {
+		val failure = Validator.forSchema(PackSchemas.schema(ResourceKind.BONE)).validate(
+			JsonParser(mergedDefinitionJson.encodeToString(contribution.resource.value)).parse(),
+		)
+		if (failure != null) diagnostics += contribution.validationOrigin().diagnostic("Merged bone definition does not satisfy the bone schema: $failure")
+	}
+	for (contribution in proportionsByKey.values) {
+		val failure = Validator.forSchema(PackSchemas.schema(ResourceKind.PROPORTION)).validate(
+			JsonParser(mergedDefinitionJson.encodeToString(contribution.resource.value)).parse(),
+		)
+		if (failure != null) diagnostics += contribution.validationOrigin().diagnostic("Merged proportion definition does not satisfy the proportion schema: $failure")
+	}
+}
+
+private fun ResourceOrigin.diagnostic(message: String) = ResourcePackCompilationDiagnostic(pack.manifest.value.id, path, message)
 
 internal fun BoneDefinition.withSet(set: BoneOverrideSet): BoneDefinition = copy(
 	nameKey = set.nameKey ?: nameKey,
@@ -320,25 +394,43 @@ internal fun ProportionDefinition.withSet(set: ProportionOverrideSet): Proportio
 
 internal fun BoneDefinition.withRemoved(path: List<String>): BoneDefinition? = when (path) {
 	listOf("mirror") -> copy(mirror = null)
+
 	listOf("batterySources") -> copy(batterySources = null)
+
 	listOf("candidateSources") -> copy(candidateSources = null)
+
 	listOf("overridable") -> copy(overridable = null)
+
 	listOf("parent") -> copy(parent = null)
+
 	listOf("headOffset") -> copy(headOffset = null)
+
 	listOf("tailOffset") -> copy(tailOffset = null)
+
 	listOf("rotationFallback") -> copy(rotationFallback = null)
+
 	listOf("constraint") -> copy(constraint = null)
+
 	listOf("outputs") -> copy(outputs = null)
+
 	listOf("inputs") -> copy(inputs = null)
+
 	listOf("inputs", "vrchat") -> copy(inputs = inputs?.copy(vrchat = null))
+
 	listOf("outputs", "driver") -> copy(outputs = outputs?.copy(driver = null))
+
 	listOf("outputs", "vmc") -> copy(outputs = outputs?.copy(vmc = null))
+
 	listOf("outputs", "vrchat") -> copy(outputs = outputs?.copy(vrchat = null))
+
 	listOf("outputs", "vrchat", "required") -> copy(outputs = outputs?.copy(vrchat = outputs.vrchat?.copy(required = null)))
+
 	else -> {
 		if (path.size == 4 && path.take(3) == listOf("outputs", "vrchat", "emit")) {
 			copy(outputs = outputs?.copy(vrchat = outputs.vrchat?.copy(emit = outputs.vrchat.emit - path[3])))
-		} else null
+		} else {
+			null
+		}
 	}
 }
 
@@ -358,10 +450,12 @@ private fun compileEmitEntries(
 	val result = BoneMap.of<Map<String, CompiledEmitEntry>>(registry)
 	for ((boneId, pair) in contributions) {
 		val (contribution, entries) = pair
-		result[boneId] = entries.mapValues { (_, entry) ->
+		result[boneId] = entries.mapValues { (address, entry) ->
 			CompiledEmitEntry(
 				from = entry.from,
-				relativeTo = entry.relativeTo?.let { resolveBoneKey(it, contribution, "outputs.vrchat.emit.relativeTo", registry, diagnostics) },
+				relativeTo = entry.relativeTo?.let {
+					resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.vrchatEmit[address]), "outputs.vrchat.emit.relativeTo", registry, diagnostics)
+				},
 				steps = entry.value ?: emptyList(),
 			)
 		}
@@ -409,11 +503,12 @@ private fun compileVmcOutputs(
 
 	for ((boneId, pair) in contributions) {
 		val (contribution, vmc) = pair
-		val outputParent = vmc.outputParent?.let { resolveBoneKey(it, contribution, "outputs.vmc.outputParent", registry, diagnostics) } ?: namedAncestor(boneId)
+		val origin = contribution.origin(contribution.fieldOrigins.vmcOutput)
+		val outputParent = vmc.outputParent?.let { resolveBoneKey(it, origin, "outputs.vmc.outputParent", registry, diagnostics) } ?: namedAncestor(boneId)
 		val inputParent = when (val parent = vmc.inputParent) {
 			VmcInputParent.Omitted -> outputParent
 			VmcInputParent.ExplicitNull -> null
-			is VmcInputParent.Bone -> resolveBoneKey(parent.key, contribution, "outputs.vmc.inputParent", registry, diagnostics)
+			is VmcInputParent.Bone -> resolveBoneKey(parent.key, origin, "outputs.vmc.inputParent", registry, diagnostics)
 		}
 		result[boneId] = CompiledVmcOutput(
 			names = vmc.name.values,
@@ -455,17 +550,17 @@ private fun compileConstraint(constraint: PackConstraint): Constraint = when (co
 	)
 }
 
-/** Resolves a bone key referenced from [contribution], reporting [context] on an unknown key. */
+/** Resolves a bone key referenced from [origin], reporting [context] on an unknown key. */
 private fun resolveBoneKey(
 	key: String,
-	contribution: BoneContribution,
+	origin: ResourceOrigin,
 	context: String,
 	registry: BoneRegistry,
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ): BoneId {
 	val boneId = registry[key]
 	if (boneId != null) return boneId
-	diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown bone '$key' in $context")
+	diagnostics += origin.diagnostic("Unknown bone '$key' in $context")
 	return BoneId(0u)
 }
 
@@ -477,27 +572,24 @@ private fun resolveFallbackBone(
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ): BoneId {
 	val target = if (key == "parent") contribution.resource.value.parent else key
+	val origin = contribution.origin(contribution.fieldOrigins.rotationFallback)
 	if (target == null) {
-		diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown bone '$key' in rotationFallback")
+		diagnostics += origin.diagnostic("Unknown bone '$key' in rotationFallback")
 		return BoneId(0u)
 	}
-	return resolveBoneKey(target, contribution, "rotationFallback", registry, diagnostics)
+	return resolveBoneKey(target, origin, "rotationFallback", registry, diagnostics)
 }
 
 private fun compileOffset(
 	offset: Offset,
-	contribution: BoneContribution,
+	origin: ResourceOrigin,
 	proportionsByKey: Map<String, ProportionContribution>,
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ): CompiledOffset {
 	val base = offset.base?.let { Vector3(it.x, it.y, it.z) } ?: Vector3.ZERO
 	val terms = (offset.terms ?: emptyList()).map { term ->
 		if (term.proportion !in proportionsByKey) {
-			diagnostics += ResourcePackCompilationDiagnostic(
-				contribution.pack.manifest.value.id,
-				contribution.resource.path,
-				"Unknown proportion '${term.proportion}'",
-			)
+			diagnostics += origin.diagnostic("Unknown proportion '${term.proportion}'")
 		}
 		CompiledOffsetTerm(term.proportion, Vector3(term.direction.x, term.direction.y, term.direction.z))
 	}
@@ -526,14 +618,12 @@ private fun validateHierarchy(
 	// the whole stack, not per pack.
 	val roots = bonesByKey.values.filter { it.resource.value.parent == null }
 	if (roots.isEmpty()) {
-		diagnostics += ResourcePackCompilationDiagnostic(core.manifest.value.id, core.manifest.path, "A resource-pack registry must have exactly one root; found none")
+		val overrideOrigin = bonesByKey.values.mapNotNull { it.fieldOrigins.parent }.lastOrNull()
+		diagnostics += overrideOrigin?.diagnostic("A resource-pack registry must have exactly one root; found none")
+			?: ResourcePackCompilationDiagnostic(core.manifest.value.id, core.manifest.path, "A resource-pack registry must have exactly one root; found none")
 	} else if (roots.size > 1) {
 		for (contribution in roots) {
-			diagnostics += ResourcePackCompilationDiagnostic(
-				contribution.pack.manifest.value.id,
-				contribution.resource.path,
-				"A resource-pack registry must have exactly one root; found ${roots.size}",
-			)
+			diagnostics += contribution.origin(contribution.fieldOrigins.parent).diagnostic("A resource-pack registry must have exactly one root; found ${roots.size}")
 		}
 	}
 
@@ -545,11 +635,8 @@ private fun validateHierarchy(
 		if (current != null) {
 			val cycle = visited.dropWhile { it != current }.toSet()
 			if (reportedCycles.add(cycle)) {
-				diagnostics += ResourcePackCompilationDiagnostic(
-					contribution.pack.manifest.value.id,
-					contribution.resource.path,
-					"Bone hierarchy contains a cycle: ${cycle.joinToString(" -> ")}",
-				)
+				val overrideOrigin = cycle.mapNotNull { bonesByKey.getValue(it).fieldOrigins.parent }.lastOrNull()
+				diagnostics += contribution.origin(overrideOrigin).diagnostic("Bone hierarchy contains a cycle: ${cycle.joinToString(" -> ")}")
 			}
 		}
 	}
