@@ -2,8 +2,8 @@ import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
+import { BodyPart } from '@/utils/body-part';
 import {
-  BodyPart,
   BoardType,
   DeviceDataT,
   FirmwareDeviceIdTableT,

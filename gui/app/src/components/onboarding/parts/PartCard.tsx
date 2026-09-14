@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { Fragment, ReactNode } from 'react';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';

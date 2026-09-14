@@ -2,8 +2,8 @@ import { useLocalization } from '@fluent/react';
 import { Clickable } from '@/components/commons/Clickable';
 import classNames from 'classnames';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { BodyPart } from '@/utils/body-part';
 import {
-  BodyPart,
   BoneRouteT,
   BoneRoutingSettingsRequestT,
   BoneRoutingSettingsResponseT,

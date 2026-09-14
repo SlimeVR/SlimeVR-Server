@@ -1,8 +1,11 @@
 package dev.slimevr.bones
 
 import solarxr_protocol.connection.BoneDefinition
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
+
+private val BODY_PART_BY_VALUE: Array<BodyPart?> = arrayOfNulls<BodyPart>(UByte.MAX_VALUE.toInt() + 1).also { array ->
+	for (bodyPart in BodyPart.entries) array[bodyPart.value.toInt()] = bodyPart
+}
 
 /**
  * The server's bone identity and hierarchy. IDs are dense (`1..maxId`),
@@ -10,11 +13,6 @@ import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
  *
  * [BodyPart] is only used at the edges: to seed [standard], and to resolve specific bones by
  * name. Everything else is [BoneId]-keyed, so a bone with no standard body part still works.
- *
- * Invariant: a definition with a [BoneDefinition.standardBodyPart] always has
- * `id == standardBodyPart.value`, checked below. That is what lets [BodyPart.boneId] convert
- * without a registry lookup, so extension bones (added via `BoneRegistryManager.register`) must
- * never be assigned a standard body part, and standard IDs are never reassigned.
  */
 class BoneRegistry private constructor(
 	val value: WireBoneRegistry,
@@ -22,20 +20,26 @@ class BoneRegistry private constructor(
 	val root: BoneId,
 	private val byId: Array<BoneDefinition?>,
 	private val byKey: Map<String, BoneDefinition>,
-	private val standardIds: Array<BoneId?>,
 	private val childIds: Array<IntArray>,
 ) {
 	operator fun get(id: BoneId): BoneDefinition? = byId.getOrNull(id.value.toInt())
 
 	/** Constant-time lookup with no per-call allocation. */
-	operator fun get(bodyPart: BodyPart): BoneId? = standardIds[bodyPart.value.toInt()]
+	operator fun get(bodyPart: BodyPart): BoneId? {
+		if (bodyPart == BodyPart.NONE) return null
+		val id = BoneId(bodyPart.value.toUShort())
+		return id.takeIf { this[it] != null }
+	}
 	fun byKey(key: String): BoneDefinition? = byKey[key]
 
 	/** The registry key is stable across a registry rebuild; a [BoneId] is not. */
 	operator fun get(key: String): BoneId? = byKey(key)?.let { BoneId(it.id) }
 
-	/** Inverse of `get(BodyPart)`; null when the ID is unknown or not a standardized bone. */
-	fun bodyPartOf(id: BoneId): BodyPart? = this[id]?.standardBodyPart
+	/** Inverse of `get(BodyPart)`; null when the ID is unknown or outside the standard `BodyPart` range. */
+	fun bodyPartOf(id: BoneId): BodyPart? {
+		if (this[id] == null) return null
+		return BODY_PART_BY_VALUE.getOrNull(id.value.toInt())?.takeIf { it != BodyPart.NONE }
+	}
 
 	/** Inverse of `get(String)`. */
 	fun keyOf(id: BoneId): String? = this[id]?.key
@@ -99,7 +103,6 @@ class BoneRegistry private constructor(
 							key = bodyPart.key,
 							displayName = bodyPart.name.replace('_', ' ').lowercase(),
 							parent = parentPartOf[bodyPart]?.boneId?.value ?: 0.toUShort(),
-							standardBodyPart = bodyPart,
 						)
 					},
 				),
@@ -115,9 +118,6 @@ class BoneRegistry private constructor(
 				"Bone registry IDs must be exactly 1..$n"
 			}
 			require(registry.bones.all { it.parent == 0.toUShort() || it.parent in definitions }) { "Bone registry has an unknown parent" }
-			require(registry.bones.all { definition -> definition.standardBodyPart?.let { it.value.toUShort() == definition.id } ?: true }) {
-				"A standard body part's ID must equal its BodyPart value"
-			}
 			val visited = mutableSetOf<UShort>()
 			fun root(id: UShort): UShort {
 				require(visited.add(id)) { "Bone registry contains a cycle" }
@@ -132,7 +132,6 @@ class BoneRegistry private constructor(
 			val byId = arrayOfNulls<BoneDefinition>(n + 1)
 			val children = Array(n + 1) { mutableListOf<Int>() }
 			var root: BoneId? = null
-			val standardIds = arrayOfNulls<BoneId>(UByte.MAX_VALUE.toInt() + 1)
 			for (definition in registry.bones) {
 				val id = definition.id.toInt()
 				byId[id] = definition
@@ -142,10 +141,6 @@ class BoneRegistry private constructor(
 				} else {
 					children[definition.parent.toInt()] += id
 				}
-				definition.standardBodyPart?.let { bodyPart ->
-					require(standardIds[bodyPart.value.toInt()] == null) { "Duplicate standard bone $bodyPart" }
-					standardIds[bodyPart.value.toInt()] = BoneId(definition.id)
-				}
 			}
 			return BoneRegistry(
 				value = registry,
@@ -153,7 +148,6 @@ class BoneRegistry private constructor(
 				root = requireNotNull(root) { "Bone registry has no root" },
 				byId = byId,
 				byKey = registry.bones.associateBy { it.key },
-				standardIds = standardIds,
 				childIds = Array(children.size) { children[it].toIntArray() },
 			)
 		}

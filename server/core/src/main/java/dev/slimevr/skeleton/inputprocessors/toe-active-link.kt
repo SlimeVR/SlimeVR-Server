@@ -4,7 +4,7 @@ import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 /**
  * Handles setting the rotation of an inactive toe bone with the first active toe bone in its sources, or keeps

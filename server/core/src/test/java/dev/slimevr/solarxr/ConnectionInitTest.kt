@@ -6,21 +6,23 @@ import dev.slimevr.TestAppContext
 import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
-import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import solarxr_protocol.ClientHello
-import solarxr_protocol.HelloStatus
 import solarxr_protocol.MessageBundle
-import solarxr_protocol.ServerHello
 import solarxr_protocol.connection.BoneDefinition
 import solarxr_protocol.connection.BoneRegistry
-import solarxr_protocol.connection.ConfigurationAcknowledged
+import solarxr_protocol.connection.BoneRegistryRequest
+import solarxr_protocol.connection.ClientHello
+import solarxr_protocol.connection.ConfigurationDone
 import solarxr_protocol.connection.ConnectionError
-import solarxr_protocol.connection.ConnectionErrorCode
+import solarxr_protocol.connection.ConnectionMessage
 import solarxr_protocol.connection.ConnectionMessageHeader
+import solarxr_protocol.connection.HelloStatus
+import solarxr_protocol.connection.InitializationRequiredError
+import solarxr_protocol.connection.ServerHello
+import solarxr_protocol.connection.UnsupportedRequestError
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.StartDataFeed
 import java.nio.ByteBuffer
@@ -28,10 +30,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private fun TestScope.buildTestBridge(sent: MutableList<MessageBundle>): SolarXRBridge {
+private fun TestScope.buildTestBridge(sent: MutableList<OutboundFrame>): SolarXRBridge {
 	val appContext = object : TestAppContext() {
 		override val server = buildTestVrServer(backgroundScope)
 		override val bones = BoneRegistryManager.create(backgroundScope)
@@ -50,64 +55,114 @@ private fun TestScope.buildTestBridge(sent: MutableList<MessageBundle>): SolarXR
 		rpcDispatcher = EventDispatcher("test.rpc", backgroundScope),
 		driverDispatcher = EventDispatcher("test.driver", backgroundScope),
 	)
-	bridge.outbound.on<MessageBundle> { sent += it }.launchIn(backgroundScope)
+	bridge.outbound.on<OutboundFrame> { sent += it }.launchIn(backgroundScope)
 	runCurrent()
 	return bridge
 }
 
-private fun MessageBundle.singleConnectionError(): ConnectionError = connectionMsgs?.single()?.message as? ConnectionError ?: error("Expected a single ConnectionError")
+private fun clientHello(version: UInt = SOLARXR_PROTOCOL_VERSION) = MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(ClientHello(protocolVersion = version))))
+private fun OutboundFrame.connectionMessage(): ConnectionMessage? = bundle.connectionMsgs?.single()?.message
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConnectionInitTest {
 
 	@Test
-	fun `checkedSolarXRFrame rejects a wrong identifier`() {
-		val fbb = FlatBufferBuilder(64)
-		ClientHello(protocolVersion = SOLARXR_PROTOCOL_VERSION).finish(JvmFlatBufferWriter(fbb))
-		assertFailsWith<IllegalArgumentException> {
-			checkedSolarXRFrame(fbb.dataBuffer(), ServerHello.FILE_IDENTIFIER)
-		}
-	}
-
-	@Test
 	fun `checkedSolarXRFrame rejects a truncated frame`() {
 		assertFailsWith<IllegalArgumentException> {
-			checkedSolarXRFrame(ByteBuffer.allocate(4), ClientHello.FILE_IDENTIFIER)
+			checkedSolarXRFrame(ByteBuffer.allocate(4))
 		}
 	}
 
 	@Test
 	fun `checkedSolarXRFrame rejects an oversized frame`() {
 		assertFailsWith<IllegalArgumentException> {
-			checkedSolarXRFrame(ByteBuffer.allocate(SOLARXR_MAX_FRAME_SIZE + 1), ClientHello.FILE_IDENTIFIER)
+			checkedSolarXRFrame(ByteBuffer.allocate(SOLARXR_MAX_FRAME_SIZE + 1))
 		}
 	}
 
 	@Test
-	fun `ClientHello, ServerHello and MessageBundle round-trip with their identifiers`() {
-		val helloFbb = FlatBufferBuilder(64)
-		ClientHello(protocolVersion = SOLARXR_PROTOCOL_VERSION).finish(JvmFlatBufferWriter(helloFbb))
-		val helloReader = checkedSolarXRFrame(helloFbb.dataBuffer(), ClientHello.FILE_IDENTIFIER)
-		assertTrue(ClientHello.hasIdentifier(helloReader))
-		assertEquals(SOLARXR_PROTOCOL_VERSION, ClientHello.fromByteBuffer(helloReader).protocolVersion)
+	fun `a MessageBundle round-trips through writeSolarXRBundle and checkedSolarXRFrame`() {
+		val fbb = FlatBufferBuilder(64)
+		writeSolarXRBundle(fbb, clientHello())
+		val reader = checkedSolarXRFrame(fbb.dataBuffer())
+		val decoded = MessageBundle.fromByteBuffer(reader).connectionMsgs?.single()?.message
+		assertEquals(SOLARXR_PROTOCOL_VERSION, (decoded as? ClientHello)?.protocolVersion)
+	}
 
-		val replyFbb = FlatBufferBuilder(64)
-		ServerHello(HelloStatus.ACCEPTED, SOLARXR_PROTOCOL_VERSION).finish(JvmFlatBufferWriter(replyFbb))
-		val replyReader = checkedSolarXRFrame(replyFbb.dataBuffer(), ServerHello.FILE_IDENTIFIER)
-		assertTrue(ServerHello.hasIdentifier(replyReader))
-		assertEquals(HelloStatus.ACCEPTED, ServerHello.fromByteBuffer(replyReader).status)
+	@Test
+	fun `ClientHello with a matching version is accepted and moves to configuring`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
+		val bridge = buildTestBridge(sent)
 
-		val bundleFbb = FlatBufferBuilder(64)
-		MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(ConfigurationAcknowledged())))
-			.finish(JvmFlatBufferWriter(bundleFbb))
-		val bundleReader = checkedSolarXRFrame(bundleFbb.dataBuffer(), MessageBundle.FILE_IDENTIFIER)
-		assertTrue(MessageBundle.hasIdentifier(bundleReader))
-		assertTrue(MessageBundle.fromByteBuffer(bundleReader).connectionMsgs?.single()?.message is ConfigurationAcknowledged)
+		onSolarXRMessage(clientHello(), bridge)
+		runCurrent()
+
+		val hello = sent.single()
+		assertNull(hello.closeReason)
+		assertEquals(ServerHello(HelloStatus.ACCEPTED, SOLARXR_PROTOCOL_VERSION), hello.connectionMessage())
+		assertEquals(ConnectionPhase.CONFIGURING, bridge.context.state.value.phase)
+	}
+
+	@Test
+	fun `ClientHello with a mismatched version is rejected and closes`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
+		val bridge = buildTestBridge(sent)
+
+		onSolarXRMessage(clientHello(version = SOLARXR_PROTOCOL_VERSION + 1u), bridge)
+		runCurrent()
+
+		val hello = sent.single()
+		assertNotNull(hello.closeReason)
+		assertEquals(ServerHello(HelloStatus.REJECTED_UNSUPPORTED_VERSION, SOLARXR_PROTOCOL_VERSION), hello.connectionMessage())
+		assertEquals(ConnectionPhase.HELLO, bridge.context.state.value.phase)
+	}
+
+	@Test
+	fun `anything but ClientHello during HELLO is rejected and closes`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
+		val bridge = buildTestBridge(sent)
+
+		onSolarXRMessage(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(BoneRegistryRequest()))), bridge)
+		runCurrent()
+
+		val frame = sent.single()
+		assertNotNull(frame.closeReason)
+		assertIs<InitializationRequiredError>((frame.connectionMessage() as ConnectionError).data)
+	}
+
+	@Test
+	fun `BoneRegistryRequest during configuration replies with the registry`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
+		val bridge = buildTestBridge(sent)
+
+		onSolarXRMessage(clientHello(), bridge)
+		runCurrent()
+		sent.clear()
+
+		onSolarXRMessage(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(BoneRegistryRequest()))), bridge)
+		runCurrent()
+
+		assertEquals(bridge.registry.value, sent.single().connectionMessage())
+	}
+
+	@Test
+	fun `an undecodable connection message during configuration gets UnsupportedRequestError`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
+		val bridge = buildTestBridge(sent)
+
+		onSolarXRMessage(clientHello(), bridge)
+		runCurrent()
+		sent.clear()
+
+		onSolarXRMessage(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(message = null))), bridge)
+		runCurrent()
+
+		assertIs<UnsupportedRequestError>((sent.single().connectionMessage() as ConnectionError).data)
 	}
 
 	@Test
 	fun `application bundles are rejected before configuration completes`() = runTest {
-		val sent = mutableListOf<MessageBundle>()
+		val sent = mutableListOf<OutboundFrame>()
 		val bridge = buildTestBridge(sent)
 		var dispatched = false
 		bridge.dataFeedDispatcher.on<StartDataFeed> { dispatched = true }.launchIn(backgroundScope)
@@ -120,18 +175,20 @@ class ConnectionInitTest {
 		runCurrent()
 
 		assertFalse(dispatched)
-		assertEquals(ConnectionErrorCode.INITIALIZATION_REQUIRED, sent.single().singleConnectionError().code)
+		assertIs<InitializationRequiredError>((sent.single().connectionMessage() as ConnectionError).data)
 	}
 
 	@Test
 	fun `application bundles dispatch once configuration completes`() = runTest {
-		val sent = mutableListOf<MessageBundle>()
+		val sent = mutableListOf<OutboundFrame>()
 		val bridge = buildTestBridge(sent)
 		var dispatched = false
 		bridge.dataFeedDispatcher.on<StartDataFeed> { dispatched = true }.launchIn(backgroundScope)
 		runCurrent()
 
-		onSolarXRMessage(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(ConfigurationAcknowledged()))), bridge)
+		onSolarXRMessage(clientHello(), bridge)
+		runCurrent()
+		onSolarXRMessage(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(ConfigurationDone()))), bridge)
 		runCurrent()
 		assertTrue(bridge.isReady)
 
@@ -145,13 +202,39 @@ class ConnectionInitTest {
 	}
 
 	@Test
-	fun `a client-sent bone registry is silently ignored`() = runTest {
-		val sent = mutableListOf<MessageBundle>()
+	fun `a single bundle carrying ClientHello, BoneRegistryRequest and ConfigurationDone completes the handshake`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
 		val bridge = buildTestBridge(sent)
 
-		val clientRegistry = BoneRegistry(
-			bones = listOf(BoneDefinition(1u, "x", null, 0u, null)),
+		onSolarXRMessage(
+			MessageBundle(
+				connectionMsgs = listOf(
+					ConnectionMessageHeader(ClientHello(protocolVersion = SOLARXR_PROTOCOL_VERSION)),
+					ConnectionMessageHeader(BoneRegistryRequest()),
+					ConnectionMessageHeader(ConfigurationDone()),
+				),
+			),
+			bridge,
 		)
+		runCurrent()
+
+		assertEquals(3, sent.size)
+		assertEquals(ServerHello(HelloStatus.ACCEPTED, SOLARXR_PROTOCOL_VERSION), sent[0].connectionMessage())
+		assertEquals(bridge.registry.value, sent[1].connectionMessage())
+		assertIs<ConfigurationDone>(sent[2].connectionMessage())
+		assertTrue(bridge.isReady)
+	}
+
+	@Test
+	fun `a client-sent bone registry is silently ignored during configuration`() = runTest {
+		val sent = mutableListOf<OutboundFrame>()
+		val bridge = buildTestBridge(sent)
+
+		onSolarXRMessage(clientHello(), bridge)
+		runCurrent()
+		sent.clear()
+
+		val clientRegistry = BoneRegistry(bones = listOf(BoneDefinition(1u, "x", null, 0u)))
 		onSolarXRMessage(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(clientRegistry))), bridge)
 		runCurrent()
 

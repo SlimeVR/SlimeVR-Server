@@ -4,10 +4,10 @@ import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+import { BodyPart } from '@/utils/body-part';
 import {
   AssignTrackerRequestT,
   BoardType,
-  BodyPart,
   ForgetDeviceRequestT,
   ImuType,
   MagnetometerStatus,

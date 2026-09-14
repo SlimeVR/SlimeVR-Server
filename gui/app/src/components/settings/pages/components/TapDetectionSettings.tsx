@@ -1,8 +1,8 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
+import { BodyPart } from '@/utils/body-part';
 import {
-  BodyPart,
   ChangeTapDetectionSettingsRequestT,
   RpcMessage,
   TapDetectionSettingsRequestT,
@@ -81,7 +81,7 @@ export function TapDetectionSettings() {
   });
 
   const bodyParts: { value: string; label: string }[] = Object.values(BodyPart)
-    .filter((v): v is BodyPart => typeof v === 'number')
+    .filter((v): v is BodyPart => typeof v === 'string')
     .filter((v) => TAP_DETECTION_BODY_PARTS.includes(v as BodyPart))
     .map((value) => ({
       value: String(value),
@@ -104,12 +104,16 @@ export function TapDetectionSettings() {
     settingsReq.yawResetEnabled = values.yawResetEnabled;
     settingsReq.yawResetTaps = values.yawResetTaps;
     settingsReq.yawResetBoneId =
-      boneIdOfBodyPart(boneIdRegistry, Number(values.yawResetTracker)) ?? null;
-    settingsReq.mountingResetBoneId =
-      boneIdOfBodyPart(boneIdRegistry, Number(values.mountingResetTracker)) ??
+      boneIdOfBodyPart(boneIdRegistry, values.yawResetTracker as BodyPart) ??
       null;
+    settingsReq.mountingResetBoneId =
+      boneIdOfBodyPart(
+        boneIdRegistry,
+        values.mountingResetTracker as BodyPart
+      ) ?? null;
     settingsReq.fullResetBoneId =
-      boneIdOfBodyPart(boneIdRegistry, Number(values.fullResetTracker)) ?? null;
+      boneIdOfBodyPart(boneIdRegistry, values.fullResetTracker as BodyPart) ??
+      null;
     settingsReq.mountingResetEnabled = values.mountingResetEnabled;
     settingsReq.mountingResetDelay = values.mountingResetDelay;
     settingsReq.mountingResetTaps = values.mountingResetTaps;

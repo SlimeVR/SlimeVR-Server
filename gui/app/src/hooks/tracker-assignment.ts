@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { BodyPart } from '@/utils/body-part';
 import {
   AssignTrackerRequestT,
-  BodyPart,
   QuatT,
   ResetTrackerAssignmentsT,
   RpcMessage,

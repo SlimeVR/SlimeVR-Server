@@ -40,8 +40,8 @@ import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
+import { BodyPart } from '@/utils/body-part';
 import {
-  BodyPart,
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,

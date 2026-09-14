@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 
 /**
  * I dedicate this hook to @uriel ;)

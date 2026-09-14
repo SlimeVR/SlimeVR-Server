@@ -2,7 +2,6 @@ package dev.slimevr.bones
 
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.connection.BoneDefinition
-import solarxr_protocol.datatypes.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

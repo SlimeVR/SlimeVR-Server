@@ -8,7 +8,7 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import kotlin.math.abs
 import kotlin.math.asin
 

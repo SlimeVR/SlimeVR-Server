@@ -6,7 +6,7 @@ import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.times
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
 import kotlin.collections.map
 import kotlin.collections.plus

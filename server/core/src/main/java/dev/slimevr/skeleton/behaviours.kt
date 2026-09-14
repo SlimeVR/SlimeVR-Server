@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.ResetType
 import java.util.concurrent.Executors
 import kotlin.math.cos

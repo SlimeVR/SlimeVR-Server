@@ -8,7 +8,7 @@ import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { rotationToQuatMap, similarQuaternions } from '@/maths/quaternion';
 import { Quaternion } from 'three';
 import { SlimeUpIcon } from '@/components/commons/icon/SlimeUpIcon';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 import { useLocaleConfig } from '@/i18n/config';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 import {

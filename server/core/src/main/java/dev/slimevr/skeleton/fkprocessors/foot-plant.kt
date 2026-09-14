@@ -8,7 +8,7 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 // The max height to plant feet by
 const val ROTATION_CORRECTION_VERTICAL = 0.1f

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 import { Quaternion } from 'three';
 import * as Sentry from '@sentry/react';
 import {

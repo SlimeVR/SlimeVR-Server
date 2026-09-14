@@ -5,15 +5,11 @@ import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
 
 /**
  * Assigns each of [incoming] a fresh ID above every ID [registry] already has, preserving order.
- * A `parent` must reference a bone [registry] already defines; contributing two new bones that
- * are parent and child of each other in the same batch isn't supported. A `standardBodyPart` is
- * rejected here too, since only the initial [BoneRegistry.standard] registry may claim those IDs,
- * which is what keeps [BodyPart.boneId][dev.slimevr.bones.boneId] safe to use with no lookup.
+ * A `parent` must reference a bone [registry] already defines
  */
 private fun assignIds(registry: BoneRegistry, incoming: List<BoneDefinition>): List<BoneDefinition> {
 	var nextId = registry.maxId
 	return incoming.map { definition ->
-		require(definition.standardBodyPart == null) { "Extension bone \"${definition.key}\" cannot claim a standard body part" }
 		require(definition.parent == 0.toUShort() || registry[BoneId(definition.parent)] != null) {
 			"Extension bone \"${definition.key}\" has an unknown parent"
 		}

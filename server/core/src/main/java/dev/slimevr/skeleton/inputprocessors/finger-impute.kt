@@ -4,7 +4,7 @@ import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 private const val INTERMEDIATE_FROM_PROXIMAL = 2.12f
 private const val DISTAL_FROM_PROXIMAL = 3.03f

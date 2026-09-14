@@ -17,7 +17,7 @@ import dev.slimevr.skeleton.Velocity
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

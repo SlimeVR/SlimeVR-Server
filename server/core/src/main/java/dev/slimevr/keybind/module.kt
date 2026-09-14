@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.ResetType
 

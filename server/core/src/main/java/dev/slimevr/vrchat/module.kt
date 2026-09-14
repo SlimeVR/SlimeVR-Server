@@ -8,7 +8,7 @@ import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
 import solarxr_protocol.rpc.VRCConfigRecommendedValues
 import solarxr_protocol.rpc.VRCConfigValidity

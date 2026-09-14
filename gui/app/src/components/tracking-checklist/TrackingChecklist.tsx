@@ -6,6 +6,7 @@ import {
 } from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
 import { Clickable } from '@/components/commons/Clickable';
+import { BodyPart } from '@/utils/body-part';
 import {
   EnableSteamVRDriverRequestT,
   ResetType,
@@ -13,7 +14,6 @@ import {
   TrackingChecklistPublicNetworksT,
   TrackingChecklistSteamVRDisconnectedT,
   TrackingChecklistStepId,
-  BodyPart,
   RoutingOutput,
   BoneRoutingSettingsRequestT,
   BoneRoutingSettingsResponseT,

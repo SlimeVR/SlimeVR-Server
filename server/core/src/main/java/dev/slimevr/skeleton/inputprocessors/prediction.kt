@@ -9,7 +9,7 @@ import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration.Companion.milliseconds
