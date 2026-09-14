@@ -128,6 +128,8 @@ private fun interpolateRatio(fromUpperToLower: Float, curvature: Float, fromReli
 	}
 }
 
+// TODO consider interpolating all axes with different ratios
+
 /**
  * Interpolates between 2 quaternions but with the absolute of the ratio for the twist part.
  */

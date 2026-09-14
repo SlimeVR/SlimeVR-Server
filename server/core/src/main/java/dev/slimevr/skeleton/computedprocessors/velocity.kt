@@ -23,7 +23,7 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
 	return Velocity(
 		linear = deltaPosition / deltaTime,
-		angular = currentVelocityData.rotation.sandwich(deltaRotation.toRotationVector()) / deltaTime,
+		angular = currentVelocityData.rotation.sandwich(deltaRotation.toRotationVectorQ()) / deltaTime,
 	)
 }
 
