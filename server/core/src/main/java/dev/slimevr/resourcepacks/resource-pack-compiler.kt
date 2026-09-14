@@ -484,16 +484,58 @@ private fun compileEmitEntries(
 	for ((boneId, pair) in contributions) {
 		val (contribution, entries) = pair
 		result[boneId] = entries.mapValues { (address, entry) ->
+			val origin = contribution.origin(contribution.fieldOrigins.vrchatEmit[address])
+			validateEmitPipeline(address, entry, origin, diagnostics)
 			CompiledEmitEntry(
 				from = entry.from,
 				relativeTo = entry.relativeTo?.let {
-					resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.vrchatEmit[address]), "outputs.vrchat.emit.relativeTo", registry, diagnostics)
+					resolveBoneKey(it, origin, "outputs.vrchat.emit.relativeTo", registry, diagnostics)
 				},
 				steps = entry.value ?: emptyList(),
 			)
 		}
 	}
 	return result
+}
+
+private enum class EmitValueType { ROTATION, VECTOR, NUMBER, BOOLEAN }
+
+private fun validateEmitPipeline(
+	address: String,
+	entry: EmitEntry,
+	origin: ResourceOrigin,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+) {
+	var type = when (entry.from) {
+		EmitSource.POSITION -> EmitValueType.VECTOR
+		EmitSource.ROTATION -> EmitValueType.ROTATION
+	}
+	for ((index, step) in entry.value.orEmpty().withIndex()) {
+		val (operation, next) = when {
+			step.euler != null -> {
+				"euler" to if (type != EmitValueType.ROTATION) null else if (step.euler.axis == null) EmitValueType.VECTOR else EmitValueType.NUMBER
+			}
+
+			step.scale != null -> "scale" to arithmeticResult(type, step.scale)
+			step.divide != null -> "divide" to arithmeticResult(type, step.divide)
+			step.offset != null -> "offset" to arithmeticResult(type, step.offset)
+			step.clamp != null -> "clamp" to type.takeIf { it == EmitValueType.NUMBER || it == EmitValueType.VECTOR }
+			step.greaterThan != null -> "greaterThan" to EmitValueType.BOOLEAN.takeIf { type == EmitValueType.NUMBER }
+			step.lessThan != null -> "lessThan" to EmitValueType.BOOLEAN.takeIf { type == EmitValueType.NUMBER }
+			else -> error("Pipeline step has no operation after schema validation")
+		}
+		if (next == null) {
+			diagnostics += origin.diagnostic("VRChat emit '$address' cannot apply $operation to ${type.name.lowercase()} at pipeline step ${index + 1}")
+			return
+		}
+		type = next
+	}
+}
+
+private fun arithmeticResult(type: EmitValueType, operand: ScalarOrVector): EmitValueType? = when (type) {
+	EmitValueType.ROTATION, EmitValueType.VECTOR -> type
+	EmitValueType.NUMBER -> if (operand is ScalarOrVector.Scalar) EmitValueType.NUMBER else null
+	EmitValueType.BOOLEAN -> null
 }
 
 /**

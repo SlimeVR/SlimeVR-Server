@@ -404,6 +404,33 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `compiler rejects invalid VRChat emit pipeline types`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:invalid-pipelines"),
+					"data/bones/extra.json" to """
+						{"key":"example:extra","nameKey":"example:extra","parent":"slimevr:head","outputs":{"vrchat":{"emit":{
+							"/example/euler":{"from":"position","value":[{"euler":"x"}]},
+							"/example/vector-on-number":{"from":"rotation","value":[{"euler":"x"},{"scale":{"x":2}}]},
+							"/example/boolean":{"from":"rotation","value":[{"euler":"x"},{"greaterThan":0},{"offset":1}]}
+						}}}}
+					""".trimIndent(),
+				),
+			),
+		)
+
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		val diagnostics = error.diagnostics.filter { "VRChat emit" in it.message }
+		assertEquals(3, diagnostics.size)
+		assertTrue(diagnostics.any { "'/example/euler'" in it.message && "cannot apply euler to vector" in it.message })
+		assertTrue(diagnostics.any { "'/example/vector-on-number'" in it.message && "cannot apply scale to number" in it.message })
+		assertTrue(diagnostics.any { "'/example/boolean'" in it.message && "cannot apply offset to boolean" in it.message })
+		assertTrue(diagnostics.all { it.packId == "example:invalid-pipelines" && it.path == "data/bones/extra.json" })
+	}
+
+	@Test
 	fun `user-pack set overrides apply in pack order and merge VRChat emit addresses`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val first = ResourcePackParser().parse(
