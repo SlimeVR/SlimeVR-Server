@@ -9,6 +9,7 @@ import dev.slimevr.hid.HIDReceiverBehaviour
 import dev.slimevr.hid.HIDRotationBatteryLegacy
 import dev.slimevr.hid.HIDRotationButtonLegacy
 import dev.slimevr.hid.HIDRuntimeLegacy
+import dev.slimevr.tracker.TrackerActions
 
 class HIDBatteryBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
@@ -20,6 +21,10 @@ class HIDBatteryBehaviour : HIDReceiverBehaviour {
 				},
 			)
 			device.recordRssi(packet.rssi)
+
+			receiver.getTracker(packet.hidId)?.let { tracker ->
+				tracker.context.dispatch(TrackerActions.Update { copy(imuTemp = packet.sensorTemp) })
+			}
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.on<HIDRotationButtonLegacy> { packet ->
