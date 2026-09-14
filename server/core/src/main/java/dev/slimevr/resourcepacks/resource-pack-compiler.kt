@@ -250,6 +250,36 @@ private fun applySetOverrides(
 			proportionsByKey[override.target] = target.copy(resource = target.resource.copy(value = target.resource.value.withSet(set)))
 		}
 	}
+	for (pack in packs) {
+		for (resource in pack.boneOverrides) {
+			val override = resource.value
+			val target = bonesByKey[override.target] ?: continue
+			var definition = target.resource.value
+			for (path in override.remove.orEmpty()) {
+				val updated = definition.withRemoved(path)
+				if (updated == null) {
+					diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Cannot remove bone property ${path.joinToString(".")}")
+				} else {
+					definition = updated
+					bonesByKey[override.target] = target.copy(resource = target.resource.copy(value = definition))
+				}
+			}
+		}
+		for (resource in pack.proportionOverrides) {
+			val override = resource.value
+			val target = proportionsByKey[override.target] ?: continue
+			var definition = target.resource.value
+			for (property in override.remove.orEmpty()) {
+				val updated = definition.withRemoved(property)
+				if (updated == null) {
+					diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Cannot remove proportion property '$property'")
+				} else {
+					definition = updated
+					proportionsByKey[override.target] = target.copy(resource = target.resource.copy(value = definition))
+				}
+			}
+		}
+	}
 }
 
 internal fun BoneDefinition.withSet(set: BoneOverrideSet): BoneDefinition = copy(
@@ -287,6 +317,38 @@ internal fun ProportionDefinition.withSet(set: ProportionOverrideSet): Proportio
 	maximum = set.maximum ?: maximum,
 	default = set.default ?: default,
 )
+
+internal fun BoneDefinition.withRemoved(path: List<String>): BoneDefinition? = when (path) {
+	listOf("mirror") -> copy(mirror = null)
+	listOf("batterySources") -> copy(batterySources = null)
+	listOf("candidateSources") -> copy(candidateSources = null)
+	listOf("overridable") -> copy(overridable = null)
+	listOf("parent") -> copy(parent = null)
+	listOf("headOffset") -> copy(headOffset = null)
+	listOf("tailOffset") -> copy(tailOffset = null)
+	listOf("rotationFallback") -> copy(rotationFallback = null)
+	listOf("constraint") -> copy(constraint = null)
+	listOf("outputs") -> copy(outputs = null)
+	listOf("inputs") -> copy(inputs = null)
+	listOf("inputs", "vrchat") -> copy(inputs = inputs?.copy(vrchat = null))
+	listOf("outputs", "driver") -> copy(outputs = outputs?.copy(driver = null))
+	listOf("outputs", "vmc") -> copy(outputs = outputs?.copy(vmc = null))
+	listOf("outputs", "vrchat") -> copy(outputs = outputs?.copy(vrchat = null))
+	listOf("outputs", "vrchat", "required") -> copy(outputs = outputs?.copy(vrchat = outputs.vrchat?.copy(required = null)))
+	else -> {
+		if (path.size == 4 && path.take(3) == listOf("outputs", "vrchat", "emit")) {
+			copy(outputs = outputs?.copy(vrchat = outputs.vrchat?.copy(emit = outputs.vrchat.emit - path[3])))
+		} else null
+	}
+}
+
+internal fun ProportionDefinition.withRemoved(property: String): ProportionDefinition? = when (property) {
+	"descriptionKey" -> copy(descriptionKey = null)
+	"contributesToHeight" -> copy(contributesToHeight = null)
+	"minimum" -> copy(minimum = null)
+	"maximum" -> copy(maximum = null)
+	else -> null
+}
 
 private fun compileEmitEntries(
 	registry: BoneRegistry,

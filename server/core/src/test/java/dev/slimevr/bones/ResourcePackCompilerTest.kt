@@ -391,6 +391,22 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `compiler rejects removing required or unknown bone override properties`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:remove"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","remove":[["nameKey"],["notAProperty"]]}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertEquals(2, error.diagnostics.size)
+		assertTrue(error.diagnostics.all { "Cannot remove" in it.message })
+	}
+
+	@Test
 	fun `bundled core pack's VMC output metadata matches the retired hardcoded tables`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val definition = compileResourcePacks(catalog(core))

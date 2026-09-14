@@ -4,6 +4,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 private fun SerialDescriptor.fieldNames(): Set<String> = (0 until elementsCount).map(::getElementName).toSet()
 
@@ -57,5 +58,41 @@ class ResourcePackOverrideTest {
 		assertEquals(set.minimum, result.minimum)
 		assertEquals(set.maximum, result.maximum)
 		assertEquals(set.default, result.default)
+	}
+
+	@Test
+	fun `bone remove supports every optional property and rejects identity paths`() {
+		val base = BoneDefinition(
+			key = "example:bone", nameKey = "name", mirror = "example:mirror", batterySources = listOf("example:battery"), candidateSources = listOf("example:candidate"),
+			overridable = true, parent = "example:parent", headOffset = Offset(), tailOffset = Offset(), rotationFallback = NoRotationFallback, constraint = TwistSwingConstraint(1f, 2f),
+			outputs = BoneOutputs(DriverOutput(true), VmcOutput(VmcNames(listOf("Bone"))), VrchatOutput(true, mapOf("/one" to EmitEntry(EmitSource.POSITION), "/two" to EmitEntry(EmitSource.ROTATION)))),
+			inputs = BoneInputs(VrchatInput("/input")),
+		)
+		assertNull(base.withRemoved(listOf("mirror"))!!.mirror)
+		assertNull(base.withRemoved(listOf("batterySources"))!!.batterySources)
+		assertNull(base.withRemoved(listOf("candidateSources"))!!.candidateSources)
+		assertNull(base.withRemoved(listOf("overridable"))!!.overridable)
+		assertNull(base.withRemoved(listOf("parent"))!!.parent)
+		assertNull(base.withRemoved(listOf("headOffset"))!!.headOffset)
+		assertNull(base.withRemoved(listOf("tailOffset"))!!.tailOffset)
+		assertNull(base.withRemoved(listOf("rotationFallback"))!!.rotationFallback)
+		assertNull(base.withRemoved(listOf("constraint"))!!.constraint)
+		assertNull(base.withRemoved(listOf("outputs"))!!.outputs)
+		assertNull(base.withRemoved(listOf("inputs"))!!.inputs)
+		assertNull(base.withRemoved(listOf("inputs", "vrchat"))!!.inputs!!.vrchat)
+		assertNull(base.withRemoved(listOf("outputs", "driver"))!!.outputs!!.driver)
+		assertNull(base.withRemoved(listOf("outputs", "vmc"))!!.outputs!!.vmc)
+		assertNull(base.withRemoved(listOf("outputs", "vrchat"))!!.outputs!!.vrchat)
+		assertNull(base.withRemoved(listOf("outputs", "vrchat", "required"))!!.outputs!!.vrchat!!.required)
+		assertEquals(setOf("/two"), base.withRemoved(listOf("outputs", "vrchat", "emit", "/one"))!!.outputs!!.vrchat!!.emit.keys)
+	}
+
+	@Test
+	fun `proportion remove supports every optional property and rejects required fields`() {
+		val base = ProportionDefinition(key = "example:proportion", nameKey = "name", descriptionKey = "description", contributesToHeight = true, minimum = 0f, maximum = 1f, default = FixedProportionDefault(0.5f))
+		assertNull(base.withRemoved("descriptionKey")!!.descriptionKey)
+		assertNull(base.withRemoved("contributesToHeight")!!.contributesToHeight)
+		assertNull(base.withRemoved("minimum")!!.minimum)
+		assertNull(base.withRemoved("maximum")!!.maximum)
 	}
 }
