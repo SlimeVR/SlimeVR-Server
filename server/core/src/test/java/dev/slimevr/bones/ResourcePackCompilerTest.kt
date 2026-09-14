@@ -404,6 +404,25 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `compiler rejects duplicate VRChat input and emit addresses`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:duplicate-addresses"),
+					"data/bones/first.json" to """{"key":"example:first","nameKey":"example:first","parent":"slimevr:head","outputs":{"vrchat":{"emit":{"/example/output":{"from":"position"}}}},"inputs":{"vrchat":{"address":"/example/input"}}}""",
+					"data/bones/second.json" to """{"key":"example:second","nameKey":"example:second","parent":"slimevr:head","outputs":{"vrchat":{"emit":{"/example/output":{"from":"rotation"}}}},"inputs":{"vrchat":{"address":"/example/input"}}}""",
+				),
+			),
+		)
+
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "Duplicate VRChat input address '/example/input'" in it.message })
+		assertTrue(error.diagnostics.any { "Duplicate VRChat emit address '/example/output'" in it.message })
+		assertTrue(error.diagnostics.filter { "Duplicate VRChat" in it.message }.all { it.path == "data/bones/second.json" })
+	}
+
+	@Test
 	fun `compiler rejects invalid VRChat emit pipeline types`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val user = ResourcePackParser().parse(

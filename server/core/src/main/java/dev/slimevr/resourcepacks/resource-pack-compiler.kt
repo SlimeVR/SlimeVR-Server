@@ -44,6 +44,7 @@ private data class BoneFieldOrigins(
 	val rotationFallback: ResourceOrigin? = null,
 	val vmcOutput: ResourceOrigin? = null,
 	val vrchatEmit: Map<String, ResourceOrigin> = emptyMap(),
+	val vrchatInput: ResourceOrigin? = null,
 )
 
 private data class BoneContribution(
@@ -210,7 +211,15 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			if (it.required == true) vrchatRequired.add(boneId)
 			emitContributions[boneId] = contribution to it.emit
 		}
-		definition.inputs?.vrchat?.let { vrchatInputAddresses[it.address] = boneId }
+		definition.inputs?.vrchat?.let { input ->
+			val existingBone = vrchatInputAddresses.putIfAbsent(input.address, boneId)
+			if (existingBone != null) {
+				val existingKey = registry.keyOf(existingBone) ?: existingBone.toString()
+				diagnostics += contribution.origin(contribution.fieldOrigins.vrchatInput).diagnostic(
+					"Duplicate VRChat input address '${input.address}'; first used by '$existingKey'",
+				)
+			}
+		}
 		if (definition.overridable == true) overridableBones.add(boneId)
 		definition.candidateSources?.let { sources ->
 			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.candidateSources), "candidateSources", registry, diagnostics) }
@@ -349,6 +358,7 @@ private fun BoneContribution.withSet(set: BoneOverrideSet, origin: ResourceOrigi
 		rotationFallback = if (set.rotationFallback != null) origin else fieldOrigins.rotationFallback,
 		vmcOutput = if (set.outputs?.vmc != null) origin else fieldOrigins.vmcOutput,
 		vrchatEmit = fieldOrigins.vrchatEmit + set.outputs?.vrchat?.emit.orEmpty().keys.associateWith { origin },
+		vrchatInput = if (set.inputs?.vrchat != null) origin else fieldOrigins.vrchatInput,
 	)
 	return copy(
 		resource = resource.copy(value = resource.value.withSet(set)),
@@ -481,10 +491,16 @@ private fun compileEmitEntries(
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ): BoneMap<Map<String, CompiledEmitEntry>> {
 	val result = BoneMap.of<Map<String, CompiledEmitEntry>>(registry)
+	val addresses = mutableMapOf<String, BoneId>()
 	for ((boneId, pair) in contributions) {
 		val (contribution, entries) = pair
 		result[boneId] = entries.mapValues { (address, entry) ->
 			val origin = contribution.origin(contribution.fieldOrigins.vrchatEmit[address])
+			val existingBone = addresses.putIfAbsent(address, boneId)
+			if (existingBone != null) {
+				val existingKey = registry.keyOf(existingBone) ?: existingBone.toString()
+				diagnostics += origin.diagnostic("Duplicate VRChat emit address '$address'; first used by '$existingKey'")
+			}
 			validateEmitPipeline(address, entry, origin, diagnostics)
 			CompiledEmitEntry(
 				from = entry.from,
