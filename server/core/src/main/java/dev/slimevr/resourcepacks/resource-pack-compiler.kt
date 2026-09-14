@@ -242,13 +242,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	val firstActiveRotationFallbacks = orderFallbackDependencies(resolvedFirstActiveRotationFallbacks) { it.lastOrNull() }
 	val vmcOutputMetadata = compileVmcOutputs(registry, vmcContributions, diagnostics)
 	val emitEntries = compileEmitEntries(registry, emitContributions, diagnostics)
-	val childrenByVmcParent = vmcOutputMetadata.entries.groupBy({ it.value.inputParent }, { it.key })
-	val vmcInputOrder = mutableListOf<BoneId>()
-	fun visitVmcInputOrder(boneId: BoneId) {
-		vmcInputOrder += boneId
-		childrenByVmcParent[boneId]?.forEach(::visitVmcInputOrder)
-	}
-	registry[BodyPart.HIP.key]?.let(::visitVmcInputOrder)
+	val vmcInputOrder = compileVmcInputOrder(vmcOutputMetadata)
 	if (diagnostics.isNotEmpty()) throw ResourcePackCompilationException(diagnostics)
 
 	return CompiledSkeleton(
@@ -560,6 +554,67 @@ private fun compileVmcOutputs(
 			},
 		)
 	}
+	validateVmcOutputs(registry, result, contributions, diagnostics)
+	return result
+}
+
+private fun validateVmcOutputs(
+	registry: BoneRegistry,
+	outputs: BoneMap<CompiledVmcOutput>,
+	contributions: Map<BoneId, Pair<BoneContribution, VmcOutput>>,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+) {
+	val names = mutableMapOf<String, BoneId>()
+	for ((boneId, output) in outputs) {
+		val contribution = contributions.getValue(boneId).first
+		val origin = contribution.origin(contribution.fieldOrigins.vmcOutput)
+		for (name in output.names) {
+			val previous = names.putIfAbsent(name, boneId) ?: continue
+			val previousKey = registry.keyOf(previous) ?: previous.toString()
+			diagnostics += origin.diagnostic(
+				"Duplicate VMC name '$name'; first used by '$previousKey'",
+			)
+		}
+		for ((field, parent) in listOf("outputParent" to output.outputParent, "inputParent" to output.inputParent)) {
+			if (parent != null && parent !in outputs) {
+				val parentKey = registry.keyOf(parent) ?: parent.toString()
+				diagnostics += origin.diagnostic("VMC $field '$parentKey' does not have a VMC output")
+			}
+		}
+	}
+
+	fun validateParentGraph(field: String, parentOf: (CompiledVmcOutput) -> BoneId?) {
+		val reportedCycles = mutableSetOf<Set<BoneId>>()
+		for ((boneId, _) in outputs) {
+			val visited = linkedSetOf<BoneId>()
+			var current: BoneId? = boneId
+			while (current != null && visited.add(current)) current = outputs[current]?.let(parentOf)
+			if (current == null) continue
+			val cycle = visited.dropWhile { it != current }.toSet()
+			if (!reportedCycles.add(cycle)) continue
+			val contribution = contributions.getValue(visited.last()).first
+			val origin = contribution.origin(contribution.fieldOrigins.vmcOutput)
+			val keys = cycle.map { registry.keyOf(it) ?: it.toString() }
+			diagnostics += origin.diagnostic("VMC $field graph contains a cycle: ${keys.joinToString(" -> ")}")
+		}
+	}
+	validateParentGraph("outputParent", CompiledVmcOutput::outputParent)
+	validateParentGraph("inputParent", CompiledVmcOutput::inputParent)
+}
+
+private fun compileVmcInputOrder(outputs: BoneMap<CompiledVmcOutput>): List<BoneId> {
+	val childrenByParent = outputs.entries.groupBy({ it.value.inputParent }, { it.key })
+	val result = mutableListOf<BoneId>()
+	val visited = mutableSetOf<BoneId>()
+	fun visit(boneId: BoneId) {
+		if (!visited.add(boneId)) return
+		result += boneId
+		childrenByParent[boneId]?.forEach(::visit)
+	}
+	childrenByParent[null].orEmpty().forEach(::visit)
+	// Compilation diagnostics reject cycles and unnamed parents. Still visit any remaining entry
+	// defensively so malformed metadata cannot recurse forever or silently disappear before throw.
+	outputs.keys.forEach(::visit)
 	return result
 }
 

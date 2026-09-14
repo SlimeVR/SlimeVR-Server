@@ -132,9 +132,9 @@ class CompiledSkeleton(
 	fun vmcOutputOf(boneId: BoneId): CompiledVmcOutput? = vmcOutputMetadata[boneId]
 	val vmcNamedBones: Set<BoneId> get() = vmcOutputMetadata.keys
 
-	/** Lowercase Unity bone name to the bone it names; the inverse of each [CompiledVmcOutput.names]. */
+	/** Exact VMC/Unity bone name to the bone it names. */
 	val unityNameToBone: Map<String, BoneId> =
-		vmcOutputMetadata.entries.flatMap { (boneId, output) -> output.names.map { it.lowercase() to boneId } }.toMap()
+		vmcOutputMetadata.entries.flatMap { (boneId, output) -> output.names.map { it to boneId } }.toMap()
 
 	/** A bone's VMC mirror-image bone, itself if it has none. */
 	fun mirrorOf(boneId: BoneId): BoneId = mirrorOf[boneId] ?: boneId

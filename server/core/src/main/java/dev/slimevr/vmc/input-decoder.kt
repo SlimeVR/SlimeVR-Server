@@ -35,7 +35,7 @@ internal fun decodeVmcMessage(msg: OscMessage, frame: VmcInputFrame, definition:
 	when (msg.address) {
 		"/VMC/Ext/Bone/Pos" -> {
 			val name = (msg.args.getOrNull(0) as? OscArg.String)?.value ?: return
-			val boneId = definition.unityNameToBone[name.lowercase()] ?: return
+			val boneId = definition.unityNameToBone[name] ?: return
 			val (pos, rot) = parseVmcTransform(msg.args, startIndex = 1) ?: return
 			frame.boneLocalPositions[boneId] = pos
 			frame.boneLocalRotations[boneId] = rot

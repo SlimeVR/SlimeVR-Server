@@ -100,6 +100,17 @@ class InputDecoderTest {
 	}
 
 	@Test
+	fun `Bone names are case sensitive`() {
+		val bundle = bundleOf(
+			OscMessage("/VMC/Ext/Bone/Pos", transformArgs("hips", Vector3.ZERO, Quaternion.IDENTITY)),
+		)
+
+		val frame = decodeVmcBundle(bundle, emptyFrame())
+
+		assertEquals(0, frame.boneLocalRotations.size)
+	}
+
+	@Test
 	fun `Carries forward bones missing from this bundle`() {
 		val first = bundleOf(
 			OscMessage("/VMC/Ext/Bone/Pos", transformArgs("Hips", Vector3(0f, 1f, 0f), Quaternion.IDENTITY)),

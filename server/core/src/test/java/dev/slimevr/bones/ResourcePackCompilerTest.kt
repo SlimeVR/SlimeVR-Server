@@ -542,6 +542,73 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `compiler rejects duplicate VMC names`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:vmc-names"),
+					"data/bones/first.json" to """{"key":"example:first","nameKey":"example:first","parent":"slimevr:head","outputs":{"vmc":{"name":"ExtraBone"}}}""",
+					"data/bones/second.json" to """{"key":"example:second","nameKey":"example:second","parent":"slimevr:head","outputs":{"vmc":{"name":"ExtraBone"}}}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		val diagnostic = error.diagnostics.single { "Duplicate VMC name" in it.message }
+		assertEquals("example:vmc-names", diagnostic.packId)
+		assertEquals("data/bones/second.json", diagnostic.path)
+	}
+
+	@Test
+	fun `compiler rejects VMC parents without VMC output metadata`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:vmc-parent"),
+					"data/bones/extra.json" to """{"key":"example:extra","nameKey":"example:extra","parent":"slimevr:head","outputs":{"vmc":{"name":"ExtraBone","outputParent":"slimevr:lower_waist","inputParent":"slimevr:lower_waist"}}}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "VMC outputParent" in it.message && "does not have a VMC output" in it.message })
+		assertTrue(error.diagnostics.any { "VMC inputParent" in it.message && "does not have a VMC output" in it.message })
+	}
+
+	@Test
+	fun `compiler rejects cycles in both VMC parent graphs`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:vmc-cycle"),
+					"data/bones/first.json" to """{"key":"example:first","nameKey":"example:first","parent":"slimevr:head","outputs":{"vmc":{"name":"ExtraFirst","outputParent":"example:second","inputParent":"example:second"}}}""",
+					"data/bones/second.json" to """{"key":"example:second","nameKey":"example:second","parent":"slimevr:head","outputs":{"vmc":{"name":"ExtraSecond","outputParent":"example:first","inputParent":"example:first"}}}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "VMC outputParent graph contains a cycle" in it.message })
+		assertTrue(error.diagnostics.any { "VMC inputParent graph contains a cycle" in it.message })
+	}
+
+	@Test
+	fun `VMC input order includes every explicit input root`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:vmc-root"),
+					"data/bones/extra.json" to """{"key":"example:extra","nameKey":"example:extra","parent":"slimevr:head","outputs":{"vmc":{"name":"ExtraRoot","outputParent":"slimevr:head","inputParent":null}}}""",
+				),
+			),
+		)
+		val definition = compileResourcePacks(catalog(core, user))
+		assertTrue(definition.registry["example:extra"]!! in definition.vmcInputOrder)
+		assertEquals(definition.vmcNamedBones, definition.vmcInputOrder.toSet())
+	}
+
+	@Test
 	fun `bundled core pack's VMC output metadata matches the retired hardcoded tables`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val definition = compileResourcePacks(catalog(core))
@@ -758,10 +825,11 @@ class ResourcePackCompilerTest {
 		}
 		assertEquals(id(BodyPart.HIP), definition.mirrorOf(id(BodyPart.HIP)), "unmirrored bone mirrors to itself")
 
-		// unityNameToBone is the inverse of names, lowercased.
-		assertEquals(id(BodyPart.HIP), definition.unityNameToBone["hips"])
-		assertEquals(id(BodyPart.LEFT_BIG_TOE), definition.unityNameToBone["leftbigtoe"])
-		assertEquals(id(BodyPart.LEFT_BIG_TOE), definition.unityNameToBone["lefttoes"])
+		// unityNameToBone is the exact, case-sensitive inverse of names.
+		assertEquals(id(BodyPart.HIP), definition.unityNameToBone["Hips"])
+		assertEquals(id(BodyPart.LEFT_BIG_TOE), definition.unityNameToBone["LeftBigToe"])
+		assertEquals(id(BodyPart.LEFT_BIG_TOE), definition.unityNameToBone["LeftToes"])
+		assertNull(definition.unityNameToBone["hips"])
 	}
 
 	@Test
