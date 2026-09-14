@@ -221,14 +221,25 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		definition.mirror?.let { mirrorOf[boneId] = resolveBoneKey(it, contribution.origin(contribution.fieldOrigins.mirror), "mirror", registry, diagnostics) }
 	}
 	val hierarchyOrder = registry.hierarchyFrom(registry.root).map { it.second }
-	val copyRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
+	val resolvedCopyRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
 		copyFallbacksByBoneId[boneId]?.let { (contribution, fallback) -> boneId to resolveFallbackBone(fallback.source, contribution, registry, diagnostics) }
 	}
-	val firstActiveRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
+	val resolvedFirstActiveRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
 		firstActiveFallbacksByBoneId[boneId]?.let { (contribution, fallback) ->
 			boneId to fallback.sources.map { resolveFallbackBone(it, contribution, registry, diagnostics) }
 		}
 	}
+	val firstActiveBones = resolvedFirstActiveRotationFallbacks.mapTo(mutableSetOf()) { it.first }
+	for ((boneId, source) in resolvedCopyRotationFallbacks) {
+		if (source !in firstActiveBones) continue
+		val contribution = copyFallbacksByBoneId.getValue(boneId).first
+		val sourceKey = registry.keyOf(source) ?: source.toString()
+		diagnostics += contribution.origin(contribution.fieldOrigins.rotationFallback).diagnostic(
+			"A copy rotationFallback cannot use firstActive bone '$sourceKey' as its source because copy fallbacks run first",
+		)
+	}
+	val copyRotationFallbacks = orderFallbackDependencies(resolvedCopyRotationFallbacks) { it }
+	val firstActiveRotationFallbacks = orderFallbackDependencies(resolvedFirstActiveRotationFallbacks) { it.lastOrNull() }
 	val vmcOutputMetadata = compileVmcOutputs(registry, vmcContributions, diagnostics)
 	val emitEntries = compileEmitEntries(registry, emitContributions, diagnostics)
 	val childrenByVmcParent = vmcOutputMetadata.entries.groupBy({ it.value.inputParent }, { it.key })
@@ -247,6 +258,34 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		emitEntries, vrchatInputAddresses,
 		vmcOutputMetadata, vmcInputOrder, mirrorOf,
 	)
+}
+
+/**
+ * Orders an acyclic fallback chain source-before-consumer. A cycle keeps its existing hierarchy
+ * order, preserving the retired head/neck fallback's deterministic winner.
+ */
+private fun <T> orderFallbackDependencies(
+	entries: List<Pair<BoneId, T>>,
+	dependency: (T) -> BoneId?,
+): List<Pair<BoneId, T>> {
+	val remaining = entries.toMutableList()
+	val result = mutableListOf<Pair<BoneId, T>>()
+	while (remaining.isNotEmpty()) {
+		val pending = remaining.associate { it.first to it.second }
+		val readyIndex = remaining.indexOfFirst { (_, value) ->
+			val source = dependency(value)
+			source == null || source !in pending
+		}
+		val cycleIndex = remaining.indexOfFirst { (boneId, _) ->
+			var source = dependency(pending.getValue(boneId))
+			val visited = mutableSetOf<BoneId>()
+			while (source != null && source != boneId && visited.add(source)) source = pending[source]?.let(dependency)
+			source == boneId
+		}
+		val nextIndex = listOf(readyIndex, cycleIndex).filter { it >= 0 }.minOrNull() ?: 0
+		result += remaining.removeAt(nextIndex)
+	}
+	return result
 }
 
 private fun applyOverrides(

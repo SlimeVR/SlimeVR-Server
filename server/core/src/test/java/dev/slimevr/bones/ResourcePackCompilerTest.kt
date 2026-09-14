@@ -203,6 +203,45 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `compiler orders extension fallback chains source before consumer`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:fallback-order"),
+					"data/bones/copy-consumer.json" to """{"key":"example:copy_consumer","nameKey":"example:copy_consumer","parent":"slimevr:head","rotationFallback":{"type":"copy","source":"example:copy_source"}}""",
+					"data/bones/copy-source.json" to """{"key":"example:copy_source","nameKey":"example:copy_source","parent":"slimevr:head","rotationFallback":{"type":"copy","source":"slimevr:head"}}""",
+					"data/bones/first-consumer.json" to """{"key":"example:first_consumer","nameKey":"example:first_consumer","parent":"slimevr:head","rotationFallback":{"type":"firstActive","sources":["example:first_source"]}}""",
+					"data/bones/first-source.json" to """{"key":"example:first_source","nameKey":"example:first_source","parent":"slimevr:head","rotationFallback":{"type":"firstActive","sources":["slimevr:head"]}}""",
+				),
+			),
+		)
+		val definition = compileResourcePacks(catalog(core, user))
+		val copyOrder = definition.copyRotationFallbacks.map { it.first }
+		assertTrue(copyOrder.indexOf(definition.registry["example:copy_source"]!!) < copyOrder.indexOf(definition.registry["example:copy_consumer"]!!))
+		val firstActiveOrder = definition.firstActiveRotationFallbacks.map { it.first }
+		assertTrue(firstActiveOrder.indexOf(definition.registry["example:first_source"]!!) < firstActiveOrder.indexOf(definition.registry["example:first_consumer"]!!))
+	}
+
+	@Test
+	fun `compiler rejects a copy fallback that depends on a firstActive fallback`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:cross-fallback"),
+					"data/bones/copy.json" to """{"key":"example:copy","nameKey":"example:copy","parent":"slimevr:head","rotationFallback":{"type":"copy","source":"example:first"}}""",
+					"data/bones/first.json" to """{"key":"example:first","nameKey":"example:first","parent":"slimevr:head","rotationFallback":{"type":"firstActive","sources":["slimevr:head"]}}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		val diagnostic = error.diagnostics.single { "copy fallbacks run first" in it.message }
+		assertEquals("example:cross-fallback", diagnostic.packId)
+		assertEquals("data/bones/copy.json", diagnostic.path)
+	}
+
+	@Test
 	fun `bundled core pack's driver and VMC accepted sets match the retired hardcoded tables`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val definition = compileResourcePacks(catalog(core))
