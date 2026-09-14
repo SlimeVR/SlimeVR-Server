@@ -23,16 +23,6 @@ private enum class SpineSource(val parts: Array<BodyPart>) {
 }
 
 private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
-private val NB_SPINE_SOURCES = SPINE_SOURCES.count()
-
-/** Ordered from parent to child */
-private val SPINE_BONES = arrayOf(
-	SpineSource.UPPER_CHEST,
-	SpineSource.LOWER_CHEST,
-	SpineSource.UPPER_WAIST,
-	SpineSource.LOWER_WAIST,
-	SpineSource.HIP,
-)
 
 // The higher a value is, the more reliable that source is.
 // If a "To" is 2x the "From", it'll use 100% "To".
@@ -40,7 +30,7 @@ private val SPINE_BONES = arrayOf(
 // A negative value will go towards the opposite rotation.
 // A From and To may be taken from different roots.
 // TODO: Fine tune
-private val SPINE_SOURCE_RELIABILITY = mapOf(
+private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to mapOf(
 		SpineSource.UPPER_CHEST to -6f, // Itself
 		// To
@@ -109,7 +99,7 @@ private fun getFromTo(selfIndex: Int, sourceActive: Map<SpineSource, Boolean>): 
 	// If To is null, we return null for the whole thing
 	val isActive = sourceActive[SPINE_SOURCES[selfIndex]] == true
 	val immediateNext = selfIndex + 1
-	val takeImmediateNext = (!isActive || selfIndex + 2 == NB_SPINE_SOURCES) && sourceActive[SPINE_SOURCES[immediateNext]] == true
+	val takeImmediateNext = (!isActive || selfIndex + 2 == SPINE_SOURCES.count()) && sourceActive[SPINE_SOURCES[immediateNext]] == true
 	val to = if (takeImmediateNext) immediateNext else nearestActive(selfIndex + 2, 1, sourceActive)
 
 	return from to to
@@ -181,18 +171,20 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 		val sourceActive = SPINE_SOURCES.associateWith { source ->
 			boneIdsFor(source).let { it.isNotEmpty() && it.all { id -> mutableInputSkeleton[id]?.isRotationActive == true } }
 		}
-		val fromTo = SPINE_BONES.withIndex().associate { (selfIndex, source) ->
-			source to getFromTo(selfIndex, sourceActive)
+		val fromTo = SPINE_SOURCE_RELIABILITY.withIndex().associate { (selfIndex, source) ->
+			source.first to getFromTo(selfIndex, sourceActive)
 		}
 
-		for (spineSource in SPINE_BONES) {
+		for ((spineIndex, spineSourceReliability) in SPINE_SOURCE_RELIABILITY.withIndex()) {
+			val spineSource = spineSourceReliability.first
+
 			// For optimization's sake, assume only one bone per SpineSource we traverse.
 			val boneId = boneIdsFor(spineSource).firstOrNull() ?: continue
 			val bone = mutableInputSkeleton[boneId] ?: continue
 			val isActive = bone.isRotationActive
 
 			// Get reliabilities mapped to this spine bone
-			val reliabilities = SPINE_SOURCE_RELIABILITY[spineSource] ?: continue
+			val reliabilities = SPINE_SOURCE_RELIABILITY[spineIndex].second
 
 			// Get the spine sources for the current spineSource
 			val (fromIndex, toIndex) = fromTo[spineSource] ?: error("No fromTo for $spineSource found.")
