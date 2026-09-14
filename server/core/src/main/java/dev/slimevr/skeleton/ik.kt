@@ -3,6 +3,7 @@ package dev.slimevr.skeleton
 import com.jme3.math.FastMath
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneSet
+import dev.slimevr.bones.Constraint
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 

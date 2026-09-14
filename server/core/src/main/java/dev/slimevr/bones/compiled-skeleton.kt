@@ -49,14 +49,23 @@ data class CompiledOffset(val base: Vector3, val terms: List<CompiledOffsetTerm>
 class BoneOffsets(val tail: BoneMap<Vector3>, val head: BoneMap<Vector3>)
 
 /**
- * The compiled bone registry, proportion catalog, and per-bone offset produced by
- * [compileResourcePacks].
+ * The compiled bone registry, proportion catalog, and per-bone offset, constraint, and
+ * rotation-fallback rule produced by [compileResourcePacks]. [copyRotationFallbacks] (bone to
+ * source) and [firstActiveRotationFallbacks] (bone to source list) are each in
+ * ancestor-before-descendant order on their own; every core bone's `copy` source that itself needs
+ * resolving first is its own parent, and a `firstActive` bone's only source that ever needs
+ * resolving first is its parent foot, both always a `copy` bone, so running every `copy` fallback
+ * before any `firstActive` one is enough to keep both schedules correctly ordered relative to
+ * each other without interleaving them into one.
  */
 class CompiledSkeleton(
 	val registry: BoneRegistry,
 	val proportions: Map<String, CompiledProportion>,
 	private val tailOffsets: BoneMap<CompiledOffset>,
 	private val headOffsets: BoneMap<CompiledOffset>,
+	val constraints: BoneMap<Constraint>,
+	val copyRotationFallbacks: List<Pair<BoneId, BoneId>>,
+	val firstActiveRotationFallbacks: List<Pair<BoneId, List<BoneId>>>,
 ) {
 	/** Every proportion's default value at [height], keyed by proportion key. */
 	fun defaultProportionValues(height: Float = REFERENCE_HEIGHT): Map<String, Float> {

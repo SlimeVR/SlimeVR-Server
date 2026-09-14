@@ -17,22 +17,19 @@ data class Offset(val base: Vector3? = null, val terms: List<OffsetTerm>? = null
 
 @Serializable
 @JsonClassDiscriminator("type")
-sealed interface RotationFallback {
-	val before: List<String>?
-	val after: List<String>?
-}
+sealed interface RotationFallback
 
 @Serializable
 @SerialName("none")
-data class NoRotationFallback(override val before: List<String>? = null, override val after: List<String>? = null) : RotationFallback
+data object NoRotationFallback : RotationFallback
 
 @Serializable
 @SerialName("copy")
-data class CopyRotationFallback(val source: String, override val before: List<String>? = null, override val after: List<String>? = null) : RotationFallback
+data class CopyRotationFallback(val source: String) : RotationFallback
 
 @Serializable
 @SerialName("firstActive")
-data class FirstActiveRotationFallback(val sources: List<String>, override val before: List<String>? = null, override val after: List<String>? = null) : RotationFallback
+data class FirstActiveRotationFallback(val sources: List<String>) : RotationFallback
 
 @Serializable
 @JsonClassDiscriminator("type")

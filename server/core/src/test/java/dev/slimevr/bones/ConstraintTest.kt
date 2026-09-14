@@ -1,4 +1,4 @@
-package dev.slimevr.skeleton
+package dev.slimevr.bones
 
 import com.jme3.math.FastMath
 import dev.slimevr.quaternionAssertEquals

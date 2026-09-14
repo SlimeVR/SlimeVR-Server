@@ -6,7 +6,6 @@ import dev.slimevr.bones.BoneSet
 import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.boneId
 import dev.slimevr.bones.mutateCopy
-import dev.slimevr.bones.resolveToBoneIds
 import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
@@ -172,6 +171,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 class ComputedSkeletonBehaviour(
 	val hz: Int,
+	val definition: CompiledSkeleton,
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
 	val fkComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
@@ -181,7 +181,7 @@ class ComputedSkeletonBehaviour(
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
 	private val headId = BodyPart.HEAD.boneId
-	private val constraints = BODY_PART_CONSTRAINT_MAP.resolveToBoneIds()
+	private val constraints = definition.constraints
 	private val ikChains = resolveIkChains()
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */

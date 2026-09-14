@@ -3,7 +3,7 @@
   "key": "slimevr:head",
   "nameKey": "slimevr:bone.head",
   "tailOffset": {"terms": [{"proportion": "slimevr:head", "direction": {"x": 0, "y": 0, "z": 1}}]},
-  "rotationFallback": {"type": "copy", "source": "slimevr:neck", "before": ["slimevr:neck"]},
+  "rotationFallback": {"type": "copy", "source": "slimevr:neck"},
   "outputs": {
     "vmc": {"name": "Head"},
     "vrchat": {

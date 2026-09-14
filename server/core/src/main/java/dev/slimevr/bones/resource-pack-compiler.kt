@@ -1,5 +1,8 @@
 package dev.slimevr.bones
 
+import dev.slimevr.resourcepacks.CopyRotationFallback
+import dev.slimevr.resourcepacks.FirstActiveRotationFallback
+import dev.slimevr.resourcepacks.NoRotationFallback
 import dev.slimevr.resourcepacks.Offset
 import dev.slimevr.resourcepacks.ParsedResourcePack
 import dev.slimevr.resourcepacks.ProportionDefinition
@@ -7,7 +10,12 @@ import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.SourcedResource
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.connection.BoneDefinition
+import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
 import dev.slimevr.resourcepacks.BoneDefinition as PackBoneDefinition
+import dev.slimevr.resourcepacks.Constraint as PackConstraint
+import dev.slimevr.resourcepacks.HingeConstraint as PackHingeConstraint
+import dev.slimevr.resourcepacks.LooseHingeConstraint as PackLooseHingeConstraint
+import dev.slimevr.resourcepacks.TwistSwingConstraint as PackTwistSwingConstraint
 import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
 
 data class ResourcePackCompilationDiagnostic(val packId: String, val path: String, val message: String)
@@ -135,15 +143,68 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 
 	val tailOffsets = BoneMap.of<CompiledOffset>(registry)
 	val headOffsets = BoneMap.of<CompiledOffset>(registry)
+	val constraints = BoneMap.of<Constraint>(registry)
+	val copyFallbacksByBoneId = mutableMapOf<BoneId, Pair<BoneContribution, CopyRotationFallback>>()
+	val firstActiveFallbacksByBoneId = mutableMapOf<BoneId, Pair<BoneContribution, FirstActiveRotationFallback>>()
 	for (contribution in allContributions) {
 		val definition = contribution.resource.value
 		val boneId = registry[definition.key] ?: continue
 		definition.tailOffset?.let { tailOffsets[boneId] = compileOffset(it, contribution, proportionsByKey, diagnostics) }
 		definition.headOffset?.let { headOffsets[boneId] = compileOffset(it, contribution, proportionsByKey, diagnostics) }
+		definition.constraint?.let { constraints[boneId] = compileConstraint(it) }
+		when (val fallback = definition.rotationFallback) {
+			null, is NoRotationFallback -> {}
+			is CopyRotationFallback -> copyFallbacksByBoneId[boneId] = contribution to fallback
+			is FirstActiveRotationFallback -> firstActiveFallbacksByBoneId[boneId] = contribution to fallback
+		}
+	}
+	val hierarchyOrder = registry.hierarchyFrom(registry.root).map { it.second }
+	val copyRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
+		copyFallbacksByBoneId[boneId]?.let { (contribution, fallback) -> boneId to resolveFallbackBone(fallback.source, contribution, registry, diagnostics) }
+	}
+	val firstActiveRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
+		firstActiveFallbacksByBoneId[boneId]?.let { (contribution, fallback) ->
+			boneId to fallback.sources.map { resolveFallbackBone(it, contribution, registry, diagnostics) }
+		}
 	}
 	if (diagnostics.isNotEmpty()) throw ResourcePackCompilationException(diagnostics)
 
-	return CompiledSkeleton(registry, proportions, tailOffsets, headOffsets)
+	return CompiledSkeleton(registry, proportions, tailOffsets, headOffsets, constraints, copyRotationFallbacks, firstActiveRotationFallbacks)
+}
+
+private fun compileConstraint(constraint: PackConstraint): Constraint = when (constraint) {
+	is PackTwistSwingConstraint -> TwistSwingConstraint(
+		twist = constraint.twistDegrees * degToRad,
+		swing = constraint.swingDegrees * degToRad,
+		allowedDeviation = (constraint.allowedDeviationDegrees ?: 0f) * degToRad,
+	)
+
+	is PackHingeConstraint -> HingeConstraint(
+		min = constraint.minDegrees * degToRad,
+		max = constraint.maxDegrees * degToRad,
+		hingeAxis = Vector3(constraint.axis.x, constraint.axis.y, constraint.axis.z),
+	)
+
+	is PackLooseHingeConstraint -> LooseHingeConstraint(
+		min = constraint.minDegrees * degToRad,
+		max = constraint.maxDegrees * degToRad,
+		allowedDeviation = constraint.allowedDeviationDegrees * degToRad,
+		hingeAxis = Vector3(constraint.axis.x, constraint.axis.y, constraint.axis.z),
+	)
+}
+
+/** Resolves one rotation-fallback source key (or the `"parent"` shorthand) to a [BoneId]. */
+private fun resolveFallbackBone(
+	key: String,
+	contribution: BoneContribution,
+	registry: BoneRegistry,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+): BoneId {
+	val target = if (key == "parent") contribution.resource.value.parent else key
+	val boneId = target?.let { registry[it] }
+	if (boneId != null) return boneId
+	diagnostics += ResourcePackCompilationDiagnostic(contribution.pack.manifest.value.id, contribution.resource.path, "Unknown bone '$key' in rotationFallback")
+	return BoneId(0u)
 }
 
 private fun compileOffset(

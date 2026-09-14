@@ -137,7 +137,7 @@ class ResourcePackParserTest {
 					"manifest.json" to manifest("example:branches"),
 					"data/bones/branch.json" to """
 				{"key":"example:branch","nameKey":"example:name",
-				"rotationFallback":{"type":"firstActive","sources":["example:first","example:last"],"after":["example:after"]},
+				"rotationFallback":{"type":"firstActive","sources":["example:first","example:last"]},
 				"constraint":{"type":"hinge","minDegrees":-1,"maxDegrees":1,"axis":{"x":1,"y":0,"z":0}},
 				"outputs":{"vrchat":{"emit":{"/example":{"from":"rotation","value":[
 					{"euler":"x"},{"euler":{"order":"YXZ","unit":"radians"}},{"scale":2},{"divide":{"x":2}},{"offset":{"z":1}},{"clamp":[-1,1]},{"greaterThan":0},{"lessThan":2}

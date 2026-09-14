@@ -1,11 +1,13 @@
 package dev.slimevr.bones
 
+import com.jme3.math.FastMath.DEG_TO_RAD
 import dev.slimevr.resourcepacks.ClasspathResourcePackSource
 import dev.slimevr.resourcepacks.InMemoryResourcePackSource
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackParser
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -82,6 +84,103 @@ class ResourcePackCompilerTest {
 		val recovered = definition.toProportionValues(offsets.tail, offsets.head)
 		assertEquals(defaults.keys, recovered.keys)
 		for (key in defaults.keys) assertFloatEquals(defaults.getValue(key), recovered.getValue(key), key)
+	}
+
+	@Test
+	fun `bundled core pack compiles constraints matching the retired hardcoded table`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val constraints = definition.constraints
+		assertEquals(19, constraints.entries.size)
+
+		fun twistSwing(part: BodyPart, twist: Float, swing: Float) {
+			val c = constraints[definition.registry[part.key]!!] as TwistSwingConstraint
+			assertFloatEquals(twist * DEG_TO_RAD, c.twist, "${part.key} twist")
+			assertFloatEquals(swing * DEG_TO_RAD, c.swing, "${part.key} swing")
+		}
+		fun looseHinge(part: BodyPart, min: Float, max: Float, allowedDeviation: Float) {
+			val c = constraints[definition.registry[part.key]!!] as LooseHingeConstraint
+			assertFloatEquals(min * DEG_TO_RAD, c.min, "${part.key} min")
+			assertFloatEquals(max * DEG_TO_RAD, c.max, "${part.key} max")
+			assertFloatEquals(allowedDeviation * DEG_TO_RAD, c.allowedDeviation, "${part.key} allowedDeviation")
+		}
+
+		twistSwing(BodyPart.LEFT_SHOULDER, 0f, 30f)
+		twistSwing(BodyPart.LEFT_UPPER_ARM, 120f, 180f)
+		looseHinge(BodyPart.LEFT_LOWER_ARM, -180f, 0f, 40f)
+		twistSwing(BodyPart.LEFT_HAND, 120f, 120f)
+		twistSwing(BodyPart.UPPER_CHEST, 90f, 120f)
+		twistSwing(BodyPart.LOWER_CHEST, 60f, 120f)
+		twistSwing(BodyPart.UPPER_WAIST, 60f, 120f)
+		twistSwing(BodyPart.LOWER_WAIST, 60f, 120f)
+		twistSwing(BodyPart.HIP, 60f, 120f)
+		twistSwing(BodyPart.LEFT_UPPER_LEG, 120f, 170f)
+		looseHinge(BodyPart.LEFT_LOWER_LEG, -5f, 180f, 10f)
+		looseHinge(BodyPart.LEFT_FOOT, -60f, 90f, 60f)
+	}
+
+	@Test
+	fun `bundled core pack's copy rotation-fallback schedule matches the retired BoneDirectLinkInputProcessor table`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val schedule = definition.copyRotationFallbacks
+		val registry = definition.registry
+
+		val expectedBones = setOf(
+			BodyPart.HEAD, BodyPart.NECK,
+			BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
+			BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER,
+			BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
+			BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM,
+			BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND,
+		).map { registry[it.key]!! }.toSet()
+		assertEquals(expectedBones, schedule.map { it.first }.toSet())
+
+		val order = schedule.map { it.first }
+		fun indexOf(part: BodyPart) = order.indexOf(registry[part.key]!!)
+
+		assertTrue(indexOf(BodyPart.HEAD) < indexOf(BodyPart.NECK), "head before neck")
+		assertTrue(indexOf(BodyPart.LEFT_SHOULDER) < indexOf(BodyPart.LEFT_UPPER_ARM), "shoulder before upper_arm")
+		assertTrue(indexOf(BodyPart.LEFT_UPPER_ARM) < indexOf(BodyPart.LEFT_LOWER_ARM), "upper_arm before lower_arm")
+		assertTrue(indexOf(BodyPart.LEFT_LOWER_ARM) < indexOf(BodyPart.LEFT_HAND), "lower_arm before hand")
+
+		val headFallback = schedule.first { it.first == registry[BodyPart.HEAD.key]!! }
+		assertEquals(registry[BodyPart.NECK.key]!!, headFallback.second)
+	}
+
+	@Test
+	fun `bundled core pack's firstActive rotation-fallback schedule matches the retired ToeActiveLinkInputProcessor table`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val schedule = definition.firstActiveRotationFallbacks
+		val registry = definition.registry
+
+		val expectedBones = setOf(
+			BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE,
+			BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE,
+		).map { registry[it.key]!! }.toSet()
+		assertEquals(expectedBones, schedule.map { it.first }.toSet())
+
+		// left_foot itself is copy-type, not firstActive, so it's resolved by
+		// CopyRotationFallbackInputProcessor before this schedule ever runs.
+		val bigToeFallback = schedule.first { it.first == registry[BodyPart.LEFT_BIG_TOE.key]!! }
+		assertEquals(registry[BodyPart.LEFT_FOOT.key]!!, bigToeFallback.second.last())
+	}
+
+	@Test
+	fun `compiler reports an unknown bone named in a rotation fallback`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:extra"),
+					"data/bones/extra.json" to """{"key":"example:extra","nameKey":"example:bone.extra","parent":"slimevr:head","rotationFallback":{"type":"copy","source":"example:missing"}}""",
+					"assets/lang/en.json" to """{"example:bone.extra":"Extra bone"}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "rotationFallback" in it.message })
 	}
 
 	@Test

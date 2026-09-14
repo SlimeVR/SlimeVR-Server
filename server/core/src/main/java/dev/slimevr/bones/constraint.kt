@@ -1,4 +1,4 @@
-package dev.slimevr.skeleton
+package dev.slimevr.bones
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

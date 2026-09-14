@@ -4,7 +4,7 @@ import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
-import dev.slimevr.bones.resolveToBoneIds
+import dev.slimevr.testCompiledSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Vector3
 import kotlin.test.Test
@@ -54,7 +54,7 @@ class IKTest {
 			target,
 		)
 
-		val ikOut = ccdIk(boneInputs, bones, listOf(goal), BODY_PART_CONSTRAINT_MAP.resolveToBoneIds(), 0.01f, 100)
+		val ikOut = ccdIk(boneInputs, bones, listOf(goal), testCompiledSkeleton.constraints, 0.01f, 100)
 		assert(ikOut.goalsReached.all { it.value }) {
 			val boneRots = ikOut.bones.values.joinToString {
 				"${it.boneId}: ${it.rotation.toEulerAngles(EulerOrder.YZX)}"

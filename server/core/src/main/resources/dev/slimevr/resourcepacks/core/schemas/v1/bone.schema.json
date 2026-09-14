@@ -74,14 +74,6 @@
             "source": {
               "description": "Bone to copy from when this bone is untracked. `parent` refers to this bone's own `parent` field rather than repeating its key.",
               "anyOf": [{"const": "parent"}, {"$ref": "common.schema.json#/$defs/key"}]
-            },
-            "before": {
-              "description": "Run this bone's fallback before the fallbacks owned by these bones, when both participate in the same order-dependent write cycle (e.g. two bones whose fallbacks copy each other).",
-              "$ref": "common.schema.json#/$defs/orderReferences"
-            },
-            "after": {
-              "description": "Run this bone's fallback after the fallbacks owned by these bones, when both participate in the same order-dependent write cycle.",
-              "$ref": "common.schema.json#/$defs/orderReferences"
             }
           }
         },
@@ -100,14 +92,6 @@
               "uniqueItems": true,
               "description": "Ordered candidates. The first one with a live, active tracker is used. If none are active, the final entry is used unconditionally, so a bone intended as the ultimate fallback (e.g. the parent foot for a toe) belongs last.",
               "items": {"anyOf": [{"const": "parent"}, {"$ref": "common.schema.json#/$defs/key"}]}
-            },
-            "before": {
-              "description": "Run this bone's fallback before the fallbacks owned by these bones, when both participate in the same order-dependent write cycle.",
-              "$ref": "common.schema.json#/$defs/orderReferences"
-            },
-            "after": {
-              "description": "Run this bone's fallback after the fallbacks owned by these bones, when both participate in the same order-dependent write cycle.",
-              "$ref": "common.schema.json#/$defs/orderReferences"
             }
           }
         }

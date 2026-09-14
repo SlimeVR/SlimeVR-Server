@@ -53,9 +53,6 @@ inline fun <V : Any> BodyPartMap<V>.forEachBone(action: (BodyPart, V) -> Unit) {
 	}
 }
 
-/** Converts a [BodyPartMap] to a plain [BoneId]-keyed [Map]; no registry needed since every key is standard. */
-fun <V : Any> BodyPartMap<V>.resolveToBoneIds(): Map<BoneId, V> = mapKeys { it.key.boneId }
-
 /**
  * Dense array-backed map keyed by [BoneId], scoped to the [registry] it was built for.
  * IDs run `1..registry.maxId`, slot 0 is unused.
