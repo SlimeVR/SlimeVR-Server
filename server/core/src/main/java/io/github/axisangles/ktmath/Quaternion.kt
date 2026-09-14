@@ -19,11 +19,6 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		val SLIMEVR: SlimeVR = SlimeVR
 
 		/**
-		 * Used to rotate an identity quaternion to face upwards for [twinExtendedBack].
-		 */
-		private val UP_ADJ = Quaternion(0.707f, -0.707f, 0f, 0f)
-
-		/**
 		 * creates a new quaternion representing the rotation about v's axis
 		 * by an angle of v's length
 		 * @param v the rotation vector
@@ -263,24 +258,6 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun twinFurthest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) this else -this
 
 	/**
-	 * Similar to [twinNearest], but offset so the lower back quadrant is the furthest
-	 * rotation relative to [that]. This is useful for joints that have limited forward
-	 * rotation, but extensive backward rotation.
-	 * @param that The reference quaternion to be nearest to or furthest from.
-	 * @return The furthest quaternion if in the lower back quadrant, otherwise the
-	 * nearest quaternion.
-	 **/
-	fun twinExtendedBack(that: Quaternion): Quaternion {
-		/*
-		 * This handles the thigh extending behind the torso to face downwards, and the
-		 * hip extending behind the chest. The thigh cannot bend to the back away from
-		 * the torso and the spine hopefully can't bend back that far, so we can fairly
-		 * safely assume the rotation is towards the torso.
-		 */
-		return this.twinNearest(that * UP_ADJ)
-	}
-
-	/**
 	 * interpolates from this quaternion to that quaternion by t in quaternion space
 	 * @param that the quaternion to interpolate to
 	 * @param t the amount to interpolate
@@ -473,7 +450,13 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes the rotation vector representing this quaternion's rotation
 	 * @return rotation vector
 	 **/
-	fun toRotationVector(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
+	fun toRotationVectorQ(): Vector3 = 2f * log().xyz
+
+	/**
+	 * computes the shortest rotation vector representing this quaternion's rotation
+	 * @return rotation vector
+	 **/
+	fun toRotationVectorR(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
 
 	@Suppress("ktlint")
 	/**
