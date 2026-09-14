@@ -62,8 +62,7 @@ class BoneRegistry private constructor(
 		result
 	}
 
-	fun hierarchyFrom(root: BoneId, onlyChildren: Boolean = false): List<Pair<BoneId?, BoneId>> =
-		hierarchyCache[root.value.toInt() * 2 + if (onlyChildren) 1 else 0]
+	fun hierarchyFrom(root: BoneId, onlyChildren: Boolean = false): List<Pair<BoneId?, BoneId>> = hierarchyCache[root.value.toInt() * 2 + if (onlyChildren) 1 else 0]
 
 	/** Cached: a full rebuild starts from [root] alone, the most common call to [highest]. */
 	val rootSet: BoneSet = BoneSet.of(this, listOf(root))

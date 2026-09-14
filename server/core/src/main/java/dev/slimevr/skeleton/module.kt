@@ -20,8 +20,8 @@ import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
-import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
+import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
