@@ -1,7 +1,6 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.BoneId
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.logging.AppLogger
@@ -28,7 +27,6 @@ private val RECOVERY_CONFIRM_DELAY = 2.seconds
 
 class VMCOutputBehaviour(
 	private val skeleton: Skeleton,
-	private val registry: BoneRegistry,
 	private val settings: Settings,
 	private val boneRouting: BoneRoutingManager,
 ) : VMCBehaviour {
@@ -62,7 +60,6 @@ class VMCOutputBehaviour(
 		val routedBones = boneRouting.context.state
 			.map { state -> state.routes.filterValues { RoutingOutput.VMC in it }.keys }
 			.distinctUntilChanged()
-			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), registry::bodyPartOf) }
 
 		val config = settings.context.state
 			.map { it.data.vmcConfig }
@@ -134,7 +131,7 @@ class VMCOutputBehaviour(
 		receiver: VMCManager,
 		runtime: OutputRuntime,
 		bones: ComputedSkeleton,
-		routedBones: Set<BodyPart>,
+		routedBones: Set<BoneId>,
 		config: VMCConfig,
 		startedAt: MonotonicValueTimeMark,
 	) {
@@ -142,7 +139,7 @@ class VMCOutputBehaviour(
 		val status = receiver.context.state.value.status
 		if (runtime.sendFailing && runtime.nextFrameRetryAt?.hasPassedNow() == false) return
 
-		val bundle = buildOutgoingBundle(bones, routedBones, config, receiver.context.state.value.vrm, startedAt.elapsedNow())
+		val bundle = buildOutgoingBundle(skeleton.definition, bones, routedBones, config, receiver.context.state.value.vrm, startedAt.elapsedNow())
 
 		try {
 			sender.send(bundle)

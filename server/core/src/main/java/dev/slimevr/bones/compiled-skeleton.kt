@@ -3,6 +3,7 @@ package dev.slimevr.bones
 import dev.slimevr.resourcepacks.FixedProportionDefault
 import dev.slimevr.resourcepacks.HeightRatioProportionDefault
 import dev.slimevr.resourcepacks.ProportionDefault
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.SkeletonBone
@@ -49,9 +50,18 @@ data class CompiledOffset(val base: Vector3, val terms: List<CompiledOffsetTerm>
  */
 class BoneOffsets(val tail: BoneMap<Vector3>, val head: BoneMap<Vector3>)
 
+/** A bone's compiled VMC output: its Unity name(s), resolved output/input parent, and rest rotation. */
+data class CompiledVmcOutput(
+	val names: List<String>,
+	val outputParent: BoneId?,
+	val inputParent: BoneId?,
+	val restRotation: Quaternion,
+)
+
 /**
  * The compiled bone registry, proportion catalog, per-bone offset, constraint, rotation-fallback
- * rule, and routing fact produced by [compileResourcePacks]. [copyRotationFallbacks] (bone to
+ * rule, routing fact, and VMC output metadata produced by [compileResourcePacks].
+ * [copyRotationFallbacks] (bone to
  * source) and [firstActiveRotationFallbacks] (bone to source list) are each in
  * ancestor-before-descendant order on their own; every core bone's `copy` source that itself needs
  * resolving first is its own parent, and a `firstActive` bone's only source that ever needs
@@ -73,6 +83,12 @@ class CompiledSkeleton(
 	private val vrchatRequired: BoneSet,
 	val overridableBones: BoneSet,
 	private val candidateSources: BoneMap<List<BoneId>>,
+	private val vmcOutputMetadata: BoneMap<CompiledVmcOutput>,
+	/** Root(hip)-to-leaf order over [vmcOutputMetadata]'s `inputParent` tree; outgoing VMC needs no
+	 * order (each bone's local transform only reads its own parent), but decoding VMC input must
+	 * accumulate world transforms parent-before-child. */
+	val vmcInputOrder: List<BoneId>,
+	private val mirrorOf: BoneMap<BoneId>,
 ) {
 	/** Bones [output] can receive, from each bone's `outputs.driver`/`outputs.vmc`/`outputs.vrchat`. */
 	fun acceptedBones(output: RoutingOutput): Set<BoneId> = when (output) {
@@ -94,6 +110,17 @@ class CompiledSkeleton(
 	val candidateBones: Set<BoneId> get() = candidateSources.keys
 
 	fun candidateSourcesOf(boneId: BoneId): List<BoneId> = candidateSources[boneId] ?: emptyList()
+
+	fun vmcOutputOf(boneId: BoneId): CompiledVmcOutput? = vmcOutputMetadata[boneId]
+	val vmcNamedBones: Set<BoneId> get() = vmcOutputMetadata.keys
+
+	/** Lowercase Unity bone name to the bone it names; the inverse of each [CompiledVmcOutput.names]. */
+	val unityNameToBone: Map<String, BoneId> by lazy {
+		vmcOutputMetadata.entries.flatMap { (boneId, output) -> output.names.map { it.lowercase() to boneId } }.toMap()
+	}
+
+	/** A bone's VMC mirror-image bone, itself if it has none. */
+	fun mirrorOf(boneId: BoneId): BoneId = mirrorOf[boneId] ?: boneId
 
 	/** Every proportion's default value at [height], keyed by proportion key. */
 	fun defaultProportionValues(height: Float = REFERENCE_HEIGHT): Map<String, Float> {

@@ -1,9 +1,8 @@
 package dev.slimevr.vmc
 
 import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.bodyPartMap
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.boneId
 import dev.slimevr.computedSkeletonOf
 import dev.slimevr.config.VMCConfig
@@ -15,6 +14,7 @@ import dev.slimevr.osc.forEachOscMessage
 import dev.slimevr.quaternionApproxEqual
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
+import dev.slimevr.testCompiledSkeleton
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -35,7 +35,8 @@ private fun assertApprox(expected: Quaternion, actual: Quaternion, message: Stri
 	)
 }
 
-private val registry = BoneRegistry.standard()
+private val definition = testCompiledSkeleton
+private val registry = definition.registry
 
 private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY, headPosition: Vector3 = Vector3.ZERO) = BoneState(
 	parentBone = null,
@@ -62,10 +63,28 @@ private fun transformArgs(name: String, pos: Vector3, rot: Quaternion): List<Osc
 
 private fun bundleOf(vararg messages: OscMessage) = OscBundle(1L, messages.map { OscContent.Message(it) })
 
+private fun emptyFrame() = emptyVmcInputFrame(definition)
+
 private fun decodeVmcBundle(bundle: OscBundle, frame: VmcInputFrame): VmcInputFrame {
-	forEachOscMessage(bundle) { msg -> decodeVmcMessage(msg, frame) }
+	forEachOscMessage(bundle) { msg -> decodeVmcMessage(msg, frame, definition) }
 	return frame
 }
+
+private fun boneMapOf(vararg entries: Pair<BodyPart, Vector3>): BoneMap<Vector3> = BoneMap.of<Vector3>(registry).also { map ->
+	for ((bodyPart, value) in entries) map[bodyPart.boneId] = value
+}
+
+private fun rotationMapOf(vararg entries: Pair<BodyPart, Quaternion>): BoneMap<Quaternion> = BoneMap.of<Quaternion>(registry).also { map ->
+	for ((bodyPart, value) in entries) map[bodyPart.boneId] = value
+}
+
+private fun worldTransforms(
+	locals: BoneMap<Quaternion>,
+	localPositions: BoneMap<Vector3>,
+	rootRotation: Quaternion,
+	rootPosition: Vector3,
+	scale: Float,
+) = vmcWorldTransforms(definition, locals, localPositions, rootRotation, rootPosition, scale)
 
 class InputDecoderTest {
 
@@ -75,7 +94,7 @@ class InputDecoderTest {
 			OscMessage("/VMC/Ext/Bone/Pos", transformArgs("LeftEye", Vector3.ZERO, Quaternion.IDENTITY)),
 		)
 
-		val frame = decodeVmcBundle(bundle, emptyVmcInputFrame())
+		val frame = decodeVmcBundle(bundle, emptyFrame())
 
 		assertEquals(0, frame.boneLocalRotations.size)
 	}
@@ -85,14 +104,14 @@ class InputDecoderTest {
 		val first = bundleOf(
 			OscMessage("/VMC/Ext/Bone/Pos", transformArgs("Hips", Vector3(0f, 1f, 0f), Quaternion.IDENTITY)),
 		)
-		val firstFrame = decodeVmcBundle(first, emptyVmcInputFrame())
+		val firstFrame = decodeVmcBundle(first, emptyFrame())
 
 		val second = bundleOf(
 			OscMessage("/VMC/Ext/Bone/Pos", transformArgs("Spine", Vector3.ZERO, Quaternion.IDENTITY)),
 		)
 		val secondFrame = decodeVmcBundle(second, firstFrame)
 
-		assertApprox(Vector3(0f, 1f, 0f), assertNotNull(secondFrame.boneLocalPositions[BodyPart.HIP]))
+		assertApprox(Vector3(0f, 1f, 0f), assertNotNull(secondFrame.boneLocalPositions[BodyPart.HIP.boneId]))
 	}
 
 	@Test
@@ -101,7 +120,7 @@ class InputDecoderTest {
 			OscMessage("/VMC/Ext/Root/Pos", transformArgs("root", Vector3(1f, 0f, 0f), Quaternion.rotationAroundYAxis(0.5f))),
 		)
 
-		val frame = decodeVmcBundle(bundle, emptyVmcInputFrame())
+		val frame = decodeVmcBundle(bundle, emptyFrame())
 
 		assertApprox(Vector3(1f, 0f, 0f), frame.rootPosition)
 		assertApprox(Quaternion.rotationAroundYAxis(0.5f), frame.rootRotation)
@@ -114,7 +133,7 @@ class InputDecoderTest {
 			OscMessage("/VMC/Ext/Tra/Pos", transformArgs("serial-1", Vector3(9f, 9f, 9f), Quaternion.IDENTITY)),
 		)
 
-		val frame = decodeVmcBundle(bundle, emptyVmcInputFrame())
+		val frame = decodeVmcBundle(bundle, emptyFrame())
 
 		val tracker = assertNotNull(frame.poseTrackers["serial-1"])
 		assertApprox(Vector3(1f, 1f, 1f), tracker.position)
@@ -142,10 +161,11 @@ class InputDecoderTest {
 			BodyPart.LEFT_FOOT to bone(BodyPart.LEFT_FOOT, Quaternion.rotationAroundYAxis(0.25f), Vector3(0.1f, -0.8f, 0f)),
 		)
 		val bones = registry.computedSkeletonOf(*bonesByPart.toList().toTypedArray())
+		val routedBones = bonesByPart.keys.map { it.boneId }.toSet()
 
-		val bundle = buildOutgoingBundle(bones, bonesByPart.keys, VMCConfig(), vrm = null, elapsed = 0.seconds)
-		val frame = decodeVmcBundle(bundle, emptyVmcInputFrame())
-		val worldTransforms = vmcWorldTransforms(
+		val bundle = buildOutgoingBundle(definition, bones, routedBones, VMCConfig(), vrm = null, elapsed = 0.seconds)
+		val frame = decodeVmcBundle(bundle, emptyFrame())
+		val worldTransforms = worldTransforms(
 			locals = frame.boneLocalRotations,
 			localPositions = frame.boneLocalPositions,
 			rootRotation = frame.rootRotation,
@@ -154,7 +174,7 @@ class InputDecoderTest {
 		)
 
 		for ((bodyPart, originalBone) in bonesByPart) {
-			val recovered = assertNotNull(worldTransforms[bodyPart], "missing $bodyPart")
+			val recovered = assertNotNull(worldTransforms[bodyPart.boneId], "missing $bodyPart")
 			assertApprox(originalBone.rotation, recovered.rotation, "$bodyPart rotation")
 			assertApprox(originalBone.headPosition, recovered.position, "$bodyPart position")
 		}
@@ -166,11 +186,11 @@ class InputDecoderTest {
 		val rootRotation = Quaternion.rotationAroundYAxis(0.9f)
 		val rootPosition = Vector3(1f, 0f, 0f)
 
-		val locals = BodyPartMap(mapOf(BodyPart.HIP to hipLocalRotation))
-		val localPositions = bodyPartMap<Vector3>()
+		val locals = rotationMapOf(BodyPart.HIP to hipLocalRotation)
+		val localPositions = BoneMap.of<Vector3>(registry)
 
-		val result = vmcWorldTransforms(locals, localPositions, rootRotation, rootPosition, scale = 1f)
-		val hip = assertNotNull(result[BodyPart.HIP])
+		val result = worldTransforms(locals, localPositions, rootRotation, rootPosition, scale = 1f)
+		val hip = assertNotNull(result[BodyPart.HIP.boneId])
 
 		assertApprox(rootRotation * hipLocalRotation, hip.rotation)
 		assertApprox(rootPosition, hip.position)
@@ -178,16 +198,16 @@ class InputDecoderTest {
 
 	@Test
 	fun `Scale multiplies position and leaves rotation alone`() {
-		val locals = BodyPartMap(mapOf(BodyPart.HIP to Quaternion.rotationAroundZAxis(0.3f)))
-		val localPositions = BodyPartMap(mapOf(BodyPart.HIP to Vector3(1f, 2f, 3f)))
+		val locals = rotationMapOf(BodyPart.HIP to Quaternion.rotationAroundZAxis(0.3f))
+		val localPositions = boneMapOf(BodyPart.HIP to Vector3(1f, 2f, 3f))
 
-		val unscaled = vmcWorldTransforms(locals, localPositions, Quaternion.IDENTITY, Vector3.ZERO, scale = 1f)
-		val scaled = vmcWorldTransforms(locals, localPositions, Quaternion.IDENTITY, Vector3.ZERO, scale = 2f)
+		val unscaled = worldTransforms(locals, localPositions, Quaternion.IDENTITY, Vector3.ZERO, scale = 1f)
+		val scaled = worldTransforms(locals, localPositions, Quaternion.IDENTITY, Vector3.ZERO, scale = 2f)
 
-		assertApprox(Quaternion.rotationAroundZAxis(0.3f), assertNotNull(scaled[BodyPart.HIP]).rotation)
+		assertApprox(Quaternion.rotationAroundZAxis(0.3f), assertNotNull(scaled[BodyPart.HIP.boneId]).rotation)
 		assertApprox(
-			assertNotNull(unscaled[BodyPart.HIP]).position * 2f,
-			assertNotNull(scaled[BodyPart.HIP]).position,
+			assertNotNull(unscaled[BodyPart.HIP.boneId]).position * 2f,
+			assertNotNull(scaled[BodyPart.HIP.boneId]).position,
 		)
 	}
 
@@ -198,22 +218,20 @@ class InputDecoderTest {
 		// A sender whose model has no UpperChest bone never emits its local rotation, so it's
 		// absent from the decoded locals map entirely. This should behave exactly as if
 		// UpperChest's local rotation had been received as IDENTITY.
-		val withoutUpperChest = BodyPartMap(mapOf(BodyPart.NECK to neckLocal))
-		val withIdentityUpperChest = BodyPartMap(
-			mapOf(BodyPart.NECK to neckLocal, BodyPart.UPPER_CHEST to Quaternion.IDENTITY),
-		)
-		val emptyPositions = bodyPartMap<Vector3>()
+		val withoutUpperChest = rotationMapOf(BodyPart.NECK to neckLocal)
+		val withIdentityUpperChest = rotationMapOf(BodyPart.NECK to neckLocal, BodyPart.UPPER_CHEST to Quaternion.IDENTITY)
+		val emptyPositions = BoneMap.of<Vector3>(registry)
 
-		val a = vmcWorldTransforms(withoutUpperChest, emptyPositions, Quaternion.IDENTITY, Vector3.ZERO, 1f)
-		val b = vmcWorldTransforms(withIdentityUpperChest, emptyPositions, Quaternion.IDENTITY, Vector3.ZERO, 1f)
+		val a = worldTransforms(withoutUpperChest, emptyPositions, Quaternion.IDENTITY, Vector3.ZERO, 1f)
+		val b = worldTransforms(withIdentityUpperChest, emptyPositions, Quaternion.IDENTITY, Vector3.ZERO, 1f)
 
-		assertApprox(assertNotNull(a[BodyPart.NECK]).rotation, assertNotNull(b[BodyPart.NECK]).rotation)
-		assertApprox(assertNotNull(a[BodyPart.HEAD]).rotation, assertNotNull(b[BodyPart.HEAD]).rotation)
+		assertApprox(assertNotNull(a[BodyPart.NECK.boneId]).rotation, assertNotNull(b[BodyPart.NECK.boneId]).rotation)
+		assertApprox(assertNotNull(a[BodyPart.HEAD.boneId]).rotation, assertNotNull(b[BodyPart.HEAD.boneId]).rotation)
 	}
 
 	@Test
 	fun `vrmHeight sums floor-to-neck offsets`() {
-		val vrm = buildVrmGeometry(VrmReader(VRM_HEIGHT_JSON))
+		val vrm = buildVrmGeometry(definition, VrmReader(VRM_HEIGHT_JSON))
 		assertApprox(Vector3(0f, 1.25f, 0f), Vector3(0f, vrm.vrmHeight, 0f))
 	}
 }

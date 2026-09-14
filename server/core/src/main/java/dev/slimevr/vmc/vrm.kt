@@ -1,9 +1,13 @@
 package dev.slimevr.vmc
 
 import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BodyPartMap
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.CompiledSkeleton
+import dev.slimevr.bones.key
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.formatExceptionMessage
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -93,27 +97,35 @@ data class Node(
 // VRM bind-pose geometry derived from a parsed VRM JSON. Used to keep the avatar's
 // local bone offsets aligned with the model's own proportions.
 data class VrmGeometry(
-	val bindOffsets: BodyPartMap<Vector3>,
+	val bindOffsets: BoneMap<Vector3>,
 	val hipLocalPosition: Vector3,
 	/** Floor-to-neck height, on the same basis as Skeleton.skeletonHeight. Used to scale VMC input positions. */
 	val vrmHeight: Float,
 )
 
-fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
-	val bindOffsets = BodyPartMap(
-		BODY_PART_TO_UNITY_BONE.mapValues { (_, unityNames) -> reader.offsetForBone(unityNames.first()) ?: Vector3.ZERO },
-	)
-	fun offset(bodyPart: BodyPart) = bindOffsets[bodyPart] ?: Vector3.ZERO
+fun buildVrmGeometry(definition: CompiledSkeleton, reader: VrmReader): VrmGeometry {
+	val registry = definition.registry
+	val bindOffsets = BoneMap.of<Vector3>(registry)
+	for (boneId in definition.vmcNamedBones) {
+		val name = definition.vmcOutputOf(boneId)?.names?.first() ?: continue
+		bindOffsets[boneId] = reader.offsetForBone(name) ?: Vector3.ZERO
+	}
 
-	val hipLocalPosition = offset(BodyPart.HIP)
+	val hip = registry[BodyPart.HIP.key]!!
+	val neck = registry[BodyPart.NECK.key]!!
+	val hipLocalPosition = bindOffsets[hip] ?: Vector3.ZERO
 
-	val vrmHeight = (
-		offset(BodyPart.HIP) +
-			offset(BodyPart.UPPER_WAIST) +
-			offset(BodyPart.LOWER_CHEST) +
-			offset(BodyPart.UPPER_CHEST) +
-			offset(BodyPart.NECK)
-		).y
+	// Floor-to-neck height, summed by walking the pack's own real parent chain from hip up to
+	// neck, rather than a fixed anatomy list, so it still works if a pack changes what's between
+	// them (e.g. no upper_waist, or an extra bone). Any bone on that chain missing a VRM offset
+	// (lower_waist has no VMC output at all) simply contributes 0.
+	var vrmHeight = 0f
+	var current: BoneId? = hip
+	while (current != null) {
+		vrmHeight += (bindOffsets[current] ?: Vector3.ZERO).y
+		if (current == neck) break
+		current = registry.parentOf(current)
+	}
 
 	return VrmGeometry(
 		bindOffsets = bindOffsets,
@@ -122,7 +134,7 @@ fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 	)
 }
 
-class VMCVrmBehaviour(private val settings: Settings) : VMCBehaviour {
+class VMCVrmBehaviour(private val skeleton: Skeleton, private val settings: Settings) : VMCBehaviour {
 	override fun observe(receiver: VMCManager) {
 		settings.context.state
 			.map { it.data.vmcConfig.vrmJson }
@@ -135,7 +147,7 @@ class VMCVrmBehaviour(private val settings: Settings) : VMCBehaviour {
 				}
 
 				try {
-					val vrm = buildVrmGeometry(VrmReader(json))
+					val vrm = buildVrmGeometry(skeleton.definition, VrmReader(json))
 					receiver.context.dispatch(VMCActions.SetVrm(state = VMCOSCVrmState.LOADED, vrm = vrm))
 				} catch (e: Exception) {
 					val message = "Failed to parse VRM JSON"

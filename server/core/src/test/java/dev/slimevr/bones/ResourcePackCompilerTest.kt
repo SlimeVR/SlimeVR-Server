@@ -1,17 +1,32 @@
 package dev.slimevr.bones
 
+import com.jme3.math.FastMath
 import com.jme3.math.FastMath.DEG_TO_RAD
 import dev.slimevr.resourcepacks.ClasspathResourcePackSource
 import dev.slimevr.resourcepacks.InMemoryResourcePackSource
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackParser
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.rpc.RoutingOutput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
+
+private fun assertQuaternionEquals(expected: Quaternion, actual: Quaternion, message: String) {
+	val same = kotlin.math.abs(expected.w - actual.w) < EPSILON &&
+		kotlin.math.abs(expected.x - actual.x) < EPSILON &&
+		kotlin.math.abs(expected.y - actual.y) < EPSILON &&
+		kotlin.math.abs(expected.z - actual.z) < EPSILON
+	val opposite = kotlin.math.abs(expected.w + actual.w) < EPSILON &&
+		kotlin.math.abs(expected.x + actual.x) < EPSILON &&
+		kotlin.math.abs(expected.y + actual.y) < EPSILON &&
+		kotlin.math.abs(expected.z + actual.z) < EPSILON
+	assertTrue(same || opposite, "$message: expected $expected, got $actual")
+}
 
 private const val EPSILON = 1e-6f
 
@@ -274,6 +289,229 @@ class ResourcePackCompilerTest {
 		)
 		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
 		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "candidateSources" in it.message })
+	}
+
+	@Test
+	fun `bundled core pack's VMC output metadata matches the retired hardcoded tables`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+		fun id(part: BodyPart) = registry[part.key]!!
+
+		val names: Map<BodyPart, List<String>> = mapOf(
+			BodyPart.HEAD to listOf("Head"),
+			BodyPart.NECK to listOf("Neck"),
+			BodyPart.UPPER_CHEST to listOf("UpperChest"),
+			BodyPart.LOWER_CHEST to listOf("Chest"),
+			BodyPart.UPPER_WAIST to listOf("Spine"),
+			BodyPart.HIP to listOf("Hips"),
+			BodyPart.LEFT_SHOULDER to listOf("LeftShoulder"),
+			BodyPart.RIGHT_SHOULDER to listOf("RightShoulder"),
+			BodyPart.LEFT_UPPER_ARM to listOf("LeftUpperArm"),
+			BodyPart.RIGHT_UPPER_ARM to listOf("RightUpperArm"),
+			BodyPart.LEFT_LOWER_ARM to listOf("LeftLowerArm"),
+			BodyPart.RIGHT_LOWER_ARM to listOf("RightLowerArm"),
+			BodyPart.LEFT_HAND to listOf("LeftHand"),
+			BodyPart.RIGHT_HAND to listOf("RightHand"),
+			BodyPart.LEFT_UPPER_LEG to listOf("LeftUpperLeg"),
+			BodyPart.RIGHT_UPPER_LEG to listOf("RightUpperLeg"),
+			BodyPart.LEFT_LOWER_LEG to listOf("LeftLowerLeg"),
+			BodyPart.RIGHT_LOWER_LEG to listOf("RightLowerLeg"),
+			BodyPart.LEFT_FOOT to listOf("LeftFoot"),
+			BodyPart.RIGHT_FOOT to listOf("RightFoot"),
+			BodyPart.LEFT_THUMB_METACARPAL to listOf("LeftThumbProximal"),
+			BodyPart.LEFT_THUMB_PROXIMAL to listOf("LeftThumbIntermediate"),
+			BodyPart.LEFT_THUMB_DISTAL to listOf("LeftThumbDistal"),
+			BodyPart.LEFT_INDEX_PROXIMAL to listOf("LeftIndexProximal"),
+			BodyPart.LEFT_INDEX_INTERMEDIATE to listOf("LeftIndexIntermediate"),
+			BodyPart.LEFT_INDEX_DISTAL to listOf("LeftIndexDistal"),
+			BodyPart.LEFT_MIDDLE_PROXIMAL to listOf("LeftMiddleProximal"),
+			BodyPart.LEFT_MIDDLE_INTERMEDIATE to listOf("LeftMiddleIntermediate"),
+			BodyPart.LEFT_MIDDLE_DISTAL to listOf("LeftMiddleDistal"),
+			BodyPart.LEFT_RING_PROXIMAL to listOf("LeftRingProximal"),
+			BodyPart.LEFT_RING_INTERMEDIATE to listOf("LeftRingIntermediate"),
+			BodyPart.LEFT_RING_DISTAL to listOf("LeftRingDistal"),
+			BodyPart.LEFT_LITTLE_PROXIMAL to listOf("LeftLittleProximal"),
+			BodyPart.LEFT_LITTLE_INTERMEDIATE to listOf("LeftLittleIntermediate"),
+			BodyPart.LEFT_LITTLE_DISTAL to listOf("LeftLittleDistal"),
+			BodyPart.RIGHT_THUMB_METACARPAL to listOf("RightThumbProximal"),
+			BodyPart.RIGHT_THUMB_PROXIMAL to listOf("RightThumbIntermediate"),
+			BodyPart.RIGHT_THUMB_DISTAL to listOf("RightThumbDistal"),
+			BodyPart.RIGHT_INDEX_PROXIMAL to listOf("RightIndexProximal"),
+			BodyPart.RIGHT_INDEX_INTERMEDIATE to listOf("RightIndexIntermediate"),
+			BodyPart.RIGHT_INDEX_DISTAL to listOf("RightIndexDistal"),
+			BodyPart.RIGHT_MIDDLE_PROXIMAL to listOf("RightMiddleProximal"),
+			BodyPart.RIGHT_MIDDLE_INTERMEDIATE to listOf("RightMiddleIntermediate"),
+			BodyPart.RIGHT_MIDDLE_DISTAL to listOf("RightMiddleDistal"),
+			BodyPart.RIGHT_RING_PROXIMAL to listOf("RightRingProximal"),
+			BodyPart.RIGHT_RING_INTERMEDIATE to listOf("RightRingIntermediate"),
+			BodyPart.RIGHT_RING_DISTAL to listOf("RightRingDistal"),
+			BodyPart.RIGHT_LITTLE_PROXIMAL to listOf("RightLittleProximal"),
+			BodyPart.RIGHT_LITTLE_INTERMEDIATE to listOf("RightLittleIntermediate"),
+			BodyPart.RIGHT_LITTLE_DISTAL to listOf("RightLittleDistal"),
+			BodyPart.LEFT_BIG_TOE to listOf("LeftToes", "LeftBigToe"),
+			BodyPart.LEFT_INDEX_TOE to listOf("LeftIndexToe"),
+			BodyPart.LEFT_MIDDLE_TOE to listOf("LeftMiddleToe"),
+			BodyPart.LEFT_RING_TOE to listOf("LeftRingToe"),
+			BodyPart.LEFT_LITTLE_TOE to listOf("LeftLittleToe"),
+			BodyPart.RIGHT_BIG_TOE to listOf("RightToes", "RightBigToe"),
+			BodyPart.RIGHT_INDEX_TOE to listOf("RightIndexToe"),
+			BodyPart.RIGHT_MIDDLE_TOE to listOf("RightMiddleToe"),
+			BodyPart.RIGHT_RING_TOE to listOf("RightRingToe"),
+			BodyPart.RIGHT_LITTLE_TOE to listOf("RightLittleToe"),
+		)
+		assertEquals(60, names.size)
+		assertEquals(names.keys.map(::id).toSet(), definition.vmcNamedBones)
+		assertNull(definition.vmcOutputOf(id(BodyPart.LOWER_WAIST)), "lower_waist has no VMC output")
+
+		// outputParent: HIP-rooted re-derivation of the real hierarchy, matching the retired
+		// VMC_OUTPUT_BONE_PARENTS exactly. inputParent matches outputParent everywhere except the
+		// 3 bones that restate an override (neck, left_shoulder, right_shoulder end up parented to
+		// upper_chest for input, but to lower_chest for output).
+		val outputParent: Map<BodyPart, BodyPart?> = mapOf(
+			BodyPart.HIP to null,
+			BodyPart.UPPER_WAIST to BodyPart.HIP,
+			BodyPart.LOWER_CHEST to BodyPart.UPPER_WAIST,
+			BodyPart.UPPER_CHEST to BodyPart.LOWER_CHEST,
+			BodyPart.NECK to BodyPart.LOWER_CHEST,
+			BodyPart.HEAD to BodyPart.NECK,
+			BodyPart.LEFT_UPPER_LEG to BodyPart.HIP,
+			BodyPart.RIGHT_UPPER_LEG to BodyPart.HIP,
+			BodyPart.LEFT_LOWER_LEG to BodyPart.LEFT_UPPER_LEG,
+			BodyPart.RIGHT_LOWER_LEG to BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.LEFT_FOOT to BodyPart.LEFT_LOWER_LEG,
+			BodyPart.RIGHT_FOOT to BodyPart.RIGHT_LOWER_LEG,
+			BodyPart.LEFT_SHOULDER to BodyPart.LOWER_CHEST,
+			BodyPart.RIGHT_SHOULDER to BodyPart.LOWER_CHEST,
+			BodyPart.LEFT_UPPER_ARM to BodyPart.LEFT_SHOULDER,
+			BodyPart.RIGHT_UPPER_ARM to BodyPart.RIGHT_SHOULDER,
+			BodyPart.LEFT_LOWER_ARM to BodyPart.LEFT_UPPER_ARM,
+			BodyPart.RIGHT_LOWER_ARM to BodyPart.RIGHT_UPPER_ARM,
+			BodyPart.LEFT_HAND to BodyPart.LEFT_LOWER_ARM,
+			BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
+			BodyPart.LEFT_THUMB_METACARPAL to BodyPart.LEFT_HAND,
+			BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.LEFT_THUMB_METACARPAL,
+			BodyPart.LEFT_THUMB_DISTAL to BodyPart.LEFT_THUMB_PROXIMAL,
+			BodyPart.LEFT_INDEX_PROXIMAL to BodyPart.LEFT_HAND,
+			BodyPart.LEFT_INDEX_INTERMEDIATE to BodyPart.LEFT_INDEX_PROXIMAL,
+			BodyPart.LEFT_INDEX_DISTAL to BodyPart.LEFT_INDEX_INTERMEDIATE,
+			BodyPart.LEFT_MIDDLE_PROXIMAL to BodyPart.LEFT_HAND,
+			BodyPart.LEFT_MIDDLE_INTERMEDIATE to BodyPart.LEFT_MIDDLE_PROXIMAL,
+			BodyPart.LEFT_MIDDLE_DISTAL to BodyPart.LEFT_MIDDLE_INTERMEDIATE,
+			BodyPart.LEFT_RING_PROXIMAL to BodyPart.LEFT_HAND,
+			BodyPart.LEFT_RING_INTERMEDIATE to BodyPart.LEFT_RING_PROXIMAL,
+			BodyPart.LEFT_RING_DISTAL to BodyPart.LEFT_RING_INTERMEDIATE,
+			BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.LEFT_HAND,
+			BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.LEFT_LITTLE_PROXIMAL,
+			BodyPart.LEFT_LITTLE_DISTAL to BodyPart.LEFT_LITTLE_INTERMEDIATE,
+			BodyPart.RIGHT_THUMB_METACARPAL to BodyPart.RIGHT_HAND,
+			BodyPart.RIGHT_THUMB_PROXIMAL to BodyPart.RIGHT_THUMB_METACARPAL,
+			BodyPart.RIGHT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_PROXIMAL,
+			BodyPart.RIGHT_INDEX_PROXIMAL to BodyPart.RIGHT_HAND,
+			BodyPart.RIGHT_INDEX_INTERMEDIATE to BodyPart.RIGHT_INDEX_PROXIMAL,
+			BodyPart.RIGHT_INDEX_DISTAL to BodyPart.RIGHT_INDEX_INTERMEDIATE,
+			BodyPart.RIGHT_MIDDLE_PROXIMAL to BodyPart.RIGHT_HAND,
+			BodyPart.RIGHT_MIDDLE_INTERMEDIATE to BodyPart.RIGHT_MIDDLE_PROXIMAL,
+			BodyPart.RIGHT_MIDDLE_DISTAL to BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
+			BodyPart.RIGHT_RING_PROXIMAL to BodyPart.RIGHT_HAND,
+			BodyPart.RIGHT_RING_INTERMEDIATE to BodyPart.RIGHT_RING_PROXIMAL,
+			BodyPart.RIGHT_RING_DISTAL to BodyPart.RIGHT_RING_INTERMEDIATE,
+			BodyPart.RIGHT_LITTLE_PROXIMAL to BodyPart.RIGHT_HAND,
+			BodyPart.RIGHT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_PROXIMAL,
+			BodyPart.RIGHT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
+			BodyPart.LEFT_BIG_TOE to BodyPart.LEFT_FOOT,
+			BodyPart.LEFT_INDEX_TOE to BodyPart.LEFT_FOOT,
+			BodyPart.LEFT_MIDDLE_TOE to BodyPart.LEFT_FOOT,
+			BodyPart.LEFT_RING_TOE to BodyPart.LEFT_FOOT,
+			BodyPart.LEFT_LITTLE_TOE to BodyPart.LEFT_FOOT,
+			BodyPart.RIGHT_BIG_TOE to BodyPart.RIGHT_FOOT,
+			BodyPart.RIGHT_INDEX_TOE to BodyPart.RIGHT_FOOT,
+			BodyPart.RIGHT_MIDDLE_TOE to BodyPart.RIGHT_FOOT,
+			BodyPart.RIGHT_RING_TOE to BodyPart.RIGHT_FOOT,
+			BodyPart.RIGHT_LITTLE_TOE to BodyPart.RIGHT_FOOT,
+		)
+		val inputParentOverrides = mapOf(
+			BodyPart.NECK to BodyPart.UPPER_CHEST,
+			BodyPart.LEFT_SHOULDER to BodyPart.UPPER_CHEST,
+			BodyPart.RIGHT_SHOULDER to BodyPart.UPPER_CHEST,
+		)
+
+		for ((part, names2) in names) {
+			val output = definition.vmcOutputOf(id(part))!!
+			assertEquals(names2, output.names, "$part names")
+			assertEquals(outputParent[part]?.let(::id), output.outputParent, "$part outputParent")
+			assertEquals((inputParentOverrides[part] ?: outputParent[part])?.let(::id), output.inputParent, "$part inputParent")
+		}
+
+		// Rest rotation: only the arms and fingers deviate from IDENTITY, mirrored left/right.
+		val leftArm = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
+		val rightArm = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
+		val leftFingers = setOf(
+			BodyPart.LEFT_THUMB_METACARPAL, BodyPart.LEFT_THUMB_PROXIMAL, BodyPart.LEFT_THUMB_DISTAL,
+			BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE, BodyPart.LEFT_INDEX_DISTAL,
+			BodyPart.LEFT_MIDDLE_PROXIMAL, BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
+			BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE, BodyPart.LEFT_RING_DISTAL,
+			BodyPart.LEFT_LITTLE_PROXIMAL, BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
+		)
+		val rightFingers = setOf(
+			BodyPart.RIGHT_THUMB_METACARPAL, BodyPart.RIGHT_THUMB_PROXIMAL, BodyPart.RIGHT_THUMB_DISTAL,
+			BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE, BodyPart.RIGHT_INDEX_DISTAL,
+			BodyPart.RIGHT_MIDDLE_PROXIMAL, BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
+			BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_DISTAL,
+			BodyPart.RIGHT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
+		)
+		val leftRest = setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND) + leftFingers
+		val rightRest = setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND) + rightFingers
+
+		for (part in names.keys) {
+			val expected = when (part) {
+				in leftRest -> leftArm
+				in rightRest -> rightArm
+				else -> Quaternion.IDENTITY
+			}
+			assertQuaternionEquals(expected, definition.vmcOutputOf(id(part))!!.restRotation, "$part restRotation")
+		}
+
+		// mirror pairs, symmetric both ways.
+		val mirrorPairs = listOf(
+			BodyPart.LEFT_SHOULDER to BodyPart.RIGHT_SHOULDER,
+			BodyPart.LEFT_UPPER_ARM to BodyPart.RIGHT_UPPER_ARM,
+			BodyPart.LEFT_LOWER_ARM to BodyPart.RIGHT_LOWER_ARM,
+			BodyPart.LEFT_HAND to BodyPart.RIGHT_HAND,
+			BodyPart.LEFT_UPPER_LEG to BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.LEFT_LOWER_LEG to BodyPart.RIGHT_LOWER_LEG,
+			BodyPart.LEFT_FOOT to BodyPart.RIGHT_FOOT,
+			BodyPart.LEFT_THUMB_METACARPAL to BodyPart.RIGHT_THUMB_METACARPAL,
+			BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.RIGHT_THUMB_PROXIMAL,
+			BodyPart.LEFT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_DISTAL,
+			BodyPart.LEFT_INDEX_PROXIMAL to BodyPart.RIGHT_INDEX_PROXIMAL,
+			BodyPart.LEFT_INDEX_INTERMEDIATE to BodyPart.RIGHT_INDEX_INTERMEDIATE,
+			BodyPart.LEFT_INDEX_DISTAL to BodyPart.RIGHT_INDEX_DISTAL,
+			BodyPart.LEFT_MIDDLE_PROXIMAL to BodyPart.RIGHT_MIDDLE_PROXIMAL,
+			BodyPart.LEFT_MIDDLE_INTERMEDIATE to BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
+			BodyPart.LEFT_MIDDLE_DISTAL to BodyPart.RIGHT_MIDDLE_DISTAL,
+			BodyPart.LEFT_RING_PROXIMAL to BodyPart.RIGHT_RING_PROXIMAL,
+			BodyPart.LEFT_RING_INTERMEDIATE to BodyPart.RIGHT_RING_INTERMEDIATE,
+			BodyPart.LEFT_RING_DISTAL to BodyPart.RIGHT_RING_DISTAL,
+			BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.RIGHT_LITTLE_PROXIMAL,
+			BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
+			BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
+			BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+			BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
+			BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
+			BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
+			BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
+		)
+		for ((left, right) in mirrorPairs) {
+			assertEquals(id(right), definition.mirrorOf(id(left)), "$left mirrors to $right")
+			assertEquals(id(left), definition.mirrorOf(id(right)), "$right mirrors to $left")
+		}
+		assertEquals(id(BodyPart.HIP), definition.mirrorOf(id(BodyPart.HIP)), "unmirrored bone mirrors to itself")
+
+		// unityNameToBone is the inverse of names, lowercased.
+		assertEquals(id(BodyPart.HIP), definition.unityNameToBone["hips"])
+		assertEquals(id(BodyPart.LEFT_BIG_TOE), definition.unityNameToBone["leftbigtoe"])
+		assertEquals(id(BodyPart.LEFT_BIG_TOE), definition.unityNameToBone["lefttoes"])
 	}
 
 	@Test

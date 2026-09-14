@@ -4,8 +4,8 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.TestAppContext
 import dev.slimevr.VRServer
 import dev.slimevr.bones.BodyPart
+import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistryManager
-import dev.slimevr.bones.bodyPartMap
 import dev.slimevr.bones.boneId
 import dev.slimevr.buildTestAppConfig
 import dev.slimevr.buildTestSkeleton
@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 
 private class Harness(val server: VRServer, val appContext: AppContextProvider, val receiver: VMCManager) {
 	private val registry = VmcTrackerRegistry(appContext, receiver)
-	private val runtime = VMCInputBehaviour.InputRuntime()
+	private val runtime = VMCInputBehaviour.InputRuntime(appContext.skeleton.definition)
 	private val behaviour = VMCInputBehaviour(appContext, appContext.config.settings)
 
 	fun handle(bundle: OscBundle, portIn: Int = 39540) = behaviour.handleBundle(bundle, runtime, registry, receiver, portIn)
@@ -120,7 +120,7 @@ class VMCInputBehaviourTest {
 		harness.receiver.context.dispatch(
 			VMCActions.SetVrm(
 				state = VMCOSCVrmState.LOADED,
-				vrm = VrmGeometry(bindOffsets = bodyPartMap(), hipLocalPosition = Vector3.ZERO, vrmHeight = skeletonHeight / 2f),
+				vrm = VrmGeometry(bindOffsets = BoneMap.of(harness.appContext.skeleton.registry), hipLocalPosition = Vector3.ZERO, vrmHeight = skeletonHeight / 2f),
 			),
 		)
 

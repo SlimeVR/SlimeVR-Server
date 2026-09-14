@@ -4,7 +4,7 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
@@ -32,12 +32,13 @@ internal class VmcTrackerRegistry(
 	private val boneTrackerIds = mutableMapOf<BoneId, Int>()
 	private val poseTrackerIds = mutableMapOf<String, Int>()
 
-	fun boneTracker(bodyPart: BodyPart, unityName: String): Tracker {
-		val boneId = bodyPart.boneId
+	fun boneTracker(boneId: BoneId, unityName: String): Tracker {
 		boneTrackerIds[boneId]?.let { id -> appContext.server.getTracker(id)?.let { existing -> return existing } }
 
 		val device = findOrCreateDevice()
 		val trackerId = appContext.server.nextHandle()
+		val registry = appContext.skeleton.definition.registry
+		val hardwareKey = registry.bodyPartOf(boneId) ?: registry.keyOf(boneId) ?: unityName
 		val runtimeTracker = Tracker.create(
 			scope = manager.context.scope,
 			id = trackerId,
@@ -45,7 +46,7 @@ internal class VmcTrackerRegistry(
 			boneId = boneId,
 			intendedBoneId = boneId,
 			deviceId = device.context.state.value.id,
-			hardwareId = "vmc:bone:$bodyPart",
+			hardwareId = "vmc:bone:$hardwareKey",
 			origin = DeviceOrigin.VMC,
 			appContext = appContext,
 		)
@@ -118,13 +119,13 @@ class VMCInputBehaviour(
 	private val appContext: AppContextProvider,
 	private val settings: Settings,
 ) : VMCBehaviour {
-	internal class InputRuntime {
-		var lastFrame: VmcInputFrame = emptyVmcInputFrame()
+	internal class InputRuntime(definition: CompiledSkeleton) {
+		var lastFrame: VmcInputFrame = emptyVmcInputFrame(definition)
 	}
 
 	override fun observe(receiver: VMCManager) {
 		val registry = VmcTrackerRegistry(appContext, receiver)
-		val runtime = InputRuntime()
+		val runtime = InputRuntime(appContext.skeleton.definition)
 		var oscReceiver: OscReceiver? = null
 
 		settings.context.state
@@ -195,7 +196,8 @@ class VMCInputBehaviour(
 		receiver: VMCManager,
 		portIn: Int,
 	) {
-		forEachOscMessage(bundle) { msg -> decodeVmcMessage(msg, runtime.lastFrame) }
+		val definition = appContext.skeleton.definition
+		forEachOscMessage(bundle) { msg -> decodeVmcMessage(msg, runtime.lastFrame, definition) }
 		val frame = runtime.lastFrame
 
 		val vrmHeight = receiver.context.state.value.vrm?.vrmHeight
@@ -203,6 +205,7 @@ class VMCInputBehaviour(
 		val scale = if (vrmHeight != null && vrmHeight > 0f) skeletonHeight / vrmHeight else 1f
 
 		val worldTransforms = vmcWorldTransforms(
+			definition = definition,
 			locals = frame.boneLocalRotations,
 			localPositions = frame.boneLocalPositions,
 			rootRotation = frame.rootRotation,
@@ -210,10 +213,10 @@ class VMCInputBehaviour(
 			scale = scale,
 		)
 
-		for (bodyPart in frame.boneLocalRotations.keys) {
-			val transform = worldTransforms[bodyPart] ?: continue
-			val unityName = BODY_PART_TO_UNITY_BONE[bodyPart]?.first() ?: continue
-			val tracker = registry.boneTracker(bodyPart, unityName)
+		for (boneId in frame.boneLocalRotations.keys) {
+			val transform = worldTransforms[boneId] ?: continue
+			val unityName = definition.vmcOutputOf(boneId)?.names?.first() ?: continue
+			val tracker = registry.boneTracker(boneId, unityName)
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = transform.rotation, position = transform.position))
 		}

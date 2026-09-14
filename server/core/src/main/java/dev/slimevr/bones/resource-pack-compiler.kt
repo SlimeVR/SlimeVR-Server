@@ -8,8 +8,13 @@ import dev.slimevr.resourcepacks.ParsedResourcePack
 import dev.slimevr.resourcepacks.ProportionDefinition
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.SourcedResource
+import dev.slimevr.resourcepacks.VmcInputParent
+import dev.slimevr.resourcepacks.VmcOutput
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.connection.BoneDefinition
+import kotlin.math.cos
+import kotlin.math.sin
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
 import dev.slimevr.resourcepacks.BoneDefinition as PackBoneDefinition
 import dev.slimevr.resourcepacks.Constraint as PackConstraint
@@ -152,6 +157,8 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	val vrchatRequired = BoneSet.of(registry)
 	val overridableBones = BoneSet.of(registry)
 	val candidateSources = BoneMap.of<List<BoneId>>(registry)
+	val mirrorOf = BoneMap.of<BoneId>(registry)
+	val vmcContributions = mutableMapOf<BoneId, Pair<BoneContribution, VmcOutput>>()
 	for (contribution in allContributions) {
 		val definition = contribution.resource.value
 		val boneId = registry[definition.key] ?: continue
@@ -164,7 +171,10 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			is FirstActiveRotationFallback -> firstActiveFallbacksByBoneId[boneId] = contribution to fallback
 		}
 		definition.outputs?.driver?.let { driverOutputs.add(boneId) }
-		definition.outputs?.vmc?.let { vmcOutputs.add(boneId) }
+		definition.outputs?.vmc?.let {
+			vmcOutputs.add(boneId)
+			vmcContributions[boneId] = contribution to it
+		}
 		definition.outputs?.vrchat?.let {
 			vrchatOutputs.add(boneId)
 			if (it.required == true) vrchatRequired.add(boneId)
@@ -173,6 +183,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		definition.candidateSources?.let { sources ->
 			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution, "candidateSources", registry, diagnostics) }
 		}
+		definition.mirror?.let { mirrorOf[boneId] = resolveBoneKey(it, contribution, "mirror", registry, diagnostics) }
 	}
 	val hierarchyOrder = registry.hierarchyFrom(registry.root).map { it.second }
 	val copyRotationFallbacks = hierarchyOrder.mapNotNull { boneId ->
@@ -183,12 +194,86 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			boneId to fallback.sources.map { resolveFallbackBone(it, contribution, registry, diagnostics) }
 		}
 	}
+	val vmcOutputMetadata = compileVmcOutputs(registry, vmcContributions, diagnostics)
+	val childrenByVmcParent = vmcOutputMetadata.entries.groupBy({ it.value.inputParent }, { it.key })
+	val vmcInputOrder = mutableListOf<BoneId>()
+	fun visitVmcInputOrder(boneId: BoneId) {
+		vmcInputOrder += boneId
+		childrenByVmcParent[boneId]?.forEach(::visitVmcInputOrder)
+	}
+	registry[BodyPart.HIP.key]?.let(::visitVmcInputOrder)
 	if (diagnostics.isNotEmpty()) throw ResourcePackCompilationException(diagnostics)
 
 	return CompiledSkeleton(
 		registry, proportions, tailOffsets, headOffsets, constraints, copyRotationFallbacks, firstActiveRotationFallbacks,
 		driverOutputs, vmcOutputs, vrchatOutputs, vrchatRequired, overridableBones, candidateSources,
+		vmcOutputMetadata, vmcInputOrder, mirrorOf,
 	)
+}
+
+/**
+ * Resolves each bone's VMC output. The real skeleton is rooted at `head`; VMC/Unity expects a
+ * `hip`-rooted one instead, so `outputParent` and `inputParent` default to the real hierarchy
+ * re-rooted at `hip` (walking parent/child edges in either direction, skipping any ancestor with
+ * no VMC output of its own), unless the bone declares its own parent explicitly. An omitted
+ * `inputParent` defaults to whatever `outputParent` resolved to (derived or overridden), so a
+ * bone whose input and output share a parent only has to declare `outputParent` once.
+ */
+private fun compileVmcOutputs(
+	registry: BoneRegistry,
+	contributions: Map<BoneId, Pair<BoneContribution, VmcOutput>>,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+): BoneMap<CompiledVmcOutput> {
+	val result = BoneMap.of<CompiledVmcOutput>(registry)
+	val hip = registry[BodyPart.HIP.key] ?: return result
+	val bfsParent = mutableMapOf<BoneId, BoneId?>(hip to null)
+	val adjacency = mutableMapOf<BoneId, MutableList<BoneId>>()
+	for (index in 1..registry.maxId) {
+		val boneId = BoneId(index.toUShort())
+		val parent = registry.parentOf(boneId) ?: continue
+		adjacency.getOrPut(boneId) { mutableListOf() }.add(parent)
+		adjacency.getOrPut(parent) { mutableListOf() }.add(boneId)
+	}
+	val queue = ArrayDeque(listOf(hip))
+	while (queue.isNotEmpty()) {
+		val current = queue.removeFirst()
+		for (neighbor in adjacency[current].orEmpty()) {
+			if (neighbor in bfsParent) continue
+			bfsParent[neighbor] = current
+			queue += neighbor
+		}
+	}
+	fun namedAncestor(boneId: BoneId): BoneId? {
+		var current = bfsParent[boneId]
+		while (current != null && current !in contributions) current = bfsParent[current]
+		return current
+	}
+
+	for ((boneId, pair) in contributions) {
+		val (contribution, vmc) = pair
+		val outputParent = vmc.outputParent?.let { resolveBoneKey(it, contribution, "outputs.vmc.outputParent", registry, diagnostics) } ?: namedAncestor(boneId)
+		val inputParent = when (val parent = vmc.inputParent) {
+			VmcInputParent.Omitted -> outputParent
+			VmcInputParent.ExplicitNull -> null
+			is VmcInputParent.Bone -> resolveBoneKey(parent.key, contribution, "outputs.vmc.inputParent", registry, diagnostics)
+		}
+		result[boneId] = CompiledVmcOutput(
+			names = vmc.name.values,
+			outputParent = outputParent,
+			inputParent = inputParent,
+			// Composed so the first entry is applied first: each later entry rotates on top of
+			// the ones before it, in listed order.
+			restRotation = (vmc.restRotation ?: emptyList()).fold(Quaternion.IDENTITY) { acc, step ->
+				axisAngleQuaternion(Vector3(step.axis.x, step.axis.y, step.axis.z), step.degrees * degToRad) * acc
+			},
+		)
+	}
+	return result
+}
+
+private fun axisAngleQuaternion(axis: Vector3, radians: Float): Quaternion {
+	val half = radians / 2f
+	return Quaternion(cos(half), axis.unit() * sin(half))
 }
 
 private fun compileConstraint(constraint: PackConstraint): Constraint = when (constraint) {

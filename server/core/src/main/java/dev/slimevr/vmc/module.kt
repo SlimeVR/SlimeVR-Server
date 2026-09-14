@@ -59,8 +59,8 @@ class VMCManager(val context: VMCContext) {
 	fun startObserving(appContext: AppContextProvider) {
 		val settings = appContext.config.settings
 		val behaviours = listOf(
-			VMCVrmBehaviour(settings),
-			VMCOutputBehaviour(appContext.skeleton, appContext.bones.current, settings, appContext.boneRouting),
+			VMCVrmBehaviour(appContext.skeleton, settings),
+			VMCOutputBehaviour(appContext.skeleton, settings, appContext.boneRouting),
 			VMCInputBehaviour(appContext, settings),
 		)
 

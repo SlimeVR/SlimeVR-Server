@@ -1,8 +1,8 @@
 package dev.slimevr.vmc
 
 import dev.slimevr.bones.BodyPart
+import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import dev.slimevr.computedSkeletonOf
 import dev.slimevr.config.VMCConfig
@@ -12,6 +12,7 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
+import dev.slimevr.testCompiledSkeleton
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.test.Test
@@ -21,7 +22,8 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
-private val registry = BoneRegistry.standard()
+private val definition = testCompiledSkeleton
+private val registry = definition.registry
 
 private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY) = BoneState(
 	parentBone = null,
@@ -35,6 +37,16 @@ private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY)
 	velocity = Velocity(Vector3.ZERO, Vector3.ZERO),
 )
 
+private fun routed(vararg bodyParts: BodyPart): Set<BoneId> = bodyParts.map { it.boneId }.toSet()
+
+private fun bundle(
+	bones: dev.slimevr.skeleton.ComputedSkeleton,
+	routedBones: Set<BoneId>,
+	config: VMCConfig = VMCConfig(),
+	vrm: VrmGeometry? = null,
+	elapsed: kotlin.time.Duration = 0.seconds,
+) = buildOutgoingBundle(definition, bones, routedBones, config, vrm, elapsed)
+
 private fun messages(bundle: OscBundle): List<OscMessage> = bundle.contents.map { (it as OscContent.Message).msg }
 
 private fun boneMessage(bundle: OscBundle, unityName: String): OscMessage? = messages(bundle)
@@ -45,18 +57,16 @@ class OutputEncoderTest {
 
 	@Test
 	fun testAlwaysSendsTimeAndOkAndRoot() {
-		val bundle = buildOutgoingBundle(
+		val result = bundle(
 			bones = BoneMap.of(registry),
 			routedBones = emptySet(),
-			config = defaultConfig,
-			vrm = null,
 			elapsed = 2.seconds,
 		)
 
-		val addresses = messages(bundle).map { it.address }
+		val addresses = messages(result).map { it.address }
 		assertEquals(listOf("/VMC/Ext/T", "/VMC/Ext/OK", "/VMC/Ext/Root/Pos"), addresses)
-		assertEquals(2f, (messages(bundle)[0].args[0] as OscArg.Float).value)
-		assertEquals(1, (messages(bundle)[1].args[0] as OscArg.Int).value)
+		assertEquals(2f, (messages(result)[0].args[0] as OscArg.Float).value)
+		assertEquals(1, (messages(result)[1].args[0] as OscArg.Int).value)
 	}
 
 	@Test
@@ -66,30 +76,21 @@ class OutputEncoderTest {
 			BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST),
 		)
 
-		val bundle = buildOutgoingBundle(
-			bones = bones,
-			routedBones = setOf(BodyPart.HIP),
-			config = defaultConfig,
-			vrm = null,
-			elapsed = 0.seconds,
-		)
+		val result = bundle(bones = bones, routedBones = routed(BodyPart.HIP))
 
-		assertNotNull(boneMessage(bundle, "Hips"))
-		assertNull(boneMessage(bundle, "Spine"))
+		assertNotNull(boneMessage(result, "Hips"))
+		assertNull(boneMessage(result, "Spine"))
 	}
 
 	@Test
 	fun testSkipsRoutedBonesMissingFromTheSkeleton() {
-		val bundle = buildOutgoingBundle(
+		val result = bundle(
 			bones = registry.computedSkeletonOf(BodyPart.HIP to bone(BodyPart.HIP)),
-			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST),
-			config = defaultConfig,
-			vrm = null,
-			elapsed = 0.seconds,
+			routedBones = routed(BodyPart.HIP, BodyPart.LOWER_WAIST),
 		)
 
-		assertNotNull(boneMessage(bundle, "Hips"))
-		assertNull(boneMessage(bundle, "Spine"))
+		assertNotNull(boneMessage(result, "Hips"))
+		assertNull(boneMessage(result, "Spine"))
 	}
 
 	@Test
@@ -100,16 +101,10 @@ class OutputEncoderTest {
 			BodyPart.RIGHT_UPPER_LEG to bone(BodyPart.RIGHT_UPPER_LEG),
 			BodyPart.HIP to bone(BodyPart.HIP),
 		)
-		val routed = setOf(BodyPart.HIP, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
+		val routedBones = routed(BodyPart.HIP, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
 
-		val plain = buildOutgoingBundle(bones, routed, defaultConfig, null, 0.seconds)
-		val mirrored = buildOutgoingBundle(
-			bones,
-			routed,
-			defaultConfig.copy(mirrorTracking = true),
-			null,
-			0.seconds,
-		)
+		val plain = bundle(bones, routedBones, defaultConfig)
+		val mirrored = bundle(bones, routedBones, defaultConfig.copy(mirrorTracking = true))
 
 		// Only the left leg is rotated, so mirroring must move that rotation onto the right leg
 		// and leave the left leg reading the (identity) right one.
@@ -123,12 +118,12 @@ class OutputEncoderTest {
 			BodyPart.HIP to bone(BodyPart.HIP),
 			BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST),
 		)
-		val routed = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST)
-		val vrm = buildVrmGeometry(VrmReader(VRM_JSON))
+		val routedBones = routed(BodyPart.HIP, BodyPart.LOWER_WAIST)
+		val vrm = buildVrmGeometry(definition, VrmReader(VRM_JSON))
 
-		val bundle = buildOutgoingBundle(bones, routed, defaultConfig, vrm, 0.seconds)
+		val result = bundle(bones, routedBones, defaultConfig, vrm)
 
-		val hips = assertNotNull(boneMessage(bundle, "Hips"))
+		val hips = assertNotNull(boneMessage(result, "Hips"))
 		assertEquals(0.9f, (hips.args[2] as OscArg.Float).value)
 	}
 }

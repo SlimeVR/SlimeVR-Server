@@ -1,7 +1,7 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.bodyPartMap
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscMessage
 import io.github.axisangles.ktmath.Quaternion
@@ -21,23 +21,24 @@ data class VmcPoseTracker(
  * for the rest.
  */
 class VmcInputFrame(
-	val boneLocalRotations: BodyPartMap<Quaternion> = bodyPartMap(),
-	val boneLocalPositions: BodyPartMap<Vector3> = bodyPartMap(),
+	definition: CompiledSkeleton,
+	val boneLocalRotations: BoneMap<Quaternion> = BoneMap.of(definition.registry),
+	val boneLocalPositions: BoneMap<Vector3> = BoneMap.of(definition.registry),
 	val poseTrackers: MutableMap<String, VmcPoseTracker> = mutableMapOf(),
 	var rootPosition: Vector3 = Vector3.ZERO,
 	var rootRotation: Quaternion = Quaternion.IDENTITY,
 )
 
-fun emptyVmcInputFrame() = VmcInputFrame()
+fun emptyVmcInputFrame(definition: CompiledSkeleton) = VmcInputFrame(definition)
 
-internal fun decodeVmcMessage(msg: OscMessage, frame: VmcInputFrame) {
+internal fun decodeVmcMessage(msg: OscMessage, frame: VmcInputFrame, definition: CompiledSkeleton) {
 	when (msg.address) {
 		"/VMC/Ext/Bone/Pos" -> {
 			val name = (msg.args.getOrNull(0) as? OscArg.String)?.value ?: return
-			val bodyPart = UNITY_BONE_TO_BODY_PART[name.lowercase()] ?: return
+			val boneId = definition.unityNameToBone[name.lowercase()] ?: return
 			val (pos, rot) = parseVmcTransform(msg.args, startIndex = 1) ?: return
-			frame.boneLocalPositions[bodyPart] = pos
-			frame.boneLocalRotations[bodyPart] = rot
+			frame.boneLocalPositions[boneId] = pos
+			frame.boneLocalRotations[boneId] = rot
 		}
 
 		"/VMC/Ext/Root/Pos" -> {
@@ -84,40 +85,42 @@ internal fun parseVmcTransform(args: List<OscArg>, startIndex: Int): Pair<Vector
 data class VmcBoneTransform(val rotation: Quaternion, val position: Vector3)
 
 /**
- * Inverse of vmcLocalRotation/vmcLocalPosition (output-encoder.kt): walks VMC_INPUT_BONE_ORDER
- * parent-before-child, accumulating VMC's parent-local bone rotations/positions into world
+ * Inverse of vmcLocalRotation/vmcLocalPosition (output-encoder.kt): walks the compiled VMC input
+ * order parent-before-child, accumulating VMC's parent-local bone rotations/positions into world
  * rotations and positions.
  */
 fun vmcWorldTransforms(
-	locals: BodyPartMap<Quaternion>,
-	localPositions: BodyPartMap<Vector3>,
+	definition: CompiledSkeleton,
+	locals: BoneMap<Quaternion>,
+	localPositions: BoneMap<Vector3>,
 	rootRotation: Quaternion,
 	rootPosition: Vector3,
 	scale: Float,
-): BodyPartMap<VmcBoneTransform> {
-	val restAdjusted = bodyPartMap<Quaternion>()
-	val modelPositions = bodyPartMap<Vector3>()
-	val result = bodyPartMap<VmcBoneTransform>()
+): BoneMap<VmcBoneTransform> {
+	val registry = definition.registry
+	val restAdjusted = BoneMap.of<Quaternion>(registry)
+	val modelPositions = BoneMap.of<Vector3>(registry)
+	val result = BoneMap.of<VmcBoneTransform>(registry)
 
-	for (bone in VMC_INPUT_BONE_ORDER) {
-		val parent = VMC_INPUT_BONE_PARENTS[bone]
-		val local = locals[bone] ?: Quaternion.IDENTITY
-		val localPosition = localPositions[bone] ?: Vector3.ZERO
+	for (boneId in definition.vmcInputOrder) {
+		val output = definition.vmcOutputOf(boneId) ?: continue
+		val parent = output.inputParent
+		val local = locals[boneId] ?: Quaternion.IDENTITY
+		val localPosition = localPositions[boneId] ?: Vector3.ZERO
 		val parentAdjusted = parent?.let { restAdjusted[it] }
 
 		val adjusted = if (parentAdjusted != null) parentAdjusted * local else local
-		restAdjusted[bone] = adjusted
+		restAdjusted[boneId] = adjusted
 
 		val modelPosition = if (parent != null && parentAdjusted != null) {
 			(modelPositions[parent] ?: Vector3.ZERO) + parentAdjusted.sandwich(localPosition)
 		} else {
 			localPosition
 		}
-		modelPositions[bone] = modelPosition
+		modelPositions[boneId] = modelPosition
 
-		val rest = VMC_REST_ROTATIONS[bone] ?: Quaternion.IDENTITY
-		result[bone] = VmcBoneTransform(
-			rotation = rootRotation * (adjusted * rest),
+		result[boneId] = VmcBoneTransform(
+			rotation = rootRotation * (adjusted * output.restRotation),
 			position = (rootPosition + rootRotation.sandwich(modelPosition)) * scale,
 		)
 	}
