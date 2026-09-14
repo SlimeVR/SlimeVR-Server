@@ -157,6 +157,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	val vrchatRequired = BoneSet.of(registry)
 	val overridableBones = BoneSet.of(registry)
 	val candidateSources = BoneMap.of<List<BoneId>>(registry)
+	val batterySources = BoneMap.of<List<BoneId>>(registry)
 	val mirrorOf = BoneMap.of<BoneId>(registry)
 	val vmcContributions = mutableMapOf<BoneId, Pair<BoneContribution, VmcOutput>>()
 	for (contribution in allContributions) {
@@ -183,6 +184,9 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		definition.candidateSources?.let { sources ->
 			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution, "candidateSources", registry, diagnostics) }
 		}
+		definition.batterySources?.let { sources ->
+			batterySources[boneId] = sources.map { resolveBoneKey(it, contribution, "batterySources", registry, diagnostics) }
+		}
 		definition.mirror?.let { mirrorOf[boneId] = resolveBoneKey(it, contribution, "mirror", registry, diagnostics) }
 	}
 	val hierarchyOrder = registry.hierarchyFrom(registry.root).map { it.second }
@@ -207,6 +211,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	return CompiledSkeleton(
 		registry, proportions, tailOffsets, headOffsets, constraints, copyRotationFallbacks, firstActiveRotationFallbacks,
 		driverOutputs, vmcOutputs, vrchatOutputs, vrchatRequired, overridableBones, candidateSources,
+		batterySources,
 		vmcOutputMetadata, vmcInputOrder, mirrorOf,
 	)
 }

@@ -1,11 +1,7 @@
 package dev.slimevr.solarxr.driver
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
-import dev.slimevr.bones.forEachBone
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
@@ -26,29 +22,6 @@ import solarxr_protocol.driver_protocol.SkeletonUpdate
 class DriverOutgoingTrackersBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
-	// Fallback chain per bone, used to attribute battery and status to the nearest
-	// physical tracker. Bones without an entry just report no battery.
-	val bodyPartToNearest: BodyPartMap<Set<BodyPart>> = BodyPartMap(
-		mapOf(
-			BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST),
-			BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST),
-			BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
-			BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
-			BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
-			BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
-			BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
-			BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
-			BodyPart.LEFT_HAND to setOf(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM),
-			BodyPart.RIGHT_HAND to setOf(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM),
-		),
-	)
-
-	private val nearestBoneIds: Map<BoneId, Set<BoneId>> = buildMap {
-		bodyPartToNearest.forEachBone { bodyPart, fallbacks ->
-			put(bodyPart.boneId, fallbacks.mapTo(mutableSetOf()) { it.boneId })
-		}
-	}
-
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
@@ -81,7 +54,7 @@ class DriverOutgoingTrackersBehaviour(
 					receiver.sendDriverMessage(SkeletonUpdate(bones = bones))
 
 					for (boneId in computedSkeleton.keys) {
-						val closestTracker = nearestBoneIds[boneId].orEmpty()
+						val closestTracker = appContext.skeleton.definition.batterySourcesOf(boneId)
 							.firstNotNullOfOrNull { trackerStateByBoneId[it] }
 						val closestDevice =
 							server.context.state.value.devices[closestTracker?.deviceId]?.context?.state?.value

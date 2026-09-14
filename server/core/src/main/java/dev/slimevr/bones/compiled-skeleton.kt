@@ -83,6 +83,7 @@ class CompiledSkeleton(
 	private val vrchatRequired: BoneSet,
 	val overridableBones: BoneSet,
 	private val candidateSources: BoneMap<List<BoneId>>,
+	private val batterySources: BoneMap<List<BoneId>>,
 	private val vmcOutputMetadata: BoneMap<CompiledVmcOutput>,
 	/** Root(hip)-to-leaf order over [vmcOutputMetadata]'s `inputParent` tree; outgoing VMC needs no
 	 * order (each bone's local transform only reads its own parent), but decoding VMC input must
@@ -111,13 +112,15 @@ class CompiledSkeleton(
 
 	fun candidateSourcesOf(boneId: BoneId): List<BoneId> = candidateSources[boneId] ?: emptyList()
 
+	/** Ordered bones whose assigned tracker's battery represents [boneId]'s battery. */
+	fun batterySourcesOf(boneId: BoneId): List<BoneId> = batterySources[boneId] ?: emptyList()
+
 	fun vmcOutputOf(boneId: BoneId): CompiledVmcOutput? = vmcOutputMetadata[boneId]
 	val vmcNamedBones: Set<BoneId> get() = vmcOutputMetadata.keys
 
 	/** Lowercase Unity bone name to the bone it names; the inverse of each [CompiledVmcOutput.names]. */
-	val unityNameToBone: Map<String, BoneId> by lazy {
+	val unityNameToBone: Map<String, BoneId> =
 		vmcOutputMetadata.entries.flatMap { (boneId, output) -> output.names.map { it.lowercase() to boneId } }.toMap()
-	}
 
 	/** A bone's VMC mirror-image bone, itself if it has none. */
 	fun mirrorOf(boneId: BoneId): BoneId = mirrorOf[boneId] ?: boneId

@@ -292,6 +292,43 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `bundled core pack's battery sources match the retired driver fallback table`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+		fun sources(vararg parts: BodyPart) = parts.map { registry[it.key]!! }
+		fun actual(part: BodyPart) = definition.batterySourcesOf(registry[part.key]!!)
+
+		assertEquals(sources(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST), actual(BodyPart.UPPER_CHEST))
+		assertEquals(sources(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST), actual(BodyPart.HIP))
+		assertEquals(sources(BodyPart.LEFT_UPPER_LEG), actual(BodyPart.LEFT_UPPER_LEG))
+		assertEquals(sources(BodyPart.RIGHT_UPPER_LEG), actual(BodyPart.RIGHT_UPPER_LEG))
+		assertEquals(sources(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG), actual(BodyPart.LEFT_FOOT))
+		assertEquals(sources(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG), actual(BodyPart.RIGHT_FOOT))
+		assertEquals(sources(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM), actual(BodyPart.LEFT_UPPER_ARM))
+		assertEquals(sources(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM), actual(BodyPart.RIGHT_UPPER_ARM))
+		assertEquals(sources(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM), actual(BodyPart.LEFT_HAND))
+		assertEquals(sources(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM), actual(BodyPart.RIGHT_HAND))
+		assertEquals(emptyList(), actual(BodyPart.HEAD))
+	}
+
+	@Test
+	fun `compiler reports an unknown bone named in batterySources`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:extra"),
+					"data/bones/extra.json" to """{"key":"example:extra","nameKey":"example:bone.extra","parent":"slimevr:head","batterySources":["example:missing"]}""",
+					"assets/lang/en.json" to """{"example:bone.extra":"Extra bone"}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "batterySources" in it.message })
+	}
+
+	@Test
 	fun `bundled core pack's VMC output metadata matches the retired hardcoded tables`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val definition = compileResourcePacks(catalog(core))
