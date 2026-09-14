@@ -25,7 +25,7 @@ import { boneRegistryAtom } from '@/store/app-store';
 import { bodyPartOfKey } from '@/utils/body-part';
 
 // Must match SOLARXR_PROTOCOL_VERSION in server/core/.../solarxr/protocol.kt
-const SOLARXR_PROTOCOL_VERSION = 3;
+const SOLARXR_PROTOCOL_VERSION = 2;
 
 type ConnectionPhase = 'awaiting-hello' | 'configuring' | 'ready';
 
