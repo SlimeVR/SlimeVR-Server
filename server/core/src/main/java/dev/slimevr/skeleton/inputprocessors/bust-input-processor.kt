@@ -104,6 +104,10 @@ class BustInputProcessor : SkeletonInputProcessor {
 
 		for (bodyPart in arrayOf(BodyPart.LEFT_BUST, BodyPart.RIGHT_BUST)) {
 			val bone = mutableInputSkeleton[bodyPart] ?: continue
+			if (!bone.isRotationActive) {
+				mutableInputSkeleton[bodyPart] = bone.copy(rotation = chestRotation)
+				continue
+			}
 			val state = states.getValue(bodyPart)
 
 			updateMotion(state, deltaTime)
