@@ -3,14 +3,14 @@ package dev.slimevr.skeleton
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneOffsets
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.BoneSet
-import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.mapValues
 import dev.slimevr.bones.mutateCopy
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.resourcepacks.BoneOffsets
+import dev.slimevr.resourcepacks.CompiledSkeleton
 import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor

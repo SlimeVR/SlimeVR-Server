@@ -11,7 +11,6 @@ import dev.slimevr.Phase1Context
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.bones.BoneRegistryManager
-import dev.slimevr.bones.compileResourcePacks
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.contextDebugEnabled
@@ -40,6 +39,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.resourcepacks.ResourcePackManager
+import dev.slimevr.resourcepacks.compileResourcePacks
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos

@@ -3,10 +3,10 @@ package dev.slimevr.vmc
 import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.key
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.resourcepacks.CompiledSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.formatExceptionMessage
 import io.github.axisangles.ktmath.Vector3

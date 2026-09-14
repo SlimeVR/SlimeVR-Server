@@ -3,10 +3,10 @@
 package dev.slimevr.heightcalibration
 
 import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.resourcepacks.CompiledSkeleton
 import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.combine

@@ -1,12 +1,12 @@
 package dev.slimevr.vmc
 
 import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.resourcepacks.CompiledSkeleton
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.Quaternion

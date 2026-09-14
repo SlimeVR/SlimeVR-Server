@@ -28,7 +28,6 @@ import dev.slimevr.android.timing.createAndroidWaiter
 import dev.slimevr.android.udp.resolveAndroidUdpAddress
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bones.BoneRegistryManager
-import dev.slimevr.bones.compileResourcePacks
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
@@ -38,6 +37,7 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resourcepacks.ResourcePackManager
+import dev.slimevr.resourcepacks.compileResourcePacks
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos

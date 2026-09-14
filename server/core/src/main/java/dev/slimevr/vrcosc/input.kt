@@ -181,13 +181,8 @@ class VRCOSCInputBehaviour(
 		receiver: VRCOSCManager,
 		portIn: Int,
 	) {
-		if (!message.address.startsWith("$TRACKING_VRSYSTEM_PATH/")) return
-		val tracker = when (message.address) {
-			"$TRACKING_VRSYSTEM_PATH/head/pose" -> VRSystemTracker.HEAD
-			"$TRACKING_VRSYSTEM_PATH/leftwrist/pose" -> VRSystemTracker.LEFT_WRIST
-			"$TRACKING_VRSYSTEM_PATH/rightwrist/pose" -> VRSystemTracker.RIGHT_WRIST
-			else -> return
-		}
+		val boneId = appContext.skeleton.definition.vrchatInputAddresses[message.address] ?: return
+		val tracker = trackerByBoneId[boneId] ?: return
 
 		val position = parsePosition(message.args) ?: return
 		val rotation = parseVrcEulerRotation(message.args, startIndex = 3) ?: return
@@ -207,3 +202,9 @@ class VRCOSCInputBehaviour(
 		)
 	}
 }
+
+private val trackerByBoneId = mapOf(
+	BodyPart.HEAD.boneId to VRSystemTracker.HEAD,
+	BodyPart.LEFT_HAND.boneId to VRSystemTracker.LEFT_WRIST,
+	BodyPart.RIGHT_HAND.boneId to VRSystemTracker.RIGHT_WRIST,
+)

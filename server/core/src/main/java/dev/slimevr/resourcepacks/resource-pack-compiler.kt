@@ -1,26 +1,25 @@
-package dev.slimevr.bones
+package dev.slimevr.resourcepacks
 
-import dev.slimevr.resourcepacks.CopyRotationFallback
-import dev.slimevr.resourcepacks.FirstActiveRotationFallback
-import dev.slimevr.resourcepacks.NoRotationFallback
-import dev.slimevr.resourcepacks.Offset
-import dev.slimevr.resourcepacks.ParsedResourcePack
-import dev.slimevr.resourcepacks.ProportionDefinition
-import dev.slimevr.resourcepacks.ResourcePackCatalog
-import dev.slimevr.resourcepacks.SourcedResource
-import dev.slimevr.resourcepacks.VmcInputParent
-import dev.slimevr.resourcepacks.VmcOutput
+import dev.slimevr.bones.BodyPart
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.BoneSet
+import dev.slimevr.bones.Constraint
+import dev.slimevr.bones.HingeConstraint
+import dev.slimevr.bones.LooseHingeConstraint
+import dev.slimevr.bones.TwistSwingConstraint
+import dev.slimevr.bones.key
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.connection.BoneDefinition
 import kotlin.math.cos
 import kotlin.math.sin
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
-import dev.slimevr.resourcepacks.BoneDefinition as PackBoneDefinition
 import dev.slimevr.resourcepacks.Constraint as PackConstraint
 import dev.slimevr.resourcepacks.HingeConstraint as PackHingeConstraint
 import dev.slimevr.resourcepacks.LooseHingeConstraint as PackLooseHingeConstraint
 import dev.slimevr.resourcepacks.TwistSwingConstraint as PackTwistSwingConstraint
+import solarxr_protocol.connection.BoneDefinition as WireBoneDefinition
 import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
 
 data class ResourcePackCompilationDiagnostic(val packId: String, val path: String, val message: String)
@@ -32,7 +31,7 @@ class ResourcePackCompilationException(val diagnostics: List<ResourcePackCompila
 
 private data class BoneContribution(
 	val pack: ParsedResourcePack,
-	val resource: SourcedResource<PackBoneDefinition>,
+	val resource: SourcedResource<dev.slimevr.resourcepacks.BoneDefinition>,
 )
 
 private data class ProportionContribution(
@@ -123,7 +122,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			bones = allContributions.mapIndexed { index, contribution ->
 				val definition = contribution.resource.value
 				val standardPart = standardPartsByKey[definition.key]
-				BoneDefinition(
+				WireBoneDefinition(
 					id = (index + 1).toUShort(),
 					key = definition.key,
 					displayName = standardPart?.name?.replace('_', ' ')?.lowercase() ?: displayName(contribution),
@@ -158,6 +157,8 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	val overridableBones = BoneSet.of(registry)
 	val candidateSources = BoneMap.of<List<BoneId>>(registry)
 	val batterySources = BoneMap.of<List<BoneId>>(registry)
+	val emitContributions = mutableMapOf<BoneId, Pair<BoneContribution, Map<String, EmitEntry>>>()
+	val vrchatInputAddresses = mutableMapOf<String, BoneId>()
 	val mirrorOf = BoneMap.of<BoneId>(registry)
 	val vmcContributions = mutableMapOf<BoneId, Pair<BoneContribution, VmcOutput>>()
 	for (contribution in allContributions) {
@@ -179,7 +180,9 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		definition.outputs?.vrchat?.let {
 			vrchatOutputs.add(boneId)
 			if (it.required == true) vrchatRequired.add(boneId)
+			emitContributions[boneId] = contribution to it.emit
 		}
+		definition.inputs?.vrchat?.let { vrchatInputAddresses[it.address] = boneId }
 		if (definition.overridable == true) overridableBones.add(boneId)
 		definition.candidateSources?.let { sources ->
 			candidateSources[boneId] = sources.map { resolveBoneKey(it, contribution, "candidateSources", registry, diagnostics) }
@@ -199,6 +202,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		}
 	}
 	val vmcOutputMetadata = compileVmcOutputs(registry, vmcContributions, diagnostics)
+	val emitEntries = compileEmitEntries(registry, emitContributions, diagnostics)
 	val childrenByVmcParent = vmcOutputMetadata.entries.groupBy({ it.value.inputParent }, { it.key })
 	val vmcInputOrder = mutableListOf<BoneId>()
 	fun visitVmcInputOrder(boneId: BoneId) {
@@ -212,8 +216,28 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		registry, proportions, tailOffsets, headOffsets, constraints, copyRotationFallbacks, firstActiveRotationFallbacks,
 		driverOutputs, vmcOutputs, vrchatOutputs, vrchatRequired, overridableBones, candidateSources,
 		batterySources,
+		emitEntries, vrchatInputAddresses,
 		vmcOutputMetadata, vmcInputOrder, mirrorOf,
 	)
+}
+
+private fun compileEmitEntries(
+	registry: BoneRegistry,
+	contributions: Map<BoneId, Pair<BoneContribution, Map<String, EmitEntry>>>,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+): BoneMap<Map<String, CompiledEmitEntry>> {
+	val result = BoneMap.of<Map<String, CompiledEmitEntry>>(registry)
+	for ((boneId, pair) in contributions) {
+		val (contribution, entries) = pair
+		result[boneId] = entries.mapValues { (_, entry) ->
+			CompiledEmitEntry(
+				from = entry.from,
+				relativeTo = entry.relativeTo?.let { resolveBoneKey(it, contribution, "outputs.vrchat.emit.relativeTo", registry, diagnostics) },
+				steps = entry.value ?: emptyList(),
+			)
+		}
+	}
+	return result
 }
 
 /**

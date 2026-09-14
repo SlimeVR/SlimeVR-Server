@@ -4,8 +4,11 @@ import com.jme3.math.FastMath
 import com.jme3.math.FastMath.DEG_TO_RAD
 import dev.slimevr.resourcepacks.ClasspathResourcePackSource
 import dev.slimevr.resourcepacks.InMemoryResourcePackSource
+import dev.slimevr.resourcepacks.REFERENCE_HEIGHT
 import dev.slimevr.resourcepacks.ResourcePackCatalog
+import dev.slimevr.resourcepacks.ResourcePackCompilationException
 import dev.slimevr.resourcepacks.ResourcePackParser
+import dev.slimevr.resourcepacks.compileResourcePacks
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
@@ -326,6 +329,38 @@ class ResourcePackCompilerTest {
 		)
 		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
 		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "batterySources" in it.message })
+	}
+
+	@Test
+	fun `bundled core pack's VRChat input addresses match the retired tracker table`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val definition = compileResourcePacks(catalog(core))
+		val registry = definition.registry
+
+		assertEquals(
+			mapOf(
+				"/tracking/vrsystem/head/pose" to registry[BodyPart.HEAD.key]!!,
+				"/tracking/vrsystem/leftwrist/pose" to registry[BodyPart.LEFT_HAND.key]!!,
+				"/tracking/vrsystem/rightwrist/pose" to registry[BodyPart.RIGHT_HAND.key]!!,
+			),
+			definition.vrchatInputAddresses,
+		)
+	}
+
+	@Test
+	fun `compiler reports an unknown bone named in a VRChat emit relativeTo`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val user = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:extra"),
+					"data/bones/extra.json" to """{"key":"example:extra","nameKey":"example:bone.extra","parent":"slimevr:head","outputs":{"vrchat":{"emit":{"/example":{"from":"rotation","relativeTo":"example:missing"}}}}}""",
+					"assets/lang/en.json" to """{"example:bone.extra":"Extra bone"}""",
+				),
+			),
+		)
+		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(core, user)) }
+		assertTrue(error.diagnostics.any { "Unknown bone" in it.message && "outputs.vrchat.emit.relativeTo" in it.message })
 	}
 
 	@Test

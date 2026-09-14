@@ -5,11 +5,11 @@ package dev.slimevr.heightcalibration
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.resourcepacks.CompiledSkeleton
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope

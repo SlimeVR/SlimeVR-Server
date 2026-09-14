@@ -1,8 +1,10 @@
-package dev.slimevr.bones
+package dev.slimevr.resourcepacks
 
-import dev.slimevr.resourcepacks.FixedProportionDefault
-import dev.slimevr.resourcepacks.HeightRatioProportionDefault
-import dev.slimevr.resourcepacks.ProportionDefault
+import dev.slimevr.bones.BoneId
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.BoneSet
+import dev.slimevr.bones.Constraint
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.RoutingOutput
@@ -58,6 +60,13 @@ data class CompiledVmcOutput(
 	val restRotation: Quaternion,
 )
 
+/** A compiled VRChat OSC emission, with its optional relative bone resolved to an ID. */
+data class CompiledEmitEntry(
+	val from: EmitSource,
+	val relativeTo: BoneId?,
+	val steps: List<PipelineStep>,
+)
+
 /**
  * The compiled bone registry, proportion catalog, per-bone offset, constraint, rotation-fallback
  * rule, routing fact, and VMC output metadata produced by [compileResourcePacks].
@@ -84,6 +93,8 @@ class CompiledSkeleton(
 	val overridableBones: BoneSet,
 	private val candidateSources: BoneMap<List<BoneId>>,
 	private val batterySources: BoneMap<List<BoneId>>,
+	private val emitEntries: BoneMap<Map<String, CompiledEmitEntry>>,
+	val vrchatInputAddresses: Map<String, BoneId>,
 	private val vmcOutputMetadata: BoneMap<CompiledVmcOutput>,
 	/** Root(hip)-to-leaf order over [vmcOutputMetadata]'s `inputParent` tree; outgoing VMC needs no
 	 * order (each bone's local transform only reads its own parent), but decoding VMC input must
@@ -114,6 +125,9 @@ class CompiledSkeleton(
 
 	/** Ordered bones whose assigned tracker's battery represents [boneId]'s battery. */
 	fun batterySourcesOf(boneId: BoneId): List<BoneId> = batterySources[boneId] ?: emptyList()
+
+	fun emitEntriesOf(boneId: BoneId): Map<String, CompiledEmitEntry> = emitEntries[boneId] ?: emptyMap()
+	val vrchatEmittingBones: Set<BoneId> get() = emitEntries.keys
 
 	fun vmcOutputOf(boneId: BoneId): CompiledVmcOutput? = vmcOutputMetadata[boneId]
 	val vmcNamedBones: Set<BoneId> get() = vmcOutputMetadata.keys

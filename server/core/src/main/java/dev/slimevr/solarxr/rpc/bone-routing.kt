@@ -2,8 +2,8 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.resourcepacks.CompiledSkeleton
 import dev.slimevr.routing.OutputStates
 import dev.slimevr.routing.Routes
 import dev.slimevr.routing.acceptedBones

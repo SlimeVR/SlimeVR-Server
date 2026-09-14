@@ -1,13 +1,11 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.bones.BoneId
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscSender
 import dev.slimevr.routing.BoneRoutingManager
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.MonotonicValueTimeMark
@@ -23,7 +21,6 @@ import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.VRCOSCOutputState
 import solarxr_protocol.rpc.VRCOSCTargetSource
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
 
 private val FRAME_RETRY_DELAY = 2.seconds
 
@@ -34,7 +31,6 @@ private val RECOVERY_CONFIRM_DELAY = 2.seconds
 
 class VRCOSCOutputBehaviour(
 	private val skeleton: Skeleton,
-	private val registry: BoneRegistry,
 	private val settings: Settings,
 	private val boneRouting: BoneRoutingManager,
 ) : VRCOSCBehaviour {
@@ -72,7 +68,6 @@ class VRCOSCOutputBehaviour(
 		val routedBones = boneRouting.context.state
 			.map { state -> state.routes.filterValues { RoutingOutput.VRC_OSC in it }.keys }
 			.distinctUntilChanged()
-			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), registry::bodyPartOf) }
 
 		combine(skeleton.computed, routedBones, ::Pair)
 			.onEach { (computedSkeleton, bones) -> sendFrame(receiver, runtime, computedSkeleton, bones) }
@@ -143,7 +138,7 @@ class VRCOSCOutputBehaviour(
 		receiver: VRCOSCManager,
 		runtime: OutputRuntime,
 		bones: ComputedSkeleton,
-		routedBones: Set<BodyPart>,
+		routedBones: Set<BoneId>,
 	) {
 		val sender = runtime.sender ?: return
 		val state = receiver.context.state.value
@@ -151,7 +146,7 @@ class VRCOSCOutputBehaviour(
 
 		if (runtime.sendFailing && runtime.nextFrameRetryAt?.hasPassedNow() == false) return
 
-		val bundle = buildOutgoingBundle(bones, routedBones) ?: return
+		val bundle = buildOutgoingBundle(skeleton.definition, bones, routedBones) ?: return
 
 		try {
 			sender.send(bundle)
