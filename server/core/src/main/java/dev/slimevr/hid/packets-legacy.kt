@@ -56,6 +56,7 @@ data class HIDDeviceInfoLegacy(
 	val firmwareDate: String,
 	val batteryLevel: Float?,
 	val batteryVoltage: Float,
+	val sensorTemp: Float?,
 	val rssi: Int,
 	val magStatus: MagnetometerStatus,
 ) : HIDTrackerPacket {
@@ -69,6 +70,7 @@ data class HIDDeviceInfoLegacy(
 			firmwareDate = formatFwDate(readU8(data, i + 11) shl 8 or readU8(data, i + 10)),
 			batteryLevel = decodeBattery(readU8(data, i + 2)),
 			batteryVoltage = decodeBatteryVoltage(readU8(data, i + 3)),
+			sensorTemp = decodeSensorTemp(readU8(data, i + 4)),
 			rssi = -readU8(data, i + 15),
 			magStatus = MagnetometerStatus.fromValue(readU8(data, i + 9).toUByte()) ?: MagnetometerStatus.NOT_SUPPORTED,
 		)
@@ -97,6 +99,7 @@ data class HIDRotationBatteryLegacy(
 	val acceleration: Vector3,
 	val batteryLevel: Float?,
 	val batteryVoltage: Float,
+	val sensorTemp: Float?,
 	val rssi: Int,
 ) : HIDTrackerPacket {
 	companion object {
@@ -106,6 +109,7 @@ data class HIDRotationBatteryLegacy(
 			acceleration = decodeAccel(data, i + 9),
 			batteryLevel = decodeBattery(readU8(data, i + 2)),
 			batteryVoltage = decodeBatteryVoltage(readU8(data, i + 3)),
+			sensorTemp = decodeSensorTemp(readU8(data, i + 4)),
 			rssi = -readU8(data, i + 15),
 		)
 	}
@@ -204,6 +208,8 @@ private fun decodeExpMapQuat(data: ByteArray, offset: Int): Quaternion {
 }
 
 private fun decodeBattery(raw: Int): Float? = if (raw == 128) null else (raw and 127).toFloat() / 100f
+
+private fun decodeSensorTemp(raw: Int): Float? = if (raw == 0) null else ((raw - 128).toFloat() / 2f) + 25f
 
 fun parseLegacyHIDPackets(data: ByteArray, length: Int = data.size): List<HIDPacket> {
 	if (length % HID_PACKET_SIZE != 0) return emptyList()
