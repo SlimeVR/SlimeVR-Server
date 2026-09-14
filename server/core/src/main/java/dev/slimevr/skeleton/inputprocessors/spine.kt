@@ -160,10 +160,8 @@ private fun interpolateAbsTwist(fromRotation: Quaternion, toRotation: Quaternion
 /**
  * Handles imputing the rotation of spine bones that are not actively receiving data from the rotations
  * of nearby bones.
- *
- * Similar to FallbackProcessor specifically for the waist and hip.
  */
-class RelaxedSpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
+class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	private val spineIds: Map<SpineSource, List<BoneId>> = SPINE_SOURCES.associateWith { source ->
 		source.parts.map { it.boneId }
 	}
