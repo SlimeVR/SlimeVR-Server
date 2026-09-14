@@ -364,6 +364,33 @@ class ResourcePackCompilerTest {
 	}
 
 	@Test
+	fun `user-pack set overrides apply in pack order and merge VRChat emit addresses`() = runTest {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val first = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:first"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","set":{"batterySources":["slimevr:upper_chest"],"outputs":{"vrchat":{"emit":{"/example/first":{"from":"position"}}}}}}""",
+				),
+			),
+		)
+		val second = ResourcePackParser().parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:second"),
+					"data/overrides/bones/hip.json" to """{"target":"slimevr:hip","set":{"batterySources":["slimevr:lower_chest"],"outputs":{"vrchat":{"emit":{"/example/second":{"from":"rotation"}}}}}}""",
+				),
+			),
+		)
+		val definition = compileResourcePacks(catalog(core, first, second))
+		val hip = definition.registry[BodyPart.HIP.key]!!
+		assertEquals(listOf(definition.registry[BodyPart.LOWER_CHEST.key]!!), definition.batterySourcesOf(hip))
+		assertTrue("/tracking/trackers/1/position" in definition.emitEntriesOf(hip))
+		assertTrue("/example/first" in definition.emitEntriesOf(hip))
+		assertTrue("/example/second" in definition.emitEntriesOf(hip))
+	}
+
+	@Test
 	fun `bundled core pack's VMC output metadata matches the retired hardcoded tables`() = runTest {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 		val definition = compileResourcePacks(catalog(core))

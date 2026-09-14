@@ -89,6 +89,7 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 			}
 		}
 	}
+	applySetOverrides(packs, bonesByKey, proportionsByKey, diagnostics)
 
 	val standardParts = BodyPart.entries.filter { it != BodyPart.NONE }
 	val standardPartsByKey = standardParts.associateBy(BodyPart::key)
@@ -220,6 +221,72 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		vmcOutputMetadata, vmcInputOrder, mirrorOf,
 	)
 }
+
+private fun applySetOverrides(
+	packs: List<ParsedResourcePack>,
+	bonesByKey: MutableMap<String, BoneContribution>,
+	proportionsByKey: MutableMap<String, ProportionContribution>,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+) {
+	for (pack in packs) {
+		for (resource in pack.boneOverrides) {
+			val override = resource.value
+			val set = override.set ?: continue
+			val target = bonesByKey[override.target]
+			if (target == null) {
+				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Unknown bone '${override.target}' in override target")
+				continue
+			}
+			bonesByKey[override.target] = target.copy(resource = target.resource.copy(value = target.resource.value.withSet(set)))
+		}
+		for (resource in pack.proportionOverrides) {
+			val override = resource.value
+			val set = override.set ?: continue
+			val target = proportionsByKey[override.target]
+			if (target == null) {
+				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Unknown proportion '${override.target}' in override target")
+				continue
+			}
+			proportionsByKey[override.target] = target.copy(resource = target.resource.copy(value = target.resource.value.withSet(set)))
+		}
+	}
+}
+
+internal fun BoneDefinition.withSet(set: BoneOverrideSet): BoneDefinition = copy(
+	nameKey = set.nameKey ?: nameKey,
+	mirror = set.mirror ?: mirror,
+	batterySources = set.batterySources ?: batterySources,
+	candidateSources = set.candidateSources ?: candidateSources,
+	overridable = set.overridable ?: overridable,
+	parent = set.parent ?: parent,
+	headOffset = set.headOffset ?: headOffset,
+	tailOffset = set.tailOffset ?: tailOffset,
+	rotationFallback = set.rotationFallback ?: rotationFallback,
+	constraint = set.constraint ?: constraint,
+	outputs = outputs.withSet(set.outputs),
+	inputs = set.inputs ?: inputs,
+)
+
+private fun BoneOutputs?.withSet(set: BoneOutputs?): BoneOutputs? {
+	if (set == null) return this
+	val current = this ?: BoneOutputs()
+	return current.copy(
+		driver = set.driver ?: current.driver,
+		vmc = set.vmc ?: current.vmc,
+		vrchat = set.vrchat?.let { incoming ->
+			current.vrchat?.copy(required = incoming.required ?: current.vrchat.required, emit = current.vrchat.emit + incoming.emit) ?: incoming
+		} ?: current.vrchat,
+	)
+}
+
+internal fun ProportionDefinition.withSet(set: ProportionOverrideSet): ProportionDefinition = copy(
+	nameKey = set.nameKey ?: nameKey,
+	descriptionKey = set.descriptionKey ?: descriptionKey,
+	contributesToHeight = set.contributesToHeight ?: contributesToHeight,
+	minimum = set.minimum ?: minimum,
+	maximum = set.maximum ?: maximum,
+	default = set.default ?: default,
+)
 
 private fun compileEmitEntries(
 	registry: BoneRegistry,
