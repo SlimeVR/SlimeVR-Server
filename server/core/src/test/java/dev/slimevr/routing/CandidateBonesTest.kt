@@ -1,6 +1,6 @@
 package dev.slimevr.routing
 
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

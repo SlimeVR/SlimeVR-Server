@@ -1,17 +1,20 @@
 package dev.slimevr.solarxr
 
+import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
+import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import java.nio.ByteBuffer
+import solarxr_protocol.MessageBundle
 
 const val SOLARXR_PROTOCOL_VERSION: UInt = 2u
 const val SOLARXR_MAX_FRAME_SIZE = 256 * 1024
 
-/** Checks framing before generated code reads a FlatBuffer root. */
-fun checkedSolarXRFrame(bytes: ByteBuffer, identifier: String): JvmFlatBufferReader {
+fun checkedSolarXRFrame(bytes: ByteBuffer): JvmFlatBufferReader {
 	require(bytes.remaining() in 8..SOLARXR_MAX_FRAME_SIZE) { "Invalid SolarXR frame length" }
-	val position = bytes.position()
-	require((0 until 4).all { bytes.get(position + 4 + it).toInt().toChar() == identifier[it] }) {
-		"Unexpected SolarXR file identifier"
-	}
 	return JvmFlatBufferReader(bytes)
+}
+
+fun writeSolarXRBundle(fbb: FlatBufferBuilder, bundle: MessageBundle) {
+	val writer = JvmFlatBufferWriter(fbb)
+	writer.finish(bundle.encode(writer))
 }

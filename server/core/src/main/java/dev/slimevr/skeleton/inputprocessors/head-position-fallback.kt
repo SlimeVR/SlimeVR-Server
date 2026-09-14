@@ -5,7 +5,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 /**
  * Moves the head input to the skeleton height. Else, it would default to (0, 0, 0).

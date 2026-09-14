@@ -1,7 +1,5 @@
 package dev.slimevr.bones
 
-import solarxr_protocol.datatypes.BodyPart
-
 val BODY_PART_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.HEAD to arrayOf(BodyPart.NECK),
 	BodyPart.NECK to arrayOf(BodyPart.UPPER_CHEST, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),

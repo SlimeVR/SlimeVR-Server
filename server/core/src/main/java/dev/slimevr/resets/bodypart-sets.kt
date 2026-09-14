@@ -1,6 +1,6 @@
 package dev.slimevr.resets
 
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 object ResetBodyParts {
 	val UPPER_LEGS = setOf(

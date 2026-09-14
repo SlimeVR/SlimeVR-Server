@@ -1,4 +1,4 @@
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 
 export const SIDES = [
   {

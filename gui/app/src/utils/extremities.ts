@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 
 export type ExtremitySide = 'left' | 'right';
 

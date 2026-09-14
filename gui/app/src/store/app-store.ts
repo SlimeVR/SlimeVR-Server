@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
+import { BodyPart } from '@/utils/body-part';
 import {
-  BodyPart,
   BoneT,
   DataFeedUpdateT,
   DeviceDataT,

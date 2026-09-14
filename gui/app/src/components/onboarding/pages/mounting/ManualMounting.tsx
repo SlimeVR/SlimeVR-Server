@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from '@/utils/body-part';
 import { Localized } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useMountingSelection } from '@/hooks/tracker-mounting';

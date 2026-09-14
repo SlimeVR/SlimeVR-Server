@@ -10,7 +10,7 @@ import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import kotlin.time.Duration
 
 internal fun buildOutgoingBundle(

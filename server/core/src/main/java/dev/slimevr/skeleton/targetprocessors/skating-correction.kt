@@ -14,7 +14,7 @@ import dev.slimevr.skeleton.computeComState
 import dev.slimevr.skeleton.resolveMasses
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.ResetType
 
 data class LockState(

@@ -6,7 +6,7 @@ import dev.slimevr.bones.boneId
 import dev.slimevr.bones.resolveToBoneIds
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import kotlin.test.Test
 
 class IKTest {

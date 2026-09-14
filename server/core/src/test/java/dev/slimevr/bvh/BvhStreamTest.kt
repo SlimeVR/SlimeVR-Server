@@ -8,7 +8,7 @@ import dev.slimevr.skeleton.buildBones
 import dev.slimevr.skeleton.defaultSkeletonState
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

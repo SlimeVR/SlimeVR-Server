@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.VMCOSCVrmState
 
 private val vrmJsonParser = Json { ignoreUnknownKeys = true }

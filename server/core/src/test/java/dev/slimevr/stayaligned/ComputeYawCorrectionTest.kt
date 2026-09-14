@@ -11,7 +11,7 @@ import dev.slimevr.tracker.stayaligned.TrackerYawCorrection
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import kotlinx.coroutines.test.runTest
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals

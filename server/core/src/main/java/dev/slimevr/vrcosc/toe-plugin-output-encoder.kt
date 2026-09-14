@@ -9,7 +9,7 @@ import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
 import io.github.axisangles.ktmath.EulerOrder
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 private const val ABSOLUTE_SPLAY_THRESHOLD_ANGLE = 7
 private const val MINIMUM_TIP_TOE_PITCH = -14

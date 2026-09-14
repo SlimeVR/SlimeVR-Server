@@ -1,6 +1,6 @@
 package dev.slimevr.util
 
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 /**
  * Used to represent the side of the skeleton a bone is on.

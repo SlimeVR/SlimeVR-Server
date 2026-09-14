@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 
 class TrackerDefaultMountingOrientationBehaviour(private val registry: BoneRegistry) : TrackerBehaviour {

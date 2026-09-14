@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 import {
-  BodyPart,
+  BoneRegistryRequestT,
   BoneRegistryT,
-  ClientHello,
-  ConfigurationAcknowledgedT,
+  ClientHelloT,
+  ConfigurationDoneT,
   ConnectionMessage,
   ConnectionMessageHeaderT,
   DataFeedMessage,
@@ -14,7 +14,7 @@ import {
   MessageBundleT,
   RpcMessage,
   RpcMessageHeaderT,
-  ServerHello,
+  ServerHelloT,
 } from 'solarxr-protocol';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
@@ -22,9 +22,10 @@ import { useStore } from 'jotai';
 import { useInterval, useTimeout } from './timeout';
 import { log } from '@/utils/logging';
 import { boneRegistryAtom } from '@/store/app-store';
+import { bodyPartOfKey } from '@/utils/body-part';
 
 // Must match SOLARXR_PROTOCOL_VERSION in server/core/.../solarxr/protocol.kt
-const SOLARXR_PROTOCOL_VERSION = 2;
+const SOLARXR_PROTOCOL_VERSION = 3;
 
 type ConnectionPhase = 'awaiting-hello' | 'configuring' | 'ready';
 
@@ -66,25 +67,6 @@ export function useProvideWebsocketApi(): WebSocketApi {
     }
   }, 3000);
 
-  const onConnected = () => {
-    if (!webSocketRef.current) return;
-    setTimedOut(false);
-
-    const fbb = new Builder(64);
-    ClientHello.finishClientHelloBuffer(
-      fbb,
-      ClientHello.createClientHello(fbb, SOLARXR_PROTOCOL_VERSION)
-    );
-    webSocketRef.current.send(fbb.asUint8Array());
-  };
-
-  const onConnectionClose = () => {
-    phaseRef.current = 'awaiting-hello';
-    store.set(boneRegistryAtom, new Map());
-    setConnected(false);
-    rpcPacketCounterRef.current = 0;
-  };
-
   const sendConnectionMessage = (
     message: ConnectionMessageHeaderT['message'],
     messageType: ConnectionMessage
@@ -97,28 +79,47 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.send(fbb.asUint8Array());
   };
 
+  const onConnected = () => {
+    if (!webSocketRef.current) return;
+    setTimedOut(false);
+
+    sendConnectionMessage(
+      new ClientHelloT(SOLARXR_PROTOCOL_VERSION),
+      ConnectionMessage.ClientHello
+    );
+  };
+
+  const onConnectionClose = () => {
+    phaseRef.current = 'awaiting-hello';
+    store.set(boneRegistryAtom, new Map());
+    setConnected(false);
+    rpcPacketCounterRef.current = 0;
+  };
+
   const onMessage = async (event: { data: Blob }) => {
     if (!event.data.arrayBuffer) return;
     const buffer = await event.data.arrayBuffer();
     const fbb = new ByteBuffer(new Uint8Array(buffer));
 
-    if (phaseRef.current === 'awaiting-hello') {
-      if (!ServerHello.bufferHasIdentifier(fbb)) return;
-      const hello = ServerHello.getRootAsServerHello(fbb);
-      if (hello.status() !== HelloStatus.ACCEPTED) {
-        log(`SolarXR handshake rejected (status ${hello.status()}), reconnecting`);
-        reconnect();
-        return;
-      }
-      phaseRef.current = 'configuring';
-      return;
-    }
-
-    if (!MessageBundle.bufferHasIdentifier(fbb)) return;
     const message = MessageBundle.getRootAsMessageBundle(fbb).unpack();
 
     message.connectionMsgs.forEach((connectionHeader) => {
       switch (connectionHeader.messageType) {
+        case ConnectionMessage.ServerHello: {
+          const hello = connectionHeader.message as ServerHelloT;
+          if (hello.status !== HelloStatus.ACCEPTED) {
+            log(`SolarXR handshake rejected (status ${hello.status}), reconnecting`);
+            reconnect();
+            return;
+          }
+          phaseRef.current = 'configuring';
+          sendConnectionMessage(
+            new BoneRegistryRequestT(),
+            ConnectionMessage.BoneRegistryRequest
+          );
+          sendConnectionMessage(new ConfigurationDoneT(), ConnectionMessage.ConfigurationDone);
+          break;
+        }
         case ConnectionMessage.BoneRegistry: {
           const registry = connectionHeader.message as BoneRegistryT;
           store.set(
@@ -126,17 +127,13 @@ export function useProvideWebsocketApi(): WebSocketApi {
             new Map(
               registry.bones.map((bone) => [
                 bone.id,
-                bone.standardBodyPart ?? BodyPart.NONE,
+                bodyPartOfKey(bone.key?.toString() ?? ''),
               ])
             )
           );
           break;
         }
-        case ConnectionMessage.FinishConfiguration:
-          sendConnectionMessage(
-            new ConfigurationAcknowledgedT(),
-            ConnectionMessage.ConfigurationAcknowledged
-          );
+        case ConnectionMessage.ConfigurationDone:
           phaseRef.current = 'ready';
           setFirstConnection(false);
           setConnected(true);

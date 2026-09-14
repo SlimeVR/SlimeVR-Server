@@ -8,7 +8,7 @@ import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults
 import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 
 class RelaxedPose(
 	val upperLeg: Angle,

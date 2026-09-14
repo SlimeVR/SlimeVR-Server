@@ -21,7 +21,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
-import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.rpc.VMCOSCVrmState
 import kotlin.test.Test
