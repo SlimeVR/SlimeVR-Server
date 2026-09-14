@@ -5,6 +5,7 @@ package dev.slimevr.heightcalibration
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.bones.BodyPart
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
@@ -48,6 +49,7 @@ class HeightCalibrationManager(
 	val context: HeightCalibrationContext,
 	val serverContext: VRServer,
 	private val userConfig: UserConfig,
+	private val definition: CompiledSkeleton,
 ) {
 	fun startObserving() = context.observeAll(this)
 
@@ -89,7 +91,7 @@ class HeightCalibrationManager(
 
 	fun start() {
 		sessionJob?.cancel()
-		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, hmdUpdates, controllerUpdates) }
+		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, definition, hmdUpdates, controllerUpdates) }
 	}
 
 	fun cancel() {
@@ -102,6 +104,7 @@ class HeightCalibrationManager(
 		fun create(
 			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
+			definition: CompiledSkeleton,
 		): HeightCalibrationManager {
 			val context = Context.create(
 				initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
@@ -110,7 +113,7 @@ class HeightCalibrationManager(
 				behaviours = listOf(BaseCalibrationBehaviour()),
 				name = "HeightCalibration",
 			)
-			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig)
+			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig, definition = definition)
 		}
 	}
 }

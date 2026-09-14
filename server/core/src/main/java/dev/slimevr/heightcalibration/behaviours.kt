@@ -3,10 +3,10 @@
 package dev.slimevr.heightcalibration
 
 import dev.slimevr.bones.BodyPart
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
-import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.combine
@@ -97,6 +97,7 @@ class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 internal suspend fun runCalibrationSession(
 	context: HeightCalibrationContext,
 	userConfig: UserConfig,
+	definition: CompiledSkeleton,
 	hmdUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
 	controllerUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
 	clock: () -> Long = System::nanoTime,
@@ -216,7 +217,7 @@ internal suspend fun runCalibrationSession(
 					if (finalStatus == UserHeightCalibrationStatus.DONE) {
 						userConfig.context.dispatch(
 							UserConfigActions.Update {
-								copy(userHeight = relativeY, proportions = computeDefaultProportionsByBone(relativeY))
+								copy(userHeight = relativeY, proportions = definition.heightScaledProportionValues(relativeY))
 							},
 						)
 					}

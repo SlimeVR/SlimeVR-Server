@@ -11,6 +11,7 @@ import dev.slimevr.Phase1Context
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.bones.BoneRegistryManager
+import dev.slimevr.bones.compileResourcePacks
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.contextDebugEnabled
@@ -126,11 +127,12 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
 	val storage = DesktopConfigStorage(configFolder.toFile())
 	val config = AppConfig.create(this, storage = storage)
-	ResourcePackManager.load(storage, javaClass.classLoader)
+	val resourcePacks = ResourcePackManager.load(storage, javaClass.classLoader)
+	val skeletonDefinition = compileResourcePacks(resourcePacks)
 
 	val server = VRServer.create(this)
 	val serialServer = createDesktopSerialServer(this)
-	val bones = BoneRegistryManager.create(scope = this)
+	val bones = BoneRegistryManager.create(scope = this, initial = skeletonDefinition.registry)
 	// Nothing registers extension bones yet, so this is a no-op today; it exists so nothing
 	// built from phase1 onward ever observes a registry that could still change under it.
 	bones.freeze()
@@ -140,9 +142,9 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
 	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
-	val skeleton = Skeleton.create(scope = this, ctx = phase1, waiter = createDesktopWaiter())
+	val skeleton = Skeleton.create(scope = this, ctx = phase1, definition = skeletonDefinition, waiter = createDesktopWaiter())
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
-	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
+	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this, definition = skeletonDefinition)
 	val trackingChecklist = TrackingChecklist.create(scope = this, extraBehaviours = { appContext ->
 		buildList {
 			add(SteamVRCheckBehaviour(appContext.server, appContext.config.settings))

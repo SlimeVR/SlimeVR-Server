@@ -1,12 +1,12 @@
 package dev.slimevr.bvh
 
 import dev.slimevr.bones.BodyPart
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import dev.slimevr.bones.mutateCopy
 import dev.slimevr.config.TextFileHandle
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.skeleton.defaultSkeletonState
+import dev.slimevr.testCompiledSkeleton
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -14,9 +14,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class BvhStreamTest {
-	private val registry = BoneRegistry.standard()
 	private val headId = BodyPart.HEAD.boneId
-	private val defaultState = defaultSkeletonState(registry)
+	private val defaultState = defaultSkeletonState(testCompiledSkeleton)
 
 	@Test
 	fun `close persists header and frame data`() = runTest {

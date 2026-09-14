@@ -2,8 +2,8 @@ package dev.slimevr.skeleton
 
 import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.BoneSet
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.boneId
 import dev.slimevr.bones.mutateCopy
 import dev.slimevr.bones.resolveToBoneIds
@@ -34,15 +34,14 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
-class ProportionsBehaviour(private val userConfig: UserConfig, private val registry: BoneRegistry) : SkeletonBehaviour {
+class ProportionsBehaviour(private val userConfig: UserConfig, private val definition: CompiledSkeleton) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
 			.distinctUntilChangedBy { it.data.proportions }
 			.map { it.data.proportions }
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
-					val lengths = configToBoneValues(proportions)
-					receiver.context.dispatch(SkeletonActions.SetProportions(toBoneOffsets(lengths, registry), lengths.height()))
+					receiver.context.dispatch(SkeletonActions.SetProportions(definition.toBoneOffsets(proportions), definition.height(proportions)))
 					receiver.resetProcessors(ResetType.FULL)
 				}
 			}

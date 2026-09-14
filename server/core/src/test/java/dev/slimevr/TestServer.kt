@@ -5,6 +5,8 @@ import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.BoneRegistryManager
+import dev.slimevr.bones.CompiledSkeleton
+import dev.slimevr.bones.compileResourcePacks
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
@@ -19,7 +21,6 @@ import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManager
-import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
@@ -28,6 +29,9 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
+import dev.slimevr.resourcepacks.ClasspathResourcePackSource
+import dev.slimevr.resourcepacks.ResourcePackCatalog
+import dev.slimevr.resourcepacks.ResourcePackParser
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
@@ -106,12 +110,20 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	return userConfig
 }
 
-fun buildTestSkeleton(scope: CoroutineScope, registry: BoneRegistry = BoneRegistry.standard()): Skeleton {
+/** The bundled core pack, compiled once and reused by every test that needs a [CompiledSkeleton]. */
+val testCompiledSkeleton: CompiledSkeleton by lazy {
+	kotlinx.coroutines.runBlocking {
+		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(object {}.javaClass.classLoader))
+		compileResourcePacks(ResourcePackCatalog(core, emptyList(), emptyList()))
+	}
+}
+
+fun buildTestSkeleton(scope: CoroutineScope, definition: CompiledSkeleton = testCompiledSkeleton, userConfig: UserConfig = buildTestUserConfig(scope)): Skeleton {
 	val context = Context.create(
-		initialState = defaultSkeletonState(registry),
+		initialState = defaultSkeletonState(definition),
 		scope = scope,
 		reducer = ::reduceSkeleton,
-		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope), registry)),
+		behaviours = listOf(ProportionsBehaviour(userConfig, definition)),
 		name = "TestSkeleton",
 	)
 	val computed = MutableSharedFlow<ComputedSkeleton>(
@@ -119,7 +131,7 @@ fun buildTestSkeleton(scope: CoroutineScope, registry: BoneRegistry = BoneRegist
 		onBufferOverflow = BufferOverflow.DROP_OLDEST,
 	)
 	computed.tryEmit(buildBones(context.state.value.boneInputs))
-	val skeleton = Skeleton(context, computed, emptySet())
+	val skeleton = Skeleton(context, definition, computed, emptySet())
 	skeleton.startObserving()
 	return skeleton
 }
@@ -213,7 +225,7 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 		behaviours = emptyList(),
 		name = "HeightCalibration[test]",
 	)
-	return HeightCalibrationManager(context, server, userConfig)
+	return HeightCalibrationManager(context, server, userConfig, testCompiledSkeleton)
 }
 
 private object NoopConfigStorage : ConfigStorage {

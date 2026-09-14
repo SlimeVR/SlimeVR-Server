@@ -1,16 +1,12 @@
 package dev.slimevr.solarxr.rpc
 
-import dev.slimevr.bones.ALL_BODY_PARTS
-import dev.slimevr.bones.bodyPartMap
-import dev.slimevr.bones.boneId
+import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.proportionKey
+import dev.slimevr.bones.skeletonBoneOf
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
-import dev.slimevr.skeleton.computeDefaultProportionsByBone
-import dev.slimevr.skeleton.height
-import dev.slimevr.skeleton.toBoneValues
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import io.github.axisangles.ktmath.Vector3
@@ -29,35 +25,28 @@ import solarxr_protocol.rpc.SkeletonProportionsResponse
 
 private const val MIN_HEIGHT = 0.9f
 
-// Bones whose value is a signed offset rather than a length, so negatives are valid.
-private val SIGNED_BONES = setOf(SkeletonBone.FOOT_SHIFT)
-
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
 ) : SolarXRBridgeBehaviour {
 	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
-		val registry = boneInputs.registry
-		val tailOffsets = bodyPartMap<Vector3>()
-		val headOffsets = bodyPartMap<Vector3>()
+		val definition = skeleton.definition
+		val tail = BoneMap.of<Vector3>(boneInputs.registry)
+		val head = BoneMap.of<Vector3>(boneInputs.registry)
 		for ((boneId, input) in boneInputs) {
-			val bodyPart = registry.bodyPartOf(boneId) ?: continue
-			tailOffsets[bodyPart] = input.offset
-			headOffsets[bodyPart] = input.headOffset
+			tail[boneId] = input.offset
+			head[boneId] = input.headOffset
 		}
-		val boneValues = toBoneValues(tailOffsets, headOffsets)
-		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
-		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
+		val proportionValues = definition.toProportionValues(tail, head)
+		val skeletonParts = proportionValues.mapNotNull { (key, value) -> skeletonBoneOf(key)?.let { SkeletonPart(it, value) } }
+		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = definition.height(proportionValues))
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
 		skeleton.context.state
 			.map { it.boneInputs }
 			.distinctUntilChanged { old, new ->
-				ALL_BODY_PARTS.all { part ->
-					val id = part.boneId
-					old[id]?.offset == new[id]?.offset && old[id]?.headOffset == new[id]?.headOffset
-				}
+				old.all { (id, input) -> input.offset == new[id]?.offset && input.headOffset == new[id]?.headOffset }
 			}
 			.drop(1)
 			.onEach { boneInputs ->
@@ -77,7 +66,7 @@ class SkeletonProportionsBehaviour(
 			if (height >= MIN_HEIGHT) {
 				userConfig.context.dispatch(
 					UserConfigActions.Update {
-						copy(userHeight = height, proportions = computeDefaultProportionsByBone(height))
+						copy(userHeight = height, proportions = skeleton.definition.heightScaledProportionValues(height))
 					},
 				)
 			}
@@ -86,7 +75,7 @@ class SkeletonProportionsBehaviour(
 		receiver.rpcDispatcher.on<SkeletonProportionsResetAllRequest> {
 			val height = userConfig.context.state.value.data.userHeight
 			if (height >= MIN_HEIGHT) {
-				val defaults = computeAllDefaultProportionsByBone(height)
+				val defaults = skeleton.definition.defaultProportionValues(height)
 				userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = defaults) })
 			}
 		}.launchIn(receiver.context.scope)
@@ -94,9 +83,11 @@ class SkeletonProportionsBehaviour(
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone
 			if (bone == SkeletonBone.NONE) return@on
-			val value = if (bone in SIGNED_BONES) req.value else req.value.coerceAtLeast(0f)
+			val key = bone.proportionKey
+			val proportion = skeleton.definition.proportions[key] ?: return@on
+			val value = req.value.coerceIn(proportion.minimum ?: Float.NEGATIVE_INFINITY, proportion.maximum ?: Float.POSITIVE_INFINITY)
 
-			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
+			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (key to value)) })
 		}.launchIn(receiver.context.scope)
 	}
 }

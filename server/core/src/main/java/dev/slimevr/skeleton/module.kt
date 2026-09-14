@@ -3,8 +3,10 @@ package dev.slimevr.skeleton
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
+import dev.slimevr.bones.BoneOffsets
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.BoneSet
+import dev.slimevr.bones.CompiledSkeleton
 import dev.slimevr.bones.mapValues
 import dev.slimevr.bones.mutateCopy
 import dev.slimevr.context.Behaviour
@@ -110,8 +112,9 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	isPositionActive = false,
 )
 
-fun defaultSkeletonState(registry: BoneRegistry): SkeletonState {
-	val offsets = toBoneOffsets(DEFAULT_PROPORTIONS, registry)
+fun defaultSkeletonState(definition: CompiledSkeleton): SkeletonState {
+	val defaults = definition.defaultProportionValues()
+	val offsets = definition.toBoneOffsets(defaults)
 	return SkeletonState(
 		boneInputs = offsets.tail.mapValues { boneId, tailOffset ->
 			DEFAULT_BONE_INPUT.copy(
@@ -120,7 +123,7 @@ fun defaultSkeletonState(registry: BoneRegistry): SkeletonState {
 				offset = tailOffset,
 			)
 		},
-		skeletonHeight = DEFAULT_HEIGHT,
+		skeletonHeight = definition.height(defaults),
 		floorLevel = 0f,
 		paused = false,
 		pausedProcessedBoneInputs = null,
@@ -201,6 +204,7 @@ interface SkeletonTargetProcessor {
 
 class Skeleton(
 	val context: SkeletonContext,
+	val definition: CompiledSkeleton,
 	val computed: MutableSharedFlow<ComputedSkeleton>,
 	private val resettableSkeletonProcessors: Set<ResettableSkeletonProcessor>,
 ) {
@@ -219,13 +223,12 @@ class Skeleton(
 	companion object {
 		const val DEFAULT_HZ = 500
 
-		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
+		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, definition: CompiledSkeleton, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
-			val registry = ctx.bones.current
 
 			val resettableSkeletonProcessors = mutableSetOf<ResettableSkeletonProcessor>()
 			val behaviours = listOf(
-				ProportionsBehaviour(ctx.config.userConfig, registry),
+				ProportionsBehaviour(ctx.config.userConfig, definition),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
@@ -264,7 +267,7 @@ class Skeleton(
 			)
 
 			val context = Context.create(
-				initialState = defaultSkeletonState(registry),
+				initialState = defaultSkeletonState(definition),
 				scope = scope,
 				reducer = ::reduce,
 				behaviours = behaviours,
@@ -276,7 +279,7 @@ class Skeleton(
 			val computed = MutableSharedFlow<ComputedSkeleton>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 			computed.tryEmit(buildBones(context.state.value.boneInputs))
 
-			return Skeleton(context, computed, resettableSkeletonProcessors)
+			return Skeleton(context, definition, computed, resettableSkeletonProcessors)
 		}
 	}
 }
