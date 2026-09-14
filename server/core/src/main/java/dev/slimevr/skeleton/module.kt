@@ -20,7 +20,7 @@ import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
-import dev.slimevr.skeleton.inputprocessors.RelaxedSpineInputProcessor
+import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
@@ -237,7 +237,7 @@ class Skeleton(
 						SmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
-						RelaxedSpineInputProcessor(settings),
+						SpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
