@@ -5,6 +5,7 @@ import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.key
+import dev.slimevr.resourcepacks.bones.CompiledVmcOutput
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.cos
@@ -55,8 +56,12 @@ internal fun compileVmcOutputs(
 			names = vmc.name.values,
 			outputParent = outputParent,
 			inputParent = inputParent,
-			restRotation = (vmc.restRotation ?: emptyList()).fold(Quaternion.IDENTITY) { acc, step ->
-				axisAngleQuaternion(Vector3(step.axis.x, step.axis.y, step.axis.z), step.degrees * degToRad) * acc
+			restRotation = (vmc.restRotation
+				?: emptyList()).fold(Quaternion.IDENTITY) { acc, step ->
+				axisAngleQuaternion(
+					Vector3(step.axis.x, step.axis.y, step.axis.z),
+					step.degrees * degToRad
+				) * acc
 			},
 		)
 	}

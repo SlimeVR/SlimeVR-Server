@@ -2,7 +2,6 @@ package dev.slimevr.vmc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
@@ -11,7 +10,7 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.forEachOscMessage
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.formatExceptionMessage

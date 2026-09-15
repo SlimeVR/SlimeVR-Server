@@ -28,7 +28,7 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
 import dev.slimevr.resourcepacks.ClasspathResourcePackSource
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.resourcepacks.ParsedResourcePack
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackParser

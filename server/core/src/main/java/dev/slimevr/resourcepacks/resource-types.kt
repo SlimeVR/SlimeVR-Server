@@ -6,19 +6,16 @@ import com.github.erosb.jsonsKema.SchemaLoader
 import com.github.erosb.jsonsKema.SchemaLoaderConfig
 import com.github.erosb.jsonsKema.Validator
 import dev.slimevr.resourcepacks.bones.BoneDefinition
-import dev.slimevr.resourcepacks.bones.BoneOverride
 import dev.slimevr.resourcepacks.languages.LanguageResource
 import dev.slimevr.resourcepacks.proportions.ProportionDefinition
-import dev.slimevr.resourcepacks.proportions.ProportionOverride
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
 import java.net.URI
 import java.nio.charset.StandardCharsets
 
 abstract class ResourceType<T : Any>(val id: String) {
 	abstract fun matches(path: String): Boolean
-	abstract fun parse(entry: ResourcePackEntry, packFormatVersion: Int, diagnostics: MutableList<ResourcePackDiagnostic>): SourcedResource<T>?
+	abstract fun validateAndDecode(path: String, document: JsonObject, diagnostics: MutableList<in ResourcePackDiagnostic>): SourcedResource<T>?
 }
 
 abstract class JsonResourceType<T : Any>(
@@ -36,32 +33,17 @@ abstract class JsonResourceType<T : Any>(
 		return document // Default is no migration
 	}
 
-	override fun parse(entry: ResourcePackEntry, packFormatVersion: Int, diagnostics: MutableList<ResourcePackDiagnostic>): SourcedResource<T>? {
-		val (instance, document) = try {
-			JsonParser(entry.contents).parse() to ResourcePackJson.parseToJsonElement(entry.contents).jsonObject
-		} catch (e: Exception) {
-			diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
-			return null
-		}
-		
-		val migratedDocument = try {
-			migrateJson(document, packFormatVersion)
-		} catch (e: Exception) {
-			diagnostics += ResourcePackDiagnostic(entry.path, message = "Migration failed: ${e.message}")
-			return null
-		}
-		
-		val migratedInstance = if (migratedDocument === document) instance else JsonParser(migratedDocument.toString()).parse()
-
-		val failure = Validator.forSchema(schema).validate(migratedInstance)
+	override fun validateAndDecode(path: String, document: JsonObject, diagnostics: MutableList<in ResourcePackDiagnostic>): SourcedResource<T>? {
+		val instance = try { JsonParser(document.toString()).parse() } catch (e: Exception) { return null }
+		val failure = Validator.forSchema(schema).validate(instance)
 		if (failure != null) {
-			diagnostics += ResourcePackDiagnostic(entry.path, message = "$id schema: $failure")
+			diagnostics += ResourcePackDiagnostic(path, message = "$id schema: $failure")
 			return null
 		}
 		return try {
-			SourcedResource(entry.path, decode(migratedDocument), migratedDocument)
+			SourcedResource(path, decode(document), document)
 		} catch (e: Exception) {
-			diagnostics += ResourcePackDiagnostic(entry.path, message = "Schema/model drift while decoding: ${e.message}")
+			diagnostics += ResourcePackDiagnostic(path, message = "Schema/model drift while decoding: ${e.message}")
 			null
 		}
 	}
@@ -69,40 +51,32 @@ abstract class JsonResourceType<T : Any>(
 	abstract fun decode(document: JsonObject): T
 }
 
+
 object ResourceTypes {
 	val MANIFEST: JsonResourceType<PackManifest> = object : JsonResourceType<PackManifest>("manifest", "manifest.schema.json") {
 		override fun matches(path: String) = path == "manifest.json"
 		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<PackManifest>(document)
 	}
 	val BONE: JsonResourceType<BoneDefinition> = object : JsonResourceType<BoneDefinition>("bone", "bone.schema.json") {
-		override fun matches(path: String) = path.startsWith("data/bones/") && path.endsWith(".json") && path.count { it == '/' } == 2
+		override fun matches(path: String) = path.startsWith("data/") && path.contains("/bones/") && path.endsWith(".json") && path.count { it == '/' } == 3
 		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<BoneDefinition>(document)
 	}
 	val PROPORTION: JsonResourceType<ProportionDefinition> = object : JsonResourceType<ProportionDefinition>("proportion", "proportion.schema.json") {
-		override fun matches(path: String) = path.startsWith("data/proportions/") && path.endsWith(".json") && path.count { it == '/' } == 2
+		override fun matches(path: String) = path.startsWith("data/") && path.contains("/proportions/") && path.endsWith(".json") && path.count { it == '/' } == 3
 		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<ProportionDefinition>(document)
 	}
-	val BONE_OVERRIDE: JsonResourceType<BoneOverride> = object : JsonResourceType<BoneOverride>("bone_override", "bone-override.schema.json") {
-		override fun matches(path: String) = path.startsWith("data/overrides/bones/") && path.endsWith(".json") && path.count { it == '/' } == 3
-		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<BoneOverride>(document)
-	}
-	val PROPORTION_OVERRIDE: JsonResourceType<ProportionOverride> = object : JsonResourceType<ProportionOverride>("proportion_override", "proportion-override.schema.json") {
-		override fun matches(path: String) = path.startsWith("data/overrides/proportions/") && path.endsWith(".json") && path.count { it == '/' } == 3
-		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<ProportionOverride>(document)
-	}
 	val LANGUAGE: JsonResourceType<LanguageResource> = object : JsonResourceType<LanguageResource>("language", "language.schema.json") {
-		override fun matches(path: String) = path.startsWith("assets/lang/") && path.endsWith(".json") && path.count { it == '/' } == 2
+		override fun matches(path: String) = path.startsWith("assets/") && path.contains("/lang/") && path.endsWith(".json") && path.count { it == '/' } == 3
 		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<LanguageResource>(document)
 	}
 
-	val ALL = listOf(MANIFEST, BONE, PROPORTION, BONE_OVERRIDE, PROPORTION_OVERRIDE, LANGUAGE)
+	val ALL = listOf(MANIFEST, BONE, PROPORTION, LANGUAGE)
 
-	fun isMisplaced(path: String): Boolean = (path.startsWith("data/") || path.startsWith("assets/lang/")) && path.endsWith(".json")
 }
 
 internal object PackSchemas {
 	const val ROOT = ClasspathResourcePackSource.CORE_ROOT + "/schemas/v1"
-	val documents = ResourceTypes.ALL.filterIsInstance<JsonResourceType<*>>().associate { type ->
+	val documents = ResourceTypes.ALL.associate { type ->
 		type.schemaName to (PackSchemas::class.java.classLoader.getResourceAsStream("$ROOT/${type.schemaName}")?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
 			?: error("Bundled resource-pack schema is missing: $ROOT/${type.schemaName}"))
 	}
@@ -110,7 +84,7 @@ internal object PackSchemas {
 
 	@Deprecated("Use ResourceType instead")
 	fun schema(id: String): Schema {
-		val type = ResourceTypes.ALL.filterIsInstance<JsonResourceType<*>>().first { it.id == id }
+		val type = ResourceTypes.ALL.first { it.id == id }
 		val base = URI("classpath:/$ROOT/")
 		val document = documents[type.schemaName]!!
 		return SchemaLoader(JsonParser(document, base.resolve(type.schemaName)).parse(), config.copy(initialBaseURI = base.resolve(type.schemaName))).load()

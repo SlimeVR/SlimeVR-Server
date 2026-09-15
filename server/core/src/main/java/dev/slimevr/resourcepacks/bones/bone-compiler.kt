@@ -6,6 +6,8 @@ import dev.slimevr.bones.Constraint
 import dev.slimevr.bones.HingeConstraint
 import dev.slimevr.bones.LooseHingeConstraint
 import dev.slimevr.bones.TwistSwingConstraint
+import dev.slimevr.resourcepacks.bones.CompiledOffset
+import dev.slimevr.resourcepacks.bones.CompiledOffsetTerm
 import io.github.axisangles.ktmath.Vector3
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
 import dev.slimevr.resourcepacks.Constraint as PackConstraint
@@ -81,7 +83,10 @@ internal fun compileOffset(
 		if (term.proportion !in proportionsByKey) {
 			diagnostics += origin.diagnostic("Unknown proportion '${term.proportion}'")
 		}
-		CompiledOffsetTerm(term.proportion, Vector3(term.direction.x, term.direction.y, term.direction.z))
+		CompiledOffsetTerm(
+			term.proportion,
+			Vector3(term.direction.x, term.direction.y, term.direction.z)
+		)
 	}
 	return CompiledOffset(base, terms)
 }
@@ -122,7 +127,7 @@ private const val DEFAULT_LANGUAGE_PATH = "assets/lang/en.json"
  */
 internal fun displayName(contribution: BoneContribution): String {
 	val nameKey = contribution.resource.value.nameKey
-	val translations = contribution.pack.get(ResourceTypes.LANGUAGE).firstOrNull { it.path == DEFAULT_LANGUAGE_PATH }?.value?.translations
+	val translations = contribution.pack.getDecoded(ResourceTypes.LANGUAGE).firstOrNull { it.path == DEFAULT_LANGUAGE_PATH }?.value?.translations
 	return translations?.get(nameKey) ?: nameKey
 }
 

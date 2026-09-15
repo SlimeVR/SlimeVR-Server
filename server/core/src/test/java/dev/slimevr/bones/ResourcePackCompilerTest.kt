@@ -1,9 +1,9 @@
 package dev.slimevr.bones
 
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.resourcepacks.InMemoryResourcePackSource
 import dev.slimevr.resourcepacks.ParsedResourcePack
-import dev.slimevr.resourcepacks.REFERENCE_HEIGHT
+import dev.slimevr.resourcepacks.bones.REFERENCE_HEIGHT
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackCompilationDiagnostic
 import dev.slimevr.resourcepacks.ResourcePackCompilationException

@@ -2,6 +2,7 @@ package dev.slimevr.resourcepacks
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonArray
 
 data class SourcedResource<T>(val path: String, val value: T, val raw: JsonObject)
 
@@ -9,10 +10,18 @@ data class SourcedResource<T>(val path: String, val value: T, val raw: JsonObjec
 class ParsedResourcePack(
 	val source: String,
 	val manifest: SourcedResource<PackManifest>,
-	val resources: Map<ResourceType<*>, List<SourcedResource<*>>>,
+	val objects: Map<ResourceType<*>, List<Pair<String, JsonObject>>>,
+	val patches: Map<ResourceType<*>, List<Pair<String, JsonArray>>>,
 ) {
-	@Suppress("UNCHECKED_CAST")
-	fun <T : Any> get(type: ResourceType<T>): List<SourcedResource<T>> = (resources[type] as List<SourcedResource<T>>?) ?: emptyList()
+    fun <T : Any> getDecoded(type: JsonResourceType<T>): List<SourcedResource<T>> {
+        val result = mutableListOf<SourcedResource<T>>()
+        val objs = objects[type] ?: return emptyList()
+        for ((path, obj) in objs) {
+            val decoded = type.validateAndDecode(path, obj, mutableListOf())
+            if (decoded != null) result.add(decoded)
+        }
+        return result
+    }
 }
 
 data class ResourcePackDiagnostic(val path: String, val pointer: String = "", val message: String)

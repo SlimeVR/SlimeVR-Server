@@ -1,7 +1,7 @@
 package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.constrainSkeleton

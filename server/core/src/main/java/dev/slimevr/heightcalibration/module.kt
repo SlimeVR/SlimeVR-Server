@@ -9,7 +9,7 @@ import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope

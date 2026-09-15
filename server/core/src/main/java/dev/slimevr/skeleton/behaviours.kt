@@ -8,7 +8,7 @@ import dev.slimevr.bones.mutateCopy
 import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.PreciseWaiter
 import dev.slimevr.util.timeSource

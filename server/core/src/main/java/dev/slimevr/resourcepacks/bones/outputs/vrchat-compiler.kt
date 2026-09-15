@@ -3,6 +3,7 @@ package dev.slimevr.resourcepacks
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.resourcepacks.bones.CompiledEmitEntry
 
 internal fun compileEmitEntries(
 	registry: BoneRegistry,
@@ -20,7 +21,13 @@ internal fun compileEmitEntries(
 			CompiledEmitEntry(
 				from = entry.from,
 				relativeTo = entry.relativeTo?.let {
-					resolveBoneKey(it, origin, "outputs.vrchat.emit.relativeTo", registry, diagnostics)
+					resolveBoneKey(
+						it,
+						origin,
+						"outputs.vrchat.emit.relativeTo",
+						registry,
+						diagnostics
+					)
 				},
 				steps = entry.value ?: emptyList(),
 			)

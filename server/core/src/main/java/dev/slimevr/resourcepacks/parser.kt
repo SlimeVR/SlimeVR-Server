@@ -1,6 +1,9 @@
 package dev.slimevr.resourcepacks
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.jsonObject
 
 internal val ResourcePackJson = Json {
 	ignoreUnknownKeys = false
@@ -19,15 +22,23 @@ object ResourcePackParser {
 		}
 		val diagnostics = mutableListOf<ResourcePackDiagnostic>()
 		entries.groupBy { it.path }.filterValues { it.size > 1 }.keys.sorted().forEach { diagnostics += ResourcePackDiagnostic(it, message = "Duplicate resource path") }
-		
+
 		val manifestEntry = entries.firstOrNull { it.path == "manifest.json" }
 		if (manifestEntry == null) {
 			diagnostics += ResourcePackDiagnostic("manifest.json", message = "Missing manifest")
 			throw ResourcePackParseException(diagnostics)
 		}
 
-		// Always parse manifest first assuming the current version so we can read its formatVersion
-		val parsedManifest = ResourceTypes.MANIFEST.parse(manifestEntry, CURRENT_FORMAT_VERSION, diagnostics) as? SourcedResource<PackManifest>
+		val rawManifest = try {
+			ResourcePackJson.parseToJsonElement(manifestEntry.contents).jsonObject
+		} catch (e: Exception) {
+			diagnostics += ResourcePackDiagnostic("manifest.json", message = "Malformed JSON: ${e.message}")
+			throw ResourcePackParseException(diagnostics)
+		}
+
+		val migratedManifest = ResourceTypes.MANIFEST.migrateJson(rawManifest, CURRENT_FORMAT_VERSION)
+		val parsedManifest = ResourceTypes.MANIFEST.validateAndDecode(manifestEntry.path, migratedManifest, diagnostics) as? SourcedResource<PackManifest>
+
 		if (parsedManifest == null) {
 			throw ResourcePackParseException(diagnostics)
 		}
@@ -38,21 +49,29 @@ object ResourcePackParser {
 			throw ResourcePackParseException(diagnostics)
 		}
 
-		val parsedResources = mutableMapOf<ResourceType<*>, MutableList<SourcedResource<*>>>()
+		val objects = mutableMapOf<ResourceType<*>, MutableList<Pair<String, JsonObject>>>()
+		val patches = mutableMapOf<ResourceType<*>, MutableList<Pair<String, JsonArray>>>()
 
 		for (entry in entries) {
 			if (entry.path == "manifest.json") continue
 			val type = types.firstOrNull { it.matches(entry.path) }
 			if (type != null) {
-				val parsed = type.parse(entry, formatVersion, diagnostics)
-				if (parsed != null) {
-					parsedResources.getOrPut(type) { mutableListOf() }.add(parsed)
+				try {
+					val element = ResourcePackJson.parseToJsonElement(entry.contents)
+					if (element is JsonArray) {
+						patches.getOrPut(type) { mutableListOf() }.add(entry.path to element)
+					} else if (element is JsonObject) {
+					    val migrated = (type as JsonResourceType<*>).migrateJson(element, formatVersion)
+						objects.getOrPut(type) { mutableListOf() }.add(entry.path to migrated)
+					} else {
+					    diagnostics += ResourcePackDiagnostic(entry.path, message = "Expected JSON object or array")
+					}
+				} catch (e: Exception) {
+					diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
 				}
-			} else if (ResourceTypes.isMisplaced(entry.path)) {
-				diagnostics += ResourcePackDiagnostic(entry.path, message = "JSON document is not allowed at this pack path")
 			}
 		}
 		if (diagnostics.isNotEmpty()) throw ResourcePackParseException(diagnostics.sortedWith(compareBy<ResourcePackDiagnostic> { it.path }.thenBy { it.pointer }))
-		return ParsedResourcePack(source.description, parsedManifest, parsedResources)
+		return ParsedResourcePack(source.description, parsedManifest, objects, patches)
 	}
 }

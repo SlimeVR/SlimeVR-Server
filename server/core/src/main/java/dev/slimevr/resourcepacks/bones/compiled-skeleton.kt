@@ -1,14 +1,20 @@
-package dev.slimevr.resourcepacks
+package dev.slimevr.resourcepacks.bones
 
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.BoneSet
 import dev.slimevr.bones.Constraint
+import dev.slimevr.resourcepacks.EmitSource
+import dev.slimevr.resourcepacks.FixedProportionDefault
+import dev.slimevr.resourcepacks.HeightRatioProportionDefault
+import dev.slimevr.resourcepacks.PipelineStep
+import dev.slimevr.resourcepacks.ProportionDefault
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.SkeletonBone
+import kotlin.collections.iterator
 
 private fun resolveDefault(default: ProportionDefault, height: Float): Float = when (default) {
 	is FixedProportionDefault -> default.value
@@ -63,7 +69,7 @@ data class CompiledEmitEntry(
 data class CompiledVrchatOutput(val required: Boolean, val emit: Map<String, CompiledEmitEntry>)
 
 /**
- * Everything [compileResourcePacks] resolves for one bone: its offsets, constraint, routing
+ * Everything [dev.slimevr.resourcepacks.compileResourcePacks] resolves for one bone: its offsets, constraint, routing
  * facts, and output/input declarations. A plain bone with none of these has every field null.
  */
 data class CompiledBone(
@@ -83,7 +89,7 @@ data class CompiledBone(
 
 /**
  * The compiled bone registry, proportion catalog, and per-bone data produced by
- * [compileResourcePacks].
+ * [dev.slimevr.resourcepacks.compileResourcePacks].
  */
 class CompiledSkeleton(
 	val registry: BoneRegistry,

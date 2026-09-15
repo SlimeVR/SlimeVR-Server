@@ -2,6 +2,7 @@ package dev.slimevr.resourcepacks
 
 import dev.slimevr.bones.BoneId
 import dev.slimevr.osc.OscArg
+import dev.slimevr.resourcepacks.bones.CompiledEmitEntry
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
 import io.github.axisangles.ktmath.Quaternion
@@ -90,7 +91,11 @@ class PipelineEvaluatorTest {
 			CompiledEmitEntry(
 				EmitSource.ROTATION,
 				BoneId(2u),
-				listOf(PipelineStep.Euler(EulerSpec(axis = Axis.X)), PipelineStep.Divide(ScalarOrVector.Scalar(90f)), PipelineStep.Clamp(listOf(-1f, 1f))),
+				listOf(
+					PipelineStep.Euler(EulerSpec(axis = Axis.X)),
+					PipelineStep.Divide(ScalarOrVector.Scalar(90f)),
+					PipelineStep.Clamp(listOf(-1f, 1f))
+				),
 			),
 			bone(rotation = Quaternion.rotationAroundXAxis(100f * PI.toFloat() / 180f)),
 			foot,

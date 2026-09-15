@@ -1,6 +1,7 @@
 package dev.slimevr.resourcepacks
 
 import dev.slimevr.osc.OscArg
+import dev.slimevr.resourcepacks.bones.CompiledEmitEntry
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

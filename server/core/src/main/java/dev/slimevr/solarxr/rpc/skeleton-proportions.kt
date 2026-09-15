@@ -3,8 +3,8 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
-import dev.slimevr.resourcepacks.proportionKey
-import dev.slimevr.resourcepacks.skeletonBoneOf
+import dev.slimevr.resourcepacks.bones.proportionKey
+import dev.slimevr.resourcepacks.bones.skeletonBoneOf
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.SolarXRBridge

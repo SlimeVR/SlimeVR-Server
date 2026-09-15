@@ -1,10 +1,9 @@
 package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.config.BoneRoutingConfig
-import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.isActive
 import kotlinx.coroutines.ExperimentalCoroutinesApi

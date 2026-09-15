@@ -5,7 +5,7 @@ import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.key
-import kotlinx.serialization.json.decodeFromJsonElement
+import dev.slimevr.resourcepacks.bones.*
 import solarxr_protocol.connection.BoneDefinition as WireBoneDefinition
 import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
 
@@ -24,11 +24,8 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		diagnostics += ResourcePackCompilationDiagnostic(catalog.core.manifest.value.id, catalog.core.manifest.path, "Expected bundled core pack ID 'slimevr:core'")
 	}
 
-	val bonesByKey = indexByKey(packs, { it.get(ResourceTypes.BONE) }, { it.key }, "bone key", diagnostics)
-	val proportionsByKey = indexByKey(packs, { it.get(ResourceTypes.PROPORTION) }, { it.key }, "proportion key", diagnostics)
-	applyOverrides(packs, bonesByKey, proportionsByKey, diagnostics)
-	revalidateMerged(bonesByKey, ResourceTypes.BONE, "bone", diagnostics)
-	revalidateMerged(proportionsByKey, ResourceTypes.PROPORTION, "proportion", diagnostics)
+	val bonesByKey = compileResourceMap(packs, ResourceTypes.BONE, "bone key", diagnostics) { it.key }
+	val proportionsByKey = compileResourceMap(packs, ResourceTypes.PROPORTION, "proportion key", diagnostics) { it.key }
 
 	val standardParts = BodyPart.entries.filter { it != BodyPart.NONE }
 	val standardPartsByKey = standardParts.associateBy(BodyPart::key)
@@ -156,3 +153,60 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 
 	return CompiledSkeleton(registry, proportions, boneMap, copyRotationFallbacks, firstActiveRotationFallbacks, vmcInputOrder)
 }
+
+private fun <T : Any> compileResourceMap(
+	packs: List<ParsedResourcePack>,
+	type: JsonResourceType<T>,
+	keyName: String,
+	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
+	keyExtractor: (T) -> String,
+): Map<String, Contribution<T>> {
+	val latestDefs = mutableMapOf<String, Contribution<T>>()
+
+	for (pack in packs) {
+		val objects = pack.objects[type] ?: emptyList()
+		for ((path, jsonObject) in objects) {
+			val origin = ResourceOrigin(pack, path)
+			latestDefs[path] = Contribution(pack, SourcedResource(path, null as T, jsonObject), mapOf(), origin)
+		}
+	}
+
+	for (pack in packs) {
+		val patches = pack.patches[type] ?: emptyList()
+		for ((path, patchArray) in patches) {
+			val base = latestDefs[path]
+			if (base == null) {
+				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, path, "Patch targets non-existent resource path: $path")
+				continue
+			}
+			try {
+				val patched = applyJsonPatch(base.resource.raw, patchArray)
+				val origin = ResourceOrigin(pack, path)
+				latestDefs[path] = base.copy(
+					resource = SourcedResource(path, null as T, patched),
+					latestOverride = origin
+				)
+			} catch (e: Exception) {
+				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, path, "Failed to apply JSON patch: ${e.message}")
+			}
+		}
+	}
+
+	val byKey = mutableMapOf<String, Contribution<T>>()
+	for ((path, contribution) in latestDefs) {
+		val decoded = type.validateAndDecode(path, contribution.resource.raw, diagnostics as MutableList<ResourcePackDiagnostic>)
+		if (decoded != null) {
+			val fullContribution = contribution.copy(resource = decoded)
+			val key = keyExtractor(decoded.value)
+			if (key in byKey) {
+				val existing = byKey.getValue(key)
+				val diagnostic = existing.origin(null).diagnostic("Multiple definitions for $keyName '$key'")
+				diagnostics += diagnostic
+			} else {
+				byKey[key] = fullContribution
+			}
+		}
+	}
+	return byKey
+}
+
