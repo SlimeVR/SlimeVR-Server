@@ -18,7 +18,7 @@ fun reduce(
 	is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
 
 	is TrackerActions.SetRotation -> {
-		val accumulatedTicks = if (action.newData && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
+		val accumulatedTicks = if (!action.refresh && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
 
 		// Rotation
 		val rawRotation: RawRotation = action.rotation ?: state.rawRotation
@@ -27,6 +27,12 @@ fun reduce(
 			Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
 		} else {
 			rawRotation
+		}
+		val polarityAlign = if (action.refresh) {
+			// Reset polarity according to last reference rotation.
+			state.lastReference
+		} else {
+			state.rotation
 		}
 
 		// Other inputs
@@ -40,7 +46,7 @@ fun reduce(
 		val rotation: CalibratedRotation =
 			if (action.rotation != null) {
 				applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
-					.twinNearest(state.rotation)
+					.twinNearest(polarityAlign)
 			} else {
 				state.rotation
 			}
@@ -117,9 +123,9 @@ fun reduce(
 				attitudeAlignment = attitudeAlignment,
 				headingAlignment = headingAlignment,
 			),
+			lastReference = action.referenceRotation,
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
-			rotation = state.rotation.twinNearest(action.referenceRotation),
 		)
 	}
 
@@ -136,24 +142,23 @@ fun reduce(
 			// TrackerYawResetSmoothingBehaviour eases sessionCalibration.headingCorrection
 			// to newHeading over smoothTime. A reset mid-ease just replaces the seed.
 			state.copy(
+				lastReference = action.referenceRotation,
 				yawResetSmoothing = YawResetSmoothing(
 					from = cal.headingCorrection,
 					to = newHeading,
 					duration = action.smoothTime,
 				),
-				rotation = state.rotation.twinNearest(state.rotation),
 			)
 		} else {
 			// Snap: apply the new heading immediately (default, no smoothing configured).
 			state.copy(
 				sessionCalibration = cal.copy(headingCorrection = newHeading),
+				lastReference = action.referenceRotation,
 				yawResetSmoothing = null,
-				rotation = state.rotation.twinNearest(action.referenceRotation),
 			)
 		}
 	}
 
-	// TODO: fix centaur on PoseMountingReset
 	is TrackerActions.PoseMountingReset -> {
 		val cal = state.sessionCalibration
 
@@ -169,8 +174,8 @@ fun reduce(
 
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = headingAlignment),
+			lastReference = action.referenceRotation,
 			lastMountingMethod = MountingMethod.POSE,
-			rotation = state.rotation.twinNearest(action.referenceRotation),
 		)
 	}
 

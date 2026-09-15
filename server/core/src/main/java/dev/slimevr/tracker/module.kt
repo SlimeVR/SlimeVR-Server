@@ -68,6 +68,7 @@ data class TrackerState(
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
 	val restOrientation: RestOrientation,
+	val lastReference: Quaternion,
 	val sessionCalibration: SessionCalibration,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
@@ -95,7 +96,7 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val newData: Boolean = true) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val refresh: Boolean = false) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion, val resetPositionalHeadAttitude: Boolean = false) : TrackerActions
@@ -193,6 +194,7 @@ class Tracker(
 			lastMountingMethod = MountingMethod.MANUAL,
 			mountingOrientation = Quaternion.IDENTITY,
 			restOrientation = Quaternion.IDENTITY,
+			lastReference = Quaternion.IDENTITY,
 			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,
 			rotation = Quaternion.IDENTITY,

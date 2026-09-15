@@ -224,23 +224,19 @@ class SessionCalibrationTest {
 					val rawRotation =
 						undoCalibration(rR * Quaternion.IDENTITY, rR, aA)
 
-					// TODO: Can we avoid needing to use twinNearest? It would be best if it was
-					//  just inherently in the right quaternion space (for both heading & attitude).
-					//  This might also just not be a problem, I'm not sure.
 					val estimatedHeadingCorrect =
 						estimateHeadingCorrect(rawRotation, rR)
 					quaternionAssertEquals(
 						rR,
-						estimatedHeadingCorrect.twinNearest(rR),
+						estimatedHeadingCorrect,
 						message = "Estimated heading correction is wrong ( hC: $hC, aA: $aA, rR: $rR )",
 					)
 
-					// TODO: See if we can avoid using twinNearest
 					val estimatedAttitudeAlign =
 						estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect, rR)
 					quaternionAssertEquals(
 						aA,
-						estimatedAttitudeAlign.twinNearest(aA),
+						estimatedAttitudeAlign,
 						message = "Estimated attitude alignment is wrong ( hC: $hC, aA: $aA, rR: $rR )",
 					)
 				}
@@ -264,12 +260,12 @@ class SessionCalibrationTest {
 						headingAlign = hA * yawOffsetRotation.inv(),
 					)
 
-					// TODO: See if we can avoid using twinNearest
 					val estimateHeadingAlign = estimateHeadingAlign(
 						rawRotation,
 						ref,
 						yawOffset = yawOffset,
 					)
+					// twinNearest is equivalent since this doesn't care about polarity
 					quaternionAssertEquals(
 						hA,
 						estimateHeadingAlign.twinNearest(hA),
