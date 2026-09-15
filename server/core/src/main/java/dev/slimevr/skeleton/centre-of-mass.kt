@@ -7,7 +7,8 @@ import dev.slimevr.util.inFloatingSeconds
 import io.github.axisangles.ktmath.Vector3
 import kotlin.time.ComparableTimeMark
 
-// TODO Where are these numbers from?
+// Source: Plagenhoef et al., 1983 (Table 4)
+// Modified for more segmentation
 val BODY_PART_MASSES = mapOf(
 	BodyPart.HEAD to 0.0827f,
 	BodyPart.LEFT_UPPER_ARM to 0.0263f,
