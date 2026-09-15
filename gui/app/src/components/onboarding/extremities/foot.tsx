@@ -1,4 +1,4 @@
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { ExtremityDescriptor } from '@/utils/extremities';
 import {
   Digit,

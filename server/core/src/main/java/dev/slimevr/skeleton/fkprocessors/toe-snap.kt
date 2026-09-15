@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton.fkprocessors
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
@@ -8,6 +7,7 @@ import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import io.github.axisangles.ktmath.Quaternion
+import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.abs
 import kotlin.math.asin
 

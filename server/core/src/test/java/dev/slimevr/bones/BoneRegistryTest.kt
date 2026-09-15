@@ -1,6 +1,7 @@
 package dev.slimevr.bones
 
 import solarxr_protocol.connection.BoneDefinition
+import solarxr_protocol.datatypes.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -32,9 +33,9 @@ class BoneRegistryTest {
 		val registry = BoneRegistry.from(
 			WireBoneRegistry(
 				bones = listOf(
-					BoneDefinition(1u, "a", null, 0u),
-					BoneDefinition(2u, "b", null, 1u),
-					BoneDefinition(3u, "c", null, 2u),
+					BoneDefinition(1u, "a", null, 0u, null),
+					BoneDefinition(2u, "b", null, 1u, null),
+					BoneDefinition(3u, "c", null, 2u, null),
 				),
 			),
 		)
@@ -47,8 +48,8 @@ class BoneRegistryTest {
 			BoneRegistry.from(
 				WireBoneRegistry(
 					bones = listOf(
-						BoneDefinition(1u, "a", null, 0u),
-						BoneDefinition(1u, "b", null, 0u),
+						BoneDefinition(1u, "a", null, 0u, null),
+						BoneDefinition(1u, "b", null, 0u, null),
 					),
 				),
 			)
@@ -60,7 +61,7 @@ class BoneRegistryTest {
 		assertFailsWith<IllegalArgumentException> {
 			BoneRegistry.from(
 				WireBoneRegistry(
-					bones = listOf(BoneDefinition(0u, "a", null, 0u)),
+					bones = listOf(BoneDefinition(0u, "a", null, 0u, null)),
 				),
 			)
 		}
@@ -71,7 +72,7 @@ class BoneRegistryTest {
 		assertFailsWith<IllegalArgumentException> {
 			BoneRegistry.from(
 				WireBoneRegistry(
-					bones = listOf(BoneDefinition(1u, "a", null, 2u)),
+					bones = listOf(BoneDefinition(1u, "a", null, 2u, null)),
 				),
 			)
 		}
@@ -83,8 +84,8 @@ class BoneRegistryTest {
 			BoneRegistry.from(
 				WireBoneRegistry(
 					bones = listOf(
-						BoneDefinition(1u, "a", null, 2u),
-						BoneDefinition(2u, "b", null, 1u),
+						BoneDefinition(1u, "a", null, 2u, null),
+						BoneDefinition(2u, "b", null, 1u, null),
 					),
 				),
 			)
@@ -96,7 +97,21 @@ class BoneRegistryTest {
 		assertFailsWith<IllegalArgumentException> {
 			BoneRegistry.from(
 				WireBoneRegistry(
-					bones = listOf(BoneDefinition(1u, "a", null, 1u)),
+					bones = listOf(BoneDefinition(1u, "a", null, 1u, null)),
+				),
+			)
+		}
+	}
+
+	@Test
+	fun `rejects duplicate standard body parts`() {
+		assertFailsWith<IllegalArgumentException> {
+			BoneRegistry.from(
+				WireBoneRegistry(
+					bones = listOf(
+						BoneDefinition(1u, "a", null, 0u, BodyPart.HIP),
+						BoneDefinition(2u, "b", null, 0u, BodyPart.HIP),
+					),
 				),
 			)
 		}
@@ -108,8 +123,8 @@ class BoneRegistryTest {
 			BoneRegistry.from(
 				WireBoneRegistry(
 					bones = listOf(
-						BoneDefinition(1u, "a", null, 0u),
-						BoneDefinition(3u, "b", null, 0u),
+						BoneDefinition(1u, "a", null, 0u, null),
+						BoneDefinition(3u, "b", null, 0u, null),
 					),
 				),
 			)

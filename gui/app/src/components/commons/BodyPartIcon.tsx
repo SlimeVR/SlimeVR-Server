@@ -1,5 +1,4 @@
-import { BodyPart } from '@/utils/body-part';
-import { BoardType, DeviceDataT } from 'solarxr-protocol';
+import { BoardType, BodyPart, DeviceDataT } from 'solarxr-protocol';
 import { useLocaleConfig } from '@/i18n/config';
 import { AnkleIcon } from './icon/AnkleIcon';
 import { ButterflyIcon } from './icon/ButterflyIcon';

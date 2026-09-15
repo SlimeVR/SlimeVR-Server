@@ -27,8 +27,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
-import { BodyPart } from '@/utils/body-part';
-import { BoneT, MountingMethod } from 'solarxr-protocol';
+import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import classNames from 'classnames';

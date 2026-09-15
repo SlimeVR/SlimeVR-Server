@@ -7,7 +7,7 @@ import {
   useMemo,
 } from 'react';
 import { useAtomValue } from 'jotai';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import {
   BodyInteractions,
   BodyInteractionsProps,

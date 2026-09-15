@@ -1,9 +1,9 @@
 package dev.slimevr.routing
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.BoneRoutingConfig
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState
 import kotlin.test.Test

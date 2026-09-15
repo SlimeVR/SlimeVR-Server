@@ -1,6 +1,5 @@
 package dev.slimevr.config
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.key
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -15,6 +14,7 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.FilteringType

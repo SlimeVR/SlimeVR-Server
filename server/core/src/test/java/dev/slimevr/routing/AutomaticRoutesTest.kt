@@ -1,10 +1,10 @@
 package dev.slimevr.routing
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState
 import kotlin.test.Test

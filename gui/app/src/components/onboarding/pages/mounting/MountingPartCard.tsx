@@ -1,6 +1,5 @@
 import classNames from 'classnames';
-import { BodyPart } from '@/utils/body-part';
-import { QuatT } from 'solarxr-protocol';
+import { BodyPart, QuatT } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
 import { ArrowUpIcon } from '@/components/commons/icon/ArrowIcons';
 import {

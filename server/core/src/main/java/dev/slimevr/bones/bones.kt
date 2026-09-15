@@ -1,5 +1,6 @@
 package dev.slimevr.bones
 
+import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
 
 /** A registry-local bone handle. `0` is reserved and never resolves to a definition. */

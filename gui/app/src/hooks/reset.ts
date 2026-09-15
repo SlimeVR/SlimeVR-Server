@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart } from '@/utils/body-part';
 import {
+  BodyPart,
   ResetRequestT,
   ResetResponseT,
   ResetStatus,

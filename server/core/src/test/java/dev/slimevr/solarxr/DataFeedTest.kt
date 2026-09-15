@@ -2,7 +2,6 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.TestAppContext
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.buildTestHeightCalibration
@@ -23,6 +22,7 @@ import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.BoneMask
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -58,7 +58,7 @@ private fun TestScope.testConn(onSend: suspend (MessageBundle) -> Unit): SolarXR
 		rpcDispatcher = EventDispatcher("test.rpc", backgroundScope),
 	)
 	bridge.startObserving()
-	bridge.outbound.on<OutboundFrame> { onSend(it.bundle) }.launchIn(backgroundScope)
+	bridge.outbound.on<MessageBundle> { onSend(it) }.launchIn(backgroundScope)
 
 	// launchIn registers the handler synchronously, but the dispatcher's own drain loop still has to
 	// start before anything emitted here can reach it.

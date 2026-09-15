@@ -2,7 +2,6 @@
 
 package dev.slimevr.tracker
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.buildTestAppContext
 import dev.slimevr.buildTestSettings
@@ -14,6 +13,7 @@ import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -2,7 +2,7 @@ import type { FluentVariable } from '@fluent/bundle';
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { CSSProperties, ReactNode, useMemo } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { Typography } from '@/components/commons/Typography';

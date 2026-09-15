@@ -1,11 +1,11 @@
 package dev.slimevr.hid.behaviours.v3
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.HIDReceiverBehaviour
 import dev.slimevr.hid.HIDSensorInfo
 import dev.slimevr.tracker.TrackerActions
+import solarxr_protocol.datatypes.BodyPart
 
 class HIDSensorInfoBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {

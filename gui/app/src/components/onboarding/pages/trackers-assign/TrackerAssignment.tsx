@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { createPortal } from 'react-dom';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';

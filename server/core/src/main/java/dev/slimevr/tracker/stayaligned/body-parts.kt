@@ -1,7 +1,7 @@
 package dev.slimevr.tracker.stayaligned
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.util.Side
+import solarxr_protocol.datatypes.BodyPart
 
 /**
  * Body parts used by Stay Aligned with some utils.

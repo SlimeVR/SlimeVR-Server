@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Clickable } from '@/components/commons/Clickable';
 import { MouseEventHandler } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { getTrackerName } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
