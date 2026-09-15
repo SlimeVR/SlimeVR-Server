@@ -1,6 +1,5 @@
 package dev.slimevr.tracker
 
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.atan2
@@ -74,7 +73,7 @@ fun estimateHeadingCorrect(
 	rotation: Quaternion,
 	referenceRotation: Quaternion,
 ): HeadingCorrection = (inverseYProjection(referenceRotation) * rotation).eulerHeading().inv()
-	.twinNearest(Quaternion.IDENTITY)
+	.twinNearest(referenceRotation)
 
 fun estimateAttitudeAlign(
 	rotation: Quaternion,
@@ -90,12 +89,7 @@ fun estimateHeadingAlign(
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
 	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
-	val rotation = applyCalibration(
-		rotation,
-		headingCorrect,
-		attitudeAlign,
-		headingAlign,
-	)
+	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign, headingAlign)
 	val pitchRoll = (inverseYProjection(referenceRotation) * rotation).sandwichUnitY()
 	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
 	return Quaternion.rotationAroundYAxis(yawAngle)

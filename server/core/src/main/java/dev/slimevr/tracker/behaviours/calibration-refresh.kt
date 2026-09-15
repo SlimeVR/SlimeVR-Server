@@ -17,7 +17,7 @@ class TrackerCalibrationRefreshBehaviour : TrackerBehaviour {
 			}
 			.onEach {
 				// Make sure to send the raw data to have calibration re-apply
-				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, newData = false))
+				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, refresh = true))
 			}.launchIn(receiver.context.scope)
 	}
 }
