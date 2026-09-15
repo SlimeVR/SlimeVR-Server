@@ -41,9 +41,11 @@ class TrackerConfigBehaviour(
 			lastMountingMethod = if (saveMountingReset && config.mountingResetOrientation != null) MountingMethod.POSE else MountingMethod.MANUAL,
 			mountingOrientation = config.mountingOrientation,
 			sessionCalibration = if (saveMountingReset && config.mountingResetOrientation != null) {
+				// Use mounting reset
 				state.sessionCalibration.copy(headingAlignment = config.mountingResetOrientation)
 			} else {
-				state.sessionCalibration
+				// Use manual mounting
+				state.sessionCalibration.copy(headingAlignment = config.mountingOrientation)
 			},
 			magStatus = when (config.magEnabled) {
 				true -> MagnetometerStatus.ENABLED
