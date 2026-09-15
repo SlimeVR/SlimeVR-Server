@@ -3,6 +3,7 @@ package dev.slimevr.trackingchecklist
 import dev.slimevr.TestAppContext
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType

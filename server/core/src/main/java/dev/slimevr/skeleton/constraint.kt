@@ -98,12 +98,13 @@ fun decomposeToSwingTwist(
 	rotation: Quaternion,
 	twistAxis: Vector3,
 ): Pair<Quaternion, Quaternion> {
+	// TODO simplify this?
 	val projection = rotation.project(twistAxis).unit()
 	val twist = Quaternion(
 		sqrt(1.0f - projection.xyz.lenSq()).withSign(rotation.w),
 		projection.xyz,
 	)
-	val swing = (rotation * twist.inv())
+	val swing = (rotation / twist)
 	return Pair(swing, twist)
 }
 

@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.BoneSet
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.ResetType
 import java.util.concurrent.Executors
 import kotlin.math.cos

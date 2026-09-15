@@ -1,5 +1,6 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.OscArg
@@ -10,7 +11,6 @@ import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import dev.slimevr.bones.BodyPart
 import kotlin.time.Duration
 
 internal fun buildOutgoingBundle(

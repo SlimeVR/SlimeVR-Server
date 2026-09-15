@@ -1,9 +1,9 @@
 package dev.slimevr.autobone
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.Vector3
-import dev.slimevr.bones.BodyPart
 
 fun slideContributionWeight(ankleA: Vector3, ankleB: Vector3, localBoneTailA: Vector3, localBoneTailB: Vector3): Float {
 	val ankleAToB = ankleB - ankleA

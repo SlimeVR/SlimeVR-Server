@@ -1,14 +1,13 @@
 package dev.slimevr.skeleton.fkprocessors
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
-import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
-import dev.slimevr.bones.BodyPart
 
 // The max height to plant feet by
 const val ROTATION_CORRECTION_VERTICAL = 0.1f
@@ -27,7 +26,7 @@ fun correctFootAttitude(
 	rotation: Quaternion,
 	correctionRatio: Float,
 	// eulerHeading is already twinNearest, so we can just use interpQ
-): Quaternion = rotation.interpQ(eulerHeading(rotation), correctionRatio)
+): Quaternion = rotation.interpQ(rotation.eulerHeading(), correctionRatio)
 
 class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 	private val boneIds: Array<BoneId> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT).map { it.boneId }.toTypedArray()

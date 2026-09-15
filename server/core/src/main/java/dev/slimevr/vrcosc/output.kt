@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VRCOSCConfig
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.VRCOSCOutputState
 import solarxr_protocol.rpc.VRCOSCTargetSource

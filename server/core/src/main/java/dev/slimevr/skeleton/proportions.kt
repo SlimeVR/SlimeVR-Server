@@ -1,12 +1,12 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.times
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
 import kotlin.collections.map
 import kotlin.collections.plus

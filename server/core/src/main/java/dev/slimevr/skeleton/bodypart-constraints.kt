@@ -1,10 +1,10 @@
 package dev.slimevr.skeleton
 
 import com.jme3.math.FastMath
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.bones.BoneId
 import io.github.axisangles.ktmath.Quaternion
-import dev.slimevr.bones.BodyPart
 
 // TODO Actually figure out good values for these constraints, maybe a source would be
 //  good?

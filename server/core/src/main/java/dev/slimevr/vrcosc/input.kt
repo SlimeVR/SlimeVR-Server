@@ -2,6 +2,7 @@ package dev.slimevr.vrcosc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.VRCOSCInputState

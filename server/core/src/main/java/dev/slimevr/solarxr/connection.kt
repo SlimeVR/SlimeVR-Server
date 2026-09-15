@@ -31,11 +31,14 @@ suspend fun onConnectionMessage(message: ConnectionMessage?, bridge: SolarXRBrid
 
 		ConnectionPhase.CONFIGURING -> when (message) {
 			is BoneRegistryRequest -> bridge.sendConnectionMessage(bridge.registry.value)
+
 			is ConfigurationDone -> {
 				bridge.sendConnectionMessage(ConfigurationDone())
 				bridge.completeConfiguration()
 			}
+
 			null -> bridge.sendConnectionMessage(ConnectionError(message = "Unrecognized connection message", data = UnsupportedRequestError()))
+
 			else -> Unit
 		}
 

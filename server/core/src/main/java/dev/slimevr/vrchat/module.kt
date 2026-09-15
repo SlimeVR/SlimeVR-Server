@@ -1,6 +1,7 @@
 package dev.slimevr.vrchat
 
 import dev.slimevr.VRServer
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.Behaviour
@@ -8,7 +9,6 @@ import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
 import solarxr_protocol.rpc.VRCConfigRecommendedValues
 import solarxr_protocol.rpc.VRCConfigValidity

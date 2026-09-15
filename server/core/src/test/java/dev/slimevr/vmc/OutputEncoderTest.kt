@@ -1,5 +1,6 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
@@ -13,7 +14,6 @@ import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import dev.slimevr.bones.BodyPart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

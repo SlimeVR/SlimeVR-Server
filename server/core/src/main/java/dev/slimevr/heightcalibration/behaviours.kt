@@ -2,6 +2,7 @@
 
 package dev.slimevr.heightcalibration
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeoutOrNull
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 import kotlin.math.PI
 import kotlin.math.cos

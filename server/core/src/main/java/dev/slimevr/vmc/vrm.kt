@@ -1,5 +1,6 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.VMCOSCVrmState
 
 private val vrmJsonParser = Json { ignoreUnknownKeys = true }
