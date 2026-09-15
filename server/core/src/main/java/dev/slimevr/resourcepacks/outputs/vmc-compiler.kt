@@ -11,14 +11,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
 
-/**
- * Resolves each bone's VMC output. The real skeleton is rooted at `head`; VMC/Unity expects a
- * `hip`-rooted one instead, so `outputParent` and `inputParent` default to the real hierarchy
- * re-rooted at `hip` (walking parent/child edges in either direction, skipping any ancestor with
- * no VMC output of its own), unless the bone declares its own parent explicitly. An omitted
- * `inputParent` defaults to whatever `outputParent` resolved to (derived or overridden), so a
- * bone whose input and output share a parent only has to declare `outputParent` once.
- */
+/** Resolves each bone's VMC output, dynamically re-rooting the hierarchy at the hip if no explicit parents are set. */
 internal fun compileVmcOutputs(
 	registry: BoneRegistry,
 	contributions: Map<BoneId, Pair<BoneContribution, VmcOutput>>,

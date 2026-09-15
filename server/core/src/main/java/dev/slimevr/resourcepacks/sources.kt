@@ -14,17 +14,7 @@ interface ResourcePackSource {
 	suspend fun entries(): List<ResourcePackEntry>
 }
 
-/** In memory source, mock for unit test **/
-class InMemoryResourcePackSource(
-	private val files: Map<String, String>,
-	override val description: String = "in memory",
-) : ResourcePackSource {
-	override suspend fun entries(): List<ResourcePackEntry> = files.entries
-		.map { ResourcePackEntry(normalizePath(it.key), it.value) }
-		.sortedBy { it.path }
-}
 
-/** Reads a local directory through ConfigStorage, never following symlinks. */
 class StorageResourcePackSource(
 	private val storage: ConfigStorage,
 	private val root: String,
@@ -60,7 +50,6 @@ class StorageResourcePackSource(
 	}
 }
 
-/** Discovers the single bundled core pack from a class loader. */
 class ClasspathResourcePackSource private constructor(
 	private val classLoader: ClassLoader,
 	override val description: String,
@@ -95,7 +84,7 @@ class ClasspathResourcePackSource private constructor(
 	}
 }
 
-private fun normalizePath(path: String): String {
+internal fun normalizePath(path: String): String {
 	val normalized = path.replace('\\', '/')
 	require(normalized.isNotEmpty() && !normalized.startsWith('/') && normalized.split('/').none { it.isEmpty() || it == "." || it == ".." }) {
 		"Invalid resource-pack path: $path"

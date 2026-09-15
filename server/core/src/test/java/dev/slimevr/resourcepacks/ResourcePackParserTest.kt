@@ -18,29 +18,29 @@ import kotlin.test.assertTrue
 class ResourcePackParserTest {
 	@Test
 	fun `bundled core pack is packaged and parsed`(): Unit = runBlocking {
-		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
+		val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 
 		assertEquals("slimevr:core", core.manifest.value.id)
-		assertEquals(61, core.bones.size)
-		assertEquals(18, core.proportions.size)
-		assertEquals(1, core.languages.size)
-		assertTrue(core.boneOverrides.isEmpty())
-		assertTrue(core.proportionOverrides.isEmpty())
+		assertEquals(61, core.get(ResourceTypes.BONE).size)
+		assertEquals(18, core.get(ResourceTypes.PROPORTION).size)
+		assertEquals(1, core.get(ResourceTypes.LANGUAGE).size)
+		assertTrue(core.get(ResourceTypes.BONE_OVERRIDE).isEmpty())
+		assertTrue(core.get(ResourceTypes.PROPORTION_OVERRIDE).isEmpty())
 
-		val head = core.bones.single { it.value.key == "slimevr:head" }.value
+		val head = core.get(ResourceTypes.BONE).single { it.value.key == "slimevr:head" }.value
 		val fallback = assertIs<CopyRotationFallback>(head.rotationFallback)
 		assertEquals("slimevr:neck", fallback.source)
 		val step = head.outputs!!.vrchat!!.emit.getValue("/tracking/trackers/head/position").value!!.single()
 		assertIs<PipelineStep.Scale>(step)
 		assertIs<ScalarOrVector.Vector>(step.operand)
-		assertIs<HeightRatioProportionDefault>(core.proportions.single { it.value.key == "slimevr:upper_chest" }.value.default)
+		assertIs<HeightRatioProportionDefault>(core.get(ResourceTypes.PROPORTION).single { it.value.key == "slimevr:upper_chest" }.value.default)
 	}
 
 	@Test
 	fun `parser aggregates malformed and misplaced resource diagnostics`() {
 		val error = assertFailsWith<ResourcePackParseException> {
 			runBlocking {
-				ResourcePackParser().parse(
+				ResourcePackParser.parse(
 					InMemoryResourcePackSource(
 						mapOf(
 							"manifest.json" to "{not json}",
@@ -59,9 +59,9 @@ class ResourcePackParserTest {
 		val jar = File("build/libs/core-jvm.jar")
 		assertTrue(jar.isFile, "jvmJar must run before the test")
 		URLClassLoader(arrayOf(jar.toURI().toURL()), null).use { loader ->
-			val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(loader))
-			assertEquals(61, core.bones.size)
-			assertEquals(18, core.proportions.size)
+			val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(loader))
+			assertEquals(61, core.get(ResourceTypes.BONE).size)
+			assertEquals(18, core.get(ResourceTypes.PROPORTION).size)
 		}
 	}
 
@@ -94,7 +94,7 @@ class ResourcePackParserTest {
 
 	@Test
 	fun `overrides and all vmc input parent states decode`() = runBlocking {
-		val pack = ResourcePackParser().parse(
+		val pack = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:variants"),
@@ -107,16 +107,16 @@ class ResourcePackParserTest {
 			),
 		)
 
-		assertEquals(VmcInputParent.Omitted, pack.bones.single { it.value.key == "example:omitted" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals(VmcInputParent.ExplicitNull, pack.bones.single { it.value.key == "example:null" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals(VmcInputParent.Bone("example:parent"), pack.bones.single { it.value.key == "example:key" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals("example:parent", pack.boneOverrides.single().value.set!!.getValue("parent").jsonPrimitive.content)
-		assertIs<FixedProportionDefault>(ResourcePackJson.decodeFromJsonElement<ProportionDefault>(pack.proportionOverrides.single().value.set!!.getValue("default")))
+		assertEquals(VmcInputParent.Omitted, pack.get(ResourceTypes.BONE).single { it.value.key == "example:omitted" }.value.outputs!!.vmc!!.inputParent)
+		assertEquals(VmcInputParent.ExplicitNull, pack.get(ResourceTypes.BONE).single { it.value.key == "example:null" }.value.outputs!!.vmc!!.inputParent)
+		assertEquals(VmcInputParent.Bone("example:parent"), pack.get(ResourceTypes.BONE).single { it.value.key == "example:key" }.value.outputs!!.vmc!!.inputParent)
+		assertEquals("example:parent", pack.get(ResourceTypes.BONE_OVERRIDE).single().value.set!!.getValue("parent").jsonPrimitive.content)
+		assertIs<FixedProportionDefault>(ResourcePackJson.decodeFromJsonElement<ProportionDefault>(pack.get(ResourceTypes.PROPORTION_OVERRIDE).single().value.set!!.getValue("default")))
 	}
 
 	@Test
 	fun `typed fallback constraint and transform variants decode`() = runBlocking {
-		val pack = ResourcePackParser().parse(
+		val pack = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:branches"),
@@ -131,7 +131,7 @@ class ResourcePackParserTest {
 				),
 			),
 		)
-		val bone = pack.bones.single().value
+		val bone = pack.get(ResourceTypes.BONE).single().value
 		assertIs<FirstActiveRotationFallback>(bone.rotationFallback)
 		assertIs<HingeConstraint>(bone.constraint)
 		val steps = bone.outputs!!.vrchat!!.emit.getValue("/example").value!!

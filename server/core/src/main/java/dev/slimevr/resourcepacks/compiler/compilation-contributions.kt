@@ -1,9 +1,9 @@
 package dev.slimevr.resourcepacks
 
-/**
- * A bone property a diagnostic can point at. [path] is the JSON path an override's `set`/`remove`
- * names it by, used to look up which pack last touched it.
- */
+import dev.slimevr.resourcepacks.bones.BoneDefinition
+import dev.slimevr.resourcepacks.proportions.ProportionDefinition
+
+/** Tracks bone properties by their JSON path to attribute overrides. */
 internal sealed class BoneField(val path: List<String>) {
 	object Mirror : BoneField(listOf("mirror"))
 	object BatterySources : BoneField(listOf("batterySources"))

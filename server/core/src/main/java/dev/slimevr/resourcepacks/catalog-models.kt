@@ -5,18 +5,15 @@ import kotlinx.serialization.json.JsonObject
 
 data class SourcedResource<T>(val path: String, val value: T, val raw: JsonObject)
 
-@Serializable(with = LanguageResourceSerializer::class)
-data class LanguageResource(val schema: String?, val translations: Map<String, String>)
 
-data class ParsedResourcePack(
+class ParsedResourcePack(
 	val source: String,
 	val manifest: SourcedResource<PackManifest>,
-	val bones: List<SourcedResource<BoneDefinition>>,
-	val proportions: List<SourcedResource<ProportionDefinition>>,
-	val boneOverrides: List<SourcedResource<BoneOverride>>,
-	val proportionOverrides: List<SourcedResource<ProportionOverride>>,
-	val languages: List<SourcedResource<LanguageResource>>,
-)
+	val resources: Map<ResourceType<*>, List<SourcedResource<*>>>,
+) {
+	@Suppress("UNCHECKED_CAST")
+	fun <T : Any> get(type: ResourceType<T>): List<SourcedResource<T>> = (resources[type] as List<SourcedResource<T>>?) ?: emptyList()
+}
 
 data class ResourcePackDiagnostic(val path: String, val pointer: String = "", val message: String)
 class ResourcePackParseException(val diagnostics: List<ResourcePackDiagnostic>) :

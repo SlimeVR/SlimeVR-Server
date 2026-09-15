@@ -1,5 +1,6 @@
 package dev.slimevr.resourcepacks
 
+import dev.slimevr.resourcepacks.languages.LanguageResource
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind

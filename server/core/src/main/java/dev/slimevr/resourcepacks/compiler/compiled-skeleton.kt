@@ -18,11 +18,7 @@ private fun resolveDefault(default: ProportionDefault, height: Float): Float = w
 /** Height, in meters, that the core pack's `heightRatio` proportion defaults are expressed against. */
 const val REFERENCE_HEIGHT = 1.58f
 
-/**
- * The proportion key a [SkeletonBone] always names: `"slimevr:" + name.lowercase()`, mirroring
- * [BodyPart.key]. [SkeletonBone] only exists at the SolarXR RPC boundary; the rest of the server
- * addresses proportions by resource key directly.
- *
+/** The proportion key corresponding to this [SkeletonBone].
  * FIXME: Remove SkeletonBone completely. Also from solarxr
  */
 val SkeletonBone.proportionKey: String get() = "slimevr:${name.lowercase()}"
@@ -45,11 +41,7 @@ data class CompiledOffsetTerm(val proportion: String, val direction: Vector3)
 /** A bone's resolved offset: a fixed [base] plus a weighted sum of proportion [terms]. */
 data class CompiledOffset(val base: Vector3, val terms: List<CompiledOffsetTerm>)
 
-/**
- * Resolved bone geometry. [tail] is the head->tail vector in the bone's own frame; [head] is the
- * parent-tail->head vector in the parent's frame, present only for bones whose pack definition
- * carries a `headOffset`.
- */
+/** Resolved bone geometry mapping tail and head vectors for all bones. */
 class BoneOffsets(val tail: BoneMap<Vector3>, val head: BoneMap<Vector3>)
 
 /** A bone's compiled VMC output: its Unity name(s), resolved output/input parent, and rest rotation. */

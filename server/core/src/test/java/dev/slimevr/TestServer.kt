@@ -112,7 +112,7 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 }
 
 val testCoreResourcePack: ParsedResourcePack by lazy {
-	kotlinx.coroutines.runBlocking { ResourcePackParser().parse(ClasspathResourcePackSource.core(object {}.javaClass.classLoader)) }
+	kotlinx.coroutines.runBlocking { ResourcePackParser.parse(ClasspathResourcePackSource.core(object {}.javaClass.classLoader)) }
 }
 
 /** The bundled core pack, compiled once and reused by every test that needs a [CompiledSkeleton]. */

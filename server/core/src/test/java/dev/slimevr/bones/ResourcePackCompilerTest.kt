@@ -8,6 +8,7 @@ import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackCompilationDiagnostic
 import dev.slimevr.resourcepacks.ResourcePackCompilationException
 import dev.slimevr.resourcepacks.ResourcePackParser
+import dev.slimevr.resourcepacks.ResourceTypes
 import dev.slimevr.resourcepacks.compileResourcePacks
 import dev.slimevr.testCoreResourcePack
 import io.github.axisangles.ktmath.Vector3
@@ -34,7 +35,7 @@ private fun catalog(core: ParsedResourcePack, vararg users: ParsedResourcePack) 
 private fun manifest(id: String) = """{"formatVersion":1,"id":"$id","nameKey":"example:name","descriptionKey":"example:description","version":[1,0,0],"authors":["Test"]}"""
 
 private suspend fun compilePack(vararg files: Pair<String, String>, packId: String = "example:test"): CompiledSkeleton {
-	val user = ResourcePackParser().parse(InMemoryResourcePackSource(mapOf("manifest.json" to manifest(packId)) + files))
+	val user = ResourcePackParser.parse(InMemoryResourcePackSource(mapOf("manifest.json" to manifest(packId)) + files))
 	return compileResourcePacks(catalog(testCoreResourcePack, user))
 }
 
@@ -220,7 +221,7 @@ class ResourcePackCompilerTest {
 
 	@Test
 	fun `user-pack set overrides apply in pack order and merge VRChat emit addresses`() = runTest {
-		val first = ResourcePackParser().parse(
+		val first = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:first"),
@@ -228,7 +229,7 @@ class ResourcePackCompilerTest {
 				),
 			),
 		)
-		val second = ResourcePackParser().parse(
+		val second = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:second"),
@@ -246,7 +247,7 @@ class ResourcePackCompilerTest {
 
 	@Test
 	fun `a later pack can set a property removed by an earlier pack`() = runTest {
-		val remove = ResourcePackParser().parse(
+		val remove = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:remove"),
@@ -254,7 +255,7 @@ class ResourcePackCompilerTest {
 				),
 			),
 		)
-		val set = ResourcePackParser().parse(
+		val set = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:set"),
@@ -385,7 +386,7 @@ class ResourcePackCompilerTest {
 	@Test
 	fun `compiler reports missing standard core bone`() = runTest {
 		val error = assertFailsWith<ResourcePackCompilationException> {
-			compileResourcePacks(catalog(testCoreResourcePack.copy(bones = testCoreResourcePack.bones.drop(1))))
+			compileResourcePacks(catalog(ParsedResourcePack(testCoreResourcePack.source, testCoreResourcePack.manifest, testCoreResourcePack.resources.toMutableMap().apply { put(ResourceTypes.BONE, testCoreResourcePack.get(ResourceTypes.BONE).drop(1)) })))
 		}
 		assertTrue(error.diagnostics.any { "Missing standard bone" in it.message })
 	}
@@ -402,8 +403,8 @@ class ResourcePackCompilerTest {
 	@Test
 	fun `compiler reports no root when every bone has a parent`() = runTest {
 		// head is the real root; giving it a parent leaves no bone without one.
-		val head = testCoreResourcePack.bones.single { it.value.key == "slimevr:head" }
-		val patched = testCoreResourcePack.copy(bones = testCoreResourcePack.bones - head + head.copy(value = head.value.copy(parent = "slimevr:neck")))
+		val head = testCoreResourcePack.get(ResourceTypes.BONE).single { it.value.key == "slimevr:head" }
+		val patched = ParsedResourcePack(testCoreResourcePack.source, testCoreResourcePack.manifest, testCoreResourcePack.resources.toMutableMap().apply { put(ResourceTypes.BONE, testCoreResourcePack.get(ResourceTypes.BONE) - head + head.copy(value = head.value.copy(parent = "slimevr:neck"))) })
 		val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(catalog(patched)) }
 		assertTrue(error.diagnostics.any { "exactly one root" in it.message && "found none" in it.message })
 	}

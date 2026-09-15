@@ -14,9 +14,7 @@ internal data class ResourceOrigin(val pack: ParsedResourcePack, val path: Strin
 
 internal fun ResourceOrigin.diagnostic(message: String) = ResourcePackCompilationDiagnostic(pack.manifest.value.id, path, message)
 
-/**
- * Finds every cycle reachable by following [parentOf] from each of [nodes]
- */
+/** Finds every cycle reachable by following [parentOf] from each of [nodes]. */
 internal fun <T> reportCycles(nodes: Iterable<T>, parentOf: (T) -> T?, report: (start: T, lastVisited: T, cycle: Set<T>) -> Unit) {
 	val reportedCycles = mutableSetOf<Set<T>>()
 	for (node in nodes) {

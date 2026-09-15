@@ -7,8 +7,7 @@ import dev.slimevr.logging.AppLogger
 
 object ResourcePackManager {
 	suspend fun load(storage: ConfigStorage, classLoader: ClassLoader): ResourcePackCatalog {
-		val parser = ResourcePackParser()
-		val core = parser.parse(ClasspathResourcePackSource.core(classLoader))
+		val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(classLoader))
 		val root = "resourcepacks"
 		if (!storage.ensureDirectory(root)) {
 			AppLogger.config.error("Unable to create ${storage.displayPath(root)}; loading bundled core pack only")
@@ -34,7 +33,7 @@ object ResourcePackManager {
 			}
 			if (!containsManifest) continue
 			try {
-				packs += parser.parse(StorageResourcePackSource(storage, packRoot))
+				packs += ResourcePackParser.parse(StorageResourcePackSource(storage, packRoot))
 			} catch (e: ResourcePackParseException) {
 				failures += ResourcePackFailure(folder.name, e.diagnostics)
 				AppLogger.config.error("Skipping invalid resource pack '${folder.name}': ${e.message}")

@@ -9,13 +9,7 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import solarxr_protocol.connection.BoneDefinition as WireBoneDefinition
 import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
 
-/**
- * Compiles the complete, ordered resource-pack stack into the runtime [CompiledSkeleton]: bone
- * identity and hierarchy, the proportion catalog, and each bone's offset.
- *
- * Core owns the standard [BodyPart] definitions and their stable IDs. Every subsequent pack can
- * contribute new bones and proportions; extension bones receive dense IDs in catalog order.
- */
+/** Compiles the ordered resource-pack stack into a runtime [CompiledSkeleton]. */
 fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	val diagnostics = mutableListOf<ResourcePackCompilationDiagnostic>()
 	val packs = listOf(catalog.core) + catalog.userPacks
@@ -30,11 +24,11 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		diagnostics += ResourcePackCompilationDiagnostic(catalog.core.manifest.value.id, catalog.core.manifest.path, "Expected bundled core pack ID 'slimevr:core'")
 	}
 
-	val bonesByKey = indexByKey(packs, { it.bones }, { it.key }, "bone key", diagnostics)
-	val proportionsByKey = indexByKey(packs, { it.proportions }, { it.key }, "proportion key", diagnostics)
+	val bonesByKey = indexByKey(packs, { it.get(ResourceTypes.BONE) }, { it.key }, "bone key", diagnostics)
+	val proportionsByKey = indexByKey(packs, { it.get(ResourceTypes.PROPORTION) }, { it.key }, "proportion key", diagnostics)
 	applyOverrides(packs, bonesByKey, proportionsByKey, diagnostics)
-	revalidateMerged(bonesByKey, ResourceKind.BONE, { ResourcePackJson.decodeFromJsonElement<BoneDefinition>(it) }, "bone", diagnostics)
-	revalidateMerged(proportionsByKey, ResourceKind.PROPORTION, { ResourcePackJson.decodeFromJsonElement<ProportionDefinition>(it) }, "proportion", diagnostics)
+	revalidateMerged(bonesByKey, ResourceTypes.BONE, "bone", diagnostics)
+	revalidateMerged(proportionsByKey, ResourceTypes.PROPORTION, "proportion", diagnostics)
 
 	val standardParts = BodyPart.entries.filter { it != BodyPart.NONE }
 	val standardPartsByKey = standardParts.associateBy(BodyPart::key)

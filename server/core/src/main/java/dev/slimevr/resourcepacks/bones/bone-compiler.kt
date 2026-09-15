@@ -13,10 +13,10 @@ import dev.slimevr.resourcepacks.HingeConstraint as PackHingeConstraint
 import dev.slimevr.resourcepacks.LooseHingeConstraint as PackLooseHingeConstraint
 import dev.slimevr.resourcepacks.TwistSwingConstraint as PackTwistSwingConstraint
 
-/** The pack that last touched [field], or null if none did. */
+/** Get last origin or null */
 internal fun BoneContribution.originOrNull(field: BoneField): ResourceOrigin? = originOrNull(field.path)
 
-/** [originOrNull] falling back to this bone's own defining pack. */
+/** Get last origin or default */
 internal fun BoneContribution.origin(field: BoneField): ResourceOrigin = originOrNull(field.path) ?: definitionOrigin
 
 internal fun compileConstraint(constraint: PackConstraint): Constraint = when (constraint) {
@@ -40,7 +40,7 @@ internal fun compileConstraint(constraint: PackConstraint): Constraint = when (c
 	)
 }
 
-/** Resolves a bone key referenced from [origin], reporting [context] on an unknown key. */
+/** Resolve bone key and report errors */
 internal fun resolveBoneKey(
 	key: String,
 	origin: ResourceOrigin,
@@ -54,7 +54,7 @@ internal fun resolveBoneKey(
 	return BoneId(0u)
 }
 
-/** Resolves one rotation-fallback source key (or the `"parent"` shorthand) to a [BoneId]. */
+/** Resolve fallback to BoneId */
 internal fun resolveFallbackBone(
 	key: String,
 	contribution: BoneContribution,
@@ -122,7 +122,7 @@ private const val DEFAULT_LANGUAGE_PATH = "assets/lang/en.json"
  */
 internal fun displayName(contribution: BoneContribution): String {
 	val nameKey = contribution.resource.value.nameKey
-	val translations = contribution.pack.languages.firstOrNull { it.path == DEFAULT_LANGUAGE_PATH }?.value?.translations
+	val translations = contribution.pack.get(ResourceTypes.LANGUAGE).firstOrNull { it.path == DEFAULT_LANGUAGE_PATH }?.value?.translations
 	return translations?.get(nameKey) ?: nameKey
 }
 

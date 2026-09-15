@@ -4,10 +4,7 @@ import com.github.erosb.jsonsKema.JsonParser
 import com.github.erosb.jsonsKema.Validator
 import kotlinx.serialization.json.JsonObject
 
-/**
- * JSON paths at which an override's `set` merges key-by-key instead of replacing the whole
- * subtree: the bone document's root, `outputs`, `outputs.vrchat`, and `outputs.vrchat.emit`.
- */
+/** JSON paths where an override's `set` merges key-by-key instead of replacing the subtree. */
 private val BONE_MERGE_POINTS: Set<List<String>> = setOf(
 	emptyList(),
 	listOf("outputs"),
@@ -17,17 +14,12 @@ private val BONE_MERGE_POINTS: Set<List<String>> = setOf(
 
 private val ROOT_ONLY_MERGE_POINT: Set<List<String>> = setOf(emptyList())
 
-/** Bone properties an override's `remove` can never name, identity and display. */
+/** Bone properties that cannot be removed by an override. */
 private val PROTECTED_BONE_PATHS: Set<List<String>> = setOf(listOf("key"), listOf("nameKey"))
 
 private class MergeResult(val raw: JsonObject, val touched: List<List<String>>)
 
-/**
- * Merges [incoming] into [target]. A key whose path (relative to the document root) is in
- * [mergePoints] recurses to merge its own keys the same way; every other key replaces the
- * existing value wholesale, an explicit JSON `null` included, since only `remove` deletes.
- * [touched] on the result carries one path per value actually written, for origin attribution.
- */
+/** Merges [incoming] into [target], replacing existing values or recursing deeply for keys in [mergePoints]. */
 private fun mergeAt(target: JsonObject, incoming: JsonObject, path: List<String>, mergePoints: Set<List<String>>): MergeResult {
 	val merged = target.toMutableMap()
 	val touched = mutableListOf<List<String>>()
@@ -56,11 +48,7 @@ private fun removeAt(target: JsonObject, path: List<String>): JsonObject? {
 	return JsonObject(target + (key to updatedChild))
 }
 
-/**
- * Drops a bone's `outputs.vrchat` once its `emit` map empties (the schema requires `emit`
- * non-empty), then drops `outputs` and/or `inputs` once either is left with no properties (the
- * schema requires both non-empty when present).
- */
+/** Removes empty `outputs.vrchat`, `outputs`, and `inputs` objects to satisfy schema constraints. */
 private fun pruneEmptyBoneContainers(definition: JsonObject): JsonObject {
 	var outputs = definition["outputs"] as? JsonObject
 	val vrchat = outputs?.get("vrchat") as? JsonObject
@@ -82,7 +70,7 @@ internal fun applyOverrides(
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ) {
 	for (pack in packs) {
-		for (resource in pack.boneOverrides.sortedBy { it.path }) {
+		for (resource in pack.get(ResourceTypes.BONE_OVERRIDE).sortedBy { it.path }) {
 			val override = resource.value
 			if (override.target !in bonesByKey) {
 				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Unknown bone '${override.target}' in override target")
@@ -112,7 +100,7 @@ internal fun applyOverrides(
 				latestOverride = origin,
 			)
 		}
-		for (resource in pack.proportionOverrides.sortedBy { it.path }) {
+		for (resource in pack.get(ResourceTypes.PROPORTION_OVERRIDE).sortedBy { it.path }) {
 			val override = resource.value
 			if (override.target !in proportionsByKey) {
 				diagnostics += ResourcePackCompilationDiagnostic(pack.manifest.value.id, resource.path, "Unknown proportion '${override.target}' in override target")
@@ -158,10 +146,9 @@ internal fun <T> indexByKey(
  * Schema-validates and decodes each overridden contribution's merged raw JSON, replacing its typed
  * value. A resource no override touched keeps the value it decoded to at parse time untouched.
  */
-internal fun <T> revalidateMerged(
+internal fun <T : Any> revalidateMerged(
 	byKey: MutableMap<String, Contribution<T>>,
-	kind: ResourceKind,
-	decode: (JsonObject) -> T,
+	type: JsonResourceType<T>,
 	label: String,
 	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
 ) {
@@ -169,13 +156,13 @@ internal fun <T> revalidateMerged(
 		val contribution = byKey.getValue(key)
 		if (contribution.latestOverride == null) continue
 		val raw = contribution.resource.raw
-		val failure = Validator.forSchema(PackSchemas.schema(kind)).validate(JsonParser(raw.toString()).parse())
+		val failure = Validator.forSchema(type.schema).validate(JsonParser(raw.toString()).parse())
 		if (failure != null) {
 			diagnostics += contribution.validationOrigin().diagnostic("Merged $label definition does not satisfy the $label schema: $failure")
 			continue
 		}
 		val decoded = try {
-			decode(raw)
+			type.decode(raw)
 		} catch (e: Exception) {
 			diagnostics += contribution.validationOrigin().diagnostic("Merged $label definition does not decode: ${e.message}")
 			continue
