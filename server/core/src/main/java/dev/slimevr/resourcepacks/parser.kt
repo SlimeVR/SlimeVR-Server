@@ -1,8 +1,8 @@
 package dev.slimevr.resourcepacks
 
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
 internal val ResourcePackJson = Json {
@@ -50,7 +50,7 @@ object ResourcePackParser {
 		}
 
 		val objects = mutableMapOf<ResourceType<*>, MutableList<Pair<String, JsonObject>>>()
-		val patches = mutableMapOf<ResourceType<*>, MutableList<Pair<String, JsonArray>>>()
+		
 
 		for (entry in entries) {
 			if (entry.path == "manifest.json") continue
@@ -58,13 +58,11 @@ object ResourcePackParser {
 			if (type != null) {
 				try {
 					val element = ResourcePackJson.parseToJsonElement(entry.contents)
-					if (element is JsonArray) {
-						patches.getOrPut(type) { mutableListOf() }.add(entry.path to element)
-					} else if (element is JsonObject) {
-					    val migrated = (type as JsonResourceType<*>).migrateJson(element, formatVersion)
+					if (element is JsonObject) {
+						val migrated = (type as JsonResourceType<*>).migrateJson(element, formatVersion)
 						objects.getOrPut(type) { mutableListOf() }.add(entry.path to migrated)
 					} else {
-					    diagnostics += ResourcePackDiagnostic(entry.path, message = "Expected JSON object or array")
+						diagnostics += ResourcePackDiagnostic(entry.path, message = "Expected JSON object")
 					}
 				} catch (e: Exception) {
 					diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
@@ -72,6 +70,6 @@ object ResourcePackParser {
 			}
 		}
 		if (diagnostics.isNotEmpty()) throw ResourcePackParseException(diagnostics.sortedWith(compareBy<ResourcePackDiagnostic> { it.path }.thenBy { it.pointer }))
-		return ParsedResourcePack(source.description, parsedManifest, objects, patches)
+		return ParsedResourcePack(source.description, parsedManifest, objects)
 	}
 }

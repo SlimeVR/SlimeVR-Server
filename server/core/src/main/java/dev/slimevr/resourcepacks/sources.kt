@@ -14,7 +14,6 @@ interface ResourcePackSource {
 	suspend fun entries(): List<ResourcePackEntry>
 }
 
-
 class StorageResourcePackSource(
 	private val storage: ConfigStorage,
 	private val root: String,

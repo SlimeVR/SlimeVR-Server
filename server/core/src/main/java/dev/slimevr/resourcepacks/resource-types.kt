@@ -34,7 +34,11 @@ abstract class JsonResourceType<T : Any>(
 	}
 
 	override fun validateAndDecode(path: String, document: JsonObject, diagnostics: MutableList<in ResourcePackDiagnostic>): SourcedResource<T>? {
-		val instance = try { JsonParser(document.toString()).parse() } catch (e: Exception) { return null }
+		val instance = try {
+			JsonParser(document.toString()).parse()
+		} catch (e: Exception) {
+			return null
+		}
 		val failure = Validator.forSchema(schema).validate(instance)
 		if (failure != null) {
 			diagnostics += ResourcePackDiagnostic(path, message = "$id schema: $failure")
@@ -50,7 +54,6 @@ abstract class JsonResourceType<T : Any>(
 
 	abstract fun decode(document: JsonObject): T
 }
-
 
 object ResourceTypes {
 	val MANIFEST: JsonResourceType<PackManifest> = object : JsonResourceType<PackManifest>("manifest", "manifest.schema.json") {
@@ -71,14 +74,15 @@ object ResourceTypes {
 	}
 
 	val ALL = listOf(MANIFEST, BONE, PROPORTION, LANGUAGE)
-
 }
 
 internal object PackSchemas {
 	const val ROOT = ClasspathResourcePackSource.CORE_ROOT + "/schemas/v1"
 	val documents = ResourceTypes.ALL.associate { type ->
-		type.schemaName to (PackSchemas::class.java.classLoader.getResourceAsStream("$ROOT/${type.schemaName}")?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
-			?: error("Bundled resource-pack schema is missing: $ROOT/${type.schemaName}"))
+		type.schemaName to (
+			PackSchemas::class.java.classLoader.getResourceAsStream("$ROOT/${type.schemaName}")?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
+				?: error("Bundled resource-pack schema is missing: $ROOT/${type.schemaName}")
+			)
 	}
 	val config = SchemaLoaderConfig.createDefaultConfig(documents.mapKeys { (name, _) -> URI("classpath:/$ROOT/").resolve(name) })
 

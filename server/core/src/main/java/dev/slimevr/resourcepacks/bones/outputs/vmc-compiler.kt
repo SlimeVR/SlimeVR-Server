@@ -1,13 +1,24 @@
-package dev.slimevr.resourcepacks
+package dev.slimevr.resourcepacks.bones.outputs
 
 import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.key
+import dev.slimevr.resourcepacks.VmcInputParent
+import dev.slimevr.resourcepacks.VmcOutput
 import dev.slimevr.resourcepacks.bones.CompiledVmcOutput
+import dev.slimevr.resourcepacks.bones.origin
+import dev.slimevr.resourcepacks.bones.resolveBoneKey
+import dev.slimevr.resourcepacks.compiler.BoneContribution
+import dev.slimevr.resourcepacks.compiler.BoneField
+import dev.slimevr.resourcepacks.compiler.ResourcePackCompilationDiagnostic
+import dev.slimevr.resourcepacks.compiler.diagnostic
+import dev.slimevr.resourcepacks.compiler.reportCycles
+import dev.slimevr.resourcepacks.compiler.reportDuplicateBoneKey
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.collections.iterator
 import kotlin.math.cos
 import kotlin.math.sin
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
@@ -46,22 +57,41 @@ internal fun compileVmcOutputs(
 	for ((boneId, pair) in contributions) {
 		val (contribution, vmc) = pair
 		val origin = contribution.origin(BoneField.OutputsVmc)
-		val outputParent = vmc.outputParent?.let { resolveBoneKey(it, origin, "outputs.vmc.outputParent", registry, diagnostics) } ?: namedAncestor(boneId)
+		val outputParent = vmc.outputParent?.let {
+			resolveBoneKey(
+				it,
+				origin,
+				"outputs.vmc.outputParent",
+				registry,
+				diagnostics,
+			)
+		} ?: namedAncestor(boneId)
 		val inputParent = when (val parent = vmc.inputParent) {
 			VmcInputParent.Omitted -> outputParent
+
 			VmcInputParent.ExplicitNull -> null
-			is VmcInputParent.Bone -> resolveBoneKey(parent.key, origin, "outputs.vmc.inputParent", registry, diagnostics)
+
+			is VmcInputParent.Bone -> resolveBoneKey(
+				parent.key,
+				origin,
+				"outputs.vmc.inputParent",
+				registry,
+				diagnostics,
+			)
 		}
 		result[boneId] = CompiledVmcOutput(
 			names = vmc.name.values,
 			outputParent = outputParent,
 			inputParent = inputParent,
-			restRotation = (vmc.restRotation
-				?: emptyList()).fold(Quaternion.IDENTITY) { acc, step ->
+			restRotation = (
+				vmc.restRotation
+					?: emptyList()
+				).fold(Quaternion.IDENTITY) { acc, step ->
 				axisAngleQuaternion(
 					Vector3(step.axis.x, step.axis.y, step.axis.z),
-					step.degrees * degToRad
-				) * acc
+					step.degrees * degToRad,
+				) *
+					acc
 			},
 		)
 	}
@@ -79,7 +109,17 @@ private fun validateVmcOutputs(
 	for ((boneId, output) in outputs) {
 		val contribution = contributions.getValue(boneId).first
 		val origin = contribution.origin(BoneField.OutputsVmc)
-		for (name in output.names) reportDuplicateBoneKey(names, name, boneId, "VMC name", registry, origin, diagnostics)
+		for (name in output.names) {
+			reportDuplicateBoneKey(
+				names,
+				name,
+				boneId,
+				"VMC name",
+				registry,
+				origin,
+				diagnostics,
+			)
+		}
 		for ((field, parent) in listOf("outputParent" to output.outputParent, "inputParent" to output.inputParent)) {
 			if (parent != null && parent !in outputs) {
 				val parentKey = registry.keyOf(parent) ?: parent.toString()
@@ -89,10 +129,20 @@ private fun validateVmcOutputs(
 	}
 
 	fun validateParentGraph(field: String, parentOf: (CompiledVmcOutput) -> BoneId?) {
-		reportCycles(outputs.keys, { outputs[it]?.let(parentOf) }) { _, lastVisited, cycle ->
-			val origin = contributions.getValue(lastVisited).first.origin(BoneField.OutputsVmc)
+		reportCycles(
+			outputs.keys,
+			{ outputs[it]?.let(parentOf) },
+		) { _, lastVisited, cycle ->
+			val origin =
+				contributions.getValue(lastVisited).first.origin(BoneField.OutputsVmc)
 			val keys = cycle.map { registry.keyOf(it) ?: it.toString() }
-			diagnostics += origin.diagnostic("VMC $field graph contains a cycle: ${keys.joinToString(" -> ")}")
+			diagnostics += origin.diagnostic(
+				"VMC $field graph contains a cycle: ${
+					keys.joinToString(
+						" -> ",
+					)
+				}",
+			)
 		}
 	}
 	validateParentGraph("outputParent", CompiledVmcOutput::outputParent)

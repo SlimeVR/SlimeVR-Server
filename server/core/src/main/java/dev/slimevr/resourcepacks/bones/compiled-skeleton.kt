@@ -69,7 +69,7 @@ data class CompiledEmitEntry(
 data class CompiledVrchatOutput(val required: Boolean, val emit: Map<String, CompiledEmitEntry>)
 
 /**
- * Everything [dev.slimevr.resourcepacks.compileResourcePacks] resolves for one bone: its offsets, constraint, routing
+ * Everything [dev.slimevr.resourcepacks.compiler.compileResourcePacks] resolves for one bone: its offsets, constraint, routing
  * facts, and output/input declarations. A plain bone with none of these has every field null.
  */
 data class CompiledBone(
@@ -89,7 +89,7 @@ data class CompiledBone(
 
 /**
  * The compiled bone registry, proportion catalog, and per-bone data produced by
- * [dev.slimevr.resourcepacks.compileResourcePacks].
+ * [dev.slimevr.resourcepacks.compiler.compileResourcePacks].
  */
 class CompiledSkeleton(
 	val registry: BoneRegistry,

@@ -1,5 +1,7 @@
-package dev.slimevr.resourcepacks
+package dev.slimevr.resourcepacks.compiler
 
+import dev.slimevr.resourcepacks.ParsedResourcePack
+import dev.slimevr.resourcepacks.SourcedResource
 import dev.slimevr.resourcepacks.bones.BoneDefinition
 import dev.slimevr.resourcepacks.proportions.ProportionDefinition
 

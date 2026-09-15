@@ -1,15 +1,15 @@
 package dev.slimevr.bones
 
-import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.resourcepacks.InMemoryResourcePackSource
 import dev.slimevr.resourcepacks.ParsedResourcePack
-import dev.slimevr.resourcepacks.bones.REFERENCE_HEIGHT
 import dev.slimevr.resourcepacks.ResourcePackCatalog
-import dev.slimevr.resourcepacks.ResourcePackCompilationDiagnostic
-import dev.slimevr.resourcepacks.ResourcePackCompilationException
 import dev.slimevr.resourcepacks.ResourcePackParser
 import dev.slimevr.resourcepacks.ResourceTypes
-import dev.slimevr.resourcepacks.compileResourcePacks
+import dev.slimevr.resourcepacks.bones.CompiledSkeleton
+import dev.slimevr.resourcepacks.bones.REFERENCE_HEIGHT
+import dev.slimevr.resourcepacks.compiler.ResourcePackCompilationDiagnostic
+import dev.slimevr.resourcepacks.compiler.ResourcePackCompilationException
+import dev.slimevr.resourcepacks.compiler.compileResourcePacks
 import dev.slimevr.testCoreResourcePack
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest

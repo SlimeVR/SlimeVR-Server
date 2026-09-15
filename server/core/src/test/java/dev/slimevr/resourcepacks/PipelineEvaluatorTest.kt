@@ -94,7 +94,7 @@ class PipelineEvaluatorTest {
 				listOf(
 					PipelineStep.Euler(EulerSpec(axis = Axis.X)),
 					PipelineStep.Divide(ScalarOrVector.Scalar(90f)),
-					PipelineStep.Clamp(listOf(-1f, 1f))
+					PipelineStep.Clamp(listOf(-1f, 1f)),
 				),
 			),
 			bone(rotation = Quaternion.rotationAroundXAxis(100f * PI.toFloat() / 180f)),

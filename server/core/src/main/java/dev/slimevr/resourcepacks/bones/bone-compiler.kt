@@ -1,4 +1,4 @@
-package dev.slimevr.resourcepacks
+package dev.slimevr.resourcepacks.bones
 
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistry
@@ -6,8 +6,16 @@ import dev.slimevr.bones.Constraint
 import dev.slimevr.bones.HingeConstraint
 import dev.slimevr.bones.LooseHingeConstraint
 import dev.slimevr.bones.TwistSwingConstraint
-import dev.slimevr.resourcepacks.bones.CompiledOffset
-import dev.slimevr.resourcepacks.bones.CompiledOffsetTerm
+import dev.slimevr.resourcepacks.Offset
+import dev.slimevr.resourcepacks.ParsedResourcePack
+import dev.slimevr.resourcepacks.ResourceTypes
+import dev.slimevr.resourcepacks.compiler.BoneContribution
+import dev.slimevr.resourcepacks.compiler.BoneField
+import dev.slimevr.resourcepacks.compiler.ProportionContribution
+import dev.slimevr.resourcepacks.compiler.ResourceOrigin
+import dev.slimevr.resourcepacks.compiler.ResourcePackCompilationDiagnostic
+import dev.slimevr.resourcepacks.compiler.diagnostic
+import dev.slimevr.resourcepacks.compiler.reportCycles
 import io.github.axisangles.ktmath.Vector3
 import com.jme3.math.FastMath.DEG_TO_RAD as degToRad
 import dev.slimevr.resourcepacks.Constraint as PackConstraint
@@ -85,7 +93,7 @@ internal fun compileOffset(
 		}
 		CompiledOffsetTerm(
 			term.proportion,
-			Vector3(term.direction.x, term.direction.y, term.direction.z)
+			Vector3(term.direction.x, term.direction.y, term.direction.z),
 		)
 	}
 	return CompiledOffset(base, terms)
@@ -119,7 +127,7 @@ internal fun <T> orderFallbackDependencies(
 	return result
 }
 
-private const val DEFAULT_LANGUAGE_PATH = "assets/lang/en.json"
+private const val DEFAULT_LANGUAGE_PATH = "assets/slimevr/lang/en.json"
 
 /**
  * The bone's compiled-in display name: its English translation if the pack ships one, else its
@@ -140,15 +148,25 @@ internal fun validateHierarchy(
 	if (roots.isEmpty()) {
 		val overrideOrigin = bonesByKey.values.mapNotNull { it.originOrNull(BoneField.Parent) }.lastOrNull()
 		diagnostics += overrideOrigin?.diagnostic("A resource-pack registry must have exactly one root; found none")
-			?: ResourcePackCompilationDiagnostic(core.manifest.value.id, core.manifest.path, "A resource-pack registry must have exactly one root; found none")
+			?: ResourcePackCompilationDiagnostic(
+				core.manifest.value.id,
+				core.manifest.path,
+				"A resource-pack registry must have exactly one root; found none",
+			)
 	} else if (roots.size > 1) {
 		for (contribution in roots) {
 			diagnostics += contribution.origin(BoneField.Parent).diagnostic("A resource-pack registry must have exactly one root; found ${roots.size}")
 		}
 	}
 
-	reportCycles(bonesByKey.keys, { bonesByKey.getValue(it).resource.value.parent }) { start, _, cycle ->
-		val overrideOrigin = cycle.mapNotNull { bonesByKey.getValue(it).originOrNull(BoneField.Parent) }.lastOrNull()
-		diagnostics += bonesByKey.getValue(start).origin(overrideOrigin).diagnostic("Bone hierarchy contains a cycle: ${cycle.joinToString(" -> ")}")
+	reportCycles(
+		bonesByKey.keys,
+		{ bonesByKey.getValue(it).resource.value.parent },
+	) { start, _, cycle ->
+		val overrideOrigin =
+			cycle.mapNotNull { bonesByKey.getValue(it).originOrNull(BoneField.Parent) }
+				.lastOrNull()
+		diagnostics += bonesByKey.getValue(start).origin(overrideOrigin)
+			.diagnostic("Bone hierarchy contains a cycle: ${cycle.joinToString(" -> ")}")
 	}
 }

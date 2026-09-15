@@ -1,9 +1,22 @@
-package dev.slimevr.resourcepacks
+package dev.slimevr.resourcepacks.bones.outputs
 
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneMap
 import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.resourcepacks.EmitEntry
+import dev.slimevr.resourcepacks.EmitSource
+import dev.slimevr.resourcepacks.PipelineStep
+import dev.slimevr.resourcepacks.ScalarOrVector
 import dev.slimevr.resourcepacks.bones.CompiledEmitEntry
+import dev.slimevr.resourcepacks.bones.origin
+import dev.slimevr.resourcepacks.bones.resolveBoneKey
+import dev.slimevr.resourcepacks.compiler.BoneContribution
+import dev.slimevr.resourcepacks.compiler.BoneField
+import dev.slimevr.resourcepacks.compiler.ResourceOrigin
+import dev.slimevr.resourcepacks.compiler.ResourcePackCompilationDiagnostic
+import dev.slimevr.resourcepacks.compiler.diagnostic
+import dev.slimevr.resourcepacks.compiler.reportDuplicateBoneKey
+import kotlin.collections.iterator
 
 internal fun compileEmitEntries(
 	registry: BoneRegistry,
@@ -16,7 +29,15 @@ internal fun compileEmitEntries(
 		val (contribution, entries) = pair
 		result[boneId] = entries.mapValues { (address, entry) ->
 			val origin = contribution.origin(BoneField.OutputsVrchatEmit(address))
-			reportDuplicateBoneKey(addresses, address, boneId, "VRChat emit address", registry, origin, diagnostics)
+			reportDuplicateBoneKey(
+				addresses,
+				address,
+				boneId,
+				"VRChat emit address",
+				registry,
+				origin,
+				diagnostics,
+			)
 			validateEmitPipeline(address, entry, origin, diagnostics)
 			CompiledEmitEntry(
 				from = entry.from,
@@ -26,7 +47,7 @@ internal fun compileEmitEntries(
 						origin,
 						"outputs.vrchat.emit.relativeTo",
 						registry,
-						diagnostics
+						diagnostics,
 					)
 				},
 				steps = entry.value ?: emptyList(),

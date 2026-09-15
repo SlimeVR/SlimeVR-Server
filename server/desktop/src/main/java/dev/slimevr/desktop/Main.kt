@@ -39,7 +39,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.resourcepacks.ResourcePackManager
-import dev.slimevr.resourcepacks.compileResourcePacks
+import dev.slimevr.resourcepacks.compiler.compileResourcePacks
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos

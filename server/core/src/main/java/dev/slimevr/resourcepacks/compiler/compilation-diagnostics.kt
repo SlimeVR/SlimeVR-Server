@@ -1,7 +1,8 @@
-package dev.slimevr.resourcepacks
+package dev.slimevr.resourcepacks.compiler
 
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistry
+import dev.slimevr.resourcepacks.ParsedResourcePack
 
 data class ResourcePackCompilationDiagnostic(val packId: String, val path: String, val message: String)
 
