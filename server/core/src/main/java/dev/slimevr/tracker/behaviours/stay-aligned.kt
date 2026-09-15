@@ -2,7 +2,6 @@ package dev.slimevr.tracker.behaviours
 
 import dev.slimevr.config.Settings
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
@@ -25,7 +24,6 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 
 class TrackerStayAlignedBehaviour(
 	private val settings: Settings,
-	private val registry: BoneRegistry,
 ) : TrackerBehaviour {
 
 	override fun observe(receiver: Tracker) {
@@ -93,7 +91,6 @@ class TrackerStayAlignedBehaviour(
 							serverFlow.value.trackers.values.map { it.context.state.value },
 							applyYawCorrection,
 							stayAlignedConfig,
-							registry,
 						)
 						if (yawCorrectionResult != null) {
 							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionResult))

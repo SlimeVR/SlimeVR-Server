@@ -2,10 +2,8 @@ package dev.slimevr.skeleton
 
 import solarxr_protocol.datatypes.BodyPart
 
-typealias BodyPartChain = List<BodyPart>
-
 // TODO Should this be generated from the BodyPart structure using start and end points?
-val BODY_PART_IK_CHAIN_MAP: BodyPartMap<BodyPartChain> = BodyPartMap(
+val BODY_PART_IK_CHAIN_MAP: BodyPartMap<IKChain> = BodyPartMap(
 	mapOf(
 		BodyPart.HEAD to listOf(
 			BodyPart.NECK,
@@ -50,8 +48,3 @@ val BODY_PART_IK_CHAIN_MAP: BodyPartMap<BodyPartChain> = BodyPartMap(
 		),
 	),
 )
-
-/** Resolves [BODY_PART_IK_CHAIN_MAP] to [BoneId] once, for a bone that has a chain. */
-fun resolveIkChains(): Map<BoneId, IKChain> = BODY_PART_IK_CHAIN_MAP.entries.associate { (bodyPart, chain) ->
-	bodyPart.boneId to chain.map { it.boneId }
-}

@@ -112,34 +112,24 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 // Resolved bone geometry for a set of proportions. tail is the head->tail vector in the bone's own
 // frame; head is the parent-tail->head vector in the parent's frame (Vector3.ZERO for most bones).
 data class BoneOffsets(
-	val tail: BoneMap<Vector3>,
-	val head: BoneMap<Vector3>,
+	val tail: BodyPartMap<Vector3>,
+	val head: BodyPartMap<Vector3>,
 )
 
-fun toBoneOffsets(lengths: Map<SkeletonBone, Float>, registry: BoneRegistry): BoneOffsets {
-	val tail = BoneMap.of<Vector3>(registry)
-	val head = BoneMap.of<Vector3>(registry)
+fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
+	val tail = bodyPartMap<Vector3>()
+	val head = bodyPartMap<Vector3>()
 	for ((cfg, length) in lengths) {
-		BONE_VALUE_TO_OFFSETS[cfg]?.let {
-			for ((bodyPart, vec) in it) {
-				val id = bodyPart.boneId
-				tail[id] = (tail[id] ?: Vector3.ZERO) + length * vec
-			}
-		}
-		BONE_VALUE_TO_HEAD_OFFSETS[cfg]?.let {
-			for ((bodyPart, vec) in it) {
-				val id = bodyPart.boneId
-				head[id] = (head[id] ?: Vector3.ZERO) + length * vec
-			}
-		}
+		BONE_VALUE_TO_OFFSETS[cfg]?.let { for ((bone, vec) in it) tail[bone] = (tail[bone] ?: Vector3.ZERO) + length * vec }
+		BONE_VALUE_TO_HEAD_OFFSETS[cfg]?.let { for ((bone, vec) in it) head[bone] = (head[bone] ?: Vector3.ZERO) + length * vec }
 	}
-	lengths[SkeletonBone.HAND_Y]?.let { handY ->
-		for ((bodyPart, vec) in getFingerOffsets(handY)) tail[bodyPart.boneId] = vec
-		for ((bodyPart, vec) in getFingerHeadOffsets(handY)) head[bodyPart.boneId] = vec
+	lengths[SkeletonBone.HAND_Y]?.let {
+		tail.putAll(getFingerOffsets(it))
+		head.putAll(getFingerHeadOffsets(it))
 	}
-	lengths[SkeletonBone.FOOT_LENGTH]?.let { footLength ->
-		for ((bodyPart, vec) in getToeOffsets(footLength)) tail[bodyPart.boneId] = vec
-		for ((bodyPart, vec) in getToeHeadOffsets(footLength)) head[bodyPart.boneId] = vec
+	lengths[SkeletonBone.FOOT_LENGTH]?.let {
+		tail.putAll(getToeOffsets(it))
+		head.putAll(getToeHeadOffsets(it))
 	}
 	return BoneOffsets(tail, head)
 }

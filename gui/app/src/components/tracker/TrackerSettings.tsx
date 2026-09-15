@@ -34,12 +34,8 @@ import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
-import { useAtomValue, useSetAtom } from 'jotai';
-import {
-  bodyPartOfBone,
-  boneRegistryAtom,
-  ignoredTrackersAtom,
-} from '@/store/app-store';
+import { useSetAtom } from 'jotai';
+import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { Tooltip } from '@/components/commons/Tooltip';
 
@@ -58,7 +54,6 @@ export function TrackerSettingsPage() {
   const { l10n } = useLocalization();
 
   const { sendRPCPacket } = useWebsocketAPI();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
   const [selectRotation, setSelectRotation] = useState<boolean>(false);
   const [selectBodyPart, setSelectBodyPart] = useState<boolean>(false);
   const { trackernum, deviceid } = useParams<{
@@ -77,7 +72,6 @@ export function TrackerSettingsPage() {
   const { trackerName } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
-  const bodyPart = bodyPartOfBone(boneRegistry, tracker?.tracker.info?.boneId);
   const assignTracker = useAssignTracker();
 
   const { currRotation, setDirection } = useMountingOrientation(tracker);
@@ -99,7 +93,7 @@ export function TrackerSettingsPage() {
     if (trackerName == tracker.tracker.info?.customName) return;
 
     const assignReq = new AssignTrackerRequestT();
-    assignReq.boneId = tracker?.tracker.info?.boneId ?? 0;
+    assignReq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignReq.displayName = trackerName ?? null;
     assignReq.trackerId = tracker?.tracker.trackerId;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
@@ -166,10 +160,10 @@ export function TrackerSettingsPage() {
         isOpen={selectBodyPart}
         onClose={() => setSelectBodyPart(false)}
         onRoleSelected={onRoleSelected}
-        bodyPart={bodyPart}
+        bodyPart={tracker?.tracker.info?.bodyPart}
       />
       <MountingSelectionMenu
-        bodyPart={bodyPart}
+        bodyPart={tracker?.tracker.info?.bodyPart}
         currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
@@ -414,18 +408,22 @@ export function TrackerSettingsPage() {
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center fill-background-10">
-                {bodyPart !== BodyPart.NONE && (
-                  <BodyPartIcon bodyPart={bodyPart} />
+                {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
+                  <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
                 )}
-                {bodyPart === BodyPart.NONE && (
+                {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
                   <WarningIcon className="fill-status-warning" />
                 )}
                 <Typography
                   color={classNames({
-                    'text-status-warning': bodyPart === BodyPart.NONE,
+                    'text-status-warning':
+                      tracker?.tracker.info?.bodyPart === BodyPart.NONE,
                   })}
                 >
-                  {l10n.getString('body_part-' + BodyPart[bodyPart])}
+                  {l10n.getString(
+                    'body_part-' +
+                      BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
+                  )}
                 </Typography>
               </div>
               <div className="flex">

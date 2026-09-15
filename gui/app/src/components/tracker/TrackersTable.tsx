@@ -20,13 +20,7 @@ import { formatVector3 } from '@/utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import {
-  bodyPartOfBone,
-  boneRegistryAtom,
-  FlatDeviceTracker,
-  TrackerConnectionGroup,
-} from '@/store/app-store';
-import { useAtomValue } from 'jotai';
+import { FlatDeviceTracker, TrackerConnectionGroup } from '@/store/app-store';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -41,7 +35,6 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
 import {
-  BodyPart,
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
@@ -78,16 +71,11 @@ type SortState = { column: SortColumn; direction: SortDirection } | null;
 const trackerSortValue = (
   { tracker, device }: FlatDeviceTracker,
   column: SortColumn,
-  l10n: ReactLocalization,
-  boneRegistry: Map<number, BodyPart>
+  l10n: ReactLocalization
 ): string | number => {
   switch (column) {
     case 'name':
-      return getLocalizedTrackerName(
-        l10n,
-        tracker?.info ?? null,
-        boneRegistry
-      ).toString();
+      return getLocalizedTrackerName(l10n, tracker?.info ?? null).toString();
     case 'type':
       return device?.hardwareInfo?.manufacturer?.toString() || '';
     case 'battery':
@@ -105,12 +93,11 @@ function compareTrackers(
   a: FlatDeviceTracker,
   b: FlatDeviceTracker,
   sortState: SortState,
-  l10n: ReactLocalization,
-  boneRegistry: Map<number, BodyPart>
+  l10n: ReactLocalization
 ) {
   if (!sortState) return 0;
-  const av = trackerSortValue(a, sortState.column, l10n, boneRegistry);
-  const bv = trackerSortValue(b, sortState.column, l10n, boneRegistry);
+  const av = trackerSortValue(a, sortState.column, l10n);
+  const bv = trackerSortValue(b, sortState.column, l10n);
   const result =
     typeof av === 'string' && typeof bv === 'string'
       ? av.localeCompare(bv)
@@ -128,7 +115,6 @@ export function TrackerNameCell({
   warning: TrackingChecklistStepT | boolean;
 }) {
   const { useName } = useTracker(tracker);
-  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const name = useName();
 
@@ -150,7 +136,7 @@ export function TrackerNameCell({
           )}
         >
           <BodyPartIcon
-            bodyPart={bodyPartOfBone(boneRegistry, tracker.info?.boneId)}
+            bodyPart={tracker.info?.bodyPart}
             device={device}
             trackerId={tracker.trackerId}
           />
@@ -426,7 +412,6 @@ export function TrackersTable({
   const { config } = useConfig();
   const { highlightedTrackers } = useTrackingChecklist();
   const { l10n } = useLocalization();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const [sortState, setSortState] = useState<SortState>(null);
 
@@ -441,13 +426,13 @@ export function TrackersTable({
   const sortedGroups = useMemo(() => {
     if (!sortState) return groups;
     const cmp = (a: FlatDeviceTracker, b: FlatDeviceTracker) =>
-      compareTrackers(a, b, sortState, l10n, boneRegistry);
+      compareTrackers(a, b, sortState, l10n);
     return groups.map((group) => ({
       ...group,
       assigned: group.assigned.toSorted(cmp),
       unassigned: group.unassigned.toSorted(cmp),
     }));
-  }, [groups, sortState, l10n, boneRegistry]);
+  }, [groups, sortState, l10n]);
 
   const columns = config?.trackersTableColumns ?? defaultTrackersTableColumns;
   const lastColumn = useMemo(() => lastVisibleColumn(columns), [columns]);

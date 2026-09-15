@@ -2,12 +2,7 @@ import classNames from 'classnames';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
-import {
-  boneRegistryAtom,
-  FlatDeviceTracker,
-  groupTrackerByBodyPart,
-} from '@/store/app-store';
-import { useAtomValue } from 'jotai';
+import { FlatDeviceTracker, groupTrackerByBodyPart } from '@/store/app-store';
 
 interface SlotDot {
   id: string;
@@ -126,10 +121,9 @@ export function BodyDisplay({
     };
   }, []);
 
-  const boneRegistry = useAtomValue(boneRegistryAtom);
   const trackerByPart = useMemo(
-    () => groupTrackerByBodyPart(trackers, boneRegistry),
-    [trackers, boneRegistry]
+    () => groupTrackerByBodyPart(trackers),
+    [trackers]
   );
 
   return (

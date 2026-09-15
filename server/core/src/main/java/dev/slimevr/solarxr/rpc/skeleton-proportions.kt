@@ -3,17 +3,15 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.skeleton.ALL_BODY_PARTS
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.skeleton.height
 import dev.slimevr.skeleton.toBoneValues
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
-import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
@@ -37,14 +35,8 @@ class SkeletonProportionsBehaviour(
 	private val skeleton: Skeleton,
 ) : SolarXRBridgeBehaviour {
 	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
-		val registry = boneInputs.registry
-		val tailOffsets = bodyPartMap<Vector3>()
-		val headOffsets = bodyPartMap<Vector3>()
-		for ((boneId, input) in boneInputs) {
-			val bodyPart = registry.bodyPartOf(boneId) ?: continue
-			tailOffsets[bodyPart] = input.offset
-			headOffsets[bodyPart] = input.headOffset
-		}
+		val tailOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
+		val headOffsets = BodyPartMap(boneInputs.mapValues { it.value.headOffset })
 		val boneValues = toBoneValues(tailOffsets, headOffsets)
 		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
 		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
@@ -55,8 +47,7 @@ class SkeletonProportionsBehaviour(
 			.map { it.boneInputs }
 			.distinctUntilChanged { old, new ->
 				ALL_BODY_PARTS.all { part ->
-					val id = part.boneId
-					old[id]?.offset == new[id]?.offset && old[id]?.headOffset == new[id]?.headOffset
+					old[part]?.offset == new[part]?.offset && old[part]?.headOffset == new[part]?.headOffset
 				}
 			}
 			.drop(1)

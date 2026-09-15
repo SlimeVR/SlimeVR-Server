@@ -1,10 +1,12 @@
 package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
+import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -21,7 +23,7 @@ private const val SMOOTH_MAX = 0.95f
 class SmoothingInputProcessor(val settings: Settings) :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
-	private var smoothed: MutableMap<BoneId, Quaternion> = mutableMapOf()
+	private var smoothed: BodyPartMap<Quaternion> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
@@ -42,14 +44,14 @@ class SmoothingInputProcessor(val settings: Settings) :
 		val smoothingAmount = SMOOTH_MIN + filteringAmount * (SMOOTH_MAX - SMOOTH_MIN)
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
-		val newSmoothed = mutableMapOf<BoneId, Quaternion>()
-		for ((boneId, bone) in mutableInputSkeleton) {
-			if (!bone.isRotationActive) continue
+		val newSmoothed = bodyPartMap<Quaternion>()
+		mutableInputSkeleton.forEachBone { bodyPart, bone ->
+			if (!bone.isRotationActive) return@forEachBone
 
-			val prev = smoothed[boneId] ?: bone.rotation
+			val prev = smoothed[bodyPart] ?: bone.rotation
 			val rotation = prev.lerpQ(bone.rotation, alpha).unit()
-			newSmoothed[boneId] = rotation
-			if (rotation != bone.rotation) mutableInputSkeleton[boneId] = bone.copy(rotation = rotation)
+			newSmoothed[bodyPart] = rotation
+			if (rotation != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
 		}
 		smoothed = newSmoothed
 	}

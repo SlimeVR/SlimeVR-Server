@@ -15,7 +15,6 @@ import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Vector3
@@ -87,8 +86,8 @@ class TrackingChecklistTest {
 				appContext,
 				settings,
 				id = id,
-				boneId = bodyPart?.boneId,
-				intendedBoneId = intendedBodyPart?.boneId,
+				bodyPart = bodyPart,
+				intendedBodyPart = intendedBodyPart,
 				status = status,
 				origin = origin,
 				imuType = imuType,
@@ -125,7 +124,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
 		// Reassigning the tracker flags it again
-		tracker.context.dispatch(TrackerActions.Update { copy(boneId = BodyPart.HIP.boneId) })
+		tracker.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HIP) })
 		runCurrent()
 		assertEquals(false, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 	}
@@ -179,7 +178,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, boneIds = null))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = null))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 	}
@@ -193,7 +192,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, boneIds = ResetBodyParts.FEET.map { it.boneId }))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 	}
@@ -217,7 +216,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).valid)
 
-		hmd.context.dispatch(TrackerActions.Update { copy(boneId = BodyPart.HEAD.boneId) })
+		hmd.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HEAD) })
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).valid)
 	}
@@ -286,7 +285,7 @@ class TrackingChecklistTest {
 	fun `STEAMVR_HANDS_ENABLED is disabled without a driver`() = runTest {
 		val step = SteamVRHandsCheckBehaviour.computeStep(
 			trackers = emptyList(),
-			routes = mapOf(BodyPart.LEFT_HAND.boneId to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND.boneId to setOf(RoutingOutput.DRIVER)),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
 			driverConnected = false,
 		)
 
@@ -296,8 +295,8 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver while a controller is held`() = runTest {
 		val step = SteamVRHandsCheckBehaviour.computeStep(
-			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(boneId = BodyPart.LEFT_HAND.boneId, origin = DeviceOrigin.UDP)), checklistTracker(Tracker.DEFAULT_STATE.copy(boneId = BodyPart.LEFT_HAND.boneId, origin = DeviceOrigin.DRIVER))),
-			routes = mapOf(BodyPart.LEFT_HAND.boneId to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND.boneId to setOf(RoutingOutput.DRIVER)),
+			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)), checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER))),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
 			driverConnected = true,
 		)
 
@@ -309,7 +308,7 @@ class TrackingChecklistTest {
 	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver with no hand tracker worn`() = runTest {
 		val step = SteamVRHandsCheckBehaviour.computeStep(
 			trackers = emptyList(),
-			routes = mapOf(BodyPart.LEFT_HAND.boneId to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND.boneId to setOf(RoutingOutput.DRIVER)),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
 			driverConnected = true,
 		)
 
@@ -321,8 +320,8 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED accepts hand trackers when no controller is held`() = runTest {
 		val step = SteamVRHandsCheckBehaviour.computeStep(
-			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(boneId = BodyPart.LEFT_HAND.boneId, origin = DeviceOrigin.UDP))),
-			routes = mapOf(BodyPart.LEFT_HAND.boneId to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND.boneId to setOf(RoutingOutput.DRIVER)),
+			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP))),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
 			driverConnected = true,
 		)
 
@@ -332,7 +331,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED ignores hands that are not routed to the driver`() = runTest {
 		val step = SteamVRHandsCheckBehaviour.computeStep(
-			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(boneId = BodyPart.LEFT_HAND.boneId, origin = DeviceOrigin.UDP)), checklistTracker(Tracker.DEFAULT_STATE.copy(boneId = BodyPart.LEFT_HAND.boneId, origin = DeviceOrigin.DRIVER))),
+			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)), checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER))),
 			routes = emptyMap(),
 			driverConnected = true,
 		)

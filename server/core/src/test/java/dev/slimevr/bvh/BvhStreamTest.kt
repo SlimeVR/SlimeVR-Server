@@ -1,10 +1,8 @@
 package dev.slimevr.bvh
 
 import dev.slimevr.config.TextFileHandle
-import dev.slimevr.skeleton.BoneRegistry
-import dev.slimevr.skeleton.boneId
+import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.skeleton.defaultSkeletonState
 import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
@@ -14,23 +12,19 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class BvhStreamTest {
-	private val registry = BoneRegistry.standard()
-	private val headId = BodyPart.HEAD.boneId
-	private val defaultState = defaultSkeletonState(registry)
-
 	@Test
 	fun `close persists header and frame data`() = runTest {
 		val file = InMemoryBvhFile()
 		val stream = BvhStream(file)
-		val initialBones = buildBones(defaultState.boneInputs)
+		val initialBones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
 		val firstFrame = buildBones(
-			defaultState.boneInputs.mutateCopy {
-				it[headId] = it.getValue(headId).copy(position = Vector3(1f, 2f, 3f))
+			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
+				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(1f, 2f, 3f))
 			},
 		)
 		val secondFrame = buildBones(
-			defaultState.boneInputs.mutateCopy {
-				it[headId] = it.getValue(headId).copy(position = Vector3(4f, 5f, 6f))
+			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
+				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(4f, 5f, 6f))
 			},
 		)
 
@@ -51,7 +45,7 @@ class BvhStreamTest {
 	fun `writeFrame after close is ignored`() = runTest {
 		val file = InMemoryBvhFile()
 		val stream = BvhStream(file)
-		val bones = buildBones(defaultState.boneInputs)
+		val bones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
 
 		stream.writeHeader(bones)
 		stream.close()
@@ -59,8 +53,8 @@ class BvhStreamTest {
 
 		stream.writeFrame(
 			buildBones(
-				defaultState.boneInputs.mutateCopy {
-					it[headId] = it.getValue(headId).copy(position = Vector3(7f, 8f, 9f))
+				DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
+					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(7f, 8f, 9f))
 				},
 			),
 		)

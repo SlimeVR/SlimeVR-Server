@@ -7,7 +7,6 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -59,7 +58,7 @@ class HeightCalibrationManager(
 			val hmd = state.trackers.values
 				.find {
 					val state = it.context.state.value
-					state.boneId == BodyPart.HEAD.boneId && state.status == TrackerStatus.OK && state.position != null
+					state.bodyPart == BodyPart.HEAD && state.status == TrackerStatus.OK && state.position != null
 				}
 				?: return@flatMapLatest emptyFlow()
 			hmd.context.state.map { s ->
@@ -74,7 +73,8 @@ class HeightCalibrationManager(
 		.flatMapLatest { state ->
 			val controllers = state.trackers.values.filter {
 				val state = it.context.state.value
-				(state.boneId == BodyPart.LEFT_HAND.boneId || state.boneId == BodyPart.RIGHT_HAND.boneId) && state.status == TrackerStatus.OK && state.position != null
+				val bodyPart = state.bodyPart
+				(bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND) && state.status == TrackerStatus.OK && state.position != null
 			}
 			if (controllers.isEmpty()) return@flatMapLatest emptyFlow()
 			combine(

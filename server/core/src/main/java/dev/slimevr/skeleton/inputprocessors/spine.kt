@@ -2,10 +2,9 @@ package dev.slimevr.skeleton.inputprocessors
 
 import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.enums.enumEntries
@@ -129,6 +128,13 @@ private fun interpolateRatio(fromUpperToLower: Float, curvature: Float, fromReli
 }
 
 // TODO consider interpolating all axes with different ratios
+private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<BodyPart> = arrayOf()): Quaternion {
+	val bonesToAverage = inputSkeleton.values.filter { it.bodyPart in takeBodyParts }
+	return bonesToAverage.map { it.rotation }
+		.reduceIndexedOrNull { index, acc, rotation ->
+			acc.lerpQ(rotation, 1f / (index + 1))
+		} ?: Quaternion.IDENTITY
+}
 
 /**
  * Interpolates between 2 quaternions but with the absolute of the ratio for the twist part.
@@ -154,25 +160,10 @@ private fun interpolateAbsTwist(fromRotation: Quaternion, toRotation: Quaternion
  * of nearby bones.
  */
 class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	private val spineIds: Map<SpineSource, List<BoneId>> = SPINE_SOURCES.associateWith { source ->
-		source.parts.map { it.boneId }
-	}
-
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
-
-		fun boneIdsFor(source: SpineSource) = spineIds.getValue(source)
-		fun averageRotation(boneIds: List<BoneId>): Quaternion {
-			val bonesToAverage = boneIds.mapNotNull { mutableInputSkeleton[it] }
-			return bonesToAverage.map { it.rotation }
-				.reduceIndexedOrNull { index, acc, rotation ->
-					acc.lerpQ(rotation, 1f / (index + 1))
-				} ?: Quaternion.IDENTITY
-		}
-
-		val sourceActive = SPINE_SOURCES.associateWith { source ->
-			boneIdsFor(source).let { it.isNotEmpty() && it.all { id -> mutableInputSkeleton[id]?.isRotationActive == true } }
-		}
+		val boneInputs = BodyPartMap(mutableInputSkeleton)
+		val sourceActive = SPINE_SOURCES.associateWith { it.parts.all { part -> boneInputs[part]?.isRotationActive == true } }
 		val fromTo = SPINE_SOURCE_RELIABILITY.withIndex().associate { (selfIndex, source) ->
 			source.first to getFromTo(selfIndex, sourceActive)
 		}
@@ -180,9 +171,9 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 		for ((spineIndex, spineSourceReliability) in SPINE_SOURCE_RELIABILITY.withIndex()) {
 			val spineSource = spineSourceReliability.first
 
-			// For optimization's sake, assume only one bone per SpineSource we traverse.
-			val boneId = boneIdsFor(spineSource).firstOrNull() ?: continue
-			val bone = mutableInputSkeleton[boneId] ?: continue
+			// For optimization's sake, assume only one BodyPart per SpineSource we traverse.
+			val bodyPart = spineSource.parts.first()
+			val bone = boneInputs[bodyPart] ?: continue
 			val isActive = bone.isRotationActive
 
 			// Get reliabilities mapped to this spine bone
@@ -201,24 +192,24 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			}
 
 			// We are interpolating as-if we were the To, but using self instead of to
-			val sourceActiveForRatio = isActive || fromIndex == null
+			val sourceActive = isActive || fromIndex == null
 			// Get the interpolation ratio
 			val interpolateRatio = interpolateRatio(
 				ratios.imputeSpineFromUpperToLower,
 				ratios.imputeSpineCurvature,
 				reliabilities[fromSpineSource] ?: continue,
 				reliabilities[toSpineSource] ?: continue,
-				sourceActiveForRatio,
+				sourceActive,
 			)
 
 			// If from is null, use to as from and use to's to as to
-			val fromParts = if (fromIndex != null) boneIdsFor(fromSpineSource) else boneIdsFor(SPINE_SOURCES[toIndex])
-			val toParts = boneIdsFor(toSpineSource)
+			val fromParts = if (fromIndex != null) fromSpineSource.parts else SPINE_SOURCES[toIndex].parts
+			val toParts = toSpineSource.parts
 			// Interpolate between from and to using our interpolation ratio.
-			mutableInputSkeleton[boneId] = bone.copy(
+			mutableInputSkeleton[bodyPart] = bone.copy(
 				rotation = interpolateAbsTwist(
-					averageRotation(fromParts),
-					averageRotation(toParts),
+					averageRotation(boneInputs, fromParts),
+					averageRotation(boneInputs, toParts),
 					interpolateRatio,
 				),
 			)

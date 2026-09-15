@@ -1,6 +1,5 @@
 package dev.slimevr.routing
 
-import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
@@ -32,15 +31,12 @@ private val COMMON_CANDIDATES = setOf(
 	BodyPart.RIGHT_LOWER_LEG,
 )
 
+private fun routedTo(
+	routes: Map<BodyPart, Set<RoutingOutput>>,
+	output: RoutingOutput,
+): Set<BodyPart> = routes.filterValues { output in it }.keys
+
 class AutomaticRoutesTest {
-	private val registry = BoneRegistry.standard()
-
-	private fun routedTo(routes: Routes, output: RoutingOutput): Set<BodyPart> = routes.filterValues { output in it }.keys.mapNotNullTo(mutableSetOf(), registry::bodyPartOf)
-
-	private fun computeAutomaticRoutes(candidateBones: Set<BodyPart>, outputStates: OutputStates): Routes = computeAutomaticRoutes(candidateBones, outputStates, registry)
-
-	private fun effectiveRoutes(routes: Routes, outputStates: OutputStates): Routes = effectiveRoutes(routes, outputStates, registry)
-
 	@Test
 	fun `the driver alone takes every bone it supports`() {
 		val routes = computeAutomaticRoutes(COMMON_CANDIDATES, active(RoutingOutput.DRIVER))

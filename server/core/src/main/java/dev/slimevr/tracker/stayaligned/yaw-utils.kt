@@ -2,7 +2,6 @@ package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleAverage
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getAllActiveFor
 import dev.slimevr.tracker.getFirstActiveFor
@@ -73,13 +72,13 @@ object YawUtils {
 	fun centreYawOfTrackers(
 		trackerStates: List<TrackerState>,
 	): Angle? {
-		val head = trackerStates.getFirstActiveFor(StayAlignedBodyParts.head.boneId) // Optional
-		val upperBody = trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup.map { it.boneId })
+		val head = trackerStates.getFirstActiveFor(StayAlignedBodyParts.head) // Optional
+		val upperBody = trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup)
 		if (upperBody.isEmpty()) return null
-		val leftUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg.boneId) ?: return null
-		val rightUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg.boneId) ?: return null
-		val leftLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftLowerLeg.boneId) ?: return null
-		val rightLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightLowerLeg.boneId) ?: return null
+		val leftUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg) ?: return null
+		val rightUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg) ?: return null
+		val leftLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftLowerLeg) ?: return null
+		val rightLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightLowerLeg) ?: return null
 
 		// Need a minimum set of trackers, and the trackers need to be oriented in a
 		// way where we can actually calculate its yaw.

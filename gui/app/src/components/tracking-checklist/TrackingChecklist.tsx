@@ -41,8 +41,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { openUrl } from '@/hooks/crossplatform';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useAtomValue } from 'jotai';
-import { bodyPartOfBone, boneRegistryAtom } from '@/store/app-store';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -181,7 +179,6 @@ function SteamVRDisconnected({
 
 function SteamVRHandsEnabled() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
   const [routing, setRouting] = useState<BoneRoutingSettingsResponseT | null>(
     null
   );
@@ -206,10 +203,10 @@ function SteamVRHandsEnabled() {
     req.routes = (routing.routes ?? [])
       .map((route) => {
         const next = new BoneRouteT();
-        next.boneId = route.boneId;
-        const bodyPart = bodyPartOfBone(boneRegistry, route.boneId);
+        next.bone = route.bone;
         next.outputs =
-          bodyPart === BodyPart.LEFT_HAND || bodyPart === BodyPart.RIGHT_HAND
+          route.bone === BodyPart.LEFT_HAND ||
+          route.bone === BodyPart.RIGHT_HAND
             ? (route.outputs ?? []).filter(
                 (output) => output !== RoutingOutput.DRIVER
               )

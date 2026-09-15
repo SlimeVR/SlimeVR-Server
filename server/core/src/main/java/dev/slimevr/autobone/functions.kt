@@ -1,7 +1,6 @@
 package dev.slimevr.autobone
 
 import dev.slimevr.skeleton.ComputedSkeleton
-import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
@@ -25,7 +24,7 @@ val PLACEHOLDER_BODY_PARTS_TO_ADJUST = arrayOf(
 	BodyPart.LOWER_WAIST,
 	BodyPart.HIP,
 	// etc.
-).map { it.boneId }
+)
 
 fun step(skeletonA: ComputedSkeleton, skeletonB: ComputedSkeleton) {
 	// TODO We need to consider both ankles, there are two... We can do contribution per
@@ -37,9 +36,9 @@ fun step(skeletonA: ComputedSkeleton, skeletonB: ComputedSkeleton) {
 
 	// TODO Consider headset sliding; if HMD consistently aligns with sliding, then
 	//  either height is wrong, or the headset has weird movement
-	val contributions = PLACEHOLDER_BODY_PARTS_TO_ADJUST.map { boneId ->
-		val boneA = skeletonA[boneId] ?: return@map 0f
-		val boneB = skeletonB[boneId] ?: return@map 0f
+	val contributions = PLACEHOLDER_BODY_PARTS_TO_ADJUST.map { bodyPart ->
+		val boneA = skeletonA[bodyPart] ?: return@map 0f
+		val boneB = skeletonB[bodyPart] ?: return@map 0f
 
 		slideContributionWeight(
 			ankleA,

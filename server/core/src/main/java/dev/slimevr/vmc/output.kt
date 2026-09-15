@@ -60,7 +60,6 @@ class VMCOutputBehaviour(
 		val routedBones = boneRouting.context.state
 			.map { state -> state.routes.filterValues { RoutingOutput.VMC in it }.keys }
 			.distinctUntilChanged()
-			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), skeleton.registry::bodyPartOf) }
 
 		val config = settings.context.state
 			.map { it.data.vmcConfig }

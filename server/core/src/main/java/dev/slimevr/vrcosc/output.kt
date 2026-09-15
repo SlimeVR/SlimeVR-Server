@@ -70,7 +70,6 @@ class VRCOSCOutputBehaviour(
 		val routedBones = boneRouting.context.state
 			.map { state -> state.routes.filterValues { RoutingOutput.VRC_OSC in it }.keys }
 			.distinctUntilChanged()
-			.map { boneIds -> boneIds.mapNotNullTo(mutableSetOf(), skeleton.registry::bodyPartOf) }
 
 		combine(skeleton.computed, routedBones, ::Pair)
 			.onEach { (computedSkeleton, bones) -> sendFrame(receiver, runtime, computedSkeleton, bones) }

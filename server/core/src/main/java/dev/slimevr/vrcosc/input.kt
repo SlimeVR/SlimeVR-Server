@@ -9,7 +9,6 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.forEachOscMessage
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.formatExceptionMessage
@@ -52,13 +51,12 @@ private class VRSystemTrackerRegistry(
 			VRSystemTracker.LEFT_WRIST -> "VRChat left hand"
 			VRSystemTracker.RIGHT_WRIST -> "VRChat right hand"
 		}
-		val boneId = bodyPart.boneId
 		val runtimeTracker = Tracker.create(
 			scope = manager.context.scope,
 			id = trackerId,
 			name = trackerName,
-			boneId = boneId,
-			intendedBoneId = boneId,
+			bodyPart = bodyPart,
+			intendedBodyPart = bodyPart,
 			deviceId = device.context.state.value.id,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,

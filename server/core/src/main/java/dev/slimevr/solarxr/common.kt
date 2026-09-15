@@ -1,13 +1,13 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.BoneState
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.BoneMask
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
 
-fun createBone(bone: BoneState, id: BoneId, mask: BoneMask): solarxr_protocol.datatypes.Bone = solarxr_protocol.datatypes.Bone(
-	id = id.value,
+fun createBone(bone: BoneState, mask: BoneMask): solarxr_protocol.datatypes.Bone = solarxr_protocol.datatypes.Bone(
+	bodyPart = if (mask.bodyPart) bone.bodyPart else BodyPart.NONE,
 	boneLength = if (mask.boneLength) bone.offset.len() else 0f,
 	rotation = if (mask.rotation) bone.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
 	orientation = if (mask.orientation) bone.orientation.let { Quat(it.x, it.y, it.z, it.w) } else null,

@@ -14,7 +14,6 @@ import dev.slimevr.osc.OscMessage
 import dev.slimevr.quaternionApproxEqual
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -80,7 +79,7 @@ class VMCInputBehaviourTest {
 		harness.handle(boneBundle("Hips", Vector3(0f, 1f, 0f), Quaternion.rotationAroundYAxis(0.3f)))
 
 		val tracker = harness.trackers().single()
-		assertEquals(BodyPart.HIP.boneId, tracker.context.state.value.boneId)
+		assertEquals(BodyPart.HIP, tracker.context.state.value.bodyPart)
 		assertEquals(DeviceOrigin.VMC, tracker.context.state.value.origin)
 		vectorAssertEquals(Vector3(0f, 1f, 0f), assertNotNull(tracker.context.state.value.position))
 		assertApprox(Quaternion.rotationAroundYAxis(0.3f), tracker.context.state.value.rawRotation)
@@ -106,7 +105,7 @@ class VMCInputBehaviourTest {
 		harness.handle(bundleOf(OscMessage("/VMC/Ext/Tra/Pos", transformArgs("serial-1", Vector3(0.5f, 0.5f, 0.5f), Quaternion.IDENTITY))))
 
 		val tracker = harness.trackers().single()
-		assertNull(tracker.context.state.value.boneId)
+		assertNull(tracker.context.state.value.bodyPart)
 		assertEquals(DeviceOrigin.VMC, tracker.context.state.value.origin)
 		vectorAssertEquals(Vector3(0.5f, 0.5f, 0.5f), assertNotNull(tracker.context.state.value.position))
 	}

@@ -3,7 +3,6 @@ package dev.slimevr.tracker.behaviours
 import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.resets.ResetBodyParts
-import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
@@ -24,14 +23,12 @@ import solarxr_protocol.rpc.ArmsResetMode
  */
 class TrackerRestOrientationBehaviour(
 	private val settings: Settings,
-	private val registry: BoneRegistry,
 ) : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		val armsResetModeFlow = settings.context.state.map { it.data.resetsConfig.armsResetMode }
-		val boneIdFlow = receiver.context.state.map { it.boneId }.distinctUntilChanged()
+		val bodyPartFlow = receiver.context.state.map { it.bodyPart }.distinctUntilChanged()
 
-		combine(armsResetModeFlow, boneIdFlow) { armsResetMode, boneId ->
-			val bodyPart = boneId?.let { registry.bodyPartOf(it) }
+		combine(armsResetModeFlow, bodyPartFlow) { armsResetMode, bodyPart ->
 			getRestOrientation(bodyPart, armsResetMode)
 		}
 			.distinctUntilChanged()

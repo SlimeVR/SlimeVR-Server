@@ -94,13 +94,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
     const m0 = getPartMaterial(new Color('#cccccc'));
     const m1 = getPartMaterial(new Color('#ad0ccc'));
 
-    for (const [bodyPart, bone] of bones.entries()) {
-      if (bodyPart === BodyPart.NONE) continue;
-      const config = SKELETON_PART_PRESETS[bodyPart];
+    for (const bone of bones.values()) {
+      if (bone.bodyPart === BodyPart.NONE) continue;
+      const config = SKELETON_PART_PRESETS[bone.bodyPart];
       if (!config.visible) continue;
 
       const part: BonePart = {
-        bodyPart,
         bone,
         shapes: [],
         surfaceDistance: 0,
@@ -173,7 +172,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
 
   setBones(bones: Map<BodyPart, BoneT>) {
     for (const part of this.parts) {
-      const bone = bones.get(part.bodyPart);
+      const bone = bones.get(part.bone.bodyPart);
       if (!bone) continue;
       if (bone.boneLength !== part.bone.boneLength) part.surfaceDirty = true;
       part.bone = bone;
@@ -182,7 +181,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
 
   setTrackers(trackers: Map<BodyPart, TrackerPreviewData>) {
     for (const part of this.parts) {
-      const tracker = trackers.get(part.bodyPart);
+      const tracker = trackers.get(part.bone.bodyPart);
       if (
         tracker?.trackerId !== part.tracker?.trackerId ||
         tracker?.boneOffset !== part.tracker?.boneOffset ||
@@ -199,7 +198,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
 
   updateMatrixWorld(force: boolean) {
     for (const part of this.parts) {
-      const { bodyPart, bone, shapes } = part;
+      const { bone, shapes } = part;
 
       position.copy(Vector3FromVec3fT(bone.headPosition));
       quat.copy(QuaternionFromQuatT(bone.orientation)).normalize();
@@ -239,7 +238,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
         }
 
         part.marker.visible = true;
-        part.marker.scale.setScalar(getTrackerMarkerScale(bodyPart));
+        part.marker.scale.setScalar(getTrackerMarkerScale(bone.bodyPart));
         part.marker.quaternion.copy(quat).multiply(part.tracker.mountingOrientation);
         part.marker.position.copy(position);
         localOffset

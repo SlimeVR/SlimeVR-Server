@@ -1,17 +1,16 @@
 package dev.slimevr.skeleton.targetprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.COMState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.IKTargets
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonTargetProcessor
 import dev.slimevr.skeleton.Velocity
-import dev.slimevr.skeleton.boneId
+import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.computeComState
-import dev.slimevr.skeleton.resolveMasses
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -79,11 +78,8 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) :
 	// Centre of mass
 	var comState: COMState? = null
 
-	val lastLockedPositions: MutableMap<BoneId, Vector3> = mutableMapOf()
-	val lockState: MutableMap<BoneId, LockState> = mutableMapOf()
-
-	private val masses = resolveMasses()
-	private val velocityBoneIds: Array<BoneId> = VELOCITY_BODY_PARTS.map { it.boneId }.toTypedArray()
+	val lastLockedPositions: BodyPartMap<Vector3> = bodyPartMap()
+	val lockState: BodyPartMap<LockState> = bodyPartMap()
 
 	override fun process(mutableIkTargets: IKTargets, fk: ComputedSkeleton, floorLevel: Float) {
 		val skeletonConfig = settings.context.state.value.data.skeletonConfig
@@ -96,21 +92,21 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) :
 		comState = computeComState(
 			curTime,
 			comState,
-			centreOfMass(fk, masses),
+			centreOfMass(fk),
 		)
 
 		val correctionStrength = skeletonConfig.ratios.skatingCorrectionStrength // TODO
 
-		for (boneId in velocityBoneIds) {
-			val curBone = fk[boneId] ?: continue
+		for (bodyPart in VELOCITY_BODY_PARTS) {
+			val curBone = fk[bodyPart] ?: continue
 			val curPosition = curBone.tailPosition
 
 			// Consider locking BodyPart
-			val lastState = lockState[boneId]
+			val lastState = lockState[bodyPart]
 			val wasLocked = lastState?.locked == true
 			val isLocked = shouldLock(
 				curPosition,
-				lastLockedPositions[boneId] ?: curPosition,
+				lastLockedPositions[bodyPart] ?: curPosition,
 				curBone.acceleration,
 				curBone.velocity,
 				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
@@ -123,13 +119,13 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) :
 				curPosition,
 			)?.also {
 				// Track lock state changes
-				lockState[boneId] = it
+				lockState[bodyPart] = it
 				// Otherwise pull the last state
 			} ?: lastState ?: continue
 
 			if (activeState.locked) {
-				mutableIkTargets[boneId] = activeState.position
-				lastLockedPositions[boneId] = activeState.position
+				mutableIkTargets[bodyPart] = activeState.position
+				lastLockedPositions[bodyPart] = activeState.position
 			}
 		}
 	}

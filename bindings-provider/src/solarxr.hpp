@@ -1,8 +1,6 @@
 #pragma once
 
 #include <filesystem>
-#include <optional>
-#include <vector>
 
 #ifdef _WIN32
 #define WIN32_MEAN_AND_LEAN
@@ -48,9 +46,6 @@ private:
 
     static std::filesystem::path getSocketPath();
 
-    // Reads exactly len bytes, looping over partial reads. false on EOF/error.
-    bool recvExact(char *buf, size_t len);
-
 public:
     SolarXRConnection() noexcept(false);
 
@@ -58,8 +53,4 @@ public:
 
     bool connected();
     void sendMsg(flatbuffers::FlatBufferBuilder &fbb);
-
-    // Reads one length-prefixed SolarXR frame (the same framing sendMsg writes).
-    // Returns nullopt on disconnect or a socket error.
-    std::optional<std::vector<uint8_t>> recvMsg();
 };

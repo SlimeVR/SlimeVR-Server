@@ -9,7 +9,6 @@ import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -18,17 +17,13 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
-import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
-import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.BoneMask
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private fun TestScope.testConn(onSend: suspend (MessageBundle) -> Unit): SolarXRBridge {
+private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
 	val server = buildTestVrServer(backgroundScope)
 	val skeleton = buildTestSkeleton(backgroundScope)
 	val settings = buildTestSettings(backgroundScope)
@@ -56,7 +51,7 @@ private fun TestScope.testConn(onSend: suspend (MessageBundle) -> Unit): SolarXR
 		rpcDispatcher = EventDispatcher("test.rpc", backgroundScope),
 	)
 	bridge.startObserving()
-	bridge.outbound.on<MessageBundle> { onSend(it) }.launchIn(backgroundScope)
+	bridge.outbound.on<MessageBundle> { onSend(ByteArray(0)) }.launchIn(backgroundScope)
 
 	// launchIn registers the handler synchronously, but the dispatcher's own drain loop still has to
 	// start before anything emitted here can reach it.
@@ -135,23 +130,6 @@ class DataFeedTest {
 
 		advanceTimeBy(500)
 		assertEquals(0, sendCount)
-	}
-
-	@Test
-	fun `emitted bones carry the registry ID for their body part`() = runTest {
-		val bundles = mutableListOf<MessageBundle>()
-		val conn = testConn { bundles += it }
-		val boneMask = BoneMask(boneLength = true)
-
-		conn.dataFeedDispatcher.emit(PollDataFeed(config = config(100).copy(boneMask = boneMask)))
-		advanceTimeBy(1)
-
-		val bones = (bundles.single().dataFeedMsgs?.single()?.message as DataFeedUpdate).bones
-		assertTrue(!bones.isNullOrEmpty())
-
-		val hipId = requireNotNull(conn.registry[BodyPart.HIP])
-		assertTrue(bones.any { it.id == hipId.value })
-		bones.forEach { bone -> assertTrue(conn.registry[BoneId(bone.id)] != null) }
 	}
 
 	// TODO: need more tests for the content of a datafeed + check if the masks work

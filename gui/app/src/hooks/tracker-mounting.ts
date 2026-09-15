@@ -6,14 +6,12 @@ import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
 } from '@/maths/quaternion';
-import { bodyPartOfBone, boneRegistryAtom, FlatDeviceTracker } from '@/store/app-store';
+import { FlatDeviceTracker } from '@/store/app-store';
 import { useAssignTracker } from './tracker-assignment';
 import { providePicker } from './tracker-picker';
-import { useAtomValue } from 'jotai';
 
 export function useMountingOrientation(td: FlatDeviceTracker | undefined) {
   const assignTracker = useAssignTracker();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const mountingOrientation = td?.tracker.info?.mountingOrientation;
   const currRotation = mountingOrientation
@@ -23,7 +21,7 @@ export function useMountingOrientation(td: FlatDeviceTracker | undefined) {
   const setDirection = (mountingOrientationDegrees: Quaternion) => {
     if (!td) return;
 
-    const bodyPart = bodyPartOfBone(boneRegistry, td.tracker.info?.boneId);
+    const bodyPart = td.tracker.info?.bodyPart || BodyPart.NONE;
     const orientation = MountingOrientationDegreesToQuatT(mountingOrientationDegrees);
 
     assignTracker(td.tracker.trackerId, bodyPart, orientation);

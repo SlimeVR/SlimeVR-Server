@@ -4,44 +4,44 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
-import dev.slimevr.skeleton.ComputedSkeleton
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
 import io.github.axisangles.ktmath.EulerOrder
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.math.*
 
 private const val ABSOLUTE_SPLAY_THRESHOLD_ANGLE = 7
 private const val MINIMUM_TIP_TOE_PITCH = -14
 private const val MINIMUM_BENDING_PITCH = 15
 private const val MAXIMUM_ABSOLUTE_TOE_RANGE = 90
 
-internal fun buildToeMessages(bones: ComputedSkeleton): List<OscContent> {
+internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
-	fun bone(bodyPart: BodyPart): BoneState? = bones[bodyPart.boneId]
 
 	// LEFT FOOT + TOES
-	val leftFoot = bone(BodyPart.LEFT_FOOT)
+	val leftFoot = bones[BodyPart.LEFT_FOOT]
 	if (leftFoot != null) {
 		val leftToes = listOf(
-			bone(BodyPart.LEFT_BIG_TOE),
-			bone(BodyPart.LEFT_INDEX_TOE),
-			bone(BodyPart.LEFT_MIDDLE_TOE),
-			bone(BodyPart.LEFT_RING_TOE),
-			bone(BodyPart.LEFT_LITTLE_TOE),
+			bones[BodyPart.LEFT_BIG_TOE],
+			bones[BodyPart.LEFT_INDEX_TOE],
+			bones[BodyPart.LEFT_MIDDLE_TOE],
+			bones[BodyPart.LEFT_RING_TOE],
+			bones[BodyPart.LEFT_LITTLE_TOE],
 		)
 		processToesForFoot(leftFoot, leftToes, Side.LEFT, messages)
 	}
 
 	// RIGHT FOOT + TOES
-	val rightFoot = bone(BodyPart.RIGHT_FOOT)
+	val rightFoot = bones[BodyPart.RIGHT_FOOT]
 	if (rightFoot != null) {
 		val rightToes = listOf(
-			bone(BodyPart.RIGHT_BIG_TOE),
-			bone(BodyPart.RIGHT_INDEX_TOE),
-			bone(BodyPart.RIGHT_MIDDLE_TOE),
-			bone(BodyPart.RIGHT_RING_TOE),
-			bone(BodyPart.RIGHT_LITTLE_TOE),
+			bones[BodyPart.RIGHT_BIG_TOE],
+			bones[BodyPart.RIGHT_INDEX_TOE],
+			bones[BodyPart.RIGHT_MIDDLE_TOE],
+			bones[BodyPart.RIGHT_RING_TOE],
+			bones[BodyPart.RIGHT_LITTLE_TOE],
 		)
 		processToesForFoot(rightFoot, rightToes, Side.RIGHT, messages)
 	}

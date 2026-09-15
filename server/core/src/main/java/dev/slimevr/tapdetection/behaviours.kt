@@ -1,8 +1,6 @@
 package dev.slimevr.tapdetection
 
 import dev.slimevr.config.TapDetectionConfig
-import dev.slimevr.skeleton.BoneId
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.timeSource
@@ -36,7 +34,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	)
 
 	// This + the assigned tap body parts are used.
-	private val falsePositiveBoneIds = setOf(
+	private val falsePositiveBodyParts = setOf(
 		BodyPart.UPPER_CHEST,
 		BodyPart.LOWER_CHEST,
 		BodyPart.UPPER_WAIST,
@@ -46,7 +44,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		BodyPart.RIGHT_UPPER_LEG,
 		BodyPart.LEFT_LOWER_LEG,
 		BodyPart.RIGHT_LOWER_LEG,
-	).mapTo(mutableSetOf()) { it.boneId }
+	)
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: TapDetectionManager) {
@@ -59,21 +57,20 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		val okTrackersFlow = receiver.server.context.state
 			.map { it.trackers.values }
 			.flatMapLatest { trackers ->
-				// Tracker state emits on every rotation packet, but only the assigned bone/status
-				// matter here. Dedup per tracker first, or combine gets resumed once per packet
-				// per tracker.
+				// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
+				// Dedup per tracker first, or combine gets resumed once per packet per tracker.
 				combine(
 					trackers.map { tracker ->
-						tracker.context.state.distinctUntilChanged { a, b -> a.boneId == b.boneId && a.status == b.status }
+						tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
 					},
 				) { states ->
-					states.map { it.boneId to it.status }
+					states.map { it.bodyPart to it.status }
 				}
 					.distinctUntilChanged()
 					.map { trackers.filter { it.context.state.value.status == TrackerStatus.OK } }
 			}
 
-		// Outer flow is refreshed whenever TapDetection config, setupMode, or a tracker's bone or status changes
+		// Outer flow is refreshed whenever TapDetection config, setupMode, or a tracker's bodyPart or status changes
 		combine(
 			tapConfigFlow,
 			setupModeFlow,
@@ -82,18 +79,17 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		)
 			.flatMapLatest { (tapDetectionConfig, setupMode, trackers) ->
 				// Computed once per outer-flow refresh for all trackers
-				val registry = receiver.skeleton.registry
-				val trackersBoneIds = trackers.map { it.context.state.value.boneId }.toSet()
-				val yawResetBoneId = arrayOf(tapDetectionConfig.yawResetBone?.let { registry.byKey(it) }?.let { BoneId(it.id) }, BodyPart.UPPER_CHEST.boneId, BodyPart.LOWER_CHEST.boneId, BodyPart.HIP.boneId, BodyPart.LOWER_WAIST.boneId, BodyPart.UPPER_WAIST.boneId)
-					.firstOrNull { it in trackersBoneIds } ?: BodyPart.UPPER_CHEST.boneId
-				val fullResetBoneId = arrayOf(tapDetectionConfig.fullResetBone?.let { registry.byKey(it) }?.let { BoneId(it.id) }, BodyPart.LEFT_UPPER_LEG.boneId, BodyPart.LEFT_LOWER_LEG.boneId)
-					.firstOrNull { it in trackersBoneIds } ?: BodyPart.LEFT_UPPER_LEG.boneId
-				val mountingResetBoneId = arrayOf(tapDetectionConfig.mountingResetBone?.let { registry.byKey(it) }?.let { BoneId(it.id) }, BodyPart.RIGHT_UPPER_LEG.boneId, BodyPart.RIGHT_LOWER_LEG.boneId)
-					.firstOrNull { it in trackersBoneIds } ?: BodyPart.RIGHT_UPPER_LEG.boneId
+				val trackersBodyParts = trackers.map { it.context.state.value.bodyPart }.toSet()
+				val yawResetBodyPart = arrayOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST)
+					.firstOrNull { it in trackersBodyParts } ?: BodyPart.UPPER_CHEST
+				val fullResetBodyPart = arrayOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
+					.firstOrNull { it in trackersBodyParts } ?: BodyPart.LEFT_UPPER_LEG
+				val mountingResetBodyPart = arrayOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
+					.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
 
 				// To keep track of which trackers are moving
 				val numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
-				val boneIdsToCheck = falsePositiveBoneIds + listOfNotNull(yawResetBoneId, fullResetBoneId, mountingResetBoneId)
+				val bodyPartsToCheck = falsePositiveBodyParts + yawResetBodyPart + fullResetBodyPart + mountingResetBodyPart
 				val trackersOverThreshold = mutableSetOf<Int>()
 
 				trackers.map { tracker ->
@@ -101,14 +97,14 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 						tapDetectionConfig,
 						setupMode,
 						tracker.context.state.value,
-						yawResetBoneId,
-						fullResetBoneId,
-						mountingResetBoneId,
+						yawResetBodyPart,
+						fullResetBodyPart,
+						mountingResetBodyPart,
 					)
 
 					// Inner flow emits whenever a tracker's rawAcceleration is updated
 					tracker.context.state
-						.filter { it.boneId in boneIdsToCheck || setupMode }
+						.filter { it.bodyPart in bodyPartsToCheck || setupMode }
 						.map { it.rawAcceleration to it.motion }
 						.distinctUntilChanged()
 						.onEach { (rawAcceleration, motionState) ->
@@ -165,29 +161,29 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		tapDetectionConfig: TapDetectionConfig,
 		setupMode: Boolean,
 		trackerState: TrackerState,
-		yawResetBoneId: BoneId?,
-		fullResetBoneId: BoneId?,
-		mountingResetBoneId: BoneId?,
+		yawResetBodyPart: BodyPart,
+		fullResetBodyPart: BodyPart,
+		mountingResetBodyPart: BodyPart,
 	): TrackerTapDetectionState {
 		// This holds a tracker's config and state for tap detection
 		val trackerTapDetectionState = TrackerTapDetectionState(trackerState.id)
 
 		// setupMode uses defaults
 		if (!setupMode) {
-			when (trackerState.boneId) {
-				yawResetBoneId if tapDetectionConfig.yawResetEnabled -> {
+			when (trackerState.bodyPart) {
+				yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
 					trackerTapDetectionState.resetType = ResetType.YAW
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetTaps
 					trackerTapDetectionState.actionDelay = tapDetectionConfig.yawResetDelay
 				}
 
-				fullResetBoneId if tapDetectionConfig.fullResetEnabled -> {
+				fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
 					trackerTapDetectionState.resetType = ResetType.FULL
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.fullResetTaps
 					trackerTapDetectionState.actionDelay = tapDetectionConfig.fullResetDelay
 				}
 
-				mountingResetBoneId if tapDetectionConfig.mountingResetEnabled -> {
+				mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
 					trackerTapDetectionState.resetType = ResetType.POSE_MOUNTING
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetTaps
 					trackerTapDetectionState.actionDelay = tapDetectionConfig.mountingResetDelay

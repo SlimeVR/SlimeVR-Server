@@ -7,7 +7,6 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
-import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -32,7 +31,7 @@ internal fun buildOutgoingBundle(
 
 			val targetParentBodyPart = VMC_OUTPUT_BONE_PARENTS[targetBodyPart]
 			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
-			val trackingBone = bones[trackingBodyPart.boneId] ?: continue
+			val trackingBone = bones[trackingBodyPart] ?: continue
 
 			if (targetParentBodyPart == null) {
 				// TODO anchorHip https://github.com/SlimeVR/SlimeVR-Server/blob/main/server/core/src/main/java/dev/slimevr/osc/VMCHandler.kt#L371
@@ -47,7 +46,7 @@ internal fun buildOutgoingBundle(
 			} else {
 				targetParentBodyPart
 			}
-			val trackingParent = bones[trackingParentBodyPart.boneId] ?: continue
+			val trackingParent = bones[trackingParentBodyPart] ?: continue
 
 			val pos = if (vrm != null) {
 				vrm.bindOffsets[targetBodyPart] ?: Vector3.ZERO
@@ -74,7 +73,7 @@ internal fun buildInitRequestMessage(): OscMessage = OscMessage("/VMC/Ext/Req", 
 
 private fun restAdjustedWorld(
 	bone: BoneState,
-	restBodyPart: BodyPart,
+	restBodyPart: BodyPart = bone.bodyPart,
 	mirror: Boolean = false,
 ): Quaternion {
 	val world = if (mirror) vmcMirrorRotation(bone.rotation) else bone.rotation
@@ -90,8 +89,8 @@ internal fun vmcLocalRotation(
 	mirror: Boolean,
 ): Quaternion {
 	val adjusted = restAdjustedWorld(bone, restBodyPart, mirror)
-	if (parent == null || restParentBodyPart == null) return adjusted
-	return restAdjustedWorld(parent, restParentBodyPart, mirror).inv() * adjusted
+	if (parent == null) return adjusted
+	return restAdjustedWorld(parent, restParentBodyPart ?: parent.bodyPart, mirror).inv() * adjusted
 }
 
 internal fun vmcLocalPosition(

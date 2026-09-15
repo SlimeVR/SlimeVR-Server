@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
+import java.util.EnumMap
 import java.util.concurrent.Executors
 import kotlin.math.cos
 import kotlin.math.sin
@@ -28,15 +29,14 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
-class ProportionsBehaviour(private val userConfig: UserConfig, private val registry: BoneRegistry) : SkeletonBehaviour {
+class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
 			.distinctUntilChangedBy { it.data.proportions }
 			.map { it.data.proportions }
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
-					val lengths = configToBoneValues(proportions)
-					receiver.context.dispatch(SkeletonActions.SetProportions(toBoneOffsets(lengths, registry), lengths.height()))
+					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
 					receiver.resetProcessors(ResetType.FULL)
 				}
 			}
@@ -78,13 +78,13 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
-						BodyPart.LOWER_CHEST.boneId,
+						BodyPart.LOWER_CHEST,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
 					),
 				)
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
-						BodyPart.LEFT_LOWER_LEG.boneId,
+						BodyPart.LEFT_LOWER_LEG,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
 					),
 				)
@@ -95,7 +95,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
 				receiver.context.dispatch(
 					SkeletonActions.SetBonePosition(
-						BodyPart.HEAD.boneId,
+						BodyPart.HEAD,
 						Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
 					),
 				)
@@ -175,9 +175,6 @@ class ComputedSkeletonBehaviour(
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
-	private val headId = BodyPart.HEAD.boneId
-	private val constraints = BODY_PART_CONSTRAINT_MAP.resolveToBoneIds()
-	private val ikChains = resolveIkChains()
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
 	private val minimumGap = intervalDuration * 0.75
@@ -203,7 +200,7 @@ class ComputedSkeletonBehaviour(
 	 * map, and the state it came from, untouched.
 	 */
 	private fun runInputProcessors(processors: List<SkeletonInputProcessor>, boneInputs: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-		val bones = boneInputs.copy()
+		val bones = EnumMap(boneInputs)
 		for (processor in processors) processor.process(bones, skeletonHeight)
 		return bones
 	}
@@ -218,8 +215,7 @@ class ComputedSkeletonBehaviour(
 		receiver.context.scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
 
 		var nextTick = timeSource.markNow()
-		// Sized to the registry this SkeletonState was built for, read once off the data.
-		val fkChangedParts = BoneSet.of(receiver.context.state.value.boneInputs.registry)
+		val fkChangedParts = mutableSetOf<BodyPart>()
 		val timings = TickTimings(hz, 10.seconds, intervalDuration)
 
 		receiver.context.scope.launch(dispatcher) {
@@ -235,8 +231,8 @@ class ComputedSkeletonBehaviour(
 							// TODO improve pause tracking code
 							//  and also possibly head default position (HeadPositionFallbackProcessor)
 							// Use already-processed paused tracking data except for the head
-							val headBone = requireNotNull(targetState.boneInputs[headId]) { "The registry must define BodyPart.HEAD" }
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[headId] = headBone.copy(position = if (headBone.isPositionActive) headBone.position else it[headId]?.position) }
+							val headBone = targetState.boneInputs[BodyPart.HEAD]
+							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
 						} else {
 							// Run pre-FK processors
 							// TODO: Add a constrain processor (maybe not needed)
@@ -244,7 +240,7 @@ class ComputedSkeletonBehaviour(
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs
 								// The buffer keeps being written after this, so state gets a copy
-								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(processedInputs.copy()))
+								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(EnumMap(processedInputs)))
 							}
 							processedInputs
 						}
@@ -257,22 +253,22 @@ class ComputedSkeletonBehaviour(
 
 						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
 						// which bones changed.
-						val beforeFk = boneInputs.copy()
+						val beforeFk = BodyPartMap(boneInputs)
 						for (processor in fkProcessors) {
 							processor.process(boneInputs, fk, targetState.floorLevel)
 
 							// Comparing and filtering the maps allocates an entry per bone each time, so
 							// the changed set is collected in one walk instead
 							fkChangedParts.clear()
-							for ((boneId, boneInput) in boneInputs) {
-								val previous = beforeFk[boneId]
-								if (boneInput == previous) continue
-								fkChangedParts.add(boneId)
-								beforeFk[boneId] = boneInput
+							boneInputs.forEachBone { bodyPart, boneInput ->
+								val previous = beforeFk[bodyPart]
+								if (boneInput == previous) return@forEachBone
+								fkChangedParts.add(bodyPart)
+								beforeFk[bodyPart] = boneInput
 
 								// For changed bones with inactive positions, update their input's position in state (needed for Localizer)
 								if (!boneInput.isPositionActive && boneInput.position != previous?.position) {
-									receiver.context.dispatch(SkeletonActions.SetBonePosition(boneId, boneInput.position, false))
+									receiver.context.dispatch(SkeletonActions.SetBonePosition(bodyPart, boneInput.position, false))
 								}
 							}
 							// Inputs changed; re-run FK
@@ -280,17 +276,20 @@ class ComputedSkeletonBehaviour(
 						}
 
 						// Run IK processors
-						val ikTargets = BoneMap.of<Vector3>(boneInputs.registry)
+						val ikTargets = bodyPartMap<Vector3>()
 						for (processor in targetProcessors) processor.process(ikTargets, fk, targetState.floorLevel)
 
 						// Run IK
 						val ikOutput = ccdIk(
 							boneInputs,
 							fk,
-							ikTargets.map { (boneId, target) ->
-								IKChainGoal(ikChains[boneId] ?: listOf(boneId), target)
+							ikTargets.map { (bodyPart, target) ->
+								IKChainGoal(
+									BODY_PART_IK_CHAIN_MAP[bodyPart] ?: listOf(bodyPart),
+									target,
+								)
 							},
-							constraints,
+							BODY_PART_CONSTRAINT_MAP,
 							0.01f,
 							100,
 						)

@@ -35,12 +35,7 @@ import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
-import {
-  assignedTrackersAtom,
-  bodyPartOfBone,
-  boneRegistryAtom,
-  bonesAtom,
-} from '@/store/app-store';
+import { assignedTrackersAtom, bonesAtom } from '@/store/app-store';
 import { Config, useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
 import { EyeIcon } from '@/components/commons/icon/EyeIcon';
@@ -430,15 +425,17 @@ function SkeletonVisualizer({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
-  const bones = useAtomValue(bonesAtom);
+  const bonesList = useAtomValue(bonesAtom);
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
-  const boneRegistry = useAtomValue(boneRegistryAtom);
 
+  const bones = useMemo(() => {
+    return new Map(bonesList.map((b) => [b.bodyPart, b]));
+  }, [bonesList]);
   const trackersByPart = useMemo(() => {
     const trackers = new Map<BodyPart, TrackerPreviewData>();
     for (const { tracker } of assignedTrackers) {
-      const bodyPart = bodyPartOfBone(boneRegistry, tracker.info?.boneId);
-      if (bodyPart === BodyPart.NONE) continue;
+      const bodyPart = tracker.info?.bodyPart;
+      if (bodyPart == null || bodyPart === BodyPart.NONE) continue;
       trackers.set(bodyPart, {
         trackerId: tracker.trackerId,
         mountingOrientation: QuaternionFromQuatT(
@@ -450,7 +447,7 @@ function SkeletonVisualizer({
       });
     }
     return trackers;
-  }, [assignedTrackers, boneRegistry]);
+  }, [assignedTrackers]);
 
   useEffect(() => {
     if (bones.size === 0) return;

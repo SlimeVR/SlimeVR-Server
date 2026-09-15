@@ -6,7 +6,6 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.resets.ResetsManager
-import dev.slimevr.skeleton.Skeleton
 import kotlinx.coroutines.CoroutineScope
 import kotlin.collections.listOf
 
@@ -22,8 +21,6 @@ typealias TapDetectionContext = Context<TapDetectionState, TapDetectionActions>
 typealias TapDetectionBehaviour = Behaviour<TapDetectionManager>
 
 class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
-	val skeleton: Skeleton get() = resetsManager.skeleton
-
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
