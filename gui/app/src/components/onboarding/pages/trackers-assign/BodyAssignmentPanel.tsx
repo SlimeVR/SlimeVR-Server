@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { Clickable } from '@/components/commons/Clickable';
 import { HTMLAttributes, ReactNode, useCallback, useMemo } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { MirrorLegend } from '@/components/onboarding/BodyAssignment';
 import {
   BodyPartAssignment,

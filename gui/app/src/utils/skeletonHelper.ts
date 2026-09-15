@@ -10,8 +10,7 @@ import {
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
-import { BodyPart } from '@/utils/body-part';
-import { BoneT } from 'solarxr-protocol';
+import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { FINGER_BODY_PARTS, TOE_BODY_PARTS } from '@/hooks/body-parts';

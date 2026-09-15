@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useEffect, useRef } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';

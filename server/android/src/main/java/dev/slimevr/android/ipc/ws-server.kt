@@ -3,12 +3,13 @@ package dev.slimevr.android.ipc
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
+import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
+import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.solarxr.OutboundFrame
+import dev.slimevr.solarxr.SOLARXR_PROTOCOL_VERSION
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.checkedSolarXRFrame
 import dev.slimevr.solarxr.onSolarXRMessage
-import dev.slimevr.solarxr.writeSolarXRBundle
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
@@ -24,7 +25,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
+import solarxr_protocol.ClientHello
+import solarxr_protocol.HelloStatus
 import solarxr_protocol.MessageBundle
+import solarxr_protocol.ServerHello
 import java.nio.ByteBuffer
 import kotlin.time.Duration.Companion.seconds
 
@@ -46,14 +50,10 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 					AppLogger.ipc.info("SolarXR[${bridge.id}] connected (websocket)")
 					appContext.server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
 
-					bridge.outbound.on<OutboundFrame> { frame ->
+					bridge.outbound.on<MessageBundle> { bundle ->
 						val fbb = FlatBufferBuilder(256)
-						writeSolarXRBundle(fbb, frame.bundle)
+						bundle.finish(JvmFlatBufferWriter(fbb))
 						send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
-						if (frame.closeReason != null) {
-							AppLogger.ipc.warn("SolarXR[${bridge.id}] closing (websocket): ${frame.closeReason}")
-							this@coroutineScope.cancel()
-						}
 					}.launchIn(this)
 
 					val initTimeout = launch {
@@ -65,6 +65,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 					}
 
 					try {
+						var awaitingHello = true
 						flow {
 							for (frame in incoming) {
 								when (frame) {
@@ -75,9 +76,22 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 							}
 						}.collect { bytes ->
 							val buffer = ByteBuffer.wrap(bytes)
-							val reader = checkedSolarXRFrame(buffer)
-							onSolarXRMessage(MessageBundle.fromByteBuffer(reader), bridge)
-							if (bridge.isReady) initTimeout.cancel()
+							if (awaitingHello) {
+								val reader = checkedSolarXRFrame(buffer, ClientHello.FILE_IDENTIFIER)
+								val hello = ClientHello.fromByteBuffer(reader)
+								val accepted = hello.protocolVersion == SOLARXR_PROTOCOL_VERSION
+								val fbb = FlatBufferBuilder(64)
+								ServerHello(if (accepted) HelloStatus.ACCEPTED else HelloStatus.REJECTED_UNSUPPORTED_VERSION, SOLARXR_PROTOCOL_VERSION)
+									.finish(JvmFlatBufferWriter(fbb))
+								send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
+								require(accepted) { "Unsupported SolarXR protocol version ${hello.protocolVersion}" }
+								awaitingHello = false
+								bridge.beginConfiguration()
+							} else {
+								val reader = checkedSolarXRFrame(buffer, MessageBundle.FILE_IDENTIFIER)
+								onSolarXRMessage(MessageBundle.fromByteBuffer(reader), bridge)
+								if (bridge.isReady) initTimeout.cancel()
+							}
 						}
 					} finally {
 						AppLogger.ipc.info("SolarXR[${bridge.id}] disconnected (websocket)")

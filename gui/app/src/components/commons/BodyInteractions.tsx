@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { useBreakpoint } from '@/hooks/breakpoint';
 
 const DOT_HIT_PADDING = 12;
@@ -20,10 +20,10 @@ export interface BodySideNames {
 }
 
 const bodyPartFromName = (name: string): BodyPart | null => {
-  const part = (BodyPart as unknown as Record<string, string | undefined>)[
+  const part = (BodyPart as unknown as Record<string, number | undefined>)[
     name
   ];
-  return typeof part === 'string' ? (part as BodyPart) : null;
+  return typeof part === 'number' ? part : null;
 };
 
 const boxOf = (el: HTMLElement, offset: { left: number; top: number }) => {

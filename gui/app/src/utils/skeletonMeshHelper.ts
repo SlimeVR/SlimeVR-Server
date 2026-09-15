@@ -15,8 +15,7 @@ import {
   SkeletonRenderPart,
   TrackerPreviewData,
 } from './skeletonHelper';
-import { BodyPart } from '@/utils/body-part';
-import { BoneT } from 'solarxr-protocol';
+import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import {

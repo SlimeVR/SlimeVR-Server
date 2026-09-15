@@ -3,7 +3,6 @@ package dev.slimevr.resets
 import com.jme3.math.FastMath
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
@@ -23,6 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ResetResponse

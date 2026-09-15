@@ -44,8 +44,12 @@ import dev.slimevr.util.timeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
+import solarxr_protocol.connection.ConfigurationAcknowledged
+import solarxr_protocol.connection.ConnectionError
+import solarxr_protocol.connection.ConnectionErrorCode
 import solarxr_protocol.connection.ConnectionMessage
 import solarxr_protocol.connection.ConnectionMessageHeader
+import solarxr_protocol.connection.FinishConfiguration
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
@@ -59,27 +63,67 @@ import solarxr_protocol.rpc.RpcMessageHeader
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-enum class ConnectionPhase { HELLO, CONFIGURING, READY }
-
 data class SolarXRBridgeState(
 	val dataFeedConfigs: List<DataFeedConfig> = emptyList(),
 	val driverName: String? = null,
 	val boneMask: BoneMask? = null,
-	val phase: ConnectionPhase = ConnectionPhase.HELLO,
+	val isReady: Boolean = false,
 	val observing: Boolean = false,
 )
 
 sealed interface SolarXRBridgeActions {
 	data class SetConfig(val configs: List<DataFeedConfig>) : SolarXRBridgeActions
 	data class SetDriverInfo(val name: String?, val boneMask: BoneMask?) : SolarXRBridgeActions
-	data class SetPhase(val phase: ConnectionPhase) : SolarXRBridgeActions
+	data object SetReady : SolarXRBridgeActions
 	data object SetObserving : SolarXRBridgeActions
 }
 
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
 typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridge>
 
-data class OutboundFrame(val bundle: MessageBundle, val closeReason: String? = null)
+suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
+	// Connection messages are a barrier: configuration must be consumed before
+	// any application bundle is dispatched.
+	val wasReady = context.isReady
+	message.connectionMsgs?.forEach { header ->
+		when (header.message) {
+			is ConfigurationAcknowledged -> context.completeConfiguration()
+			else -> Unit
+		}
+	}
+	if (!wasReady) {
+		if (message.dataFeedMsgs != null || message.rpcMsgs != null || message.driverMsgs != null) {
+			context.sendConnectionMessage(ConnectionError(ConnectionErrorCode.INITIALIZATION_REQUIRED, "Configuration has not completed"))
+		}
+		return
+	}
+	message.dataFeedMsgs?.forEach {
+		val msg = it.message ?: return
+		context.dataFeedDispatcher.emit(msg)
+	}
+
+	message.rpcMsgs?.forEach {
+		val msg = it.message ?: return
+		val replyTo = it.replyTo
+		if (replyTo != 0u) {
+			context.rpcRequests.tryResolve(replyTo, msg)
+			return@forEach
+		}
+		context.rpcReplies.record(msg, it.txId)
+		context.rpcDispatcher.emit(msg)
+	}
+
+	message.driverMsgs?.forEach {
+		val msg = it.message ?: return
+		val replyTo = it.replyTo
+		if (replyTo != 0u) {
+			context.driverRequests.tryResolve(replyTo, msg)
+			return@forEach
+		}
+		context.driverReplies.record(msg, it.txId)
+		context.driverDispatcher.emit(msg)
+	}
+}
 
 class SolarXRBridge(
 	val id: Int,
@@ -88,10 +132,10 @@ class SolarXRBridge(
 	val dataFeedDispatcher: EventDispatcher<DataFeedMessage> = EventDispatcher("SolarXR[$id].dataFeed", context.scope, capacity = 32),
 	val rpcDispatcher: EventDispatcher<RpcMessage> = EventDispatcher("SolarXR[$id].rpc", context.scope, capacity = 64),
 	val driverDispatcher: EventDispatcher<DriverMessage> = EventDispatcher("SolarXR[$id].driver", context.scope, capacity = 64),
-	val outbound: EventDispatcher<OutboundFrame> = EventDispatcher("SolarXR[$id].outbound", context.scope, capacity = 64),
+	val outbound: EventDispatcher<MessageBundle> = EventDispatcher("SolarXR[$id].outbound", context.scope, capacity = 64),
 	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
 ) {
-	val isReady: Boolean get() = context.state.value.phase == ConnectionPhase.READY
+	val isReady: Boolean get() = context.state.value.isReady
 	val registry: BoneRegistry get() = appContext.bones.current
 
 	// Jobs are mutable handles with no meaningful equality; storing them in state
@@ -118,18 +162,23 @@ class SolarXRBridge(
 		return driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
 	}
 
-	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(OutboundFrame(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message)))))
-	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(OutboundFrame(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message)))))
+	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
+	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
 
 	suspend inline fun <reified R : RpcMessage> requestRpc(message: RpcMessage, timeout: Duration = 10.seconds): R = rpcRequests.request(timeout, message) { msg, newTxId -> sendRpc(msg, txId = newTxId) }
 	suspend inline fun <reified R : DriverMessage> requestDriverMessage(message: DriverMessage, timeout: Duration = 10.seconds): R = driverRequests.request(timeout, message) { msg, newTxId -> sendDriverMessage(msg, txId = newTxId) }
 
-	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(OutboundFrame(MessageBundle(dataFeedMsgs = listOf(frame))))
-	suspend fun sendConnectionMessage(message: ConnectionMessage, closeReason: String? = null) = outbound.emit(OutboundFrame(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(message))), closeReason))
+	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(MessageBundle(dataFeedMsgs = listOf(frame)))
+	suspend fun sendConnectionMessage(message: ConnectionMessage) = outbound.emit(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(message))))
+
+	suspend fun beginConfiguration() {
+		sendConnectionMessage(registry.value)
+		sendConnectionMessage(FinishConfiguration())
+	}
 
 	fun completeConfiguration() {
-		if (context.state.value.phase == ConnectionPhase.READY) return
-		context.dispatch(SolarXRBridgeActions.SetPhase(ConnectionPhase.READY))
+		if (context.state.value.isReady) return
+		context.dispatch(SolarXRBridgeActions.SetReady)
 		if (!context.state.value.observing) {
 			context.dispatch(SolarXRBridgeActions.SetObserving)
 			startObserving()

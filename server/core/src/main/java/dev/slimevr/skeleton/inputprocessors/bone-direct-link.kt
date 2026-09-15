@@ -1,10 +1,10 @@
 package dev.slimevr.skeleton.inputprocessors
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
+import solarxr_protocol.datatypes.BodyPart
 
 /**
  * Handles setting the rotation of an inactive bone with its source bone.

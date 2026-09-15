@@ -1,12 +1,12 @@
 package dev.slimevr.skeleton.inputprocessors
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.Quaternion
+import solarxr_protocol.datatypes.BodyPart
 
 /**
  * Rotates the first Quaternion to match its roll to the rotation of

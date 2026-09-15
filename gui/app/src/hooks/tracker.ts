@@ -1,6 +1,5 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart } from '@/utils/body-part';
-import { TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
+import { BodyPart, TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
 import { ReactLocalization, useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';

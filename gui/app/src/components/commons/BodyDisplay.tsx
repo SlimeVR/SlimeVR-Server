@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
 import {
   boneRegistryAtom,

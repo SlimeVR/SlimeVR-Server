@@ -1,7 +1,6 @@
 package dev.slimevr.tracker.behaviours
 
 import com.jme3.math.FastMath
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.resets.ResetBodyParts
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ArmsResetMode
 
 /**

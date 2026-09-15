@@ -1,7 +1,6 @@
 package dev.slimevr.solarxr.driver
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.driver_protocol.BoneBatteryUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate

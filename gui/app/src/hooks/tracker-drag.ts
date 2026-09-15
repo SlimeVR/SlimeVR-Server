@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { selectAtom } from 'jotai/utils';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { createPointerDrag } from './pointer-drag';
 
 export interface TrackerDragPayload {
@@ -10,10 +10,10 @@ export interface TrackerDragPayload {
 
 export const trackerDrag = createPointerDrag<TrackerDragPayload, BodyPart>({
   attribute: 'data-drop-body-part',
-  serialize: (part) => part,
+  serialize: (part) => BodyPart[part],
   parse: (raw) => {
-    const part = (BodyPart as unknown as Record<string, string>)[raw];
-    return typeof part === 'string' ? (part as BodyPart) : null;
+    const part = (BodyPart as unknown as Record<string, number>)[raw];
+    return typeof part === 'number' ? part : null;
   },
 });
 

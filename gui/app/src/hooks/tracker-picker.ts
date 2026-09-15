@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import { createContext, useContext, useMemo, useState } from 'react';
-import { BodyPart } from '@/utils/body-part';
+import { BodyPart } from 'solarxr-protocol';
 import { useAtomValue } from 'jotai';
 import { useConfig } from './config';
 import {

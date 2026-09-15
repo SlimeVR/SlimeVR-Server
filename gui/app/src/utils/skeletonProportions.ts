@@ -1,5 +1,4 @@
-import { BodyPart } from '@/utils/body-part';
-import { BoneT } from 'solarxr-protocol';
+import { BodyPart, BoneT } from 'solarxr-protocol';
 import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 
 /**

@@ -1,6 +1,5 @@
 package dev.slimevr.stayaligned
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.StayAlignedConfig
@@ -12,6 +11,7 @@ import dev.slimevr.tracker.stayaligned.TrackerYawCorrection
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals

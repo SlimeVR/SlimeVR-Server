@@ -1,6 +1,5 @@
 package dev.slimevr.tracker.stayaligned
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.StayAlignedConfig
@@ -18,6 +17,7 @@ import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import dev.slimevr.util.Side
 import dev.slimevr.util.side
 import io.github.axisangles.ktmath.Quaternion
+import solarxr_protocol.datatypes.BodyPart
 
 /**
  * Entry point for Stay Aligned. More specifically, computeYawCorrection is.

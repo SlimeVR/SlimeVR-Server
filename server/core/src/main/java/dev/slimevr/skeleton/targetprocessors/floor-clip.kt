@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton.targetprocessors
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
@@ -8,6 +7,7 @@ import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.IKTargets
 import dev.slimevr.skeleton.SkeletonTargetProcessor
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 
 class FloorClipTargetProcessor(
 	val settings: Settings,

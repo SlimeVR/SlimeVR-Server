@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton.fkprocessors
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
@@ -20,6 +19,7 @@ import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds

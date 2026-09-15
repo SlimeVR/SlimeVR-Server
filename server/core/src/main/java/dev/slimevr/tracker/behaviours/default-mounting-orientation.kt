@@ -1,6 +1,5 @@
 package dev.slimevr.tracker.behaviours
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 
 class TrackerDefaultMountingOrientationBehaviour(private val registry: BoneRegistry) : TrackerBehaviour {

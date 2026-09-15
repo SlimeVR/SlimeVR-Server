@@ -2,7 +2,6 @@ package dev.slimevr.keybind
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.config.Settings
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.ResetType
 

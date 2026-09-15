@@ -1,11 +1,11 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.bones.mapValues
 import dev.slimevr.bones.mutateCopy
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBoneRotation -> {

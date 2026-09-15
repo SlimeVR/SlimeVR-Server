@@ -1,8 +1,8 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import io.github.axisangles.ktmath.Quaternion
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import kotlin.time.Duration
 

@@ -1,7 +1,7 @@
 import { Control, Controller, useForm } from 'react-hook-form';
 import { Clickable } from '@/components/commons/Clickable';
-import { BodyPart } from '@/utils/body-part';
 import {
+  BodyPart,
   ChangeSkeletonProportionsRequestT,
   ResetType,
   RpcMessage,
