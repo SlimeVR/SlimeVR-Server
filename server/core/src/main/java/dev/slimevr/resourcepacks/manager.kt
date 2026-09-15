@@ -8,6 +8,7 @@ import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.resourcepacks.compiler.ResourcePackCompilationException
 import dev.slimevr.resourcepacks.compiler.compileResourcePacks
 import kotlinx.coroutines.CancellationException
+import kotlin.time.measureTimedValue
 
 data class LoadedResourcePacks(val catalog: ResourcePackCatalog, val skeleton: CompiledSkeleton)
 
@@ -16,11 +17,14 @@ object ResourcePackManager {
 	suspend fun loadCompiled(storage: ConfigStorage, classLoader: ClassLoader): LoadedResourcePacks {
 		val catalog = load(storage, classLoader)
 		val coreCatalog = catalog.copy(userPacks = emptyList())
-		val core = compileResourcePacks(coreCatalog)
+		val (core, coreCompileTime) = measureTimedValue { compileResourcePacks(coreCatalog) }
+		AppLogger.config.info("Compiled core pack in ${coreCompileTime.inWholeMilliseconds}ms.")
 		if (catalog.userPacks.isEmpty()) return LoadedResourcePacks(catalog, core)
 		return try {
 			val ordered = orderResourcePacks(catalog)
-			LoadedResourcePacks(ordered, compileResourcePacks(ordered))
+			val (compiled, compileTime) = measureTimedValue { compileResourcePacks(ordered) }
+			AppLogger.config.info("Compiled resource pack stack in ${compileTime.inWholeMilliseconds}ms.")
+			LoadedResourcePacks(ordered, compiled)
 		} catch (e: ResourcePackCompilationException) {
 			AppLogger.config.error("Unable to compile resource packs; loading bundled core pack only:\n${e.message}")
 			val failure = ResourcePackFailure(
@@ -34,10 +38,8 @@ object ResourcePackManager {
 	}
 
 	suspend fun load(storage: ConfigStorage, classLoader: ClassLoader): ResourcePackCatalog {
-		val coreStart = System.currentTimeMillis()
-		val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(classLoader))
-		val coreTime = System.currentTimeMillis() - coreStart
-		AppLogger.config.info("Loaded core pack in ${coreTime}ms.")
+		val (core, coreTime) = measureTimedValue { ResourcePackParser.parse(ClasspathResourcePackSource.core(classLoader)) }
+		AppLogger.config.info("Loaded core pack in ${coreTime.inWholeMilliseconds}ms.")
 
 		val root = "resourcepacks"
 		if (!storage.ensureDirectory(root)) {
@@ -66,14 +68,12 @@ object ResourcePackManager {
 			}
 			if (!containsManifest) continue
 			try {
-				val packStart = System.currentTimeMillis()
-				val parsed = ResourcePackParser.parse(StorageResourcePackSource(storage, packRoot))
-				val packTime = System.currentTimeMillis() - packStart
+				val (parsed, packTime) = measureTimedValue { ResourcePackParser.parse(StorageResourcePackSource(storage, packRoot)) }
 
 				if (parsed.manifest.value.formatVersion < ResourcePackParser.CURRENT_FORMAT_VERSION) {
-					AppLogger.config.warn("Loaded pack '${folder.name}' in ${packTime}ms. Format version ${parsed.manifest.value.formatVersion} was automatically migrated to ${ResourcePackParser.CURRENT_FORMAT_VERSION}. This older format is deprecated and may lose support in future updates.")
+					AppLogger.config.warn("Loaded pack '${folder.name}' in ${packTime.inWholeMilliseconds}ms. Format version ${parsed.manifest.value.formatVersion} was automatically migrated to ${ResourcePackParser.CURRENT_FORMAT_VERSION}. This older format is deprecated and may lose support in future updates.")
 				} else {
-					AppLogger.config.info("Loaded pack '${folder.name}' in ${packTime}ms.")
+					AppLogger.config.info("Loaded pack '${folder.name}' in ${packTime.inWholeMilliseconds}ms.")
 				}
 				packs += parsed
 			} catch (e: ResourcePackParseException) {
