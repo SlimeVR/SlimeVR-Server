@@ -1,26 +1,23 @@
 package dev.slimevr.resourcepacks
 
-import com.github.erosb.jsonsKema.JsonParser
-import com.github.erosb.jsonsKema.Validator
 import dev.slimevr.config.ConfigStorage
 import dev.slimevr.config.StorageEntry
 import dev.slimevr.config.StorageEntryType
 import dev.slimevr.config.TextFileHandle
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 import java.net.URLClassLoader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ResourcePackParserTest {
 	@Test
-	fun `bundled core pack is packaged and parsed`() = runBlocking {
+	fun `bundled core pack is packaged and parsed`(): Unit = runBlocking {
 		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 
 		assertEquals("slimevr:core", core.manifest.value.id)
@@ -33,7 +30,9 @@ class ResourcePackParserTest {
 		val head = core.bones.single { it.value.key == "slimevr:head" }.value
 		val fallback = assertIs<CopyRotationFallback>(head.rotationFallback)
 		assertEquals("slimevr:neck", fallback.source)
-		assertIs<ScalarOrVector.Vector>(head.outputs!!.vrchat!!.emit.getValue("/tracking/trackers/head/position").value!!.single().scale)
+		val step = head.outputs!!.vrchat!!.emit.getValue("/tracking/trackers/head/position").value!!.single()
+		assertIs<PipelineStep.Scale>(step)
+		assertIs<ScalarOrVector.Vector>(step.operand)
 		assertIs<HeightRatioProportionDefault>(core.proportions.single { it.value.key == "slimevr:upper_chest" }.value.default)
 	}
 
@@ -94,20 +93,6 @@ class ResourcePackParserTest {
 	}
 
 	@Test
-	fun `core typed documents round trip through their trusted schemas`() = runBlocking {
-		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(javaClass.classLoader))
-		val json = Json {
-			encodeDefaults = false
-			explicitNulls = true
-		}
-
-		assertRoundTrip(core.manifest, PackManifest.serializer(), ResourceKind.MANIFEST, json)
-		assertRoundTrips(core.bones, BoneDefinition.serializer(), ResourceKind.BONE, json)
-		assertRoundTrips(core.proportions, ProportionDefinition.serializer(), ResourceKind.PROPORTION, json)
-		assertRoundTrips(core.languages, LanguageResourceSerializer, ResourceKind.LANGUAGE, json)
-	}
-
-	@Test
 	fun `overrides and all vmc input parent states decode`() = runBlocking {
 		val pack = ResourcePackParser().parse(
 			InMemoryResourcePackSource(
@@ -125,8 +110,8 @@ class ResourcePackParserTest {
 		assertEquals(VmcInputParent.Omitted, pack.bones.single { it.value.key == "example:omitted" }.value.outputs!!.vmc!!.inputParent)
 		assertEquals(VmcInputParent.ExplicitNull, pack.bones.single { it.value.key == "example:null" }.value.outputs!!.vmc!!.inputParent)
 		assertEquals(VmcInputParent.Bone("example:parent"), pack.bones.single { it.value.key == "example:key" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals("example:parent", pack.boneOverrides.single().value.set!!.parent)
-		assertIs<FixedProportionDefault>(pack.proportionOverrides.single().value.set!!.default)
+		assertEquals("example:parent", pack.boneOverrides.single().value.set!!.getValue("parent").jsonPrimitive.content)
+		assertIs<FixedProportionDefault>(ResourcePackJson.decodeFromJsonElement<ProportionDefault>(pack.proportionOverrides.single().value.set!!.getValue("default")))
 	}
 
 	@Test
@@ -150,22 +135,28 @@ class ResourcePackParserTest {
 		assertIs<FirstActiveRotationFallback>(bone.rotationFallback)
 		assertIs<HingeConstraint>(bone.constraint)
 		val steps = bone.outputs!!.vrchat!!.emit.getValue("/example").value!!
-		assertEquals(Axis.X, steps[0].euler!!.axis)
-		assertEquals(EulerOrder.YXZ, steps[1].euler!!.order)
-		assertIs<ScalarOrVector.Scalar>(steps[2].scale)
-		assertIs<ScalarOrVector.Vector>(steps[3].divide)
-		assertEquals(listOf(-1f, 1f), steps[5].clamp)
-		assertEquals(0f, steps[6].greaterThan)
-		assertEquals(2f, steps[7].lessThan)
+		val bareAxis = steps[0]
+		assertIs<PipelineStep.Euler>(bareAxis)
+		assertEquals(Axis.X, bareAxis.spec.axis)
+		val orderedEuler = steps[1]
+		assertIs<PipelineStep.Euler>(orderedEuler)
+		assertEquals(EulerOrder.YXZ, orderedEuler.spec.order)
+		val scale = steps[2]
+		assertIs<PipelineStep.Scale>(scale)
+		assertIs<ScalarOrVector.Scalar>(scale.operand)
+		val divide = steps[3]
+		assertIs<PipelineStep.Divide>(divide)
+		assertIs<ScalarOrVector.Vector>(divide.operand)
+		val clamp = steps[5]
+		assertIs<PipelineStep.Clamp>(clamp)
+		assertEquals(listOf(-1f, 1f), clamp.bounds)
+		val greaterThan = steps[6]
+		assertIs<PipelineStep.GreaterThan>(greaterThan)
+		assertEquals(0f, greaterThan.threshold)
+		val lessThan = steps[7]
+		assertIs<PipelineStep.LessThan>(lessThan)
+		assertEquals(2f, lessThan.threshold)
 	}
-}
-
-private fun <T> assertRoundTrips(resources: List<SourcedResource<T>>, serializer: KSerializer<T>, kind: ResourceKind, json: Json) = resources.forEach { assertRoundTrip(it, serializer, kind, json) }
-
-private fun <T> assertRoundTrip(resource: SourcedResource<T>, serializer: KSerializer<T>, kind: ResourceKind, json: Json) {
-	val encoded = json.encodeToString(serializer, resource.value)
-	assertNull(Validator.forSchema(PackSchemas.schema(kind)).validate(JsonParser(encoded).parse()), resource.path)
-	assertEquals(resource.value, json.decodeFromString(serializer, encoded), resource.path)
 }
 
 private fun manifest(id: String) = """

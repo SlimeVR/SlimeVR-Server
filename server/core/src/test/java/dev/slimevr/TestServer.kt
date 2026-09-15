@@ -29,6 +29,7 @@ import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
 import dev.slimevr.resourcepacks.ClasspathResourcePackSource
 import dev.slimevr.resourcepacks.CompiledSkeleton
+import dev.slimevr.resourcepacks.ParsedResourcePack
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourcePackParser
 import dev.slimevr.resourcepacks.compileResourcePacks
@@ -110,12 +111,13 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	return userConfig
 }
 
+val testCoreResourcePack: ParsedResourcePack by lazy {
+	kotlinx.coroutines.runBlocking { ResourcePackParser().parse(ClasspathResourcePackSource.core(object {}.javaClass.classLoader)) }
+}
+
 /** The bundled core pack, compiled once and reused by every test that needs a [CompiledSkeleton]. */
 val testCompiledSkeleton: CompiledSkeleton by lazy {
-	kotlinx.coroutines.runBlocking {
-		val core = ResourcePackParser().parse(ClasspathResourcePackSource.core(object {}.javaClass.classLoader))
-		compileResourcePacks(ResourcePackCatalog(core, emptyList(), emptyList()))
-	}
+	compileResourcePacks(ResourcePackCatalog(testCoreResourcePack, emptyList(), emptyList()))
 }
 
 fun buildTestSkeleton(scope: CoroutineScope, definition: CompiledSkeleton = testCompiledSkeleton, userConfig: UserConfig = buildTestUserConfig(scope)): Skeleton {

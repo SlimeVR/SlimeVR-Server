@@ -103,16 +103,17 @@ enum class EmitSource {
 	ROTATION,
 }
 
-@Serializable
-data class PipelineStep(
-	val euler: EulerSpec? = null,
-	val scale: ScalarOrVector? = null,
-	val divide: ScalarOrVector? = null,
-	val offset: ScalarOrVector? = null,
-	val clamp: List<Float>? = null,
-	val greaterThan: Float? = null,
-	val lessThan: Float? = null,
-)
+/** One pipeline transform step; the schema requires exactly one operation per step. */
+@Serializable(with = PipelineStepSerializer::class)
+sealed interface PipelineStep {
+	data class Euler(val spec: EulerSpec) : PipelineStep
+	data class Scale(val operand: ScalarOrVector) : PipelineStep
+	data class Divide(val operand: ScalarOrVector) : PipelineStep
+	data class Offset(val operand: ScalarOrVector) : PipelineStep
+	data class Clamp(val bounds: List<Float>) : PipelineStep
+	data class GreaterThan(val threshold: Float) : PipelineStep
+	data class LessThan(val threshold: Float) : PipelineStep
+}
 
 @Serializable(with = EulerSpecSerializer::class)
 data class EulerSpec(val axis: Axis? = null, val order: EulerOrder? = null, val unit: EulerUnit? = null)
@@ -155,29 +156,3 @@ data class VrchatInput(val address: String)
 
 @Serializable
 data class BoneInputs(val vrchat: VrchatInput? = null)
-
-@Serializable
-data class BoneOverrideSet(
-	val nameKey: String? = null,
-	val mirror: String? = null,
-	val batterySources: List<String>? = null,
-	val candidateSources: List<String>? = null,
-	val overridable: Boolean? = null,
-	val parent: String? = null,
-	val headOffset: Offset? = null,
-	val tailOffset: Offset? = null,
-	val rotationFallback: RotationFallback? = null,
-	val constraint: Constraint? = null,
-	val outputs: BoneOutputs? = null,
-	val inputs: BoneInputs? = null,
-)
-
-@Serializable
-data class ProportionOverrideSet(
-	val nameKey: String? = null,
-	val descriptionKey: String? = null,
-	val contributesToHeight: Boolean? = null,
-	val minimum: Float? = null,
-	val maximum: Float? = null,
-	val default: ProportionDefault? = null,
-)

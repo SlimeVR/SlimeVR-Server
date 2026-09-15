@@ -29,15 +29,14 @@ internal fun evaluateEmit(entry: CompiledEmitEntry, bone: BoneState, relativeTo:
 	return value.toOscArgs()
 }
 
-private fun applyStep(step: PipelineStep, value: PipelineValue): PipelineValue = when {
-	step.euler != null -> euler(value, step.euler)
-	step.scale != null -> arithmetic(value, step.scale, 1f) { left, right -> left * right }
-	step.divide != null -> arithmetic(value, step.divide, 1f) { left, right -> left / right }
-	step.offset != null -> arithmetic(value, step.offset, 0f) { left, right -> left + right }
-	step.clamp != null -> clamp(value, step.clamp)
-	step.greaterThan != null -> PipelineValue.Boolean((value as PipelineValue.Number).value > step.greaterThan)
-	step.lessThan != null -> PipelineValue.Boolean((value as PipelineValue.Number).value < step.lessThan)
-	else -> error("Pipeline step has no operation")
+private fun applyStep(step: PipelineStep, value: PipelineValue): PipelineValue = when (step) {
+	is PipelineStep.Euler -> euler(value, step.spec)
+	is PipelineStep.Scale -> arithmetic(value, step.operand, 1f) { left, right -> left * right }
+	is PipelineStep.Divide -> arithmetic(value, step.operand, 1f) { left, right -> left / right }
+	is PipelineStep.Offset -> arithmetic(value, step.operand, 0f) { left, right -> left + right }
+	is PipelineStep.Clamp -> clamp(value, step.bounds)
+	is PipelineStep.GreaterThan -> PipelineValue.Boolean((value as PipelineValue.Number).value > step.threshold)
+	is PipelineStep.LessThan -> PipelineValue.Boolean((value as PipelineValue.Number).value < step.threshold)
 }
 
 private fun euler(value: PipelineValue, spec: EulerSpec): PipelineValue {

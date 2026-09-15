@@ -10,26 +10,23 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonEncoder
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.float
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.put
 
 private fun Decoder.requireJson(): JsonDecoder = this as? JsonDecoder ?: throw SerializationException("Resource packs require a JSON decoder")
-private fun Encoder.requireJson(): JsonEncoder = this as? JsonEncoder ?: throw SerializationException("Resource packs require a JSON encoder")
 private fun JsonElement.objectValue(): JsonObject = this as? JsonObject ?: throw SerializationException("Expected a JSON object")
+
+private fun neverEncoded(): Nothing = error("Resource packs are never re-encoded")
 
 object VmcNamesSerializer : KSerializer<VmcNames> {
 	override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("VmcNames", PrimitiveKind.STRING)
 	override fun deserialize(decoder: Decoder) = decoder.requireJson().decodeJsonElement().let { VmcNames(if (it is JsonArray) it.map { name -> name.jsonPrimitive.content } else listOf(it.jsonPrimitive.content)) }
-	override fun serialize(encoder: Encoder, value: VmcNames) = encoder.requireJson().encodeJsonElement(if (value.values.size == 1) JsonPrimitive(value.values.single()) else encoder.requireJson().json.encodeToJsonElement(value.values))
+	override fun serialize(encoder: Encoder, value: VmcNames) = neverEncoded()
 }
 
 object VmcOutputSerializer : KSerializer<VmcOutput> {
@@ -44,21 +41,7 @@ object VmcOutputSerializer : KSerializer<VmcOutput> {
 		}
 		return VmcOutput(json.decodeFromJsonElement(objectValue["name"]!!), objectValue["outputParent"]?.jsonPrimitive?.contentOrNull, parent, objectValue["restRotation"]?.let { json.decodeFromJsonElement(it) })
 	}
-	override fun serialize(encoder: Encoder, value: VmcOutput) {
-		val json = encoder.requireJson().json
-		encoder.requireJson().encodeJsonElement(
-			buildJsonObject {
-				put("name", json.encodeToJsonElement(value.name))
-				value.outputParent?.let { put("outputParent", it) }
-				when (val parent = value.inputParent) {
-					VmcInputParent.Omitted -> Unit
-					VmcInputParent.ExplicitNull -> put("inputParent", JsonNull)
-					is VmcInputParent.Bone -> put("inputParent", parent.key)
-				}
-				value.restRotation?.let { put("restRotation", json.encodeToJsonElement(it)) }
-			},
-		)
-	}
+	override fun serialize(encoder: Encoder, value: VmcOutput) = neverEncoded()
 }
 
 object EulerSpecSerializer : KSerializer<EulerSpec> {
@@ -70,20 +53,7 @@ object EulerSpecSerializer : KSerializer<EulerSpec> {
 		val objectValue = value.objectValue()
 		return EulerSpec(objectValue["axis"]?.let { json.decodeFromJsonElement(it) }, objectValue["order"]?.let { json.decodeFromJsonElement(it) }, objectValue["unit"]?.let { json.decodeFromJsonElement(it) })
 	}
-	override fun serialize(encoder: Encoder, value: EulerSpec) {
-		val json = encoder.requireJson().json
-		if (value.order == null && value.unit == null && value.axis != null) {
-			encoder.requireJson().encodeJsonElement(json.encodeToJsonElement(value.axis))
-		} else {
-			encoder.requireJson().encodeJsonElement(
-				buildJsonObject {
-					value.axis?.let { put("axis", json.encodeToJsonElement(it)) }
-					value.order?.let { put("order", json.encodeToJsonElement(it)) }
-					value.unit?.let { put("unit", json.encodeToJsonElement(it)) }
-				},
-			)
-		}
-	}
+	override fun serialize(encoder: Encoder, value: EulerSpec) = neverEncoded()
 }
 
 object ScalarOrVectorSerializer : KSerializer<ScalarOrVector> {
@@ -93,12 +63,27 @@ object ScalarOrVectorSerializer : KSerializer<ScalarOrVector> {
 		val value = decoder.requireJson().decodeJsonElement()
 		return if (value is JsonPrimitive) ScalarOrVector.Scalar(value.float) else ScalarOrVector.Vector(json.decodeFromJsonElement(value))
 	}
-	override fun serialize(encoder: Encoder, value: ScalarOrVector) = encoder.requireJson().encodeJsonElement(
-		when (value) {
-			is ScalarOrVector.Scalar -> JsonPrimitive(value.value)
-			is ScalarOrVector.Vector -> encoder.requireJson().json.encodeToJsonElement(value.value)
-		},
-	)
+	override fun serialize(encoder: Encoder, value: ScalarOrVector) = neverEncoded()
+}
+
+object PipelineStepSerializer : KSerializer<PipelineStep> {
+	override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("PipelineStep", PrimitiveKind.STRING)
+	override fun deserialize(decoder: Decoder): PipelineStep {
+		val json = decoder.requireJson().json
+		val (key, value) = decoder.requireJson().decodeJsonElement().objectValue().entries.singleOrNull()
+			?: throw SerializationException("A pipeline step must have exactly one operation")
+		return when (key) {
+			"euler" -> PipelineStep.Euler(json.decodeFromJsonElement(value))
+			"scale" -> PipelineStep.Scale(json.decodeFromJsonElement(value))
+			"divide" -> PipelineStep.Divide(json.decodeFromJsonElement(value))
+			"offset" -> PipelineStep.Offset(json.decodeFromJsonElement(value))
+			"clamp" -> PipelineStep.Clamp(json.decodeFromJsonElement(value))
+			"greaterThan" -> PipelineStep.GreaterThan(json.decodeFromJsonElement(value))
+			"lessThan" -> PipelineStep.LessThan(json.decodeFromJsonElement(value))
+			else -> throw SerializationException("Unknown pipeline step operation '$key'")
+		}
+	}
+	override fun serialize(encoder: Encoder, value: PipelineStep) = neverEncoded()
 }
 
 /** A language file has `$schema` alongside otherwise flat translation entries. */
@@ -112,10 +97,5 @@ object LanguageResourceSerializer : KSerializer<LanguageResource> {
 		}
 		return LanguageResource(schema, translations)
 	}
-	override fun serialize(encoder: Encoder, value: LanguageResource) = encoder.requireJson().encodeJsonElement(
-		buildJsonObject {
-			value.schema?.let { put("$" + "schema", it) }
-			value.translations.forEach { (key, translation) -> put(key, translation) }
-		},
-	)
+	override fun serialize(encoder: Encoder, value: LanguageResource) = neverEncoded()
 }

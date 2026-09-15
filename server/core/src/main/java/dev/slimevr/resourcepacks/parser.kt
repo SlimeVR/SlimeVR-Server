@@ -3,15 +3,18 @@ package dev.slimevr.resourcepacks
 import com.github.erosb.jsonsKema.JsonParser
 import com.github.erosb.jsonsKema.Validator
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonObject
+
+internal val ResourcePackJson = Json {
+	ignoreUnknownKeys = false
+	explicitNulls = true
+}
 
 /** Validates trusted-schema JSON, then decodes a complete typed resource model. */
 class ResourcePackParser {
-	private val json = Json {
-		ignoreUnknownKeys = false
-		explicitNulls = true
-	}
+	private val json = ResourcePackJson
 
 	suspend fun parse(source: ResourcePackSource): ParsedResourcePack {
 		val entries = try {
@@ -39,12 +42,12 @@ class ResourcePackParser {
 			val document = validate(entry, kind, diagnostics) ?: continue
 			try {
 				when (kind) {
-					ResourceKind.MANIFEST -> manifest = SourcedResource(entry.path, json.decodeFromJsonElement(document))
-					ResourceKind.BONE -> bones += SourcedResource(entry.path, json.decodeFromJsonElement(document))
-					ResourceKind.PROPORTION -> proportions += SourcedResource(entry.path, json.decodeFromJsonElement(document))
-					ResourceKind.BONE_OVERRIDE -> boneOverrides += SourcedResource(entry.path, json.decodeFromJsonElement(document))
-					ResourceKind.PROPORTION_OVERRIDE -> proportionOverrides += SourcedResource(entry.path, json.decodeFromJsonElement(document))
-					ResourceKind.LANGUAGE -> languages += SourcedResource(entry.path, json.decodeFromJsonElement(document))
+					ResourceKind.MANIFEST -> manifest = SourcedResource(entry.path, json.decodeFromJsonElement(document), document)
+					ResourceKind.BONE -> bones += SourcedResource(entry.path, json.decodeFromJsonElement(document), document)
+					ResourceKind.PROPORTION -> proportions += SourcedResource(entry.path, json.decodeFromJsonElement(document), document)
+					ResourceKind.BONE_OVERRIDE -> boneOverrides += SourcedResource(entry.path, json.decodeFromJsonElement(document), document)
+					ResourceKind.PROPORTION_OVERRIDE -> proportionOverrides += SourcedResource(entry.path, json.decodeFromJsonElement(document), document)
+					ResourceKind.LANGUAGE -> languages += SourcedResource(entry.path, json.decodeFromJsonElement(document), document)
 				}
 			} catch (e: Exception) {
 				diagnostics += ResourcePackDiagnostic(entry.path, message = "Schema/model drift while decoding: ${e.message}")
@@ -54,9 +57,9 @@ class ResourcePackParser {
 		return ParsedResourcePack(source.description, requireNotNull(manifest), bones.toList(), proportions.toList(), boneOverrides.toList(), proportionOverrides.toList(), languages.toList())
 	}
 
-	private fun validate(entry: ResourcePackEntry, kind: ResourceKind, diagnostics: MutableList<ResourcePackDiagnostic>): JsonElement? {
-		val instance = try {
-			JsonParser(entry.contents).parse()
+	private fun validate(entry: ResourcePackEntry, kind: ResourceKind, diagnostics: MutableList<ResourcePackDiagnostic>): JsonObject? {
+		val (instance, document) = try {
+			JsonParser(entry.contents).parse() to json.parseToJsonElement(entry.contents).jsonObject
 		} catch (e: Exception) {
 			diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
 			return null
@@ -66,11 +69,6 @@ class ResourcePackParser {
 			diagnostics += ResourcePackDiagnostic(entry.path, message = "$kind schema: $failure")
 			return null
 		}
-		return try {
-			json.parseToJsonElement(entry.contents)
-		} catch (e: Exception) {
-			diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
-			null
-		}
+		return document
 	}
 }

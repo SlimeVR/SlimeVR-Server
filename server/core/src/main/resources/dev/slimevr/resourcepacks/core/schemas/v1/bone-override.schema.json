@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "SlimeVR bone override",
-  "description": "Overrides selected properties of an existing bone. Definitions are resolved first, then overrides are applied in pack order before the resulting skeleton is validated. `set` merges where the bone schema declares a keyed map (`outputs` per output key, `emit` per address) and replaces whole everywhere deeper: a `value` pipeline or a `restRotation` list is always swapped atomically.",
+  "description": "Overrides selected properties of an existing bone. Definitions are resolved first, then overrides are applied in pack order before the resulting skeleton is validated. `set` merges key by key at the bone's root, at `outputs`, at `outputs.vrchat`, and at `outputs.vrchat.emit` (by address); everywhere deeper it replaces the value wholesale, a `value` pipeline or a `restRotation` list included.",
   "type": "object",
   "additionalProperties": false,
   "required": ["target"],
@@ -21,7 +21,7 @@
       "type": "object",
       "minProperties": 1,
       "additionalProperties": false,
-      "description": "Property values to set on the target bone. `outputs` and the `emit` map inside each output entry merge per key. Every other property, and everything nested below those two merge points, is replaced atomically.",
+      "description": "Property values to set on the target bone. `outputs`, `outputs.vrchat`, and `outputs.vrchat.emit` merge per key; everything else, and everything nested deeper than those, is replaced atomically.",
       "properties": {
         "nameKey": {"$ref": "bone.schema.json#/properties/nameKey"},
         "mirror": {"$ref": "bone.schema.json#/properties/mirror"},

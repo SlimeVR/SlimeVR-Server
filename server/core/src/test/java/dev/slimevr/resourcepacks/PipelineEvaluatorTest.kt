@@ -40,13 +40,13 @@ private fun assertFloats(expected: List<Float>, actual: List<OscArg>) {
 
 class PipelineEvaluatorTest {
 	@Test
-	fun `tracker transforms reproduce the retired position and rotation encoder`() {
+	fun `position and rotation pipelines transform a tracker relative to its parent`() {
 		val position = Vector3(1f, 2f, 3f)
 		val rotation = Quaternion.rotationAroundXAxis(0.3f) * Quaternion.rotationAroundYAxis(-0.4f)
 		val state = bone(position, rotation)
 
 		val positionArgs = evaluateEmit(
-			entry(EmitSource.POSITION, listOf(PipelineStep(scale = ScalarOrVector.Vector(PartialVector3(z = -1f))))),
+			entry(EmitSource.POSITION, listOf(PipelineStep.Scale(ScalarOrVector.Vector(PartialVector3(z = -1f))))),
 			state,
 			null,
 		)
@@ -56,8 +56,8 @@ class PipelineEvaluatorTest {
 			entry(
 				EmitSource.ROTATION,
 				listOf(
-					PipelineStep(scale = ScalarOrVector.Vector(PartialVector3(x = -1f, y = -1f))),
-					PipelineStep(euler = EulerSpec(order = EulerOrder.YXZ)),
+					PipelineStep.Scale(ScalarOrVector.Vector(PartialVector3(x = -1f, y = -1f))),
+					PipelineStep.Euler(EulerSpec(order = EulerOrder.YXZ)),
 				),
 			),
 			state,
@@ -70,24 +70,28 @@ class PipelineEvaluatorTest {
 	}
 
 	@Test
-	fun `toe pipeline reproduces bend splay curl and tiptoe thresholds`() {
+	fun `toe pipeline evaluates bend splay curl and tiptoe thresholds`() {
 		fun toeEntry(axis: Axis, step: PipelineStep) = CompiledEmitEntry(
 			EmitSource.ROTATION,
 			relativeTo = BoneId(2u),
-			steps = listOf(PipelineStep(euler = EulerSpec(axis = axis)), step),
+			steps = listOf(PipelineStep.Euler(EulerSpec(axis = axis)), step),
 		)
 		val foot = bone(rotation = Quaternion.IDENTITY)
 		val bentToe = bone(rotation = Quaternion.rotationAroundXAxis(16f * PI.toFloat() / 180f))
 		val tiptoe = bone(rotation = Quaternion.rotationAroundXAxis(-15f * PI.toFloat() / 180f))
 
-		assertEquals(OscArg.True, evaluateEmit(toeEntry(Axis.X, PipelineStep(greaterThan = 15f)), bentToe, foot).single())
-		assertEquals(OscArg.True, evaluateEmit(toeEntry(Axis.X, PipelineStep(lessThan = -14f)), tiptoe, foot).single())
+		assertEquals(OscArg.True, evaluateEmit(toeEntry(Axis.X, PipelineStep.GreaterThan(15f)), bentToe, foot).single())
+		assertEquals(OscArg.True, evaluateEmit(toeEntry(Axis.X, PipelineStep.LessThan(-14f)), tiptoe, foot).single())
 		assertEquals(
 			OscArg.True,
-			evaluateEmit(toeEntry(Axis.Z, PipelineStep(greaterThan = 7f)), bone(rotation = Quaternion.rotationAroundZAxis(8f * PI.toFloat() / 180f)), foot).single(),
+			evaluateEmit(toeEntry(Axis.Z, PipelineStep.GreaterThan(7f)), bone(rotation = Quaternion.rotationAroundZAxis(8f * PI.toFloat() / 180f)), foot).single(),
 		)
 		val curl = evaluateEmit(
-			CompiledEmitEntry(EmitSource.ROTATION, BoneId(2u), listOf(PipelineStep(euler = EulerSpec(axis = Axis.X)), PipelineStep(divide = ScalarOrVector.Scalar(90f)), PipelineStep(clamp = listOf(-1f, 1f)))),
+			CompiledEmitEntry(
+				EmitSource.ROTATION,
+				BoneId(2u),
+				listOf(PipelineStep.Euler(EulerSpec(axis = Axis.X)), PipelineStep.Divide(ScalarOrVector.Scalar(90f)), PipelineStep.Clamp(listOf(-1f, 1f))),
+			),
 			bone(rotation = Quaternion.rotationAroundXAxis(100f * PI.toFloat() / 180f)),
 			foot,
 		)

@@ -67,46 +67,73 @@ data class CompiledEmitEntry(
 	val steps: List<PipelineStep>,
 )
 
+/** A bone's compiled VRChat output: whether it's forced on, and its OSC emissions by address. */
+data class CompiledVrchatOutput(val required: Boolean, val emit: Map<String, CompiledEmitEntry>)
+
 /**
- * The compiled bone registry, proportion catalog, per-bone offset, constraint, rotation-fallback
- * rule, routing fact, and VMC output metadata produced by [compileResourcePacks].
- * [copyRotationFallbacks] (bone to
- * source) and [firstActiveRotationFallbacks] (bone to source list) are each in
- * ancestor-before-descendant order on their own; every core bone's `copy` source that itself needs
- * resolving first is its own parent, and a `firstActive` bone's only source that ever needs
- * resolving first is its parent foot, both always a `copy` bone, so running every `copy` fallback
- * before any `firstActive` one is enough to keep both schedules correctly ordered relative to
- * each other without interleaving them into one.
+ * Everything [compileResourcePacks] resolves for one bone: its offsets, constraint, routing
+ * facts, and output/input declarations. A plain bone with none of these has every field null.
+ */
+data class CompiledBone(
+	val tailOffset: CompiledOffset? = null,
+	val headOffset: CompiledOffset? = null,
+	val constraint: Constraint? = null,
+	val mirror: BoneId? = null,
+	/** Null if the bone declares no `candidateSources` at all; distinct from an empty list. */
+	val candidateSources: List<BoneId>? = null,
+	val batterySources: List<BoneId>? = null,
+	val overridable: Boolean = false,
+	val driverOutput: Boolean = false,
+	val vmc: CompiledVmcOutput? = null,
+	val vrchat: CompiledVrchatOutput? = null,
+	val vrchatInput: String? = null,
+)
+
+/**
+ * The compiled bone registry, proportion catalog, and per-bone data produced by
+ * [compileResourcePacks].
  */
 class CompiledSkeleton(
 	val registry: BoneRegistry,
 	val proportions: Map<String, CompiledProportion>,
-	private val tailOffsets: BoneMap<CompiledOffset>,
-	private val headOffsets: BoneMap<CompiledOffset>,
-	val constraints: BoneMap<Constraint>,
+	private val bones: BoneMap<CompiledBone>,
 	val copyRotationFallbacks: List<Pair<BoneId, BoneId>>,
 	val firstActiveRotationFallbacks: List<Pair<BoneId, List<BoneId>>>,
-	private val driverOutputs: BoneSet,
-	private val vmcOutputs: BoneSet,
-	private val vrchatOutputs: BoneSet,
-	private val vrchatRequired: BoneSet,
-	val overridableBones: BoneSet,
-	private val candidateSources: BoneMap<List<BoneId>>,
-	private val batterySources: BoneMap<List<BoneId>>,
-	private val emitEntries: BoneMap<Map<String, CompiledEmitEntry>>,
-	val vrchatInputAddresses: Map<String, BoneId>,
-	private val vmcOutputMetadata: BoneMap<CompiledVmcOutput>,
-	/** Root(hip)-to-leaf order over [vmcOutputMetadata]'s `inputParent` tree; outgoing VMC needs no
-	 * order (each bone's local transform only reads its own parent), but decoding VMC input must
-	 * accumulate world transforms parent-before-child. */
 	val vmcInputOrder: List<BoneId>,
-	private val mirrorOf: BoneMap<BoneId>,
 ) {
+	private val boneEntries = bones.entries
+
+	val constraints: BoneMap<Constraint> = BoneMap.of<Constraint>(registry).also { map ->
+		for ((boneId, bone) in boneEntries) bone.constraint?.let { map[boneId] = it }
+	}
+
+	private val driverOutputs = BoneSet.of(registry, boneEntries.filter { it.value.driverOutput }.map { it.key })
+
+	/** Bones with a VMC output declaration. Equal to [acceptedBones] of [RoutingOutput.VMC]. */
+	val vmcNamedBones: Set<BoneId> = BoneSet.of(registry, boneEntries.filter { it.value.vmc != null }.map { it.key })
+
+	/** Bones with a VRChat OSC emission declared. Equal to [acceptedBones] of [RoutingOutput.VRC_OSC]. */
+	val vrchatEmittingBones: Set<BoneId> = BoneSet.of(registry, boneEntries.filter { it.value.vrchat != null }.map { it.key })
+
+	private val vrchatRequired = BoneSet.of(registry, boneEntries.filter { it.value.vrchat?.required == true }.map { it.key })
+
+	val overridableBones: BoneSet = BoneSet.of(registry, boneEntries.filter { it.value.overridable }.map { it.key })
+
+	/** Bones with a `candidateSources` list, each naming the bones that make it a routing candidate. */
+	val candidateBones: Set<BoneId> = BoneSet.of(registry, boneEntries.filter { it.value.candidateSources != null }.map { it.key })
+
+	val vrchatInputAddresses: Map<String, BoneId> =
+		boneEntries.mapNotNull { (boneId, bone) -> bone.vrchatInput?.let { it to boneId } }.toMap()
+
+	/** Exact VMC/Unity bone name to the bone it names. */
+	val unityNameToBone: Map<String, BoneId> =
+		boneEntries.flatMap { (boneId, bone) -> bone.vmc?.names.orEmpty().map { it to boneId } }.toMap()
+
 	/** Bones [output] can receive, from each bone's `outputs.driver`/`outputs.vmc`/`outputs.vrchat`. */
 	fun acceptedBones(output: RoutingOutput): Set<BoneId> = when (output) {
 		RoutingOutput.DRIVER -> driverOutputs
-		RoutingOutput.VMC -> vmcOutputs
-		RoutingOutput.VRC_OSC -> vrchatOutputs
+		RoutingOutput.VMC -> vmcNamedBones
+		RoutingOutput.VRC_OSC -> vrchatEmittingBones
 	}
 
 	/**
@@ -114,30 +141,21 @@ class CompiledSkeleton(
 	 */
 	fun requiredBones(output: RoutingOutput): Set<BoneId> = when (output) {
 		RoutingOutput.DRIVER -> emptySet()
-		RoutingOutput.VMC -> vmcOutputs
+		RoutingOutput.VMC -> vmcNamedBones
 		RoutingOutput.VRC_OSC -> vrchatRequired
 	}
 
-	/** Bones with a `candidateSources` list, each naming the bones that make it a routing candidate. */
-	val candidateBones: Set<BoneId> get() = candidateSources.keys
-
-	fun candidateSourcesOf(boneId: BoneId): List<BoneId> = candidateSources[boneId] ?: emptyList()
+	fun candidateSourcesOf(boneId: BoneId): List<BoneId> = bones[boneId]?.candidateSources ?: emptyList()
 
 	/** Ordered bones whose assigned tracker's battery represents [boneId]'s battery. */
-	fun batterySourcesOf(boneId: BoneId): List<BoneId> = batterySources[boneId] ?: emptyList()
+	fun batterySourcesOf(boneId: BoneId): List<BoneId> = bones[boneId]?.batterySources ?: emptyList()
 
-	fun emitEntriesOf(boneId: BoneId): Map<String, CompiledEmitEntry> = emitEntries[boneId] ?: emptyMap()
-	val vrchatEmittingBones: Set<BoneId> get() = emitEntries.keys
+	fun emitEntriesOf(boneId: BoneId): Map<String, CompiledEmitEntry> = bones[boneId]?.vrchat?.emit ?: emptyMap()
 
-	fun vmcOutputOf(boneId: BoneId): CompiledVmcOutput? = vmcOutputMetadata[boneId]
-	val vmcNamedBones: Set<BoneId> get() = vmcOutputMetadata.keys
-
-	/** Exact VMC/Unity bone name to the bone it names. */
-	val unityNameToBone: Map<String, BoneId> =
-		vmcOutputMetadata.entries.flatMap { (boneId, output) -> output.names.map { it to boneId } }.toMap()
+	fun vmcOutputOf(boneId: BoneId): CompiledVmcOutput? = bones[boneId]?.vmc
 
 	/** A bone's VMC mirror-image bone, itself if it has none. */
-	fun mirrorOf(boneId: BoneId): BoneId = mirrorOf[boneId] ?: boneId
+	fun mirrorOf(boneId: BoneId): BoneId = bones[boneId]?.mirror ?: boneId
 
 	/** Every proportion's default value at [height], keyed by proportion key. */
 	fun defaultProportionValues(height: Float = REFERENCE_HEIGHT): Map<String, Float> {
@@ -168,24 +186,26 @@ class CompiledSkeleton(
 		return sum
 	}
 
+	private fun isResolvable(offset: CompiledOffset, values: Map<String, Float>): Boolean = offset.terms.isEmpty() || offset.terms.any { it.proportion in values }
+
 	fun toBoneOffsets(values: Map<String, Float>): BoneOffsets {
 		val tail = BoneMap.of<Vector3>(registry)
 		val head = BoneMap.of<Vector3>(registry)
-		for ((boneId, offset) in tailOffsets) if (isResolvable(offset, values)) tail[boneId] = resolve(offset, values)
-		for ((boneId, offset) in headOffsets) if (isResolvable(offset, values)) head[boneId] = resolve(offset, values)
+		for ((boneId, bone) in boneEntries) {
+			bone.tailOffset?.let { if (isResolvable(it, values)) tail[boneId] = resolve(it, values) }
+			bone.headOffset?.let { if (isResolvable(it, values)) head[boneId] = resolve(it, values) }
+		}
 		return BoneOffsets(tail, head)
 	}
-
-	private fun isResolvable(offset: CompiledOffset, values: Map<String, Float>): Boolean = offset.terms.isEmpty() || offset.terms.any { it.proportion in values }
 
 	/**
 	 * Inverse of [toBoneOffsets]: recovers each proportion's value from resolved offsets
 	 */
 	fun toProportionValues(tail: BoneMap<Vector3>, head: BoneMap<Vector3>): Map<String, Float> {
 		val result = mutableMapOf<String, Float>()
-		fun collect(resolved: BoneMap<Vector3>, offsets: BoneMap<CompiledOffset>) {
+		fun collect(resolved: BoneMap<Vector3>, offsetOf: (CompiledBone) -> CompiledOffset?) {
 			for ((boneId, vector) in resolved) {
-				val offset = offsets[boneId] ?: continue
+				val offset = bones[boneId]?.let(offsetOf) ?: continue
 				val remainder = vector - offset.base
 				for (term in offset.terms) {
 					if (term.proportion in result) continue
@@ -195,8 +215,8 @@ class CompiledSkeleton(
 				}
 			}
 		}
-		collect(tail, tailOffsets)
-		collect(head, headOffsets)
+		collect(tail) { it.tailOffset }
+		collect(head) { it.headOffset }
 		return result
 	}
 }

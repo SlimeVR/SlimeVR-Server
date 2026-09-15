@@ -2,6 +2,7 @@ package dev.slimevr.resourcepacks
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class PackManifest(
@@ -48,7 +49,7 @@ data class ProportionDefinition(
 data class BoneOverride(
 	@SerialName("$" + "schema") val schema: String? = null,
 	val target: String,
-	val set: BoneOverrideSet? = null,
+	val set: JsonObject? = null,
 	val remove: List<List<String>>? = null,
 )
 
@@ -56,6 +57,6 @@ data class BoneOverride(
 data class ProportionOverride(
 	@SerialName("$" + "schema") val schema: String? = null,
 	val target: String,
-	val set: ProportionOverrideSet? = null,
+	val set: JsonObject? = null,
 	val remove: List<String>? = null,
 )

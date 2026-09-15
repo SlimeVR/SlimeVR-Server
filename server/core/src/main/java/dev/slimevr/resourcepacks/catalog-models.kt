@@ -1,8 +1,9 @@
 package dev.slimevr.resourcepacks
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
-data class SourcedResource<T>(val path: String, val value: T)
+data class SourcedResource<T>(val path: String, val value: T, val raw: JsonObject)
 
 @Serializable(with = LanguageResourceSerializer::class)
 data class LanguageResource(val schema: String?, val translations: Map<String, String>)
