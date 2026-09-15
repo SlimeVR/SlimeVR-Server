@@ -692,7 +692,7 @@ settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine cu
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode
-settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a positional head tracker.
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control-subtitle = Tap based resets
