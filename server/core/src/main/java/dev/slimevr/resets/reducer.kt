@@ -1,6 +1,6 @@
 package dev.slimevr.resets
 
-import dev.slimevr.bones.boneId
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.util.timeSource
 import solarxr_protocol.rpc.ResetType
 

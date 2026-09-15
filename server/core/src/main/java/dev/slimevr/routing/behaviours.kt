@@ -16,7 +16,7 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 	override fun observe(receiver: BoneRoutingManager) {
 		val server = appContext.server
 		val settings = appContext.config.settings
-		val registry = appContext.bones.current
+		val registry = appContext.skeleton.registry
 
 		combine(
 			settings.context.state.map { it.data.boneRoutingConfig }.distinctUntilChanged(),

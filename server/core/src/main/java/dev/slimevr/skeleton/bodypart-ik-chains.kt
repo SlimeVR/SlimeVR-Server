@@ -1,8 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import solarxr_protocol.datatypes.BodyPart
 
 typealias BodyPartChain = List<BodyPart>

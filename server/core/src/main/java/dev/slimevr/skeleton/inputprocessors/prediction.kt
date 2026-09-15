@@ -1,11 +1,11 @@
 package dev.slimevr.skeleton.inputprocessors
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -39,7 +39,7 @@ class PredictionInputProcessor(val settings: Settings) :
 		BodyPart.RIGHT_UPPER_ARM.boneId,
 		BodyPart.LEFT_LOWER_ARM.boneId,
 		BodyPart.RIGHT_LOWER_ARM.boneId,
-		-> 1.4f
+			-> 1.4f
 
 		else -> 1f
 	}

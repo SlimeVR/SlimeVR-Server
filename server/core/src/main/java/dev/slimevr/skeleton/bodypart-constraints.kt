@@ -1,8 +1,6 @@
 package dev.slimevr.skeleton
 
 import com.jme3.math.FastMath
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.BoneId
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 

@@ -1,13 +1,13 @@
 package dev.slimevr.skeleton.fkprocessors
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonFkProcessor
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.resolveMasses
 import dev.slimevr.skeleton.targetprocessors.FLOOR_CALIBRATION_OFFSET

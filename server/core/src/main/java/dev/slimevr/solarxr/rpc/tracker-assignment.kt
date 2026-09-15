@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
-import dev.slimevr.bones.BoneId
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker

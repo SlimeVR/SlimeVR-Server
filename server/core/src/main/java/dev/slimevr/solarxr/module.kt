@@ -4,7 +4,6 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
 import dev.slimevr.Subscription
 import dev.slimevr.VRServerActions
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
@@ -62,6 +61,7 @@ import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import dev.slimevr.skeleton.BoneRegistry as SkeletonBoneRegistry
 
 data class SolarXRBridgeState(
 	val dataFeedConfigs: List<DataFeedConfig> = emptyList(),
@@ -136,7 +136,7 @@ class SolarXRBridge(
 	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
 ) {
 	val isReady: Boolean get() = context.state.value.isReady
-	val registry: BoneRegistry get() = appContext.bones.current
+	val registry: SkeletonBoneRegistry get() = appContext.skeleton.registry
 
 	// Jobs are mutable handles with no meaningful equality; storing them in state
 	// would break distinctUntilChanged and data class copy semantics.

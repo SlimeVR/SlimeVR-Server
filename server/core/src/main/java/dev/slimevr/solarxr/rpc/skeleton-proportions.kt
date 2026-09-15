@@ -1,12 +1,12 @@
 package dev.slimevr.solarxr.rpc
 
-import dev.slimevr.bones.ALL_BODY_PARTS
-import dev.slimevr.bones.bodyPartMap
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.skeleton.ALL_BODY_PARTS
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.skeleton.height

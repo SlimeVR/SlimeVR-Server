@@ -1,8 +1,8 @@
 package dev.slimevr.tracker.behaviours
 
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour

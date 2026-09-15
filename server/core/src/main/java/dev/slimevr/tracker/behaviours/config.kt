@@ -1,10 +1,10 @@
 package dev.slimevr.tracker.behaviours
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState

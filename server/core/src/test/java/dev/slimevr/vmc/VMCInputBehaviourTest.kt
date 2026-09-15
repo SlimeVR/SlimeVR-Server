@@ -3,9 +3,6 @@ package dev.slimevr.vmc
 import dev.slimevr.AppContextProvider
 import dev.slimevr.TestAppContext
 import dev.slimevr.VRServer
-import dev.slimevr.bones.BoneRegistryManager
-import dev.slimevr.bones.bodyPartMap
-import dev.slimevr.bones.boneId
 import dev.slimevr.buildTestAppConfig
 import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestVrServerStub
@@ -16,6 +13,8 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.quaternionApproxEqual
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -48,7 +47,6 @@ private fun buildHarness(scope: CoroutineScope): Harness {
 		override val server: VRServer = server
 		override val config: AppConfig = config
 		override val skeleton: Skeleton = skeleton
-		override val bones = BoneRegistryManager.create(scope, skeleton.registry)
 	}
 	return Harness(server, appContext, VMCManager.create(scope))
 }

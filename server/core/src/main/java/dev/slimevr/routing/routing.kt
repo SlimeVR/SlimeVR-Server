@@ -1,9 +1,9 @@
 package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.BoneRoutingConfig
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.isActive
@@ -121,7 +121,7 @@ fun intendedRoutesFlow(appContext: AppContextProvider): Flow<Routes> = combine(
 	appContext.config.settings.context.state.map { it.data.boneRoutingConfig }.distinctUntilChanged(),
 	appContext.boneRouting.context.state.map { it.routes },
 ) { config, sent ->
-	val registry = appContext.bones.current
+	val registry = appContext.skeleton.registry
 	val requested = if (config.automatic) sent else manualRoutesAsBoneIds(config.manualRoutes, registry)
 	effectiveRoutes(requested + overrideRoutes(config, registry), ALL_ACTIVE, registry)
 }.distinctUntilChanged()

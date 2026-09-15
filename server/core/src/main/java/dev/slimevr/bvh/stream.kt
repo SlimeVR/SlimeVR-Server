@@ -1,8 +1,8 @@
 package dev.slimevr.bvh
 
 import com.jme3.math.FastMath
-import dev.slimevr.bones.BoneId
 import dev.slimevr.config.TextFileHandle
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion

@@ -4,15 +4,15 @@ package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerState
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.routing.Routes
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.VRCConfigState

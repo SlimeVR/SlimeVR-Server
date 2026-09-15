@@ -1,11 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.BoneSet
-import dev.slimevr.bones.boneId
-import dev.slimevr.bones.mutateCopy
-import dev.slimevr.bones.resolveToBoneIds
 import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger

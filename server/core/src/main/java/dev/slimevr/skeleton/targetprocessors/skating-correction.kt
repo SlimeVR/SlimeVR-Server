@@ -1,14 +1,14 @@
 package dev.slimevr.skeleton.targetprocessors
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.COMState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.IKTargets
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonTargetProcessor
 import dev.slimevr.skeleton.Velocity
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.computeComState
 import dev.slimevr.skeleton.resolveMasses

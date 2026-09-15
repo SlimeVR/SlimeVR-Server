@@ -1,11 +1,11 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.bones.boneId
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

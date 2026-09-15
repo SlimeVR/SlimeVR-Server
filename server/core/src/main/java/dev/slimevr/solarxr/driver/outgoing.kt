@@ -1,11 +1,11 @@
 package dev.slimevr.solarxr.driver
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
-import dev.slimevr.bones.forEachBone
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.boneId
+import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.createBone

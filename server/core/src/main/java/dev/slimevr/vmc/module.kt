@@ -60,7 +60,7 @@ class VMCManager(val context: VMCContext) {
 		val settings = appContext.config.settings
 		val behaviours = listOf(
 			VMCVrmBehaviour(settings),
-			VMCOutputBehaviour(appContext.skeleton, appContext.bones.current, settings, appContext.boneRouting),
+			VMCOutputBehaviour(appContext.skeleton, settings, appContext.boneRouting),
 			VMCInputBehaviour(appContext, settings),
 		)
 

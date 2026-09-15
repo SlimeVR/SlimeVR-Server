@@ -1,4 +1,4 @@
-package dev.slimevr.bones
+package dev.slimevr.skeleton
 
 import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
@@ -76,12 +76,7 @@ class BoneMap<V> private constructor(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun get(key: BoneId): V? {
-		val index = key.value.toInt()
-		if (index == 0) return null
-		require(index in 1 until array.size) { "$key is outside this registry" }
-		return array[index] as V?
-	}
+	override fun get(key: BoneId): V? = array.getOrNull(key.value.toInt()) as V?
 
 	operator fun set(key: BoneId, value: V) {
 		array[indexOf(key)] = value

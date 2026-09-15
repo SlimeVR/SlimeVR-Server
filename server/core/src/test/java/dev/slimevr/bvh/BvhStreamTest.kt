@@ -1,11 +1,11 @@
 package dev.slimevr.bvh
 
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
-import dev.slimevr.bones.mutateCopy
 import dev.slimevr.config.TextFileHandle
+import dev.slimevr.skeleton.BoneRegistry
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.skeleton.defaultSkeletonState
+import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart

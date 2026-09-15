@@ -1,9 +1,9 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.bodyPartMap
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.bodyPartMap
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 

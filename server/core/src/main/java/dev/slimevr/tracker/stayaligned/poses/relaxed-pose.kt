@@ -1,8 +1,8 @@
 package dev.slimevr.tracker.stayaligned.poses
 
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts

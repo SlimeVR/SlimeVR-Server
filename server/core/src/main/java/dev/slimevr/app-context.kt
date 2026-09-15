@@ -1,6 +1,5 @@
 package dev.slimevr
 
-import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
@@ -24,14 +23,12 @@ interface Phase1ContextProvider {
 	val server: VRServer
 	val config: AppConfig
 	val serialServer: SerialServer
-	val bones: BoneRegistryManager
 }
 
 data class Phase1Context(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
-	override val bones: BoneRegistryManager,
 ) : Phase1ContextProvider
 
 interface AppContextProvider : Phase1ContextProvider {
@@ -60,7 +57,6 @@ class AppContext(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
-	override val bones: BoneRegistryManager,
 	override val serverInfos: ServerInfos,
 	override val featureFlags: FeatureFlags,
 	override val keybindManager: KeybindManager,

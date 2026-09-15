@@ -1,8 +1,8 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.util.formatExceptionMessage
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged

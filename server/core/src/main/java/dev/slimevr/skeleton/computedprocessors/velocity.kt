@@ -1,6 +1,6 @@
 package dev.slimevr.skeleton.computedprocessors
 
-import dev.slimevr.bones.BoneId
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonComputedProcessor

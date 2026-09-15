@@ -1,8 +1,8 @@
 package dev.slimevr.tracker.stayaligned
 
-import dev.slimevr.bones.boneId
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleAverage
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getAllActiveFor
 import dev.slimevr.tracker.getFirstActiveFor

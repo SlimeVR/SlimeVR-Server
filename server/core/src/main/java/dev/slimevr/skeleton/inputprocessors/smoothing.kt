@@ -1,7 +1,7 @@
 package dev.slimevr.skeleton.inputprocessors
 
-import dev.slimevr.bones.BoneId
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor

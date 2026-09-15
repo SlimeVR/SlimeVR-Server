@@ -1,6 +1,6 @@
 package dev.slimevr.tracker.behaviours
 
-import dev.slimevr.bones.BoneId
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour

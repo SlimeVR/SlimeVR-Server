@@ -1,9 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.times
 import solarxr_protocol.datatypes.BodyPart

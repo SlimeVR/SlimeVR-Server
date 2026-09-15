@@ -1,13 +1,13 @@
 package dev.slimevr.tracker
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BoneId
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
 import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
@@ -133,7 +133,7 @@ class Tracker(
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
-			val registry = appContext.bones.current
+			val registry = appContext.skeleton.registry
 			val trackerConfigs = settings.context.state.value.data.trackers
 			val savedConfig = trackerConfigs[hardwareId]
 			val baseState = DEFAULT_STATE.copy(
