@@ -7,7 +7,6 @@ import dev.slimevr.resourcepacks.Offset
 import dev.slimevr.resourcepacks.RotationFallback
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class BoneDefinition(
@@ -25,12 +24,4 @@ data class BoneDefinition(
 	val constraint: Constraint? = null,
 	val outputs: BoneOutputs? = null,
 	val inputs: BoneInputs? = null,
-)
-
-@Serializable
-data class BoneOverride(
-	@SerialName("$" + "schema") val schema: String? = null,
-	val target: String,
-	val set: JsonObject? = null,
-	val remove: List<List<String>>? = null,
 )

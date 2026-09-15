@@ -12,4 +12,6 @@ data class PackManifest(
 	val descriptionKey: String,
 	val version: List<Int>,
 	val authors: List<String>,
+	val before: List<String> = emptyList(),
+	val after: List<String> = emptyList(),
 )

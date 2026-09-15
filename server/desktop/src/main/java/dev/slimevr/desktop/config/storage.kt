@@ -15,6 +15,11 @@ import java.nio.file.StandardCopyOption
 class DesktopConfigStorage(
 	private val root: File,
 ) : ConfigStorage {
+	override suspend fun readBytes(path: String): ByteArray? = withContext(Dispatchers.IO) {
+		val file = resolve(path)
+		if (file.exists()) file.readBytes() else null
+	}
+
 	override suspend fun read(path: String): String? = withContext(Dispatchers.IO) {
 		val file = resolve(path)
 		if (file.exists()) file.readText() else null

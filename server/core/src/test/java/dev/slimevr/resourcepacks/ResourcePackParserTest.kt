@@ -4,9 +4,9 @@ import dev.slimevr.config.ConfigStorage
 import dev.slimevr.config.StorageEntry
 import dev.slimevr.config.StorageEntryType
 import dev.slimevr.config.TextFileHandle
+import dev.slimevr.resourcepacks.compiler.resolveResourcePacks
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.JsonObject
 import java.io.File
 import java.net.URLClassLoader
 import kotlin.test.Test
@@ -17,27 +17,93 @@ import kotlin.test.assertTrue
 
 class ResourcePackParserTest {
 	@Test
+	fun `a new resource type resolves without changing the skeleton compiler`() = runBlocking {
+		val notes = object : ResourceType<JsonObject>("note") {
+			override fun matches(path: String) = path.startsWith("data/example/notes/")
+			override fun validateAndDecode(path: String, document: JsonObject, diagnostics: MutableList<in ResourcePackDiagnostic>) = SourcedResource(path, document, document)
+		}
+		val pack = ResourcePackParser.parse(
+			InMemoryResourcePackSource(
+				mapOf(
+					"manifest.json" to manifest("example:notes"),
+					"data/example/notes/base.json" to """{"title":"Base"}""",
+					"data/example/notes/derived.json" to """{"${'$'}extend":"data/example/notes/base.json","body":"Content"}""",
+				),
+			),
+			ResourceTypes.ALL + notes,
+		)
+		val resolved = resolveResourcePacks(ResourcePackCatalog(pack, emptyList(), emptyList()))
+		assertEquals(setOf("title", "body"), resolved.get(notes).getValue("data/example/notes/derived.json").resource.value.keys)
+	}
+
+	@Test
+	fun `compilation failures fall back to a working core skeleton`() = runBlocking {
+		for (bone in listOf("{}", """{"key":"example:bad","nameKey":"example:bad","parent":"example:missing"}""")) {
+			val storage = MemoryStorage(
+				mapOf(
+					"resourcepacks/bad/manifest.json" to manifest("example:bad"),
+					"resourcepacks/bad/data/example/bones/bad.json" to bone,
+				),
+			)
+			val loaded = ResourcePackManager.loadCompiled(storage, javaClass.classLoader)
+			assertEquals(61, loaded.skeleton.registry.maxId)
+			assertTrue(loaded.catalog.userPacks.isEmpty())
+			assertTrue(loaded.catalog.failures.single().diagnostics.any { "example:bad" in it.path })
+		}
+	}
+
+	@Test
+	fun `pack ordering cycles fall back to core during startup`() = runBlocking {
+		val storage = MemoryStorage(
+			mapOf(
+				"resourcepacks/bad/manifest.json" to manifest("example:bad").dropLast(1) + ",\"before\":[\"slimevr:core\"]}",
+			),
+		)
+		val loaded = ResourcePackManager.loadCompiled(storage, javaClass.classLoader)
+		assertEquals(61, loaded.skeleton.registry.maxId)
+		assertTrue(loaded.catalog.failures.flatMap { it.diagnostics }.any { "cycle" in it.message })
+	}
+
+	@Test
+	fun `unrecognized assets are retained without reading their payload`() = runBlocking {
+		var reads = 0
+		val bytes = byteArrayOf(0, -1, 42)
+		val source = object : ResourcePackSource {
+			override val description = "lazy binary asset"
+			override suspend fun entries() = listOf(
+				ResourcePackEntry("manifest.json", manifest("example:asset")),
+				ResourcePackEntry("assets/example/picture.bin") {
+					reads++
+					bytes
+				},
+			)
+		}
+		val pack = ResourcePackParser.parse(source)
+		assertEquals(0, reads)
+		assertTrue(pack.entries.getValue("assets/example/picture.bin").readBytes().contentEquals(bytes))
+		assertEquals(1, reads)
+	}
+
+	@Test
 	fun `bundled core pack is packaged and parsed`(): Unit = runBlocking {
 		val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(javaClass.classLoader))
 
 		assertEquals("slimevr:core", core.manifest.value.id)
-		assertEquals(61, core.get(ResourceTypes.BONE).size)
-		assertEquals(18, core.get(ResourceTypes.PROPORTION).size)
-		assertEquals(1, core.get(ResourceTypes.LANGUAGE).size)
-		assertTrue(core.get(ResourceTypes.BONE_OVERRIDE).isEmpty())
-		assertTrue(core.get(ResourceTypes.PROPORTION_OVERRIDE).isEmpty())
+		assertEquals(61, core.decoded(ResourceTypes.BONE).size)
+		assertEquals(18, core.decoded(ResourceTypes.PROPORTION).size)
+		assertEquals(1, core.decoded(ResourceTypes.LANGUAGE).size)
 
-		val head = core.get(ResourceTypes.BONE).single { it.value.key == "slimevr:head" }.value
+		val head = core.decoded(ResourceTypes.BONE).single { it.value.key == "slimevr:head" }.value
 		val fallback = assertIs<CopyRotationFallback>(head.rotationFallback)
 		assertEquals("slimevr:neck", fallback.source)
 		val step = head.outputs!!.vrchat!!.emit.getValue("/tracking/trackers/head/position").value!!.single()
 		assertIs<PipelineStep.Scale>(step)
 		assertIs<ScalarOrVector.Vector>(step.operand)
-		assertIs<HeightRatioProportionDefault>(core.get(ResourceTypes.PROPORTION).single { it.value.key == "slimevr:upper_chest" }.value.default)
+		assertIs<HeightRatioProportionDefault>(core.decoded(ResourceTypes.PROPORTION).single { it.value.key == "slimevr:upper_chest" }.value.default)
 	}
 
 	@Test
-	fun `parser aggregates malformed and misplaced resource diagnostics`() {
+	fun `parser reports malformed manifest before reading resources`() {
 		val error = assertFailsWith<ResourcePackParseException> {
 			runBlocking {
 				ResourcePackParser.parse(
@@ -51,7 +117,7 @@ class ResourcePackParserTest {
 			}
 		}
 
-		assertEquals(listOf("data/not-a-definition.json", "manifest.json"), error.diagnostics.map { it.path })
+		assertEquals(listOf("manifest.json"), error.diagnostics.map { it.path })
 	}
 
 	@Test
@@ -60,8 +126,8 @@ class ResourcePackParserTest {
 		assertTrue(jar.isFile, "jvmJar must run before the test")
 		URLClassLoader(arrayOf(jar.toURI().toURL()), null).use { loader ->
 			val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(loader))
-			assertEquals(61, core.get(ResourceTypes.BONE).size)
-			assertEquals(18, core.get(ResourceTypes.PROPORTION).size)
+			assertEquals(61, core.decoded(ResourceTypes.BONE).size)
+			assertEquals(18, core.decoded(ResourceTypes.PROPORTION).size)
 		}
 	}
 
@@ -93,25 +159,21 @@ class ResourcePackParserTest {
 	}
 
 	@Test
-	fun `overrides and all vmc input parent states decode`() = runBlocking {
+	fun `all vmc input parent states decode`() = runBlocking {
 		val pack = ResourcePackParser.parse(
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:variants"),
-					"data/bones/omitted.json" to bone("example:omitted", "{\"name\":\"Omitted\"}"),
-					"data/bones/null.json" to bone("example:null", "{\"name\":\"Null\",\"inputParent\":null}"),
-					"data/bones/key.json" to bone("example:key", "{\"name\":\"Key\",\"inputParent\":\"example:parent\"}"),
-					"data/overrides/bones/one.json" to "{\"target\":\"example:omitted\",\"set\":{\"parent\":\"example:parent\"}}",
-					"data/overrides/proportions/one.json" to "{\"target\":\"example:height\",\"set\":{\"default\":{\"type\":\"fixed\",\"value\":1}}}",
+					"data/example/bones/omitted.json" to bone("example:omitted", "{\"name\":\"Omitted\"}"),
+					"data/example/bones/null.json" to bone("example:null", "{\"name\":\"Null\",\"inputParent\":null}"),
+					"data/example/bones/key.json" to bone("example:key", "{\"name\":\"Key\",\"inputParent\":\"example:parent\"}"),
 				),
 			),
 		)
 
-		assertEquals(VmcInputParent.Omitted, pack.get(ResourceTypes.BONE).single { it.value.key == "example:omitted" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals(VmcInputParent.ExplicitNull, pack.get(ResourceTypes.BONE).single { it.value.key == "example:null" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals(VmcInputParent.Bone("example:parent"), pack.get(ResourceTypes.BONE).single { it.value.key == "example:key" }.value.outputs!!.vmc!!.inputParent)
-		assertEquals("example:parent", pack.get(ResourceTypes.BONE_OVERRIDE).single().value.set!!.getValue("parent").jsonPrimitive.content)
-		assertIs<FixedProportionDefault>(ResourcePackJson.decodeFromJsonElement<ProportionDefault>(pack.get(ResourceTypes.PROPORTION_OVERRIDE).single().value.set!!.getValue("default")))
+		assertEquals(VmcInputParent.Omitted, pack.decoded(ResourceTypes.BONE).single { it.value.key == "example:omitted" }.value.outputs!!.vmc!!.inputParent)
+		assertEquals(VmcInputParent.ExplicitNull, pack.decoded(ResourceTypes.BONE).single { it.value.key == "example:null" }.value.outputs!!.vmc!!.inputParent)
+		assertEquals(VmcInputParent.Bone("example:parent"), pack.decoded(ResourceTypes.BONE).single { it.value.key == "example:key" }.value.outputs!!.vmc!!.inputParent)
 	}
 
 	@Test
@@ -120,7 +182,7 @@ class ResourcePackParserTest {
 			InMemoryResourcePackSource(
 				mapOf(
 					"manifest.json" to manifest("example:branches"),
-					"data/bones/branch.json" to """
+					"data/example/bones/branch.json" to """
 				{"key":"example:branch","nameKey":"example:name",
 				"rotationFallback":{"type":"firstActive","sources":["example:first","example:last"]},
 				"constraint":{"type":"hinge","minDegrees":-1,"maxDegrees":1,"axis":{"x":1,"y":0,"z":0}},
@@ -131,7 +193,7 @@ class ResourcePackParserTest {
 				),
 			),
 		)
-		val bone = pack.get(ResourceTypes.BONE).single().value
+		val bone = pack.decoded(ResourceTypes.BONE).single().value
 		assertIs<FirstActiveRotationFallback>(bone.rotationFallback)
 		assertIs<HingeConstraint>(bone.constraint)
 		val steps = bone.outputs!!.vrchat!!.emit.getValue("/example").value!!

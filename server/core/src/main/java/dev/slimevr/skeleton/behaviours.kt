@@ -39,10 +39,9 @@ class ProportionsBehaviour(private val userConfig: UserConfig, private val defin
 			.distinctUntilChangedBy { it.data.proportions }
 			.map { it.data.proportions }
 			.onEach { proportions ->
-				if (proportions.isNotEmpty()) {
-					receiver.context.dispatch(SkeletonActions.SetProportions(definition.toBoneOffsets(proportions), definition.height(proportions)))
-					receiver.resetProcessors(ResetType.FULL)
-				}
+				val values = definition.defaultProportionValues() + proportions.filterKeys { it in definition.proportions }
+				receiver.context.dispatch(SkeletonActions.SetProportions(definition.toBoneOffsets(values), definition.height(values), values))
+				receiver.resetProcessors(ResetType.FULL)
 			}
 			.launchIn(receiver.context.scope)
 	}

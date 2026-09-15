@@ -195,26 +195,4 @@ class CompiledSkeleton(
 		}
 		return BoneOffsets(tail, head)
 	}
-
-	/**
-	 * Inverse of [toBoneOffsets]: recovers each proportion's value from resolved offsets
-	 */
-	fun toProportionValues(tail: BoneMap<Vector3>, head: BoneMap<Vector3>): Map<String, Float> {
-		val result = mutableMapOf<String, Float>()
-		fun collect(resolved: BoneMap<Vector3>, offsetOf: (CompiledBone) -> CompiledOffset?) {
-			for ((boneId, vector) in resolved) {
-				val offset = bones[boneId]?.let(offsetOf) ?: continue
-				val remainder = vector - offset.base
-				for (term in offset.terms) {
-					if (term.proportion in result) continue
-					val lenSq = term.direction.lenSq()
-					if (lenSq == 0f) continue
-					result[term.proportion] = remainder.dot(term.direction) / lenSq
-				}
-			}
-		}
-		collect(tail) { it.tailOffset }
-		collect(head) { it.headOffset }
-		return result
-	}
 }

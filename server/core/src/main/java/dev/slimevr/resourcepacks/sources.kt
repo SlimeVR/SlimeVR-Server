@@ -7,7 +7,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-data class ResourcePackEntry(val path: String, val contents: String)
+class ResourcePackEntry(val path: String, private val reader: suspend () -> ByteArray) {
+	constructor(path: String, contents: String) : this(path, { contents.encodeToByteArray() })
+	suspend fun readBytes(): ByteArray = reader()
+	suspend fun readText(): String = readBytes().decodeToString(throwOnInvalidSequence = true)
+}
 
 interface ResourcePackSource {
 	val description: String
@@ -35,9 +39,9 @@ class StorageResourcePackSource(
 
 					StorageEntryType.FILE -> {
 						val path = normalizePath(child)
-						val contents = storage.read(configPath(root, path))
-							?: throw IOException("Unable to read $path")
-						result += ResourcePackEntry(path, contents)
+						result += ResourcePackEntry(path) {
+							storage.readBytes(configPath(root, path)) ?: throw IOException("Unable to read $path")
+						}
 					}
 
 					StorageEntryType.OTHER -> throw IOException("Unsupported filesystem entry in resource pack: $child")
@@ -60,9 +64,12 @@ class ClasspathResourcePackSource private constructor(
 		} ?: throw IOException("Bundled core resource-pack index is missing ($indexPath)")
 		paths.sorted().map { path ->
 			val resource = "$CORE_ROOT/$path"
-			val contents = classLoader.getResourceAsStream(resource)?.bufferedReader()?.use { it.readText() }
-				?: throw IOException("Bundled core resource is missing ($resource)")
-			ResourcePackEntry(path, contents)
+			ResourcePackEntry(path) {
+				withContext(Dispatchers.IO) {
+					classLoader.getResourceAsStream(resource)?.use { it.readBytes() }
+						?: throw IOException("Bundled core resource is missing ($resource)")
+				}
+			}
 		}
 	}
 

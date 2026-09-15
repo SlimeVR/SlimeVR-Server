@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 
 interface ConfigStorage {
 	suspend fun read(path: String): String?
+	suspend fun readBytes(path: String): ByteArray? = read(path)?.encodeToByteArray()
 	suspend fun write(path: String, content: String)
 	suspend fun backup(path: String)
 	suspend fun exists(path: String): Boolean

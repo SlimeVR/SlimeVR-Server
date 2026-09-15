@@ -14,6 +14,8 @@ import java.net.URI
 import java.nio.charset.StandardCharsets
 
 abstract class ResourceType<T : Any>(val id: String) {
+	open val mergeLayers: Boolean = false
+	open fun migrateJson(document: JsonObject, fromVersion: Int): JsonObject = document
 	abstract fun matches(path: String): Boolean
 	abstract fun validateAndDecode(path: String, document: JsonObject, diagnostics: MutableList<in ResourcePackDiagnostic>): SourcedResource<T>?
 }
@@ -29,14 +31,11 @@ abstract class JsonResourceType<T : Any>(
 		SchemaLoader(JsonParser(document, base.resolve(schemaName)).parse(), PackSchemas.config.copy(initialBaseURI = base.resolve(schemaName))).load()
 	}
 
-	open fun migrateJson(document: JsonObject, fromVersion: Int): JsonObject {
-		return document // Default is no migration
-	}
-
 	override fun validateAndDecode(path: String, document: JsonObject, diagnostics: MutableList<in ResourcePackDiagnostic>): SourcedResource<T>? {
 		val instance = try {
 			JsonParser(document.toString()).parse()
 		} catch (e: Exception) {
+			diagnostics += ResourcePackDiagnostic(path, message = "Invalid JSON: ${e.message}")
 			return null
 		}
 		val failure = Validator.forSchema(schema).validate(instance)
@@ -69,6 +68,7 @@ object ResourceTypes {
 		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<ProportionDefinition>(document)
 	}
 	val LANGUAGE: JsonResourceType<LanguageResource> = object : JsonResourceType<LanguageResource>("language", "language.schema.json") {
+		override val mergeLayers = true
 		override fun matches(path: String) = path.startsWith("assets/") && path.contains("/lang/") && path.endsWith(".json") && path.count { it == '/' } == 3
 		override fun decode(document: JsonObject) = ResourcePackJson.decodeFromJsonElement<LanguageResource>(document)
 	}
@@ -85,12 +85,4 @@ internal object PackSchemas {
 			)
 	}
 	val config = SchemaLoaderConfig.createDefaultConfig(documents.mapKeys { (name, _) -> URI("classpath:/$ROOT/").resolve(name) })
-
-	@Deprecated("Use ResourceType instead")
-	fun schema(id: String): Schema {
-		val type = ResourceTypes.ALL.first { it.id == id }
-		val base = URI("classpath:/$ROOT/")
-		val document = documents[type.schemaName]!!
-		return SchemaLoader(JsonParser(document, base.resolve(type.schemaName)).parse(), config.copy(initialBaseURI = base.resolve(type.schemaName))).load()
-	}
 }

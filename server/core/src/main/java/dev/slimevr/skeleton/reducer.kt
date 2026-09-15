@@ -46,7 +46,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 				offset = action.boneOffsets.tail[boneId] ?: bone.offset,
 			)
 		}
-		state.copy(boneInputs = newBones, skeletonHeight = action.skeletonHeight)
+		state.copy(boneInputs = newBones, skeletonHeight = action.skeletonHeight, proportionValues = action.values)
 	}
 
 	is SkeletonActions.PauseTracking -> state.copy(paused = action.pause, pausedProcessedBoneInputs = null)

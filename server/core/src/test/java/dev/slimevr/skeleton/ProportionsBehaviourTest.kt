@@ -33,6 +33,7 @@ class ProportionsBehaviourTest {
 
 		val newHeadOffset = skeleton.context.state.value.boneInputs[headId]!!.offset
 		assertEquals(defaultHeadOffset, newHeadOffset)
+		assertEquals(0.05f, skeleton.context.state.value.boneInputs[BodyPart.LEFT_LOWER_LEG.boneId]!!.offset.z)
 	}
 
 	@Test
@@ -51,5 +52,6 @@ class ProportionsBehaviourTest {
 		val upperLegId = BodyPart.LEFT_UPPER_LEG.boneId
 		val newUpperLegOffset = skeleton.context.state.value.boneInputs[upperLegId]!!.offset
 		assertEquals(0.5f, -newUpperLegOffset.y)
+		assertTrue(skeleton.context.state.value.skeletonHeight > 1f)
 	}
 }

@@ -8,12 +8,9 @@ import dev.slimevr.bones.key
 import dev.slimevr.resourcepacks.CopyRotationFallback
 import dev.slimevr.resourcepacks.EmitEntry
 import dev.slimevr.resourcepacks.FirstActiveRotationFallback
-import dev.slimevr.resourcepacks.JsonResourceType
 import dev.slimevr.resourcepacks.NoRotationFallback
-import dev.slimevr.resourcepacks.ParsedResourcePack
 import dev.slimevr.resourcepacks.ResourcePackCatalog
 import dev.slimevr.resourcepacks.ResourceTypes
-import dev.slimevr.resourcepacks.SourcedResource
 import dev.slimevr.resourcepacks.VmcOutput
 import dev.slimevr.resourcepacks.bones.CompiledBone
 import dev.slimevr.resourcepacks.bones.CompiledProportion
@@ -21,7 +18,6 @@ import dev.slimevr.resourcepacks.bones.CompiledSkeleton
 import dev.slimevr.resourcepacks.bones.CompiledVrchatOutput
 import dev.slimevr.resourcepacks.bones.compileConstraint
 import dev.slimevr.resourcepacks.bones.compileOffset
-import dev.slimevr.resourcepacks.bones.displayName
 import dev.slimevr.resourcepacks.bones.orderFallbackDependencies
 import dev.slimevr.resourcepacks.bones.origin
 import dev.slimevr.resourcepacks.bones.outputs.compileEmitEntries
@@ -30,9 +26,6 @@ import dev.slimevr.resourcepacks.bones.outputs.compileVmcOutputs
 import dev.slimevr.resourcepacks.bones.resolveBoneKey
 import dev.slimevr.resourcepacks.bones.resolveFallbackBone
 import dev.slimevr.resourcepacks.bones.validateHierarchy
-import dev.slimevr.resourcepacks.deepMerge
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import kotlin.collections.iterator
 import kotlin.collections.plusAssign
 import kotlin.collections.set
@@ -40,20 +33,12 @@ import solarxr_protocol.connection.BoneDefinition as WireBoneDefinition
 import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
 
 /** Compiles the ordered resource-pack stack into a runtime [CompiledSkeleton]. */
-fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
+fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton = compileSkeleton(resolveResourcePacks(catalog))
+
+internal fun compileSkeleton(resources: ResolvedResourcePacks): CompiledSkeleton {
+	val catalog = resources.catalog
 	val diagnostics = mutableListOf<ResourcePackCompilationDiagnostic>()
 	val packs = listOf(catalog.core) + catalog.userPacks
-	val packIds = mutableMapOf<String, ParsedResourcePack>()
-	for (pack in packs) {
-		val id = pack.manifest.value.id
-		if (packIds.put(id, pack) != null) {
-			diagnostics += ResourcePackCompilationDiagnostic(
-				id,
-				pack.manifest.path,
-				"Duplicate pack ID '$id'",
-			)
-		}
-	}
 	if (catalog.core.manifest.value.id != "slimevr:core") {
 		diagnostics += ResourcePackCompilationDiagnostic(
 			catalog.core.manifest.value.id,
@@ -62,8 +47,19 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		)
 	}
 
-	val bonesByKey = compileResourceMap(packs, ResourceTypes.BONE, "bone key", diagnostics) { it.key }
-	val proportionsByKey = compileResourceMap(packs, ResourceTypes.PROPORTION, "proportion key", diagnostics) { it.key }
+	val bonesByKey = resources.keyed(ResourceTypes.BONE) { it.key }
+	val proportionsByKey = resources.keyed(ResourceTypes.PROPORTION) { it.key }
+
+	val translations = resources.get(ResourceTypes.LANGUAGE).values
+		.filter { it.resource.path.endsWith("/en.json") }
+		.flatMap { contribution ->
+			contribution.resource.value.translations.map { (key, value) ->
+				val origin = contribution.originOrNull(listOf(key)) ?: contribution.validationOrigin()
+				Triple(key, value, packs.indexOf(origin.pack))
+			}
+		}
+		.sortedBy { it.third }
+		.associate { it.first to it.second }
 
 	val standardParts = BodyPart.entries.filter { it != BodyPart.NONE }
 	val standardPartsByKey = standardParts.associateBy(BodyPart::key)
@@ -109,13 +105,10 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 		WireBoneRegistry(
 			bones = allContributions.mapIndexed { index, contribution ->
 				val definition = contribution.resource.value
-				val standardPart = standardPartsByKey[definition.key]
 				WireBoneDefinition(
 					id = (index + 1).toUShort(),
 					key = definition.key,
-					displayName = standardPart?.name?.replace('_', ' ')?.lowercase() ?: displayName(
-						contribution,
-					),
+					displayName = translations[definition.nameKey] ?: definition.nameKey,
 					parent = definition.parent?.let(idByKey::getValue) ?: 0.toUShort(),
 				)
 			},
@@ -267,73 +260,4 @@ fun compileResourcePacks(catalog: ResourcePackCatalog): CompiledSkeleton {
 	}
 
 	return CompiledSkeleton(registry, proportions, boneMap, copyRotationFallbacks, firstActiveRotationFallbacks, vmcInputOrder)
-}
-
-private fun <T : Any> compileResourceMap(
-	packs: List<ParsedResourcePack>,
-	type: JsonResourceType<T>,
-	keyName: String,
-	diagnostics: MutableList<ResourcePackCompilationDiagnostic>,
-	keyExtractor: (T) -> String,
-): Map<String, Contribution<T>> {
-	class RawContribution(
-		val pack: ParsedResourcePack,
-		val path: String,
-		val raw: kotlinx.serialization.json.JsonObject,
-		val latestOverride: ResourceOrigin? = null,
-	)
-	val latestDefs = mutableMapOf<String, RawContribution>()
-
-	for (pack in packs) {
-		val objects = pack.objects[type] ?: emptyList()
-		for ((path, jsonObject) in objects) {
-			val origin = ResourceOrigin(pack, path)
-			val existing = latestDefs[path]
-			if (existing != null) {
-				latestDefs[path] = RawContribution(existing.pack, path, jsonObject, origin)
-			} else {
-				latestDefs[path] = RawContribution(pack, path, jsonObject, origin)
-			}
-		}
-	}
-
-
-	fun resolveExtend(path: String, visited: Set<String>): JsonObject {
-		val base = latestDefs[path]?.raw ?: return JsonObject(emptyMap())
-		val extendPath = base["\$extend"]?.jsonPrimitive?.content ?: return base
-		if (extendPath in visited) {
-			diagnostics += ResourcePackCompilationDiagnostic(latestDefs[path]!!.pack.manifest.value.id, path, "Cyclic \$extend detected: $extendPath")
-			return base
-		}
-		val parent = resolveExtend(extendPath, visited + path)
-		return deepMerge(parent, base)
-	}
-
-	val byKey = mutableMapOf<String, Contribution<T>>()
-	for ((path, rawCont) in latestDefs) {
-		val resolvedRaw = resolveExtend(path, emptySet())
-		val localDiags = mutableListOf<dev.slimevr.resourcepacks.ResourcePackDiagnostic>()
-		val decoded = type.validateAndDecode(path, resolvedRaw, localDiags)
-		for (diag in localDiags) {
-			val msg = if (diag.pointer.isNotEmpty()) "${diag.pointer}: ${diag.message}" else diag.message
-			diagnostics += ResourcePackCompilationDiagnostic(rawCont.pack.manifest.value.id, diag.path, msg)
-		}
-		if (decoded != null) {
-			val fullContribution = Contribution(
-				rawCont.pack,
-				SourcedResource(path, decoded.value, resolvedRaw),
-				emptyMap(),
-				rawCont.latestOverride
-			)
-			val key = keyExtractor(decoded.value)
-			if (key in byKey) {
-				val existing = byKey.getValue(key)
-				val diagnostic = existing.origin(null).diagnostic("Multiple definitions for $keyName '$key'")
-				diagnostics += diagnostic
-			} else {
-				byKey[key] = fullContribution
-			}
-		}
-	}
-	return byKey
 }

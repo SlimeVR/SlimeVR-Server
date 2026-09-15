@@ -8,18 +8,8 @@ class ParsedResourcePack(
 	val source: String,
 	val manifest: SourcedResource<PackManifest>,
 	val objects: Map<ResourceType<*>, List<Pair<String, JsonObject>>>,
-
-) {
-	fun <T : Any> getDecoded(type: JsonResourceType<T>): List<SourcedResource<T>> {
-		val result = mutableListOf<SourcedResource<T>>()
-		val objs = objects[type] ?: return emptyList()
-		for ((path, obj) in objs) {
-			val decoded = type.validateAndDecode(path, obj, mutableListOf())
-			if (decoded != null) result.add(decoded)
-		}
-		return result
-	}
-}
+	val entries: Map<String, ResourcePackEntry> = emptyMap(),
+)
 
 data class ResourcePackDiagnostic(val path: String, val pointer: String = "", val message: String)
 class ResourcePackParseException(val diagnostics: List<ResourcePackDiagnostic>) :

@@ -94,6 +94,7 @@ typealias ComputedSkeleton = BoneMap<BoneState>
 
 data class SkeletonState(
 	val boneInputs: InputSkeleton,
+	val proportionValues: Map<String, Float>,
 	val skeletonHeight: Float,
 	val floorLevel: Float,
 	val paused: Boolean,
@@ -116,13 +117,16 @@ fun defaultSkeletonState(definition: CompiledSkeleton): SkeletonState {
 	val defaults = definition.defaultProportionValues()
 	val offsets = definition.toBoneOffsets(defaults)
 	return SkeletonState(
-		boneInputs = offsets.tail.mapValues { boneId, tailOffset ->
-			DEFAULT_BONE_INPUT.copy(
-				boneId = boneId,
-				headOffset = offsets.head[boneId] ?: Vector3.ZERO,
-				offset = tailOffset,
-			)
+		boneInputs = BoneMap.of<BoneInput>(definition.registry).also { inputs ->
+			for ((_, boneId) in definition.registry.hierarchyFrom(definition.registry.root)) {
+				inputs[boneId] = DEFAULT_BONE_INPUT.copy(
+					boneId = boneId,
+					headOffset = offsets.head[boneId] ?: Vector3.ZERO,
+					offset = offsets.tail[boneId] ?: Vector3.ZERO,
+				)
+			}
 		},
+		proportionValues = defaults,
 		skeletonHeight = definition.height(defaults),
 		floorLevel = 0f,
 		paused = false,
@@ -175,7 +179,7 @@ sealed interface SkeletonActions {
 	data class SetBoneAcceleration(val boneId: BoneId, val acceleration: Vector3, val setActive: Boolean = true) : SkeletonActions
 	data class SetBonePosition(val boneId: BoneId, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
 	data class DisableBone(val boneId: BoneId) : SkeletonActions
-	data class SetProportions(val boneOffsets: BoneOffsets, val skeletonHeight: Float) : SkeletonActions
+	data class SetProportions(val boneOffsets: BoneOffsets, val skeletonHeight: Float, val values: Map<String, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions

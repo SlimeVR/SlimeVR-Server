@@ -16,12 +16,13 @@ class ResourcePackSmokeTest {
 	@Test
 	fun loadsBundledCoreAndCreatesLocalPackDirectory() = runBlocking {
 		val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-		val catalog = ResourcePackManager.load(
+		val loaded = ResourcePackManager.loadCompiled(
 			AndroidConfigStorage(context.filesDir),
 			context.javaClass.classLoader ?: ClassLoader.getSystemClassLoader(),
 		)
 
-		assertEquals("slimevr:core", catalog.core.manifest.value.id)
+		assertEquals("slimevr:core", loaded.catalog.core.manifest.value.id)
+		assertEquals(61, loaded.skeleton.registry.maxId)
 		assertTrue(File(context.filesDir, "resourcepacks").isDirectory)
 	}
 }

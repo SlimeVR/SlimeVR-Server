@@ -1,7 +1,7 @@
 package dev.slimevr.resourcepacks
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
@@ -18,6 +18,7 @@ object ResourcePackParser {
 		val entries = try {
 			source.entries()
 		} catch (e: Exception) {
+			if (e is CancellationException) throw e
 			throw ResourcePackParseException(listOf(ResourcePackDiagnostic("", message = "Unable to scan ${source.description}: ${e.message}")))
 		}
 		val diagnostics = mutableListOf<ResourcePackDiagnostic>()
@@ -30,14 +31,15 @@ object ResourcePackParser {
 		}
 
 		val rawManifest = try {
-			ResourcePackJson.parseToJsonElement(manifestEntry.contents).jsonObject
+			ResourcePackJson.parseToJsonElement(manifestEntry.readText()).jsonObject
 		} catch (e: Exception) {
+			if (e is CancellationException) throw e
 			diagnostics += ResourcePackDiagnostic("manifest.json", message = "Malformed JSON: ${e.message}")
 			throw ResourcePackParseException(diagnostics)
 		}
 
 		val migratedManifest = ResourceTypes.MANIFEST.migrateJson(rawManifest, CURRENT_FORMAT_VERSION)
-		val parsedManifest = ResourceTypes.MANIFEST.validateAndDecode(manifestEntry.path, migratedManifest, diagnostics) as? SourcedResource<PackManifest>
+		val parsedManifest = ResourceTypes.MANIFEST.validateAndDecode(manifestEntry.path, migratedManifest, diagnostics)
 
 		if (parsedManifest == null) {
 			throw ResourcePackParseException(diagnostics)
@@ -50,26 +52,26 @@ object ResourcePackParser {
 		}
 
 		val objects = mutableMapOf<ResourceType<*>, MutableList<Pair<String, JsonObject>>>()
-		
 
 		for (entry in entries) {
 			if (entry.path == "manifest.json") continue
 			val type = types.firstOrNull { it.matches(entry.path) }
 			if (type != null) {
 				try {
-					val element = ResourcePackJson.parseToJsonElement(entry.contents)
+					val element = ResourcePackJson.parseToJsonElement(entry.readText())
 					if (element is JsonObject) {
-						val migrated = (type as JsonResourceType<*>).migrateJson(element, formatVersion)
+						val migrated = type.migrateJson(element, formatVersion)
 						objects.getOrPut(type) { mutableListOf() }.add(entry.path to migrated)
 					} else {
 						diagnostics += ResourcePackDiagnostic(entry.path, message = "Expected JSON object")
 					}
 				} catch (e: Exception) {
+					if (e is CancellationException) throw e
 					diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
 				}
 			}
 		}
 		if (diagnostics.isNotEmpty()) throw ResourcePackParseException(diagnostics.sortedWith(compareBy<ResourcePackDiagnostic> { it.path }.thenBy { it.pointer }))
-		return ParsedResourcePack(source.description, parsedManifest, objects)
+		return ParsedResourcePack(source.description, parsedManifest, objects, entries.associateBy { it.path })
 	}
 }

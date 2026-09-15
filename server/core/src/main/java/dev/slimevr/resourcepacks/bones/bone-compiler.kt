@@ -8,7 +8,6 @@ import dev.slimevr.bones.LooseHingeConstraint
 import dev.slimevr.bones.TwistSwingConstraint
 import dev.slimevr.resourcepacks.Offset
 import dev.slimevr.resourcepacks.ParsedResourcePack
-import dev.slimevr.resourcepacks.ResourceTypes
 import dev.slimevr.resourcepacks.compiler.BoneContribution
 import dev.slimevr.resourcepacks.compiler.BoneField
 import dev.slimevr.resourcepacks.compiler.ProportionContribution
@@ -125,18 +124,6 @@ internal fun <T> orderFallbackDependencies(
 		result += remaining.removeAt(nextIndex)
 	}
 	return result
-}
-
-private const val DEFAULT_LANGUAGE_PATH = "assets/slimevr/lang/en.json"
-
-/**
- * The bone's compiled-in display name: its English translation if the pack ships one, else its
- * bare nameKey
- */
-internal fun displayName(contribution: BoneContribution): String {
-	val nameKey = contribution.resource.value.nameKey
-	val translations = contribution.pack.getDecoded(ResourceTypes.LANGUAGE).firstOrNull { it.path == DEFAULT_LANGUAGE_PATH }?.value?.translations
-	return translations?.get(nameKey) ?: nameKey
 }
 
 internal fun validateHierarchy(

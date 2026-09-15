@@ -30,12 +30,12 @@ internal data class Contribution<T>(
 	internal val definitionOrigin get() = ResourceOrigin(pack, resource.path)
 
 	internal fun originOrNull(path: List<String>): ResourceOrigin? {
-		for (length in path.size downTo 1) origins[path.subList(0, length)]?.let { return it }
+		for (length in path.size downTo 0) origins[path.subList(0, length)]?.let { return it }
 		return null
 	}
 
 	/** An origin already resolved elsewhere (e.g. across several bones), falling back to this resource's own defining pack. */
-	fun origin(resolved: ResourceOrigin?): ResourceOrigin = resolved ?: definitionOrigin
+	fun origin(resolved: ResourceOrigin?): ResourceOrigin = resolved ?: validationOrigin()
 
 	fun validationOrigin(): ResourceOrigin = latestOverride ?: definitionOrigin
 }

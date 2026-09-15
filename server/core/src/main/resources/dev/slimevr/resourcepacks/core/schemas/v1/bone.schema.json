@@ -2,8 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["key", "nameKey"],
+  "if": {"required": ["$extend"]},
+  "then": {},
+  "else": {"required": ["key", "nameKey"]},
   "properties": {
+    "$extend": {"type": "string", "minLength": 1, "description": "Pack-relative resource path to inherit. The same path inherits the next lower pack layer."},
     "$schema": {"type": "string"},
     "key": {
       "$ref": "common.schema.json#/$defs/key",
