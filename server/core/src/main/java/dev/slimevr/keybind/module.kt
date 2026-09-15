@@ -9,7 +9,6 @@ import dev.slimevr.context.Context
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
-import dev.slimevr.skeleton.boneId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -24,7 +23,7 @@ import solarxr_protocol.rpc.ResetType
 
 private const val KEYBIND_SOURCE = "Keybind"
 
-private val FEET_BONE_IDS = listOf(BodyPart.LEFT_FOOT.boneId, BodyPart.RIGHT_FOOT.boneId)
+private val FEET_BODY_PARTS = listOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 private const val BINDING_SETTLE_MS = 300L
 
@@ -75,7 +74,7 @@ class KeybindTriggerBehaviour(
 				KeybindId.MOUNTING_RESET -> resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.POSE_MOUNTING, delaySeconds)
 
 				KeybindId.FEET_MOUNTING_RESET ->
-					resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.POSE_MOUNTING, delaySeconds, FEET_BONE_IDS)
+					resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.POSE_MOUNTING, delaySeconds, FEET_BODY_PARTS)
 
 				KeybindId.PAUSE_TRACKING -> {
 					if (delaySeconds > 0f) delay((delaySeconds * 1000).toLong())

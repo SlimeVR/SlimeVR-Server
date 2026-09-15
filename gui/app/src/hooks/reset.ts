@@ -9,14 +9,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue } from 'jotai';
-import {
-  assignedTrackersAtom,
-  bodyPartOfBone,
-  boneIdOfBodyPart,
-  boneIdRegistryAtom,
-  boneRegistryAtom,
-  serverGuardsAtom,
-} from '@/store/app-store';
+import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS, TOE_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
 import * as Sentry from '@sentry/react';
@@ -47,8 +40,6 @@ export function useReset(
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
-  const boneIdRegistry = useAtomValue(boneIdRegistryAtom);
   const finishedTimeoutRef = useRef<NodeJS.Timeout>();
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
   const [progress, setProgress] = useState(0);
@@ -59,9 +50,7 @@ export function useReset(
   const triggerReset = () => {
     const req = new ResetRequestT();
     req.resetType = options.type;
-    req.boneIds = parts
-      .map((part) => boneIdOfBodyPart(boneIdRegistry, part))
-      .filter((id): id is number => id != null);
+    req.bodyParts = parts;
     switch (options.type) {
       case ResetType.YAW:
         req.delay = 0;
@@ -113,14 +102,11 @@ export function useReset(
 
   useRPCPacket(
     RpcMessage.ResetResponse,
-    ({ status, resetType, progress, duration, boneIds }: ResetResponseT) => {
-      const responseBodyParts = (boneIds ?? []).map((id) =>
-        bodyPartOfBone(boneRegistry, id)
-      );
+    ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
       if (
         resetType !== options.type ||
         (resetType == ResetType.POSE_MOUNTING &&
-          JSON.stringify(parts) !== JSON.stringify(responseBodyParts))
+          JSON.stringify(parts) !== JSON.stringify(bodyParts))
       ) {
         onResetCanceled();
         return;
@@ -160,13 +146,11 @@ export function useReset(
     error = 'reset-error-mounting-need_full_reset';
   } else if (options.type === ResetType.POSE_MOUNTING && options.group !== 'default') {
     if (
-      !assignedTrackers.some(({ tracker }) => {
-        const bodyPart = bodyPartOfBone(boneRegistry, tracker.info?.boneId);
-        return (
-          bodyPart !== BodyPart.NONE &&
-          BODY_PARTS_GROUPS[options.group].includes(bodyPart)
-        );
-      })
+      !assignedTrackers.some(
+        ({ tracker }) =>
+          tracker.info?.bodyPart &&
+          BODY_PARTS_GROUPS[options.group].includes(tracker.info?.bodyPart)
+      )
     ) {
       disabled = true;
       error = `reset-error-no_${options.group}_tracker`;

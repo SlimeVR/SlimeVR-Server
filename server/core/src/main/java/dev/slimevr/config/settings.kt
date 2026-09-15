@@ -3,7 +3,6 @@ package dev.slimevr.config
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
-import dev.slimevr.skeleton.key
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -25,7 +24,8 @@ private const val SETTINGS_CONFIG_VERSION = 2
 
 @Serializable
 data class TrackerConfig(
-	val bone: String? = null,
+	@Serializable(with = BodyPartSerializer::class)
+	val bodyPart: BodyPart? = null,
 	val customName: String? = null,
 	@Serializable(with = QuaternionSerializer::class)
 	val mountingOrientation: Quaternion = Quaternion.IDENTITY,
@@ -58,10 +58,8 @@ data class BoneRoutingConfig(
 	/**
 	 * Explicit routes. Ignored while [automatic], apart from the overridable bones, which
 	 * the user owns in either mode. Do not read directly, use BoneRoutingManager.
-	 *
-	 * Keyed by [dev.slimevr.skeleton.BoneRegistry] key
 	 */
-	val manualRoutes: Map<String, Set<RoutingOutput>>? = null,
+	val manualRoutes: Map<BodyPart, Set<RoutingOutput>>? = null,
 )
 
 @Serializable
@@ -78,9 +76,12 @@ data class TapDetectionConfig(
 	var yawResetEnabled: Boolean = true,
 	var fullResetEnabled: Boolean = true,
 	var mountingResetEnabled: Boolean = true,
-	var yawResetBone: String? = BodyPart.UPPER_CHEST.key,
-	var mountingResetBone: String? = BodyPart.RIGHT_UPPER_LEG.key,
-	var fullResetBone: String? = BodyPart.LEFT_UPPER_LEG.key,
+	@Serializable(with = BodyPartSerializer::class)
+	var yawResetBodyPart: BodyPart? = BodyPart.UPPER_CHEST,
+	@Serializable(with = BodyPartSerializer::class)
+	var mountingResetBodyPart: BodyPart? = BodyPart.RIGHT_UPPER_LEG,
+	@Serializable(with = BodyPartSerializer::class)
+	var fullResetBodyPart: BodyPart? = BodyPart.LEFT_UPPER_LEG,
 	var yawResetTaps: Int = 2,
 	var fullResetTaps: Int = 3,
 	var mountingResetTaps: Int = 3,

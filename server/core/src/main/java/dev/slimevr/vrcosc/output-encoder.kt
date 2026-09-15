@@ -4,8 +4,8 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
-import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -34,7 +34,7 @@ internal fun buildOutgoingBundle(
 		for ((bodyPart, trackerId) in trackerIdsByBodyPart) {
 			if (bodyPart !in routedBones) continue
 
-			val bone = bones[bodyPart.boneId] ?: continue
+			val bone = bones[bodyPart] ?: continue
 			add(
 				OscContent.Message(
 					positionMessage("/tracking/trackers/$trackerId/position", bone.headPosition),
@@ -47,14 +47,14 @@ internal fun buildOutgoingBundle(
 			)
 		}
 
-		bones[BodyPart.HEAD.boneId]?.let { head ->
+		bones[BodyPart.HEAD]?.let { head ->
 			add(
 				OscContent.Message(
 					positionMessage("/tracking/trackers/head/position", head.headPosition),
 				),
 			)
 		}
-
+		
 		addAll(buildToeMessages(bones))
 	}
 

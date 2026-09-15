@@ -108,15 +108,14 @@ fun constrainOffset(
 }
 
 fun constrainOffsetWithSkeleton(
-	boneId: BoneId,
+	bodyPart: BodyPart,
 	offset: Quaternion,
 	bones: ComputedSkeleton,
-	constraints: Map<BoneId, Constraint>,
+	constraints: BodyPartMap<Constraint>,
 ): Quaternion {
-	val registry = bones.registry
-	val constraint = constraints[boneId] ?: return offset
-	val boneRot = bones[boneId]?.rotation ?: return offset
-	val parentRot = registry.parentOf(boneId)?.let { parent ->
+	val constraint = constraints[bodyPart] ?: return offset
+	val boneRot = bones[bodyPart]?.rotation ?: return offset
+	val parentRot = parentOf(bodyPart)?.let { parent ->
 		bones[parent]?.rotation
 	} ?: Quaternion.IDENTITY
 
@@ -130,15 +129,14 @@ fun constrainOffsetWithSkeleton(
 
 fun constrainSkeleton(
 	bones: InputSkeleton,
-	constraints: Map<BoneId, Constraint>,
+	constraints: BodyPartMap<Constraint>,
 ): InputSkeleton {
-	val registry = bones.registry
-	// Apply constraints top-down, from the root
-	for ((parentId, boneId) in registry.hierarchyFrom(registry.root)) {
-		val bone = bones[boneId] ?: continue
-		val constraint = constraints[boneId] ?: continue
-		val parentRotation = parentId?.let { bones[it]?.rotation } ?: Quaternion.IDENTITY
-		bones[boneId] = bone.copy(
+	// Apply constraints top-down
+	for ((parentBodyPart, bodyPart) in iterateBodyPartHierarchy()) {
+		val bone = bones[bodyPart] ?: continue
+		val constraint = constraints[bodyPart] ?: continue
+		val parentRotation = bones[parentBodyPart]?.rotation ?: Quaternion.IDENTITY
+		bones[bodyPart] = bone.copy(
 			rotation = constraint.apply(
 				parentRotation,
 				bone.rotation,

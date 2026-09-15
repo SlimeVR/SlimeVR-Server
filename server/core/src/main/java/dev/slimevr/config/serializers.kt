@@ -1,16 +1,21 @@
 package dev.slimevr.config
 
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.nullable
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.KeybindId
 
 object KeybindIdSerializer : KSerializer<KeybindId> {
@@ -27,6 +32,28 @@ object KeybindIdSerializer : KSerializer<KeybindId> {
 			?: KeybindId.NONE
 	}
 }
+
+object BodyPartSerializer : KSerializer<BodyPart?> {
+	@OptIn(ExperimentalSerializationApi::class)
+	override val descriptor = PrimitiveSerialDescriptor("BodyPart", PrimitiveKind.STRING).nullable
+
+	override fun serialize(encoder: Encoder, value: BodyPart?) {
+		val jsonEncoder = encoder as JsonEncoder
+		if (value == null) {
+			jsonEncoder.encodeJsonElement(JsonNull)
+		} else {
+			jsonEncoder.encodeJsonElement(JsonPrimitive(value.name))
+		}
+	}
+
+	override fun deserialize(decoder: Decoder): BodyPart? {
+		val element = (decoder as JsonDecoder).decodeJsonElement()
+		if (element is JsonNull) return null
+		return BodyPart.entries.firstOrNull { it.name == element.jsonPrimitive.content }
+	}
+}
+
+object BodyPartListSerializer : KSerializer<List<BodyPart?>> by ListSerializer(BodyPartSerializer)
 
 @Serializable
 private data class QuaternionSurrogate(val w: Float, val x: Float, val y: Float, val z: Float)

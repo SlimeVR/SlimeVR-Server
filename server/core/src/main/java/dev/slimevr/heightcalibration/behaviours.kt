@@ -4,7 +4,6 @@ package dev.slimevr.heightcalibration
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3
@@ -65,9 +64,9 @@ private fun isHmdLeveled(snapshot: TrackerSnapshot): Boolean {
 
 class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 	fun canCalibrate(trackers: List<TrackerState>): Boolean {
-		val hasHmd = trackers.any { it.boneId == BodyPart.HEAD.boneId && it.position != null }
+		val hasHmd = trackers.any { it.bodyPart == BodyPart.HEAD && it.position != null }
 		val hasHand = trackers.any {
-			(it.boneId == BodyPart.LEFT_HAND.boneId || it.boneId == BodyPart.RIGHT_HAND.boneId) && it.position != null
+			(it.bodyPart == BodyPart.LEFT_HAND || it.bodyPart == BodyPart.RIGHT_HAND) && it.position != null
 		}
 		return hasHmd && hasHand
 	}
@@ -77,13 +76,13 @@ class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 			.flatMapLatest { state ->
 				val trackers = state.trackers.values.toList()
 				if (trackers.isEmpty()) return@flatMapLatest flowOf(false)
-				// React to per-tracker position/bone changes, not just tracker add/remove. canCalibrate
-				// only looks at the bone assigned and whether position is set, so dedup on that per
-				// tracker rather than letting every rotation packet resume the combine.
+				// React to per-tracker position/bodyPart changes, not just tracker add/remove. canCalibrate
+				// only looks at bodyPart and whether position is set, so dedup on that per tracker rather
+				// than letting every rotation packet resume the combine.
 				combine(
 					trackers.map { tracker ->
 						tracker.context.state.distinctUntilChanged { a, b ->
-							a.boneId == b.boneId && (a.position == null) == (b.position == null)
+							a.bodyPart == b.bodyPart && (a.position == null) == (b.position == null)
 						}
 					},
 				) { states -> canCalibrate(states.toList()) }

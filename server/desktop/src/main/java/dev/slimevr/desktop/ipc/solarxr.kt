@@ -9,20 +9,17 @@ import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServerActions
 import dev.slimevr.desktop.startBindingsProvider
 import dev.slimevr.desktop.unblockSteamVRDriver
+import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.solarxr.SOLARXR_PROTOCOL_VERSION
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
-import dev.slimevr.solarxr.checkedSolarXRFrame
 import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -31,14 +28,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.Buffer
-import solarxr_protocol.ClientHello
-import solarxr_protocol.HelloStatus
 import solarxr_protocol.MessageBundle
-import solarxr_protocol.ServerHello
 import solarxr_protocol.rpc.EnableSteamVRDriverRequest
 import solarxr_protocol.rpc.OpenKeybindSettingsRequest
 import java.nio.ByteBuffer
-import kotlin.time.Duration.Companion.seconds
 
 class EnableSteamVRDriverBehaviour : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
@@ -110,47 +103,24 @@ suspend fun handleSolarXRBridge(
 
 	bridge.outbound.on<MessageBundle> { bundle ->
 		fbb.clear()
-		bundle.finish(JvmFlatBufferWriter(fbb))
+		fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
 		sendBuffer.write(fbb.dataBuffer())
 		send(sendBuffer)
 	}.launchIn(this)
 
-	val initTimeout = launch {
-		delay(10.seconds)
-		if (!bridge.isReady) {
-			AppLogger.solarxr.warn("SolarXR[${bridge.id}] initialization timed out ($transport)")
-			this@coroutineScope.cancel()
-		}
-	}
+	bridge.startObserving()
 
 	val receiveArray = ByteArray(MAX_FRAME_SIZE)
 
 	try {
-		var awaitingHello = true
 		messages.collect { frame ->
 			val size = frame.size.toInt()
 			// read(array, offset, count) only copies from one internal segment (up to 8k) per call
 			// and returns however much that was, so filling a fixed array takes a loop
 			var done = 0
 			while (done < size) done += frame.read(receiveArray, done, size - done)
-			val bytes = ByteBuffer.wrap(receiveArray, 0, size)
-			if (awaitingHello) {
-				val reader = checkedSolarXRFrame(bytes, ClientHello.FILE_IDENTIFIER)
-				val hello = ClientHello.fromByteBuffer(reader)
-				val accepted = hello.protocolVersion == SOLARXR_PROTOCOL_VERSION
-				fbb.clear()
-				ServerHello(if (accepted) HelloStatus.ACCEPTED else HelloStatus.REJECTED_UNSUPPORTED_VERSION, SOLARXR_PROTOCOL_VERSION)
-					.finish(JvmFlatBufferWriter(fbb))
-				sendBuffer.write(fbb.dataBuffer())
-				send(sendBuffer)
-				require(accepted) { "Unsupported SolarXR protocol version ${hello.protocolVersion}" }
-				awaitingHello = false
-				bridge.beginConfiguration()
-			} else {
-				val reader = checkedSolarXRFrame(bytes, MessageBundle.FILE_IDENTIFIER)
-				onSolarXRMessage(MessageBundle.fromByteBuffer(reader), bridge)
-				if (bridge.isReady) initTimeout.cancel()
-			}
+			val reader = JvmFlatBufferReader(ByteBuffer.wrap(receiveArray, 0, size))
+			onSolarXRMessage(MessageBundle.decode(reader, reader.getInt(0)), bridge)
 		}
 	} finally {
 		AppLogger.solarxr.info("SolarXR[${bridge.id}] disconnected ($transport)")

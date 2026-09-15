@@ -3,9 +3,13 @@ package dev.slimevr.skeleton
 import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
+import java.util.EnumMap
+import kotlin.collections.component1
+import kotlin.collections.component2
 
-fun requireBone(bones: ComputedSkeleton, boneId: BoneId) = requireNotNull(bones[boneId]) {
-	"The computed skeleton is missing \"${bones.registry[boneId]?.key ?: boneId}\" from the IK chain."
+fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
+	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
 }
 
 fun chainDistanceFromTarget(
@@ -19,12 +23,12 @@ fun chainDistanceFromTarget(
 
 private val oppositeRotation = Quaternion.rotationAroundZAxis(FastMath.PI)
 fun fromChainToTarget(
-	boneId: BoneId,
+	bodyPart: BodyPart,
 	bones: ComputedSkeleton,
 	chain: IKChain,
 	target: Vector3,
 ): Quaternion? {
-	val boneHead = requireBone(bones, boneId).headPosition
+	val boneHead = requireBone(bones, bodyPart).headPosition
 	val chainTail = requireBone(bones, chain.last()).tailPosition
 
 	val localChainTail = (chainTail - boneHead).unit()
@@ -53,11 +57,14 @@ fun rotateChain(
 	chain: IKChain,
 	rotation: Quaternion,
 ) {
-	for (boneId in chain) {
-		val boneInput = requireNotNull(boneInputs[boneId]) {
-			"The provided bone inputs are missing \"${boneInputs.registry[boneId]?.key ?: boneId}\" from the IK chain."
+	for (bodyPart in chain) {
+		boneInputs.compute(bodyPart) { _, boneInput ->
+			requireNotNull(boneInput) {
+				"The provided bone inputs are missing \"${bodyPart}\" from the IK chain."
+			}.copy(
+				rotation = rotation * boneInput.rotation,
+			)
 		}
-		boneInputs[boneId] = boneInput.copy(rotation = rotation * boneInput.rotation)
 	}
 }
 
@@ -66,17 +73,17 @@ fun ccdIkIteration(
 	bones: ComputedSkeleton,
 	chain: IKChain,
 	target: Vector3,
-	constraints: Map<BoneId, Constraint>?,
+	constraints: BodyPartMap<Constraint>?,
 ): ComputedSkeleton {
 	// TODO: Do we need annealing and/or dampening?
 	// The first bone in the chain is the one we are adjusting in this iteration
-	val boneId = chain.first()
-	val offset = fromChainToTarget(boneId, bones, chain, target) ?: return bones
+	val bodyPart = chain.first()
+	val offset = fromChainToTarget(bodyPart, bones, chain, target) ?: return bones
 
 	// We only need to constrain the bone that we are adjusting
 	val constrainedOffset = constraints?.let {
 		constrainOffsetWithSkeleton(
-			boneId,
+			bodyPart,
 			offset,
 			bones,
 			it,
@@ -87,10 +94,10 @@ fun ccdIkIteration(
 	rotateChain(boneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
-	return buildBones(boneInputs, BoneSet.of(boneInputs.registry, chain), bones)
+	return buildBones(boneInputs, chain.toSet(), bones)
 }
 
-typealias IKChain = List<BoneId>
+typealias IKChain = List<BodyPart>
 data class IKChainGoal(
 	val chain: IKChain,
 	val target: Vector3,
@@ -105,14 +112,14 @@ fun ccdIk(
 	boneInputs: InputSkeleton,
 	bones: ComputedSkeleton,
 	goals: List<IKChainGoal>,
-	constraints: Map<BoneId, Constraint>?,
+	constraints: BodyPartMap<Constraint>?,
 	threshold: Float,
 	maxIterations: Int,
 ): IKOutput {
 	// No goals leaves every bone as the FK pass built it, so nothing below needs to run
 	if (goals.isEmpty()) return IKOutput(bones, emptyMap())
 
-	val workingBoneInputs = boneInputs.copy()
+	val workingBoneInputs = EnumMap(boneInputs)
 	var boneOutputs = bones
 
 	for (i in 0..maxIterations) {

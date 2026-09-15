@@ -66,7 +66,6 @@ export interface TrackerPreviewData {
 }
 
 export interface SkeletonRenderPart {
-  bodyPart: BodyPart;
   bone: BoneT;
   tracker?: TrackerPreviewData;
 }
@@ -90,14 +89,14 @@ export class BasedSkeletonHelper extends LineSegments2 {
   }
 
   constructor(bones: Map<BodyPart, BoneT>) {
-    const parts = [...bones.entries()]
-      .filter(([bodyPart]) => bodyPart !== BodyPart.NONE)
-      .map(([bodyPart, bone]) => ({ bodyPart, bone }));
+    const parts = [...bones.values()]
+      .filter((bone) => bone.bodyPart !== BodyPart.NONE)
+      .map((bone) => ({ bone }));
     const geometry = new LineSegmentsGeometry();
     geometry.setPositions(parts.flatMap(() => [0, 0, 0, 0, 0, 0]));
     geometry.setColors(
-      parts.flatMap(({ bodyPart }) => {
-        const color = getBoneColor(bodyPart);
+      parts.flatMap(({ bone }) => {
+        const color = getBoneColor(bone.bodyPart);
         return [color.r, color.g, color.b, color.r, color.g, color.b];
       })
     );
@@ -114,13 +113,13 @@ export class BasedSkeletonHelper extends LineSegments2 {
 
   setBones(bones: Map<BodyPart, BoneT>) {
     for (const part of this.parts) {
-      part.bone = bones.get(part.bodyPart) ?? part.bone;
+      part.bone = bones.get(part.bone.bodyPart) ?? part.bone;
     }
   }
 
   setTrackers(trackers: Map<BodyPart, TrackerPreviewData>) {
     for (const part of this.parts) {
-      part.tracker = trackers.get(part.bodyPart);
+      part.tracker = trackers.get(part.bone.bodyPart);
       if (!part.tracker && part.marker) part.marker.visible = false;
     }
   }
@@ -129,7 +128,7 @@ export class BasedSkeletonHelper extends LineSegments2 {
     const vertices: number[] = [];
 
     for (const part of this.parts) {
-      const { bodyPart, bone, tracker } = part;
+      const { bone, tracker } = part;
       boneHead.copy(Vector3FromVec3fT(bone.headPosition));
       getBoneTail(bone, boneTail);
       vertices.push(boneHead.x, boneHead.y, boneHead.z);
@@ -137,7 +136,7 @@ export class BasedSkeletonHelper extends LineSegments2 {
 
       if (!tracker) continue;
       if (!part.marker) {
-        const color = getBoneColor(bodyPart);
+        const color = getBoneColor(bone.bodyPart);
         part.marker = new Mesh(
           this.trackerMarkerGeometry,
           new MeshStandardMaterial({
@@ -154,7 +153,7 @@ export class BasedSkeletonHelper extends LineSegments2 {
         .normalize()
         .multiply(tracker.mountingOrientation);
       part.marker.visible = true;
-      part.marker.scale.setScalar(getTrackerMarkerScale(bodyPart));
+      part.marker.scale.setScalar(getTrackerMarkerScale(bone.bodyPart));
       part.marker.quaternion.copy(orientation);
       part.marker.position.lerpVectors(boneHead, boneTail, tracker.boneOffset);
       markerOffset.set(0, 0, 0.02).applyQuaternion(orientation);

@@ -19,14 +19,14 @@ class TrackerAssignmentConflictBehaviour : TrackerBehaviour {
 			.filter { active -> active }
 			.onEach {
 				val state = receiver.context.state.value
-				val boneId = state.boneId ?: return@onEach
+				val bodyPart = state.bodyPart ?: return@onEach
 
-				val boneTaken = receiver.appContext.server.context.state.value.trackers.values.any { other ->
+				val bodyPartTaken = receiver.appContext.server.context.state.value.trackers.values.any { other ->
 					val otherState = other.context.state.value
-					otherState.id != state.id && otherState.boneId == boneId && otherState.status.isActive()
+					otherState.id != state.id && otherState.bodyPart == bodyPart && otherState.status.isActive()
 				}
-				if (boneTaken) {
-					receiver.context.dispatch(TrackerActions.Update { copy(boneId = null) })
+				if (bodyPartTaken) {
+					receiver.context.dispatch(TrackerActions.Update { copy(bodyPart = null) })
 				}
 			}
 			.launchIn(receiver.context.scope)

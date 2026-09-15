@@ -23,13 +23,6 @@ import {
 } from '@/hooks/body-parts';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
-import { useAtomValue } from 'jotai';
-import {
-  bodyPartOfBone,
-  boneIdOfBodyPart,
-  boneIdRegistryAtom,
-  boneRegistryAtom,
-} from '@/store/app-store';
 import {
   CHECKBOX_CLASSES,
   CheckboxInternal,
@@ -128,31 +121,20 @@ const OUTPUT_CELL_CLASSES =
 
 type RouteMap = Map<BodyPart, Set<RoutingOutput>>;
 
-function toRouteMap(
-  routes: BoneRouteT[],
-  boneRegistry: Map<number, BodyPart>
-): RouteMap {
+function toRouteMap(routes: BoneRouteT[]): RouteMap {
   return new Map(
-    routes.map((route) => [
-      bodyPartOfBone(boneRegistry, route.boneId),
-      new Set(route.outputs ?? []),
-    ])
+    routes.map((route) => [route.bone, new Set(route.outputs ?? [])])
   );
 }
 
-function toBoneRoutes(
-  routes: RouteMap,
-  boneIdRegistry: Map<BodyPart, number>
-): BoneRouteT[] {
+function toBoneRoutes(routes: RouteMap): BoneRouteT[] {
   return Array.from(routes.entries())
     .filter(([, outputs]) => outputs.size > 0)
-    .flatMap(([bone, outputs]) => {
-      const boneId = boneIdOfBodyPart(boneIdRegistry, bone);
-      if (boneId == null) return [];
+    .map(([bone, outputs]) => {
       const route = new BoneRouteT();
-      route.boneId = boneId;
+      route.bone = bone;
       route.outputs = Array.from(outputs);
-      return [route];
+      return route;
     });
 }
 
@@ -335,8 +317,6 @@ export function BoneRoutingSettings() {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
-  const boneIdRegistry = useAtomValue(boneIdRegistryAtom);
   const [settings, setSettings] = useState(new BoneRoutingSettingsResponseT());
 
   const [automatic, setAutomatic] = useState(true);
@@ -354,29 +334,17 @@ export function BoneRoutingSettings() {
   const accepts = useMemo(
     () =>
       new Map(
-        outputs.map((status) => [
-          status.output,
-          new Set(
-            (status.accepts ?? []).map((id) => bodyPartOfBone(boneRegistry, id))
-          ),
-        ])
+        outputs.map((status) => [status.output, new Set(status.accepts ?? [])])
       ),
-    [outputs, boneRegistry]
+    [outputs]
   );
 
   const requires = useMemo(
     () =>
       new Map(
-        outputs.map((status) => [
-          status.output,
-          new Set(
-            (status.requires ?? []).map((id) =>
-              bodyPartOfBone(boneRegistry, id)
-            )
-          ),
-        ])
+        outputs.map((status) => [status.output, new Set(status.requires ?? [])])
       ),
-    [outputs, boneRegistry]
+    [outputs]
   );
 
   const overridable = useMemo(
@@ -384,14 +352,10 @@ export function BoneRoutingSettings() {
       new Map(
         outputs.map((status) => [
           status.output,
-          new Set(
-            (status.overridable ?? []).map((id) =>
-              bodyPartOfBone(boneRegistry, id)
-            )
-          ),
+          new Set(status.overridable ?? []),
         ])
       ),
-    [outputs, boneRegistry]
+    [outputs]
   );
 
   const conflicts = useMemo(
@@ -471,15 +435,15 @@ export function BoneRoutingSettings() {
 
   useEffect(() => {
     setAutomatic(settings.automatic ?? true);
-    setRoutes(toRouteMap(settings.routes ?? [], boneRegistry));
+    setRoutes(toRouteMap(settings.routes ?? []));
 
     const handsAlreadyOnDriver = (settings.routes ?? []).some(
       (route) =>
-        HAND_BODY_PARTS.includes(bodyPartOfBone(boneRegistry, route.boneId)) &&
+        HAND_BODY_PARTS.includes(route.bone) &&
         (route.outputs ?? []).includes(RoutingOutput.DRIVER)
     );
     if (handsAlreadyOnDriver) setHandsWarningAccepted(true);
-  }, [settings, boneRegistry]);
+  }, [settings]);
 
   useRPCPacket(
     RpcMessage.BoneRoutingSettingsResponse,
@@ -489,7 +453,7 @@ export function BoneRoutingSettings() {
   const submit = (nextAutomatic: boolean, nextRoutes: RouteMap) => {
     const req = new ChangeBoneRoutingSettingsRequestT();
     req.automatic = nextAutomatic;
-    req.routes = toBoneRoutes(nextRoutes, boneIdRegistry);
+    req.routes = toBoneRoutes(nextRoutes);
     sendRPCPacket(RpcMessage.ChangeBoneRoutingSettingsRequest, req);
   };
 

@@ -1,10 +1,8 @@
 package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -27,27 +25,27 @@ private fun alignRoll(from: Quaternion, to: Quaternion): Quaternion {
  */
 class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	/**
-	 * First value is the bone to be aligned.
+	 * First value is the BodyPart to be aligned.
 	 *
-	 * Second value is a source bone.
+	 * Second value is a source BodyPart
 	 */
-	private val boneToSources: Array<Pair<BoneId, BoneId>> = arrayOf(
+	private val bodyPartToSources = arrayOf(
 		BodyPart.LEFT_UPPER_LEG to BodyPart.LEFT_LOWER_LEG,
 		BodyPart.RIGHT_UPPER_LEG to BodyPart.RIGHT_LOWER_LEG,
-	).map { (bodyPart, source) -> bodyPart.boneId to source.boneId }.toTypedArray()
+	)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
 		if (ratio == 0f) return
 
 		// Upper legs are written, lower legs are read, so the two never overlap
-		for ((boneId, sourceId) in boneToSources) {
-			val bone = mutableInputSkeleton[boneId] ?: continue
+		for (bodyPartToSource in bodyPartToSources) {
+			val bone = mutableInputSkeleton[bodyPartToSource.first] ?: continue
 			if (!bone.isRotationActive) continue
 
-			val sourceRotation = mutableInputSkeleton[sourceId]?.rotation ?: continue
+			val sourceRotation = mutableInputSkeleton[bodyPartToSource.second]?.rotation ?: continue
 			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
-			mutableInputSkeleton[boneId] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
+			mutableInputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
 		}
 	}
 }

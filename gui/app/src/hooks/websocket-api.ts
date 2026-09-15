@@ -1,32 +1,17 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 import {
-  BodyPart,
-  BoneRegistryT,
-  ClientHello,
-  ConfigurationAcknowledgedT,
-  ConnectionMessage,
-  ConnectionMessageHeaderT,
   DataFeedMessage,
   DataFeedMessageHeaderT,
-  HelloStatus,
   MessageBundle,
   MessageBundleT,
   RpcMessage,
   RpcMessageHeaderT,
-  ServerHello,
 } from 'solarxr-protocol';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
-import { useStore } from 'jotai';
 import { useInterval, useTimeout } from './timeout';
 import { log } from '@/utils/logging';
-import { boneRegistryAtom } from '@/store/app-store';
-
-// Must match SOLARXR_PROTOCOL_VERSION in server/core/.../solarxr/protocol.kt
-const SOLARXR_PROTOCOL_VERSION = 2;
-
-type ConnectionPhase = 'awaiting-hello' | 'configuring' | 'ready';
 
 export interface WebSocketApi {
   isConnected: boolean;
@@ -45,12 +30,10 @@ export type RPCPacketType = RpcMessageHeaderT['message'];
 export type DataFeedPacketType = DataFeedMessageHeaderT['message'];
 
 export function useProvideWebsocketApi(): WebSocketApi {
-  const store = useStore();
   const rpcPacketCounterRef = useRef<number>(0);
   const webSocketRef = useRef<WebSocket | null>(null);
   const rpclistenerRef = useRef<EventTarget>(new EventTarget());
   const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
-  const phaseRef = useRef<ConnectionPhase>('awaiting-hello');
   const [isFirstConnection, setFirstConnection] = useState(true);
   const [timedOut, setTimedOut] = useState(false);
   const [isConnected, setConnected] = useState(false);
@@ -68,88 +51,23 @@ export function useProvideWebsocketApi(): WebSocketApi {
 
   const onConnected = () => {
     if (!webSocketRef.current) return;
+    setFirstConnection(false);
     setTimedOut(false);
-
-    const fbb = new Builder(64);
-    ClientHello.finishClientHelloBuffer(
-      fbb,
-      ClientHello.createClientHello(fbb, SOLARXR_PROTOCOL_VERSION)
-    );
-    webSocketRef.current.send(fbb.asUint8Array());
+    setConnected(true);
   };
 
   const onConnectionClose = () => {
-    phaseRef.current = 'awaiting-hello';
-    store.set(boneRegistryAtom, new Map());
     setConnected(false);
     rpcPacketCounterRef.current = 0;
-  };
-
-  const sendConnectionMessage = (
-    message: ConnectionMessageHeaderT['message'],
-    messageType: ConnectionMessage
-  ) => {
-    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
-    const fbb = new Builder(64);
-    const bundle = new MessageBundleT();
-    bundle.connectionMsgs = [new ConnectionMessageHeaderT(messageType, message)];
-    MessageBundle.finishMessageBundleBuffer(fbb, bundle.pack(fbb));
-    webSocketRef.current.send(fbb.asUint8Array());
   };
 
   const onMessage = async (event: { data: Blob }) => {
     if (!event.data.arrayBuffer) return;
     const buffer = await event.data.arrayBuffer();
+
     const fbb = new ByteBuffer(new Uint8Array(buffer));
 
-    if (phaseRef.current === 'awaiting-hello') {
-      if (!ServerHello.bufferHasIdentifier(fbb)) return;
-      const hello = ServerHello.getRootAsServerHello(fbb);
-      if (hello.status() !== HelloStatus.ACCEPTED) {
-        log(`SolarXR handshake rejected (status ${hello.status()}), reconnecting`);
-        reconnect();
-        return;
-      }
-      phaseRef.current = 'configuring';
-      return;
-    }
-
-    if (!MessageBundle.bufferHasIdentifier(fbb)) return;
     const message = MessageBundle.getRootAsMessageBundle(fbb).unpack();
-
-    message.connectionMsgs.forEach((connectionHeader) => {
-      switch (connectionHeader.messageType) {
-        case ConnectionMessage.BoneRegistry: {
-          const registry = connectionHeader.message as BoneRegistryT;
-          store.set(
-            boneRegistryAtom,
-            new Map(
-              registry.bones.map((bone) => [
-                bone.id,
-                bone.standardBodyPart ?? BodyPart.NONE,
-              ])
-            )
-          );
-          break;
-        }
-        case ConnectionMessage.FinishConfiguration:
-          sendConnectionMessage(
-            new ConfigurationAcknowledgedT(),
-            ConnectionMessage.ConfigurationAcknowledged
-          );
-          phaseRef.current = 'ready';
-          setFirstConnection(false);
-          setConnected(true);
-          break;
-        case ConnectionMessage.ConnectionError:
-          log(`SolarXR connection error: ${JSON.stringify(connectionHeader.message)}`);
-          break;
-        default:
-          break;
-      }
-    });
-
-    if (phaseRef.current !== 'ready') return;
 
     message.rpcMsgs.forEach((rpcHeader) => {
       rpclistenerRef.current?.dispatchEvent(
@@ -179,7 +97,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     rpcHeader.message = data;
 
     message.rpcMsgs = [rpcHeader];
-    MessageBundle.finishMessageBundleBuffer(fbb, message.pack(fbb));
+    fbb.finish(message.pack(fbb));
 
     webSocketRef.current.send(fbb.asUint8Array());
 
@@ -200,13 +118,12 @@ export function useProvideWebsocketApi(): WebSocketApi {
     datafeedHeader.message = data;
 
     message.dataFeedMsgs = [datafeedHeader];
-    MessageBundle.finishMessageBundleBuffer(fbb, message.pack(fbb));
+    fbb.finish(message.pack(fbb));
 
     webSocketRef.current.send(fbb.asUint8Array());
   };
 
   const connect = () => {
-    phaseRef.current = 'awaiting-hello';
     webSocketRef.current = new WebSocket(`ws://${targetIp}:${targetPort}`);
 
     // Connection opened
@@ -223,7 +140,6 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.removeEventListener('message', onMessage);
     webSocketRef.current.close();
     webSocketRef.current = null;
-    phaseRef.current = 'awaiting-hello';
     setConnected(false);
   };
 

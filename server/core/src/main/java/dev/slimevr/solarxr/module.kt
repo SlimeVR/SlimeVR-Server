@@ -8,9 +8,9 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
 import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
+import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
-import dev.slimevr.solarxr.driver.DriverRegistrationBehaviour
 import dev.slimevr.solarxr.rpc.AssignTrackerBehaviour
 import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
 import dev.slimevr.solarxr.rpc.BvhBehaviour
@@ -43,12 +43,6 @@ import dev.slimevr.util.timeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
-import solarxr_protocol.connection.ConfigurationAcknowledged
-import solarxr_protocol.connection.ConnectionError
-import solarxr_protocol.connection.ConnectionErrorCode
-import solarxr_protocol.connection.ConnectionMessage
-import solarxr_protocol.connection.ConnectionMessageHeader
-import solarxr_protocol.connection.FinishConfiguration
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
@@ -61,42 +55,22 @@ import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import dev.slimevr.skeleton.BoneRegistry as SkeletonBoneRegistry
 
 data class SolarXRBridgeState(
 	val dataFeedConfigs: List<DataFeedConfig> = emptyList(),
 	val driverName: String? = null,
 	val boneMask: BoneMask? = null,
-	val isReady: Boolean = false,
-	val observing: Boolean = false,
 )
 
 sealed interface SolarXRBridgeActions {
 	data class SetConfig(val configs: List<DataFeedConfig>) : SolarXRBridgeActions
 	data class SetDriverInfo(val name: String?, val boneMask: BoneMask?) : SolarXRBridgeActions
-	data object SetReady : SolarXRBridgeActions
-	data object SetObserving : SolarXRBridgeActions
 }
 
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
 typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridge>
 
 suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
-	// Connection messages are a barrier: configuration must be consumed before
-	// any application bundle is dispatched.
-	val wasReady = context.isReady
-	message.connectionMsgs?.forEach { header ->
-		when (header.message) {
-			is ConfigurationAcknowledged -> context.completeConfiguration()
-			else -> Unit
-		}
-	}
-	if (!wasReady) {
-		if (message.dataFeedMsgs != null || message.rpcMsgs != null || message.driverMsgs != null) {
-			context.sendConnectionMessage(ConnectionError(ConnectionErrorCode.INITIALIZATION_REQUIRED, "Configuration has not completed"))
-		}
-		return
-	}
 	message.dataFeedMsgs?.forEach {
 		val msg = it.message ?: return
 		context.dataFeedDispatcher.emit(msg)
@@ -135,9 +109,6 @@ class SolarXRBridge(
 	val outbound: EventDispatcher<MessageBundle> = EventDispatcher("SolarXR[$id].outbound", context.scope, capacity = 64),
 	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
 ) {
-	val isReady: Boolean get() = context.state.value.isReady
-	val registry: SkeletonBoneRegistry get() = appContext.skeleton.registry
-
 	// Jobs are mutable handles with no meaningful equality; storing them in state
 	// would break distinctUntilChanged and data class copy semantics.
 	internal var datafeedTimers: List<Job> = emptyList()
@@ -169,21 +140,6 @@ class SolarXRBridge(
 	suspend inline fun <reified R : DriverMessage> requestDriverMessage(message: DriverMessage, timeout: Duration = 10.seconds): R = driverRequests.request(timeout, message) { msg, newTxId -> sendDriverMessage(msg, txId = newTxId) }
 
 	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(MessageBundle(dataFeedMsgs = listOf(frame)))
-	suspend fun sendConnectionMessage(message: ConnectionMessage) = outbound.emit(MessageBundle(connectionMsgs = listOf(ConnectionMessageHeader(message))))
-
-	suspend fun beginConfiguration() {
-		sendConnectionMessage(registry.value)
-		sendConnectionMessage(FinishConfiguration())
-	}
-
-	fun completeConfiguration() {
-		if (context.state.value.isReady) return
-		context.dispatch(SolarXRBridgeActions.SetReady)
-		if (!context.state.value.observing) {
-			context.dispatch(SolarXRBridgeActions.SetObserving)
-			startObserving()
-		}
-	}
 
 	fun disconnectDriverTrackers() {
 		val driverName = context.state.value.driverName ?: return
@@ -241,7 +197,7 @@ class SolarXRBridge(
 			add(AssignTrackerBehaviour(appContext.server))
 			add(DongleSettingsBehaviour(appContext.server))
 			add(TelemetryBehaviour(appContext.server))
-			add(DriverRegistrationBehaviour(appContext))
+			add(DriverHandshakeBehaviour(appContext))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext))
 			add(MagBehaviour(appContext))

@@ -4,7 +4,6 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker
@@ -32,19 +31,6 @@ class DriverIncomingTrackersBehaviour(
 			}
 			val hardwareId = req.hardwareIdentifier
 
-			// 0 means unassigned; any other ID must resolve in the registry. The tracker keeps the
-			// BoneId as its identity even when the bone has no standardized BodyPart, so extension
-			// bones can be assigned like any other.
-			val requestedBoneId = BoneId(req.boneId)
-			val boneId = if (requestedBoneId.value == 0.toUShort()) {
-				null
-			} else if (receiver.registry[requestedBoneId] != null) {
-				requestedBoneId
-			} else {
-				receiver.sendDriverMessage(AddTrackerResponse(status = AddTrackerStatus.ERROR), replyTo = replyTo)
-				return@onDriverMessage
-			}
-
 			val existing = server.context.state.value.trackers.values
 				.find { it.context.state.value.hardwareId == hardwareId }
 			if (existing != null) {
@@ -55,7 +41,7 @@ class DriverIncomingTrackersBehaviour(
 					return@onDriverMessage
 				}
 
-				existing.context.dispatchAll(listOf(TrackerActions.SetDriverName(driverName), TrackerActions.Update { copy(intendedBoneId = boneId) }))
+				existing.context.dispatchAll(listOf(TrackerActions.SetDriverName(driverName), TrackerActions.Update { copy(intendedBodyPart = req.bodyPart) }))
 				receiver.sendDriverMessage(
 					AddTrackerResponse(
 						status = AddTrackerStatus.ALREADY_EXISTS,
@@ -87,8 +73,8 @@ class DriverIncomingTrackersBehaviour(
 				scope = scope,
 				id = trackerId,
 				name = req.displayName ?: "Tracker #$trackerId",
-				boneId = boneId,
-				intendedBoneId = boneId,
+				bodyPart = req.bodyPart,
+				intendedBodyPart = req.bodyPart,
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,

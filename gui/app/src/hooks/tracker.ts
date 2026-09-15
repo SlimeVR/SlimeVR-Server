@@ -6,17 +6,14 @@ import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { useAtomValue } from 'jotai';
-import { bodyPartOfBone, boneRegistryAtom, trackerFromIdAtom } from '@/store/app-store';
+import { trackerFromIdAtom } from '@/store/app-store';
 
 export const getLocalizedTrackerName = (
   l10n: ReactLocalization,
-  info: TrackerInfoT | null,
-  boneRegistry: Map<number, BodyPart>
+  info: TrackerInfoT | null
 ) => {
   if (info?.customName) return info?.customName;
-  const bodyPart = bodyPartOfBone(boneRegistry, info?.boneId);
-  if (bodyPart !== BodyPart.NONE)
-    return l10n.getString('body_part-' + BodyPart[bodyPart]);
+  if (info?.bodyPart) return l10n.getString('body_part-' + BodyPart[info?.bodyPart]);
   return info?.displayName || 'NONE';
 };
 
@@ -33,14 +30,10 @@ export const velocityGlowStyle = (velocity: number): CSSProperties => {
 
 export const useTracker = (tracker: TrackerDataT) => {
   const { l10n } = useLocalization();
-  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   return {
     useName: () =>
-      useMemo(
-        () => getLocalizedTrackerName(l10n, tracker.info, boneRegistry),
-        [tracker.info, l10n, boneRegistry]
-      ),
+      useMemo(() => getLocalizedTrackerName(l10n, tracker.info), [tracker.info, l10n]),
     useRawRotationEulerDegrees: () =>
       useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>

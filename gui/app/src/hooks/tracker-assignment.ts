@@ -13,7 +13,7 @@ import { useWebsocketAPI } from './websocket-api';
 import { useConfig } from './config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useAtomValue } from 'jotai';
-import { boneIdOfBodyPart, boneIdRegistryAtom, donglesAtom } from '@/store/app-store';
+import { donglesAtom } from '@/store/app-store';
 import { hoveredBodyPartAtom } from './tracker-drag';
 import { providePicker } from './tracker-picker';
 
@@ -26,7 +26,6 @@ export type Pending =
 
 export function useAssignTracker() {
   const { sendRPCPacket } = useWebsocketAPI();
-  const boneIdRegistry = useAtomValue(boneIdRegistryAtom);
 
   return (
     trackerId: number,
@@ -35,7 +34,7 @@ export function useAssignTracker() {
   ) => {
     const request = new AssignTrackerRequestT();
     request.trackerId = trackerId;
-    request.boneId = boneIdOfBodyPart(boneIdRegistry, bodyPart) ?? 0;
+    request.bodyPosition = bodyPart;
     request.mountingOrientation = mountingOrientation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, request);
   };

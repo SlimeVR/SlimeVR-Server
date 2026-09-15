@@ -13,7 +13,6 @@ import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import { useAtomValue } from 'jotai';
 import {
   assignedTrackersAtom,
-  boneRegistryAtom,
   donglesAtom,
   flatTrackersAtom,
   groupTrackersByConnection,
@@ -36,13 +35,12 @@ export function Home() {
   const trackers = useAtomValue(assignedTrackersAtom);
   const allTrackers = useAtomValue(flatTrackersAtom);
   const dongles = useAtomValue(donglesAtom);
-  const boneRegistry = useAtomValue(boneRegistryAtom);
   const { highlightedTrackers } = useTrackingChecklist();
   const navigate = useNavigate();
 
   const groups = useMemo(
-    () => groupTrackersByConnection(allTrackers, dongles, boneRegistry),
-    [allTrackers, dongles, boneRegistry]
+    () => groupTrackersByConnection(allTrackers, dongles),
+    [allTrackers, dongles]
   );
 
   const sendToSettings = (tracker: TrackerDataT) => {

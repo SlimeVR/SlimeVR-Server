@@ -9,10 +9,8 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.getFirstActiveFor
 import io.github.axisangles.ktmath.Quaternion
@@ -45,7 +43,7 @@ data class ResetsState(
 
 sealed interface ResetsActions {
 	data class ClearResets(val resetTypes: List<ResetType>) : ResetsActions
-	data class EndReset(val resetType: ResetType, val boneIds: List<BoneId>? = null, val resetMountingFeet: Boolean = false) : ResetsActions
+	data class EndReset(val resetType: ResetType, val bodyParts: List<BodyPart>? = null, val resetMountingFeet: Boolean = false) : ResetsActions
 	data object ClearMountingCompleted : ResetsActions
 }
 
@@ -56,25 +54,23 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	fun startObserving() = context.observeAll(this)
 
 	private var resetJob: Job = Job()
-	private val registry get() = skeleton.registry
 
 	/**
 	 * Schedules a reset according to the resetType.
 	 * resetSourceName is used for logging
 	 * If delay is null, the default delay from config will be used.
-	 * If boneIds is null, resets all trackers.
+	 * If bodyParts is null, resets all trackers.
 	 */
-	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, boneIds: List<BoneId>? = null) {
+	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
 		resetJob.cancelAndJoin()
 		resetJob = context.scope.launch {
 			val delayMs = (delay * 1000).toInt()
 			val fullSeconds = delayMs / 1000
 			val remainder = delayMs % 1000
-			val wireBoneIds = boneIds?.map { it.value }
 
 			// Tell the GUI we started a reset
 			server.sendSolarxrRpc(
-				ResetResponse(resetType, ResetStatus.STARTED, wireBoneIds, 0, delayMs),
+				ResetResponse(resetType, ResetStatus.STARTED, bodyParts, 0, delayMs),
 			)
 
 			// Wait for the reset delay while updating the GUI every second
@@ -83,14 +79,14 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				// Skip final tick if at the same time as finish
 				if (index != fullSeconds - 1 || remainder != 0) {
 					server.sendSolarxrRpc(
-						ResetResponse(resetType, ResetStatus.STARTED, wireBoneIds, (index + 1) * 1000, delayMs),
+						ResetResponse(resetType, ResetStatus.STARTED, bodyParts, (index + 1) * 1000, delayMs),
 					)
 				}
 			}
 			delay(remainder.toLong())
 
 			// Reset trackers
-			executeTrackerResets(resetType, boneIds, settings.context.state.value.data.resetsConfig)
+			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
 			if (resetType == ResetType.FULL) {
 				// Tell the skeleton to set the floor level and try resetting the head position (for mocap mode)
@@ -101,7 +97,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			skeleton.resetProcessors(resetType)
 
 			// Update state and config
-			context.dispatch(ResetsActions.EndReset(resetType, boneIds, settings.context.state.value.data.resetsConfig.resetMountingFeet))
+			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
@@ -120,7 +116,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 			// Tell the GUI we finished a reset
 			server.sendSolarxrRpc(
-				ResetResponse(resetType, ResetStatus.FINISHED, wireBoneIds, delayMs, delayMs),
+				ResetResponse(resetType, ResetStatus.FINISHED, bodyParts, delayMs, delayMs),
 			)
 		}
 	}
@@ -133,18 +129,18 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}
 
-	private fun executeTrackerResets(resetType: ResetType, boneIds: List<BoneId>? = null, config: ResetsConfig) {
+	private fun executeTrackerResets(resetType: ResetType, bodyParts: List<BodyPart>? = null, config: ResetsConfig) {
 		val allTrackers = server.context.state.value.trackers.values
 
 		// Filter out the trackers that we want to reset
-		val trackers = if (!boneIds.isNullOrEmpty()) {
+		val trackers = if (!bodyParts.isNullOrEmpty()) {
 			allTrackers.filter {
-				boneIds.contains(it.context.state.value.boneId)
+				bodyParts.contains(it.context.state.value.bodyPart)
 			}
 		} else {
 			// Exclude feet, fingers and toes from mounting reset except if forced
 			allTrackers.filter {
-				val bodyPart = it.context.state.value.boneId?.let { id -> registry.bodyPartOf(id) }
+				val bodyPart = it.context.state.value.bodyPart
 				resetType != ResetType.POSE_MOUNTING ||
 					(
 						(config.resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
@@ -157,7 +153,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		val referenceRotation = allTrackers
 			.map { it.context.state.value }
 			.filter { it.position != null }
-			.getFirstActiveFor(BodyPart.HEAD.boneId)
+			.getFirstActiveFor(BodyPart.HEAD)
 			?.rawRotation?.twinNearest(Quaternion.IDENTITY) ?: Quaternion.IDENTITY
 
 		// Dispatch the reset action to the trackers
@@ -166,7 +162,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				when (resetType) {
 					ResetType.YAW -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime.toDouble().seconds)
 					ResetType.FULL -> TrackerActions.FullReset(referenceRotation, config.resetPositionalHeadAttitude)
-					ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(it.context.state.value.boneId?.let { id -> registry.bodyPartOf(id) }, config.armsResetMode))
+					ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
 		}

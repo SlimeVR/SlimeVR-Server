@@ -129,31 +129,3 @@ void SolarXRConnection::sendMsg(flatbuffers::FlatBufferBuilder &fbb) {
         return;
     }
 }
-
-bool SolarXRConnection::recvExact(char *buf, size_t len) {
-    size_t done = 0;
-    while (done < len) {
-        auto n = recv(fd, buf + done, static_cast<int>(len - done), 0);
-        if (n == SocketError || n == 0) return false;
-        done += static_cast<size_t>(n);
-    }
-    return true;
-}
-
-std::optional<std::vector<uint8_t>> SolarXRConnection::recvMsg() {
-    uint32_t size = 0;
-    if (!recvExact(reinterpret_cast<char *>(&size), sizeof(size))) return std::nullopt;
-    if constexpr (std::endian::native != std::endian::little)
-        size = std::byteswap(size);
-
-    if (size < sizeof(size)) {
-        Logger::get().warning("Received an invalid SolarXR frame size {}", size);
-        return std::nullopt;
-    }
-
-    std::vector<uint8_t> buffer(size - sizeof(size));
-    if (!buffer.empty() && !recvExact(reinterpret_cast<char *>(buffer.data()), buffer.size())) {
-        return std::nullopt;
-    }
-    return buffer;
-}

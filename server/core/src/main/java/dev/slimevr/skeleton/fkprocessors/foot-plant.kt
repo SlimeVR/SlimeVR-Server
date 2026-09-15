@@ -1,12 +1,9 @@
 package dev.slimevr.skeleton.fkprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
-import dev.slimevr.skeleton.boneId
-import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -30,16 +27,16 @@ fun correctFootAttitude(
 ): Quaternion = rotation.interpQ(rotation.eulerHeading(), correctionRatio)
 
 class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
-	private val boneIds: Array<BoneId> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT).map { it.boneId }.toTypedArray()
+	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		if (!settings.context.state.value.data.skeletonConfig.toggles.footPlant) return
 
-		for (boneId in boneIds) {
-			val input = mutableInputSkeleton[boneId] ?: continue
+		for (bodyPart in bodyParts) {
+			val input = mutableInputSkeleton[bodyPart] ?: continue
 			if (input.isRotationActive) continue
-			val output = fk[boneId] ?: continue
-			mutableInputSkeleton[boneId] = input.copy(
+			val output = fk[bodyPart] ?: continue
+			mutableInputSkeleton[bodyPart] = input.copy(
 				rotation = correctFootAttitude(
 					input.rotation,
 					computeFootPlantRatio(

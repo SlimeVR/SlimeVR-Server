@@ -26,7 +26,9 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
+import solarxr_protocol.rpc.SkeletonBone
 
 data class Velocity(
 	/** In meters/s */
@@ -39,7 +41,7 @@ val ZERO_VELOCITY = Velocity(Vector3.ZERO, Vector3.ZERO)
 
 /** Pre-FK */
 data class BoneInput(
-	val boneId: BoneId,
+	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
 	val rotation: Quaternion,
@@ -53,7 +55,7 @@ data class BoneInput(
 /** Post-FK */
 data class BoneState(
 	val parentBone: BoneState?,
-	val boneId: BoneId,
+	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
 	val rotation: Quaternion,
@@ -81,8 +83,8 @@ data class BoneState(
 		get() = tailPosition - headPosition
 }
 
-typealias InputSkeleton = BoneMap<BoneInput>
-typealias ComputedSkeleton = BoneMap<BoneState>
+typealias InputSkeleton = BodyPartMap<BoneInput>
+typealias ComputedSkeleton = BodyPartMap<BoneState>
 
 data class SkeletonState(
 	val boneInputs: InputSkeleton,
@@ -93,7 +95,7 @@ data class SkeletonState(
 )
 
 val DEFAULT_BONE_INPUT = BoneInput(
-	boneId = BoneId(0u),
+	bodyPart = BodyPart.NONE,
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
 	rotation = Quaternion.IDENTITY,
@@ -104,13 +106,13 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	isPositionActive = false,
 )
 
-fun defaultSkeletonState(registry: BoneRegistry): SkeletonState {
-	val offsets = toBoneOffsets(DEFAULT_PROPORTIONS, registry)
-	return SkeletonState(
-		boneInputs = offsets.tail.mapValues { boneId, tailOffset ->
+val DEFAULT_SKELETON_STATE = run {
+	val offsets = toBoneOffsets(DEFAULT_PROPORTIONS)
+	SkeletonState(
+		boneInputs = offsets.tail.mapValues { bodyPart, tailOffset ->
 			DEFAULT_BONE_INPUT.copy(
-				boneId = boneId,
-				headOffset = offsets.head[boneId] ?: Vector3.ZERO,
+				bodyPart = bodyPart,
+				headOffset = offsets.head[bodyPart] ?: Vector3.ZERO,
 				offset = tailOffset,
 			)
 		},
@@ -122,12 +124,12 @@ fun defaultSkeletonState(registry: BoneRegistry): SkeletonState {
 }
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
-	// Raw position of the bone input is used for a root bone since it has no parent
+	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
 	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) }
 		?: bone.position ?: Vector3.ZERO
 	return BoneState(
 		parentBone = parentBone,
-		boneId = bone.boneId,
+		bodyPart = bone.bodyPart,
 		headOffset = bone.headOffset,
 		offset = bone.offset,
 		rotation = bone.rotation,
@@ -143,30 +145,25 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
  *
  * If changedParts is used, pass lastResult to fill in the gaps that won't be re-computed.
  */
-fun buildBones(
-	boneInputs: InputSkeleton,
-	changedParts: BoneSet = boneInputs.registry.rootSet,
-	lastResult: ComputedSkeleton = BoneMap.of(boneInputs.registry),
-): ComputedSkeleton {
-	val registry = boneInputs.registry
+fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet, lastResult: BodyPartMap<BoneState> = bodyPartMap()): ComputedSkeleton {
 	return lastResult.mutateCopy { result ->
-		for (boneId in registry.highest(changedParts)) {
-			val parent = registry.parentOf(boneId)
-			registry.hierarchyFrom(parent ?: boneId, onlyChildren = parent != null).forEach { (parentId, childId) ->
-				val rawBone = boneInputs[childId] ?: return@forEach
-				val parentBone = parentId?.let { result[it] }
-				result[childId] = buildBone(rawBone, parentBone, result[childId]?.velocity ?: ZERO_VELOCITY)
+		for (bodyPart in highestBodyParts(changedParts)) {
+			iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
+				val rawBone = boneInputs[childPart] ?: return@forEach
+				val parentBone = parentPart?.let { result[it] }
+				// Velocity is written directly during the skeleton loop computed bones; keep it.
+				result[childPart] = buildBone(rawBone, parentBone, result[childPart]?.velocity ?: ZERO_VELOCITY)
 			}
 		}
 	}
 }
 
 sealed interface SkeletonActions {
-	data class SetBoneRotation(val boneId: BoneId, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
-	data class SetBoneAcceleration(val boneId: BoneId, val acceleration: Vector3, val setActive: Boolean = true) : SkeletonActions
-	data class SetBonePosition(val boneId: BoneId, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
-	data class DisableBone(val boneId: BoneId) : SkeletonActions
-	data class SetProportions(val boneOffsets: BoneOffsets, val skeletonHeight: Float) : SkeletonActions
+	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
+	data class SetBoneAcceleration(val bodyPart: BodyPart, val acceleration: Vector3, val setActive: Boolean = true) : SkeletonActions
+	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
+	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
+	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
@@ -188,7 +185,7 @@ interface SkeletonFkProcessor {
 interface SkeletonComputedProcessor {
 	fun process(mutableComputedSkeleton: ComputedSkeleton)
 }
-typealias IKTargets = BoneMap<Vector3>
+typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
 	fun process(mutableIkTargets: IKTargets, fk: ComputedSkeleton, floorLevel: Float)
 }
@@ -199,10 +196,6 @@ class Skeleton(
 	private val resettableSkeletonProcessors: Set<ResettableSkeletonProcessor>,
 ) {
 	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
-
-	// Reads off boneInputs so registry and state always agree, even if a future registry
-	// swap is added later
-	val registry: BoneRegistry get() = context.state.value.boneInputs.registry
 
 	fun startObserving() = context.observeAll(this)
 
@@ -215,11 +208,10 @@ class Skeleton(
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
-			val registry = BoneRegistry.standard()
 
 			val resettableSkeletonProcessors = mutableSetOf<ResettableSkeletonProcessor>()
 			val behaviours = listOf(
-				ProportionsBehaviour(ctx.config.userConfig, registry),
+				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
@@ -258,16 +250,17 @@ class Skeleton(
 			)
 
 			val context = Context.create(
-				initialState = defaultSkeletonState(registry),
+				initialState = DEFAULT_SKELETON_STATE,
 				scope = scope,
 				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "Skeleton",
 			)
 
-			// Replay one sample for late subscribers. Non-blocking: a slow driver misses a
-			// pose instead of stalling this thread, which has nothing else to do.
-			val computed = MutableSharedFlow<ComputedSkeleton>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+			val computed = MutableSharedFlow<ComputedSkeleton>(
+				replay = 1,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
 			computed.tryEmit(buildBones(context.state.value.boneInputs))
 
 			return Skeleton(context, computed, resettableSkeletonProcessors)

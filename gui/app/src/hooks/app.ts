@@ -11,13 +11,7 @@ import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue, useSetAtom } from 'jotai';
-import {
-  bodyPartOfBone,
-  bonesAtom,
-  boneRegistryAtom,
-  datafeedAtom,
-  devicesAtom,
-} from '@/store/app-store';
+import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
 import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
@@ -38,7 +32,6 @@ export function useProvideAppContext(): AppContext {
   const setDatafeed = useSetAtom(datafeedAtom);
   const setBones = useSetAtom(bonesAtom);
   const devices = useAtomValue(devicesAtom);
-  const boneRegistry = useAtomValue(boneRegistryAtom);
 
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
@@ -55,11 +48,7 @@ export function useProvideAppContext(): AppContext {
     if (packet.index === 0) {
       setDatafeed(packet);
     } else if (packet.index === 1) {
-      setBones(
-        new Map(
-          packet.bones.map((bone) => [bodyPartOfBone(boneRegistry, bone.id), bone])
-        )
-      );
+      setBones(packet.bones);
     }
   });
 

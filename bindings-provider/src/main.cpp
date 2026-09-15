@@ -29,77 +29,6 @@ using namespace solarxr_protocol;
 
 static void shutdown_vr(vr::IVRSystem *_sys) { vr::VR_Shutdown(); }
 
-// Must match SOLARXR_PROTOCOL_VERSION in server/core/.../solarxr/protocol.kt
-constexpr uint32_t SOLARXR_PROTOCOL_VERSION = 2;
-
-// Exchanges ClientHello/ServerHello, then waits for the server's BoneRegistry and
-// FinishConfiguration before acknowledging. All later sends must use
-// FinishMessageBundleBuffer so the server does not gate them as pre-init messages.
-static bool performSolarXRHandshake(SolarXRConnection &conn) {
-    using namespace solarxr_protocol::connection;
-
-    {
-        flatbuffers::FlatBufferBuilder fbb;
-        auto hello = CreateClientHello(fbb, SOLARXR_PROTOCOL_VERSION);
-        fbb.Finish(hello, "SXCH");
-        conn.sendMsg(fbb);
-    }
-
-    auto helloReply = conn.recvMsg();
-    if (!helloReply || helloReply->size() < 8
-        || !flatbuffers::BufferHasIdentifier(helloReply->data(), "SXSH")) {
-        Logger::get().error("Did not receive a valid SolarXR ServerHello");
-        return false;
-    }
-    auto serverHello = flatbuffers::GetRoot<ServerHello>(helloReply->data());
-    if (serverHello->status() != HelloStatus::ACCEPTED) {
-        Logger::get().error("SolarXR server rejected our protocol version (status {})",
-                            static_cast<int>(serverHello->status()));
-        return false;
-    }
-
-    // Connection messages arrive in their own bundles; process each fully
-    // (the server sends BoneRegistry before FinishConfiguration).
-    bool finished = false;
-    while (!finished) {
-        auto frame = conn.recvMsg();
-        if (!frame || frame->size() < 8
-            || !flatbuffers::BufferHasIdentifier(frame->data(), "SXMB")) {
-            Logger::get().error("Did not receive a valid SolarXR MessageBundle during initialization");
-            return false;
-        }
-        auto bundle = flatbuffers::GetRoot<MessageBundle>(frame->data());
-        auto msgs = bundle->connection_msgs();
-        if (!msgs) continue;
-
-        for (auto header : *msgs) {
-            switch (header->message_type()) {
-            case ConnectionMessage::FinishConfiguration:
-                finished = true;
-                break;
-            case ConnectionMessage::ConnectionError: {
-                auto error = header->message_as_ConnectionError();
-                Logger::get().warning("SolarXR connection error during initialization: {}",
-                                      error->message() ? error->message()->str() : "");
-                break;
-            }
-            default:
-                break;
-            }
-        }
-    }
-
-    flatbuffers::FlatBufferBuilder fbb;
-    std::vector<flatbuffers::Offset<ConnectionMessageHeader>> connectionMsgs{
-        CreateConnectionMessageHeader(fbb, ConnectionMessage::ConfigurationAcknowledged,
-                                      CreateConfigurationAcknowledged(fbb).Union()),
-    };
-    auto bundle = CreateMessageBundleDirect(fbb, nullptr, nullptr, nullptr, &connectionMsgs);
-    FinishMessageBundleBuffer(fbb, bundle);
-    conn.sendMsg(fbb);
-    return true;
-}
-
 static void onYawReset(SolarXRConnection &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
@@ -109,7 +38,7 @@ static void onYawReset(SolarXRConnection &conn) {
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
-    FinishMessageBundleBuffer(fbb, bundle);
+    fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 static void onFullReset(SolarXRConnection &conn) {
@@ -121,7 +50,7 @@ static void onFullReset(SolarXRConnection &conn) {
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
-    FinishMessageBundleBuffer(fbb, bundle);
+    fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 static void onMountingCalibration(SolarXRConnection &conn) {
@@ -133,22 +62,21 @@ static void onMountingCalibration(SolarXRConnection &conn) {
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
-    FinishMessageBundleBuffer(fbb, bundle);
+    fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 static void onFeetMountingCalibration(SolarXRConnection &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto boneIds = fbb.CreateVector<uint16_t>(
-        { static_cast<uint16_t>(datatypes::BodyPart::LEFT_FOOT),
-          static_cast<uint16_t>(datatypes::BodyPart::RIGHT_FOOT) });
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, boneIds, 0.f);
+    auto bodyParts = fbb.CreateVector(
+        { datatypes::BodyPart::LEFT_FOOT, datatypes::BodyPart::RIGHT_FOOT });
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, bodyParts, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
         fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
-    FinishMessageBundleBuffer(fbb, bundle);
+    fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 static void onToggleTracking(SolarXRConnection &conn) {
@@ -163,7 +91,7 @@ static void onToggleTracking(SolarXRConnection &conn) {
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
-    FinishMessageBundleBuffer(fbb, bundle);
+    fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 
@@ -208,11 +136,6 @@ int main() {
 
     try {
         SolarXRConnection conn;
-        if (!performSolarXRHandshake(conn)) {
-            logger.error("Failed to complete SolarXR connection initialization");
-            return 1;
-        }
-
         std::unique_ptr<vr::IVRSystem, decltype(&shutdown_vr)> sys{ nullptr,
                                                                     shutdown_vr };
 

@@ -3,8 +3,6 @@ package dev.slimevr.stayaligned
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.StayAlignedRelaxedPoseConfig
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.skeleton.BoneRegistry
-import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.stayaligned.TrackerYawCorrection
@@ -23,8 +21,6 @@ import kotlin.test.assertNull
  * Tests the entry point of Stay Aligned
  */
 class ComputeYawCorrectionTest {
-
-	val registry = BoneRegistry.standard()
 
 	val enabledStayAlignedConfig = StayAlignedConfig(
 		enabled = true,
@@ -50,7 +46,7 @@ class ComputeYawCorrectionTest {
 
 	val lockedTrackerState = Tracker.DEFAULT_STATE.copy(
 		motion = Motion.RESTING,
-		boneId = BodyPart.HIP.boneId,
+		bodyPart = BodyPart.HIP,
 		status = TrackerStatus.OK,
 		stayAlignedData = Tracker.DEFAULT_STATE.stayAlignedData.copy(lockedRotation = pointFiveYaw),
 	)
@@ -68,7 +64,6 @@ class ComputeYawCorrectionTest {
 			listOf(lockedTrackerState),
 			Angle(0.002f),
 			enabledStayAlignedConfig,
-			registry,
 		)
 
 		assertNotNull(result)
@@ -82,7 +77,6 @@ class ComputeYawCorrectionTest {
 			listOf(lockedTrackerState),
 			Angle(0f),
 			enabledStayAlignedConfig,
-			registry,
 		)
 
 		assertNotNull(result)
@@ -96,7 +90,6 @@ class ComputeYawCorrectionTest {
 			listOf(primarilyAtRestTrackerState),
 			Angle(0.002f),
 			enabledStayAlignedConfig,
-			registry,
 		)
 
 		assertNull(result)
@@ -108,14 +101,13 @@ class ComputeYawCorrectionTest {
 			movingTrackerState,
 			listOf(
 				movingTrackerState,
-				movingTrackerState.copy(boneId = BodyPart.LEFT_UPPER_LEG.boneId, rotation = fiveYaw),
-				movingTrackerState.copy(boneId = BodyPart.RIGHT_UPPER_LEG.boneId, rotation = fiveYaw),
-				movingTrackerState.copy(boneId = BodyPart.LEFT_LOWER_LEG.boneId, rotation = fiveYaw),
-				movingTrackerState.copy(boneId = BodyPart.RIGHT_LOWER_LEG.boneId, rotation = fiveYaw),
+				movingTrackerState.copy(bodyPart = BodyPart.LEFT_UPPER_LEG, rotation = fiveYaw),
+				movingTrackerState.copy(bodyPart = BodyPart.RIGHT_UPPER_LEG, rotation = fiveYaw),
+				movingTrackerState.copy(bodyPart = BodyPart.LEFT_LOWER_LEG, rotation = fiveYaw),
+				movingTrackerState.copy(bodyPart = BodyPart.RIGHT_LOWER_LEG, rotation = fiveYaw),
 			),
 			Angle(0.002f),
 			enabledStayAlignedConfig,
-			registry,
 		)
 
 		assertNotNull(result)

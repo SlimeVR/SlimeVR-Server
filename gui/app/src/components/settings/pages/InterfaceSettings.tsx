@@ -126,7 +126,7 @@ export function InterfaceSettings() {
       handleResetSounds(values.notifications.feedbackSoundVolume, {
         resetType: ResetType.FULL,
         status: ResetStatus.FINISHED,
-        boneIds: [],
+        bodyParts: [],
         progress: 0,
         duration: 0,
       });

@@ -1,9 +1,7 @@
 package dev.slimevr.skeleton.inputprocessors
 
-import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.boneId
 import solarxr_protocol.datatypes.BodyPart
 
 private const val INTERMEDIATE_FROM_PROXIMAL = 2.12f
@@ -13,40 +11,26 @@ private const val DISTAL_FROM_PROXIMAL = 3.03f
  * Handles rotations of inactive finger bones.
  */
 class FingerImputeInputProcessor : SkeletonInputProcessor {
-	private data class BodyPartFinger(
+	private data class Finger(
 		val hand: BodyPart,
 		val proximal: BodyPart,
 		val intermediate: BodyPart,
 		val distal: BodyPart,
 	)
 
-	private data class Finger(
-		val hand: BoneId,
-		val proximal: BoneId,
-		val intermediate: BoneId,
-		val distal: BoneId,
+	private val fingers = arrayOf(
+		Finger(BodyPart.LEFT_HAND, BodyPart.LEFT_THUMB_METACARPAL, BodyPart.LEFT_THUMB_PROXIMAL, BodyPart.LEFT_THUMB_DISTAL),
+		Finger(BodyPart.LEFT_HAND, BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE, BodyPart.LEFT_INDEX_DISTAL),
+		Finger(BodyPart.LEFT_HAND, BodyPart.LEFT_MIDDLE_PROXIMAL, BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL),
+		Finger(BodyPart.LEFT_HAND, BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE, BodyPart.LEFT_RING_DISTAL),
+		Finger(BodyPart.LEFT_HAND, BodyPart.LEFT_LITTLE_PROXIMAL, BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL),
+
+		Finger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_THUMB_METACARPAL, BodyPart.RIGHT_THUMB_PROXIMAL, BodyPart.RIGHT_THUMB_DISTAL),
+		Finger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE, BodyPart.RIGHT_INDEX_DISTAL),
+		Finger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_MIDDLE_PROXIMAL, BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL),
+		Finger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_DISTAL),
+		Finger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL),
 	)
-
-	private val fingers: Array<Finger> = arrayOf(
-		BodyPartFinger(BodyPart.LEFT_HAND, BodyPart.LEFT_THUMB_METACARPAL, BodyPart.LEFT_THUMB_PROXIMAL, BodyPart.LEFT_THUMB_DISTAL),
-		BodyPartFinger(BodyPart.LEFT_HAND, BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE, BodyPart.LEFT_INDEX_DISTAL),
-		BodyPartFinger(BodyPart.LEFT_HAND, BodyPart.LEFT_MIDDLE_PROXIMAL, BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL),
-		BodyPartFinger(BodyPart.LEFT_HAND, BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE, BodyPart.LEFT_RING_DISTAL),
-		BodyPartFinger(BodyPart.LEFT_HAND, BodyPart.LEFT_LITTLE_PROXIMAL, BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL),
-
-		BodyPartFinger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_THUMB_METACARPAL, BodyPart.RIGHT_THUMB_PROXIMAL, BodyPart.RIGHT_THUMB_DISTAL),
-		BodyPartFinger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE, BodyPart.RIGHT_INDEX_DISTAL),
-		BodyPartFinger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_MIDDLE_PROXIMAL, BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL),
-		BodyPartFinger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_DISTAL),
-		BodyPartFinger(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL),
-	).map { finger ->
-		Finger(
-			hand = finger.hand.boneId,
-			proximal = finger.proximal.boneId,
-			intermediate = finger.intermediate.boneId,
-			distal = finger.distal.boneId,
-		)
-	}.toTypedArray()
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		for (finger in fingers) {
