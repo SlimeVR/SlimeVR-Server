@@ -1,8 +1,8 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import io.github.axisangles.ktmath.Quaternion
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import kotlin.time.Duration
 
@@ -22,11 +22,12 @@ fun reduce(
 		val accumulatedTicks = if (action.newData && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
 
 		// Rotation
-		val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
+		val rawRotation: RawRotation = action.rotation ?: state.rawRotation
 		val correctedRawRotation = if (state.stayAlignedData.enabled) {
-			Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawPolarityTrackedRotation
+			// Apply stay aligned yaw correction
+			Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
 		} else {
-			rawPolarityTrackedRotation
+			rawRotation
 		}
 
 		// Other inputs
@@ -40,6 +41,7 @@ fun reduce(
 		val rotation: CalibratedRotation =
 			if (action.rotation != null) {
 				applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
+					.twinNearest(state.rotation)
 			} else {
 				state.rotation
 			}
@@ -53,7 +55,7 @@ fun reduce(
 			}
 
 		state.copy(
-			rawRotation = rawPolarityTrackedRotation,
+			rawRotation = rawRotation,
 			rotation = rotation,
 			rawAcceleration = rawAcceleration,
 			acceleration = acceleration,
@@ -84,13 +86,10 @@ fun reduce(
 		val shouldAlignAttitude = !isHead || !isPositional || action.resetPositionalHeadAttitude
 		val shouldAlignHeadingWithReference = !isHead && isPositional
 
-		// Use the shortest rotation/default polarity
-		val shortestRawRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
-
 		val headingCorrection =
 			if (shouldAlignAttitude) {
 				estimateHeadingCorrect(
-					shortestRawRotation,
+					state.rawRotation,
 					action.referenceRotation,
 				)
 			} else {
@@ -99,7 +98,7 @@ fun reduce(
 		val attitudeAlignment =
 			if (shouldAlignAttitude) {
 				estimateAttitudeAlign(
-					shortestRawRotation,
+					state.rawRotation,
 					headingCorrection,
 					action.referenceRotation,
 				)
@@ -121,7 +120,7 @@ fun reduce(
 			),
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
-			rawRotation = shortestRawRotation,
+			rotation = state.rotation.twinNearest(action.referenceRotation),
 		)
 	}
 
@@ -143,16 +142,19 @@ fun reduce(
 					to = newHeading,
 					duration = action.smoothTime,
 				),
+				rotation = state.rotation.twinNearest(state.rotation),
 			)
 		} else {
 			// Snap: apply the new heading immediately (default, no smoothing configured).
 			state.copy(
 				sessionCalibration = cal.copy(headingCorrection = newHeading),
 				yawResetSmoothing = null,
+				rotation = state.rotation.twinNearest(action.referenceRotation),
 			)
 		}
 	}
 
+	// TODO: fix centaur on PoseMountingReset
 	is TrackerActions.PoseMountingReset -> {
 		val cal = state.sessionCalibration
 
@@ -169,6 +171,7 @@ fun reduce(
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = headingAlignment),
 			lastMountingMethod = MountingMethod.POSE,
+			rotation = state.rotation.twinNearest(action.referenceRotation),
 		)
 	}
 

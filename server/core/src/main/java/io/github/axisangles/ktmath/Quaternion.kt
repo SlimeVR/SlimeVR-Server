@@ -395,7 +395,12 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	/**
 	 * Returns the twist (rotation around the local y-axis of the Quaternion) unitized.
 	 */
-	fun twist() = Quaternion(this.w, 0f, this.y, 0f).unit()
+	fun twistY() = Quaternion(this.w, 0f, this.y, 0f).unit()
+
+	/**
+	 * Returns a Quaternion representing the heading of this Quaternion using Euler angles and preserving polarity.
+	 */
+	fun eulerHeading() = rotationAroundYAxis(this.toEulerAngles(EulerOrder.YZX).y).twinNearest(this)
 
 	/**
 	 * applies this quaternion's rotation to that vector

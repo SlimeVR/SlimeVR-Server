@@ -1,5 +1,6 @@
 package dev.slimevr.tracker.stayaligned.poses
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
@@ -8,7 +9,6 @@ import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults
 import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
-import dev.slimevr.bones.BodyPart
 
 class RelaxedPose(
 	val upperLeg: Angle,

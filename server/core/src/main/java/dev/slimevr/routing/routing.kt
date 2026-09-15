@@ -1,6 +1,7 @@
 package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.BoneRoutingConfig
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState

@@ -66,7 +66,8 @@ enum class BodyPart(val value: UByte) {
 	RIGHT_INDEX_TOE(58u),
 	RIGHT_MIDDLE_TOE(59u),
 	RIGHT_RING_TOE(60u),
-	RIGHT_LITTLE_TOE(61u);
+	RIGHT_LITTLE_TOE(61u),
+	;
 
 	companion object {
 		fun fromValue(value: UByte): BodyPart? = entries.firstOrNull { it.value == value }

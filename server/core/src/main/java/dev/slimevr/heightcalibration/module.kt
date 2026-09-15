@@ -4,6 +4,7 @@ package dev.slimevr.heightcalibration
 
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 

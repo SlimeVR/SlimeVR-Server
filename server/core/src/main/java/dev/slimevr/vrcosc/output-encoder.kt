@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.boneId
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
@@ -9,7 +10,6 @@ import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import dev.slimevr.bones.BodyPart
 import kotlin.math.PI
 
 private val trackerIdsByBodyPart = mapOf(

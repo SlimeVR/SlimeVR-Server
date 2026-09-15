@@ -3,6 +3,7 @@ package dev.slimevr.resets
 import com.jme3.math.FastMath
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.bones.boneId
@@ -22,7 +23,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ResetResponse
@@ -158,7 +158,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			.map { it.context.state.value }
 			.filter { it.position != null }
 			.getFirstActiveFor(BodyPart.HEAD.boneId)
-			?.rawRotation ?: Quaternion.IDENTITY
+			?.rawRotation?.twinNearest(Quaternion.IDENTITY) ?: Quaternion.IDENTITY
 
 		// Dispatch the reset action to the trackers
 		trackers.forEach {

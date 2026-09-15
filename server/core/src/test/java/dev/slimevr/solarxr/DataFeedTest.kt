@@ -2,6 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.TestAppContext
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.BoneRegistryManager
 import dev.slimevr.buildTestHeightCalibration
@@ -22,7 +23,6 @@ import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.datatypes.BoneMask
 import kotlin.test.Test
 import kotlin.test.assertEquals

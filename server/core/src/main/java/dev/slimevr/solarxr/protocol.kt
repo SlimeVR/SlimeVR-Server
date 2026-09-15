@@ -3,8 +3,8 @@ package dev.slimevr.solarxr
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
-import java.nio.ByteBuffer
 import solarxr_protocol.MessageBundle
+import java.nio.ByteBuffer
 
 const val SOLARXR_PROTOCOL_VERSION: UInt = 2u
 const val SOLARXR_MAX_FRAME_SIZE = 256 * 1024

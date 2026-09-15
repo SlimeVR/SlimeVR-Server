@@ -1,14 +1,13 @@
 package dev.slimevr.skeleton.fkprocessors
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
-import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
-import dev.slimevr.bones.BodyPart
 import kotlin.math.abs
 import kotlin.math.asin
 
@@ -40,7 +39,7 @@ fun snapToes(
 	correctionRatio: Float,
 ): Quaternion {
 	// TODO Do we want to retain roll?
-	val heading = eulerHeading(rotation)
+	val heading = rotation.eulerHeading()
 	// TODO Not yet tested if this is the right method & math
 	val maxPitch = Quaternion.rotationAroundXAxis(MAX_TOE_SNAP_ANGLE * correctionRatio)
 	// Pitch must be applied first

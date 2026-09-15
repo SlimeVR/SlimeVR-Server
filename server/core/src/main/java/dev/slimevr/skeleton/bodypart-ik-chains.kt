@@ -1,9 +1,9 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
-import dev.slimevr.bones.BodyPart
 
 typealias BodyPartChain = List<BodyPart>
 

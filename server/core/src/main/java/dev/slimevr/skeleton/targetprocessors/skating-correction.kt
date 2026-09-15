@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton.targetprocessors
 
+import dev.slimevr.bones.BodyPart
 import dev.slimevr.bones.BoneId
 import dev.slimevr.bones.boneId
 import dev.slimevr.config.Settings
@@ -14,7 +15,6 @@ import dev.slimevr.skeleton.computeComState
 import dev.slimevr.skeleton.resolveMasses
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
-import dev.slimevr.bones.BodyPart
 import solarxr_protocol.rpc.ResetType
 
 data class LockState(

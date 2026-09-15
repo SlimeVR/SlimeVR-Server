@@ -146,7 +146,7 @@ class SessionCalibrationTest {
 				}.forEach { hA ->
 					val boneOrientationA = rawOrientation * aA * hA
 					val boneOrientationB = rawOrientation * hA * aA
-					quaternionAssertNotEquals(boneOrientationA, boneOrientationB)
+					quaternionAssertNotEquals(boneOrientationA, boneOrientationB, message = "aA $aA, hA: $hA ")
 				}
 			}
 	}
@@ -217,8 +217,7 @@ class SessionCalibrationTest {
 
 	@Test
 	fun estimateSessionCalibrationTests() {
-		// We can only estimate session calibration with yaw and pitch, roll cannot be
-		//  compensated for
+		// We can only estimate session calibration with yaw and pitch, roll cannot be compensated for
 		heading.forEach { hC ->
 			pitch.forEach { aA ->
 				heading.forEach { rR ->
@@ -316,9 +315,6 @@ class SessionCalibrationTest {
 	companion object {
 		// 5 steps
 		val step = (-180..180 step 72).map { it.toFloat() }
-
-		// 12 steps
-		val fineStep = (-180..180 step 30).map { it.toFloat() }
 
 		// Will not work when we don't know the heading correction or heading alignment,
 		//  we will need Euler angles to calculate those, and it needs to sacrifice one
