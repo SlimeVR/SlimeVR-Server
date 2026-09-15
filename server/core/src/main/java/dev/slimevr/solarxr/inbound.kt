@@ -8,7 +8,7 @@ suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
 	val wasReady = context.isReady
 	message.connectionMsgs?.forEach { header -> onConnectionMessage(header.message, context) }
 	if (!wasReady) {
-		if (!message.dataFeedMsgs.isNullOrEmpty() || !message.rpcMsgs.isNullOrEmpty() || !message.driverMsgs.isNullOrEmpty()) {
+		if (message.dataFeedMsgs != null || message.rpcMsgs != null || message.driverMsgs != null) {
 			context.sendConnectionMessage(ConnectionError(message = "Configuration has not completed", data = InitializationRequiredError()))
 		}
 		return
