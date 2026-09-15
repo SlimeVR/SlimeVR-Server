@@ -29,25 +29,23 @@ class ResourcePackOrderingTest {
 	}
 
 	@Test
-	fun `cycles self ordering and ordering before core are rejected`() = runTest {
+	fun `cycles self ordering, ordering before core and duplicate IDs are rejected`() = runTest {
 		val a = testPack("example:a", after = listOf("example:b"))
 		val b = testPack("example:b", after = listOf("example:a"))
 		val self = testPack("example:self", before = listOf("example:self"))
 		val beforeCore = testPack("example:before", before = listOf("slimevr:core"))
-		for (packs in listOf(listOf(a, b), listOf(self), listOf(beforeCore))) {
+		val duplicate = testPack("example:duplicate")
+		val cases = listOf(
+			listOf(a, b) to "cycle",
+			listOf(self) to "cycle",
+			listOf(beforeCore) to "cycle",
+			listOf(duplicate, duplicate) to "Duplicate pack ID",
+		)
+		for ((packs, expected) in cases) {
 			val error = assertFailsWith<ResourcePackCompilationException> {
 				orderResourcePacks(ResourcePackCatalog(testCoreResourcePack, packs, emptyList()))
 			}
-			assertTrue(error.diagnostics.all { it.path == "manifest.json" && "cycle" in it.message })
+			assertTrue(error.diagnostics.all { it.path == "manifest.json" && expected in it.message }, expected)
 		}
-	}
-
-	@Test
-	fun `duplicate IDs are rejected before sorting`() = runTest {
-		val a = testPack("example:a")
-		val error = assertFailsWith<ResourcePackCompilationException> {
-			orderResourcePacks(ResourcePackCatalog(testCoreResourcePack, listOf(a, a), emptyList()))
-		}
-		assertTrue(error.message!!.contains("Duplicate pack ID"))
 	}
 }

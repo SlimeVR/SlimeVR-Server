@@ -42,77 +42,19 @@ class BoneRegistryTest {
 	}
 
 	@Test
-	fun `rejects duplicate IDs`() {
-		assertFailsWith<IllegalArgumentException> {
-			BoneRegistry.from(
-				WireBoneRegistry(
-					bones = listOf(
-						BoneDefinition(1u, "a", null, 0u),
-						BoneDefinition(1u, "b", null, 0u),
-					),
-				),
-			)
-		}
-	}
-
-	@Test
-	fun `rejects ID 0`() {
-		assertFailsWith<IllegalArgumentException> {
-			BoneRegistry.from(
-				WireBoneRegistry(
-					bones = listOf(BoneDefinition(0u, "a", null, 0u)),
-				),
-			)
-		}
-	}
-
-	@Test
-	fun `rejects an unknown parent`() {
-		assertFailsWith<IllegalArgumentException> {
-			BoneRegistry.from(
-				WireBoneRegistry(
-					bones = listOf(BoneDefinition(1u, "a", null, 2u)),
-				),
-			)
-		}
-	}
-
-	@Test
-	fun `rejects a cycle`() {
-		assertFailsWith<IllegalArgumentException> {
-			BoneRegistry.from(
-				WireBoneRegistry(
-					bones = listOf(
-						BoneDefinition(1u, "a", null, 2u),
-						BoneDefinition(2u, "b", null, 1u),
-					),
-				),
-			)
-		}
-	}
-
-	@Test
-	fun `rejects a bone that is its own parent`() {
-		assertFailsWith<IllegalArgumentException> {
-			BoneRegistry.from(
-				WireBoneRegistry(
-					bones = listOf(BoneDefinition(1u, "a", null, 1u)),
-				),
-			)
-		}
-	}
-
-	@Test
-	fun `rejects non-contiguous IDs`() {
-		assertFailsWith<IllegalArgumentException> {
-			BoneRegistry.from(
-				WireBoneRegistry(
-					bones = listOf(
-						BoneDefinition(1u, "a", null, 0u),
-						BoneDefinition(3u, "b", null, 0u),
-					),
-				),
-			)
+	fun `rejects malformed wire registries`() {
+		val cases = mapOf(
+			"duplicate IDs" to listOf(BoneDefinition(1u, "a", null, 0u), BoneDefinition(1u, "b", null, 0u)),
+			"ID 0" to listOf(BoneDefinition(0u, "a", null, 0u)),
+			"an unknown parent" to listOf(BoneDefinition(1u, "a", null, 2u)),
+			"a cycle" to listOf(BoneDefinition(1u, "a", null, 2u), BoneDefinition(2u, "b", null, 1u)),
+			"a bone that is its own parent" to listOf(BoneDefinition(1u, "a", null, 1u)),
+			"non-contiguous IDs" to listOf(BoneDefinition(1u, "a", null, 0u), BoneDefinition(3u, "b", null, 0u)),
+		)
+		for ((name, bones) in cases) {
+			assertFailsWith<IllegalArgumentException>(name) {
+				BoneRegistry.from(WireBoneRegistry(bones = bones))
+			}
 		}
 	}
 

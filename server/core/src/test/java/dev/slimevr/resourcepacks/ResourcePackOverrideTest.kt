@@ -65,7 +65,7 @@ class ResourcePackOverrideTest {
 	}
 
 	@Test
-	fun `missing and malformed inheritance targets fail explicitly`() = runTest {
+	fun `invalid $extend targets fail explicitly`() = runTest {
 		for (target in listOf("\"data/example/bones/missing.json\"", "{}", "null", "42")) {
 			val pack = testPack(
 				"example:bad",
@@ -74,18 +74,16 @@ class ResourcePackOverrideTest {
 				""".trimIndent(),
 			)
 			val error = assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(stack(pack)) }
-			assertTrue(error.diagnostics.any { "${'$'}extend" in it.message && it.packId == "example:bad" })
+			assertTrue(error.diagnostics.any { "${'$'}extend" in it.message && it.packId == "example:bad" }, target)
 		}
-	}
 
-	@Test
-	fun `inheritance cycles fail and self inheritance needs a lower layer`() = runTest {
 		val cycle = testPack(
 			"example:cycle",
 			"data/example/bones/a.json" to """{"${'$'}extend":"data/example/bones/b.json","key":"example:a"}""",
 			"data/example/bones/b.json" to """{"${'$'}extend":"data/example/bones/a.json","key":"example:b"}""",
 		)
 		assertTrue(assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(stack(cycle)) }.message!!.contains("Cyclic"))
+
 		val self = testPack("example:self", "data/example/bones/a.json" to """{"${'$'}extend":"data/example/bones/a.json"}""")
 		assertTrue(assertFailsWith<ResourcePackCompilationException> { compileResourcePacks(stack(self)) }.message!!.contains("no inherited layer"))
 	}
