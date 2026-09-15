@@ -1,10 +1,10 @@
 package dev.slimevr.vrchat
 
 import dev.slimevr.VRServer
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.boneId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

@@ -1,7 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import dev.slimevr.util.inFloatingSeconds
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart

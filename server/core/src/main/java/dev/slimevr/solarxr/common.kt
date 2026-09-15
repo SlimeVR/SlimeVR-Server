@@ -1,6 +1,6 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.bones.BoneId
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.BoneState
 import solarxr_protocol.datatypes.BoneMask
 import solarxr_protocol.datatypes.math.Quat

@@ -1,10 +1,7 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
-import dev.slimevr.bones.resolveToBoneIds
 import io.github.axisangles.ktmath.EulerOrder
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.test.Test

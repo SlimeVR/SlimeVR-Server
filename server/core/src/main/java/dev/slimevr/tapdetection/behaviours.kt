@@ -1,8 +1,8 @@
 package dev.slimevr.tapdetection
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.timeSource
@@ -82,7 +82,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		)
 			.flatMapLatest { (tapDetectionConfig, setupMode, trackers) ->
 				// Computed once per outer-flow refresh for all trackers
-				val registry = receiver.registry
+				val registry = receiver.skeleton.registry
 				val trackersBoneIds = trackers.map { it.context.state.value.boneId }.toSet()
 				val yawResetBoneId = arrayOf(tapDetectionConfig.yawResetBone?.let { registry.byKey(it) }?.let { BoneId(it.id) }, BodyPart.UPPER_CHEST.boneId, BodyPart.LOWER_CHEST.boneId, BodyPart.HIP.boneId, BodyPart.LOWER_WAIST.boneId, BodyPart.UPPER_WAIST.boneId)
 					.firstOrNull { it in trackersBoneIds } ?: BodyPart.UPPER_CHEST.boneId

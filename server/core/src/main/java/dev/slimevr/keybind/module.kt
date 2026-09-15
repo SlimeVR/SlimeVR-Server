@@ -2,7 +2,6 @@ package dev.slimevr.keybind
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
@@ -10,6 +9,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
+import dev.slimevr.skeleton.boneId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay

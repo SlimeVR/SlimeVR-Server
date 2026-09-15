@@ -1,8 +1,6 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.routing.OutputStates
 import dev.slimevr.routing.Routes
@@ -13,6 +11,8 @@ import dev.slimevr.routing.intendedRoutesFlow
 import dev.slimevr.routing.outputStatesFlow
 import dev.slimevr.routing.overridableBones
 import dev.slimevr.routing.requiredBones
+import dev.slimevr.skeleton.BoneId
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.combine
@@ -62,7 +62,7 @@ class BoneRoutingBehaviour(
 	private val settings = appContext.config.settings
 
 	override fun observe(receiver: SolarXRBridge) {
-		val registry = appContext.bones.current
+		val registry = appContext.skeleton.registry
 		val responses = combine(
 			settings.context.state.map { it.data.boneRoutingConfig.automatic }.distinctUntilChanged(),
 			intendedRoutesFlow(appContext),

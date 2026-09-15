@@ -1,10 +1,10 @@
 package dev.slimevr.stayaligned
 
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.StayAlignedRelaxedPoseConfig
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.skeleton.BoneRegistry
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.stayaligned.TrackerYawCorrection

@@ -3,7 +3,7 @@ package dev.slimevr.solarxr
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.EventDispatcher
 import dev.slimevr.TestAppContext
-import dev.slimevr.bones.BoneRegistryManager
+import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
@@ -34,7 +34,7 @@ import kotlin.test.assertTrue
 private fun TestScope.buildTestBridge(sent: MutableList<MessageBundle>): SolarXRBridge {
 	val appContext = object : TestAppContext() {
 		override val server = buildTestVrServer(backgroundScope)
-		override val bones = BoneRegistryManager.create(backgroundScope)
+		override val skeleton = buildTestSkeleton(backgroundScope)
 	}
 	val context = Context.create(
 		initialState = SolarXRBridgeState(),
@@ -157,6 +157,6 @@ class ConnectionInitTest {
 
 		assertTrue(sent.isEmpty())
 		// The registry stays the server-issued default; the client's attempt never lands.
-		assertEquals(dev.slimevr.bones.BoneRegistry.standard().value, bridge.registry.value)
+		assertEquals(dev.slimevr.skeleton.BoneRegistry.standard().value, bridge.registry.value)
 	}
 }

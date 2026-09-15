@@ -1,8 +1,8 @@
 package dev.slimevr.vmc
 
 import com.jme3.math.FastMath
-import dev.slimevr.bones.BodyPartMap
 import dev.slimevr.resets.ResetBodyParts
+import dev.slimevr.skeleton.BodyPartMap
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart

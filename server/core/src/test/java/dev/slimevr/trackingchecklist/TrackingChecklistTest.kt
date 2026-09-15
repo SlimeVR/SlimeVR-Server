@@ -3,7 +3,6 @@ package dev.slimevr.trackingchecklist
 import dev.slimevr.TestAppContext
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
-import dev.slimevr.bones.boneId
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestTracker
@@ -16,6 +15,7 @@ import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Vector3

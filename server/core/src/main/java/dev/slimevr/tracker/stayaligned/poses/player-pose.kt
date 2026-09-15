@@ -1,7 +1,7 @@
 package dev.slimevr.tracker.stayaligned.poses
 
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
+import dev.slimevr.skeleton.BoneRegistry
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getAllActiveFor
 import dev.slimevr.tracker.getFirstActiveFor

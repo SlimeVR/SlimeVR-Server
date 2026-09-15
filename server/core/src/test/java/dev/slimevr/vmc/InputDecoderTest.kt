@@ -1,9 +1,5 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.bones.BodyPartMap
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.bodyPartMap
-import dev.slimevr.bones.boneId
 import dev.slimevr.computedSkeletonOf
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.OscArg
@@ -12,8 +8,12 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.forEachOscMessage
 import dev.slimevr.quaternionApproxEqual
+import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
+import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

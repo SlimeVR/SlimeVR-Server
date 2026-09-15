@@ -1,4 +1,4 @@
-package dev.slimevr.bones
+package dev.slimevr.skeleton
 
 import solarxr_protocol.connection.BoneDefinition
 import solarxr_protocol.datatypes.BodyPart
@@ -10,11 +10,6 @@ import solarxr_protocol.connection.BoneRegistry as WireBoneRegistry
  *
  * [BodyPart] is only used at the edges: to seed [standard], and to resolve specific bones by
  * name. Everything else is [BoneId]-keyed, so a bone with no standard body part still works.
- *
- * Invariant: a definition with a [BoneDefinition.standardBodyPart] always has
- * `id == standardBodyPart.value`, checked below. That is what lets [BodyPart.boneId] convert
- * without a registry lookup, so extension bones (added via `BoneRegistryManager.register`) must
- * never be assigned a standard body part, and standard IDs are never reassigned.
  */
 class BoneRegistry private constructor(
 	val value: WireBoneRegistry,
@@ -42,15 +37,12 @@ class BoneRegistry private constructor(
 	fun parentOf(id: BoneId): BoneId? = this[id]?.parent?.takeIf { it != 0.toUShort() }?.let(::BoneId)
 	fun childrenOf(id: BoneId): List<BoneId> = (childIds.getOrNull(id.value.toInt()) ?: IntArray(0)).map { BoneId(it.toUShort()) }
 
-	// Hierarchy is fixed for the registry's lifetime, so traversals are too: computed once here,
-	// not memoized lazily on first use. This registry is shared across every consumer once
-	// frozen, each free to call hierarchyFrom from its own dispatcher; a lazily-filled plain
-	// array has no happens-before edge between an unsynchronized writer and a reader on another
-	// thread, which a mutable ArrayList published that way can turn into a torn read instead of
-	// just wasted recomputation. Built once, single-threaded, during construction instead.
-	private val hierarchyCache: Array<List<Pair<BoneId?, BoneId>>> = Array(2 * (maxId + 1)) { cacheIndex ->
-		val root = BoneId((cacheIndex / 2).toUShort())
-		val onlyChildren = cacheIndex % 2 == 1
+	// Hierarchy is fixed for the registry's lifetime, so traversals are too. Memoized lazily
+	// since the bone set isn't known at compile time.
+	private val hierarchyCache = arrayOfNulls<List<Pair<BoneId?, BoneId>>>(2 * (maxId + 1))
+	fun hierarchyFrom(root: BoneId, onlyChildren: Boolean = false): List<Pair<BoneId?, BoneId>> {
+		val cacheIndex = root.value.toInt() * 2 + if (onlyChildren) 1 else 0
+		hierarchyCache[cacheIndex]?.let { return it }
 		val result = mutableListOf<Pair<BoneId?, BoneId>>()
 		fun visit(parent: BoneId?, id: BoneId, skipSelf: Boolean) {
 			if (!skipSelf) result += parent to id
@@ -59,10 +51,9 @@ class BoneRegistry private constructor(
 			}
 		}
 		visit(null, root, onlyChildren)
-		result
+		hierarchyCache[cacheIndex] = result
+		return result
 	}
-
-	fun hierarchyFrom(root: BoneId, onlyChildren: Boolean = false): List<Pair<BoneId?, BoneId>> = hierarchyCache[root.value.toInt() * 2 + if (onlyChildren) 1 else 0]
 
 	/** Cached: a full rebuild starts from [root] alone, the most common call to [highest]. */
 	val rootSet: BoneSet = BoneSet.of(this, listOf(root))
@@ -115,9 +106,6 @@ class BoneRegistry private constructor(
 				"Bone registry IDs must be exactly 1..$n"
 			}
 			require(registry.bones.all { it.parent == 0.toUShort() || it.parent in definitions }) { "Bone registry has an unknown parent" }
-			require(registry.bones.all { definition -> definition.standardBodyPart?.let { it.value.toUShort() == definition.id } ?: true }) {
-				"A standard body part's ID must equal its BodyPart value"
-			}
 			val visited = mutableSetOf<UShort>()
 			fun root(id: UShort): UShort {
 				require(visited.add(id)) { "Bone registry contains a cycle" }

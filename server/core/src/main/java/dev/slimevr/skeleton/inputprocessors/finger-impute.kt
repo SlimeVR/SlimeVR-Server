@@ -1,9 +1,9 @@
 package dev.slimevr.skeleton.inputprocessors
 
-import dev.slimevr.bones.BoneId
-import dev.slimevr.bones.boneId
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
+import dev.slimevr.skeleton.boneId
 import solarxr_protocol.datatypes.BodyPart
 
 private const val INTERMEDIATE_FROM_PROXIMAL = 2.12f

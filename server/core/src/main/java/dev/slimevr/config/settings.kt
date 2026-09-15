@@ -1,9 +1,9 @@
 package dev.slimevr.config
 
-import dev.slimevr.bones.key
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
+import dev.slimevr.skeleton.key
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -59,7 +59,7 @@ data class BoneRoutingConfig(
 	 * Explicit routes. Ignored while [automatic], apart from the overridable bones, which
 	 * the user owns in either mode. Do not read directly, use BoneRoutingManager.
 	 *
-	 * Keyed by [dev.slimevr.bones.BoneRegistry] key
+	 * Keyed by [dev.slimevr.skeleton.BoneRegistry] key
 	 */
 	val manualRoutes: Map<String, Set<RoutingOutput>>? = null,
 )

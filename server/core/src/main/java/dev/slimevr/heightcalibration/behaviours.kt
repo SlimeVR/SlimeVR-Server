@@ -2,9 +2,9 @@
 
 package dev.slimevr.heightcalibration
 
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.skeleton.boneId
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3

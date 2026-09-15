@@ -1,8 +1,8 @@
 package dev.slimevr.routing
 
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
 import dev.slimevr.config.BoneRoutingConfig
+import dev.slimevr.skeleton.BoneRegistry
+import dev.slimevr.skeleton.boneId
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState

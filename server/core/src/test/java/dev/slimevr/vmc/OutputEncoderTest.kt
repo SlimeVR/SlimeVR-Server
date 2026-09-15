@@ -1,16 +1,16 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.bones.BoneMap
-import dev.slimevr.bones.BoneRegistry
-import dev.slimevr.bones.boneId
 import dev.slimevr.computedSkeletonOf
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.skeleton.BoneMap
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
+import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart

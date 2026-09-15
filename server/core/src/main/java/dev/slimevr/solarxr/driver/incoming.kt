@@ -2,9 +2,9 @@ package dev.slimevr.solarxr.driver
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
-import dev.slimevr.bones.BoneId
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
+import dev.slimevr.skeleton.BoneId
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker

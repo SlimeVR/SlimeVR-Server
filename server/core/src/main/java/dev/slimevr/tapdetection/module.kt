@@ -2,7 +2,6 @@ package dev.slimevr.tapdetection
 
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -22,7 +21,7 @@ sealed interface TapDetectionActions {
 typealias TapDetectionContext = Context<TapDetectionState, TapDetectionActions>
 typealias TapDetectionBehaviour = Behaviour<TapDetectionManager>
 
-class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings, val registry: BoneRegistry) {
+class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
 	val skeleton: Skeleton get() = resetsManager.skeleton
 
 	fun startObserving() = context.observeAll(this)
@@ -38,7 +37,7 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 				behaviours = listOf(TapDetectionBasicBehaviour()),
 				name = "TapDetectionManager",
 			)
-			return TapDetectionManager(context, ctx.server, resetsManager, ctx.config.settings, ctx.bones.current)
+			return TapDetectionManager(context, ctx.server, resetsManager, ctx.config.settings)
 		}
 	}
 }

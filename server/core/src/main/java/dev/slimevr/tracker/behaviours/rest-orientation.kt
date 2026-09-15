@@ -1,9 +1,9 @@
 package dev.slimevr.tracker.behaviours
 
 import com.jme3.math.FastMath
-import dev.slimevr.bones.BoneRegistry
 import dev.slimevr.config.Settings
 import dev.slimevr.resets.ResetBodyParts
+import dev.slimevr.skeleton.BoneRegistry
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour

@@ -1,7 +1,7 @@
 package dev.slimevr.autobone
 
-import dev.slimevr.bones.boneId
 import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.skeleton.boneId
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
