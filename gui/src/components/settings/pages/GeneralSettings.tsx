@@ -1347,7 +1347,7 @@ export function GeneralSettings() {
                 <div>
                   <Typography bold>
                     {l10n.getString(
-                      'settings-general-gesture_control-fullResetTracker'
+                      'settings-general-gesture_control-mountingResetTracker'
                     )}
                   </Typography>
                   <Dropdown
