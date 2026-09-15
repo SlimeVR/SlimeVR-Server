@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets
 
 abstract class ResourceType<T : Any>(val id: String) {
 	abstract fun matches(path: String): Boolean
-	abstract fun parse(entry: ResourcePackEntry, diagnostics: MutableList<ResourcePackDiagnostic>): SourcedResource<T>?
+	abstract fun parse(entry: ResourcePackEntry, packFormatVersion: Int, diagnostics: MutableList<ResourcePackDiagnostic>): SourcedResource<T>?
 }
 
 abstract class JsonResourceType<T : Any>(
@@ -32,20 +32,34 @@ abstract class JsonResourceType<T : Any>(
 		SchemaLoader(JsonParser(document, base.resolve(schemaName)).parse(), PackSchemas.config.copy(initialBaseURI = base.resolve(schemaName))).load()
 	}
 
-	override fun parse(entry: ResourcePackEntry, diagnostics: MutableList<ResourcePackDiagnostic>): SourcedResource<T>? {
+	open fun migrateJson(document: JsonObject, fromVersion: Int): JsonObject {
+		return document // Default is no migration
+	}
+
+	override fun parse(entry: ResourcePackEntry, packFormatVersion: Int, diagnostics: MutableList<ResourcePackDiagnostic>): SourcedResource<T>? {
 		val (instance, document) = try {
 			JsonParser(entry.contents).parse() to ResourcePackJson.parseToJsonElement(entry.contents).jsonObject
 		} catch (e: Exception) {
 			diagnostics += ResourcePackDiagnostic(entry.path, message = "Malformed JSON: ${e.message}")
 			return null
 		}
-		val failure = Validator.forSchema(schema).validate(instance)
+		
+		val migratedDocument = try {
+			migrateJson(document, packFormatVersion)
+		} catch (e: Exception) {
+			diagnostics += ResourcePackDiagnostic(entry.path, message = "Migration failed: ${e.message}")
+			return null
+		}
+		
+		val migratedInstance = if (migratedDocument === document) instance else JsonParser(migratedDocument.toString()).parse()
+
+		val failure = Validator.forSchema(schema).validate(migratedInstance)
 		if (failure != null) {
 			diagnostics += ResourcePackDiagnostic(entry.path, message = "$id schema: $failure")
 			return null
 		}
 		return try {
-			SourcedResource(entry.path, decode(document), document)
+			SourcedResource(entry.path, decode(migratedDocument), migratedDocument)
 		} catch (e: Exception) {
 			diagnostics += ResourcePackDiagnostic(entry.path, message = "Schema/model drift while decoding: ${e.message}")
 			null

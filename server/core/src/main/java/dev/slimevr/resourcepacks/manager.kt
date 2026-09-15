@@ -7,7 +7,11 @@ import dev.slimevr.logging.AppLogger
 
 object ResourcePackManager {
 	suspend fun load(storage: ConfigStorage, classLoader: ClassLoader): ResourcePackCatalog {
+		val coreStart = System.currentTimeMillis()
 		val core = ResourcePackParser.parse(ClasspathResourcePackSource.core(classLoader))
+		val coreTime = System.currentTimeMillis() - coreStart
+		AppLogger.config.info("Loaded core pack in ${coreTime}ms.")
+		
 		val root = "resourcepacks"
 		if (!storage.ensureDirectory(root)) {
 			AppLogger.config.error("Unable to create ${storage.displayPath(root)}; loading bundled core pack only")
@@ -33,7 +37,16 @@ object ResourcePackManager {
 			}
 			if (!containsManifest) continue
 			try {
-				packs += ResourcePackParser.parse(StorageResourcePackSource(storage, packRoot))
+				val packStart = System.currentTimeMillis()
+				val parsed = ResourcePackParser.parse(StorageResourcePackSource(storage, packRoot))
+				val packTime = System.currentTimeMillis() - packStart
+				
+				if (parsed.manifest.value.formatVersion < ResourcePackParser.CURRENT_FORMAT_VERSION) {
+					AppLogger.config.warn("Loaded pack '${folder.name}' in ${packTime}ms. Format version ${parsed.manifest.value.formatVersion} was automatically migrated to ${ResourcePackParser.CURRENT_FORMAT_VERSION}. This older format is deprecated and may lose support in future updates.")
+				} else {
+					AppLogger.config.info("Loaded pack '${folder.name}' in ${packTime}ms.")
+				}
+				packs += parsed
 			} catch (e: ResourcePackParseException) {
 				failures += ResourcePackFailure(folder.name, e.diagnostics)
 				AppLogger.config.error("Skipping invalid resource pack '${folder.name}': ${e.message}")
