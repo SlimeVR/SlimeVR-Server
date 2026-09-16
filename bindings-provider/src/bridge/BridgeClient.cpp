@@ -18,7 +18,7 @@ void BridgeClient::CreateConnection() {
     }
 
     if (last_path_ != path) {
-        Logger::get().info("Trying to connect to socket {}", path.string());
+        Logger::Get().Info("Trying to connect to socket {}", path.string());
         last_path_ = path;
     }
 
@@ -33,19 +33,19 @@ void BridgeClient::CreateConnection() {
     }
     memcpy(addr.sun_path, path_str.data(), path_str.size() + 1);
 
-    int ret = connect(fd, reinterpret_cast<const struct sockaddr *>(&addr), sizeof(addr));
+    int ret = connect(fd, reinterpret_cast<const struct sockaddr*>(&addr), sizeof(addr));
     if (ret == SocketError) {
         int err = GetLastSocketError();
         CloseSocket(fd);
         throw std::system_error(err, std::system_category(), "connect() failed");
     }
 
-    Logger::get().info("Connected to {}", path.string());
+    Logger::Get().Info("Connected to {}", path.string());
 
     ret = SetNonBlocking(fd);
     if (ret == SocketError) {
         int err = GetLastSocketError();
-        Logger::get().warning("Failed to set socket into non-blocking mode: {}", std::error_code(err, std::system_category()).message());
+        Logger::Get().Warning("Failed to set socket into non-blocking mode: {}", std::error_code(err, std::system_category()).message());
     }
 
     fd_ = fd;

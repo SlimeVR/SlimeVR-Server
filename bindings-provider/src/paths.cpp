@@ -4,18 +4,19 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+#undef GetTempPath
 #endif
 
 namespace fs = std::filesystem;
 
-fs::path Paths::getDataPath() {
+fs::path Paths::GetDataPath() {
     fs::path basePath{};
 
 #if defined(__linux__)
-    if (const char *dataHomeOverride = getenv("XDG_DATA_HOME")) {
+    if (const char* dataHomeOverride = getenv("XDG_DATA_HOME")) {
         basePath = dataHomeOverride;
     } else {
-        const char *homeDir = getenv("HOME");
+        const char* homeDir = getenv("HOME");
         if (homeDir == nullptr)
             throw std::runtime_error("HOME is unset");
 
@@ -23,7 +24,7 @@ fs::path Paths::getDataPath() {
     }
 #elif defined(_WIN32)
     {
-        const char *appData = getenv("APPDATA");
+        const char* appData = getenv("APPDATA");
         if (appData == nullptr)
             throw std::runtime_error("APPDATA is unset");
 
@@ -36,15 +37,15 @@ fs::path Paths::getDataPath() {
     return basePath / "dev.slimevr.SlimeVR";
 }
 
-fs::path Paths::getLogPath() { return Paths::getDataPath() / "logs"; }
+fs::path Paths::GetLogPath() { return Paths::GetDataPath() / "logs"; }
 
-fs::path Paths::getTempPath() noexcept {
+fs::path Paths::GetTempPath() noexcept {
 #ifdef _WIN32
     WCHAR tmp_dir[MAX_PATH + 1];
     GetTempPathW(std::size(tmp_dir), tmp_dir);
     return tmp_dir;
 #else
-    if (const char *tmp_dir = getenv("TMPDIR")) {
+    if (const char* tmp_dir = getenv("TMPDIR")) {
         return tmp_dir;
     }
 
