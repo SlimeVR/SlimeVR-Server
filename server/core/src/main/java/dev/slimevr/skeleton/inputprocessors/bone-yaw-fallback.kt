@@ -16,7 +16,7 @@ class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
 		mutableInputSkeleton.forEachBone { parentPart, parentBone ->
 			if (!parentBone.isRotationActive) return@forEachBone // Parent needs to be active
 
-			val parentYaw = parentBone.rotation.project(Vector3.POS_Y).unit()
+			val parentYaw = parentBone.rotation.eulerHeading()
 			for (childPart in iterateBodyPartHierarchy(parentPart, true)) {
 				val childBone = mutableInputSkeleton[childPart.second] ?: continue
 				if (childBone.isRotationActive) continue // Child needs to be inactive
