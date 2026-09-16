@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.MonotonicValueTimeMark

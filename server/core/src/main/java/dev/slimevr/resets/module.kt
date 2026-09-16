@@ -88,12 +88,13 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			// Reset trackers
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
+			// Reset skeleton floor level on full resets
 			if (resetType == ResetType.FULL) {
-				// Tell the skeleton to set the floor level and try resetting the head position (for mocap mode)
-				skeleton.context.dispatch(SkeletonActions.ComputeFloorLevel)
+				skeleton.context.dispatch(SkeletonActions.ResetFloorLevel)
 			}
 
 			// Reset the skeleton processors that store temporary data (smoothing, localizer, skating correction, etc.)
+			delay(10) // TODO skeleton runs in a different thread and seems to cause a race condition. Temporary patch.
 			skeleton.resetProcessors(resetType)
 
 			// Update state and config
