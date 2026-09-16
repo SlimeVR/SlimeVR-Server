@@ -41,11 +41,16 @@ fun reduce(
 		val position = action.position ?: state.position
 
 		val cal = state.sessionCalibration
+		// TODO: figure out better fix for this that applies in state for StayAligned
+		//  (positional head can get a non-identity headingAlignment when not assigned to head and it persists when
+		//  assigning back to head and even loading from config)
+		val isPositionalHead = state.position != null && state.bodyPart == BodyPart.HEAD
+		val headingAlignment = if (!isPositionalHead) cal.headingAlignment else Quaternion.IDENTITY
 
 		// Rotation calibration
 		val rotation: CalibratedRotation =
 			if (action.rotation != null) {
-				applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
+				applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, headingAlignment, state.restOrientation)
 					.twinNearest(polarityAlign)
 			} else {
 				state.rotation
