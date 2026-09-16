@@ -96,10 +96,15 @@ export const FINGER_BODY_PARTS = [
   ...LEFT_FINGER_BODY_PARTS,
   ...RIGHT_FINGER_BODY_PARTS,
 ];
+export const BUST_BODY_PARTS = [
+  BodyPart.LEFT_BUST,
+  BodyPart.RIGHT_BUST,
+];
 export const ALL_BODY_PARTS = [
   BodyPart.NONE,
   ...SPINE_BODY_PARTS,
   ...POSTERIOR_BODY_PARTS,
+  ...BUST_BODY_PARTS,
   ...LEG_BODY_PARTS,
   ...ARM_BODY_PARTS,
   ...FINGER_BODY_PARTS,

@@ -141,8 +141,44 @@ export class BasedSkeletonHelper extends LineSegments2 {
   updateMatrixWorld(force: boolean) {
     const vertices: number[] = [];
 
+    const hasBustTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.LEFT_BUST ||
+          part.bone.bodyPart === BodyPart.RIGHT_BUST) &&
+        part.tracker
+    );
+    const hasTailTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.TAIL ||
+          part.bone.bodyPart === BodyPart.TAIL_1 ||
+          part.bone.bodyPart === BodyPart.TAIL_2 ||
+          part.bone.bodyPart === BodyPart.TAIL_3 ||
+          part.bone.bodyPart === BodyPart.TAIL_4 ||
+          part.bone.bodyPart === BodyPart.TAIL_5 ||
+          part.bone.bodyPart === BodyPart.TAIL_6) &&
+        part.tracker
+    );
+
     for (const part of this.parts) {
       const { bone, tracker } = part;
+      const isBustPart =
+        bone.bodyPart === BodyPart.LEFT_BUST || bone.bodyPart === BodyPart.RIGHT_BUST;
+      const isTailPart =
+        bone.bodyPart === BodyPart.TAIL ||
+        bone.bodyPart === BodyPart.TAIL_1 ||
+        bone.bodyPart === BodyPart.TAIL_2 ||
+        bone.bodyPart === BodyPart.TAIL_3 ||
+        bone.bodyPart === BodyPart.TAIL_4 ||
+        bone.bodyPart === BodyPart.TAIL_5 ||
+        bone.bodyPart === BodyPart.TAIL_6;
+
+      const hidden = (isBustPart && !hasBustTracker) || (isTailPart && !hasTailTracker);
+
+      if (hidden) {
+        if (part.marker) part.marker.visible = false;
+        continue;
+      }
+
       boneHead.copy(Vector3FromVec3fT(bone.headPosition));
       getBoneTail(bone, boneTail);
       vertices.push(boneHead.x, boneHead.y, boneHead.z);
