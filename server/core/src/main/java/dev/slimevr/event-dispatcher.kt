@@ -113,11 +113,21 @@ class EventDispatcher<T : Any>(
 
 				val handlersStartNanos = System.nanoTime()
 				if (metrics == null) {
-					for (sub in handlersFor(type)) sub.action(envelope.payload)
+					for (sub in handlersFor(type)) {
+						try {
+							sub.action(envelope.payload)
+						} catch (t: Throwable) {
+							AppLogger.events.error("Error handling event ${envelope.payload}", t)
+						}
+					}
 				} else {
 					for (sub in handlersFor(type)) {
 						val start = System.nanoTime()
-						sub.action(envelope.payload)
+						try {
+							sub.action(envelope.payload)
+						} catch (t: Throwable) {
+							AppLogger.events.error("Error handling event ${envelope.payload}", t)
+						}
 						metrics?.recordHandler(System.nanoTime() - start, type)
 					}
 				}
