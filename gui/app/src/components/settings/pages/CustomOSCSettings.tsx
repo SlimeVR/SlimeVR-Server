@@ -116,18 +116,14 @@ export function CustomOSCSettings() {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(config));
   }, [config]);
 
-  // Keep selected ID valid if profiles list changes
-  useEffect(() => {
-    if (config.profiles.length > 0) {
-      if (!selectedProfileId || !config.profiles.some((p) => p.id === selectedProfileId)) {
-        setSelectedProfileId(config.profiles[0].id);
-      }
-    } else {
-      setSelectedProfileId(null);
-    }
-  }, [config.profiles, selectedProfileId]);
+  const activeSelectedProfileId =
+    selectedProfileId && config.profiles.some((p) => p.id === selectedProfileId)
+      ? selectedProfileId
+      : config.profiles.length > 0
+      ? config.profiles[0].id
+      : null;
 
-  const focusedProfile = config.profiles.find((p) => p.id === selectedProfileId) || null;
+  const focusedProfile = config.profiles.find((p) => p.id === activeSelectedProfileId) || null;
 
   const toggleGlobalEnable = (enabled: boolean) => {
     setConfig((prev) => ({ ...prev, enabled }));
@@ -176,10 +172,10 @@ export function CustomOSCSettings() {
   };
 
   const updateFocusedProfile = (updater: (prev: CustomOscProfile) => CustomOscProfile) => {
-    if (!selectedProfileId) return;
+    if (!activeSelectedProfileId) return;
     setConfig((prev) => ({
       ...prev,
-      profiles: prev.profiles.map((p) => (p.id === selectedProfileId ? updater(p) : p)),
+      profiles: prev.profiles.map((p) => (p.id === activeSelectedProfileId ? updater(p) : p)),
     }));
   };
 
@@ -313,7 +309,7 @@ export function CustomOSCSettings() {
                 </div>
               ) : (
                 config.profiles.map((profile) => {
-                  const isSelected = profile.id === selectedProfileId;
+                  const isSelected = profile.id === activeSelectedProfileId;
                   return (
                     <div
                       key={profile.id}
