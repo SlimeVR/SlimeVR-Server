@@ -9,8 +9,8 @@ import solarxr_protocol.datatypes.BodyPart
 val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 	mapOf(
 		BodyPart.LEFT_SHOULDER to TwistSwingConstraint(
-			0f * FastMath.DEG_TO_RAD,
-			30f * FastMath.DEG_TO_RAD,
+			105f * FastMath.DEG_TO_RAD,
+			45f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_UPPER_ARM to TwistSwingConstraint(
 			120f * FastMath.DEG_TO_RAD,
@@ -27,8 +27,8 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		),
 
 		BodyPart.RIGHT_SHOULDER to TwistSwingConstraint(
-			0f * FastMath.DEG_TO_RAD,
-			30f * FastMath.DEG_TO_RAD,
+			105f * FastMath.DEG_TO_RAD,
+			45f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_UPPER_ARM to TwistSwingConstraint(
 			120f * FastMath.DEG_TO_RAD,
