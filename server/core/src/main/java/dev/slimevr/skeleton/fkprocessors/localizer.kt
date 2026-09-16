@@ -208,6 +208,7 @@ object COMLocalizer {
 class LocalizerFkProcessor(val settings: Settings) :
 	SkeletonFkProcessor,
 	ResettableSkeletonProcessor {
+	private var lastHeadPosition: Vector3? = null
 	private var plantedFoot = FootLocalizer.PlantedFoot.NONE
 	private var targetFoot = Vector3.ZERO
 
@@ -275,7 +276,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return horizontal foot travel and vertical COM travel
 				Vector3(footTravel.x, comTravel.y, footTravel.z)
 
-				Vector3.ZERO // TODO
+//				Vector3.ZERO // TODO
 			}
 
 			FollowSource.COM -> {
@@ -284,7 +285,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return COM travel
 				COMLocalizer.computeCOMTravel(targetCOM, targetCOM)
 
-				Vector3.ZERO // TODO
+//				Vector3.ZERO // TODO
 			}
 
 			FollowSource.HIP -> {
@@ -293,16 +294,18 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return the sitting travel
 				HipLocalizer.computeSittingTravel(currentHip, targetHip)
 
-				Vector3.ZERO // TODO
+//				Vector3.ZERO // TODO
 			}
 		}
 
-		val newHeadPosition = (headInput.position ?: Vector3.ZERO) + travel
+		val newHeadPosition = (lastHeadPosition ?: headInput.position) + travel
 		mutableInputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
+		lastHeadPosition = newHeadPosition
 	}
 
 	override fun reset(resetType: ResetType) {
 		if (resetType == ResetType.FULL) {
+			lastHeadPosition = null
 			plantedFoot = FootLocalizer.PlantedFoot.NONE
 			targetFoot = Vector3.ZERO
 			sittingTime = Duration.ZERO

@@ -46,7 +46,7 @@ data class BoneInput(
 	val offset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
-	val position: Vector3?,
+	val position: Vector3,
 	val isRotationActive: Boolean,
 	val isAccelerationActive: Boolean,
 	val isPositionActive: Boolean,
@@ -100,7 +100,7 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	offset = Vector3.ZERO,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
-	position = null,
+	position = Vector3.ZERO,
 	isRotationActive = false,
 	isAccelerationActive = false,
 	isPositionActive = false,
@@ -125,8 +125,7 @@ val DEFAULT_SKELETON_STATE = run {
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
 	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
-	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) }
-		?: bone.position ?: Vector3.ZERO
+	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) } ?: bone.position
 	return BoneState(
 		parentBone = parentBone,
 		bodyPart = bone.bodyPart,
@@ -166,7 +165,6 @@ sealed interface SkeletonActions {
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
-	data object ResetHeadPosition : SkeletonActions
 	data object ComputeFloorLevel : SkeletonActions
 }
 
@@ -213,7 +211,6 @@ class Skeleton(
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
-				LocalizerResetBehaviour(settings),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
