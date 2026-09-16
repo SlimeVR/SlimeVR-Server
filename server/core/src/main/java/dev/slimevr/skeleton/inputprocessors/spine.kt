@@ -14,8 +14,8 @@ import kotlin.enums.enumEntries
 const val DEFAULT_SPINE_UPPER_LOWER = 0.5f
 
 private data class Reliability(
-	val pitch: Float,
-	val side: Float? = null, // Use pitch if null
+	val vertical: Float,
+	val side: Float? = null, // Use vertical if null
 )
 
 private enum class SpineSource(val parts: Array<BodyPart>) {
@@ -142,22 +142,27 @@ private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<B
 }
 
 /**
- * Interpolates between 2 rotations with a different ratio for pitch and the rest/side.
+ * Interpolates between 2 rotations with a different ratio for vertical and the rest/side.
  */
-private fun interpolatePitchSide(fromRotation: Quaternion, toRotation: Quaternion, pitchRatio: Float, sideRatio: Float?): Quaternion {
-	if (sideRatio == null) return fromRotation.interpQ(toRotation, pitchRatio)
+private fun interpolateVerticalSide(fromRotation: Quaternion, toRotation: Quaternion, verticalRatio: Float, sideRatio: Float?): Quaternion {
+	if (sideRatio == null) return fromRotation.interpQ(toRotation, verticalRatio)
 
-	// Deconstruct the twist and swing of the rotations
-	val fromTwist = fromRotation.project(Vector3.POS_X).unit()
-	val fromSwing = fromRotation / fromTwist
-	val toTwist = toRotation.project(Vector3.POS_X).unit()
-	val toSwing = toRotation / toTwist
+	// Work with the rotation delta to avoid axes being ambiguous
+	val delta = fromRotation.inv() * toRotation
 
-	// Interpolate each part separately
-	val interpolatedTwist = fromTwist.interpQ(toTwist, pitchRatio)
-	val interpolatedSwing = fromSwing.interpQ(toSwing, sideRatio)
+	// Decompose the delta into its twist (vertical) and swing (remaining) along the x-axis
+	val twistX = delta.project(Vector3.POS_X).unit()
+	val swingX = delta / twistX
 
-	return interpolatedSwing * interpolatedTwist
+	// Scale each axis of the delta with our ratios
+	val scaledVertical = twistX.pow(verticalRatio)
+	val scaledSide = swingX.pow(sideRatio)
+
+	// Recompose the delta (360d of freedom around X, 135d around Z and Y each)
+	val scaledDelta = scaledVertical * scaledSide
+
+	// Return scaled delta applied to From rotation
+	return fromRotation * scaledDelta
 }
 
 /**
@@ -202,9 +207,9 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			// Get the interpolation ratios. sideRatio is null if nothing specified for side.
 			val fromReliability = reliabilities[fromSpineSource] ?: continue
 			val toReliability = reliabilities[toSpineSource] ?: continue
-			val pitchRatio = interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.pitch, toReliability.pitch, sourceActive)
+			val verticalRatio = interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.vertical, toReliability.vertical, sourceActive)
 			val sideRatio = if (fromReliability.side != null || toReliability.side != null) {
-				interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.side ?: fromReliability.pitch, toReliability.side ?: toReliability.pitch, sourceActive)
+				interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.side ?: fromReliability.vertical, toReliability.side ?: toReliability.vertical, sourceActive)
 			} else {
 				null
 			}
@@ -214,10 +219,10 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			val toParts = toSpineSource.parts
 			// Interpolate between from and to using our interpolation ratio.
 			mutableInputSkeleton[bodyPart] = bone.copy(
-				rotation = interpolatePitchSide(
+				rotation = interpolateVerticalSide(
 					averageRotation(boneInputs, fromParts),
 					averageRotation(boneInputs, toParts),
-					pitchRatio,
+					verticalRatio,
 					sideRatio,
 				),
 			)
