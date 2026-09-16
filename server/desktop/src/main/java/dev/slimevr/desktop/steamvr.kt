@@ -14,6 +14,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -152,7 +153,7 @@ suspend fun startBindingsProvider() = withContext(Dispatchers.IO) {
 		return@withContext
 	}
 	AppLogger.steamvr.info("Started bindings provider (PID ${proc.pid()})")
-	proc.waitFor()
+	runInterruptible { proc.waitFor() }
 
 	AppLogger.steamvr.info("Bindings provider exited with code ${proc.exitValue()}")
 }
