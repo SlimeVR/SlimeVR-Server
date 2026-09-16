@@ -1,6 +1,7 @@
 import { BoardType, BodyPart, DeviceDataT } from 'solarxr-protocol';
 import { useLocaleConfig } from '@/i18n/config';
 import { AnkleIcon } from './icon/AnkleIcon';
+import { BustIcon } from './icon/BustIcon';
 import { ButterflyIcon } from './icon/ButterflyIcon';
 import { ChestIcon } from './icon/ChestIcon';
 import { ControllerIcon } from './icon/ControllerIcon';
@@ -61,18 +62,22 @@ function UnassignedGlyph({
 }
 
 // All body parts that are right or left, are by default left!
-export const mapPart: Record<
-  BodyPart,
-  ({
-    width,
-    currentLocales,
-  }: {
-    width?: number;
-    currentLocales: string[];
-  }) => JSX.Element
+export const mapPart: Partial<
+  Record<
+    BodyPart,
+    ({
+      width,
+      currentLocales,
+    }: {
+      width?: number;
+      currentLocales: string[];
+    }) => JSX.Element
+  >
 > = {
   [BodyPart.UPPER_CHEST]: ({ width }) => <UpperChestIcon width={width} />,
   [BodyPart.LOWER_CHEST]: ({ width }) => <ChestIcon width={width} />,
+  [BodyPart.LEFT_BUST]: ({ width }) => <BustIcon width={width} />,
+  [BodyPart.RIGHT_BUST]: ({ width }) => <BustIcon width={width} flipped />,
   [BodyPart.HEAD]: ({ width }) => <HeadsetIcon width={width} />,
   [BodyPart.HIP]: ({ width }) => <HipIcon width={width} />,
   [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
@@ -178,7 +183,7 @@ export const mapPart: Record<
   [BodyPart.RIGHT_RING_TOE]: renderFootRight,
   [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
   [BodyPart.LEFT_POSTERIOR]: ({ width }) => <HipIcon width={width} />,
-  [BodyPart.RIGHT_POSTERIOR]: ({ width }) => <HipIcon width={width} flipped />,
+  [BodyPart.RIGHT_POSTERIOR]: ({ width }) => <HipIcon width={width} />,
   [BodyPart.TAIL]: ({ width }) => <HipIcon width={width} />,
 };
 export function renderFootLeft({
