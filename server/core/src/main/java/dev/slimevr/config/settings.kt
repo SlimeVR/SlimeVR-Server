@@ -230,6 +230,7 @@ data class SettingsConfigState(
 	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
 	val stayAlignedConfig: StayAlignedConfig = StayAlignedConfig(),
+	val customOscConfig: CustomOscConfig = CustomOscConfig(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {

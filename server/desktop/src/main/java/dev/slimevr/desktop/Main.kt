@@ -13,6 +13,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.contextDebugEnabled
+import dev.slimevr.customosc.CustomOscOutputManager
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.install.executeShellCommand
@@ -152,6 +153,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
+	val customOscOutputManager = CustomOscOutputManager.create(skeleton = skeleton, settings = config.settings, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
 	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)
 
@@ -174,6 +176,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		bvhManager = bvhManager,
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,
+		customOscOutputManager = customOscOutputManager,
 		resetsManager = resetsManager,
 		tapDetectionManager = tapDetectionManager,
 	)
