@@ -6,11 +6,11 @@
 #include <tuple>
 
 // These must be included before Windows.h because of some macro collisions.
+#include "bridge/BridgeClient.hpp"
 #include "flatbuffers/flatbuffers.h"
 #include "solarxr_protocol/generated/all_generated.h"
 
 #include "logger.hpp"
-#include "solarxr.hpp"
 #include "vr_utils.hpp"
 
 #include "openvr.h"
@@ -29,7 +29,7 @@ using namespace solarxr_protocol;
 
 static void shutdown_vr(vr::IVRSystem *_sys) { vr::VR_Shutdown(); }
 
-static void onYawReset(SolarXRConnection &conn) {
+static void onYawReset(BridgeTransport &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::YAW, 0, 0.f);
@@ -39,9 +39,9 @@ static void onYawReset(SolarXRConnection &conn) {
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onFullReset(SolarXRConnection &conn) {
+static void onFullReset(BridgeTransport &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::FULL, 0, 0.f);
@@ -51,9 +51,9 @@ static void onFullReset(SolarXRConnection &conn) {
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onMountingCalibration(SolarXRConnection &conn) {
+static void onMountingCalibration(BridgeTransport &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, 0, 0.f);
@@ -63,9 +63,9 @@ static void onMountingCalibration(SolarXRConnection &conn) {
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onFeetMountingCalibration(SolarXRConnection &conn) {
+static void onFeetMountingCalibration(BridgeTransport &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto bodyParts = fbb.CreateVector(
@@ -77,9 +77,9 @@ static void onFeetMountingCalibration(SolarXRConnection &conn) {
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onToggleTracking(SolarXRConnection &conn) {
+static void onToggleTracking(BridgeTransport &conn) {
     static bool shouldPause = false;
     flatbuffers::FlatBufferBuilder fbb;
 
@@ -92,7 +92,7 @@ static void onToggleTracking(SolarXRConnection &conn) {
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
 
 sig_atomic_t should_exit = 0;
@@ -135,7 +135,9 @@ int main() {
 #endif
 
     try {
-        SolarXRConnection conn;
+        BridgeClient conn(nullptr, nullptr, [] { should_exit = 1; }, [](std::exception &) { should_exit = 1; });
+        conn.Start();
+
         std::unique_ptr<vr::IVRSystem, decltype(&shutdown_vr)> sys{ nullptr,
                                                                     shutdown_vr };
 
@@ -211,7 +213,7 @@ int main() {
             return 1;
         }
 
-        std::map<std::string, std::tuple<vr::VRActionHandle_t, std::function<void(SolarXRConnection &)>>>
+        std::map<std::string, std::tuple<vr::VRActionHandle_t, std::function<void(BridgeTransport &)>>>
             actions{
                 { "/actions/main/in/YawReset",
                   std::make_tuple(vr::k_ulInvalidActionHandle, onYawReset) },
@@ -279,11 +281,6 @@ int main() {
                 default:
                     break;
                 }
-            }
-
-            if (!conn.connected()) {
-                logger.warning("Connection to SlimeVR lost, exiting");
-                break;
             }
 
             vr::VRActiveActionSet_t set{
