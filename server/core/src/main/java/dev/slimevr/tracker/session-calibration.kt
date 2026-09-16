@@ -67,7 +67,7 @@ fun undoCalibration(
 	.sandwich(calibratedAcceleration)
 
 // Used for referenceRotation since it works better on an HMD.
-private fun inverseYProjection(q: Quaternion) = q.twistY().inv()
+private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
 
 fun estimateHeadingCorrect(
 	rotation: Quaternion,

@@ -6,11 +6,17 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.enums.enumEntries
 
 // At this default value, the user's spine should behave as we meant it to.
 const val DEFAULT_SPINE_UPPER_LOWER = 0.5f
+
+private data class Reliability(
+	val pitch: Float,
+	val side: Float? = null, // Use pitch if null
+)
 
 private enum class SpineSource(val parts: Array<BodyPart>) {
 	UPPER_CHEST(arrayOf(BodyPart.UPPER_CHEST)),
@@ -31,53 +37,53 @@ private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
 // TODO: Fine tune
 private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to mapOf(
-		SpineSource.UPPER_CHEST to -6f, // Itself
+		SpineSource.UPPER_CHEST to Reliability(-6f, 18f), // Itself
 		// To
-		SpineSource.LOWER_CHEST to 1f,
-		SpineSource.UPPER_WAIST to 1.5f,
-		SpineSource.LOWER_WAIST to 2f,
-		SpineSource.HIP to 4f,
-		SpineSource.UPPER_LEGS to 3f,
+		SpineSource.LOWER_CHEST to Reliability(1f),
+		SpineSource.UPPER_WAIST to Reliability(1.5f),
+		SpineSource.LOWER_WAIST to Reliability(2f),
+		SpineSource.HIP to Reliability(4f),
+		SpineSource.UPPER_LEGS to Reliability(3f),
 	),
 	SpineSource.LOWER_CHEST to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to -10f,
-		SpineSource.LOWER_CHEST to -11f, // Itself
+		SpineSource.UPPER_CHEST to Reliability(-10f, 8.25f),
+		SpineSource.LOWER_CHEST to Reliability(-11f, 9f), // Itself
 		// To
-		SpineSource.UPPER_WAIST to 1.5f,
-		SpineSource.LOWER_WAIST to 2f,
-		SpineSource.HIP to 4f,
-		SpineSource.UPPER_LEGS to 3f,
+		SpineSource.UPPER_WAIST to Reliability(1.5f),
+		SpineSource.LOWER_WAIST to Reliability(2f),
+		SpineSource.HIP to Reliability(4f),
+		SpineSource.UPPER_LEGS to Reliability(3f),
 	),
 	SpineSource.UPPER_WAIST to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to 10f,
-		SpineSource.LOWER_CHEST to 10f,
-		SpineSource.UPPER_WAIST to 68f, // Itself
+		SpineSource.UPPER_CHEST to Reliability(10f),
+		SpineSource.LOWER_CHEST to Reliability(10f),
+		SpineSource.UPPER_WAIST to Reliability(68f), // Itself
 		// To
-		SpineSource.LOWER_WAIST to 17f,
-		SpineSource.HIP to 5.5f,
-		SpineSource.UPPER_LEGS to 4.5f,
+		SpineSource.LOWER_WAIST to Reliability(17f, 20f),
+		SpineSource.HIP to Reliability(5.5f, 7f),
+		SpineSource.UPPER_LEGS to Reliability(4.5f, 6f),
 	),
 	SpineSource.LOWER_WAIST to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to 6f,
-		SpineSource.LOWER_CHEST to 6f,
-		SpineSource.UPPER_WAIST to 6.25f,
-		SpineSource.LOWER_WAIST to 44f, // Itself
+		SpineSource.UPPER_CHEST to Reliability(6f),
+		SpineSource.LOWER_CHEST to Reliability(6f),
+		SpineSource.UPPER_WAIST to Reliability(6.25f),
+		SpineSource.LOWER_WAIST to Reliability(44f), // Itself
 		// To
-		SpineSource.HIP to 10f,
-		SpineSource.UPPER_LEGS to 4.25f,
+		SpineSource.HIP to Reliability(10f),
+		SpineSource.UPPER_LEGS to Reliability(4.25f),
 	),
 	SpineSource.HIP to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to 9.5f,
-		SpineSource.LOWER_CHEST to 9.5f,
-		SpineSource.UPPER_WAIST to 12.5f,
-		SpineSource.LOWER_WAIST to 13f,
-		SpineSource.HIP to 40f, // Itself
+		SpineSource.UPPER_CHEST to Reliability(9.5f),
+		SpineSource.LOWER_CHEST to Reliability(9.5f),
+		SpineSource.UPPER_WAIST to Reliability(12.5f),
+		SpineSource.LOWER_WAIST to Reliability(13f),
+		SpineSource.HIP to Reliability(40f), // Itself
 		// To
-		SpineSource.UPPER_LEGS to 13f,
+		SpineSource.UPPER_LEGS to Reliability(13f),
 	),
 )
 
@@ -127,7 +133,6 @@ private fun interpolateRatio(fromUpperToLower: Float, curvature: Float, fromReli
 	}
 }
 
-// TODO consider interpolating all axes with different ratios
 private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<BodyPart> = arrayOf()): Quaternion {
 	val bonesToAverage = inputSkeleton.values.filter { it.bodyPart in takeBodyParts }
 	return bonesToAverage.map { it.rotation }
@@ -137,20 +142,20 @@ private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<B
 }
 
 /**
- * Interpolates between 2 quaternions but with the absolute of the ratio for the twist part.
+ * Interpolates between 2 rotations with a different ratio for pitch and the rest/side.
  */
-private fun interpolateAbsTwist(fromRotation: Quaternion, toRotation: Quaternion, ratio: Float): Quaternion {
-	if (ratio >= 0f) return fromRotation.interpQ(toRotation, ratio)
+private fun interpolatePitchSide(fromRotation: Quaternion, toRotation: Quaternion, pitchRatio: Float, sideRatio: Float?): Quaternion {
+	if (sideRatio == null) return fromRotation.interpQ(toRotation, pitchRatio)
 
 	// Deconstruct the twist and swing of the rotations
-	val fromTwist = fromRotation.twistY()
+	val fromTwist = fromRotation.project(Vector3.POS_X).unit()
 	val fromSwing = fromRotation / fromTwist
-	val toTwist = toRotation.twistY()
+	val toTwist = toRotation.project(Vector3.POS_X).unit()
 	val toSwing = toRotation / toTwist
 
 	// Interpolate each part separately
-	val interpolatedTwist = fromTwist.interpQ(toTwist, -ratio)
-	val interpolatedSwing = fromSwing.interpQ(toSwing, ratio)
+	val interpolatedTwist = fromTwist.interpQ(toTwist, pitchRatio)
+	val interpolatedSwing = fromSwing.interpQ(toSwing, sideRatio)
 
 	return interpolatedSwing * interpolatedTwist
 }
@@ -193,24 +198,27 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 
 			// We are interpolating as-if we were the To, but using self instead of to
 			val sourceActive = isActive || fromIndex == null
-			// Get the interpolation ratio
-			val interpolateRatio = interpolateRatio(
-				ratios.imputeSpineFromUpperToLower,
-				ratios.imputeSpineCurvature,
-				reliabilities[fromSpineSource] ?: continue,
-				reliabilities[toSpineSource] ?: continue,
-				sourceActive,
-			)
+
+			// Get the interpolation ratios. sideRatio is null if nothing specified for side.
+			val fromReliability = reliabilities[fromSpineSource] ?: continue
+			val toReliability = reliabilities[toSpineSource] ?: continue
+			val pitchRatio = interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.pitch, toReliability.pitch, sourceActive)
+			val sideRatio = if (fromReliability.side != null || toReliability.side != null) {
+				interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.side ?: fromReliability.pitch, toReliability.side ?: toReliability.pitch, sourceActive)
+			} else {
+				null
+			}
 
 			// If from is null, use to as from and use to's to as to
 			val fromParts = if (fromIndex != null) fromSpineSource.parts else SPINE_SOURCES[toIndex].parts
 			val toParts = toSpineSource.parts
 			// Interpolate between from and to using our interpolation ratio.
 			mutableInputSkeleton[bodyPart] = bone.copy(
-				rotation = interpolateAbsTwist(
+				rotation = interpolatePitchSide(
 					averageRotation(boneInputs, fromParts),
 					averageRotation(boneInputs, toParts),
-					interpolateRatio,
+					pitchRatio,
+					sideRatio,
 				),
 			)
 		}
