@@ -47,7 +47,7 @@
  */
 class BridgeTransport {
 public:
-    using MessageHeader = std::variant<const solarxr_protocol::data_feed::DataFeedMessageHeader *, const solarxr_protocol::rpc::RpcMessageHeader *, const solarxr_protocol::driver_protocol::DriverMessageHeader *>;
+    using MessageHeader = std::variant<const solarxr_protocol::data_feed::DataFeedMessageHeader*, const solarxr_protocol::rpc::RpcMessageHeader*, const solarxr_protocol::driver_protocol::DriverMessageHeader*>;
 
 #ifdef _WIN32
     using Socket = SOCKET;
@@ -100,7 +100,7 @@ public:
         Cancelled() noexcept { };
         ~Cancelled() { };
 
-        const char *what() const noexcept override {
+        const char* what() const noexcept override {
             return "IO operation cancelled";
         }
     };
@@ -112,11 +112,11 @@ public:
      * @throws std::system_error error returned on socket
      * @returns @ref SocketError on fail, otherwise number of bytes read
      */
-    static ptrdiff_t ReadFully(Socket fd, std::stop_token stop, void *data, size_t size) {
+    static ptrdiff_t ReadFully(Socket fd, std::stop_token stop, void* data, size_t size) {
         ptrdiff_t ret;
         size_t received = 0;
         while (!stop.stop_requested() && received < size) {
-            ret = recv(fd, reinterpret_cast<char *>(data) + received, size - received, 0);
+            ret = recv(fd, reinterpret_cast<char*>(data) + received, size - received, 0);
             if (ret == 0) // EOF
                 return ret;
 
@@ -145,7 +145,7 @@ public:
      *
      * @returns @ref SocketError on fail, otherwise number of bytes written
      */
-    static inline ptrdiff_t WriteFully(Socket fd, const void *data, size_t size) {
+    static inline ptrdiff_t WriteFully(Socket fd, const void* data, size_t size) {
 #ifdef __linux__
         constexpr int flags = MSG_NOSIGNAL;
 #else
@@ -155,7 +155,7 @@ public:
         ptrdiff_t ret;
         size_t sent = 0;
         while (sent < size) {
-            ret = send(fd, reinterpret_cast<const char *>(data) + sent, size - sent, flags);
+            ret = send(fd, reinterpret_cast<const char*>(data) + sent, size - sent, flags);
             if (ret == SocketError) [[unlikely]] {
                 int err = GetLastSocketError();
                 if (IsBlockingError(err)) [[likely]] {
@@ -224,10 +224,10 @@ public:
         return pollfd.revents & POLLIN;
     }
 
-    BridgeTransport(std::function<void(MessageHeader &&)> on_message_received = {},
+    BridgeTransport(std::function<void(MessageHeader&&)> on_message_received = {},
                     std::function<void()> on_connect = {},
                     std::function<void()> on_disconnect = {},
-                    std::function<void(std::exception &)> on_error = {})
+                    std::function<void(std::exception&)> on_error = {})
         : connect_callback_(on_connect)
         , message_callback_(on_message_received)
         , disconnect_callback_(on_disconnect)
@@ -235,7 +235,7 @@ public:
 #ifdef _WIN32
         WSADATA _ws_data;
         if (int ret = WSAStartup(MAKEWORD(2, 2), &_ws_data); ret != 0) {
-            Logger::get().error("WSAStartup failed with code {}", ret);
+            Logger::Get().Error("WSAStartup failed with code {}", ret);
             return;
         }
 #endif
@@ -272,7 +272,7 @@ public:
      *
      * @param message The message to send.
      */
-    void SendMessage(const flatbuffers::FlatBufferBuilder &fbb);
+    void SendMessage(const flatbuffers::FlatBufferBuilder& fbb);
 
     /**
      * @brief Checks if the channel is connected.
@@ -333,9 +333,9 @@ private:
     void RunThread(std::stop_token stop);
 
     std::function<void()> connect_callback_;
-    std::function<void(MessageHeader &&)> message_callback_;
+    std::function<void(MessageHeader&&)> message_callback_;
     std::function<void()> disconnect_callback_;
-    std::function<void(std::exception &)> error_callback_;
+    std::function<void(std::exception&)> error_callback_;
 
     std::jthread thread_;
     std::jthread reconnect_thread_;
