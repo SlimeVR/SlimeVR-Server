@@ -51,7 +51,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.SetPausedBoneInputs -> state.copy(pausedProcessedBoneInputs = action.pausedBoneInputs)
 
-	is SkeletonActions.ComputeFloorLevel -> {
+	is SkeletonActions.ResetFloorLevel -> {
 		val skeletonHeight = state.skeletonHeight
 		val headBone = state.boneInputs[BodyPart.HEAD]
 		if (headBone != null && headBone.isPositionActive) {
