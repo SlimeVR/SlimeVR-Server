@@ -276,7 +276,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return horizontal foot travel and vertical COM travel
 				Vector3(footTravel.x, comTravel.y, footTravel.z)
 
-//				Vector3.ZERO // TODO
+// 				Vector3.ZERO // TODO
 			}
 
 			FollowSource.COM -> {
@@ -285,7 +285,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return COM travel
 				COMLocalizer.computeCOMTravel(targetCOM, targetCOM)
 
-//				Vector3.ZERO // TODO
+// 				Vector3.ZERO // TODO
 			}
 
 			FollowSource.HIP -> {
@@ -294,7 +294,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return the sitting travel
 				HipLocalizer.computeSittingTravel(currentHip, targetHip)
 
-//				Vector3.ZERO // TODO
+// 				Vector3.ZERO // TODO
 			}
 		}
 
