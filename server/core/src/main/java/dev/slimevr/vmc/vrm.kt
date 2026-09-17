@@ -97,6 +97,8 @@ data class VrmGeometry(
 	val hipLocalPosition: Vector3,
 	/** Floor-to-neck height, on the same basis as Skeleton.skeletonHeight. Used to scale VMC input positions. */
 	val vrmHeight: Float,
+	/** Floor-to-neck height along the VMC output hierarchy */
+	val outputRestHeight: Float,
 )
 
 fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
@@ -115,10 +117,13 @@ fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 			offset(BodyPart.NECK)
 		).y
 
+	val outputRestHeight = hipLocalPosition.y + VMC_HIP_TO_NECK_CHAIN.sumOf { offset(it).y.toDouble() }.toFloat()
+
 	return VrmGeometry(
 		bindOffsets = bindOffsets,
 		hipLocalPosition = hipLocalPosition,
 		vrmHeight = vrmHeight,
+		outputRestHeight = outputRestHeight,
 	)
 }
 

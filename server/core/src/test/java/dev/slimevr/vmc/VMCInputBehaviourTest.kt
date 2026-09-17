@@ -117,7 +117,7 @@ class VMCInputBehaviourTest {
 		harness.receiver.context.dispatch(
 			VMCActions.SetVrm(
 				state = VMCOSCVrmState.LOADED,
-				vrm = VrmGeometry(bindOffsets = bodyPartMap(), hipLocalPosition = Vector3.ZERO, vrmHeight = skeletonHeight / 2f),
+				vrm = VrmGeometry(bindOffsets = bodyPartMap(), hipLocalPosition = Vector3.ZERO, vrmHeight = skeletonHeight / 2f, outputRestHeight = skeletonHeight / 2f),
 			),
 		)
 
