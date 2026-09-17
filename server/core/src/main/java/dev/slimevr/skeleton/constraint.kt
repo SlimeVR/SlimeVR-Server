@@ -32,26 +32,20 @@ interface Constraint {
 	): Quaternion = applyLocalOperation(parentRotation, childRotation, ::apply)
 }
 
-class CompleteConstraint : Constraint {
-	override fun apply(localRotation: Quaternion): Quaternion = localRotation
-}
-
 data class TwistSwingConstraint(
 	/**
 	 * Twist range in radians.
 	 */
-	val twist: Float = 0.0f,
+	val twist: Float = 0f,
 	/**
 	 * Swing range in radians.
 	 */
-	val swing: Float = 0.0f,
-	val allowedDeviation: Float = 0f,
-	val maxDeviationFromTracker: Float = 15f,
+	val swing: Float = 0f,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, Vector3.NEG_Y)
-		swingQ = constrain(swingQ, swing)
-		twistQ = constrain(twistQ, twist)
+		swingQ = constrainAngle(swingQ, swing)
+		twistQ = constrainAngle(twistQ, twist)
 		return swingQ * twistQ
 	}
 }
@@ -60,11 +54,11 @@ data class HingeConstraint(
 	/**
 	 * Minimum rotation in radians.
 	 */
-	val min: Float = 0.0f,
+	val min: Float = 0f,
 	/**
 	 * Maximum rotation in radians.
 	 */
-	val max: Float = 0.0f,
+	val max: Float = 0f,
 	val maxDeviationFromTracker: Float = 15f,
 	val hingeAxis: Vector3 = Vector3.NEG_X,
 ) : Constraint {
@@ -78,18 +72,18 @@ data class LooseHingeConstraint(
 	/**
 	 * Minimum rotation in radians.
 	 */
-	val min: Float = 0.0f,
+	val min: Float = 0f,
 	/**
 	 * Maximum rotation in radians.
 	 */
-	val max: Float = 0.0f,
+	val max: Float = 0f,
 	val allowedDeviation: Float = 0f,
 	val maxDeviationFromTracker: Float = 15f,
 	val hingeAxis: Vector3 = Vector3.NEG_X,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		val (nonHingeRot, hingeAxisRot) = decomposeToSwingTwist(localRotation, hingeAxis)
-		return constrain(nonHingeRot, allowedDeviation) *
+		return constrainAngle(nonHingeRot, allowedDeviation) *
 			constrainOnAxis(hingeAxisRot, min, max, hingeAxis)
 	}
 }
@@ -98,17 +92,12 @@ fun decomposeToSwingTwist(
 	rotation: Quaternion,
 	twistAxis: Vector3,
 ): Pair<Quaternion, Quaternion> {
-	// TODO simplify this?
-	val projection = rotation.project(twistAxis).unit()
-	val twist = Quaternion(
-		sqrt(1.0f - projection.xyz.lenSq()).withSign(rotation.w),
-		projection.xyz,
-	)
-	val swing = (rotation / twist)
+	val twist = rotation.project(twistAxis).unit()
+	val swing = rotation / twist
 	return Pair(swing, twist)
 }
 
-fun constrain(rotation: Quaternion, angle: Float): Quaternion {
+fun constrainAngle(rotation: Quaternion, angle: Float): Quaternion {
 	// Use angle to get the maximum magnitude the vector part of rotation can be
 	// before it has violated a constraint.
 	// Multiplying by 0.5 uniquely maps angles 0-180 degrees to 0-1 which works
@@ -123,7 +112,7 @@ fun constrain(rotation: Quaternion, angle: Float): Quaternion {
 			vector.unit() * magnitude,
 		)
 	} else {
-		rotation.unit()
+		rotation
 	}
 }
 
@@ -155,10 +144,10 @@ fun constrainOnAxis(
 			abs(if (distToMin < distToMax) magnitudeSqrMin else magnitudeSqrMax)
 
 		Quaternion(
-			sqrt(1.0f - magnitudeSqr),
+			sqrt(1f - magnitudeSqr),
 			vector.unit() * -magnitude,
-		).unit()
+		)
 	} else {
-		rotation.unit()
+		rotation
 	}
 }
