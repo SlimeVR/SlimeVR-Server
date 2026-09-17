@@ -317,7 +317,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 		targetFoot = currentFoot
 
 		// Update head position from travel
-		val newHeadPosition = headInput.position + travel
+		val newHeadPosition = (headInput.position ?: Vector3.ZERO) + travel
 		mutableInputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
 	}
 
