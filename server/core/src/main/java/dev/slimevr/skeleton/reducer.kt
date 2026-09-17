@@ -17,7 +17,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.SetBonePosition -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(position = action.position, isPositionActive = action.setActive) })
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(position = action.position ?: Vector3.ZERO, isPositionActive = action.setActive) })
 	}
 
 	is SkeletonActions.DisableBone -> {
@@ -27,7 +27,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 				it[action.bodyPart] = bone.copy(
 					rotation = Quaternion.IDENTITY,
 					acceleration = Vector3.ZERO,
-					position = null,
+					position = Vector3.ZERO,
 					isRotationActive = false,
 					isAccelerationActive = false,
 					isPositionActive = false,
@@ -51,16 +51,14 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.SetPausedBoneInputs -> state.copy(pausedProcessedBoneInputs = action.pausedBoneInputs)
 
-	is SkeletonActions.ResetHeadPosition -> {
-		val boneInputs = state.boneInputs
-		val headBone = boneInputs[BodyPart.HEAD] ?: return state
-		if (headBone.isPositionActive) return state
-		state.copy(boneInputs = boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = null) })
-	}
-
-	is SkeletonActions.ComputeFloorLevel -> {
+	is SkeletonActions.ResetFloorLevel -> {
 		val skeletonHeight = state.skeletonHeight
-		val headHeight = state.boneInputs[BodyPart.HEAD]?.position?.y ?: skeletonHeight
-		state.copy(floorLevel = headHeight - skeletonHeight)
+		val headBone = state.boneInputs[BodyPart.HEAD]
+		if (headBone != null && headBone.isPositionActive) {
+			val headHeight = headBone.position.y
+			state.copy(floorLevel = headHeight - skeletonHeight)
+		} else {
+			state.copy(floorLevel = 0f)
+		}
 	}
 }

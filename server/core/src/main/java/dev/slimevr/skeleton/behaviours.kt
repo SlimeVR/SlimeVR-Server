@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.MonotonicValueTimeMark
@@ -52,17 +51,6 @@ class HeightLogBehaviour : SkeletonBehaviour {
 				.map { it.skeletonHeight }
 				.collect { height -> AppLogger.skeleton.info("User height changed: ${"%.2f".format(height)}m") }
 		}
-	}
-}
-
-/**
- * Handles resetting the head position whenever mocap mode gets disabled
- */
-class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
-	override fun observe(receiver: Skeleton) {
-		settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
-			if (!it.data.skeletonConfig.toggles.mocapMode) receiver.context.dispatch(SkeletonActions.ResetHeadPosition)
-		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -228,11 +216,10 @@ class ComputedSkeletonBehaviour(
 						val targetState = receiver.context.state.value
 
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
-							// TODO improve pause tracking code
-							//  and also possibly head default position (HeadPositionFallbackProcessor)
+							// TODO improve pause tracking code, maybe using a processor
 							// Use already-processed paused tracking data except for the head
 							val headBone = targetState.boneInputs[BodyPart.HEAD]
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
+							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]!!.position) }
 						} else {
 							// Run pre-FK processors
 							// TODO: Add a constrain processor (maybe not needed)
@@ -262,13 +249,9 @@ class ComputedSkeletonBehaviour(
 							fkChangedParts.clear()
 							boneInputs.forEachBone { bodyPart, boneInput ->
 								val previous = beforeFk[bodyPart]
-								if (boneInput == previous) return@forEachBone
-								fkChangedParts.add(bodyPart)
-								beforeFk[bodyPart] = boneInput
-
-								// For changed bones with inactive positions, update their input's position in state (needed for Localizer)
-								if (!boneInput.isPositionActive && boneInput.position != previous?.position) {
-									receiver.context.dispatch(SkeletonActions.SetBonePosition(bodyPart, boneInput.position, false))
+								if (boneInput != previous) {
+									fkChangedParts.add(bodyPart)
+									beforeFk[bodyPart] = boneInput
 								}
 							}
 							// Inputs changed; re-run FK

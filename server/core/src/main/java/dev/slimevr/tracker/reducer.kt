@@ -18,14 +18,21 @@ fun reduce(
 	is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
 
 	is TrackerActions.SetRotation -> {
-		val accumulatedTicks = if (action.newData && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
+		val accumulatedTicks = if (!action.refresh && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
 
 		// Rotation
-		val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
+		val rawRotation: RawRotation = action.rotation ?: state.rawRotation
 		val correctedRawRotation = if (state.stayAlignedData.enabled) {
-			Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawPolarityTrackedRotation
+			// Apply stay aligned yaw correction
+			Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
 		} else {
-			rawPolarityTrackedRotation
+			rawRotation
+		}
+		val polarityAlign = if (action.refresh) {
+			// Reset polarity according to last reference rotation.
+			state.lastReference
+		} else {
+			state.rotation
 		}
 
 		// Other inputs
@@ -34,11 +41,17 @@ fun reduce(
 		val position = action.position ?: state.position
 
 		val cal = state.sessionCalibration
+		// TODO: figure out better fix for this that applies in state for StayAligned
+		//  (positional head can get a non-identity headingAlignment when not assigned to head and it persists when
+		//  assigning back to head and even loading from config)
+		val isPositionalHead = state.position != null && state.bodyPart == BodyPart.HEAD
+		val headingAlignment = if (!isPositionalHead) cal.headingAlignment else Quaternion.IDENTITY
 
 		// Rotation calibration
 		val rotation: CalibratedRotation =
 			if (action.rotation != null) {
-				applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
+				applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, headingAlignment, state.restOrientation)
+					.twinNearest(polarityAlign)
 			} else {
 				state.rotation
 			}
@@ -52,7 +65,7 @@ fun reduce(
 			}
 
 		state.copy(
-			rawRotation = rawPolarityTrackedRotation,
+			rawRotation = rawRotation,
 			rotation = rotation,
 			rawAcceleration = rawAcceleration,
 			acceleration = acceleration,
@@ -83,13 +96,10 @@ fun reduce(
 		val shouldAlignAttitude = !isHead || !isPositional || action.resetPositionalHeadAttitude
 		val shouldAlignHeadingWithReference = !isHead && isPositional
 
-		// Use the shortest rotation/default polarity
-		val shortestRawRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
-
 		val headingCorrection =
 			if (shouldAlignAttitude) {
 				estimateHeadingCorrect(
-					shortestRawRotation,
+					state.rawRotation,
 					action.referenceRotation,
 				)
 			} else {
@@ -98,7 +108,7 @@ fun reduce(
 		val attitudeAlignment =
 			if (shouldAlignAttitude) {
 				estimateAttitudeAlign(
-					shortestRawRotation,
+					state.rawRotation,
 					headingCorrection,
 					action.referenceRotation,
 				)
@@ -118,9 +128,9 @@ fun reduce(
 				attitudeAlignment = attitudeAlignment,
 				headingAlignment = headingAlignment,
 			),
+			lastReference = action.referenceRotation,
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
-			rawRotation = shortestRawRotation,
 		)
 	}
 
@@ -137,6 +147,7 @@ fun reduce(
 			// TrackerYawResetSmoothingBehaviour eases sessionCalibration.headingCorrection
 			// to newHeading over smoothTime. A reset mid-ease just replaces the seed.
 			state.copy(
+				lastReference = action.referenceRotation,
 				yawResetSmoothing = YawResetSmoothing(
 					from = cal.headingCorrection,
 					to = newHeading,
@@ -147,6 +158,7 @@ fun reduce(
 			// Snap: apply the new heading immediately (default, no smoothing configured).
 			state.copy(
 				sessionCalibration = cal.copy(headingCorrection = newHeading),
+				lastReference = action.referenceRotation,
 				yawResetSmoothing = null,
 			)
 		}
@@ -167,6 +179,7 @@ fun reduce(
 
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = headingAlignment),
+			lastReference = action.referenceRotation,
 			lastMountingMethod = MountingMethod.POSE,
 		)
 	}

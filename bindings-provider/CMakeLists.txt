@@ -42,7 +42,8 @@ message(STATUS "Found OpenVR library at: ${OPENVR_LIBRARY}")
 add_executable("${PROJECT_NAME}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/paths.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/logger.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/solarxr.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/bridge/BridgeClient.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/bridge/BridgeTransport.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/vr_utils.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
 )

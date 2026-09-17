@@ -477,7 +477,7 @@ settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
-settings-sidebar-osc_trackers = VRChat OSC Trackers
+settings-sidebar-vrchat_osc = VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
@@ -697,7 +697,7 @@ settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine cu
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode
-settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a positional head tracker.
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control-subtitle = Tap based resets
@@ -827,10 +827,10 @@ settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC VRChat settings
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
-    Change settings specific to the OSC Trackers standard used for sending
+    Change settings specific to VRChat OSC and the OSC Trackers standard used to send
     tracking data to applications without SteamVR (ex. Quest standalone).
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
 settings-osc-vrchat-enable = Enable

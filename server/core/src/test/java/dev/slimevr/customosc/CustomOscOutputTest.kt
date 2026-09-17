@@ -62,7 +62,7 @@ class CustomOscOutputTest {
 
 		assertNotNull(config)
 		assertEquals(1, config.profiles.size)
-		assertEquals("slimevr", config.profiles[0].id)
+		assertEquals("test-config", config.profiles[0].id)
 		assertEquals(BodyPart.UPPER_CHEST, config.profiles[0].trackers[0].bodyPart)
 	}
 }

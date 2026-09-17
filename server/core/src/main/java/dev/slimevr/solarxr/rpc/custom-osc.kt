@@ -38,13 +38,13 @@ class CustomOscBehaviour(
 									name = fbProfile.name ?: "",
 									enabled = fbProfile.enabled,
 									address = fbProfile.address ?: "127.0.0.1",
-									port = fbProfile.port.toInt().takeIf { it > 0 } ?: 9000,
+									port = fbProfile.port.takeIf { it > 0u }?.toInt() ?: 9000,
 									trackers = fbProfile.trackers?.map { fbTracker ->
 										CustomOscTrackerMapping(
 											bodyPart = BodyPart.entries.firstOrNull { it.value == fbTracker.bodyPart },
 											params = fbTracker.params?.map { fbParam ->
 												CustomOscParamMapping(
-													axis = OscAxisSource.entries.getOrNull(fbParam.axis.toInt())
+													axis = OscAxisSource.entries.getOrNull(fbParam.axis.ordinal)
 														?: OscAxisSource.ROTATION_PITCH,
 													address = fbParam.address ?: "",
 												)
@@ -74,7 +74,8 @@ class CustomOscBehaviour(
 						bodyPart = tracker.bodyPart?.value ?: BodyPart.NONE.value,
 						params = tracker.params.map { param ->
 							solarxr_protocol.rpc.CustomOSCParamMapping(
-								axis = param.axis.ordinal.toUByte(),
+								axis = solarxr_protocol.rpc.CustomOSCAxisSource.entries.getOrNull(param.axis.ordinal)
+									?: solarxr_protocol.rpc.CustomOSCAxisSource.POSITION_X,
 								address = param.address,
 							)
 						},

@@ -32,7 +32,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 
 			val tracker = ensureHidTracker(receiver, packet.hidId, device.context.state.value.id, imuType = packet.imuType) ?: return@on
 			// legacy carries imu/mag type in every type-0, so keep re-asserting them
-			tracker.context.dispatch(TrackerActions.Update { copy(imuType = packet.imuType, magStatus = packet.magStatus) })
+			tracker.context.dispatch(TrackerActions.Update { copy(imuType = packet.imuType, magStatus = packet.magStatus, imuTemp = packet.sensorTemp) })
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 		}.launchIn(receiver.context.scope)
 	}

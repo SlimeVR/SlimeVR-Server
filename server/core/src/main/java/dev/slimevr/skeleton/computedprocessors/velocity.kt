@@ -25,12 +25,13 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
 	return Velocity(
 		linear = deltaPosition / deltaTime,
-		angular = currentVelocityData.rotation.sandwich(deltaRotation.toRotationVector()) / deltaTime,
+		angular = currentVelocityData.rotation.sandwich(deltaRotation.toRotationVectorQ()) / deltaTime,
 	)
 }
 
 // We smooth out the velocity since if a tracker is sending at 100tps and skeleton is at 500hz,
 //  4 frames out of 5 will have little to no velocity, so we need to smooth at least across those frames.
+// TODO: should we try to smooth less for it to be more responsive? Fine tune or find a better solution.
 private val SMOOTHING_WINDOW = 40.milliseconds.inFloatingSeconds
 private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
 	val t = (deltaTime / SMOOTHING_WINDOW).coerceAtMost(1f)

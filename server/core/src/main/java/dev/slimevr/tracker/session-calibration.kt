@@ -1,6 +1,5 @@
 package dev.slimevr.tracker
 
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.atan2
@@ -67,16 +66,13 @@ fun undoCalibration(
 ): RawAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
 	.sandwich(calibratedAcceleration)
 
-// Used to get yaw. Works better for IMU trackers.
-fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
-
-// Used to get yaw. Works better on an HMD.
-fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
+// Used for referenceRotation since it works better on an HMD.
+private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
 
 fun estimateHeadingCorrect(
 	rotation: Quaternion,
 	referenceRotation: Quaternion,
-): HeadingCorrection = eulerHeading(inverseYProjection(referenceRotation) * rotation).inv()
+): HeadingCorrection = (inverseYProjection(referenceRotation) * rotation).eulerHeading().inv()
 	.twinNearest(referenceRotation)
 
 fun estimateAttitudeAlign(
@@ -93,12 +89,7 @@ fun estimateHeadingAlign(
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
 	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
-	val rotation = applyCalibration(
-		rotation,
-		headingCorrect,
-		attitudeAlign,
-		headingAlign,
-	)
+	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign, headingAlign)
 	val pitchRoll = (inverseYProjection(referenceRotation) * rotation).sandwichUnitY()
 	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
 	return Quaternion.rotationAroundYAxis(yawAngle)

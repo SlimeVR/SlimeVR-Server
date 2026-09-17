@@ -38,7 +38,7 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/driver', scrollTo: 'driver' },
       },
       {
-        label: l10n.getString('settings-sidebar-osc_trackers'),
+        label: l10n.getString('settings-sidebar-vrchat_osc'),
         value: { url: '/settings/osc/vrchat', scrollTo: 'vrchat' },
       },
       {

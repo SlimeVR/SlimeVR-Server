@@ -86,7 +86,7 @@ export function SettingsSidebar() {
           <SettingsLink
             to="/settings/osc/vrchat"
             scrollTo="vrchat"
-            id="settings-sidebar-osc_trackers"
+            id="settings-sidebar-vrchat_osc"
           />
           <SettingsLink
             to="/settings/osc/vmc"
