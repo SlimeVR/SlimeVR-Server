@@ -36,7 +36,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
 					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
-					receiver.resetProcessors(ResetType.FULL)
+					receiver.context.dispatch(SkeletonActions.RequestProcessorReset(ResetType.FULL))
 				}
 			}
 			.launchIn(receiver.context.scope)
@@ -202,6 +202,10 @@ class ComputedSkeletonBehaviour(
 		}.asCoroutineDispatcher()
 		receiver.context.scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
 
+		val resettableProcessors = (inputProcessors + fkComputedProcessors + fkProcessors + targetProcessors + ikComputedProcessors)
+			.filterIsInstance<ResettableSkeletonProcessor>()
+			.distinct()
+
 		var nextTick = timeSource.markNow()
 		val fkChangedParts = mutableSetOf<BodyPart>()
 		val timings = TickTimings(hz, 10.seconds, intervalDuration)
@@ -214,6 +218,14 @@ class ComputedSkeletonBehaviour(
 
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
+
+						val pendingResets = targetState.processorResets
+						if (pendingResets.isNotEmpty()) {
+							for (resetType in pendingResets.distinct()) {
+								for (processor in resettableProcessors) processor.reset(resetType)
+							}
+							receiver.context.dispatch(SkeletonActions.ProcessorResetsApplied(pendingResets.size))
+						}
 
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
 							// TODO improve pause tracking code, maybe using a processor

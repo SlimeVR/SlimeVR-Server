@@ -61,4 +61,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 			state.copy(floorLevel = 0f)
 		}
 	}
+
+	is SkeletonActions.RequestProcessorReset -> state.copy(processorResets = state.processorResets + action.resetType)
+	is SkeletonActions.ProcessorResetsApplied -> state.copy(processorResets = state.processorResets.drop(action.count))
 }

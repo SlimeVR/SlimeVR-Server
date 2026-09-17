@@ -3,6 +3,7 @@ package dev.slimevr.tracker
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
+import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 
 fun reduce(
@@ -131,6 +132,7 @@ fun reduce(
 			lastReference = action.referenceRotation,
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.FULL,
 		)
 	}
 
@@ -153,6 +155,7 @@ fun reduce(
 					to = newHeading,
 					duration = action.smoothTime,
 				),
+				pendingSkeletonResets = state.pendingSkeletonResets + ResetType.YAW,
 			)
 		} else {
 			// Snap: apply the new heading immediately (default, no smoothing configured).
@@ -160,6 +163,7 @@ fun reduce(
 				sessionCalibration = cal.copy(headingCorrection = newHeading),
 				lastReference = action.referenceRotation,
 				yawResetSmoothing = null,
+				pendingSkeletonResets = state.pendingSkeletonResets + ResetType.YAW,
 			)
 		}
 	}
@@ -181,6 +185,7 @@ fun reduce(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = headingAlignment),
 			lastReference = action.referenceRotation,
 			lastMountingMethod = MountingMethod.POSE,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.POSE_MOUNTING,
 		)
 	}
 
@@ -189,6 +194,10 @@ fun reduce(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = state.mountingOrientation),
 			lastMountingMethod = MountingMethod.MANUAL,
 		)
+	}
+
+	is TrackerActions.ClearPendingSkeletonResets -> {
+		state.copy(pendingSkeletonResets = state.pendingSkeletonResets.drop(action.count))
 	}
 
 	is TrackerActions.SetMotion -> {
