@@ -270,12 +270,17 @@ export function TrackerConnectionGroupSection({
             'border-background-40': variant === 'secondary',
           })}
         />
-        <div
-          className={classNames('sticky -right-0 flex items-center px-2', {
-            'bg-background-70': variant === 'primary',
-            'bg-background-60': variant === 'secondary',
-          })}
-        >
+        <div className="sticky -right-0 z-10 flex items-center px-2">
+          <div
+            className={classNames(
+              'absolute inset-0 -z-10',
+              '[mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)]',
+              {
+                'bg-background-70': variant === 'primary',
+                'bg-background-60': variant === 'secondary',
+              }
+            )}
+          />
           {toolbox ?? <TrackerConnectionGroupDefaultToolbox group={group} />}
         </div>
       </div>
