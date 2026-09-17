@@ -169,7 +169,7 @@ export function Home() {
           )}
 
           {groups.length === 0 && (
-            <div className="flex flex-col items-center justify-center gap-4 text-center p-6 flex-grow">
+            <div className="flex flex-col items-center justify-center gap-4 text-center p-6 flex-grow h-full">
               <div className="relative flex items-center justify-center antialiased">
                 <div
                   className="absolute w-64 h-64 rounded-full pointer-events-none"
