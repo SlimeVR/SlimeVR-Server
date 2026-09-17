@@ -139,7 +139,8 @@ class InputDecoderTest {
 			),
 		)
 
-		val bundle = buildOutgoingBundle(bones, bones.keys, VMCConfig(), vrm = null, elapsed = 0.seconds)
+		val config = VMCConfig(anchorAtHips = false)
+		val bundle = buildOutgoingBundle(bones, bones.keys, config, vrm = null, skeletonHeight = 1.7f, floorLevel = 0f, elapsed = 0.seconds)
 		val frame = decodeVmcBundle(bundle, emptyVmcInputFrame())
 		val worldTransforms = vmcWorldTransforms(
 			locals = frame.boneLocalRotations,

@@ -3,6 +3,7 @@ package dev.slimevr.vmc
 import com.jme3.math.FastMath
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.util.opposite
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -163,6 +164,22 @@ private class VmcBoneTree(hierarchy: BodyPartMap<Array<BodyPart>>) {
 
 val VMC_OUTPUT_BONE_PARENTS: BodyPartMap<BodyPart?> = VmcBoneTree(VMC_HIERARCHY_MAP).parents
 
+// Bones between the hips and the neck, hips first, as VMC's hierarchy links them.
+val VMC_HIP_TO_NECK_CHAIN: List<BodyPart> = generateSequence(BodyPart.NECK) { VMC_OUTPUT_BONE_PARENTS[it] }
+	.takeWhile { it != BodyPart.HIP }
+	.toList()
+	.asReversed()
+
+// Spine bones between the hips and the neck in the actual skeleton hierarchy
+// Used to derive a rest hip height above the floor when anchored with no VRM loaded.
+val SPINE_CHAIN_ABOVE_HIP: List<BodyPart> = listOf(
+	BodyPart.NECK,
+	BodyPart.UPPER_CHEST,
+	BodyPart.LOWER_CHEST,
+	BodyPart.UPPER_WAIST,
+	BodyPart.LOWER_WAIST,
+)
+
 val VMC_INPUT_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	VMC_HIERARCHY_MAP +
 		mapOf(
@@ -178,44 +195,7 @@ val UNITY_BONE_TO_BODY_PART: Map<String, BodyPart> = BODY_PART_TO_UNITY_BONE.ent
 	.flatMap { (bodyPart, names) -> names.map { name -> name.lowercase() to bodyPart } }
 	.toMap()
 
-val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
-	BodyPart.LEFT_SHOULDER to BodyPart.RIGHT_SHOULDER,
-	BodyPart.LEFT_UPPER_ARM to BodyPart.RIGHT_UPPER_ARM,
-	BodyPart.LEFT_LOWER_ARM to BodyPart.RIGHT_LOWER_ARM,
-	BodyPart.LEFT_HAND to BodyPart.RIGHT_HAND,
-	BodyPart.LEFT_UPPER_LEG to BodyPart.RIGHT_UPPER_LEG,
-	BodyPart.LEFT_LOWER_LEG to BodyPart.RIGHT_LOWER_LEG,
-	BodyPart.LEFT_FOOT to BodyPart.RIGHT_FOOT,
-	BodyPart.LEFT_THUMB_METACARPAL to BodyPart.RIGHT_THUMB_METACARPAL,
-	BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.RIGHT_THUMB_PROXIMAL,
-	BodyPart.LEFT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_DISTAL,
-	BodyPart.LEFT_INDEX_PROXIMAL to BodyPart.RIGHT_INDEX_PROXIMAL,
-	BodyPart.LEFT_INDEX_INTERMEDIATE to BodyPart.RIGHT_INDEX_INTERMEDIATE,
-	BodyPart.LEFT_INDEX_DISTAL to BodyPart.RIGHT_INDEX_DISTAL,
-	BodyPart.LEFT_MIDDLE_PROXIMAL to BodyPart.RIGHT_MIDDLE_PROXIMAL,
-	BodyPart.LEFT_MIDDLE_INTERMEDIATE to BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
-	BodyPart.LEFT_MIDDLE_DISTAL to BodyPart.RIGHT_MIDDLE_DISTAL,
-	BodyPart.LEFT_RING_PROXIMAL to BodyPart.RIGHT_RING_PROXIMAL,
-	BodyPart.LEFT_RING_INTERMEDIATE to BodyPart.RIGHT_RING_INTERMEDIATE,
-	BodyPart.LEFT_RING_DISTAL to BodyPart.RIGHT_RING_DISTAL,
-	BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.RIGHT_LITTLE_PROXIMAL,
-	BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
-	BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
-	BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
-	BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
-	BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
-	BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
-	BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
-	BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
-)
-
-val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
-	VMC_MIRROR_BONE_PAIRS
-		.flatMap { (left, right) -> listOf(left to right, right to left) }
-		.toMap(),
-)
-
-fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = VMC_MIRROR_BONES[bodyPart] ?: bodyPart
+fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = bodyPart.opposite ?: bodyPart
 
 // Per-bone rest offset, subtracted from the live world rotation before computing the VMC local.
 // Arms remap our hanging rest (NEG_Y) to the VRM rig's T-pose rest direction so the avatar isn't stuck at T regardless of our pose.

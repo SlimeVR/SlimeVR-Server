@@ -179,7 +179,7 @@ data class VMCConfig(
 	/** Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg) */
 	val mirrorTracking: Boolean = false,
 	/** Anchor the tracking at the hip (sitting down)? */
-	val anchorAtHips: Boolean = false,
+	val anchorAtHips: Boolean = true,
 	/** JSON part of the VRM to be used */
 	val vrmJson: String? = null,
 )
