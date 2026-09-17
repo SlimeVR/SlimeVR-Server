@@ -222,7 +222,6 @@ class ComputedSkeletonBehaviour(
 							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]!!.position) }
 						} else {
 							// Run pre-FK processors
-							// TODO: Add a constrain processor (maybe not needed)
 							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs

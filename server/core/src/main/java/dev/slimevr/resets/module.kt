@@ -94,7 +94,8 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			}
 
 			// Reset the skeleton processors that store temporary data (smoothing, localizer, skating correction, etc.)
-			delay(10) // TODO skeleton runs in a different thread and seems to cause a race condition. Temporary patch.
+			delay(10) // TODO REMOVE Temporary patch to prevent old data from surviving reset at least.
+			// TODO Skeleton runs in a different thread, causing a race condition. The following line needs to run with the skeleton thread locked.
 			skeleton.resetProcessors(resetType)
 
 			// Update state and config
