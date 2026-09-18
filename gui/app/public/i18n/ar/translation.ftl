@@ -32,6 +32,19 @@ tips-failed_webgl = فشل تهيئة WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = أغلق
+
 ## Body parts
 
 body_part-NONE = غير محدد
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = الفخذ الأيمن
 body_part-RIGHT_LOWER_LEG = الكاحل الأيمن
 body_part-RIGHT_FOOT = القدم اليمنى
 body_part-UPPER_CHEST = أعلى الصدر
-body_part-CHEST = الصدر
-body_part-WAIST = الخصر
 body_part-HIP = الورك
 body_part-LEFT_SHOULDER = الكتف الأيسر
 body_part-LEFT_UPPER_ARM = العضد الأيسر
@@ -89,23 +100,10 @@ body_part-RIGHT_LITTLE_DISTAL = الجزء البعيد الصغير الأيم�
 ## BoardType
 
 board_type-UNKNOWN = مجهول
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = لوحة مخصصة
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
 board_type-SLIMEVR = سلايم في آر
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = رانجلر جويكونز
 board_type-MOCOPI = سوني موكوبي (Mocopi)
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = قفاز SlimeVR تطوير IMU
 
 ## Proportions
@@ -123,8 +121,6 @@ skeleton_bone-NECK-desc =
     إلى اليسار واليمين وقم بتعديله حتى تصبح أي حركة في أجهزة التتبع الأخرى ضئيلة.
 skeleton_bone-torso_group = طول الجذع
 skeleton_bone-UPPER_CHEST = طول أعلى الصدر
-skeleton_bone-CHEST = طول الصدر
-skeleton_bone-WAIST = طول الخصر
 skeleton_bone-HIP = طول الورك
 skeleton_bone-HIPS_WIDTH = عرض الورك
 skeleton_bone-leg_group = طول الساق
@@ -148,16 +144,6 @@ reset-reset_all_warning-cancel = إلغاء
 reset-full = اعاده تعيين
 reset-mounting = إعادة تعيين التركيب
 reset-yaw = إعادة تعيين الانعراج
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = تم اكتشاف جهاز تسلسلي جديد!
-serial_detection-new_device-p1 = أدخل بيانات اعتماد الواي فاي  الخاصة بك!
-serial_detection-new_device-p2 = يرجى تحديد ما تريد القيام به
-serial_detection-open_wifi = اتصل بشبكة الواي فاي
-serial_detection-open_serial = افتح وحدة التحكم التسلسلية
-serial_detection-submit = إرسال!
-serial_detection-close = أغلق
 
 ## Navigation bar
 
@@ -184,9 +170,7 @@ widget-developer_mode = وضع المطوّر
 widget-developer_mode-high_contrast = تباين عالي
 widget-developer_mode-precise_rotation = دوران دقيق
 widget-developer_mode-fast_data_feed = تغذية البيانات السريعة
-widget-developer_mode-sort_by_name = فرز بالاسم
 widget-developer_mode-raw_slime_rotation = الدوران الصافي
-widget-developer_mode-more_info = المزيد
 
 ## Widget: IMU Visualizer
 
@@ -281,6 +265,15 @@ tracker-settings-update-up_to_date = حديث
 tracker-settings-update = التحديث الآن
 tracker-settings-update-title = إصدار البرنامج الثابت
 
+## Dongle settings
+
+dongle-infos-hardware_revision = مراجعة الأجهزة
+dongle-status-disconnected = فقد الاتصال
+dongle-settings-back = ارجع إلى قائمة أجهزة التعقب
+dongle-settings-name_section-description = أعطها لقب لطيف :)
+dongle-settings-update = التحديث الآن
+dongle-settings-update-title = إصدار البرنامج الثابت
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = غير محدد
@@ -294,6 +287,11 @@ body_assignment_menu-unassign_tracker = إلغاء تعيين جهاز التع�
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -311,8 +309,9 @@ mounting_selection_menu-close = أغلق
 
 settings-sidebar-title = الإعدادات
 settings-sidebar-general = الاعدادات العامة
+settings-sidebar-trackers = أجهزة التعقب
 settings-sidebar-interface = واجهة المستخدم
-settings-sidebar-osc_trackers = أجهزة تعقب في ار تشات أوه أس سي
+settings-sidebar-vrchat_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 settings-sidebar-appearance = مظهر
@@ -320,6 +319,15 @@ settings-sidebar-notifications = إشعارات
 settings-sidebar-behavior = سلوك
 settings-sidebar-firmware-tool = أداة برامج الجهاز المصنوع بنفسك
 settings-sidebar-advanced = متقدم
+
+## Bone routing settings
+
+settings-routing-output-vrc_osc = أجهزة تعقب "في ار تشات أوه أس سي"
+settings-routing-hands-warning-cancel = إلغاء
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = تمكين
 
 ## Tracker mechanics
 
@@ -347,6 +355,15 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     يستخدم المقياس المغناطيسي على جميع أجهزة التعقب التي تحتوي على برامج ثابتة متوافقة له ، مما يقلل من الانحراف في البيئات المغناطيسية المستقرة.
     يمكن تعطيله لكل جهاز تعقب في إعدادات التعقب. <b>من فضلك لا تغلق أيا من أجهزة التعقب أثناء تبديل هذا!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = استخدم المقياس المغناطيسي على أجهزة التعقب
+settings-stay_aligned-general-label = الاعدادات العامة
+settings-stay_aligned-relaxed_poses-close = أغلق
+
+## Keybinds Page
+
+settings-keybinds_full-reset = اعاده تعيين
+settings-keybinds_yaw-reset = إعادة تعيين الانعراج
+settings-keybinds_reset-all-button = إعادة تعيين الكل
+settings-keybinds-recorder-modal-cancel-button = إلغاء
 
 ## FK/Tracking settings
 
@@ -446,9 +463,6 @@ settings-interface-appearance-font_size-description = يؤثر هذا على ح�
 ## Notification settings
 
 settings-interface-notifications = إشعارات
-settings-general-interface-serial_detection = الكشف عن جهاز تسلسلي
-settings-general-interface-serial_detection-description = سيعرض هذا الخيار نافذة منبثقة في كل مرة تقوم فيها بتوصيل جهاز تسلسلي جديد يمكن أن يكون جهاز تعقب. يساعد في تحسين عملية إعداد جهاز التعقب.
-settings-general-interface-serial_detection-label = الكشف عن جهاز تسلسلي
 settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
 settings-general-interface-feedback_sound-label = صوت ردود الفعل
@@ -460,6 +474,8 @@ settings-general-interface-connected_trackers_warning-label = تحذير عن أ
 ## Behavior settings
 
 settings-interface-behavior = السلوك
+settings-general-interface-dev_mode = وضع المطوّر
+settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-use_tray = تصغير إلى علبة النظام
 settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
 settings-general-interface-use_tray-label = تصغير إلى علبة النظام
@@ -506,6 +522,8 @@ settings-serial-serial_select = اختر منفذ تسلسلي
 settings-serial-auto_dropdown_item = تلقائي
 settings-serial-get_wifi_scan = احصل على فحص WiFi
 settings-serial-save_logs = حفظ في ملف
+settings-serial-send_command-warning-ok = أنا أعرف ماذا أفعل
+settings-serial-send_command-warning-cancel = إلغاء
 
 ## OSC VRChat settings
 
@@ -528,6 +546,12 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = عنوان الشبكة
 settings-osc-vrchat-network-address-description-v1 = اختر العنوان الذي تريد إرسال البيانات إليه. يمكن تركها دون أن تمس ل VRChat.
 settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخاص بفي ار تشات
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = دوران
+settings-osc-vrchat-status-badge-error = خطأ
+settings-osc-vrchat-status-badge-unknown = مجهول
 
 ## VMC OSC settings
 
@@ -560,6 +584,7 @@ settings-osc-vmc-anchor_hip-label = ثبت في الوركين
 settings-osc-vmc-mirror_tracking = اعكس التعقب
 settings-osc-vmc-mirror_tracking-description = اعكس التعقب أفقيا.
 settings-osc-vmc-mirror_tracking-label = اعكس التعقب
+settings-osc-vmc-status-badge-error = خطأ
 
 ## Common OSC settings
 
@@ -598,7 +623,7 @@ settings-utils-advanced-open_logs-label = فتح المجلد
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -614,12 +639,18 @@ onboarding-setup_warning-cancel = متابعة الإعداد
 
 ## Quiz
 
+onboarding-quiz_continue = ‏‏متابعة
+onboarding-quiz_back = العودة
+onboarding-quiz-runtime-answer-steamvr = ستيم في ار
+onboarding-quiz-mocap_preferences-head_tracker-yes = نعم
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = الرجوع
 onboarding-wifi_creds-submit = إرسال!
+onboarding-wifi_creds-retry = اعادة المحاولة
+onboarding-wifi_creds-ssid-label = اسم الواي فاي
 onboarding-wifi_creds-ssid =
-    .label = اسم الواي فاي
     .placeholder = أدخل اسم الواي فاي
 onboarding-wifi_creds-ssid-required = مطلوب اسم Wi-Fi
 onboarding-wifi_creds-password =
@@ -628,6 +659,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = أغلق
 
 ## Setup start
 
@@ -639,6 +671,7 @@ onboarding-home-start = هيا نتجهز!
 onboarding-connect_tracker-title = ربط أجهزة التعقب
 onboarding-connect_tracker-issue-serial = أواجه مشكلة في الاتصال!
 onboarding-connect_tracker-usb = جهاز تعقب يو أس بي
+onboarding-connect_tracker-close = أغلق
 onboarding-connect_tracker-connection_status-serial_init = نتواصل بجهاز التسلسلي
 onboarding-connect_tracker-connection_status-obtaining_mac_address = الحصول على عنوان mac الخاص بجهاز التعقب
 onboarding-connect_tracker-connection_status-provisioning = نرسل بيانات اعتماد واي فاي
@@ -680,6 +713,11 @@ onboarding-assign_trackers-assigned =
         [many] { $assigned } من { $trackers } أجهزة تعقب عينت
        *[other] { $assigned } من { $trackers } أجهزة تعقب عينت
     }
+onboarding-assign_trackers-tap_modal-cancel = إلغاء
+onboarding-assign_trackers-side-right = اليمين
+onboarding-assign_trackers-side-left = اليسار
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = عرض المرآة
 
 ## Tracker assignment warnings
 
@@ -859,6 +897,16 @@ onboarding-automatic_proportions-smol_warning-cancel = الرجوع
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = ارتدي أجهزة التعقب
+onboarding-stay_aligned-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
+onboarding-stay_aligned-verify_mounting-title = معايرة التركيب
+onboarding-stay_aligned-preparation-title = التحضير
+
+## Home
+
+home-settings-close = أغلق
+home-no_trackers-connect = ربط أجهزة التعقب
+
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = أجهزة التعقب لا تزال قيد التشغيل
@@ -882,6 +930,7 @@ firmware_tool = أداة البرامج الثابتة DIY
 firmware_tool-description = يسمح لك بتكوين و لتحديث أجهزة التعقب DIY الخاصة بك
 firmware_tool-not_available = عفوا ، أداة البرامج الثابتة غير متوفرة في الوقت الحالي. عد لاحقا!
 firmware_tool-not_compatible = أداة البرنامج الثابت غير متوافقة مع هذا الإصدار من الخادم. يرجى تحديث الخادم الخاص بك!
+firmware_tool-select_source-version = إصدار البرنامج الثابت
 firmware_tool-flash_method_step = طريقة التثبيت
 firmware_tool-flash_method_step-description = الرجاء حدد طريقة التثبيت التي تريد استخدامها
 firmware_tool-flashbtn_step = اضغط على زر التمهيد
@@ -896,6 +945,7 @@ firmware_tool-flashbtn_step-board_SLIMEVR = أوقف تشغيل جهاز الت�
 
 ## Dedicated Firmware Update Page
 
+firmware_update-retry = اعادة المحاولة
 
 ## Tray Menu
 
@@ -924,9 +974,16 @@ unknown_device-modal-description =
     هل تريد توصيله ب SlimeVR؟
 unknown_device-modal-confirm = أكيد
 unknown_device-modal-forget = تجاهلها
+vrc_config-spine_mode-UNKNOWN = مجهول
+vrc_config-tracker_model-UNKNOWN = مجهول
+vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = أغلق
+tracking_checklist-UNASSIGNED_HMD-desc = يجب تعيين سماعة رأس VR كجهاز تعقب للرأس.
+toolbar-mounting_calibration = معايرة التركيب
+toolbar-mounting_calibration-feet = القدمين
