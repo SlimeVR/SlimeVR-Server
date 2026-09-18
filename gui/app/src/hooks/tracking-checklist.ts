@@ -40,6 +40,8 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
     'tracking_checklist-STEAMVR_HANDS_ENABLED',
   [TrackingChecklistStepId.STANDABLE_INSTALLED]:
     'tracking_checklist-STANDABLE_INSTALLED',
+  [TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED]:
+    'tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED',
 };
 
 export type TrackingChecklistStepStatus =

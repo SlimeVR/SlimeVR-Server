@@ -49,7 +49,7 @@ data class BoneInput(
 	val offset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
-	val position: Vector3,
+	val position: Vector3?,
 	val isRotationActive: Boolean,
 	val isAccelerationActive: Boolean,
 	val isPositionActive: Boolean,
@@ -95,6 +95,7 @@ data class SkeletonState(
 	val floorLevel: Float,
 	val paused: Boolean,
 	val pausedProcessedBoneInputs: InputSkeleton?,
+	val processorResets: List<ResetType> = emptyList(),
 )
 
 val DEFAULT_BONE_INPUT = BoneInput(
@@ -103,7 +104,7 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	offset = Vector3.ZERO,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
-	position = Vector3.ZERO,
+	position = null,
 	isRotationActive = false,
 	isAccelerationActive = false,
 	isPositionActive = false,
@@ -128,7 +129,8 @@ val DEFAULT_SKELETON_STATE = run {
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
 	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
-	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) } ?: bone.position
+	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) }
+		?: bone.position ?: Vector3.ZERO
 	return BoneState(
 		parentBone = parentBone,
 		bodyPart = bone.bodyPart,
@@ -168,7 +170,10 @@ sealed interface SkeletonActions {
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
+	data object ResetHeadPosition : SkeletonActions
 	data object ResetFloorLevel : SkeletonActions
+	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
+	data class ProcessorResetsApplied(val count: Int) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -194,15 +199,10 @@ interface SkeletonTargetProcessor {
 class Skeleton(
 	val context: SkeletonContext,
 	val computed: MutableSharedFlow<ComputedSkeleton>,
-	private val resettableSkeletonProcessors: Set<ResettableSkeletonProcessor>,
 ) {
 	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
 
 	fun startObserving() = context.observeAll(this)
-
-	fun resetProcessors(resetType: ResetType) {
-		resettableSkeletonProcessors.forEach { it.reset(resetType) }
-	}
 
 	companion object {
 		const val DEFAULT_HZ = 500
@@ -210,17 +210,17 @@ class Skeleton(
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
 
-			val resettableSkeletonProcessors = mutableSetOf<ResettableSkeletonProcessor>()
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
+				LocalizerResetBehaviour(settings),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
 					inputProcessors = listOf(
-						PredictionInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
-						SmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						PredictionInputProcessor(settings),
+						SmoothingInputProcessor(settings),
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
 						SpineInputProcessor(settings),
@@ -235,19 +235,19 @@ class Skeleton(
 						ConstraintInputProcessor(settings),
 					),
 					fkComputedProcessors = listOf(
-						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
+						VelocityComputedProcessor(),
 					),
 					fkProcessors = listOf(
-						LocalizerFkProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						LocalizerFkProcessor(settings),
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
 						FloorClipTargetProcessor(settings),
-						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						SkatingCorrectionTargetProcessor(settings),
 					),
 					ikComputedProcessors = listOf(
-						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
+						VelocityComputedProcessor(),
 					),
 				),
 			)
@@ -266,7 +266,7 @@ class Skeleton(
 			)
 			computed.tryEmit(buildBones(context.state.value.boneInputs))
 
-			return Skeleton(context, computed, resettableSkeletonProcessors)
+			return Skeleton(context, computed)
 		}
 	}
 }

@@ -65,12 +65,26 @@ class VMCOutputBehaviour(
 			.map { it.data.vmcConfig }
 			.distinctUntilChanged()
 
-		combine(skeleton.computed, routedBones, config, ::Triple)
-			.onEach { (computedSkeleton, bones, vmcConfig) ->
-				sendFrame(receiver, runtime, computedSkeleton, bones, vmcConfig, startedAt)
+		val floorReference = skeleton.context.state
+			.map { it.skeletonHeight to it.floorLevel }
+			.distinctUntilChanged()
+
+		combine(skeleton.computed, routedBones, config, floorReference) { computedSkeleton, routedBoneSet, vmcConfig, floor ->
+			FrameInputs(computedSkeleton, routedBoneSet, vmcConfig, skeletonHeight = floor.first, floorLevel = floor.second)
+		}
+			.onEach { (computedSkeleton, routedBoneSet, vmcConfig, skeletonHeight, floorLevel) ->
+				sendFrame(receiver, runtime, computedSkeleton, routedBoneSet, vmcConfig, skeletonHeight, floorLevel, startedAt)
 			}
 			.launchIn(receiver.context.scope)
 	}
+
+	private data class FrameInputs(
+		val computedSkeleton: ComputedSkeleton,
+		val routedBones: Set<BodyPart>,
+		val config: VMCConfig,
+		val skeletonHeight: Float,
+		val floorLevel: Float,
+	)
 
 	private suspend fun applyTarget(
 		receiver: VMCManager,
@@ -133,13 +147,23 @@ class VMCOutputBehaviour(
 		bones: ComputedSkeleton,
 		routedBones: Set<BodyPart>,
 		config: VMCConfig,
+		skeletonHeight: Float,
+		floorLevel: Float,
 		startedAt: MonotonicValueTimeMark,
 	) {
 		val sender = runtime.sender ?: return
 		val status = receiver.context.state.value.status
 		if (runtime.sendFailing && runtime.nextFrameRetryAt?.hasPassedNow() == false) return
 
-		val bundle = buildOutgoingBundle(bones, routedBones, config, receiver.context.state.value.vrm, startedAt.elapsedNow())
+		val bundle = buildOutgoingBundle(
+			bones,
+			routedBones,
+			config,
+			receiver.context.state.value.vrm,
+			skeletonHeight,
+			floorLevel,
+			startedAt.elapsedNow(),
+		)
 
 		try {
 			sender.send(bundle)

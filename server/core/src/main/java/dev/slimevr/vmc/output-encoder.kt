@@ -17,6 +17,8 @@ internal fun buildOutgoingBundle(
 	routedBones: Set<BodyPart>,
 	config: VMCConfig,
 	vrm: VrmGeometry?,
+	skeletonHeight: Float,
+	floorLevel: Float,
 	elapsed: Duration,
 ): OscBundle {
 	val contents = buildList {
@@ -30,29 +32,20 @@ internal fun buildOutgoingBundle(
 			if (targetBodyPart !in routedBones) continue
 
 			val targetParentBodyPart = VMC_OUTPUT_BONE_PARENTS[targetBodyPart]
-			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
+			val trackingBodyPart = trackingBodyPart(targetBodyPart, config.mirrorTracking)
 			val trackingBone = bones[trackingBodyPart] ?: continue
 
 			if (targetParentBodyPart == null) {
-				// TODO anchorHip https://github.com/SlimeVR/SlimeVR-Server/blob/main/server/core/src/main/java/dev/slimevr/osc/VMCHandler.kt#L371
-				val pos = vrm?.hipLocalPosition ?: Vector3.ZERO
+				val pos = vmcHipPosition(bones, vrm, config, skeletonHeight, floorLevel)
 				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
 				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", unityNames.first(), pos, rot)))
 				continue
 			}
 
-			val trackingParentBodyPart = if (config.mirrorTracking) {
-				vmcMirrorSource(targetParentBodyPart)
-			} else {
-				targetParentBodyPart
-			}
+			val trackingParentBodyPart = trackingBodyPart(targetParentBodyPart, config.mirrorTracking)
 			val trackingParent = bones[trackingParentBodyPart] ?: continue
 
-			val pos = if (vrm != null) {
-				vrm.bindOffsets[targetBodyPart] ?: Vector3.ZERO
-			} else {
-				vmcLocalPosition(trackingBone, trackingParent, targetParentBodyPart, config.mirrorTracking)
-			}
+			val pos = emittedLocalPosition(targetBodyPart, targetParentBodyPart, trackingBone, trackingParent, vrm, config.mirrorTracking)
 			val rot = vmcLocalRotation(
 				trackingBone,
 				trackingParent,
@@ -70,6 +63,8 @@ internal fun buildOutgoingBundle(
 }
 
 internal fun buildInitRequestMessage(): OscMessage = OscMessage("/VMC/Ext/Req", emptyList())
+
+private fun trackingBodyPart(targetBodyPart: BodyPart, mirror: Boolean): BodyPart = if (mirror) vmcMirrorSource(targetBodyPart) else targetBodyPart
 
 private fun restAdjustedWorld(
 	bone: BoneState,
@@ -102,6 +97,56 @@ internal fun vmcLocalPosition(
 	val parentAdjusted = restAdjustedWorld(parent, restParentBodyPart, mirror)
 	val localPosition = bone.headPosition - parent.headPosition
 	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
+}
+
+private fun emittedLocalPosition(
+	targetBodyPart: BodyPart,
+	targetParentBodyPart: BodyPart,
+	trackingBone: BoneState,
+	trackingParent: BoneState,
+	vrm: VrmGeometry?,
+	mirror: Boolean,
+): Vector3 = if (vrm != null) {
+	vrm.bindOffsets[targetBodyPart] ?: Vector3.ZERO
+} else {
+	vmcLocalPosition(trackingBone, trackingParent, targetParentBodyPart, mirror)
+}
+
+private fun hipToNeckOffset(bones: ComputedSkeleton, vrm: VrmGeometry?, mirror: Boolean): Vector3? {
+	var parentBodyPart = BodyPart.HIP
+	var offset = Vector3.ZERO
+	for (bodyPart in VMC_HIP_TO_NECK_CHAIN) {
+		val trackingBone = bones[trackingBodyPart(bodyPart, mirror)] ?: return null
+		val trackingParent = bones[trackingBodyPart(parentBodyPart, mirror)] ?: return null
+		val localPosition = emittedLocalPosition(bodyPart, parentBodyPart, trackingBone, trackingParent, vrm, mirror)
+		val parentWorldRotation = restAdjustedWorld(trackingParent, parentBodyPart, mirror)
+		offset += parentWorldRotation.sandwich(localPosition)
+		parentBodyPart = bodyPart
+	}
+	return offset
+}
+
+// Hip height above the floor at rest, used when anchored with no VRM loaded
+private fun restHipHeight(bones: ComputedSkeleton, skeletonHeight: Float): Float = skeletonHeight +
+	SPINE_CHAIN_ABOVE_HIP.sumOf { (bones[it]?.offset?.y ?: 0f).toDouble() }.toFloat()
+
+private fun vmcHipPosition(
+	bones: ComputedSkeleton,
+	vrm: VrmGeometry?,
+	config: VMCConfig,
+	skeletonHeight: Float,
+	floorLevel: Float,
+): Vector3 {
+	val anchoredHipPosition = vrm?.hipLocalPosition ?: Vector3(0f, restHipHeight(bones, skeletonHeight), 0f)
+	if (config.anchorAtHips) return anchoredHipPosition
+
+	val neck = bones[BodyPart.NECK] ?: return anchoredHipPosition
+	val neckOffset = hipToNeckOffset(bones, vrm, config.mirrorTracking) ?: return anchoredHipPosition
+
+	val restHeight = vrm?.outputRestHeight ?: skeletonHeight
+	val scale = if (skeletonHeight != 0f) restHeight / skeletonHeight else 1f
+	val floorRelativeNeck = (neck.headPosition - Vector3(0f, floorLevel, 0f)) * scale
+	return floorRelativeNeck - neckOffset
 }
 
 private fun transformMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(

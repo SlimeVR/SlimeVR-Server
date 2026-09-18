@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.MonotonicValueTimeMark
@@ -36,7 +37,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
 					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
-					receiver.resetProcessors(ResetType.FULL)
+					receiver.context.dispatch(SkeletonActions.RequestProcessorReset(ResetType.FULL))
 				}
 			}
 			.launchIn(receiver.context.scope)
@@ -51,6 +52,17 @@ class HeightLogBehaviour : SkeletonBehaviour {
 				.map { it.skeletonHeight }
 				.collect { height -> AppLogger.skeleton.info("User height changed: ${"%.2f".format(height)}m") }
 		}
+	}
+}
+
+/**
+ * Handles resetting the head position whenever mocap mode gets disabled
+ */
+class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
+	override fun observe(receiver: Skeleton) {
+		settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
+			if (!it.data.skeletonConfig.toggles.mocapMode) receiver.context.dispatch(SkeletonActions.ResetHeadPosition)
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -202,6 +214,10 @@ class ComputedSkeletonBehaviour(
 		}.asCoroutineDispatcher()
 		receiver.context.scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
 
+		val resettableProcessors = (inputProcessors + fkComputedProcessors + fkProcessors + targetProcessors + ikComputedProcessors)
+			.filterIsInstance<ResettableSkeletonProcessor>()
+			.distinct()
+
 		var nextTick = timeSource.markNow()
 		val fkChangedParts = mutableSetOf<BodyPart>()
 		val timings = TickTimings(hz, 10.seconds, intervalDuration)
@@ -215,14 +231,21 @@ class ComputedSkeletonBehaviour(
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
 
+						val pendingResets = targetState.processorResets
+						if (pendingResets.isNotEmpty()) {
+							for (resetType in pendingResets.distinct()) {
+								for (processor in resettableProcessors) processor.reset(resetType)
+							}
+							receiver.context.dispatch(SkeletonActions.ProcessorResetsApplied(pendingResets.size))
+						}
+
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
 							// TODO improve pause tracking code, maybe using a processor
 							// Use already-processed paused tracking data except for the head
 							val headBone = targetState.boneInputs[BodyPart.HEAD]
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]!!.position) }
+							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
 						} else {
 							// Run pre-FK processors
-							// TODO: Add a constrain processor (maybe not needed)
 							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs
@@ -249,9 +272,13 @@ class ComputedSkeletonBehaviour(
 							fkChangedParts.clear()
 							boneInputs.forEachBone { bodyPart, boneInput ->
 								val previous = beforeFk[bodyPart]
-								if (boneInput != previous) {
-									fkChangedParts.add(bodyPart)
-									beforeFk[bodyPart] = boneInput
+								if (boneInput == previous) return@forEachBone
+								fkChangedParts.add(bodyPart)
+								beforeFk[bodyPart] = boneInput
+
+								// For changed bones with inactive positions, update their input's position in state (needed for Localizer)
+								if (!boneInput.isPositionActive && boneInput.position != previous?.position) {
+									receiver.context.dispatch(SkeletonActions.SetBonePosition(bodyPart, boneInput.position, false))
 								}
 							}
 							// Inputs changed; re-run FK

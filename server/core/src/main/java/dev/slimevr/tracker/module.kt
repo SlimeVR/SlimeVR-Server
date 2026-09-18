@@ -28,6 +28,7 @@ import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.TrackerDataType
+import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 
 // A tracker is initialized as ROTATING to prevent TapDetection and Stay Aligned from running immediately.
@@ -85,6 +86,7 @@ data class TrackerState(
 	val motion: Motion,
 	val yawResetSmoothing: YawResetSmoothing?,
 	val stayAlignedData: StayAlignedData,
+	val pendingSkeletonResets: List<ResetType> = emptyList(),
 )
 
 fun List<TrackerState>.getFirstActiveFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull { it.bodyPart == bodyPart && it.status.isActive() }
@@ -104,6 +106,7 @@ sealed interface TrackerActions {
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
+	data class ClearPendingSkeletonResets(val count: Int) : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
 	data class SetStayAlignedEnabled(val enabled: Boolean) : TrackerActions

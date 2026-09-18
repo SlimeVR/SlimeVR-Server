@@ -15,6 +15,7 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
+import kotlin.math.floor
 
 data class LockState(
 	val locked: Boolean,
@@ -28,12 +29,11 @@ const val FOOT_ACCELERATION_SENSITIVITY = 1f
 
 const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
 
-// All squared for performance
-const val SKATING_DISTANCE_THRESHOLD = 0.25f
-const val SKATING_LINEAR_VELOCITY_THRESHOLD = 5.76f
-const val SKATING_ANGULAR_VELOCITY_THRESHOLD = 20.25f
-const val SKATING_VELOCITY_THRESHOLD = 5.76f
-const val SKATING_ACCELERATION_THRESHOLD = 0.49f
+const val SKATING_DISTANCE_THRESHOLD_SQ = 0.25f
+const val SKATING_LINEAR_VELOCITY_THRESHOLD_SQ = 5.76f
+const val SKATING_ANGULAR_VELOCITY_THRESHOLD_SQ = 20.25f
+const val SKATING_VELOCITY_THRESHOLD_SQ = 5.76f
+const val SKATING_ACCELERATION_THRESHOLD_SQ = 0.49f
 
 const val FLOOR_CALIBRATION_OFFSET = 0.0025f
 const val FLOOR_DISTANCE_THRESHOLD = 0.065f
@@ -45,13 +45,18 @@ fun shouldLock(
 	lastPosition: Vector3,
 	acceleration: Vector3,
 	velocity: Velocity,
-	thresholdMultiplier: Float,
-	floorLevel: Float,
-): Boolean = ((position - lastPosition).let { Vector3(it.x, 0f, it.z) }.lenSq() <= SKATING_DISTANCE_THRESHOLD * thresholdMultiplier) &&
-	(velocity.linear.lenSq() <= SKATING_LINEAR_VELOCITY_THRESHOLD * thresholdMultiplier) &&
-	(velocity.angular.lenSq() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier) &&
-	(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
-	(acceleration.lenSq() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
+	wasLocked: Boolean,
+	floorLevel: Float = 0f,
+	correctionStrength: Float = 1f,
+): Boolean {
+	val thresholdMultiplier = (if (wasLocked) 1f else SKATING_LOCK_ENGAGE_PERCENT) * (correctionStrength * 0.5f + 0.5f)
+	val floorLevel = floorLevel + FLOOR_CALIBRATION_OFFSET
+	return ((position - lastPosition).let { Vector3(it.x, 0f, it.z) }.lenSq() <= SKATING_DISTANCE_THRESHOLD_SQ) &&
+		(velocity.linear.lenSq() <= SKATING_LINEAR_VELOCITY_THRESHOLD_SQ * thresholdMultiplier) &&
+		(velocity.angular.lenSq() <= SKATING_ANGULAR_VELOCITY_THRESHOLD_SQ * thresholdMultiplier) &&
+		(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
+		(acceleration.lenSq() <= SKATING_ACCELERATION_THRESHOLD_SQ * thresholdMultiplier * correctionStrength)
+}
 
 fun computeLockState(
 	wasLocked: Boolean,
@@ -109,8 +114,9 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) :
 				lastLockedPositions[bodyPart] ?: curPosition,
 				curBone.acceleration,
 				curBone.velocity,
-				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
-				floorLevel + FLOOR_CALIBRATION_OFFSET,
+				wasLocked,
+				floorLevel,
+				correctionStrength,
 			)
 
 			val activeState = computeLockState(

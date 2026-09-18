@@ -63,6 +63,9 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	setupDesktopLogging()
 	installUncaughtExceptionReporting()
 
+	val version = GIT_VERSION_TAG.ifBlank { GIT_COMMIT_HASH } + if (!GIT_CLEAN) "-dirty" else ""
+	AppLogger.logging.info("Starting SlimeVR Server $version (commit $GIT_COMMIT_HASH)")
+
 	// Electron (and Ctrl+C) terminate us with SIGTERM, which the JVM turns into a plain
 	// process halt once every registered shutdown hook thread finishes. Without this hook,
 	// awaitCancellation() below is never unblocked and the `finally { appContext.dispose() }`

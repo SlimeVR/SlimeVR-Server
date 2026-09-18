@@ -8,9 +8,8 @@ import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.targetprocessors.FLOOR_CALIBRATION_OFFSET
-import dev.slimevr.skeleton.targetprocessors.SKATING_ACCELERATION_THRESHOLD
-import dev.slimevr.skeleton.targetprocessors.SKATING_LOCK_ENGAGE_PERCENT
-import dev.slimevr.skeleton.targetprocessors.SKATING_VELOCITY_THRESHOLD
+import dev.slimevr.skeleton.targetprocessors.SKATING_ACCELERATION_THRESHOLD_SQ
+import dev.slimevr.skeleton.targetprocessors.SKATING_VELOCITY_THRESHOLD_SQ
 import dev.slimevr.skeleton.targetprocessors.shouldLock
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.inFloatingSeconds
@@ -24,9 +23,8 @@ import kotlin.time.Duration.Companion.seconds
 
 private const val MAX_FOOT_PERCENTAGE = 50.0f
 private const val MAX_ACCEL_UP = 2.0f
-private const val SITTING_KNEE_THRESHOLD = 1.1f
+private const val SITTING_KNEE_THRESHOLD = -0.1f
 private const val CONSTANT_ACCELERATION: Float = 2.0f
-private val WARMUP_DELAY = 160.milliseconds
 private val SITTING_THRESHOLD = 1.6.seconds
 private val VELOCITY_SAMPLE_RATE = 16.milliseconds
 
@@ -38,18 +36,15 @@ enum class FollowSource {
 
 // Returns true if the user is likely sitting
 private fun isUserSitting(fk: ComputedSkeleton): Boolean {
-	// based on the waist to knee vector decide if the user is sitting or
-	// standing (ie, if the user is sitting the vector will be pointing off
-	// to the side for both feet)
-	var leftKnee: Vector3 = fk[BodyPart.LEFT_UPPER_LEG]?.tailPosition ?: return false
-	var rightKnee: Vector3 = fk[BodyPart.RIGHT_UPPER_LEG]?.tailPosition ?: return false
-	val hip: Vector3 = fk[BodyPart.HIP]?.tailPosition ?: return false
-	leftKnee = hip - leftKnee
-	rightKnee = hip - rightKnee
+	// Using the local knee positions, decide if the user is sitting or
+	// standing (if the user is sitting the vector will be pointing off
+	// to the side for both knees)
+	val leftKnee = fk[BodyPart.LEFT_UPPER_LEG] ?: return false
+	val rightKnee = fk[BodyPart.RIGHT_UPPER_LEG] ?: return false
 
 	// if the y component of the vectors is small then the user is probably sitting
-	val sittingLeft = leftKnee.y * SITTING_KNEE_THRESHOLD < leftKnee.x + leftKnee.z
-	val sittingRight = rightKnee.y * SITTING_KNEE_THRESHOLD < rightKnee.x + rightKnee.z
+	val sittingLeft = leftKnee.localTailPosition.y / leftKnee.offset.len() > SITTING_KNEE_THRESHOLD
+	val sittingRight = rightKnee.localTailPosition.y / rightKnee.offset.len() > SITTING_KNEE_THRESHOLD
 
 	return sittingLeft && sittingRight
 }
@@ -58,7 +53,10 @@ private fun isUserSitting(fk: ComputedSkeleton): Boolean {
 private fun isFootOnGround(fk: ComputedSkeleton): Boolean {
 	val leftFoot = fk[BodyPart.LEFT_FOOT] ?: return false
 	val rightFoot = fk[BodyPart.RIGHT_FOOT] ?: return false
-	return leftFoot.tailPosition.y <= 0f || rightFoot.tailPosition.y <= 0f
+	return leftFoot.headPosition.y <= 0f ||
+		rightFoot.headPosition.y <= 0f ||
+		leftFoot.tailPosition.y <= 0f ||
+		rightFoot.tailPosition.y <= 0f
 }
 
 private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSitting(fk)) {
@@ -87,13 +85,24 @@ object FootLocalizer {
 		NONE,
 	}
 
-	private fun isFootLocked(bone: BoneState, lastPlantedFoot: PlantedFoot) = shouldLock(
+	fun getCurrentFootPosition(fk: ComputedSkeleton, plantedFoot: PlantedFoot) = when (plantedFoot) {
+		PlantedFoot.LEFT -> fk[BodyPart.LEFT_FOOT]?.tailPosition
+		PlantedFoot.RIGHT -> fk[BodyPart.RIGHT_FOOT]?.tailPosition
+		else -> null
+	}
+
+	private fun whichPlantedFoot(bodyPart: BodyPart) = when (bodyPart) {
+		BodyPart.LEFT_LOWER_LEG, BodyPart.LEFT_FOOT -> PlantedFoot.LEFT
+		BodyPart.RIGHT_LOWER_LEG, BodyPart.RIGHT_FOOT -> PlantedFoot.RIGHT
+		else -> PlantedFoot.NONE
+	}
+
+	private fun isFootLocked(bone: BoneState, lastPlantedFoot: PlantedFoot): Boolean = shouldLock(
 		bone.tailPosition,
 		bone.tailPosition,
 		bone.acceleration,
 		bone.velocity,
-		if (lastPlantedFoot == PlantedFoot.LEFT) SKATING_LOCK_ENGAGE_PERCENT else 1f,
-		0f,
+		lastPlantedFoot == whichPlantedFoot(bone.bodyPart),
 	)
 
 	/**
@@ -101,30 +110,30 @@ object FootLocalizer {
 	 * the scaled thresholds for velocity and acceleration
 	 */
 	private fun velocityAccelRatio(bone: BoneState): Float {
-		val velocityPercentage = bone.velocity.linear.lenSq() / SKATING_VELOCITY_THRESHOLD
-		val accelerationPercentage = bone.acceleration.lenSq() / SKATING_ACCELERATION_THRESHOLD
+		val velocityPercentage = bone.velocity.linear.lenSq() / SKATING_VELOCITY_THRESHOLD_SQ
+		val accelerationPercentage = bone.acceleration.lenSq() / SKATING_ACCELERATION_THRESHOLD_SQ
 		return (velocityPercentage + accelerationPercentage) / 2f
 	}
 
 	fun getPlantedFoot(fk: ComputedSkeleton, lastPlantedFoot: PlantedFoot): PlantedFoot {
-		val leftFoot = fk[BodyPart.LEFT_FOOT] ?: return PlantedFoot.NONE
-		val rightFoot = fk[BodyPart.RIGHT_FOOT] ?: return PlantedFoot.NONE
+		val leftLowerLeg = fk[BodyPart.LEFT_LOWER_LEG] ?: return PlantedFoot.NONE
+		val rightLowerLeg = fk[BodyPart.RIGHT_LOWER_LEG] ?: return PlantedFoot.NONE
 
-		// If foot is locked, use that
-		if (isFootLocked(leftFoot, lastPlantedFoot)) return PlantedFoot.LEFT
-		if (isFootLocked(rightFoot, lastPlantedFoot)) return PlantedFoot.RIGHT
+		// If foot is locked, use that TODO should maybe not use that and just check y position instead
+//		if (isFootLocked(leftLowerLeg, lastPlantedFoot)) return PlantedFoot.LEFT
+//		if (isFootLocked(rightLowerLeg, lastPlantedFoot)) return PlantedFoot.RIGHT
 
 		// Else, use velocity and accel to pick the foot who moves the least
-		val leftVelocityAccelRatio = velocityAccelRatio(leftFoot)
-		val rightVelocityAccelRatio = velocityAccelRatio(rightFoot)
+		val leftVelocityAccelRatio = velocityAccelRatio(leftLowerLeg)
+		val rightVelocityAccelRatio = velocityAccelRatio(rightLowerLeg)
 		return if (leftVelocityAccelRatio < rightVelocityAccelRatio &&
 			leftVelocityAccelRatio < MAX_FOOT_PERCENTAGE &&
-			leftFoot.acceleration.y < MAX_ACCEL_UP
+			leftLowerLeg.acceleration.y < MAX_ACCEL_UP
 		) {
 			PlantedFoot.LEFT
 		} else if (rightVelocityAccelRatio < leftVelocityAccelRatio &&
 			rightVelocityAccelRatio < MAX_FOOT_PERCENTAGE &&
-			rightFoot.acceleration.y < MAX_ACCEL_UP
+			rightLowerLeg.acceleration.y < MAX_ACCEL_UP
 		) {
 			PlantedFoot.RIGHT
 		} else {
@@ -132,18 +141,12 @@ object FootLocalizer {
 		}
 	}
 
-	fun getCurrentFootPosition(fk: ComputedSkeleton, plantedFoot: PlantedFoot) = when (plantedFoot) {
-		PlantedFoot.LEFT -> fk[BodyPart.LEFT_FOOT]
-		PlantedFoot.RIGHT -> fk[BodyPart.RIGHT_FOOT]
-		else -> null
-	}?.tailPosition ?: Vector3.ZERO
-
-	fun computeFootTravel(currentFoot: Vector3, targetFoot: Vector3) = currentFoot - targetFoot
+	fun computeFootTravel(currentFoot: Vector3, targetFoot: Vector3) = targetFoot - currentFoot
 }
 
 object HipLocalizer {
-	fun getAdjustedTargetHip(inputs: InputSkeleton, fk: ComputedSkeleton, targetHip: Vector3): Vector3 {
-		getLowestBone(inputs, fk)?.let {
+	fun computeAdjustedTargetHip(targetHip: Vector3, lowestBone: BoneState?): Vector3 {
+		lowestBone?.let {
 			if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
 				return Vector3(targetHip.x, targetHip.y + (FLOOR_CALIBRATION_OFFSET - it.tailPosition.y), targetHip.z)
 			}
@@ -151,14 +154,14 @@ object HipLocalizer {
 		return targetHip
 	}
 
-	fun computeSittingTravel(hip: Vector3, targetHip: Vector3) = hip - targetHip
+	fun computeSittingTravel(hip: Vector3, targetHip: Vector3) = targetHip - hip
 }
 
 object COMLocalizer {
 	private val TORSO_TRACKERS = setOf(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST, BodyPart.HIP)
 
 	/** Get the average accel of the torso bones */
-	fun getTorsoAccel(inputs: InputSkeleton): Vector3 {
+	fun computeTorsoAccel(inputs: InputSkeleton): Vector3 {
 		var i = 0f
 		return TORSO_TRACKERS.fold(Vector3.ZERO) { acc, part ->
 			inputs[part]?.let {
@@ -173,14 +176,14 @@ object COMLocalizer {
 	}
 
 	/** Get the velocity of the COM */
-	fun getCOMVelocity(currentCOM: Vector3, previousCOMs: List<Pair<MonotonicValueTimeMark, Vector3>>, lastCOMVelocity: Vector3, currentTime: MonotonicValueTimeMark, comAccel: Vector3, deltaTime: Duration): Vector3 {
+	fun computeCOMVelocity(currentCOM: Vector3, previousCOMs: List<Pair<MonotonicValueTimeMark, Vector3>>, lastCOMVelocity: Vector3, currentTime: MonotonicValueTimeMark, comAccel: Vector3, deltaTime: Duration): Vector3 {
 		// Calculate the velocity
 		val sampleTimeTarget = currentTime - VELOCITY_SAMPLE_RATE
 		val previousCOM = previousCOMs.firstOrNull { it.first <= sampleTimeTarget } ?: return Vector3.ZERO
 		val comVelocity = (previousCOM.second - currentCOM) / ((previousCOM.first - currentTime).inFloatingSeconds)
 
 		// Constantly pull the skeleton down a little to account for acceleration inaccuracy
-		val gravity = (comAccel.y - CONSTANT_ACCELERATION) / deltaTime.inFloatingSeconds
+		val gravity = (comAccel.y - CONSTANT_ACCELERATION) * deltaTime.inFloatingSeconds
 
 		// Add the acceleration of gravity
 		return Vector3(
@@ -190,27 +193,32 @@ object COMLocalizer {
 		)
 	}
 
-	fun getTargetCOM(inputs: InputSkeleton, fk: ComputedSkeleton, targetCOM: Vector3, comVelocity: Vector3, deltaTime: Duration): Vector3 {
-		val currentCOM = targetCOM + (comVelocity / deltaTime.inFloatingSeconds)
+	fun computeTargetCOM(targetCOM: Vector3, comVelocity: Vector3, deltaTime: Duration) = targetCOM + (comVelocity * deltaTime.inFloatingSeconds)
 
-		// Update the target COM and velocity to reflect this new distance
-		getLowestBone(inputs, fk)?.let {
-			if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
-				return Vector3(currentCOM.x, currentCOM.y + (FLOOR_CALIBRATION_OFFSET - it.tailPosition.y), currentCOM.z)
-			}
+	fun floorAdjustTargetCOM(targetCOM: Vector3, lowestBone: BoneState?) = lowestBone?.let {
+		if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
+			Vector3(targetCOM.x, targetCOM.y + (FLOOR_CALIBRATION_OFFSET - it.tailPosition.y), targetCOM.z)
+		} else {
+			targetCOM
 		}
-		return currentCOM
-	}
+	} ?: targetCOM
 
-	fun computeCOMTravel(currentCOM: Vector3, targetCOM: Vector3) = currentCOM - targetCOM
+	fun floorAdjustCOMVelocity(comVelocity: Vector3, lowestBone: BoneState?) = lowestBone?.let {
+		if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
+			Vector3(comVelocity.x, 0f, comVelocity.z)
+		} else {
+			comVelocity
+		}
+	} ?: comVelocity
+
+	fun computeCOMTravel(currentCOM: Vector3, targetCOM: Vector3) = targetCOM - currentCOM
 }
 
 class LocalizerFkProcessor(val settings: Settings) :
 	SkeletonFkProcessor,
 	ResettableSkeletonProcessor {
-	private var lastHeadPosition: Vector3? = null
-	private var plantedFoot = FootLocalizer.PlantedFoot.NONE
-	private var targetFoot = Vector3.ZERO
+	private var lastPlantedFoot = FootLocalizer.PlantedFoot.NONE
+	private var targetFoot: Vector3? = null
 
 	private var sittingTime = Duration.ZERO
 	private var targetHip = Vector3.ZERO
@@ -230,6 +238,8 @@ class LocalizerFkProcessor(val settings: Settings) :
 		val deltaTime = now - lastProcessTime
 		lastProcessTime = now
 
+		val lowestBone = getLowestBone(mutableInputSkeleton, fk)
+
 		// Only follow the hip if the user's been sitting for enough time, else follow the foot
 		val followSource = getSourceToFollow(fk).let {
 			if (it == FollowSource.HIP) {
@@ -245,69 +255,78 @@ class LocalizerFkProcessor(val settings: Settings) :
 			}
 		}
 
+		// Get current foot info and update target foot if planted foot changed
+		val currentPlantedFoot = FootLocalizer.getPlantedFoot(fk, lastPlantedFoot)
+		val currentFoot = FootLocalizer.getCurrentFootPosition(fk, currentPlantedFoot)
+		// Target planted foot changed, reset target to current
+		if (currentPlantedFoot != lastPlantedFoot) targetFoot = currentFoot
+
 		// Compute comVelocity and targetCom
 		val currentCom = centreOfMass(fk)
 		if (followSource != FollowSource.COM) targetCOM = currentCom
-		val comAccel = COMLocalizer.getTorsoAccel(mutableInputSkeleton)
-		comVelocity = COMLocalizer.getCOMVelocity(currentCom, previousCOMs, comVelocity, now, comAccel, deltaTime)
-		targetCOM = COMLocalizer.getTargetCOM(mutableInputSkeleton, fk, targetCOM, comVelocity, deltaTime)
 		previousCOMs.add(now to centreOfMass(fk))
 
+		// Compute COM stuff
+		val comAccel = COMLocalizer.computeTorsoAccel(mutableInputSkeleton)
+		comVelocity = COMLocalizer.computeCOMVelocity(currentCom, previousCOMs, comVelocity, now, comAccel, deltaTime)
+		targetCOM = COMLocalizer.computeTargetCOM(targetCOM, comVelocity, deltaTime)
+		targetCOM = COMLocalizer.floorAdjustTargetCOM(targetCOM, lowestBone)
+		comVelocity = COMLocalizer.floorAdjustCOMVelocity(comVelocity, lowestBone)
+
+		// Get current hip position
 		val currentHip = fk[BodyPart.HIP]?.tailPosition ?: Vector3.ZERO
 
 		val travel = when (followSource) {
 			FollowSource.FOOT -> {
 				// Set the hip target to the current hip
 				targetHip = currentHip
+
 				// Get foot travel
-				plantedFoot = FootLocalizer.getPlantedFoot(fk, plantedFoot)
-				val footTravel = if (plantedFoot == FootLocalizer.PlantedFoot.NONE) {
-					targetFoot = Vector3.ZERO
-					Vector3.ZERO
-				} else {
-					val currentFoot = FootLocalizer.getCurrentFootPosition(fk, plantedFoot)
-					val travel = FootLocalizer.computeFootTravel(currentFoot, targetFoot)
-					targetFoot = currentFoot
-					travel
-				}
+				val footTravel = currentFoot?.let { current ->
+					targetFoot?.let { target ->
+						FootLocalizer.computeFootTravel(current, target)
+					}
+				} ?: Vector3.ZERO
 
 				// Get COM travel
-				val comTravel = COMLocalizer.computeCOMTravel(targetCOM, targetCOM)
+				val comTravel = COMLocalizer.computeCOMTravel(currentCom, targetCOM)
+
 				// Return horizontal foot travel and vertical COM travel
 				Vector3(footTravel.x, comTravel.y, footTravel.z)
-
-// 				Vector3.ZERO // TODO
 			}
 
 			FollowSource.COM -> {
 				// Set the hip target to the current hip
 				targetHip = currentHip
-				// Return COM travel
-				COMLocalizer.computeCOMTravel(targetCOM, targetCOM)
 
-// 				Vector3.ZERO // TODO
+				// Set target foot
+				targetFoot = currentFoot
+
+				// Return COM travel
+				COMLocalizer.computeCOMTravel(currentCom, targetCOM)
 			}
 
 			FollowSource.HIP -> {
 				// Adjust the target hip
-				targetHip = HipLocalizer.getAdjustedTargetHip(mutableInputSkeleton, fk, targetHip)
+				targetHip = HipLocalizer.computeAdjustedTargetHip(targetHip, lowestBone)
+
 				// Return the sitting travel
 				HipLocalizer.computeSittingTravel(currentHip, targetHip)
-
-// 				Vector3.ZERO // TODO
 			}
 		}
 
-		val newHeadPosition = (lastHeadPosition ?: headInput.position) + travel
+		// Set last foot info for next frame
+		lastPlantedFoot = currentPlantedFoot
+
+		// Update head position from travel
+		val newHeadPosition = (headInput.position ?: Vector3.ZERO) + travel
 		mutableInputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
-		lastHeadPosition = newHeadPosition
 	}
 
 	override fun reset(resetType: ResetType) {
 		if (resetType == ResetType.FULL) {
-			lastHeadPosition = null
-			plantedFoot = FootLocalizer.PlantedFoot.NONE
-			targetFoot = Vector3.ZERO
+			lastPlantedFoot = FootLocalizer.PlantedFoot.NONE
+			targetFoot = null
 			sittingTime = Duration.ZERO
 			targetHip = Vector3.ZERO
 			previousCOMs.clear()
