@@ -69,6 +69,28 @@ class HIDCommon {
 			deviceList: MutableList<Int>,
 		): HIDDevice? {
 			synchronized(hidDevices) {
+				// Registration (packet 255) carries the stable MAC. After a hub reboot, BLE
+				// slots are reassigned, so match by MAC first and rebind hidId.
+				if (deviceName != null) {
+					val byMac = deviceList.map { hidDevices[it] }.find {
+						it.name == deviceName || it.hardwareIdentifier == deviceName
+					}
+					if (byMac != null) {
+						if (byMac.hidId != deviceId) {
+							for (other in deviceList.map { hidDevices[it] }) {
+								if (other !== byMac && other.hidId == deviceId) {
+									other.hidId = -1
+								}
+							}
+							LogManager.info(
+								"[TrackerServer] Rebound device $deviceName to id $deviceId (was ${byMac.hidId}) for ${hidSerialNumber ?: "Unknown HID Device"}",
+							)
+							byMac.hidId = deviceId
+						}
+						return byMac
+					}
+				}
+
 				deviceList.map { hidDevices[it] }.find { it.hidId == deviceId }?.let { return it }
 				if (deviceName == null) { // not registered yet
 					return null
@@ -171,8 +193,8 @@ class HIDCommon {
 				return
 			}
 
-			if (tracker.status == TrackerStatus.TIMED_OUT) {
-				// If tracker was previously sleeping/shutdown, reset the sleep time and status
+			if (tracker.status == TrackerStatus.TIMED_OUT || tracker.status == TrackerStatus.DISCONNECTED) {
+				// Revive after sleep, USB reattach, or hub reboot once real packets arrive.
 				// If there is some other error, the relevant packet should set it a little later
 				tracker.setSleepTime(Long.MAX_VALUE)
 				tracker.status = TrackerStatus.OK

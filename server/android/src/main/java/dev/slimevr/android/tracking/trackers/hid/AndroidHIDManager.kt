@@ -75,8 +75,12 @@ class AndroidHIDManager(
 			synchronized(this.devices) {
 				for (id in it) {
 					val device = this.devices[id]
+					device.hidId = -1
 					for (value in device.trackers.values) {
-						if (value.status == TrackerStatus.DISCONNECTED) value.status = TrackerStatus.OK
+						if (value.status == TrackerStatus.OK || value.status == TrackerStatus.TIMED_OUT) {
+							value.status = TrackerStatus.DISCONNECTED
+						}
+						value.setSleepTime(Long.MAX_VALUE)
 					}
 				}
 			}
@@ -114,16 +118,17 @@ class AndroidHIDManager(
 			synchronized(this.devices) {
 				for (id in it) {
 					val device = this.devices[id]
+					device.hidId = -1
 					for (value in device.trackers.values) {
-						if (value.status == TrackerStatus.OK) {
-							value.status =
-								TrackerStatus.DISCONNECTED
+						if (value.status == TrackerStatus.OK || value.status == TrackerStatus.TIMED_OUT) {
+							value.status = TrackerStatus.DISCONNECTED
 						}
 					}
 				}
 			}
 
 			this.devicesByHID.remove(hidDevice)
+			this.lastDataByHID.remove(hidDevice)
 
 			val oldConn = this.connByHID.remove(hidDevice)
 			val serial = oldConn?.serialNumber ?: "Unknown"
