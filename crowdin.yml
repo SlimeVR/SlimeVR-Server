@@ -1,3 +1,16 @@
+# Crowdin Configuration File
+# https://developer.crowdin.com/configuration-file/
+
 files:
-  - source: gui/public/i18n/en/translation.ftl
-    translation: gui/public/i18n/%two_letters_code%/translation.ftl
+  - source: /gui/app/public/i18n/en/translation.ftl
+    translation: /gui/app/public/i18n/%locale%/%original_file_name%
+    languages_mapping:
+      locale:
+        zh-CN: zh-Hans
+        zh-TW: zh-Hant
+        nb: nb-NO
+        nb-NO: nb-NO
+        sv: sv-SE
+        sv-SE: sv-SE
+        en-OWO: en-x-owo
+        owo: en-x-owo

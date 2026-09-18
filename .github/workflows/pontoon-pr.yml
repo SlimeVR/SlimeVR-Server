@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - pontoon
+      - l10n_main
 jobs:
   pull_request:
     if: ${{ github.repository == 'SlimeVR/SlimeVR-Server' }}
@@ -18,4 +19,4 @@ jobs:
           GH_TOKEN: ${{ secrets.PONTOON_BOT_KEY }}
         run: |
           gh_pr_up() { gh pr create "$@" --label "Area: Translation" --base main || gh pr edit "$@"; }
-          gh_pr_up --title "New Pontoon translations" --body "Please don't squash me 🥺"
+          gh_pr_up --title "New translations" --body "Please don't squash me 🥺"
