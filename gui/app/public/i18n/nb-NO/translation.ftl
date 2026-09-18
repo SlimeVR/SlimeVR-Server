@@ -32,6 +32,19 @@ tips-failed_webgl = Feil ved initialisering av WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Lukk
+
 ## Body parts
 
 body_part-NONE = Ikke tildelt
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = Høyre lår
 body_part-RIGHT_LOWER_LEG = Høyre ankel
 body_part-RIGHT_FOOT = Høyre fot
 body_part-UPPER_CHEST = Øvre bryst
-body_part-CHEST = Bryst
-body_part-WAIST = Midje
 body_part-HIP = Hofte
 body_part-LEFT_SHOULDER = Venstre skulder
 body_part-LEFT_UPPER_ARM = Venstre overarm
@@ -69,15 +80,7 @@ body_part-LEFT_RING_PROXIMAL = Venstre innerste ring
 ## BoardType
 
 board_type-UNKNOWN = Ukjent
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Egendefinert brett
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-SLIMEVR = SlimeVR
-board_type-OWOTRACK = owoTrack
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 
 ## Proportions
 
@@ -85,8 +88,6 @@ skeleton_bone-NONE = Ingen
 skeleton_bone-HEAD = Hode bytte
 skeleton_bone-NECK = Halslengde
 skeleton_bone-torso_group = Torsolengde
-skeleton_bone-CHEST = Bryst-lengde
-skeleton_bone-WAIST = Midje-lengde
 skeleton_bone-HIP = Hofte-lengde
 skeleton_bone-HIPS_WIDTH = Hofte-bredde
 skeleton_bone-UPPER_LEG = Lår-lengde
@@ -105,16 +106,6 @@ reset-reset_all_warning-cancel = Avbryt
 reset-full = Nullstill
 reset-mounting = Nullstill montering
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Ny seriell enhet oppdaget!
-serial_detection-new_device-p1 = Tast inn din WiFi legitimasjon!
-serial_detection-new_device-p2 = Vennligst velg hva du vil gjøre med den
-serial_detection-open_wifi = Koble til Wi-Fi
-serial_detection-open_serial = Åpne seriell konsoll
-serial_detection-submit = Send inn!
-serial_detection-close = Lukk
-
 ## Navigation bar
 
 navbar-home = Hjem
@@ -131,11 +122,6 @@ bvh-recording = Spiller inn...
 
 ## Tracking pause
 
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
 
 ## Widget: Developer settings
 
@@ -143,18 +129,13 @@ widget-developer_mode = Utvikler modus
 widget-developer_mode-high_contrast = Høy kontrast
 widget-developer_mode-precise_rotation = Nøyaktig rotering
 widget-developer_mode-fast_data_feed = Rask data-feed
-widget-developer_mode-sort_by_name = Sorter etter navn
 widget-developer_mode-raw_slime_rotation = Rå rotering
-widget-developer_mode-more_info = Mer info
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotasjon
 widget-imu_visualizer-rotation_raw = Rå
 widget-imu_visualizer-rotation_preview = Forhåndsvisning
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -163,24 +144,17 @@ tracker-status-busy = Opptatt
 tracker-status-error = Feilmelding
 tracker-status-disconnected = Frakoblet
 tracker-status-occluded = Okkludert
-tracker-status-ok = OK
 
 ## Tracker status columns
 
 tracker-table-column-name = Navn
-tracker-table-column-type = Type
 tracker-table-column-battery = Batteri
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Aksel. X/Y/Z
 tracker-table-column-rotation = Rotasjon X/Y/Z
 tracker-table-column-position = Posisjon X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
-tracker-rotation-front = Front
 tracker-rotation-left = Venstre
 tracker-rotation-right = Høyre
 tracker-rotation-back = Bak
@@ -191,7 +165,6 @@ tracker-rotation-custom = Egendefinert
 tracker-infos-manufacturer = Produsent
 tracker-infos-display_name = Vis navn
 tracker-infos-custom_name = Tilpasset navn
-tracker-infos-url = Tracker URL
 
 ## Tracker settings
 
@@ -208,6 +181,12 @@ tracker-settings-mounting_section-edit = Endre montering
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Gi den et søtt kallenavn :)
 tracker-settings-name_section-placeholder = ~Thͭiͪaͥsͣˢ~ venstre ben
+tracker-settings-name_section-label = Tracker navn
+
+## Dongle settings
+
+dongle-status-disconnected = Frakoblet
+dongle-settings-back = Gå tilbake til tracker-liste
 
 ## Tracker part card info
 
@@ -222,6 +201,11 @@ body_assignment_menu-unassign_tracker = Fjern tracker-tildeling
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -239,9 +223,18 @@ mounting_selection_menu-close = Lukk
 
 settings-sidebar-title = Innstillinger
 settings-sidebar-general = Generelle
+settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Grensesnitt
 settings-sidebar-utils = Verktøy
 settings-sidebar-serial = Seriell konsoll
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Avslutt
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Aktiver
 
 ## Tracker mechanics
 
@@ -263,6 +256,13 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
     Kan deaktiveres per tracker i trackerens innstillinger. <b>Ikke slå av noen av trackerne mens du endrer denne innstillingen !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Bruk magnetometer på trackere
+settings-stay_aligned-general-label = Generelle
+settings-stay_aligned-relaxed_poses-close = Lukk
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Nullstill
+settings-keybinds-recorder-modal-cancel-button = Avslutt
 
 ## FK/Tracking settings
 
@@ -277,6 +277,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = Gulv-clip
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating korreksjon
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korreksjon styrke
+settings-general-fk_settings-arm_fk-back = Bak
 
 ## Gesture control settings (tracker tapping)
 
@@ -304,12 +305,11 @@ settings-general-interface-lang-placeholder = Velg språket du vil bruke
 
 ## Notification settings
 
-settings-general-interface-serial_detection = Seriell enhets gjenkjenning
-settings-general-interface-serial_detection-description = Dette valget viser en pop-up for hver gang du kobler til en ny seriell-enhet som kunne vært en sporer. Dette forbedrer sporerens konfigureringsprosess.
-settings-general-interface-serial_detection-label = Seriell enhets gjenkjenning
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Utvikler modus
+settings-general-interface-dev_mode-label = Utvikler modus
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
     
@@ -336,7 +336,8 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Jeg vet hva jeg driver med
 settings-serial-factory_reset-warning-cancel = Avslutt
 settings-serial-serial_select = Velg en serieport
-settings-serial-auto_dropdown_item = Auto
+settings-serial-send_command-warning-ok = Jeg vet hva jeg driver med
+settings-serial-send_command-warning-cancel = Avslutt
 
 ## OSC VRChat settings
 
@@ -354,34 +355,58 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Nettverksadresse
 settings-osc-vrchat-network-address-placeholder = VRChat ip adresse
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotasjon
+settings-osc-vrchat-status-badge-error = Feilmelding
+settings-osc-vrchat-status-badge-unknown = Ukjent
+
 ## VMC OSC settings
 
+settings-osc-vmc-enable = Aktiver
+settings-osc-vmc-enable-description = Skru av/på utsending og mottakelse av data.
+settings-osc-vmc-enable-label = Aktiver
+settings-osc-vmc-network = Nettverks-porter
+settings-osc-vmc-network-port_in =
+    .label = Port Inn
+    .placeholder = Port in (default: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Port Ut
+    .placeholder = Port out (default: 39539)
+settings-osc-vmc-network-address = Nettverksadresse
+settings-osc-vmc-network-address-placeholder = IPV4 adresse
+settings-osc-vmc-status-badge-error = Feilmelding
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-cancel = Avslutt
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
 
 onboarding-skip = Hopp over oppsett
 onboarding-continue = Fortsett
+onboarding-previous_step = Forrige steg
+onboarding-setup_warning-skip = Hopp over oppsett
 
 ## Quiz
 
+onboarding-quiz_continue = Fortsett
+onboarding-quiz_back = Bak
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Send inn!
+onboarding-wifi_creds-ssid-label = Wi-Fi navn
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi navn
     .placeholder = Tast inn navnet på ditt Wi-Fi nettverk
 onboarding-wifi_creds-password =
     .label = Passord
@@ -389,6 +414,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Lukk
 
 ## Setup start
 
@@ -399,7 +425,7 @@ onboarding-home-start = La oss sette i gang!
 
 onboarding-connect_tracker-title = Koble til trackere
 onboarding-connect_tracker-issue-serial = Jeg sliter med å koble til!
-onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-close = Lukk
 onboarding-connect_tracker-connection_status-connecting = Sender Wi-Fi legitimasjon
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
@@ -414,12 +440,6 @@ onboarding-connect_tracker-connected_trackers =
     }
 onboarding-connect_tracker-next = Jeg har tilkoblet alle mine trackere
 
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
-
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Tildel trackerne
@@ -432,8 +452,17 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } av 1 tracker tildelt
        *[other] { $assigned } av { $trackers } trackere tildelt
     }
+onboarding-assign_trackers-tap_modal-cancel = Avslutt
+onboarding-assign_trackers-side-right = Høyre
+onboarding-assign_trackers-side-left = Venstre
 
 ## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
+onboarding-choose_mounting-auto_mounting = Automatisk montering
+onboarding-choose_mounting-manual_mounting = Sett opp montering manuelt
 
 ## Tracker manual mounting setup
 
@@ -460,6 +489,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Ta på deg dine trackere
 onboarding-automatic_mounting-put_trackers_on-description = For å kalibrere monterings-rotasjonene, må vi bruke trackerne du akkurat tildelte. Ta på deg alle dine trackere, du kan se hvem som er hvem i figuren til høyre.
 onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
+## Tracker manual proportions setupa
+
+
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Gå tilbake til Nullstillings opplæring
@@ -472,7 +504,6 @@ onboarding-automatic_proportions-put_trackers_on-next = Jeg har alle mine tracke
 onboarding-automatic_proportions-start_recording-title = Gjør deg klar til å bevege deg
 onboarding-automatic_proportions-start_recording-description = Vi kommer nå til å spille inn noen spesifikke poseringer og bevegelser. Disse vil bli vist i den neste skjermen. Gjør deg klar til å starte når du trykker på knappen!
 onboarding-automatic_proportions-start_recording-next = Start Innspilling
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Innspilling pågår...
 onboarding-automatic_proportions-recording-description-p1 = Utfør bevegelsene vist nedenfor:
 onboarding-automatic_proportions-recording-processing = Jobber med resultatet
@@ -496,14 +527,23 @@ onboarding-automatic_proportions-done-description = Din kropps-proposisjons kali
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = Ta på deg alle dine trackere
+onboarding-stay_aligned-put_trackers_on-next = Jeg har alle mine trackere på
+onboarding-stay_aligned-verify_mounting-title = Monterings nullstilling
+onboarding-stay_aligned-preparation-title = Forberedning
+
+## Home
+
+home-settings-close = Lukk
+home-no_trackers-connect = Koble til trackere
+
 ## Trackers Still On notification
 
-
-## Status system
-
+trackers_still_on-modal-confirm = Avslutt SlimeVR
 
 ## Firmware tool globals
 
+firmware_tool-loading = Laster...
 
 ## Firmware tool Steps
 
@@ -526,9 +566,15 @@ tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
+vrc_config-spine_mode-UNKNOWN = Ukjent
+vrc_config-tracker_model-UNKNOWN = Ukjent
+vrc_config-avatar_measurement_type-UNKNOWN = Ukjent
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Lukk
+toolbar-mounting_calibration = Monterings nullstilling
+toolbar-mounting_calibration-feet = Føtter
