@@ -75,7 +75,7 @@ jobs:
       - name: Get tags
         run: git fetch --tags origin --recurse-submodules=no --force
       - name: Setup PNPM
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v6.0.9
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -143,7 +143,7 @@ jobs:
       - name: Get tags
         run: git fetch --tags origin --recurse-submodules=no --force
       - name: Setup PNPM
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v6.0.9
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -176,7 +176,7 @@ jobs:
       - name: Get tags
         run: git fetch --tags origin --recurse-submodules=no --force
       - name: Setup PNPM
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v6.0.9
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
