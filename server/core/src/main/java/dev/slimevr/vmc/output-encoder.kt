@@ -66,6 +66,55 @@ internal fun buildInitRequestMessage(): OscMessage = OscMessage("/VMC/Ext/Req", 
 
 private fun trackingBodyPart(targetBodyPart: BodyPart, mirror: Boolean): BodyPart = if (mirror) vmcMirrorSource(targetBodyPart) else targetBodyPart
 
+private fun vmcMirrorSource(bodyPart: BodyPart): BodyPart {
+	return when (bodyPart) {
+		BodyPart.HEAD -> return BodyPart.HEAD
+		BodyPart.NECK -> return BodyPart.NECK
+		BodyPart.UPPER_CHEST -> return BodyPart.UPPER_CHEST
+		BodyPart.LOWER_CHEST -> return BodyPart.LOWER_CHEST
+		BodyPart.UPPER_WAIST -> return BodyPart.UPPER_WAIST
+		BodyPart.LOWER_WAIST -> return BodyPart.LOWER_WAIST
+		BodyPart.HIP -> return BodyPart.HIP
+		BodyPart.LEFT_UPPER_LEG -> BodyPart.RIGHT_UPPER_LEG
+		BodyPart.RIGHT_UPPER_LEG -> BodyPart.LEFT_UPPER_LEG
+		BodyPart.LEFT_LOWER_LEG -> BodyPart.RIGHT_LOWER_LEG
+		BodyPart.RIGHT_LOWER_LEG -> BodyPart.LEFT_LOWER_LEG
+		BodyPart.LEFT_FOOT -> BodyPart.RIGHT_FOOT
+		BodyPart.RIGHT_FOOT -> BodyPart.LEFT_FOOT
+		BodyPart.LEFT_UPPER_ARM -> BodyPart.RIGHT_UPPER_ARM
+		BodyPart.RIGHT_UPPER_ARM -> BodyPart.LEFT_UPPER_ARM
+		BodyPart.LEFT_LOWER_ARM -> BodyPart.RIGHT_LOWER_ARM
+		BodyPart.RIGHT_LOWER_ARM -> BodyPart.LEFT_LOWER_ARM
+		BodyPart.LEFT_HAND -> BodyPart.RIGHT_HAND
+		BodyPart.RIGHT_HAND -> BodyPart.LEFT_HAND
+		BodyPart.LEFT_SHOULDER -> BodyPart.RIGHT_SHOULDER
+		BodyPart.RIGHT_SHOULDER -> BodyPart.LEFT_SHOULDER
+		BodyPart.LEFT_THUMB_METACARPAL -> BodyPart.RIGHT_THUMB_METACARPAL
+		BodyPart.LEFT_THUMB_PROXIMAL -> BodyPart.RIGHT_THUMB_PROXIMAL
+		BodyPart.LEFT_THUMB_DISTAL -> BodyPart.RIGHT_THUMB_DISTAL
+		BodyPart.LEFT_INDEX_PROXIMAL -> BodyPart.RIGHT_INDEX_PROXIMAL
+		BodyPart.LEFT_INDEX_INTERMEDIATE -> BodyPart.RIGHT_INDEX_INTERMEDIATE
+		BodyPart.LEFT_INDEX_DISTAL -> BodyPart.RIGHT_INDEX_DISTAL
+		BodyPart.LEFT_MIDDLE_PROXIMAL -> BodyPart.RIGHT_MIDDLE_PROXIMAL
+		BodyPart.LEFT_MIDDLE_INTERMEDIATE -> BodyPart.RIGHT_MIDDLE_INTERMEDIATE
+		BodyPart.LEFT_MIDDLE_DISTAL -> BodyPart.RIGHT_MIDDLE_DISTAL
+		BodyPart.LEFT_RING_PROXIMAL -> BodyPart.RIGHT_RING_PROXIMAL
+		BodyPart.LEFT_RING_INTERMEDIATE -> BodyPart.RIGHT_RING_INTERMEDIATE
+		BodyPart.LEFT_RING_DISTAL -> BodyPart.RIGHT_RING_DISTAL
+		BodyPart.LEFT_LITTLE_PROXIMAL -> BodyPart.RIGHT_LITTLE_PROXIMAL
+		BodyPart.LEFT_LITTLE_INTERMEDIATE -> BodyPart.RIGHT_LITTLE_INTERMEDIATE
+		BodyPart.LEFT_LITTLE_DISTAL -> BodyPart.RIGHT_LITTLE_DISTAL
+		BodyPart.LEFT_BIG_TOE -> BodyPart.RIGHT_BIG_TOE
+		BodyPart.LEFT_INDEX_TOE -> BodyPart.RIGHT_INDEX_TOE
+		BodyPart.LEFT_MIDDLE_TOE -> BodyPart.RIGHT_MIDDLE_TOE
+		BodyPart.LEFT_RING_TOE -> BodyPart.RIGHT_RING_TOE
+		BodyPart.LEFT_LITTLE_TOE -> BodyPart.RIGHT_LITTLE_TOE
+		BodyPart.LEFT_BUST -> BodyPart.RIGHT_BUST
+		BodyPart.RIGHT_BUST -> BodyPart.LEFT_BUST
+		else -> bodyPart
+	}
+}
+
 private fun restAdjustedWorld(
 	bone: BoneState,
 	restBodyPart: BodyPart = bone.bodyPart,

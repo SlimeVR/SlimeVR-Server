@@ -231,7 +231,7 @@ class Skeleton(
 						ToeActiveLinkInputProcessor(),
 						BustInputProcessor(),
 						PosteriorDirectLinkInputProcessor(),
-						TailChainInputProcessor().also { resettableSkeletonProcessors.add(it) },
+						TailChainInputProcessor(),
 						ConstraintInputProcessor(settings),
 					),
 					fkComputedProcessors = listOf(
