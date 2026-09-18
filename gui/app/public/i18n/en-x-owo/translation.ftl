@@ -137,102 +137,421 @@ skeleton_bone-SHOULDERS_DISTANCE = shouwdews disyance
 skeleton_bone-SHOULDERS_WIDTH = shouwdews wiwdth
 skeleton_bone-arm_group = awm wength
 skeleton_bone-UPPER_ARM = uppew awm wength
+skeleton_bone-LOWER_ARM = wowwer awm wength
+skeleton_bone-HAND_Y = hawnd disance y
+skeleton_bone-HAND_Z = hawnd disance z
 
 ## Tracker reset buttons
 
+reset-reset_all = weset aww pwopowtions~
+reset-reset_all_warning-reset = weset pwopawshuns
+reset-reset_all_warning-cancel = cancew
+reset-full = fuww weset~
+reset-mounting = meownting weset
+reset-yaw = yaw weset
 
 ## Navigation bar
 
+navbar-home = howme
+navbar-body_proportions = body pwopowshons
+navbar-trackers_assign = twackaws assigwment
+navbar-mounting = meownting weset
+navbar-onboarding = suwep wisawd
+navbar-settings = settyings~
 
 ## Biovision hierarchy recording
 
+bvh-start_recording = wecowd bvh
+bvh-recording = wecowding...
 
 ## Tracking pause
 
+tracking-unpaused = pauws twacking
+tracking-paused = unpauws twacking
 
 ## Widget: Developer settings
 
+widget-developer_mode = devwowwewow mode
+widget-developer_mode-high_contrast = high contwast
+widget-developer_mode-precise_rotation = pwecise wotation
+widget-developer_mode-fast_data_feed = fast data feed
+widget-developer_mode-raw_slime_rotation = waw
 
 ## Widget: IMU Visualizer
 
+widget-imu_visualizer = wotation
+widget-imu_visualizer-preview = pwewiew
+widget-imu_visualizer-hide = hoide
+widget-imu_visualizer-rotation_raw = waw
+widget-imu_visualizer-rotation_preview = pwewiew
+widget-imu_visualizer-acceleration = accewewation
+widget-imu_visualizer-position = pawsition
 
 ## Tracker status
 
+tracker-status-none = no stawtus
+tracker-status-busy = busy
+tracker-status-error = ewwow
+tracker-status-disconnected = disconnyected
+tracker-status-occluded = occwuded
+tracker-status-ok = oki
+tracker-status-timed_out = Timed owt
 
 ## Tracker status columns
 
+tracker-table-column-name = nayme
+tracker-table-column-type = type
+tracker-table-column-battery = battewy
+tracker-table-column-ping = pyng
+tracker-table-column-tps = tps
+tracker-table-column-temperature = temp. °C
+tracker-table-column-linear-acceleration = accew. X/Y/Z
+tracker-table-column-rotation = wotaytion x/y/z
+tracker-table-column-position = pawsytion x/y/z
+tracker-table-column-url = uawl
 
 ## Tracker rotation
 
+tracker-rotation-front = fwowt
+tracker-rotation-front_left = fwont-weft
+tracker-rotation-front_right = fwont-wight
+tracker-rotation-left = lewft
+tracker-rotation-right = wight
+tracker-rotation-back = bak
+tracker-rotation-back_left = back-weft
+tracker-rotation-back_right = back-wight
+tracker-rotation-custom = custowm
 
 ## Tracker information
 
+tracker-infos-manufacturer = mawufactuwer
+tracker-infos-display_name = dispway name
+tracker-infos-custom_name = custowm name
+tracker-infos-url = twackaw uawl
+tracker-infos-hardware_identifier = hawdwawe id
+tracker-infos-imu = imu sensow
+tracker-infos-board_type = mane bored
+tracker-infos-network_version = pwotocol vewsiowon
+tracker-infos-magnetometer = magentometer
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] disabled.
+        [ENABLED] enabled!!
+       *[NOT_SUPPORTED] nawt suppowted...
+    }
 
 ## Tracker settings
 
+tracker-settings-back = go bak to twackaws liwst
+tracker-settings-title = twackaw sewtings
+tracker-settings-assignment_section = assiwnment
+tracker-settings-assignment_section-description = what pawt of the bawdy the twackaw is assiwned to uwu
+tracker-settings-assignment_section-edit = ewdit assiwnment
+tracker-settings-mounting_section = meownting pawsition
+tracker-settings-mounting_section-description = whewe is the twackaw mownted?
+tracker-settings-mounting_section-edit = edit meownting
+tracker-settings-use_mag = awwow magentometer on dis twackew
+tracker-settings-use_mag-label = awwow magnetomemer
+# The .<name> means it's an attribute and it's related to the top key.
+# In this case that is the settings for the assignment section.
+tracker-settings-name_section = twackaw name
+tracker-settings-name_section-placeholder = ewimewl's weft pawb
+tracker-settings-name_section-label = twackaw name
+tracker-settings-forget = *forgors the tracker*
+tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
+tracker-settings-forget-label = *forgors the tracker*
+tracker-settings-update-up_to_date = up to dayte!! ^w^
+tracker-settings-update = uwupdate meow!
 
 ## Dongle settings
 
+dongle-infos-hardware_revision = hawdwawe revision
+dongle-status-disconnected = disconnyected
+dongle-settings-back = go bak to twackaws liwst
+dongle-settings-update = uwupdate meow!
 
 ## Tracker part card info
 
+tracker-part_card-unassigned = unassigwed
 
 ## Body assignment menu
 
+body_assignment_menu = whewe doo yew want dis twayckaw to be?
+body_assignment_menu-description = chooce a wocation whewe yew want dis twayckaw to be assyigned. awtwernativewy, yew can chooce to manage awl twackaws at ownce instawd of won by won.
+body_assignment_menu-manage_trackers = manage awl twackaws
+body_assignment_menu-unassign_tracker = unassyign twayckaw
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>wawning:</b> a neck twackew can be deadwy if adjusted too tightwy,
+            the stwap (collar) couwd cut the ciwcuwation to youw head!
+tracker_selection_menu-neck_warning-done = i undewstand the wisks~
+tracker_selection_menu-neck_warning-cancel = cancew
 
 ## Mounting menu
 
+mounting_selection_menu-close = cwose
 
 ## Sidebar settings
 
+settings-sidebar-title = settyings~
+settings-sidebar-general = genyawaw
+settings-sidebar-trackers = trayckawws
+settings-sidebar-interface = intyawface~
+settings-sidebar-utils = utiwities
+settings-sidebar-appearance = appeawance
+settings-sidebar-notifications = notificashuns
 
 ## Bone routing settings
 
+settings-routing-hands-warning-cancel = cancew
 
 ## SteamVR / Monado output settings
 
+settings-driver-enable = enaybwe
 
 ## Tracker mechanics
 
+settings-general-tracker_mechanics-filtering = fiwtewing~
+# This also cares about multilines
+settings-general-tracker_mechanics-filtering-description =
+    chooce teh fiwwtewing type fow youw twackaws.
+    pwediction pwedicts movment while smowthing smowthens movment.
+settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
+settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
+settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
+settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
+settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
+settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
+    wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
+    can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = use mangenmometer on twackews
+settings-stay_aligned-general-label = genyawaw
+settings-stay_aligned-relaxed_poses-close = cwose
 
 ## Keybinds Page
 
+settings-keybinds_full-reset = fuww weset~
+settings-keybinds_yaw-reset = yaw weset
+settings-keybinds-recorder-modal-cancel-button = cancew
 
 ## FK/Tracking settings
 
+# Floor clip:
+# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
+# Skating correction:
+# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
+# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
+# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
+settings-general-fk_settings-leg_tweak-toe_snap = toe snap
+settings-general-fk_settings-leg_tweak-foot_plant = pawb pwant
+settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
+settings-general-fk_settings-leg_tweak-skating_correction-description = skating-cowwection cowwects fow ice skating but can decwease accuwacy in cewtain movement pattewns. When enabwing this make suwe to fuww weset and wecawibwate in game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can reduce ow even ewiminates cwipping thwough the fwoow. When enabwing this, make suwe to fuww weset and wecawibwate in game.
+settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
+settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
+settings-general-fk_settings-leg_fk = leg twacking
+settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = enfourse constwaints
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
+settings-general-fk_settings-arm_fk-back = bak
+settings-general-fk_settings-arm_fk-back-description = The defauwt mode, wit da uppew awms going back and wowew awms going fowwawd.
+settings-general-fk_settings-arm_fk-tpose_up-description = Expects youw awms to be down on the sides duwing Fuww Weset, and 90 degwees up to the sides duwing Meownting Weset.
+settings-general-fk_settings-arm_fk-tpose_down-description = Expects youw awms to be 90 degwees up to the sides duwing Fuww Weset, and down on the sides duwing Meownting Weset.
+settings-general-fk_settings-arm_fk-forward = Fowwawd
+settings-general-fk_settings-arm_fk-forward-description = Expects youw awms to be up 90 degwees fowwawd. Usefuw fow VTubing.
+settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
+settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
+settings-general-fk_settings-self_localization-title = mocap mowd
 
 ## Gesture control settings (tracker tapping)
 
+settings-general-gesture_control-subtitle = bap bwased wesets
+settings-general-gesture_control-description = awwows fow wesets to be twiggewed by bapping a twackew. teh twackew hyest up on youw towso is used fow yaw weset, the twackew hyest up on youw weft weg is use fow fuww reset, and da twackew hiest up on youw wight weg is used fow mounting weset. it shouwd be menshuned dat baps must bappen wifin 0.6 second to be wegistewed.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 bap
+       *[other] { $amount } baps
+    }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 twackew
+       *[other] { $amount } twackews
+    }
+settings-general-gesture_control-yawResetEnabled = enabwe bap to yaw weset
+settings-general-gesture_control-yawResetDelay = yaw weset deway
+settings-general-gesture_control-yawResetTaps = baps fow yaw weset
+settings-general-gesture_control-fullResetEnabled = enabwe bap to fuww weset
+settings-general-gesture_control-fullResetDelay = fuww weset deway
+settings-general-gesture_control-fullResetTaps = baps fow fuww weset
+settings-general-gesture_control-mountingResetEnabled = enable wap to weset mountwing
+settings-general-gesture_control-mountingResetDelay = mountwing weset deway
+settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = twackews over thweshowd
+settings-general-gesture_control-numberTrackersOverThreshold-description = incwease dis vawue if da bap detecshun is nawt wowking. dont incwease it above what is need to make bap detecshun wowk as it wowd cauwse mowe fawse pawsitives.
 
 ## Appearance settings
 
+settings-interface-appearance = appeawance
+settings-general-interface-dev_mode = devwowwewow mode
+settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
+settings-general-interface-dev_mode-label = devwowwewow mode
+settings-general-interface-lang = sewect wanguage
+settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
+settings-general-interface-lang-placeholder = sewect teh wanguage to use
+# Keep the font name untranslated
+settings-interface-appearance-font = gui fawnt
+settings-interface-appearance-font-description = dis change da fawnt use by da intewface.
+settings-interface-appearance-font-placeholder = defawt fawnt
+settings-interface-appearance-font-os_font = os fawnt
+settings-interface-appearance-font-slime_font = defawt fawnt
+settings-interface-appearance-font_size = bass fawn scawing
+settings-interface-appearance-font_size-description = dis affects da fawnt size of da whol intewface except dis setting panew.
 
 ## Notification settings
 
+settings-interface-notifications = notificashuns
+settings-general-interface-feedback_sound = feeback sownd
+settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
+settings-general-interface-feedback_sound-label = feeback sownd
+settings-general-interface-feedback_sound-volume = feedback sownd volyume
+settings-general-interface-connected_trackers_warning = Connected twackews wawning
+settings-general-interface-connected_trackers_warning-description = This option wiww show a pop-up evewy time you twy exiting SwimeVR whiwe having one ow mowe connected twackews. It weminds you to tuwn off youw twackews when you awe done to pwesewve battewy wife.
+settings-general-interface-connected_trackers_warning-label = Connected twackews wawning on exit
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = devwowwewow mode
+settings-general-interface-dev_mode-label = devwowwewow mode
+settings-general-interface-use_tray = minimaize to systehm tway
+settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
+settings-general-interface-use_tray-label = minimaize to systehm tway
+settings-general-interface-discord_presence = shaer activitey on discowd
+settings-general-interface-discord_presence-description = tewws ur discoard cwient dat ur using SlyimeVR awong wif teh nuhmbew of IMU twackewrz u r using.
+settings-general-interface-discord_presence-label = shaer activitey on discowd
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] slimin awaound :3
+        [one] using 1 twackew
+       *[other] using { $amount } twackewz
+    }
 
 ## Serial settings
 
+settings-serial-connection_lost = connyection to shewyaw wost, weconnyecting... >~<
+settings-serial-reboot = weboot
+settings-serial-factory_reset = fawctowy reset
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>wawning:</b> this wiww weset the twackew to factowy settings.
+            which means wi-fi and cawibwation settings <b>wiww aww be wost!</b>
+settings-serial-factory_reset-warning-ok = i know what I'm doing :3
+settings-serial-factory_reset-warning-cancel = cancew
+settings-serial-serial_select = sewect a shewyaw pawt
+settings-serial-auto_dropdown_item = awto
+settings-serial-save_logs = saeve to file
+settings-serial-send_command-warning-ok = i know what I'm doing :3
+settings-serial-send_command-warning-cancel = cancew
 
 ## OSC VRChat settings
 
+settings-osc-vrchat-enable = enaybwe
+settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
+settings-osc-vrchat-enable-label = enaybwe
+settings-osc-vrchat-network = newtwowk pawts
+settings-osc-vrchat-network-port_in =
+    .label = pawt in
+    .placeholder = pawt in (defawwt: 9001)
+settings-osc-vrchat-network-port_out =
+    .label = pawt out
+    .placeholder = pawt out (defawwt: 9000)
+settings-osc-vrchat-network-address = network addwess
+settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 
 ## VRChat OSC status
 
+settings-osc-vrchat-status-tracking = wotation
+settings-osc-vrchat-status-badge-error = ewwow
+settings-osc-vrchat-status-badge-unknown = unnown
 
 ## VMC OSC settings
 
+settings-osc-vmc = viwtuaw motion captuwe
+# This cares about multilines
+settings-osc-vmc-description =
+    change settings specific to the vmc (viwtuaw motion captuwe) pwotocow
+            to send SwimeVR's twacking data and weceive twacking data fwom othew apps.
+settings-osc-vmc-enable = enaybwe
+settings-osc-vmc-enable-description = toggle teh sending awnd wweceiving of data
+settings-osc-vmc-enable-label = enaybwe
+settings-osc-vmc-network = newtwowk pawts
+settings-osc-vmc-network-description = set the pawts fow wistening awnd sending data via vmc
+settings-osc-vmc-network-port_in =
+    .label = pawt in
+    .placeholder = pawt in (defawwt: 39540)
+settings-osc-vmc-network-port_out =
+    .label = pawt out
+    .placeholder = pawt out (defawwt: 39539)
+settings-osc-vmc-network-address = network addwess
+settings-osc-vmc-network-address-description = choose which addwess to send out data at via vmc
+settings-osc-vmc-network-address-placeholder = IPV4 addwess
+settings-osc-vmc-vrm = VRM modew
+settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse</u>
+settings-osc-vmc-anchor_hip = anchow at hips
+settings-osc-vmc-anchor_hip-label = anchow at hips
+settings-osc-vmc-mirror_tracking = miwwow twacking
+settings-osc-vmc-mirror_tracking-description = miwwow da twacking howizawntawwy.
+settings-osc-vmc-mirror_tracking-label = miwwow twacking
+settings-osc-vmc-status-badge-error = ewwow
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>wawning!!</b> this wiww weset youw gui settings to defawts :(
+            aw you supew dupew sure?
+        [server]
+            <b>wawning!!</b> this wiww weset youw twacking settings to defawts :(
+            aw you supew dupew sure?
+       *[all]
+            <b>wawning!!</b> this wiww make aww youw settings go bye-bye!!
+            aw you supew dupew sure??
+    }
+settings-utils-advanced-reset_warning-reset = weset setings
+settings-utils-advanced-reset_warning-cancel = cancew
+settings-utils-advanced-open_data-v1 = config fowdew
+settings-utils-advanced-open_data-description-v1 = open swimevr's config fowdew in da fiwe explowew, containing teh configuwation
+settings-utils-advanced-open_data-label = open fowdew
+settings-utils-advanced-open_logs = logs fowdew
+settings-utils-advanced-open_logs-description = open swimevr's logs fowdew in da fiwe explowew, containing teh logs of da app
+settings-utils-advanced-open_logs-label = open fowdew
 
 ## Home Screen
 
@@ -242,9 +561,20 @@ skeleton_bone-UPPER_ARM = uppew awm wength
 
 ## Setup/onboarding menu
 
+onboarding-skip = skipy setup
+onboarding-continue = continyue
+onboarding-previous_step = pwevious step
+onboarding-setup_warning =
+    <b>Wawning:</b> The inyitiaw setup is wequiwed fow good twacking,
+    it is nyeeded if this is youw fiwst time using SwimeVR.
+onboarding-setup_warning-skip = skipy setup
+onboarding-setup_warning-cancel = continu setup
 
 ## Quiz
 
+onboarding-quiz_continue = continyue
+onboarding-quiz_back = bak
+onboarding-quiz-runtime-answer-steamvr = steawmvr~
 
 ## Wi-Fi setup
 
