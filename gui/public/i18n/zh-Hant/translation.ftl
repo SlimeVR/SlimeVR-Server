@@ -652,6 +652,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = 定位資料
 settings-general-fk_settings-ik-use_position = 使用定位資料
 settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
+settings-general-fk_settings-velocity_settings = 移動速度設定
+settings-general-fk_settings-velocity_settings-description = 傳送推算出的移動速度資料到 SteamVR，使用 Natural Locomotion 需要啟用本功能，可能會導致全身追蹤發生抖動。
+settings-general-fk_settings-velocity_settings-send_derived_velocity = 傳送推算的移動速度至驅動程式
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
@@ -701,12 +704,15 @@ settings-general-gesture_control-trackers = { $amount } 個追蹤器
 settings-general-gesture_control-yawResetEnabled = 敲擊以左右偏擺重置
 settings-general-gesture_control-yawResetDelay = 左右偏擺重置延遲
 settings-general-gesture_control-yawResetTaps = 左右偏擺重置敲擊次數
+settings-general-gesture_control-yawResetTracker = 左右偏擺重置追蹤器
 settings-general-gesture_control-fullResetEnabled = 敲擊以完整重置
 settings-general-gesture_control-fullResetDelay = 完整重置延遲
 settings-general-gesture_control-fullResetTaps = 完整重置敲擊次數
+settings-general-gesture_control-fullResetTracker = 完整重置追蹤器
 settings-general-gesture_control-mountingResetEnabled = 敲擊以配戴重置
 settings-general-gesture_control-mountingResetDelay = 重置配戴延遲
 settings-general-gesture_control-mountingResetTaps = 重置配戴敲擊次數
+settings-general-gesture_control-mountingResetTracker = 配戴重置追蹤器
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 觸發敲擊判定的最多追蹤器數量
 settings-general-gesture_control-numberTrackersOverThreshold-description = 如果敲擊偵測無法作動，請嘗試增加此值以降低敲擊判定的門檻。為避免誤判，請勿設定超過所需要的數值。
@@ -794,6 +800,12 @@ settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 選擇序列埠
 settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
+settings-serial-enter_pairing = 開始配對
+settings-serial-exit_pairing = 結束配對
+settings-serial-calibrate = 校正
+settings-serial-six_side_calibrate = 六面校正
+settings-serial-dfu = 進入 DFU 模式
+settings-serial-meow = 喵！
 settings-serial-file_type = 純文字格式
 settings-serial-save_logs = 儲存到檔案
 settings-serial-send_command = 傳送
@@ -959,9 +971,45 @@ onboarding-setup_warning-cancel = 繼續設定
 
 ## Quiz
 
+onboarding-quiz_continue = 繼續
+onboarding-quiz_back = 返回
+onboarding-quiz-more_sets_modal-title = 已經連接全部的追蹤器了嗎？
+onboarding-quiz-more_sets_modal-desc = 如有其他追蹤器組合，現在可以進行連接。
+onboarding-quiz-more_sets_modal-confirm = 所有的追蹤器都連接好了
+onboarding-quiz-more_sets_modal-cancel = 我想連接更多追蹤器
+onboarding-quiz-slimeset-title = 連接的是什麼類型的追蹤器？
+onboarding-quiz-slimeset-description = 如要使用多組追蹤器，流程後可以再連接其他組合
+onboarding-quiz-slimeset-official-sets = 官方 SlimeVR 追蹤器
+onboarding-quiz-slimeset-thirdparty-sets = 第三方或是 DIY 的追蹤器
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 和 V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly 薄型追蹤器
+onboarding-quiz-slimeset-answer-wifi = 透過 Wi-Fi 連接的 Slime 追蹤器
+onboarding-quiz-slimeset-answer-dongle = 透過 USB 接收器連接的 Slime 追蹤器
+onboarding-quiz-usage-title = 追蹤器將會用於何種用途？
+onboarding-quiz-usage-description = 若打算將 SlimeVR 用在不同用途上，之後可以變更影響到的設定。
+onboarding-quiz-usage-answer-VRC = VR 遊戲（如 VRChat）
+onboarding-quiz-usage-answer-mocap_vtubing = 動作捕捉、VTuber 虛擬主播
+onboarding-quiz-runtime-title = 會透過 SteamVR 執行遊戲，或只在頭戴顯示器本機上執行遊戲？
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = 頭戴顯示器本機
+onboarding-quiz-mocap_preferences-title = 動作捕捉偏好
+onboarding-quiz-mocap_preferences-desc = 指明在動作捕捉或是虛擬主播的環境下，要如何使用 SlimeVR
+onboarding-quiz-mocap_preferences-playspace-title = 你的使用型態是什麼？
+onboarding-quiz-mocap_preferences-playspace-desc = 若選擇站立使用，SlimeVR 將會嘗試追蹤走路姿勢，而非固定在原地。
+onboarding-quiz-mocap_preferences-playspace-sitting = 坐著使用
+onboarding-quiz-mocap_preferences-playspace-standing = 站立使用
+onboarding-quiz-mocap_preferences-vrm_model-title = 你有要使用的 VRM 模型嗎？（選用）
+onboarding-quiz-mocap_preferences-vrm_model-desc = 載入 VRM 模型可以提高追蹤品質，以及使用 VMC 的應用程式的相容性。
+onboarding-quiz-mocap_preferences-head_tracker-title = 頭上有配戴追蹤器或是 VR 投戴顯示器嗎？
+onboarding-quiz-mocap_preferences-head_tracker-yes = 有
+onboarding-quiz-mocap_preferences-head_tracker-no = 沒有
+onboarding-quiz-mocap_preferences-head_tracker_location-title = 頭部的追蹤器在哪個位置
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = 額頭
+onboarding-quiz-mocap_preferences-head_tracker_location-face = 臉部
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = 返回
 onboarding-wifi_creds-v2 = 透過 Wi-Fi 連接
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1010,6 +1058,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = 找不到硬體 udev 存取規則
+install-info_udev-rules_warning = 透過序列埠終端以及使用 USB 接收器，需要先設定 udev 存取規則。請將下列指令複製進終端機以新增 udev 規則。
+install-info_udev-rules_modal_button = 關閉
+install-info_udev-rules_modal-dont-show-again_checkbox = 不要再顯示
 
 ## Setup start
 
@@ -1338,6 +1390,7 @@ onboarding-user_height-description = 我們需要使用你的身高來計算軀�
 onboarding-user_height-need_head_tracker = 進行校正需要具備定位功能的頭戴顯示器與控制器。
 onboarding-user_height-calculate = 自動計算我的身高
 onboarding-user_height-next_step = 繼續並儲存
+onboarding-user_height-prev_step = 返回
 onboarding-user_height-manual-proportions = 手動調整軀幹比例
 onboarding-user_height-calibration-title = 校正進度
 onboarding-user_height-calibration-RECORDING_FLOOR = 以控制器前端碰觸地面
@@ -1489,6 +1542,7 @@ firmware_tool-flashing_step-description = 追蹤器燒錄中，請遵循畫面�
 firmware_tool-flashing_step-warning-v2 = 除非特別指示，燒錄中請勿移除或是關閉追蹤器，否則可能導致主板無法使用
 firmware_tool-flashing_step-flash_more = 燒錄更多追蹤器
 firmware_tool-flashing_step-exit = 離開
+firmware_tool-flashing_step-onboarding_continue = 繼續
 
 ## firmware tool build status
 
@@ -1624,7 +1678,18 @@ tracking_checklist-FULL_RESET = 進行完整重置
 tracking_checklist-FULL_RESET-desc = 有追蹤器需要進行重置
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未執行
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未執行，你要把追蹤器用在 VR 上嗎？
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = 由於先前的 SteamVR 崩潰，驅動程式已被 SteamVR 停用。
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = 驅動程式在 SteamVR 設定中被停用。
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = 驅動程式尚未安裝。
 tracking_checklist-STEAMVR_DISCONNECTED-open = 啟動 SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = 啟用驅動程式
+tracking_checklist-STEAMVR_HANDS_ENABLED = 手部追蹤器已開啟
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = 你啟用了 SteamVR 虛擬手部追蹤器，這會導致在 SteamVR 及遊戲中無法使用按鍵輸入。
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = 關閉手部追蹤器
+tracking_checklist-STANDABLE_INSTALLED = 偵測到 Standable 已安裝
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable 與 SlimeVR 一併使用時，容易造成追蹤上的問題。請從 Steam 中完全移除 Standable 來避免這類問題發生。
+    移除 Standable 前，必須先關閉 SteamVR。
 tracking_checklist-TRACKERS_REST_CALIBRATION = 校正追蹤器
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 追蹤器尚未進行校正。請將以黃色標記的追蹤器放置在平面上幾秒鐘。
 tracking_checklist-TRACKER_ERROR = 追蹤器出現錯誤
