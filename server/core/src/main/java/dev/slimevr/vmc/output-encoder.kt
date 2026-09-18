@@ -64,8 +64,7 @@ internal fun buildOutgoingBundle(
 
 internal fun buildInitRequestMessage(): OscMessage = OscMessage("/VMC/Ext/Req", emptyList())
 
-private fun trackingBodyPart(targetBodyPart: BodyPart, mirror: Boolean): BodyPart =
-	if (mirror) vmcMirrorSource(targetBodyPart) else targetBodyPart
+private fun trackingBodyPart(targetBodyPart: BodyPart, mirror: Boolean): BodyPart = if (mirror) vmcMirrorSource(targetBodyPart) else targetBodyPart
 
 private fun restAdjustedWorld(
 	bone: BoneState,

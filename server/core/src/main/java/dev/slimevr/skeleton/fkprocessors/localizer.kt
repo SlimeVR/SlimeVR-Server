@@ -54,8 +54,10 @@ private fun isUserSitting(fk: ComputedSkeleton): Boolean {
 private fun isFootOnGround(fk: ComputedSkeleton): Boolean {
 	val leftFoot = fk[BodyPart.LEFT_FOOT] ?: return false
 	val rightFoot = fk[BodyPart.RIGHT_FOOT] ?: return false
-	return leftFoot.headPosition.y <= 0f || rightFoot.headPosition.y <= 0f ||
-		leftFoot.tailPosition.y <= 0f || rightFoot.tailPosition.y <= 0f
+	return leftFoot.headPosition.y <= 0f ||
+		rightFoot.headPosition.y <= 0f ||
+		leftFoot.tailPosition.y <= 0f ||
+		rightFoot.tailPosition.y <= 0f
 }
 
 private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSitting(fk)) {
@@ -91,12 +93,12 @@ object FootLocalizer {
 	}
 
 	private fun isFootLocked(bone: BoneState, lastPlantedFoot: PlantedFoot): Boolean = shouldLock(
-			bone.tailPosition,
-			bone.tailPosition,
-			bone.acceleration,
-			bone.velocity,
-			lastPlantedFoot == whichPlantedFoot(bone.bodyPart),
-		)
+		bone.tailPosition,
+		bone.tailPosition,
+		bone.acceleration,
+		bone.velocity,
+		lastPlantedFoot == whichPlantedFoot(bone.bodyPart),
+	)
 
 	/**
 	 * Returns the average percentage the real velocity and acceleration are of
@@ -194,21 +196,19 @@ object COMLocalizer {
 
 	fun getTargetCOM(targetCOM: Vector3, comVelocity: Vector3, deltaTime: Duration) = targetCOM + (comVelocity * deltaTime.inFloatingSeconds)
 
-	fun floorAdjustTargetCOM(targetCOM: Vector3, lowestBone: BoneState?) =
-		lowestBone?.let {
-			if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
-				Vector3(targetCOM.x, targetCOM.y + (FLOOR_CALIBRATION_OFFSET - it.tailPosition.y), targetCOM.z)
-			}
-			targetCOM
-		} ?: targetCOM
+	fun floorAdjustTargetCOM(targetCOM: Vector3, lowestBone: BoneState?) = lowestBone?.let {
+		if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
+			Vector3(targetCOM.x, targetCOM.y + (FLOOR_CALIBRATION_OFFSET - it.tailPosition.y), targetCOM.z)
+		}
+		targetCOM
+	} ?: targetCOM
 
-	fun floorAdjustCOMVelocity(comVelocity: Vector3, lowestBone: BoneState?) =
-		lowestBone?.let {
-			if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
-				Vector3(comVelocity.x, 0f, comVelocity.z)
-			}
-			comVelocity
-		} ?: comVelocity
+	fun floorAdjustCOMVelocity(comVelocity: Vector3, lowestBone: BoneState?) = lowestBone?.let {
+		if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
+			Vector3(comVelocity.x, 0f, comVelocity.z)
+		}
+		comVelocity
+	} ?: comVelocity
 
 	fun computeCOMTravel(currentCOM: Vector3, targetCOM: Vector3) = targetCOM - currentCOM
 }
@@ -286,7 +286,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				} ?: Vector3.ZERO
 
 				// Get COM travel
-				val comTravel= COMLocalizer.computeCOMTravel(currentCom, targetCOM)
+				val comTravel = COMLocalizer.computeCOMTravel(currentCom, targetCOM)
 
 				// Return horizontal foot travel and vertical COM travel
 				Vector3(footTravel.x, comTravel.y, footTravel.z)
@@ -308,7 +308,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 				// Return the sitting travel
 				HipLocalizer.computeSittingTravel(currentHip, targetHip)
 
- 				Vector3.ZERO // TODO
+				Vector3.ZERO // TODO
 			}
 		}
 

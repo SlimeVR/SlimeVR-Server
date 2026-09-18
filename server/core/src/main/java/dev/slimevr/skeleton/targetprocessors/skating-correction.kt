@@ -52,10 +52,10 @@ fun shouldLock(
 	val thresholdMultiplier = (if (wasLocked) 1f else SKATING_LOCK_ENGAGE_PERCENT) * (correctionStrength * 0.5f + 0.5f)
 	val floorLevel = floorLevel + FLOOR_CALIBRATION_OFFSET
 	return ((position - lastPosition).let { Vector3(it.x, 0f, it.z) }.lenSq() <= SKATING_DISTANCE_THRESHOLD_SQ) &&
-			(velocity.linear.lenSq() <= SKATING_LINEAR_VELOCITY_THRESHOLD_SQ * thresholdMultiplier) &&
-			(velocity.angular.lenSq() <= SKATING_ANGULAR_VELOCITY_THRESHOLD_SQ * thresholdMultiplier) &&
-			(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
-			(acceleration.lenSq() <= SKATING_ACCELERATION_THRESHOLD_SQ * thresholdMultiplier * correctionStrength)
+		(velocity.linear.lenSq() <= SKATING_LINEAR_VELOCITY_THRESHOLD_SQ * thresholdMultiplier) &&
+		(velocity.angular.lenSq() <= SKATING_ANGULAR_VELOCITY_THRESHOLD_SQ * thresholdMultiplier) &&
+		(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
+		(acceleration.lenSq() <= SKATING_ACCELERATION_THRESHOLD_SQ * thresholdMultiplier * correctionStrength)
 }
 
 fun computeLockState(
