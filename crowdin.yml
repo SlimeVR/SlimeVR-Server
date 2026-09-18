@@ -1,0 +1,34 @@
+# Crowdin Configuration File
+# https://developer.crowdin.com/configuration-file/
+
+files:
+  - source: /gui/app/public/i18n/en/translation.ftl
+    translation: /gui/app/public/i18n/%locale%/%original_file_name%
+    update_option: update_as_unapproved
+    languages_mapping:
+      locale:
+        zh-CN: zh-Hans
+        zh-TW: zh-Hant
+        nb: nb-NO
+        sv: sv-SE
+        fr: fr
+        de: de
+        it: it
+        ja: ja
+        ko: ko
+        ar: ar
+        cs: cs
+        da: da
+        el: el
+        es-419: es-419
+        et: et
+        fi: fi
+        he: he
+        lt: lt
+        nl: nl
+        pl: pl
+        ru: ru
+        th: th
+        tr: tr
+        uk: uk
+        vi: vi
