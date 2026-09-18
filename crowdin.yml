@@ -1,6 +1,9 @@
 # Crowdin Configuration File
 # https://developer.crowdin.com/configuration-file/
 
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+
 files:
   - source: /gui/app/public/i18n/en/translation.ftl
     translation: /gui/app/public/i18n/%locale%/%original_file_name%
