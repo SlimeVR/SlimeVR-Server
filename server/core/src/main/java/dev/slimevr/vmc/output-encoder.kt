@@ -110,7 +110,6 @@ private fun vmcMirrorSource(bodyPart: BodyPart): BodyPart {
 		BodyPart.LEFT_RING_TOE -> BodyPart.RIGHT_RING_TOE
 		BodyPart.LEFT_LITTLE_TOE -> BodyPart.RIGHT_LITTLE_TOE
 		BodyPart.LEFT_BUST -> BodyPart.RIGHT_BUST
-		BodyPart.RIGHT_BUST -> BodyPart.LEFT_BUST
 		else -> bodyPart
 	}
 }
