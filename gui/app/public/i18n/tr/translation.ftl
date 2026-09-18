@@ -34,7 +34,19 @@ tips-failed_webgl = WebGL başlatılamadı.
 unit-meter = Metre
 unit-foot = Ayak
 unit-inch = Inç
-unit-cm = cm
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Kapat
 
 ## Body parts
 
@@ -49,8 +61,6 @@ body_part-RIGHT_UPPER_LEG = Sağ Uyluk
 body_part-RIGHT_LOWER_LEG = Sağ Ayak Bileği
 body_part-RIGHT_FOOT = Sağ Ayak
 body_part-UPPER_CHEST = Üst Göğüs
-body_part-CHEST = Göğüs
-body_part-WAIST = Bel
 body_part-HIP = Kalça
 body_part-LEFT_SHOULDER = Sol Omuz
 body_part-LEFT_UPPER_ARM = Sol Üst Kol
@@ -92,244 +102,75 @@ body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
 ## BoardType
 
-board_type-UNKNOWN = Bilinmeyen
-board_type-NODEMCU = NodeMCU
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR Dev Board
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
-board_type-GESTURES = Hareketler
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = Jenerik nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
-skeleton_bone-NONE = Yok
-skeleton_bone-HEAD = Kafa Hizası
-skeleton_bone-HEAD-desc =
-    Bu, kulaklığın ile başının ortası arasındaki mesafedir.
-    Ayarlamak için, 'hayır' der gibi başını soldan sağa ve sağdan sola salla,
-    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
-skeleton_bone-NECK = Boyun Uzunluğu
-skeleton_bone-NECK-desc =
-    Bu, başının ortasından boynunun başlangıcına kadar olan mesafedir.
-    Ayarlamak için başını 'evet' der gibi yukarı-aşağı hareket ettir veya başını hafifçe öne eğip, başını sola ve sağa kaydır,
-    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
-skeleton_bone-torso_group = Gövde Uzunluğu
-skeleton_bone-torso_group-desc =
-    Bu, boynunun başlangıcından kalçalarına kadar olan mesafedir.
-    Ayarlamak için dik dur ve sanal kalçaların, gerçek kalçalarınla hizalanana kadar değeri değiştir.
-skeleton_bone-UPPER_CHEST = Üst Göğüs Uzunluğu
-skeleton_bone-UPPER_CHEST-desc =
-    Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-CHEST = Göğüs Uzunluğu
-skeleton_bone-CHEST-desc =
-    Bu, göğsünün ortasından omurganın ortasına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-WAIST = Bel Uzunluğu
-skeleton_bone-WAIST-desc =
-    Bu, omurganın ortasından göbek deliğine kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-HIP = Kalça Uzunluğu
-skeleton_bone-HIP-desc =
-    Bu, göbek deliğinden kalçalarına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-HIPS_WIDTH = Kalça Genişliği
-skeleton_bone-HIPS_WIDTH-desc =
-    Bu, bacaklarının başladığı noktalar arasındaki mesafedir.
-    Ayarlamak için bacaklarını düz tutarak tam bir sıfırlama yap ve,
-    sanal bacaklarının aralığı, gerçek bacaklarının aralığıyla hizalanana kadar bu değeri değiştir.
-skeleton_bone-leg_group = Bacak uzunluğu
-skeleton_bone-leg_group-desc =
-    Bu, kalçandan ayaklarına olan mesafedir.
-    Ayarlamak için Gövde uzunluğunu doğru şekilde ayarla ve,
-    sanal ayakların gerçek ayaklarınla aynı seviyeye gelene kadar bu değeri değiştir.
-skeleton_bone-UPPER_LEG = Üst Bacak Uzunluğu
-skeleton_bone-UPPER_LEG-desc =
-    Bu, kalçandan dizlerine olan mesafedir.
-    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
-    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
-skeleton_bone-LOWER_LEG = Alt Bacak Uzunluğu
-skeleton_bone-LOWER_LEG-desc =
-    Bu, dizlerinden ayak bileklerine olan mesafedir.
-    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
-    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
-skeleton_bone-FOOT_LENGTH = Ayak Uzunluğu
-skeleton_bone-FOOT_LENGTH-desc =
-    Bu, ayak bileklerinden ayak parmaklarına olan mesafedir.
-    Ayarlamak için parmak uçlarına çık ve sanal ayakların sabit kalana kadar bu değeri değiştir.
-skeleton_bone-FOOT_SHIFT = Ayak hizası
-skeleton_bone-FOOT_SHIFT-desc =
-    Bu değer, dizinden ayak bileğine olan yatay mesafedir.
-    Bu, dik dururken alt bacaklarının geriye doğru konumlanmasını telafi eder.
-    Ayarlamak için Ayak uzunluğunu 0 olarak ayarla, tam sıfırlama yap ve,
-    sanal ayakların ayak bileklerinin ortasıyla hizalanana kadar bu değeri değiştir.
-skeleton_bone-SHOULDERS_DISTANCE = Omuz Mesafesi
-skeleton_bone-SHOULDERS_WIDTH = Omuz Genişliği
-skeleton_bone-arm_group = Kol uzunluğu
-skeleton_bone-UPPER_ARM = Üst Kol Uzunluğu
-skeleton_bone-LOWER_ARM = Alt Kol Uzunluğu
 
 ## Tracker reset buttons
 
-reset-reset_all = Tüm oranları sıfırla
-reset-reset_all_warning-cancel = İptal et
-reset-full = Sıfırlama
-reset-mounting-feet = Ayak Kalibrasyonu
-reset-mounting-fingers = Parmak Kalibrasyonu
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Yeni seri cihaz algılandı!
-serial_detection-new_device-p1 = Wi-Fi bilgilerinizi girin!
-serial_detection-new_device-p2 = Lütfen onunla ne yapmak istediğinizi seçin
-serial_detection-open_wifi = Wi-Fi'ye bağlan
-serial_detection-open_serial = Seri Konsolu Aç
-serial_detection-submit = Gönder!
-serial_detection-close = Kapat
 
 ## Navigation bar
 
-navbar-home = Ana Menü
-navbar-body_proportions = Vücut Oranları
-navbar-onboarding = Kurulum Sihirbazı
-navbar-settings = Ayarlar
 
 ## Biovision hierarchy recording
 
-bvh-start_recording = BVH Kaydet
-bvh-recording = Kaydediliyor
 
 ## Tracking pause
-
-tracking-unpaused = Takibi duraklat
-
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
 
-widget-developer_mode = Geliştirici Modu
-widget-developer_mode-high_contrast = Yüksek kontrast
-widget-developer_mode-precise_rotation = Hassas dönüş
-widget-developer_mode-sort_by_name = Ada göre sırala
-widget-developer_mode-more_info = Daha fazla bilgi
 
 ## Widget: IMU Visualizer
 
-widget-imu_visualizer = Rotasyon
-widget-imu_visualizer-preview = Önizle
-widget-imu_visualizer-hide = Gizle
-widget-imu_visualizer-rotation_preview = Önizle
 
 ## Tracker status
 
-tracker-status-none = Durum Yok
-tracker-status-busy = Meşgul
-tracker-status-error = Hata
-tracker-status-disconnected = Bağlantı kesildi
-tracker-status-ok = İYİ
-tracker-status-timed_out = Zaman aşımı
 
 ## Tracker status columns
 
-tracker-table-column-name = İsim
-tracker-table-column-type = Tür
-tracker-table-column-battery = Pil
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Sıcaklık °C
-tracker-table-column-rotation = Rotasyon X/Y/Z
-tracker-table-column-position = Pozisyon X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
-tracker-rotation-front = Ön
-tracker-rotation-left = Sol
-tracker-rotation-right = Sağ
-tracker-rotation-back = Arka
 
 ## Tracker information
 
-tracker-infos-manufacturer = Üretici
-tracker-infos-display_name = Görünen Ad
-tracker-infos-custom_name = Özel Ad
-tracker-infos-url = Takipçi URL'si
-tracker-infos-hardware_identifier = Donanım Kimliği
-tracker-infos-imu = IMU Sensör
-tracker-infos-board_type = Ana kart
 
 ## Tracker settings
 
-tracker-settings-back = Takipçi listesine geri dön
-tracker-settings-title = Takipçi ayarları
-tracker-settings-assignment_section-description = Tracker'in vücudun hangi kısmına atandığı.
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
-tracker-settings-name_section = Takipçi adı
-tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
+
+## Dongle settings
+
 
 ## Tracker part card info
 
-tracker-part_card-unassigned = Atanmamış
 
 ## Body assignment menu
 
-body_assignment_menu = Bu takipçinin nerede olmasını istiyorsunuz?
-body_assignment_menu-manage_trackers = Tüm takipçileri yönet
 
 ## Tracker assignment menu
 
-tracker_selection_menu-neck_warning-done = Riskleri anlıyorum
-tracker_selection_menu-neck_warning-cancel = İptal
 
 ## Mounting menu
 
-mounting_selection_menu = Bu takipçinin nerede olmasını istiyorsunuz?
-mounting_selection_menu-close = Kapat
 
 ## Sidebar settings
 
-settings-sidebar-title = Ayarlar
-settings-sidebar-general = Genel
-settings-sidebar-interface = Arayüz
-settings-sidebar-osc_trackers = VRChat OSC Takipçileri
-settings-sidebar-serial = Seri konsol
+
+## Bone routing settings
+
+
+## SteamVR / Monado output settings
+
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics-filtering-amount = Miktar
+
+## Keybinds Page
+
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-leg_fk = Bacak takibi
 
 ## Gesture control settings (tracker tapping)
 
@@ -345,16 +186,12 @@ settings-general-fk_settings-leg_fk = Bacak takibi
 
 ## Serial settings
 
-settings-serial-reboot = Yeniden Başlat
-settings-serial-factory_reset-warning-ok = Ben ne yaptığımı biliyorum
-settings-serial-factory_reset-warning-cancel = İptal et
-settings-serial-auto_dropdown_item = Otomatik
 
 ## OSC VRChat settings
 
-settings-osc-vrchat-enable = Etkinleştir
-settings-osc-vrchat-enable-label = Etkinleştir
-settings-osc-vrchat-network-address = Ağ adresi
+
+## VRChat OSC status
+
 
 ## VMC OSC settings
 
@@ -368,7 +205,7 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -380,25 +217,13 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Wi-Fi setup
 
 
-## Mounting setup
-
-
 ## Install info
 
 
 ## Setup start
 
 
-## Setup done
-
-
 ## Tracker connection setup
-
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
 
 
 ## Tracker assignment setup
@@ -432,9 +257,6 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 
 ## Trackers Still On notification
-
-
-## Status system
 
 
 ## Firmware tool globals
