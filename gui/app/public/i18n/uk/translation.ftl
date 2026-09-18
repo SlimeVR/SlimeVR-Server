@@ -27,6 +27,19 @@ tips-failed_webgl = Не вдалося ініціалізувати WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Закрити
+
 ## Body parts
 
 body_part-NONE = Не призначено
@@ -40,8 +53,6 @@ body_part-RIGHT_UPPER_LEG = Праве стегно
 body_part-RIGHT_LOWER_LEG = Права щиколотка
 body_part-RIGHT_FOOT = Права нога
 body_part-UPPER_CHEST = Верхня частина грудей
-body_part-CHEST = Груди
-body_part-WAIST = Талія
 body_part-HIP = Стегно
 body_part-LEFT_SHOULDER = Ліве плече
 body_part-LEFT_UPPER_ARM = Ліва верхня частина руки
@@ -61,8 +72,6 @@ skeleton_bone-HEAD = Зсув голови
 skeleton_bone-NECK = Довжина шиї
 skeleton_bone-torso_group = Довжина тулуба
 skeleton_bone-UPPER_CHEST = Довжина верхньої частини грудей
-skeleton_bone-CHEST = Довжина грудей
-skeleton_bone-WAIST = Довжина талії
 skeleton_bone-HIP = Довжина стегна
 skeleton_bone-HIPS_WIDTH = Ширина стегон
 skeleton_bone-leg_group = Довжина ніг
@@ -81,19 +90,10 @@ skeleton_bone-HAND_Z = Відстань руки Z
 ## Tracker reset buttons
 
 reset-reset_all = Скинути всі пропорції
+reset-reset_all_warning-cancel = Скасувати
 reset-full = Повне скидання
 reset-mounting = Скинути положення
 reset-yaw = Скинути нахил
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Виявлено новий послідовний пристрій!
-serial_detection-new_device-p1 = Введіть дані вашого Wi-Fi!
-serial_detection-new_device-p2 = Будь ласка, виберіть, що ви хочете з ним зробити
-serial_detection-open_wifi = Підключити до Wi-Fi
-serial_detection-open_serial = Відкрити послідовну консоль
-serial_detection-submit = Підтвердити!
-serial_detection-close = Закрити
 
 ## Navigation bar
 
@@ -120,13 +120,12 @@ widget-developer_mode = Режим розробника
 widget-developer_mode-high_contrast = Висока контрастність
 widget-developer_mode-precise_rotation = Точне обертання
 widget-developer_mode-fast_data_feed = Швидка подача даних
-widget-developer_mode-sort_by_name = Сортування за назвою
 widget-developer_mode-raw_slime_rotation = Необроблене обертання
-widget-developer_mode-more_info = Детальніше
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Обертання
+widget-imu_visualizer-hide = Сховати
 widget-imu_visualizer-rotation_raw = Необроблене
 widget-imu_visualizer-rotation_preview = Попередній перегляд
 
@@ -137,7 +136,6 @@ tracker-status-busy = Зайнятий
 tracker-status-error = Помилка
 tracker-status-disconnected = Відключено
 tracker-status-occluded = Закрито
-tracker-status-ok = OK
 tracker-status-timed_out = Минув час очікування
 
 ## Tracker status columns
@@ -146,12 +144,10 @@ tracker-table-column-name = Ім'я
 tracker-table-column-type = Тип
 tracker-table-column-battery = Батарея
 tracker-table-column-ping = Пінг
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Темп. °C
 tracker-table-column-linear-acceleration = Прискорення X/Y/Z
 tracker-table-column-rotation = Обертання X/Y/Z
 tracker-table-column-position = Позиція X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -191,9 +187,16 @@ tracker-settings-mounting_section-edit = Змінити місце розташ�
 tracker-settings-name_section = Ім'я трекера
 tracker-settings-name_section-description = Дайте йому миле прізвисько °^°
 tracker-settings-name_section-placeholder = Ліва нога NightyBeast
+tracker-settings-name_section-label = Ім'я трекера
 tracker-settings-forget = Забути трекери
 tracker-settings-forget-description = Прибирає трекер із SlimeVR і забороняє йому підключатися до сервера до того, як він буде перезапущений. Конфігурацію трекера не буде втрачено.
 tracker-settings-forget-label = Забути трекери
+
+## Dongle settings
+
+dongle-infos-hardware_revision = Ревізія обладнання
+dongle-status-disconnected = Відключено
+dongle-settings-back = Повернутися до списку трекерів
 
 ## Tracker part card info
 
@@ -208,6 +211,11 @@ body_assignment_menu-unassign_tracker = Відв'язати трекер
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -225,12 +233,20 @@ mounting_selection_menu-close = Закрити
 
 settings-sidebar-title = Параметри
 settings-sidebar-general = Загальні
+settings-sidebar-trackers = Трекери
 settings-sidebar-interface = Інтерфейс
-settings-sidebar-osc_trackers = VRChat OSC трекери
 settings-sidebar-utils = Утиліти
 settings-sidebar-serial = Послідовна консоль
 settings-sidebar-appearance = Зовнішність
 settings-sidebar-notifications = Сповіщення
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Скасувати
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Увімкнути
 
 ## Tracker mechanics
 
@@ -253,6 +269,14 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Зберігає калібрування положення трекерів на тілі між перезавантаженнями. Корисний
     при носінні костюма, в якому трекери не переміщаються між сесіями. <b>Не рекомендується для звичайних користувачів!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Зберегти калібрування положення
+settings-stay_aligned-general-label = Загальні
+settings-stay_aligned-relaxed_poses-close = Закрити
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Повне скидання
+settings-keybinds_yaw-reset = Скинути нахил
+settings-keybinds-recorder-modal-cancel-button = Скасувати
 
 ## FK/Tracking settings
 
@@ -336,9 +360,6 @@ settings-interface-appearance-font_size-description = Це впливає на �
 ## Notification settings
 
 settings-interface-notifications = Повідомлення
-settings-general-interface-serial_detection = Виявлення послідовного пристрою
-settings-general-interface-serial_detection-description = Цей параметр відображатиме спливаюче вікно кожного разу, коли ви підключаєте новий послідовний пристрій, який може бути трекером. Це допомагає покращити процес налаштування трекера.
-settings-general-interface-serial_detection-label = Виявлення послідовного пристрою
 settings-general-interface-feedback_sound = Звук зворотного зв'язку
 settings-general-interface-feedback_sound-description = Ця опція відтворюватиме звуковий сигнал при спрацьовуванні скидання
 settings-general-interface-feedback_sound-label = Звук зворотного зв'язку
@@ -349,6 +370,8 @@ settings-general-interface-connected_trackers_warning-label = Попередже
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Режим розробника
+settings-general-interface-dev_mode-label = Режим розробника
 settings-general-interface-use_tray = Згорнути в системний трей
 settings-general-interface-use_tray-description = Дозволяє закрити вікно, не закриваючи сервер SlimeVR, так що ви можете продовжувати використати його, не турбуючись про інтерфейс.
 settings-general-interface-use_tray-label = Згорнути в системний трей
@@ -377,6 +400,8 @@ settings-serial-serial_select = Вибір послідовного порту
 settings-serial-auto_dropdown_item = Автоматично
 settings-serial-get_wifi_scan = Сканувати мережу Wi-Fi
 settings-serial-save_logs = Зберегти у файл
+settings-serial-send_command-warning-ok = Я знаю, що роблю
+settings-serial-send_command-warning-cancel = Скасувати
 
 ## OSC VRChat settings
 
@@ -394,6 +419,11 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Мережева адреса
 settings-osc-vrchat-network-address-description-v1 = Виберіть, за якою адресою надсилати дані. Можна залишити без змін для VRChat.
 settings-osc-vrchat-network-address-placeholder = IP-адреса VRChat
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Обертання
+settings-osc-vrchat-status-badge-error = Помилка
 
 ## VMC OSC settings
 
@@ -425,17 +455,20 @@ settings-osc-vmc-anchor_hip-label = Якір у стегон
 settings-osc-vmc-mirror_tracking = Дзеркальний трекінг
 settings-osc-vmc-mirror_tracking-description = Віддзеркалити трекери горизонтально.
 settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
+settings-osc-vmc-status-badge-error = Помилка
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-reset = Скинути налаштування
+settings-utils-advanced-reset_warning-cancel = Скасувати
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -451,12 +484,15 @@ onboarding-setup_warning-cancel = Продовжити налаштування
 
 ## Quiz
 
+onboarding-quiz_continue = Продовжити
+onboarding-quiz_back = Назад
+onboarding-quiz-mocap_preferences-head_tracker-yes = Так
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Підтвердити!
+onboarding-wifi_creds-ssid-label = Назва Wi-Fi
 onboarding-wifi_creds-ssid =
-    .label = Назва Wi-Fi
     .placeholder = Введіть назву Wi-Fi
 onboarding-wifi_creds-password =
     .label = Пароль
@@ -464,6 +500,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Закрити
 
 ## Setup start
 
@@ -475,6 +512,7 @@ onboarding-home-start = Давайте налаштуємося!
 onboarding-connect_tracker-title = Підключіть трекери
 onboarding-connect_tracker-issue-serial = У мене виникли проблеми з підключенням!
 onboarding-connect_tracker-usb = USB-трекер
+onboarding-connect_tracker-close = Закрити
 onboarding-connect_tracker-connection_status-serial_init = Підключення до послідовного пристрою
 onboarding-connect_tracker-connection_status-provisioning = Надсилання даних Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Спроба підключення до Wi-Fi
@@ -511,6 +549,11 @@ onboarding-assign_trackers-assigned =
         [many] { $assigned } з { $trackers } трекерів призначенно
        *[other] { $assigned } з { $trackers } трекерів призначенно
     }
+onboarding-assign_trackers-tap_modal-cancel = Скасувати
+onboarding-assign_trackers-side-right = Справа
+onboarding-assign_trackers-side-left = Зліва
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Дзеркальний вигляд
 
 ## Tracker assignment warnings
 
@@ -547,9 +590,12 @@ onboarding-manual_mounting-next = Наступний крок
 
 ## Tracker automatic mounting setup
 
+onboarding-automatic_mounting-title = Калібрування положення
+onboarding-automatic_mounting-manual_mounting = Самостійна прив'язка
 onboarding-automatic_mounting-next = Наступний крок
 onboarding-automatic_mounting-prev_step = Попередній крок
 onboarding-automatic_mounting-done-restart = Спробуйте знову
+onboarding-automatic_mounting-mounting_reset-title = Калібрування положення
 
 ## Tracker manual proportions setupa
 
@@ -562,6 +608,7 @@ onboarding-automatic_proportions-start_recording-title = Приготуйтес�
 onboarding-automatic_proportions-start_recording-next = Почати запис
 onboarding-automatic_proportions-recording-title = ЗАПИС
 onboarding-automatic_proportions-recording-description-p1 = Повторюйте рухи, показані нижче:
+onboarding-automatic_proportions-recording-processing = Обробка результату
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
@@ -578,21 +625,23 @@ onboarding-automatic_proportions-verify_results-processing = Обробка ре
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-verify_mounting-title = Калібрування положення
 
 ## Home
 
+home-settings-close = Закрити
+home-no_trackers-connect = Підключіть трекери
 
 ## Trackers Still On notification
 
 
-## Status system
-
-
 ## Firmware tool globals
 
+firmware_tool-loading = Підключення до сервера
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Версія прошивки
 
 ## firmware tool build status
 
@@ -605,6 +654,7 @@ onboarding-automatic_proportions-verify_results-processing = Обробка ре
 
 ## Tray Menu
 
+tray_menu-hide = Сховати
 
 ## First exit modal
 
@@ -627,3 +677,6 @@ unknown_device-modal-forget = Ігнорувати
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Закрити
+toolbar-mounting_calibration = Калібрування положення
+toolbar-mounting_calibration-feet = Ступні
