@@ -13,6 +13,14 @@ fun reduce(state: VRCOSCState, action: VRCOSCActions): VRCOSCState = when (actio
 		status = state.status.copy(lastReceivedInputMillis = action.millis),
 	)
 
+	is VRCOSCActions.SetLastReceivedTracking -> state.copy(
+		status = state.status.copy(lastReceivedTrackingMillis = action.millis),
+	)
+
+	is VRCOSCActions.SetTrackingDataState -> state.copy(
+		status = state.status.copy(trackingDataState = action.state),
+	)
+
 	is VRCOSCActions.SetOscQuery -> state.copy(
 		status = state.status.copy(
 			oscQueryState = action.state,

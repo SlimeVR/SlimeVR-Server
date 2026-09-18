@@ -18,6 +18,7 @@ import dev.slimevr.vrchat.VRCConfigState
 import dev.slimevr.vrchat.computeRecommendedValues
 import dev.slimevr.vrchat.computeValidity
 import dev.slimevr.vrchat.isVRCConfigValid
+import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,6 +46,7 @@ import solarxr_protocol.rpc.TrackingChecklistStepVisibility
 import solarxr_protocol.rpc.TrackingChecklistTrackerError
 import solarxr_protocol.rpc.TrackingChecklistTrackerReset
 import solarxr_protocol.rpc.TrackingChecklistUnassignedHMD
+import solarxr_protocol.rpc.VRCOSCTrackingDataState
 
 // Flat-maps a server state flow into a combined flow of all context states for a given collection.
 // Re-emits whenever any item's state changes or the collection itself changes.
@@ -281,6 +283,30 @@ class NetworkProfileCheckBehaviour(
 			}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class VRChatOscTrackingDisabledCheckBehaviour(
+	private val vrcOscManager: VRCOSCManager,
+	private val settings: Settings,
+) : TrackingChecklistBehaviourType {
+	companion object {
+		fun computeStep(enabled: Boolean, trackingDataState: VRCOSCTrackingDataState): TrackingChecklistStep = TrackingChecklistStep(
+			valid = trackingDataState != VRCOSCTrackingDataState.DISABLED_IN_VRCHAT,
+			enabled = enabled,
+			ignorable = true,
+			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+		)
+	}
+
+	override fun observe(receiver: TrackingChecklist) {
+		combine(
+			settings.context.state.map { state -> state.data.vrcOscConfig.enabled }.distinctUntilChanged(),
+			vrcOscManager.context.state.map { state -> state.status.trackingDataState }.distinctUntilChanged(),
+		) { enabled, trackingDataState -> computeStep(enabled, trackingDataState) }
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }

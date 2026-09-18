@@ -14,8 +14,10 @@ import {
   VRCOSCStatusChangeResponseT,
   VRCOSCStatusRequestT,
   VRCOSCTargetSource,
+  VRCOSCTrackingDataState,
   type VRCOSCDiscoveredTargetT,
 } from 'solarxr-protocol';
+import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Input } from '@/components/commons/Input';
@@ -60,7 +62,10 @@ type Badge =
   | 'searching'
   | 'idle'
   | 'disabled'
-  | 'error';
+  | 'error'
+  | 'received'
+  | 'not-sent'
+  | 'unknown';
 
 const BADGE_VARIANTS: Record<Badge, StatusVariant> = {
   listening: 'success',
@@ -70,6 +75,9 @@ const BADGE_VARIANTS: Record<Badge, StatusVariant> = {
   idle: 'neutral',
   disabled: 'neutral',
   error: 'critical',
+  received: 'success',
+  'not-sent': 'warning',
+  unknown: 'neutral',
 };
 
 function VrcBadge({ badge }: { badge: Badge }) {
@@ -100,6 +108,12 @@ const OSCQUERY_BADGES: Record<VRCOSCOscQueryState, Badge> = {
   [VRCOSCOscQueryState.ERROR]: 'error',
 };
 
+const TRACKING_DATA_BADGES: Record<VRCOSCTrackingDataState, Badge> = {
+  [VRCOSCTrackingDataState.UNKNOWN]: 'unknown',
+  [VRCOSCTrackingDataState.DISABLED_IN_VRCHAT]: 'not-sent',
+  [VRCOSCTrackingDataState.RECEIVED]: 'received',
+};
+
 function inputBadge(state: VRCOSCInputState, received: boolean): Badge {
   if (state === VRCOSCInputState.LISTENING && received) return 'listening';
   return INPUT_BADGES[state];
@@ -119,6 +133,8 @@ function StatusCard({
   const outputState = status.outputState ?? VRCOSCOutputState.IDLE;
   const oscQueryState = status.oscqueryState ?? VRCOSCOscQueryState.DISABLED;
   const targetSource = status.targetSource ?? VRCOSCTargetSource.NONE;
+  const trackingDataState =
+    status.trackingDataState ?? VRCOSCTrackingDataState.UNKNOWN;
 
   const sourceLabel =
     targetSource === VRCOSCTargetSource.MANUAL
@@ -129,6 +145,7 @@ function StatusCard({
 
   const lastInputElapsed = relativeTime(status.lastReceivedInputMillis);
   const lastFrameElapsed = relativeTime(status.lastFrameSentMillis);
+  const lastTrackingElapsed = relativeTime(status.lastReceivedTrackingMillis);
 
   return (
     <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-md divide-y divide-background-60">
@@ -174,6 +191,41 @@ function StatusCard({
               />
             )}
           </>
+        )}
+      </StatusRow>
+
+      <StatusRow
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vrchat-status-tracking"
+          />
+        }
+        badge={<VrcBadge badge={TRACKING_DATA_BADGES[trackingDataState]} />}
+      >
+        {trackingDataState === VRCOSCTrackingDataState.RECEIVED ? (
+          lastTrackingElapsed ? (
+            <Typography
+              color="secondary"
+              id="settings-osc-vrchat-status-tracking-received"
+              vars={{ elapsed: lastTrackingElapsed }}
+            />
+          ) : null
+        ) : trackingDataState === VRCOSCTrackingDataState.DISABLED_IN_VRCHAT ? (
+          <Typography
+            color="secondary"
+            id="settings-osc-vrchat-status-tracking-disabled"
+            elems={{
+              OscTrackingLink: (
+                <A href="https://docs.slimevr.dev/server/osc-information.html" />
+              ),
+            }}
+          />
+        ) : (
+          <Typography
+            color="secondary"
+            id="settings-osc-vrchat-status-tracking-unknown"
+          />
         )}
       </StatusRow>
 

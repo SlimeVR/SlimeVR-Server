@@ -179,6 +179,13 @@ class VRCOSCInputBehaviour(
 		receiver: VRCOSCManager,
 		portIn: Int,
 	) {
+		receiver.context.dispatchAll(
+			listOf(
+				VRCOSCActions.SetInput(state = VRCOSCInputState.LISTENING, port = portIn),
+				VRCOSCActions.SetLastReceivedInput(System.currentTimeMillis()),
+			),
+		)
+
 		if (!message.address.startsWith("$TRACKING_VRSYSTEM_PATH/")) return
 		val tracker = when (message.address) {
 			"$TRACKING_VRSYSTEM_PATH/head/pose" -> VRSystemTracker.HEAD
@@ -197,11 +204,6 @@ class VRCOSCInputBehaviour(
 			),
 		)
 		registry.setStatus(TrackerStatus.OK)
-		receiver.context.dispatchAll(
-			listOf(
-				VRCOSCActions.SetInput(state = VRCOSCInputState.LISTENING, port = portIn),
-				VRCOSCActions.SetLastReceivedInput(System.currentTimeMillis()),
-			),
-		)
+		receiver.context.dispatch(VRCOSCActions.SetLastReceivedTracking(System.currentTimeMillis()))
 	}
 }
