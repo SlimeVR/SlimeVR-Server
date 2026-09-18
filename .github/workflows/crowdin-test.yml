@@ -26,7 +26,8 @@ jobs:
           upload_translations: false
           download_translations: true
           localization_branch_name: ${{ inputs.localization_branch }}
-          dry_run: ${{ inputs.dry_run }}
+          dryrun_action: ${{ inputs.dry_run }}
           create_pull_request: false
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          base_url: 'https://slimevr.api.crowdin.com'
