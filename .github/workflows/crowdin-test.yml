@@ -11,6 +11,10 @@ on:
         description: 'Branch to target for translations'
         type: string
         default: 'l10n_main'
+      upload_translations:
+        description: 'Upload existing translations to Crowdin (Use only for initial import!)'
+        type: boolean
+        default: false
 
 jobs:
   test-crowdin:
@@ -26,7 +30,7 @@ jobs:
         uses: crowdin/github-action@v2
         with:
           upload_sources: true
-          upload_translations: false
+          upload_translations: ${{ inputs.upload_translations }}
           download_translations: true
           localization_branch_name: ${{ inputs.localization_branch }}
           crowdin_branch_name: ${{ inputs.localization_branch }}
