@@ -17,7 +17,6 @@ websocket-error-logs = Mở thư mục nhật ký logs
 
 ## Update notification
 
-version_update-title = Phiên bản mới có thể cập nhật:
 version_update-description = Nhấp vào "{ version_update-update }" sẽ tải xuống trình cài đặt SlimeVR cho bạn.
 version_update-update = Cập nhật
 version_update-close = Đóng
@@ -32,6 +31,19 @@ tips-failed_webgl = Không thể khởi tạo WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Đóng
+
 ## Body parts
 
 body_part-NONE = Chưa được gán
@@ -45,8 +57,6 @@ body_part-RIGHT_UPPER_LEG = Bắp chân phải
 body_part-RIGHT_LOWER_LEG = Cẳng chân phải
 body_part-RIGHT_FOOT = Bàn chân phải
 body_part-UPPER_CHEST = Ngực trên
-body_part-CHEST = Ngực
-body_part-WAIST = Eo
 body_part-HIP = Hông
 body_part-LEFT_SHOULDER = Vai trái
 body_part-LEFT_UPPER_ARM = Bắp tay trái
@@ -58,8 +68,7 @@ body_part-LEFT_FOOT = Bàn chân trái
 
 ## BoardType
 
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-UNKNOWN = Không rõ
 
 ## Proportions
 
@@ -68,8 +77,6 @@ skeleton_bone-HEAD = Sai số đầu
 skeleton_bone-NECK = Chiều dài cổ
 skeleton_bone-torso_group = Độ dài thân
 skeleton_bone-UPPER_CHEST = Độ dài ngực trên
-skeleton_bone-CHEST = Khoảng cách ngực
-skeleton_bone-WAIST = Khoảng cách eo
 skeleton_bone-HIP = Khoảng cách hông
 skeleton_bone-HIPS_WIDTH = Chiều rộng hông
 skeleton_bone-leg_group = Chiều dài chân
@@ -93,16 +100,6 @@ reset-reset_all_warning-cancel = Hủy
 reset-full = Đặt lại
 reset-mounting = Đặt lại hướng gắn tracker
 reset-yaw = Đặt lại chiều quay lệch
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Tìm thấy thiết bị mới!
-serial_detection-new_device-p1 = Nhập thông tin Wi-Fi
-serial_detection-new_device-p2 = Chọn hành động cần thực hiện
-serial_detection-open_wifi = Kết nối đến Wi-Fi
-serial_detection-open_serial = Mở cổng Serial
-serial_detection-submit = Gửi
-serial_detection-close = Đóng
 
 ## Navigation bar
 
@@ -129,9 +126,7 @@ widget-developer_mode = Chế độ nhà phát triển
 widget-developer_mode-high_contrast = Chế độ tương phản cao
 widget-developer_mode-precise_rotation = Hiển thị góc quay chính xác
 widget-developer_mode-fast_data_feed = Tăng tốc độ gửi dữ liệu
-widget-developer_mode-sort_by_name = Sắp xếp theo tên
 widget-developer_mode-raw_slime_rotation = Sử dụng giá trị góc quay thực cho tracker
-widget-developer_mode-more_info = Thêm thông tin
 
 ## Widget: IMU Visualizer
 
@@ -158,8 +153,6 @@ tracker-status-timed_out = Hết thời gian chờ
 tracker-table-column-name = Tên
 tracker-table-column-type = Loại
 tracker-table-column-battery = Pin
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Nhiệt độ (°C)
 tracker-table-column-linear-acceleration = Tốc độ X/Y/Z
 tracker-table-column-rotation = Góc quay X/Y/Z
@@ -184,7 +177,6 @@ tracker-infos-manufacturer = Nhà sản xuất
 tracker-infos-display_name = Tên hiển thị
 tracker-infos-custom_name = Tên gọi
 tracker-infos-url = Đường dẫn
-tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = Cảm biến IMU (IMU Sensor)
 tracker-infos-board_type = Bảng mạch chính
 tracker-infos-network_version = Phiên bản giao thức
@@ -204,9 +196,16 @@ tracker-settings-mounting_section-edit = Thay đổi chỗ đặt
 tracker-settings-name_section = Tên tracker
 tracker-settings-name_section-description = Đặt cho nó một cái tên đẹp :3
 tracker-settings-name_section-placeholder = Chân trái của JINODK
+tracker-settings-name_section-label = Tên tracker
 tracker-settings-forget = Quên thiết bị
 tracker-settings-forget-description = Xóa thiết bị khỏi phần mềm SlimeVR và ngăn nó kết nối với nó cho đến khi máy chủ được khởi động lại. Cấu hình của trình theo dõi sẽ không bị mất.
 tracker-settings-forget-label = Quên thiết bị
+
+## Dongle settings
+
+dongle-infos-hardware_revision = Revision phần cứng
+dongle-status-disconnected = Đã ngắt kết nối
+dongle-settings-back = Quay lại danh sách tracker
 
 ## Tracker part card info
 
@@ -221,6 +220,11 @@ body_assignment_menu-unassign_tracker = Bỏ gán tracker
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -238,13 +242,21 @@ mounting_selection_menu-close = Đóng
 
 settings-sidebar-title = Cài đặt
 settings-sidebar-general = Cài đặt chung
+settings-sidebar-trackers = Cấu hình Tracker
 settings-sidebar-interface = Giao diện
-settings-sidebar-osc_trackers = Trình theo dõi VRChat OSC
 settings-sidebar-utils = Công cụ
 settings-sidebar-serial = Cổng Serial
 settings-sidebar-appearance = Giao diện
 settings-sidebar-notifications = Thông báo
 settings-sidebar-advanced = Cài đặt mở rộng
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Hủy
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Bật
 
 ## Tracker mechanics
 
@@ -267,6 +279,15 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Lưu thiết bị đã giao tự động cho các thiết bị giữa các lần khởi động lại. Có ích
     khi mặc một bộ đồ SlimeVR mà trình theo dõi không di chuyển giữa các phiên. <b>Không được khuyến khích cho người dùng bình thường!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Đặt lại hướng gắn thiết bị
+settings-stay_aligned-general-label = Cài đặt chung
+settings-stay_aligned-relaxed_poses-close = Đóng
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Đặt lại
+settings-keybinds_yaw-reset = Đặt lại chiều quay lệch
+settings-keybinds_reset-all-button = Đặt lại tất cả
+settings-keybinds-recorder-modal-cancel-button = Hủy
 
 ## FK/Tracking settings
 
@@ -351,9 +372,6 @@ settings-interface-appearance-font_size-description = Điều này ảnh hưởn
 ## Notification settings
 
 settings-interface-notifications = Thông báo
-settings-general-interface-serial_detection = Nhận dạng thiết bị Serial mới
-settings-general-interface-serial_detection-description = Hiển thị pop-up mỗi lần một thiết bị Serial mới được kết nối qua USB (có thể là tracker), giúp cải thiện quá trình thiết lập tracker
-settings-general-interface-serial_detection-label = Nhận dạng thiết bị Serial mới
 settings-general-interface-feedback_sound = Âm thanh phản hồi
 settings-general-interface-feedback_sound-description = Tùy chọn này sẽ phát âm thanh khi thiết lập lại được kích hoạt.
 settings-general-interface-feedback_sound-label = Âm thanh phản hồi
@@ -364,6 +382,8 @@ settings-general-interface-connected_trackers_warning-label = Cảnh báo thiế
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Chế độ nhà phát triển
+settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
 settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
@@ -397,6 +417,8 @@ settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
 settings-serial-save_logs = Lưu vào tệp
+settings-serial-send_command-warning-ok = Tôi biết mình đang làm gì
+settings-serial-send_command-warning-cancel = Hủy
 
 ## OSC VRChat settings
 
@@ -422,9 +444,14 @@ settings-osc-vrchat-network-address = Địa chỉ mạng
 settings-osc-vrchat-network-address-description-v1 = Chọn địa chỉ để gửi dữ liệu đến. Có thể giữ nguyên cho VRChat.
 settings-osc-vrchat-network-address-placeholder = Địa chỉ IP của thiết bị chơi VRChat
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Góc quay
+settings-osc-vrchat-status-badge-error = Lỗi
+settings-osc-vrchat-status-badge-unknown = Không rõ
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Thay đổi cài đặt cụ thể cho giao thức VMC (Virtual Motion Capture)
@@ -452,6 +479,7 @@ settings-osc-vmc-anchor_hip-label = Cố định ở hông
 settings-osc-vmc-mirror_tracking = Phản chiếu ngược theo dõi cơ thể
 settings-osc-vmc-mirror_tracking-description = Phản chiếu theo dõi theo chiều ngang.
 settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ thể
+settings-osc-vmc-status-badge-error = Lỗi
 
 ## Common OSC settings
 
@@ -464,11 +492,12 @@ settings-utils-advanced-reset-all-label = Đặt lại tất cả
 settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
 settings-utils-advanced-open_data-label = Mở thư mục
+settings-utils-advanced-open_logs-label = Mở thư mục
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -484,12 +513,15 @@ onboarding-setup_warning-cancel = Tiếp tục thiết lập
 
 ## Quiz
 
+onboarding-quiz_continue = Tiếp tục
+onboarding-quiz_back = Khuỷu tay ra sau
+onboarding-quiz-mocap_preferences-head_tracker-yes = Có
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Gửi
+onboarding-wifi_creds-ssid-label = Tên hiển thị
 onboarding-wifi_creds-ssid =
-    .label = Tên hiển thị
     .placeholder = Nhập tên Wi-Fi
 onboarding-wifi_creds-password =
     .label = Mật khẩu
@@ -497,6 +529,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Đóng
 
 ## Setup start
 
@@ -507,7 +540,7 @@ onboarding-home-start = Bắt đầu thiết lập!
 
 onboarding-connect_tracker-title = Kết nối tracker
 onboarding-connect_tracker-issue-serial = Có vấn đề với việc kết nối? Kiểm tra thông tin qua cổng Serial
-onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-close = Đóng
 onboarding-connect_tracker-connection_status-serial_init = Kết nối với thiết bị nối tiếp serial
 onboarding-connect_tracker-connection_status-provisioning = Đang gửi thông tin Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Đang gửi thông tin Wi-Fi
@@ -540,6 +573,11 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } trên 1 tracker đã giao
        *[other] { $assigned } trên { $trackers } tracker đã giao
     }
+onboarding-assign_trackers-tap_modal-cancel = Hủy
+onboarding-assign_trackers-side-right = Phải
+onboarding-assign_trackers-side-left = Trái
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Xem hình phản chiếu
 
 ## Tracker assignment warnings
 
@@ -646,6 +684,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
 onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
 onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
+## Tracker manual proportions setupa
+
+
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Quay lại cân chỉnh hướng gắn
@@ -667,7 +708,6 @@ onboarding-automatic_proportions-requirements-next = Tôi đã đọc các yêu 
 onboarding-automatic_proportions-start_recording-title = Chuẩn bị đo
 onboarding-automatic_proportions-start_recording-description = Phần mềm sẽ đo một số chuyển động, cử chỉ cụ thể, hãy chuẩn bị cho việc di chuyển theo yêu cầu trong phần tiếp theo
 onboarding-automatic_proportions-start_recording-next = Bắt đầu
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Đang ghi...
 onboarding-automatic_proportions-recording-description-p1 = Thực hiện các thao tác sau:
 # Each line of text is a different list item
@@ -700,6 +740,16 @@ onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = Đeo tracker lên người
+onboarding-stay_aligned-put_trackers_on-next = Tiếp tục
+onboarding-stay_aligned-verify_mounting-title = Đặt lại hướng gắn
+onboarding-stay_aligned-preparation-title = Chuẩn bị tư thế
+
+## Home
+
+home-settings-close = Đóng
+home-no_trackers-connect = Kết nối tracker
+
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Tracker vẫn còn bật
@@ -711,9 +761,11 @@ trackers_still_on-modal-cancel = Vui lòng đợi...
 
 ## Firmware tool globals
 
+firmware_tool-loading = Đang kết nối với máy chủ
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Phiên bản firmware
 
 ## firmware tool build status
 
@@ -751,9 +803,16 @@ unknown_device-modal-description =
     Bạn có muốn kết nối nó với SlimeVR không?
 unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
+vrc_config-spine_mode-UNKNOWN = Không rõ
+vrc_config-tracker_model-UNKNOWN = Không rõ
+vrc_config-avatar_measurement_type-UNKNOWN = Không rõ
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Đóng
+tracking_checklist-UNASSIGNED_HMD-desc = Kính thực tế ảo VR này nên được giao là bộ theo dõi đầu.
+toolbar-mounting_calibration = Đặt lại hướng gắn
+toolbar-mounting_calibration-feet = Bàn chân
