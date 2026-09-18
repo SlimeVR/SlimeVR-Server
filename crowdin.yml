@@ -1,0 +1,3 @@
+files:
+  - source: gui/public/i18n/en/translation.ftl
+    translation: gui/public/i18n/%two_letters_code%/translation.ftl
