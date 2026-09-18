@@ -109,6 +109,7 @@
 
 ## Appearance settings
 
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 
 ## Notification settings
 
