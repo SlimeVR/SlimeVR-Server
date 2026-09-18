@@ -32,7 +32,7 @@
 package com.jme3.math
 
 import io.github.axisangles.ktmath.Vector3
-import io.github.axisangles.ktmath.Vector3.Companion.NULL
+import io.github.axisangles.ktmath.Vector3.Companion.ZERO
 import java.util.*
 import kotlin.math.*
 
@@ -358,8 +358,8 @@ object FastMath {
 	): Float {
 		val epsilon = 0.001f
 		val middleValue = (startRange + endRange) * 0.5f
-		var start = NULL
-		var end = NULL
+		var start = ZERO
+		var end = ZERO
 		if (startRange != 0f) {
 			start = interpolateCatmullRom(startRange, curveTension, p0, p1, p2, p3)
 		}
@@ -663,4 +663,9 @@ object FastMath {
 				or ((f shr 13) and 0x03ff)
 			).toShort()
 	}
+
+	/**
+	 * Linearly interpolates between 2 numbers
+	 */
+	fun lerp(from: Float, to: Float, t: Float): Float = from + (to - from) * t
 }

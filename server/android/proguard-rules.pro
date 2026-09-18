@@ -25,6 +25,9 @@
 -dontwarn org.jetbrains.annotations.Async$Schedule
 -dontwarn reactor.blockhound.integration.BlockHoundIntegration
 
+# JDK-only, referenced by ktor's ReloadingZipFileSystem which we never use
+-dontwarn com.sun.nio.file.**
+
 -keep class io.ktor.** { *; }
 -keep class io.netty.** { *; }
 -keep class kotlin.reflect.jvm.internal.** { *; }

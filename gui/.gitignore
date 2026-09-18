@@ -1,16 +1,16 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # JS/TS dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # Build artifacts
-/build
-/target
+build/
+target/
 
 # misc
 .DS_Store
@@ -26,8 +26,8 @@ yarn-error.log*
 *.log
 
 # vite
-/dist
-/stats.html
+dist/
+stats.html
 vite.config.ts.timestamp*
 electron.vite.config.*.mjs
 

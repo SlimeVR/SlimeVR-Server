@@ -4,8 +4,12 @@
 # Syncthing ignore file
 .stignore
 
-# Ignore .idea
-.idea
+# Ignore .idea, except shared project inspection profiles and run configurations
+.idea/*
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/*.xml
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml
 
 # Ignore .fleet
 .fleet
@@ -40,6 +44,9 @@ build/
 # direnv has been claimed for Nix usage
 .direnv/
 .devenv
+
+# Git worktrees
+.worktree/
 
 # Ignore Android local properties
 local.properties

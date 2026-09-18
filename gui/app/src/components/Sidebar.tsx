@@ -1,0 +1,264 @@
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { NavLink } from 'react-router-dom';
+import { Clickable } from './commons/Clickable';
+import { TrackingChecklist } from './tracking-checklist/TrackingChecklist';
+import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import classNames from 'classnames';
+import { Typography } from './commons/Typography';
+import { useLocaleConfig } from '@/i18n/config';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import {
+  RpcMessage,
+  SkeletonProportionsRequestT,
+  SkeletonProportionsResponseT,
+} from 'solarxr-protocol';
+import { Tooltip } from './commons/Tooltip';
+import { Vector3 } from 'three';
+import { RecordIcon } from './commons/icon/RecordIcon';
+import { PauseIcon } from './commons/icon/PauseIcon';
+import { HumanIcon } from './commons/icon/HumanIcon';
+import { EyeIcon } from './commons/icon/EyeIcon';
+import { useConfig } from '@/hooks/config';
+import { useBHV } from '@/hooks/bvh';
+import { usePauseTracking } from '@/hooks/pause-tracking';
+import { PlayIcon } from './commons/icon/PlayIcon';
+import { CubeIcon } from './commons/icon/CubeIcon';
+import { LineIcon } from './commons/icon/LineIcon';
+
+export function PreviewControls({ open }: { open: boolean }) {
+  const [userHeight, setUserHeight] = useState('');
+  const { currentLocales } = useLocaleConfig();
+  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+
+  const {
+    state: bvhState,
+    toggle: toggleBVH,
+    available: bvhAvailable,
+  } = useBHV();
+  const { paused, toggle: toggleTracking } = usePauseTracking();
+
+  const { cmFormat } = useMemo(() => {
+    const cmFormat = Intl.NumberFormat(currentLocales, {
+      style: 'unit',
+      unit: 'centimeter',
+      maximumFractionDigits: 1,
+    });
+    return { cmFormat };
+  }, [currentLocales]);
+  useRPCPacket(
+    RpcMessage.SkeletonProportionsResponse,
+    (data: SkeletonProportionsResponseT) => {
+      if (data.skeletonHeight)
+        setUserHeight(cmFormat.format((data.skeletonHeight * 100) / 0.936));
+    }
+  );
+
+  useEffect(() => {
+    sendRPCPacket(
+      RpcMessage.SkeletonProportionsRequest,
+      new SkeletonProportionsRequestT()
+    );
+  }, []);
+
+  return (
+    <>
+      <Tooltip
+        preferedDirection="bottom"
+        content={
+          <Typography id="onboarding-manual_proportions-estimated_height" />
+        }
+      >
+        <NavLink
+          to="/onboarding/body-proportions/scaled"
+          state={{ alonePage: true }}
+          className={classNames(
+            'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-pointer hover:bg-background-50 w-fit top-2 left-2 absolute',
+            {
+              'opacity-0 pointer-events-none': !open,
+              'opacity-100': open,
+            }
+          )}
+        >
+          <Typography variant="section-title">{userHeight}</Typography>
+        </NavLink>
+      </Tooltip>
+      <div className="absolute bottom-0 pb-4 flex justify-center w-full">
+        <div className="flex bg-background-80 bg-opacity-70 rounded-lg gap-2 px-4 py-2 items-center fill-background-10">
+          {bvhAvailable && (
+            <Tooltip
+              content={
+                <Typography
+                  variant="section-title"
+                  id={
+                    bvhState === 'idle'
+                      ? 'bvh-start_recording'
+                      : 'bvh-stop_recording'
+                  }
+                />
+              }
+              preferedDirection="top"
+            >
+              <Clickable
+                disabled={!open}
+                aria-disabled={!open}
+                pressed={bvhState !== 'idle'}
+                className={classNames(
+                  'flex justify-center items-center w-10 h-10 rounded-full hover:bg-background-60 cursor-pointer',
+                  { 'bg-background-60': bvhState !== 'idle' }
+                )}
+                onClick={() => toggleBVH()}
+              >
+                {bvhState === 'idle' && <RecordIcon width={20} />}
+                {bvhState !== 'idle' && (
+                  <div className="w-5 h-5 rounded-full bg-status-critical animate-pulse" />
+                )}
+              </Clickable>
+            </Tooltip>
+          )}
+          <Tooltip
+            content={
+              <Typography
+                variant="section-title"
+                id={paused ? 'tracking-paused' : 'tracking-unpaused'}
+              />
+            }
+            preferedDirection="top"
+          >
+            <Clickable
+              disabled={!open}
+              aria-disabled={!open}
+              pressed={paused}
+              className="flex justify-center items-center w-14 h-14 rounded-full bg-background-60 hover:bg-background-50 cursor-pointer"
+              onClick={() => toggleTracking()}
+            >
+              {!paused && <PauseIcon width={25} />}
+              {paused && <PlayIcon width={25} />}
+            </Clickable>
+          </Tooltip>
+          <Tooltip
+            content={
+              <Typography
+                variant="section-title"
+                id="preview-mocap_mode_soon"
+              />
+            }
+            preferedDirection="top"
+          >
+            <div className="flex justify-center items-center w-10 h-10 rounded-full cursor-not-allowed">
+              <HumanIcon width={20} />
+            </div>
+          </Tooltip>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PreviewSection({ open }: { open: boolean }) {
+  const { config, setConfig } = useConfig();
+  const [disabledRender, setDisabledRender] = useState(config?.skeletonPreview);
+
+  const toggleRender = () => {
+    setConfig({ skeletonPreview: disabledRender });
+  };
+
+  useLayoutEffect(() => {
+    // need useLayoutEffect to make sure that the state is corect before the first render of the skeleton
+    setDisabledRender(!config?.skeletonPreview);
+  }, [config]);
+
+  return (
+    <div
+      className={classNames(
+        'transition-opacity duration-500 delay-500 h-full relative',
+        {
+          'opacity-0': !open,
+          'opacity-100': open,
+        }
+      )}
+    >
+      <SkeletonVisualizerWidget
+        disabled={disabledRender || !open}
+        toggleDisabled={() => toggleRender()}
+        onInit={(context) => {
+          context.addView({
+            left: 0,
+            bottom: 0,
+            width: 1,
+            height: 1,
+            position: new Vector3(3, 2.5, -3),
+            onHeightChange(v, newHeight) {
+              v.controls.target.set(0, newHeight / 2.2, 0.1);
+              const scale = Math.max(1, newHeight) / 1.3;
+              v.camera.zoom = 1 / scale;
+            },
+          });
+        }}
+      />
+      <Tooltip
+        preferedDirection="bottom"
+        content={<Typography id="preview-disable_render" />}
+      >
+        <Clickable
+          disabled={!open}
+          aria-hidden={!open}
+          pressed={!disabledRender}
+          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
+          onClick={() => toggleRender()}
+        >
+          <EyeIcon width={18} closed={!disabledRender} />
+        </Clickable>
+      </Tooltip>
+      <Tooltip
+        preferedDirection="bottom"
+        content={<Typography id="preview-render_mode" />}
+      >
+        <Clickable
+          disabled={!open}
+          aria-hidden={!open}
+          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-14 top-2 bg-background-60 hover:bg-background-50"
+          onClick={() =>
+            setConfig({
+              skeletonPreviewStyle:
+                config?.skeletonPreviewStyle == 'lines' ? 'mesh' : 'lines',
+            })
+          }
+        >
+          {config?.skeletonPreviewStyle == 'lines' && <CubeIcon width={18} />}
+          {config?.skeletonPreviewStyle == 'mesh' && <LineIcon size={18} />}
+        </Clickable>
+      </Tooltip>
+      <PreviewControls open={open} />
+    </div>
+  );
+}
+
+export function Sidebar() {
+  const { closed, closing, toggleClosed } = useTrackingChecklist();
+
+  const closedHight = '90px';
+  const checklistSize = closed ? closedHight : 'calc(100% - 16px)';
+  const previewSize = closed ? `calc(100% - ${closedHight} - 24px)` : '0%';
+
+  return (
+    <>
+      <div
+        className="transition-[height] duration-500 rounded-lg my-2 bg-background-70 overflow-clip"
+        style={{ height: checklistSize }}
+      >
+        <TrackingChecklist
+          closed={closed}
+          closing={closing}
+          toggleClosed={toggleClosed}
+        />
+      </div>
+      <div
+        className="transition-[height] duration-500 rounded-lg my-2 bg-background-70 overflow-clip"
+        style={{ height: previewSize }}
+      >
+        <PreviewSection open={closed} />
+      </div>
+    </>
+  );
+}

@@ -19,14 +19,6 @@
 # Some server code~
 /server/ @ButterscotchV @loucass003 @Erimelowo
 
-/server/src/main/java/dev/slimevr/autobone/ @ButterscotchV
-/server/src/main/java/dev/slimevr/poserecorder/ @ButterscotchV
-/server/src/main/java/dev/slimevr/posestreamer/ @ButterscotchV
-
-/server/src/main/java/dev/slimevr/osc/ @Erimelowo
-/server/src/main/java/dev/slimevr/tracking/processor/ @Erimelowo
-/server/src/main/java/dev/slimevr/filtering/ @Erimelowo
-
 /bindings-provider/ @ImSapphire
 
 # Linux files

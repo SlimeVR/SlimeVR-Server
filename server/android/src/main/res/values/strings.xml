@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SlimeVR</string>
+    <string name="stop_server">Stop Server</string>
 </resources>

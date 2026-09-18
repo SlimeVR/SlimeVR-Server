@@ -10,7 +10,7 @@ import {
   shell,
   Tray,
 } from 'electron';
-import { IPC_CHANNELS } from '../shared';
+import { GHGet, GHReturn, IPC_CHANNELS } from '@slimevr/gui-shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
@@ -33,7 +33,7 @@ import { closeLogger, logger } from './logger';
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
-import { ServerStatusEvent } from 'electron/preload/interface';
+import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 
@@ -65,22 +65,39 @@ protocol.registerSchemesAsPrivileged([
 
 let mainWindow: BrowserWindow | null = null;
 
-handleIpc(IPC_CHANNELS.GH_FETCH, async (e, options) => {
-  if (options.type === 'fw-releases') {
-    return fetch(
-      'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
-    ).then((res) => res.json());
-  }
-  if (options.type === 'asset') {
-    if (
-      !options.url.startsWith(
-        'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
-      )
-    )
-      return null;
-    return fetch(options.url).then((res) => res.json());
-  }
+// While the keybind recorder is open, F3/F5/F7/F12/Ctrl+R must reach the renderer as
+// ordinary keydowns instead of being eaten by hardenWindow's reload/devtools guards below,
+// otherwise those keys can never be captured into a shortcut at all.
+let recordingKeybind = false;
+handleIpc(IPC_CHANNELS.SET_KEYBIND_RECORDING, (e, recording) => {
+  recordingKeybind = recording;
 });
+
+handleIpc(
+  IPC_CHANNELS.GH_FETCH,
+  async <T extends GHGet>(_e: unknown, options: T): Promise<GHReturn[T['type']]> => {
+    switch (options.type) {
+      case 'fw-releases': {
+        return fetch(
+          'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
+        ).then((res) => res.json()) as Promise<GHReturn[T['type']]>;
+      }
+      case 'asset': {
+        if (
+          !options.url.startsWith(
+            'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
+          )
+        )
+          return null;
+        return fetch(options.url).then((res) => res.json()) as Promise<
+          GHReturn[T['type']]
+        >;
+      }
+      default:
+        throw 'unhandled type';
+    }
+  }
+);
 
 handleIpc(IPC_CHANNELS.OS_STATS, async () => {
   return {
@@ -126,17 +143,20 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
   }
 });
 
-handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
-  const allowedUrls = [
-    /^steam:\/\//,
-    /^ms-settings:network$/,
-    /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
-    /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
-    /^https:\/\/discord\.gg\/slimevr$/,
-  ];
-  if (allowedUrls.find((a) => url.match(a))) open(url);
+const EXTERNAL_URL_ALLOWLIST = [
+  /^steam:\/\//,
+  /^ms-settings:network$/,
+  /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
+  /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
+  /^https:\/\/discord\.gg\/slimevr$/,
+];
+
+const openExternalUrl = (url: string) => {
+  if (EXTERNAL_URL_ALLOWLIST.some((a) => url.match(a))) open(url);
   else logger.error({ url }, 'attempted to open non-whitelisted URL');
-});
+};
+
+handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => openExternalUrl(url));
 
 handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
   const store = stores[type];
@@ -253,6 +273,41 @@ const saveWindowState = async () => {
   });
 };
 
+/**
+ * The renderer is our whole UI, not a web page: it should not spawn a second
+ * window, reload, or fire Chromium's page shortcuts. Shut that off here so the
+ * renderer never has to fight the browser. Dev tools stay reachable.
+ */
+function hardenWindow(win: BrowserWindow) {
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    openExternalUrl(url);
+    return { action: 'deny' };
+  });
+
+  const devMode = !!process.env.ELECTRON_RENDERER_URL;
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.type !== 'keyDown') return;
+    if (recordingKeybind) return;
+    const key = input.key.toLowerCase();
+    const mod = input.control || input.meta;
+
+    // Ctrl/Cmd+Shift+I, Cmd+Alt+I, F12 -> dev tools.
+    if (key === 'f12' || (key === 'i' && mod && (input.shift || input.alt))) {
+      event.preventDefault();
+      win.webContents.toggleDevTools();
+      return;
+    }
+
+    const blocked =
+      (input.alt && key === 'enter') || // "save page" / properties
+      key === 'f3' || // find next
+      key === 'f7' || // caret browsing
+      (!devMode && (key === 'f5' || (mod && key === 'r')));
+
+    if (blocked) event.preventDefault();
+  });
+}
+
 function createWindow() {
   const validatedState = validateWindowState(windowState);
 
@@ -273,6 +328,8 @@ function createWindow() {
       devTools: true,
     },
   });
+
+  hardenWindow(mainWindow);
 
   if (process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
@@ -404,7 +461,7 @@ const spawnServer = async () => {
   if (!javaBin) {
     dialog.showErrorBox(
       'SlimeVR',
-      'Unable to find a compatible Java version, please download Java 17 or higher'
+      'Unable to find a compatible Java version, Make sure to use the latest SlimeVR installer. Or install java 25 or higher'
     );
     app.quit();
     return;
@@ -496,6 +553,18 @@ app.whenReady().then(async () => {
   stores = await initStores();
   checkEnvironmentVariables();
   const server = await spawnServer();
+
+  // No app menu on Windows/Linux (the frame is custom and every default
+  // accelerator is unwanted). macOS keeps a minimal one so Cmd+C/V/Q work.
+  Menu.setApplicationMenu(
+    getPlatform() === 'macos'
+      ? Menu.buildFromTemplate([
+          { role: 'appMenu' },
+          { role: 'editMenu' },
+          { role: 'windowMenu' },
+        ])
+      : null
+  );
 
   createWindow();
 

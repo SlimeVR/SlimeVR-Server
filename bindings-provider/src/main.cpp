@@ -1,4 +1,3 @@
-#include <cassert>
 #include <csignal>
 #include <map>
 #include <optional>
@@ -9,13 +8,15 @@
 #include "flatbuffers/flatbuffers.h"
 #include "solarxr_protocol/generated/all_generated.h"
 
+#include "bridge/BridgeClient.hpp"
 #include "logger.hpp"
-#include "solarxr.hpp"
 #include "vr_utils.hpp"
 
 #include "openvr.h"
 
 #ifdef _WIN32
+#define WIN32_MEAN_AND_LEAN
+#define NOMINMAX
 #include <Windows.h>
 #else
 #include <cstdlib>
@@ -25,83 +26,77 @@ namespace fs = std::filesystem;
 using namespace std::chrono_literals;
 using namespace solarxr_protocol;
 
-static void shutdown_vr(vr::IVRSystem *_sys) { vr::VR_Shutdown(); }
+static void ShutdownVR(vr::IVRSystem* _sys) { vr::VR_Shutdown(); }
 
-static void onYawReset(SolarXRConnection &conn) {
+static void OnYawReset(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Yaw, 0, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::YAW, 0, 0.f);
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onFullReset(SolarXRConnection &conn) {
+static void OnFullReset(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Full, 0, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::FULL, 0, 0.f);
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onMountingCalibration(SolarXRConnection &conn) {
+static void OnMountingCalibration(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Mounting, 0, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, 0, 0.f);
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onFeetMountingCalibration(SolarXRConnection &conn) {
+static void OnFeetMountingCalibration(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto bodyParts = fbb.CreateVector(
         { datatypes::BodyPart::LEFT_FOOT, datatypes::BodyPart::RIGHT_FOOT });
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Mounting, bodyParts, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, bodyParts, 0.f);
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
-static void onToggleTracking(SolarXRConnection &conn) {
+static void OnToggleTracking(BridgeTransport& conn) {
     static bool shouldPause = false;
     flatbuffers::FlatBufferBuilder fbb;
 
     shouldPause = !shouldPause;
     auto toggleReq = rpc::CreateSetPauseTrackingRequest(fbb, shouldPause);
-    auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::SetPauseTrackingRequest,
-        toggleReq.Union());
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::SetPauseTrackingRequest, toggleReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
-    conn.sendMsg(fbb);
+    conn.SendMessage(fbb);
 }
 
 sig_atomic_t should_exit = 0;
 
-static void signal_handler(int signal) {
-    Logger::get().info("Received signal {}", signal);
+static void OnSignal(int signal) {
+    Logger::Get().Info("Received signal {}", signal);
     should_exit = 1;
 }
 
 int main() {
-    auto &logger = Logger::get();
+    auto& logger = Logger::Get();
 
     // Steam and SteamVR respectively set these environment variables on applications that
     // they spawn, which the SteamVR client library (vrclient) will then use as the
@@ -121,8 +116,8 @@ int main() {
     //
     // This is not documented anywhere publicly, see CVRClient::SendConnectMessage in vrclient instead.
 
-    constexpr const char *STEAM_APPID = "3245490";
-    constexpr const char *STEAMVR_APPKEY = "steam.overlay.3245490";
+    constexpr const char* STEAM_APPID = "3245490";
+    constexpr const char* STEAMVR_APPKEY = "steam.overlay.3245490";
 
 #ifdef _WIN32
     SetEnvironmentVariableA("SteamAppId", STEAM_APPID);
@@ -133,9 +128,10 @@ int main() {
 #endif
 
     try {
-        SolarXRConnection conn;
-        std::unique_ptr<vr::IVRSystem, decltype(&shutdown_vr)> sys{ nullptr,
-                                                                    shutdown_vr };
+        BridgeClient conn(nullptr, nullptr, [] { should_exit = 1; }, [](std::exception&) { should_exit = 1; });
+        conn.Start();
+
+        std::unique_ptr<vr::IVRSystem, decltype(&ShutdownVR)> sys{ nullptr, ShutdownVR };
 
         // On vrlink, VR_Init returns
         // VRInitError_Driver_WirelessHmdNotConnected while the connection
@@ -150,22 +146,19 @@ int main() {
         }
 
         if (sys == nullptr or err != vr::VRInitError_None) {
-            logger.error("Failed to init OpenVR: {} ({})",
+            logger.Error("Failed to init OpenVR: {} ({})",
                          vr::VR_GetVRInitErrorAsSymbol(err),
                          vr::VR_GetVRInitErrorAsEnglishDescription(err));
             return 1;
         }
 
-        logger.info("Initialised OpenVR, HMD model '{}'",
-                    VRUtils::getStringProp(vr::k_unTrackedDeviceIndex_Hmd,
-                                           vr::Prop_ModelNumber_String)
-                        .value_or("<unknown>"));
+        logger.Info("Initialised OpenVR, HMD model '{}'", VRUtils::GetStringProp(vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_ModelNumber_String).value_or("<unknown>"));
 
-        vr::IVRApplications *app = vr::VRApplications();
-        vr::IVRInput *input = vr::VRInput();
+        vr::IVRApplications* app = vr::VRApplications();
+        vr::IVRInput* input = vr::VRInput();
 
         fs::path actionManifestPath;
-        std::tie(std::ignore, actionManifestPath) = VRUtils::initialiseManifest();
+        std::tie(std::ignore, actionManifestPath) = VRUtils::InitialiseManifests();
 
         // We don't want our app key to randomly change if SteamVR decides to honour
         // application manifests with no binary path. Instead let it generate an
@@ -182,21 +175,16 @@ int main() {
         // SetActionManifestPath may return IPCError if vrserver is busy and takes
         // too long to reply, so keep invoking until it succeeds
         {
-            vr::EVRInputError err{};
+            vr::EVRInputError err;
             constexpr int max_tries = 5;
             int tries = 0;
-            while ((err = input->SetActionManifestPath(
-                        actionManifestPath.string().data()))
-                       == vr::VRInputError_IPCError
-                   && tries++ < max_tries) {
-                logger.debug("IPC error loading action manifest, retrying ({}/{})",
-                             tries, max_tries);
+            while ((err = input->SetActionManifestPath(actionManifestPath.string().data())) == vr::VRInputError_IPCError && tries++ < max_tries) {
+                logger.Debug("IPC error loading action manifest, retrying ({}/{})", tries, max_tries);
                 std::this_thread::sleep_for(20ms);
             }
 
             if (err != vr::VRInputError_None) {
-                logger.error("Failed to set action manifest path: {}",
-                             std::to_underlying(err));
+                logger.Error("Failed to set action manifest path: {}", std::to_underlying(err));
                 return 1;
             }
         }
@@ -204,84 +192,65 @@ int main() {
         vr::VRActionSetHandle_t action_set;
         if (auto err = input->GetActionSetHandle("/actions/main", &action_set);
             err != vr::VRInputError_None) {
-            logger.error("Failed to get main action set handle: {}",
-                         std::to_underlying(err));
+            logger.Error("Failed to get main action set handle: {}", std::to_underlying(err));
             return 1;
         }
 
-        std::map<std::string, std::tuple<vr::VRActionHandle_t, std::function<void(SolarXRConnection &)>>>
+        std::map<std::string, std::tuple<vr::VRActionHandle_t, std::function<void(BridgeTransport&)>>>
             actions{
-                { "/actions/main/in/YawReset",
-                  std::make_tuple(vr::k_ulInvalidActionHandle, onYawReset) },
-                { "/actions/main/in/FullReset",
-                  std::make_tuple(vr::k_ulInvalidActionHandle, onFullReset) },
-                { "/actions/main/in/MountingCalibration",
-                  std::make_tuple(vr::k_ulInvalidActionHandle,
-                                  onMountingCalibration) },
-                { "/actions/main/in/FeetMountingCalibration",
-                  std::make_tuple(vr::k_ulInvalidActionHandle,
-                                  onFeetMountingCalibration) },
-                { "/actions/main/in/ToggleTracking",
-                  std::make_tuple(vr::k_ulInvalidActionHandle, onToggleTracking) },
+                { "/actions/main/in/YawReset", std::make_tuple(vr::k_ulInvalidActionHandle, OnYawReset) },
+                { "/actions/main/in/FullReset", std::make_tuple(vr::k_ulInvalidActionHandle, OnFullReset) },
+                { "/actions/main/in/MountingCalibration", std::make_tuple(vr::k_ulInvalidActionHandle, OnMountingCalibration) },
+                { "/actions/main/in/FeetMountingCalibration", std::make_tuple(vr::k_ulInvalidActionHandle, OnFeetMountingCalibration) },
+                { "/actions/main/in/ToggleTracking", std::make_tuple(vr::k_ulInvalidActionHandle, OnToggleTracking) },
             };
 
-        for (auto &[name, tuple] : actions) {
-            auto &[handle, _] = tuple;
+        for (auto& [name, tuple] : actions) {
+            auto& [handle, _] = tuple;
             if (auto err = input->GetActionHandle(name.c_str(), &handle);
                 err != vr::VRInputError_None || handle == vr::k_ulInvalidActionHandle) {
-                logger.warning("Failed to get action handle for action {}: {}", name,
+                logger.Warning("Failed to get action handle for action {}: {}", name,
                                std::to_underlying(err));
             }
         }
 
         constexpr auto interval = 1000ms / 30;
 
-        signal(SIGINT, signal_handler);
-        signal(SIGTERM, signal_handler);
+        signal(SIGINT, OnSignal);
+        signal(SIGTERM, OnSignal);
         while (!should_exit) {
             vr::VREvent_t event{};
             while (sys->PollNextEvent(&event, sizeof(event))) {
                 switch (event.eventType) {
                 case vr::VREvent_Quit:
-                    logger.info("OpenVR runtime requested quit");
+                    logger.Info("OpenVR runtime requested quit");
                     should_exit = 1;
                     break;
                 case vr::VREvent_Input_BindingLoadFailed: {
-                    auto &loadData = event.data.inputBinding;
-                    logger.debug("Binding load failed (ulAppContainer={} "
-                                 "pathMessage={} pathUrl={} pathControllerType={})",
-                                 loadData.ulAppContainer, loadData.pathMessage,
-                                 loadData.pathUrl, loadData.pathControllerType);
+                    auto& loadData = event.data.inputBinding;
+                    logger.Debug("Binding load failed (ulAppContainer={} pathMessage={} pathUrl={} pathControllerType={})",
+                                 loadData.ulAppContainer, loadData.pathMessage, loadData.pathUrl, loadData.pathControllerType);
                     break;
                 }
                 case vr::VREvent_Input_BindingLoadSuccessful: {
-                    auto &loadData = event.data.inputBinding;
-                    logger.debug("Binding load successful (ulAppContainer={} "
-                                 "pathMessage={} pathUrl={} pathControllerType={})",
-                                 loadData.ulAppContainer, loadData.pathMessage,
-                                 loadData.pathUrl, loadData.pathControllerType);
+                    auto& loadData = event.data.inputBinding;
+                    logger.Debug("Binding load successful (ulAppContainer={} pathMessage={} pathUrl={} pathControllerType={})",
+                                 loadData.ulAppContainer, loadData.pathMessage, loadData.pathUrl, loadData.pathControllerType);
                     break;
                 }
                 case vr::VREvent_Input_ActionManifestReloaded:
-                    logger.debug("Action manifest reloaded");
+                    logger.Debug("Action manifest reloaded");
                     break;
                 case vr::VREvent_Input_ActionManifestLoadFailed: {
-                    auto &manifestData = event.data.actionManifest;
-                    logger.debug(
-                        "Action manifest load failed (pathAppKey={} pathMessage={} "
-                        "pathMessageParam={} pathManifestPath={})",
-                        manifestData.pathAppKey, manifestData.pathMessage,
-                        manifestData.pathMessageParam, manifestData.pathManifestPath);
+                    auto& manifestData = event.data.actionManifest;
+                    logger.Debug(
+                        "Action manifest load failed (pathAppKey={} pathMessage={} pathMessageParam={} pathManifestPath={})",
+                        manifestData.pathAppKey, manifestData.pathMessage, manifestData.pathMessageParam, manifestData.pathManifestPath);
                     break;
                 }
                 default:
                     break;
                 }
-            }
-
-            if (!conn.connected()) {
-                logger.warning("Connection to SlimeVR lost, exiting");
-                break;
             }
 
             vr::VRActiveActionSet_t set{
@@ -292,39 +261,38 @@ int main() {
             };
             if (auto err = input->UpdateActionState(&set, sizeof(set), 1);
                 err != vr::VRInputError_None) {
-                logger.warning("Error when updating action states: {}",
+                logger.Warning("Error when updating action states: {}",
                                std::to_underlying(err));
             }
 
-            for (auto &[name, tuple] : actions) {
-                auto &[handle, callback] = tuple;
+            for (auto& [name, tuple] : actions) {
+                auto& [handle, callback] = tuple;
                 vr::InputDigitalActionData_t action_data{};
                 if (auto err = input->GetDigitalActionData(
                         handle, &action_data, sizeof(action_data),
                         vr::k_ulInvalidInputValueHandle);
                     err != vr::VRInputError_None) {
-                    logger.warning("Failed to get action state for {} ({}): {}", name,
-                                   handle, std::to_underlying(err));
+                    logger.Warning("Failed to get action state for {} ({}): {}", name, handle, std::to_underlying(err));
                     continue;
                 }
 
                 if (action_data.bActive && action_data.bChanged && action_data.bState) {
-                    logger.debug("Action {} triggered", name);
+                    logger.Debug("Action {} triggered", name);
                     callback(conn);
                 }
             }
 
-            logger.flush();
+            logger.Flush();
             std::this_thread::sleep_for(interval);
         }
 
-        logger.info("Main loop done");
-    } catch (std::exception &ex) {
-        logger.error("Exception in main: {}", ex.what());
-        logger.flush();
+        logger.Info("Main loop done");
+    } catch (std::exception& ex) {
+        logger.Error("Exception in main: {}", ex.what());
+        logger.Flush();
         return 1;
     }
 
-    logger.flush();
+    logger.Flush();
     return 0;
 }

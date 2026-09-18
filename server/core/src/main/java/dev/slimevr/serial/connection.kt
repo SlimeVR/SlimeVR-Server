@@ -1,0 +1,63 @@
+package dev.slimevr.serial
+
+import dev.slimevr.context.Behaviour
+import dev.slimevr.context.Context
+import kotlinx.coroutines.CoroutineScope
+
+val MAC_REGEX = Regex("mac: (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})", RegexOption.IGNORE_CASE)
+
+data class SerialPortHandle(
+	val portLocation: String,
+	val descriptivePortName: String,
+	val writeCommand: suspend (String) -> Unit,
+	val close: suspend () -> Unit,
+)
+
+data class SerialConnectionState(
+	val portLocation: String,
+	val descriptivePortName: String,
+	val connected: Boolean,
+	val logLines: List<String>,
+)
+
+sealed interface SerialConnectionActions {
+	data class LogLine(val line: String) : SerialConnectionActions
+	data object ClearLogs : SerialConnectionActions
+	data object Disconnected : SerialConnectionActions
+}
+
+typealias SerialConnectionContext = Context<SerialConnectionState, SerialConnectionActions>
+typealias SerialConnectionBehaviour = Behaviour<SerialConnection.Console>
+
+sealed interface SerialConnection {
+	class Console(
+		val context: SerialConnectionContext,
+		val handle: SerialPortHandle,
+	) : SerialConnection {
+		fun startObserving() = context.observeAll(this)
+
+		companion object {
+			fun create(handle: SerialPortHandle, scope: CoroutineScope): Console {
+				val behaviours = emptyList<SerialConnectionBehaviour>()
+				val context = Context.create(
+					initialState = SerialConnectionState(
+						portLocation = handle.portLocation,
+						descriptivePortName = handle.descriptivePortName,
+						connected = true,
+						logLines = listOf(),
+					),
+					scope = scope,
+					reducer = ::reduce,
+					behaviours = behaviours,
+					name = "SerialConnection[${handle.descriptivePortName}]",
+				)
+
+				val conn = Console(context = context, handle = handle)
+				conn.startObserving()
+				return conn
+			}
+		}
+	}
+
+	data object Flashing : SerialConnection
+}

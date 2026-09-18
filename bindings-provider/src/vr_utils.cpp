@@ -11,14 +11,14 @@
 namespace fs = std::filesystem;
 
 std::optional<std::string>
-VRUtils::getStringProp(vr::TrackedDeviceIndex_t deviceIndex,
+VRUtils::GetStringProp(vr::TrackedDeviceIndex_t deviceIndex,
                        vr::ETrackedDeviceProperty prop) {
-    vr::IVRSystem *sys = vr::VRSystem();
+    vr::IVRSystem* sys = vr::VRSystem();
     vr::ETrackedPropertyError err{ vr::TrackedProp_Success };
 
     uint32_t required_len = sys->GetStringTrackedDeviceProperty(deviceIndex, prop, nullptr, 0, &err);
     if (err != vr::TrackedProp_BufferTooSmall) {
-        Logger::get().info(
+        Logger::Get().Info(
             "Failed to get size of string property {} for device {}: {}",
             std::to_underlying(prop), deviceIndex,
             sys->GetPropErrorNameFromEnum(err));
@@ -29,7 +29,7 @@ VRUtils::getStringProp(vr::TrackedDeviceIndex_t deviceIndex,
     sys->GetStringTrackedDeviceProperty(deviceIndex, prop, s.data(), required_len,
                                         &err);
     if (err != vr::TrackedProp_Success) {
-        Logger::get().info("Failed to get string property {} for device {}: {}",
+        Logger::Get().Info("Failed to get string property {} for device {}: {}",
                            std::to_underlying(prop), deviceIndex,
                            sys->GetPropErrorNameFromEnum(err));
         return std::nullopt;
@@ -38,8 +38,8 @@ VRUtils::getStringProp(vr::TrackedDeviceIndex_t deviceIndex,
     return s;
 }
 
-std::tuple<fs::path, fs::path> VRUtils::initialiseManifest() {
-    fs::path manifestDir = Paths::getDataPath() / "bindings-provider";
+std::tuple<fs::path, fs::path> VRUtils::InitialiseManifests() {
+    fs::path manifestDir = Paths::GetDataPath() / "bindings-provider";
     std::error_code ec;
     fs::create_directories(manifestDir, ec);
     if (ec) {
@@ -59,7 +59,7 @@ std::tuple<fs::path, fs::path> VRUtils::initialiseManifest() {
         std::make_pair("vive_controller.json"sv, SVR_VRAPP_VIVE_BINDS),
     };
 
-    for (auto &[name, contents] : requiredFiles) {
+    for (auto& [name, contents] : requiredFiles) {
         fs::path path = manifestDir / name;
         if (!fs::exists(path)) {
             std::ofstream stream(path);
