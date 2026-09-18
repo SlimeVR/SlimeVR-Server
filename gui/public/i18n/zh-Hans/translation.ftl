@@ -646,6 +646,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = 位置数据
 settings-general-fk_settings-ik-use_position = 使用位置数据
 settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = 手臂追踪
 settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
 settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
@@ -695,12 +698,15 @@ settings-general-gesture_control-trackers = { $amount } 个追踪器
 settings-general-gesture_control-yawResetEnabled = 开启敲击重置航向轴
 settings-general-gesture_control-yawResetDelay = 敲击重置航向轴延迟
 settings-general-gesture_control-yawResetTaps = 重置航向轴敲击次数
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = 开启敲击完整重置
 settings-general-gesture_control-fullResetDelay = 敲击完整重置延迟
 settings-general-gesture_control-fullResetTaps = 完整重置敲击次数
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
 settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 可触发敲击重置的追踪器数量
 settings-general-gesture_control-numberTrackersOverThreshold-description = 如敲击重置不起作用请增加此值。请在保证敲击重置可用的情况下将此值设置的尽可能低，否则会导致误报。
@@ -747,6 +753,9 @@ settings-general-interface-connected_trackers_warning-label = 退出时，有追
 ## Behavior settings
 
 settings-interface-behavior = 行为
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
 settings-general-interface-use_tray-label = 最小化至任务栏
@@ -790,6 +799,12 @@ settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 选择串行端口
 settings-serial-auto_dropdown_item = 自动
 settings-serial-get_wifi_scan = 扫描可用WiFi
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = 纯文本
 settings-serial-save_logs = 保存到文件
 settings-serial-send_command = 发送
@@ -813,10 +828,10 @@ settings-osc-router-network = 网络端口
 settings-osc-router-network-description =
     设置用于监听和向 VRChat 发送数据的端口
     这些端口可以与 SlimeVR 服务器中使用的其他端口相同。
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = 输入端口
     .placeholder = 输入端口（默认 9002）
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = 输出端口
     .placeholder = 输出端口（默认 9000）
 settings-osc-router-network-address = 网络地址
@@ -844,10 +859,10 @@ settings-osc-vrchat-oscqueryEnabled-description =
 settings-osc-vrchat-oscqueryEnabled-label = 启用 OSCQuery
 settings-osc-vrchat-network = 网络端口
 settings-osc-vrchat-network-description-v1 = 设置传输OSC数据的端口。用于VRChat时无需修改。
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = 输入端口
     .placeholder = 输入端口（默认 9001）
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = 输出端口
     .placeholder = 输出端口（默认 9000）
 settings-osc-vrchat-network-address = 网络地址
@@ -873,10 +888,10 @@ settings-osc-vmc-enable-description = 切换数据的发送和接收
 settings-osc-vmc-enable-label = 启用
 settings-osc-vmc-network = 网络端口
 settings-osc-vmc-network-description = 设置用于监听和发送 VMC 数据的连接端口
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = 输入端口
     .placeholder = 输入端口 (默认: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = 输出端口
     .placeholder = 输出端口 (默认: 39539)
 settings-osc-vmc-network-address = 网络地址
@@ -1005,11 +1020,11 @@ onboarding-wifi_creds-description-v2 =
     请确保输入的是 2.4GHz 频段的 Wi-Fi 凭证！
 onboarding-wifi_creds-skip = 跳过 Wi-Fi 设置
 onboarding-wifi_creds-submit = 提交！
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = SSID
     .placeholder = 输入 SSID
 onboarding-wifi_creds-ssid-required = Wi-Fi 名称为必填项
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = 密码
     .placeholder = 输入密码
 onboarding-wifi_creds-dongle-title = 通过接收器连接
@@ -1457,7 +1472,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = { $trackerName } 追踪器发生错误
 status_system-StatusUnassignedHMD = VR头显应被分配为头部追踪器。
-status_system-StatusPublicNetwork = 您当前的网络类型设置为“公开”。 这可能会导致SlimeVR功能出现异常。<PublicFixLink>点击这里查看如何进行设置。</PublicFixLink>
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1493,11 +1512,11 @@ firmware_tool-board_defaults-error-format = 格式无效
 firmware_tool-board_defaults-error-format-number = 不是数字
 firmware_tool-flash_method_step = 固件烧录方式
 firmware_tool-flash_method_step-description = 请选择您要使用的固件烧录方式
-firmware_tool-flash_method_step-ota-v2 =
+firmware_tool-flash_method_step-ota-v2 = 
     .label = Wi-Fi
     .description = 选择无线OTA更新方式。你的追踪器将会使用Wi-Fi来更新固件。只在已设置完成的追踪器上生效。
 firmware_tool-flash_method_step-ota-info = 将会使用你的Wi-Fi凭证来刷写追踪器的固件并确保一切正常。<b>我们不会存储你的Wi-Fi凭证!</b>
-firmware_tool-flash_method_step-serial-v2 =
+firmware_tool-flash_method_step-serial-v2 = 
     .label = USB
     .description = 使用USB线连接来更新你的追踪器。
 firmware_tool-flashbtn_step = 按下启动/Boot按钮
@@ -1661,10 +1680,18 @@ tracking_checklist-FULL_RESET = 进行完整重置
 tracking_checklist-FULL_RESET-desc = 有些追踪器需要进行重置
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未在运行
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未在运行。你要将追踪器用于 VR 吗？
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = 启动 SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
 tracking_checklist-STEAMVR_HANDS_ENABLED = 手部追踪器已开启
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = 你已经启用了SteamVR的虚拟手部追踪器。这会导致SteamVR和游戏中的按键输入无法使用。
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = 关闭它们
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = 校准追踪器
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 您尚未执行追踪器校准。请将（黄色高亮显示的）追踪器放置在平稳表面上，并静置数秒。
 tracking_checklist-TRACKER_ERROR = 追踪器出现错误
@@ -1676,10 +1703,17 @@ tracking_checklist-UNASSIGNED_HMD = VR 头戴显示器未分配给头部
 tracking_checklist-UNASSIGNED_HMD-desc = VR 头戴显示器应该被分配为头部追踪器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 更改网络配置文件类型
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
-    检测到您的部分网卡被设为“公用网络”：
-    { $adapters }
-    这可能会影响 SlimeVR 的正常运行。
-    <PublicFixLink>点击此处查看如何更改设置。</PublicFixLink>
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 记录持续校准所使用的姿势以减缓漂移现象

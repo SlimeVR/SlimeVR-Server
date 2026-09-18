@@ -656,6 +656,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position = ใช้ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = การจับตำแหน่งแขน
 settings-general-fk_settings-arm_fk-description = บังคับให้ติดตามแขนจากเฮดเซ็ต (HMD) แม้ว่าจะมีข้อมูลตำแหน่งมืออยู่ก็ตาม
 settings-general-fk_settings-arm_fk-force_arms = บังคับใช้ตำแหน่งแขนจากแว่น
@@ -702,12 +705,15 @@ settings-general-gesture_control-trackers = { $amount } ตัว
 settings-general-gesture_control-yawResetEnabled = ใช้การแตะเพื่อรีเซ็ตแกนตั้ง
 settings-general-gesture_control-yawResetDelay = เวลาหน่วงก่อนรีเซ็ตแกนตั้ง
 settings-general-gesture_control-yawResetTaps = แตะเพื่อรีเซ็ตแกนตั้ง
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = ใช้การแตะเพื่อรีเซ็ตทั้งหมด
 settings-general-gesture_control-fullResetDelay = เวลาหน่วงก่อนรีเซ็ตทั้งหมด
 settings-general-gesture_control-fullResetTaps = แตะเพื่อรีเซ็ตทั้งหมด
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = ใช้การแตะเพื่อรีเซ็ตการตั้งศูนย์การติดตั้ง
 settings-general-gesture_control-mountingResetDelay = เวลาหน่วงก่อนทำการรีเซ็ตการติดตั้ง
 settings-general-gesture_control-mountingResetTaps = แตะเพื่อรีเซ็ตการติดตั้ง
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = จำนวนแทร็กเกอร์ที่เกินเกณฑ์
 settings-general-gesture_control-numberTrackersOverThreshold-description = ให้เพิ่มค่านี้หากแทร็กเกอร์ไม่ตอบสนองกับการแตะ ไม่ควรเพิ่มค่าเกินความจำเป็น เพราะอาจทำให้เกิดการตรวจจับที่ผิดพลาดได้มากขึ้น
@@ -754,6 +760,9 @@ settings-general-interface-connected_trackers_warning-label = เตือนแ
 ## Behavior settings
 
 settings-interface-behavior = พฤติกรรมการทำงาน
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = ย่อไปที่ถาดระบบ
 settings-general-interface-use_tray-description = ช่วยให้คุณสามารถปิดหน้าต่างโดยไม่ต้องปิด SlimeVR Server คุณจึงสามารถใช้งานต่อได้โดยไม่มี GUI รบกวน
 settings-general-interface-use_tray-label = ย่อไปที่ถาดระบบ
@@ -797,6 +806,12 @@ settings-serial-factory_reset-warning-cancel = ยกเลิก
 settings-serial-serial_select = เลือกพอร์ต Serial
 settings-serial-auto_dropdown_item = อัตโนมัติ
 settings-serial-get_wifi_scan = สแกนเครือข่าย WiFi
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = ข้อความล้วน
 settings-serial-save_logs = บันทึกลงไฟล์
 settings-serial-send_command = ส่ง
@@ -820,10 +835,10 @@ settings-osc-router-network = พอร์ตเครือข่าย
 settings-osc-router-network-description =
     ตั้งค่าพอร์ตสำหรับการรับฟังและการส่งข้อมูล
     อาจใช้พอร์ตเดียวกับพอร์ตอื่นที่ใช้ในเซิร์ฟเวอร์ SlimeVR ก็ได้
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = พอร์ตขาเข้า
     .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 9002)
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = พอร์ตขาออก
     .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 9000)
 settings-osc-router-network-address = ที่อยู่เครือข่าย
@@ -849,10 +864,10 @@ settings-osc-vrchat-oscqueryEnabled-description =
 settings-osc-vrchat-oscqueryEnabled-label = เปิดใช้งาน OSCQuery
 settings-osc-vrchat-network = พอร์ตเครือข่าย
 settings-osc-vrchat-network-description-v1 = ตั้งค่าพอร์ตสำหรับการรับฟังและการส่งข้อมูล สามารถปล่อยว่างไว้สำหรับ VRChat
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = พอร์ตขาเข้า
     .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 9001)
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = พอร์ตขาออก
     .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 9000)
 settings-osc-vrchat-network-address = ที่อยู่เครือข่าย
@@ -878,10 +893,10 @@ settings-osc-vmc-enable-description = เปิดการรับและส
 settings-osc-vmc-enable-label = เปิดใช้งาน
 settings-osc-vmc-network = พอร์ตเครือข่าย
 settings-osc-vmc-network-description = ตั้งพอร์ตสำหรับส่งและรับข้อมูลผ่าน VMC
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = พอร์ตขาเข้า
     .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = พอร์ตขาออก
     .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 39539)
 settings-osc-vmc-network-address = ที่อยู่เครือข่าย
@@ -956,9 +971,45 @@ onboarding-setup_warning-cancel = ดำเนินการตั้งค่�
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
 onboarding-wifi_creds-v2 = แทร็กเกอร์ที่ใช้ Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -968,11 +1019,11 @@ onboarding-wifi_creds-description-v2 =
     และตรวจสอบให้แน่ใจว่าคุณใช้การเชื่อมต่อ Wi-Fi  เป็นคลื่น 2.4GHz กับแทร็กเกอร์นี้
 onboarding-wifi_creds-skip = ข้ามการตั้งค่า Wi-Fi
 onboarding-wifi_creds-submit = ยืนยัน!
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = ชื่อ Wi-Fi
     .placeholder = ใส่ชื่อ Wi-Fi
 onboarding-wifi_creds-ssid-required = ต้องระบุชื่อ Wi-Fi
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = รหัสผ่าน
     .placeholder = ป้อนรหัสผ่าน
 onboarding-wifi_creds-dongle-title = แทร็กเกอร์ที่ใช้ดองเกิล
@@ -1005,6 +1056,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -1335,6 +1390,7 @@ onboarding-user_height-description = เราต้องการความ�
 onboarding-user_height-need_head_tracker = จำเป็นต้องใช้เฮดเซ็ต (หรือแทร็กเกอร์ส่วนหัว) และคอนโทรลเลอร์ที่มีการติดตามตำแหน่งเพื่อทำการตั้งศูนย์
 onboarding-user_height-calculate = คำนวณความสูงของฉันโดยอัตโนมัติ
 onboarding-user_height-next_step = บันทึกและดำเนินการต่อ
+onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = ปรับสัดส่วนด้วยตัวเอง
 onboarding-user_height-calibration-title = ความคืบหน้าการตั้งศูนย์
 onboarding-user_height-calibration-RECORDING_FLOOR = แตะพื้นด้วยปลายคอนโทรลเลอร์ของคุณ
@@ -1413,7 +1469,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = แทร็กเกอร์ { $trackerName } เกิดข้อผิดพลาด
 status_system-StatusUnassignedHMD = เฮดเซ็ท VR ของคุณควรจะถูกกำหนดเป็นแทร็กเกอร์ส่วนหัว
-status_system-StatusPublicNetwork = โปรไฟล์เครือข่ายของคุณตอนนี้ถูกตั้งค่าเป็นสาธารณะ ({ $adapters }) ในขณะนี้ ซึ่งไม่แนะนำสำหรับการทำงานของ SlimeVR <PublicFixLink>สามารถดูวิธีการแก้ไขได้ที่นี่</PublicFixLink>
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1449,13 +1509,13 @@ firmware_tool-board_defaults-error-format = รูปแบบไม่ถูก
 firmware_tool-board_defaults-error-format-number = ไม่ใช่ตัวเลข
 firmware_tool-flash_method_step = วิธีการลงเฟิร์มแวร์
 firmware_tool-flash_method_step-description = กรุณาเลือกวิธีการลงเฟิร์มแวร์ที่คุณต้องการใช้
-firmware_tool-flash_method_step-ota-v2 =
+firmware_tool-flash_method_step-ota-v2 = 
     .label = Wi-Fi
     .description = ใช้การอัปเดตแบบ Over-the-air (OTA) โดยแทร็กเกอร์คุณจะใช้ Wi-Fi เพื่ออัปเดตเฟิร์มแวร์ ใช้งานได้เฉพาะแทร็กเกอร์ที่ได้รับการตั้งค่าแล้วเท่านั้น
 firmware_tool-flash_method_step-ota-info =
     เราใช้ข้อมูลรับรอง Wi-Fi ของคุณเพื่อลงเฟิร์มแวร์แทร็กเกอร์และยืนยันว่าทุกอย่างทำงานได้อย่างถูกต้อง
     <b>เราไม่จัดเก็บข้อมูล Wi-Fi ของคุณ!</b>
-firmware_tool-flash_method_step-serial-v2 =
+firmware_tool-flash_method_step-serial-v2 = 
     .label = USB
     .description = ใช้สาย USB เพื่ออัปเดตแทร็กเกอร์ของคุณ
 firmware_tool-flashbtn_step = กรุณากดปุ่ม Boot
@@ -1484,6 +1544,7 @@ firmware_tool-flashing_step-description = กำลังลงเฟิร์�
 firmware_tool-flashing_step-warning-v2 = อย่าถอดสาย หรือปิดแทร็กเกอร์ในระหว่างกระบวนการอัปโหลด เว้นแต่จะได้รับคำแนะนำ ไม่อย่างนั้นอาจทำให้บอร์ดของคุณใช้งานไม่ได้
 firmware_tool-flashing_step-flash_more = ลงเฟิร์มแวร์ให้แทร็กเกอร์ตัวอื่น
 firmware_tool-flashing_step-exit = ออก
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
@@ -1618,7 +1679,18 @@ tracking_checklist-FULL_RESET = ทำการรีเซ็ตทั้งห
 tracking_checklist-FULL_RESET-desc = แทร็กเกอร์บางส่วนจำเป็นต้องทำการรีเซ็ต
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR ไม่ได้ทำงานอยู่
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR ไม่ได้ทำงานอยู่ คุณจะใช้เพื่อเล่น VR ใช่หรือไม่?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = เปิด SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = ตั้งศูนย์แทร็กเกอร์ของคุณ
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = คุณยังไม่ได้ทำการตั้งศูนย์แทร็กเกอร์ โปรดวางแทร็กเกอร์ของคุณ (ที่ไฮไลต์ด้วยสีเหลือง) ไว้บนพื้นที่ราบเวลาสองสามวินาที
 tracking_checklist-TRACKER_ERROR = แทร็กเกอร์ที่มีปัญหา
@@ -1630,8 +1702,17 @@ tracking_checklist-UNASSIGNED_HMD = เฮดเซ็ท VR ไม่ได้�
 tracking_checklist-UNASSIGNED_HMD-desc = ควรระบุเฮตเซ็ท VR ให้เป็นแทร็กเกอร์ส่วนหัว
 tracking_checklist-NETWORK_PROFILE_PUBLIC = แก้ไขโปรไฟล์เครือข่าย
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
-    โปรไฟล์เครือข่ายของคุณ ({ $adapters }) ถูกตั้งค่าเป็น สาธารณะ (Public) อยู่ในขณะนี้ ซึ่งไม่แนะนำสำหรับการทำงานที่ถูกต้องของ SlimeVR
-    <PublicFixLink>ดูวิธีการแก้ไขได้ที่นี่</PublicFixLink>
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = เปิด Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = ตั้งค่า Stay Aligned
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = บันทึกท่าท่างใน Stay Aligned เพื่อลดการดริฟท์

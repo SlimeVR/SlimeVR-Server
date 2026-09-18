@@ -17,7 +17,7 @@ websocket-error-logs = Mở thư mục nhật ký logs
 
 ## Update notification
 
-version_update-title = Phiên bản mới có thể cập nhật:
+version_update-title = New version available: { $version }
 version_update-description = Nhấp vào "{ version_update-update }" sẽ tải xuống trình cài đặt SlimeVR cho bạn.
 version_update-update = Cập nhật
 version_update-close = Đóng
@@ -33,6 +33,10 @@ tips-failed_webgl = Không thể khởi tạo WebGL.
 
 ## Units
 
+unit-meter = Meter
+unit-foot = Foot
+unit-inch = Inch
+unit-cm = cm
 
 ## Body parts
 
@@ -57,48 +61,210 @@ body_part-LEFT_HAND = Tay trái
 body_part-LEFT_UPPER_LEG = Bắp chân trái
 body_part-LEFT_LOWER_LEG = Cẳng chân trái
 body_part-LEFT_FOOT = Bàn chân trái
+body_part-LEFT_THUMB_METACARPAL = Left thumb metacarpal
+body_part-LEFT_THUMB_PROXIMAL = Left thumb proximal
+body_part-LEFT_THUMB_DISTAL = Left thumb distal
+body_part-LEFT_INDEX_PROXIMAL = Left index proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Left index intermediate
+body_part-LEFT_INDEX_DISTAL = Left index distal
+body_part-LEFT_MIDDLE_PROXIMAL = Left middle proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Left middle intermediate
+body_part-LEFT_MIDDLE_DISTAL = Left middle distal
+body_part-LEFT_RING_PROXIMAL = Left ring proximal
+body_part-LEFT_RING_INTERMEDIATE = Left ring intermediate
+body_part-LEFT_RING_DISTAL = Left ring distal
+body_part-LEFT_LITTLE_PROXIMAL = Left little proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Left little intermediate
+body_part-LEFT_LITTLE_DISTAL = Left little distal
+body_part-RIGHT_THUMB_METACARPAL = Right thumb metacarpal
+body_part-RIGHT_THUMB_PROXIMAL = Right thumb proximal
+body_part-RIGHT_THUMB_DISTAL = Right thumb distal
+body_part-RIGHT_INDEX_PROXIMAL = Right index proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Right index intermediate
+body_part-RIGHT_INDEX_DISTAL = Right index distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Right middle proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Right middle intermediate
+body_part-RIGHT_MIDDLE_DISTAL = Right middle distal
+body_part-RIGHT_RING_PROXIMAL = Right ring proximal
+body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
+body_part-RIGHT_RING_DISTAL = Right ring distal
+body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
+body_part-RIGHT_LITTLE_DISTAL = Right little distal
 
 ## BoardType
 
+board_type-UNKNOWN = Unknown
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Custom Board
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
 board_type-MOCOPI = Sony Mocopi
 board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-GESTURES = Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generic nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
 skeleton_bone-NONE = Chưa được gán
 skeleton_bone-HEAD = Sai số đầu
+skeleton_bone-HEAD-desc =
+    This is the distance from your headset to the middle of your head.
+    To adjust it, shake your head left to right as if you're disagreeing and modify
+    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = Chiều dài cổ
+skeleton_bone-NECK-desc =
+    This is the distance from the middle of your head to the base of your neck.
+    To adjust it, move your head up and down as if you're nodding or tilt your head
+    to the left and right and modify it until any movement in other trackers is negligible.
 skeleton_bone-torso_group = Độ dài thân
+skeleton_bone-torso_group-desc =
+    This is the distance from the base of your neck to your hips.
+    To adjust it, modify it standing up straight until your virtual hips line
+    up with your real ones.
 skeleton_bone-UPPER_CHEST = Độ dài ngực trên
+skeleton_bone-UPPER_CHEST-desc =
+    This is the distance from the base of your neck to the middle of your chest.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-CHEST_OFFSET = Sai số ngực
+skeleton_bone-CHEST_OFFSET-desc =
+    This can be adjusted to move your virtual chest tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = Khoảng cách ngực
+skeleton_bone-CHEST-desc =
+    This is the distance from the middle of your chest to the middle of your spine.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-WAIST = Khoảng cách eo
+skeleton_bone-WAIST-desc =
+    This is the distance from the middle of your spine to your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Khoảng cách hông
+skeleton_bone-HIP-desc =
+    This is the distance from your belly button to your hips.
+    To adjust it, set your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIP_OFFSET = Sai số hông
+skeleton_bone-HIP_OFFSET-desc =
+    This can be adjusted to move your virtual hip tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = Chiều rộng hông
+skeleton_bone-HIPS_WIDTH-desc =
+    This is the distance between the start of your legs.
+    To adjust it, perform a full reset with your legs straight and modify it until
+    your virtual legs match up with your real ones horizontally.
 skeleton_bone-leg_group = Chiều dài chân
+skeleton_bone-leg_group-desc =
+    This is the distance from your hips to your feet.
+    To adjust it, adjust your Torso Length properly and modify it
+    until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Chiều dài bắp chân
+skeleton_bone-UPPER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Chiều dài cẳng chân
+skeleton_bone-LOWER_LEG-desc =
+    This is the distance from your knees to your ankles.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Chiều dài bàn chân
+skeleton_bone-FOOT_LENGTH-desc =
+    This is the distance from your ankles to your toes.
+    To adjust it, tiptoe and modify it until your virtual feet stay in place.
 skeleton_bone-FOOT_SHIFT = Sai số bàn chân
+skeleton_bone-FOOT_SHIFT-desc =
+    This value is the horizontal distance from your knee to your ankle.
+    It accounts for your lower legs going backwards when standing up straight.
+    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
+    feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Sai số thân
+skeleton_bone-SKELETON_OFFSET-desc =
+    This can be adjusted to offset all your trackers forward or backward.
+    It can be used to help with calibration in certain games or applications
+    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Khoảng cách vai
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    This is the vertical distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Chiều rộng vai
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    This is the horizontal distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Chiều dài cánh tay
+skeleton_bone-arm_group-desc =
+    This is the distance from your shoulders to your wrists.
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y
+    to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Chiều dài bắp tay
+skeleton_bone-UPPER_ARM-desc =
+    This is the distance from your shoulders to your elbows.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Chiều dài cẳng tay
+skeleton_bone-LOWER_ARM-desc =
+    This is the distance from your elbows to your wrists.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = Khoảng cách tay Y
+skeleton_bone-HAND_Y-desc =
+    This is the vertical distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with the middle of your hands.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = Khoảng cách tay Z
+skeleton_bone-HAND_Z-desc =
+    This is the horizontal distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, set it to 0.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = Sai số khuỷu tay
+skeleton_bone-ELBOW_OFFSET-desc =
+    This can be adjusted to move your virtual elbow trackers up or down in order to aid
+    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 
 reset-reset_all = Đặt lại tất cả bộ phận
+reset-reset_all_warning-v2 =
+    <b>Warning:</b> Your proportions will be reset to defaults scaled to your configured height.
+    Are you sure you want to do this?
 reset-reset_all_warning-reset = Đặt lại tỷ lệ
 reset-reset_all_warning-cancel = Hủy
+reset-reset_all_warning_default-v2 =
+    <b>Warning:</b> Your height has not been configured, your proportions will be reset to defaults with the default height.
+    Are you sure you want to do this?
 reset-full = Đặt lại
 reset-mounting = Đặt lại hướng gắn tracker
+reset-mounting-feet = Feet Calibration
+reset-mounting-fingers = Fingers Calibration
 reset-yaw = Đặt lại chiều quay lệch
+reset-error-no_feet_tracker = No feet tracker assigned
+reset-error-no_fingers_tracker = No finger tracker assigned
+reset-error-mounting-need_full_reset = Need a full reset before mounting
+reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 
 ## Serial detection stuff
 
@@ -118,11 +284,14 @@ navbar-trackers_assign = Phân bố tracker
 navbar-mounting = Cân chỉnh hướng gắn tracker
 navbar-onboarding = Trình thiết lập
 navbar-settings = Cài đặt
+navbar-connect_trackers = Connect Trackers
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Ghi BVH
+bvh-stop_recording = Save BVH recording
 bvh-recording = Đang ghi...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 
@@ -163,6 +332,7 @@ widget-imu_visualizer-rotation_raw = Gốc
 widget-imu_visualizer-rotation_preview = Qua xử lí
 widget-imu_visualizer-acceleration = Gia tốc
 widget-imu_visualizer-position = Vị trí
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
@@ -185,11 +355,13 @@ tracker-table-column-name = Tên
 tracker-table-column-type = Loại
 tracker-table-column-battery = Pin
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Packet Loss
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Nhiệt độ (°C)
 tracker-table-column-linear-acceleration = Tốc độ X/Y/Z
 tracker-table-column-rotation = Góc quay X/Y/Z
 tracker-table-column-position = Tọa độ X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = Đường dẫn
 
 ## Tracker rotation
@@ -214,9 +386,20 @@ tracker-infos-url = Đường dẫn
 tracker-infos-version = Phiên bản firmware
 tracker-infos-hardware_rev = Revision phần cứng
 tracker-infos-hardware_identifier = Hardware ID
+tracker-infos-data_support = Data support
 tracker-infos-imu = Cảm biến IMU (IMU Sensor)
 tracker-infos-board_type = Bảng mạch chính
 tracker-infos-network_version = Phiên bản giao thức
+tracker-infos-magnetometer = Magnetometer
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+       *[NOT_SUPPORTED] Not supported
+        [DISABLED] Disabled
+        [ENABLED] Enabled
+    }
+tracker-infos-packet_loss = Packet Loss
+tracker-infos-packets_lost = Packets Lost
+tracker-infos-packets_received = Packets Received
 
 ## Tracker settings
 
@@ -231,14 +414,32 @@ tracker-settings-mounting_section-edit = Thay đổi chỗ đặt
 tracker-settings-drift_compensation_section = Cho phép bù trừ sai số
 tracker-settings-drift_compensation_section-description = Tracker này được phép bù trừ cho sai số của nó không?
 tracker-settings-drift_compensation_section-edit = Cho phép bù trừ sai số
+tracker-settings-use_mag = Allow magnetometer on this tracker
+# Multiline!
+tracker-settings-use_mag-description =
+    Should this tracker use magnetometer to reduce drift when magnetometer usage is allowed? <b>Please don't shutdown your tracker while toggling this!</b>
+    
+    You need to allow magnetometer usage first, <magSetting>click here to go to the setting</magSetting>.
+tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
 tracker-settings-name_section-description = Đặt cho nó một cái tên đẹp :3
 tracker-settings-name_section-placeholder = Chân trái của JINODK
+tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Quên thiết bị
 tracker-settings-forget-description = Xóa thiết bị khỏi phần mềm SlimeVR và ngăn nó kết nối với nó cho đến khi máy chủ được khởi động lại. Cấu hình của trình theo dõi sẽ không bị mất.
 tracker-settings-forget-label = Quên thiết bị
+tracker-settings-update-unavailable-v2 = No releases found
+tracker-settings-update-incompatible = Cannot update. Incompatible board or firmware version
+tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
+tracker-settings-update-up_to_date = Up to date
+tracker-settings-update-blocked = Update not available. No other releases available
+tracker-settings-update = Update now
+tracker-settings-update-title = Firmware version
+tracker-settings-current-version = Current
+tracker-settings-latest-version = Latest
+tracker-settings-build-date = Build Date
 
 ## Tracker part card info
 
@@ -304,16 +505,24 @@ mounting_selection_menu-close = Đóng
 
 settings-sidebar-title = Cài đặt
 settings-sidebar-general = Cài đặt chung
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Cơ chế tracker
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = Cài đặt tracker
 settings-sidebar-gesture_control = Cử chỉ điều khiển
 settings-sidebar-interface = Giao diện
 settings-sidebar-osc_router = Router OSC
 settings-sidebar-osc_trackers = Trình theo dõi VRChat OSC
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Công cụ
 settings-sidebar-serial = Cổng Serial
 settings-sidebar-appearance = Giao diện
+settings-sidebar-home = Home Screen
+settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = Thông báo
+settings-sidebar-behavior = Behavior
+settings-sidebar-firmware-tool = DIY Firmware Tool
+settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Cài đặt mở rộng
 
 ## SteamVR settings
@@ -370,7 +579,17 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Thay đổi mức độ bù trừ và số lần đặt lại được áp dụng bù trừ
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Bù trừ sai số
 settings-general-tracker_mechanics-drift_compensation-prediction = Dự đoán bù trôi (drift compensation)
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Predicts yaw drift compensation beyond previously measured range.
+    Enable this if your trackers are continuously spinning on the yaw axis.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Dự đoán bù trôi (drift compensation)
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Warning:</b> Only use drift compensation if you need to reset
+    very often (every ~5-10 minutes).
+    
+    Some IMUs prone to frequent resets include:
+    Joy-Cons, owoTrack, and MPUs (without recent firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Hủy
 settings-general-tracker_mechanics-drift_compensation_warning-done = Tôi hiểu
 settings-general-tracker_mechanics-drift_compensation-amount-label = Mức độ bù trừ
@@ -380,6 +599,33 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Lưu thiết bị đã giao tự động cho các thiết bị giữa các lần khởi động lại. Có ích
     khi mặc một bộ đồ SlimeVR mà trình theo dõi không di chuyển giữa các phiên. <b>Không được khuyến khích cho người dùng bình thường!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Đặt lại hướng gắn thiết bị
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
+    Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
+settings-stay_aligned-setup-label = Setup Stay Aligned
+settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
+settings-stay_aligned-enabled-label = Adjust trackers
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
+settings-stay_aligned-general-label = General
+settings-stay_aligned-relaxed_poses-label = Relaxed Poses
+settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
+settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
+settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a chair
+settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
+settings-stay_aligned-relaxed_poses-save_pose = Save pose
+settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
+settings-stay_aligned-relaxed_poses-close = Close
+settings-stay_aligned-debug-label = Debugging
+settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
+settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
 ## FK/Tracking settings
 
@@ -401,6 +647,19 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Ngăn xuyên sà
 settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
+settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Correct with constraints
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Correct joint rotations when they push past their limit
+settings-general-fk_settings-ik = Position data
+settings-general-fk_settings-ik-use_position = Use Position data
+settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = Track cánh tay
 settings-general-fk_settings-arm_fk-description = Thay đổi cách cánh tay được track
 settings-general-fk_settings-arm_fk-force_arms = Lấy dữ liệu cánh tay từ kính
@@ -451,12 +710,15 @@ settings-general-gesture_control-trackers = { $amount } trackers
 settings-general-gesture_control-yawResetEnabled = Bật chạm để đặt lại chiều quay
 settings-general-gesture_control-yawResetDelay = Thời gian delay trước khi đặt lại
 settings-general-gesture_control-yawResetTaps = Số lần chạm để đặt lại chiều quay
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = Bật chạm để đặt lại chiều quay
 settings-general-gesture_control-fullResetDelay = Thời gian delay trước khi đặt lại full
 settings-general-gesture_control-fullResetTaps = Số lần chạm để đặt lại full
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = Chạm để đặt lại hướng gắn tracker
 settings-general-gesture_control-mountingResetDelay = Thời gian delay trước khi đặt lại hướng gắn tracker
 settings-general-gesture_control-mountingResetTaps = Số lần chạm cho đặt lại hướng gắn tracker
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Số thiết bị có thể vượt phát hiện
 settings-general-gesture_control-numberTrackersOverThreshold-description = Tăng số này nếu tính năng chạm thiết bị không hoạt động. Không tăng nó quá trên mức cần thiết để làm cho phát hiện chạm hoạt động vì nó sẽ gây ra nhiều kết quả sai hơn.
@@ -468,6 +730,9 @@ settings-general-interface-dev_mode = Chế độ nhà phát triển
 settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
 settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-theme = Màu giao diện
+settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
+settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
+settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Thay đổi ngôn ngữ (Change language)
 settings-general-interface-lang-description = Đổi ngôn ngữ hiển thị (Change the default language you want to use)
 settings-general-interface-lang-placeholder = Chọn ngôn ngữ để sử dụng (Select the language to use)
@@ -479,6 +744,9 @@ settings-interface-appearance-font-os_font = Phông chữ hệ điều hành
 settings-interface-appearance-font-slime_font = Phông chữ mặc định
 settings-interface-appearance-font_size = Tỷ lệ phông chữ cơ bản
 settings-interface-appearance-font_size-description = Điều này ảnh hưởng đến kích thước phông chữ của toàn bộ giao diện ngoại trừ bảng cài đặt này.
+settings-interface-appearance-decorations = Use the system native decorations
+settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
+settings-interface-appearance-decorations-label = Use native decorations
 
 ## Notification settings
 
@@ -496,6 +764,10 @@ settings-general-interface-connected_trackers_warning-label = Cảnh báo thiế
 
 ## Behavior settings
 
+settings-interface-behavior = Behavior
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
 settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
@@ -507,6 +779,17 @@ settings-general-interface-discord_presence-message =
         [0] Đang quay trên Slime
        *[other] Đang dùng { $amount } điểm full body
     }
+settings-interface-behavior-error_tracking = Error collection via Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Do you consent to the collection of anonymized error data?</h1>
+    
+    <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
+    
+    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+settings-interface-behavior-error_tracking-label = Send errors to developers
+settings-interface-behavior-bvh_directory = Directory to save BVH recordings
+settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
+settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
 
@@ -528,8 +811,19 @@ settings-serial-factory_reset-warning-cancel = Hủy
 settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = Văn bản thô
 settings-serial-save_logs = Lưu vào tệp
+settings-serial-send_command = Send
+settings-serial-send_command-placeholder = Command...
+settings-serial-send_command-warning = <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
+settings-serial-send_command-warning-ok = I know what I'm doing
+settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC router settings
 
@@ -546,10 +840,10 @@ settings-osc-router-network = Cổng mạng
 settings-osc-router-network-description =
     Đặt cổng nhận và gửi dữ liệu OSC
     Có thể dùng chung cổng với server SlimeVR
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = Cổng vào
     .placeholder = Cổng vào (Mặc định: 9002)
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = Cổng ra
     .placeholder = Cổng ra (Mặc định: 9000)
 settings-osc-router-network-address = Địa chỉ mạng
@@ -569,12 +863,19 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = Dữ liệu OSC
 settings-osc-vrchat-enable-description = Cho phép nhận và gửi dữ liệu OSC
 settings-osc-vrchat-enable-label = Giao tiếp dữ liệu OSC
+settings-osc-vrchat-oscqueryEnabled = Enable OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery automatically detects running instances of VRChat and sends them data.
+    It can also advertise itself to them in order to receive HMD and controller data.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's settings
+    under "Tracking & IK" and enable "Allow Sending Head and Wrist VR Tracking OSC Data".
+settings-osc-vrchat-oscqueryEnabled-label = Enable OSCQuery
 settings-osc-vrchat-network = Cổng mạng
 settings-osc-vrchat-network-description-v1 = Đặt các cổng để lấy và gửi dữ liệu. Có thể giữ nguyên cho VRChat.
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = Cổng vào
     .placeholder = Cổng vào (Mặc định: 9001)
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = Cổng ra
     .placeholder = Cổng ra (Mặc định: 9000)
 settings-osc-vrchat-network-address = Địa chỉ mạng
@@ -600,10 +901,10 @@ settings-osc-vmc-enable-description = Cho phép nhận và gửi dữ liệu OSC
 settings-osc-vmc-enable-label = Chuyển tiếp dữ liệu OSC
 settings-osc-vmc-network = Cổng mạng (Network ports)
 settings-osc-vmc-network-description = Đặt các cổng để nghe và gửi dữ liệu qua VMC.
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = Cổng vào (Port In)
     .placeholder = Port in (default: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = Cổng ra (Port out)
     .placeholder = Port out (default: 39539)
 settings-osc-vmc-network-address = Địa chỉ mạng (Network address)
@@ -611,6 +912,7 @@ settings-osc-vmc-network-address-description = Chọn địa chỉ để gửi d
 settings-osc-vmc-network-address-placeholder = Địa chỉ IPV4
 settings-osc-vmc-vrm = Model VRM
 settings-osc-vmc-vrm-description = Tải mô hình VRM để cho phép neo đầu và cho phép khả năng tương thích cao hơn với các ứng dụng khác.
+settings-osc-vmc-vrm-untitled_model = Untitled model
 settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
 settings-osc-vmc-anchor_hip = Cố định ở hông
 settings-osc-vmc-anchor_hip-description = Cố định theo dõi ở hông, hữu ích cho VTubing ngồi. Nếu tắt, hãy tải mô hình VRM.
@@ -621,21 +923,48 @@ settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ t
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-port_banned_error = The port { $port } can't be used!
 
 ## Advanced settings
 
 settings-utils-advanced = Cài đặt mở rộng
 settings-utils-advanced-reset-gui = Đặt lại cài đặt GUI
+settings-utils-advanced-reset-gui-description = Restore the default settings for the interface.
+settings-utils-advanced-reset-gui-label = Reset GUI
+settings-utils-advanced-reset-server = Reset tracking settings
+settings-utils-advanced-reset-server-description = Restore the default settings for the tracking.
+settings-utils-advanced-reset-server-label = Reset tracking
+settings-utils-advanced-reset-all = Reset all settings
+settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
 settings-utils-advanced-reset-all-label = Đặt lại tất cả
+settings-utils-advanced-reset_warning =
+    <b>Warning:</b> This will reset { $type ->
+        [gui] your GUI
+        [server] your tracking
+       *[all] all your
+    } settings to the defaults.
+    Are you sure you want to do this?
 settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
+settings-utils-advanced-open_data-v1 = Config folder
+settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = Mở thư mục
+settings-utils-advanced-open_logs = Logs folder
+settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
+settings-utils-advanced-open_logs-label = Open folder
 
 ## Home Screen
 
+settings-home-list-layout = Trackers list layout
+settings-home-list-layout-desc = Select one of the possible layouts of the home screen
+settings-home-list-layout-grid = Grid
+settings-home-list-layout-table = Table
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Active Steps
+settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
 ## Setup/onboarding menu
 
@@ -651,17 +980,65 @@ onboarding-setup_warning-cancel = Tiếp tục thiết lập
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
+onboarding-wifi_creds-v2 = Trackers using Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
+    
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Bỏ qua cài đặt Wi-Fi
 onboarding-wifi_creds-submit = Gửi
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = Tên hiển thị
     .placeholder = Nhập tên Wi-Fi
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-ssid-required = Wi-Fi name is required
+onboarding-wifi_creds-password = 
     .label = Mật khẩu
     .placeholder = và mật khẩu
+onboarding-wifi_creds-dongle-title = Trackers using a dongle
+onboarding-wifi_creds-dongle-description = If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
+onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
 
@@ -690,6 +1067,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -712,12 +1093,24 @@ onboarding-connect_tracker-issue-serial = Có vấn đề với việc kết n�
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Đang tìm tracker
 onboarding-connect_tracker-connection_status-serial_init = Kết nối với thiết bị nối tiếp serial
+onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker mac address
 onboarding-connect_tracker-connection_status-provisioning = Đang gửi thông tin Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Đang gửi thông tin Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Đang tìm máy chủ
 onboarding-connect_tracker-connection_status-connection_error = Không thể kết nối đến Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Không thể tìm thấy máy chủ
 onboarding-connect_tracker-connection_status-done = Đã kết nối đến máy chủ SlimeVR
+onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
+onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
+onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
+onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
+    If this does not work:
+      - try using a different USB cable
+      - try using a different USB port
+      - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -735,6 +1128,7 @@ onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 
 onboarding-calibration_tutorial = Hướng dẫn hiệu chuẩn IMU
 onboarding-calibration_tutorial-subtitle = Cái này sẽ giúp giảm trôi trượt theo dõi!
+onboarding-calibration_tutorial-description-v1 = After turning on your trackers, place them on a stable surface for a moment to allow for calibration. Calibration can be performed at any time after the trackers are powered on—this page simply provides a tutorial. To begin, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
 onboarding-calibration_tutorial-calibrate = Tôi đã đặt thiết bị theo dõi của mình lên bàn
 onboarding-calibration_tutorial-status-waiting = Đang chờ bạn hoàn thành
 onboarding-calibration_tutorial-status-calibrating = Đang hiệu chuẩn
@@ -757,6 +1151,7 @@ onboarding-assignment_tutorial-done = Tôi đã dán nhãn dán và dây đai!
 onboarding-assign_trackers-back = Quay lại cài đặt Wi-Fi
 onboarding-assign_trackers-title = Gán tracker
 onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán tracker bằng cách nhấn vào tên bộ phận muốn gán và chọn tracker
+onboarding-assign_trackers-unassign_all = Unassign all trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -897,14 +1292,31 @@ onboarding-automatic_mounting-done-restart = Thử lại
 onboarding-automatic_mounting-mounting_reset-title = Đặt lại hướng gắn
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Đứng khom người như tư thế trượt tuyết với đầu gối khom lại, thân trên hướng tới trước và hai tay co lại để giữ thăng bằng như hình bên
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Nhấn nút đặt lại và chờ 3 giây trước khi hệ thống cân chỉnh hướng gắn tracker
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Chuẩn bị tư thế
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
 onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
 onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
 onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
+onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
+onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
+onboarding-manual_proportions-export = Export proportions
+onboarding-manual_proportions-import = Import proportions
+onboarding-manual_proportions-file_type = Body proportions file
+onboarding-manual_proportions-normal_increment = Normal increment
+onboarding-manual_proportions-precise_increment = Precise increment
+onboarding-manual_proportions-grouped_proportions = Grouped proportions
+onboarding-manual_proportions-all_proportions = All proportions
+onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
 
@@ -925,12 +1337,33 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Headset của bạn đang báo cáo dữ liệu vị trí cho máy chủ SlimeVR (điều này thường có nghĩa là SteamVR đang chạy và kết nối với SlimeVR bằng driver SteamVR của SlimeVR).
     Tracking của bạn đang hoạt động và thể hiện chính xác các chuyển động của bạn (ví dụ: bạn đã thực hiện thiết đặt lại hoàn toàn và chúng di chuyển đúng hướng khi đá, cúi xuống, ngồi, v.v.).
 onboarding-automatic_proportions-requirements-next = Tôi đã đọc các yêu cầu
+onboarding-automatic_proportions-check_height-title-v3 = Measure your headset height
+onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height because headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful not to raise your hands higher than your headset, as they may affect the measurement!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Nếu bạn đang sử dụng Kính VR Standalone, hãy đảm bảo có guardian /
     Ranh giới được bật để chiều cao của bạn là chính xác!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Không rõ
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is:
+onboarding-automatic_proportions-check_height-measure-start = Start measuring
+onboarding-automatic_proportions-check_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_height-measure-reset = Retry measuring
 onboarding-automatic_proportions-check_height-next_step = Những chỉ số này là đúng
+onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
+onboarding-automatic_proportions-check_floor_height-description = In some cases, your floor height may not be set correctly by your headset, causing the headset height to be measured as higher than it should be. You can measure the "height" of your floor to correct your headset height.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Start measuring and put a controller against your floor to measure its height. If you are sure that your floor height is correct, you can skip this step.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
+onboarding-automatic_proportions-check_floor_height-full_height = Your estimated full height is:
+onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring
+onboarding-automatic_proportions-check_floor_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_floor_height-measure-reset = Retry measuring
+onboarding-automatic_proportions-check_floor_height-skip_step = Skip step and save
+onboarding-automatic_proportions-check_floor_height-next_step = Use floor height and save
 onboarding-automatic_proportions-start_recording-title = Chuẩn bị đo
 onboarding-automatic_proportions-start_recording-description = Phần mềm sẽ đo một số chuyển động, cử chỉ cụ thể, hãy chuẩn bị cho việc di chuyển theo yêu cầu trong phần tiếp theo
 onboarding-automatic_proportions-start_recording-next = Bắt đầu
@@ -960,17 +1393,84 @@ onboarding-automatic_proportions-verify_results-redo = Thử lại
 onboarding-automatic_proportions-verify_results-confirm = Kết quả tương đối chính xác
 onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Warning:</b> There was an error while estimating proportions!
+    This is likely a mounting calibration issue. Make sure your tracking works properly before trying again.
+    Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
 onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
+onboarding-automatic_proportions-smol_warning =
+    Your configured height of { $height } is smaller than the minimum accepted height of { $minHeight }.
+    <b>Please redo the measurements and ensure they are correct.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Go back
 
 ## User height calibration
 
+onboarding-user_height-title = What is your height?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
+onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
+onboarding-user_height-calculate = Calculate my height automatically
+onboarding-user_height-next_step = Continue and save
+onboarding-user_height-prev_step = Back
+onboarding-user_height-manual-proportions = Manual Proportions
+onboarding-user_height-calibration-title = Calibration Progress
+onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is leveled
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the floor
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stand back up and stand still!
+onboarding-user_height-calibration-DONE = Success!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timed out, try again.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to stand straight and look forward at the end of the calibration.
+onboarding-user_height-calibration-error = Calibration Failed
+onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
+onboarding-user_height-reset-warning =
+    <b>Warning:</b> This will reset your proportions to be based on your height.
+    Are you sure you want to do this?
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Stay Aligned
+onboarding-stay_aligned-description = Configure Stay Aligned to keep your trackers aligned.
+onboarding-stay_aligned-put_trackers_on-title = Put on your trackers
+onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
+onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
+onboarding-stay_aligned-verify_mounting-title = Mounting Calibration
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Redo Mounting calibration
+onboarding-stay_aligned-preparation-title = Preparation
+onboarding-stay_aligned-preparation-tip = Make sure to stand upright. Keep looking forward with your arms down at your sides.
+onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-sitting-title = Relaxed Sitting in Chair Pose
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sit in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Sitting on Floor Pose
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-skip_step = Skip
+onboarding-stay_aligned-done-title = Stay Aligned enabled!
+onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
+onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to recalibrate the poses.
+onboarding-stay_aligned-previous_step = Previous
+onboarding-stay_aligned-next_step = Next
+onboarding-stay_aligned-restart = Restart
+onboarding-stay_aligned-done = Done
+onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 
 home-no_trackers = Chưa có thiết bị nào được phát hiện hoặc điều ra
+home-settings = Home Page Settings
+home-settings-close = Close
 
 ## Trackers Still On notification
 
@@ -991,21 +1491,124 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = Tracker { $trackerName } có lỗi.
 status_system-StatusUnassignedHMD = Kính thực tế ảo VR này nên được giao là bộ theo dõi đầu.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
+firmware_tool-next_step = Next Step
+firmware_tool-previous_step = Previous Step
+firmware_tool-ok = Looks good
+firmware_tool-retry = Retry
+firmware_tool-loading = Loading...
 
 ## Firmware tool Steps
 
+firmware_tool = DIY Firmware tool
+firmware_tool-description = Allows you to configure and flash your DIY trackers
+firmware_tool-not_available = Oops, the firmware tool is not available at the moment. Come back later!
+firmware_tool-not_compatible = The firmware tool is not compatible with this version of the server. Please update your server!
+firmware_tool-select_source = Select the firmware to flash
+firmware_tool-select_source-description = Select the firmware you want to flash on your board
+firmware_tool-select_source-error = Unable to load Sources
+firmware_tool-select_source-board_type = Board Type
+firmware_tool-select_source-firmware = Firmware Source
+firmware_tool-select_source-version = Firmware Version
+firmware_tool-select_source-official = Official
+firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = No source selected
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
+firmware_tool-board_defaults = Configure your board
+firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
+firmware_tool-board_defaults-add = Add
+firmware_tool-board_defaults-reset = Reset to Default
+firmware_tool-board_defaults-error-required = Required field
+firmware_tool-board_defaults-error-format = Invalid format
+firmware_tool-board_defaults-error-format-number = Not a number
+firmware_tool-flash_method_step = Flashing Method
+firmware_tool-flash_method_step-description = Please select the flashing method you want to use
+firmware_tool-flash_method_step-ota-v2 = 
+    .label = Wi-Fi
+    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
+firmware_tool-flash_method_step-ota-info =
+    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your wifi credentials!</b>
+firmware_tool-flash_method_step-serial-v2 = 
+    .label = USB
+    .description = Use a USB cable to update your tracker.
+firmware_tool-flashbtn_step = Press the boot button
+firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
+firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect the USB cable to your computer, then follow the appropriate steps for your SlimeVR board revision:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Turn on the tracker while pushing in the FLASH button on the top side of the board. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_OTHER =
+    Before flashing, you will probably need to put the tracker into bootloader mode.
+    Most of the time, this means pressing the boot button on the board before the flashing process starts.
+    If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
+    Refer to your board's flashing instructions to learn how to enter bootloader mode.
+firmware_tool-flash_method_ota-title = Flashing over Wi-Fi
+firmware_tool-flash_method_ota-devices = Detected OTA Devices:
+firmware_tool-flash_method_ota-no_devices = There are no boards that can be updated using OTA, make sure you selected the correct board type
+firmware_tool-flash_method_serial-title = Flashing over USB
+firmware_tool-flash_method_serial-wifi = Wi-Fi Credentials:
+firmware_tool-flash_method_serial-devices-label = Detected Serial Devices:
+firmware_tool-flash_method_serial-devices-placeholder = Select a serial device
+firmware_tool-flash_method_serial-no_devices = There are no compatible serial devices detected, make sure the tracker is plugged in
+firmware_tool-build_step = Building
+firmware_tool-build_step-description = The firmware is building, please wait
+firmware_tool-flashing_step = Flashing
+firmware_tool-flashing_step-description = Your trackers are flashing, please follow the instructions on the screen
+firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
+firmware_tool-flashing_step-flash_more = Flash more trackers
+firmware_tool-flashing_step-exit = Exit
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Waiting to build....
+firmware_tool-build-CREATING_BUILD_FOLDER = Creating the build folder
+firmware_tool-build-DOWNLOADING_SOURCE = Downloading the source code
+firmware_tool-build-EXTRACTING_SOURCE = Extracting the source code
+firmware_tool-build-BUILDING = Building the firmware
+firmware_tool-build-SAVING = Saving the build
+firmware_tool-build-DONE = Build Complete
+firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 
+firmware_update-status-DOWNLOADING = Downloading the firmware
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
+firmware_update-status-AUTHENTICATING = Authenticating with the mcu
+firmware_update-status-UPLOADING = Uploading the firmware
+firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
+firmware_update-status-REBOOTING = Applying the update
+firmware_update-status-PROVISIONING = Setting Wi-Fi credentials
+firmware_update-status-DONE = Update complete!
+firmware_update-status-ERROR_DEVICE_NOT_FOUND = Could not find the device
+firmware_update-status-ERROR_TIMEOUT = The update process timed out
+firmware_update-status-ERROR_DOWNLOAD_FAILED = Could not download the firmware
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = Could not authenticate with the mcu
+firmware_update-status-ERROR_UPLOAD_FAILED = Could not upload the firmware
+firmware_update-status-ERROR_PROVISIONING_FAILED = Could not set the Wi-Fi credentials
+firmware_update-status-ERROR_UNSUPPORTED_METHOD = The update method is not supported
+firmware_update-status-ERROR_UNKNOWN = Unknown error
 
 ## Dedicated Firmware Update Page
 
+firmware_update-title = Firmware update
+firmware_update-devices = Available Devices
+firmware_update-devices-description = Please select the trackers you want to update to the latest version of SlimeVR firmware.
+firmware_update-no_devices = Please make sure that the trackers you want to update are ON and connected to the Wi-Fi!
+firmware_update-changelog-title = Updating to { $version }
+firmware_update-looking_for_devices = Looking for devices to update...
+firmware_update-retry = Retry
+firmware_update-update = Update Selected Trackers
+firmware_update-exit = Exit
 
 ## Tray Menu
 
@@ -1034,9 +1637,121 @@ unknown_device-modal-description =
     Bạn có muốn kết nối nó với SlimeVR không?
 unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
+# VRChat config warnings
+vrc_config-page-title = VRChat configuration warnings
+vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR.
+vrc_config-page-help = Can't find the settings?
+vrc_config-page-help-desc = Check out our <a>documentation on this topic!</a>
+vrc_config-page-big_menu = Tracking & IK (Big Menu)
+vrc_config-page-big_menu-desc = Settings related to IK in the big settings menu
+vrc_config-page-wrist_menu = Tracking & IK (Wrist Menu)
+vrc_config-page-wrist_menu-desc = Settings related to IK in small settings menu (wrist menu)
+vrc_config-on = On
+vrc_config-off = Off
+vrc_config-invalid = You have misconfigured VRChat settings!
+vrc_config-show_more = Show more
+vrc_config-setting_name = VRChat Setting name
+vrc_config-recommended_value = Recommended Value
+vrc_config-current_value = Current Value
+vrc_config-mute = Mute Warning
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
+vrc_config-spine_mode-UNKNOWN = Unknown
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+vrc_config-tracker_model-UNKNOWN = Unknown
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System
+vrc_config-avatar_measurement_type-UNKNOWN = Unknown
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Error collection consent modal
 
+error_collection_modal-title = Can we collect errors?
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    You can change this setting later in the Behavior section of the settings page.
+error_collection_modal-confirm = I agree
+error_collection_modal-cancel = I don't want to
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking Checklist
+tracking_checklist-settings = Tracking Checklist Settings
+tracking_checklist-settings-close = Close
+tracking_checklist-status-incomplete = You are not prepared to use SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] You have 1 warning!
+       *[many] You have { $count } warnings!
+    }
+tracking_checklist-status-complete = You are prepared to use SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
+tracking_checklist-FULL_RESET = Perform a full reset
+tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR disconnected
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
+tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
+tracking_checklist-TRACKER_ERROR = Trackers with Errors
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
+tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
+tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
+tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+tracking_checklist-ignore = Ignore
+preview-mocap_mode_soon = Mocap Mode (Soon™)
+preview-disable_render = Disable rendering
+preview-disabled_render = Rendering disabled
+toolbar-mounting_calibration = Mounting Calibration
+toolbar-mounting_calibration-default = Body
+toolbar-mounting_calibration-feet = Feet
+toolbar-mounting_calibration-fingers = Fingers
+toolbar-drift_reset = Drift Reset
+toolbar-assigned_trackers = { $count } trackers assigned
+toolbar-unassigned_trackers = { $count } trackers unassigned

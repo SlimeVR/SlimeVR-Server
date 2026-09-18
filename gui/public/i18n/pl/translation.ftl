@@ -115,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = Rękawica SlimeVR Dev IMU
+board_type-GESTURES = Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generic nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -349,6 +354,7 @@ tracker-table-column-name = Nazwa
 tracker-table-column-type = Typ
 tracker-table-column-battery = Bateria
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Packet Loss
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Akceleracja X/Y/Z
@@ -390,6 +396,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Włączony
        *[NOT_SUPPORTED] Nieobsługiwane
     }
+tracker-infos-packet_loss = Packet Loss
+tracker-infos-packets_lost = Packets Lost
+tracker-infos-packets_received = Packets Received
 
 ## Tracker settings
 
@@ -429,6 +438,7 @@ tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
 tracker-settings-current-version = Aktualny
 tracker-settings-latest-version = Najnowszy
+tracker-settings-build-date = Build Date
 
 ## Tracker part card info
 
@@ -593,6 +603,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Wykorzystuje magnetometr we wszystkich trackerach, które mają kompatybilne oprogramowanie sprzętowe, redukując dryf w stabilnych środowiskach magnetycznych.¶
     Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Użyj magnetometru na trackerach
+settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 settings-stay_aligned = Wyrównywanie
 settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
 settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
@@ -643,6 +656,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Dane pozycji
 settings-general-fk_settings-ik-use_position = Użyj danych o pozycji
 settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
 settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
@@ -701,12 +717,15 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Włącz stuknięcie, aby zresetować odchylanie
 settings-general-gesture_control-yawResetDelay = Opóźnienie resetowania odchylenia
 settings-general-gesture_control-yawResetTaps = Stuknięć do zresetowania odchylenia
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = Włącz stuknięcie, aby całkowicie zresetować
 settings-general-gesture_control-fullResetDelay = Pełne opóźnienie resetu
 settings-general-gesture_control-fullResetTaps = Stuknięć do pełnego resetu
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = Włącz stuknięcie, aby zresetować położenie
 settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania położenia
 settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackery ponad progiem
 settings-general-gesture_control-numberTrackersOverThreshold-description = Zwiększ tę wartość, jeśli wykrywanie stukniecia nie działa. Nie zwiększaj go ponad to, co konieczne, ponieważ wygeneruje to fałszywe stuknięcia.
@@ -753,6 +772,9 @@ settings-general-interface-connected_trackers_warning-label = Ostrzeżenie o pod
 ## Behavior settings
 
 settings-interface-behavior = Zachowanie
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimalizuj do zasobnika systemowego
 settings-general-interface-use_tray-description = Pozwala zamknąć okno bez wyłączania serwera SlimeVR, aby używać trackerów bez interfejsu graficznego.
 settings-general-interface-use_tray-label = Minimalizuj do zasobnika systemowego
@@ -798,6 +820,12 @@ settings-serial-factory_reset-warning-cancel = Anuluj
 settings-serial-serial_select = Wybierz port szeregowy
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = Zwykły tekst
 settings-serial-save_logs = Zapisz do pliku
 settings-serial-send_command = Wyślij
@@ -821,10 +849,10 @@ settings-osc-router-network = Porty sieciowe
 settings-osc-router-network-description =
     Ustaw porty do odbierania i wysyłania danych.
     Mogą to być takie same porty, jak inne porty używane na serwerze SlimeVR.
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = Port wejściowy
     .placeholder = Port wejściowy (domyślnie: 9002)
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = Port wyjściowy
     .placeholder = Port wyjściowy (domyślnie: 9000)
 settings-osc-router-network-address = Adres sieciowy
@@ -853,10 +881,10 @@ settings-osc-vrchat-oscqueryEnabled-description =
 settings-osc-vrchat-oscqueryEnabled-label = Włącz OSCQuery
 settings-osc-vrchat-network = Porty sieciowe
 settings-osc-vrchat-network-description-v1 = Ustaw porty do odbierania i wysyłania danych. Nie trzeba tego zmieniać dla VRChata.
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = Port In
     .placeholder = Port in (default: 9001)
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Adres sieciowy
@@ -882,10 +910,10 @@ settings-osc-vmc-enable-description = Przełącz wysyłanie i odbieranie danych.
 settings-osc-vmc-enable-label = Umożliwiać
 settings-osc-vmc-network = Porty sieciowe
 settings-osc-vmc-network-description = Ustaw porty do odbierania i wysyłania danych przez VMC
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = Port Wejścia
     .placeholder = Port Wejścia (domyślnie: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = Port Wyjścia
     .placeholder = Port Wyjścia (domyślnie: 39539)
 settings-osc-vmc-network-address = Adres sieciowy
@@ -962,18 +990,65 @@ onboarding-setup_warning-cancel = Kontynuuj konfigurację
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
+onboarding-wifi_creds-v2 = Trackers using Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
+    
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = SSID
     .placeholder = Enter SSID
 onboarding-wifi_creds-ssid-required = Nazwa Wi-Fi jest wymagana
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = Password
     .placeholder = Enter password
+onboarding-wifi_creds-dongle-title = Trackers using a dongle
+onboarding-wifi_creds-dongle-description = If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
+onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
 
@@ -1002,6 +1077,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -1352,6 +1431,7 @@ onboarding-user_height-description = Potrzebujemy twojego wzrostu, aby obliczyć
 onboarding-user_height-need_head_tracker = Do kalibracji wymaganę są gogle vr z kontrolerami.
 onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
 onboarding-user_height-next_step = Kontynuuj i zapisz
+onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = Manualne Proporcje Ciała
 onboarding-user_height-calibration-title = Postęp kalibracji
 onboarding-user_height-calibration-RECORDING_FLOOR = Dotknij podłogi górną częścią kontrolera
@@ -1405,6 +1485,7 @@ onboarding-stay_aligned-previous_step = Poprzednie
 onboarding-stay_aligned-next_step = Następne
 onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Gotowy
+onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 
@@ -1460,6 +1541,9 @@ firmware_tool-select_source-firmware = Źródło oprogramowania
 firmware_tool-select_source-version = Wersja oprogramowania
 firmware_tool-select_source-official = Oficjalny
 firmware_tool-select_source-dev = Deweloperski
+firmware_tool-select_source-not_selected = No source selected
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
 firmware_tool-board_defaults = Skonfiguruj swoje urządzenie
 firmware_tool-board_defaults-description = Ustaw piny lub ustawienia do twojego urządzenia
 firmware_tool-board_defaults-add = Dodaj
@@ -1469,13 +1553,13 @@ firmware_tool-board_defaults-error-format = Nieprawidłowy format
 firmware_tool-board_defaults-error-format-number = To nie liczba
 firmware_tool-flash_method_step = Metoda flashowania
 firmware_tool-flash_method_step-description = Wybierz metodę flashowania, której chcesz użyć
-firmware_tool-flash_method_step-ota-v2 =
+firmware_tool-flash_method_step-ota-v2 = 
     .label = Wi-Fi
     .description = Użyj metody bezprzewodowej. Twoje urządzenie będzie aktualizować się przez Wi-Fi. Działa tylko z skonfigurowanymi urządzeniami.
 firmware_tool-flash_method_step-ota-info =
     Używamy Twoich danych wi-fi, aby wgrać tracker i potwierdzić, że wszystko działa poprawnie.
     <b>Nie przechowujemy Twoich danych wifi!</b>
-firmware_tool-flash_method_step-serial-v2 =
+firmware_tool-flash_method_step-serial-v2 = 
     .label = USB
     .description = Użyj kabla usb, aby aktualizować urządzenie.
 firmware_tool-flashbtn_step = Naciśnij przycisk zasilania
@@ -1507,6 +1591,7 @@ firmware_tool-flashing_step-description = Twoje trackery migają. Postępuj zgod
 firmware_tool-flashing_step-warning-v2 = Nie odłączaj ani nie wyłączaj trackera podczas procesu przesyłania, chyba że zostaniesz o to poproszony, może to spowodować, że twoje urządzenie stanie się bezużyteczne.
 firmware_tool-flashing_step-flash_more = Flashuj więcej trackerów
 firmware_tool-flashing_step-exit = Wyjście
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
@@ -1647,7 +1732,18 @@ tracking_checklist-FULL_RESET = Wykonaj pełny reset
 tracking_checklist-FULL_RESET-desc = Niektóre urządzenia wymagają resetu.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR nie jest uruchomiony
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR nie jest uruchomiony. Czy twoje gogle są podłączone?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Uruchom SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Skalibruj swoje urządzenia
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Nie wykonałeś kalibracji urządzenia. Proszę, pozwól swoim urządzeniom (podświetlonym na żółto) odpocząć na stabilnej powierzchni przez kilka sekund.
 tracking_checklist-TRACKER_ERROR = Urządzenia z błędami

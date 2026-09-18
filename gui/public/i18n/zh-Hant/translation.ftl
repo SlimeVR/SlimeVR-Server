@@ -652,6 +652,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = 定位資料
 settings-general-fk_settings-ik-use_position = 使用定位資料
 settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
@@ -701,12 +704,15 @@ settings-general-gesture_control-trackers = { $amount } 個追蹤器
 settings-general-gesture_control-yawResetEnabled = 敲擊以左右偏擺重置
 settings-general-gesture_control-yawResetDelay = 左右偏擺重置延遲
 settings-general-gesture_control-yawResetTaps = 左右偏擺重置敲擊次數
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = 敲擊以完整重置
 settings-general-gesture_control-fullResetDelay = 完整重置延遲
 settings-general-gesture_control-fullResetTaps = 完整重置敲擊次數
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = 敲擊以配戴重置
 settings-general-gesture_control-mountingResetDelay = 重置配戴延遲
 settings-general-gesture_control-mountingResetTaps = 重置配戴敲擊次數
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 觸發敲擊判定的最多追蹤器數量
 settings-general-gesture_control-numberTrackersOverThreshold-description = 如果敲擊偵測無法作動，請嘗試增加此值以降低敲擊判定的門檻。為避免誤判，請勿設定超過所需要的數值。
@@ -753,6 +759,9 @@ settings-general-interface-connected_trackers_warning-label = 當退出程式時
 ## Behavior settings
 
 settings-interface-behavior = 行為
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓你在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓你在不受圖形介面的打擾下繼續使用追蹤器。
 settings-general-interface-use_tray-label = 最小化到系統列
@@ -794,6 +803,12 @@ settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 選擇序列埠
 settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = 純文字格式
 settings-serial-save_logs = 儲存到檔案
 settings-serial-send_command = 傳送
@@ -817,10 +832,10 @@ settings-osc-router-network = 連接埠
 settings-osc-router-network-description =
     設定用於監聽和傳送資料的連接埠，
     可以與 SlimeVR 伺服器中使用的其他埠號相同。
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = 輸入埠
     .placeholder = 輸入埠（預設：9002）
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = 輸出埠
     .placeholder = 輸出埠（預設：9000）
 settings-osc-router-network-address = 網路地址
@@ -846,10 +861,10 @@ settings-osc-vrchat-oscqueryEnabled-description =
 settings-osc-vrchat-oscqueryEnabled-label = 啟用 OSCQuery
 settings-osc-vrchat-network = 連接埠
 settings-osc-vrchat-network-description-v1 = 設定收發追蹤器資料的連接埠埠號，使用 VRChat 不須更改。
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = 輸入埠
     .placeholder = 輸入埠（預設：9001）
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = 輸出埠
     .placeholder = 輸出埠（預設：9000）
 settings-osc-vrchat-network-address = 網路位址
@@ -875,10 +890,10 @@ settings-osc-vmc-enable-description = 切換資料的傳送和接收。
 settings-osc-vmc-enable-label = 啟用
 settings-osc-vmc-network = 連接埠
 settings-osc-vmc-network-description = 設定用於監聽和傳送 VMC 資料的連接埠。
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = 輸入埠
     .placeholder = 輸入埠（預設：39540）
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = 輸出埠
     .placeholder = 輸出埠（預設：39539）
 settings-osc-vmc-network-address = 網路地址
@@ -959,9 +974,45 @@ onboarding-setup_warning-cancel = 繼續設定
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
 onboarding-wifi_creds-v2 = 透過 Wi-Fi 連接
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -971,11 +1022,11 @@ onboarding-wifi_creds-description-v2 =
     請確保輸入的是 2.4 GHz 頻道的 Wi-Fi 憑證。
 onboarding-wifi_creds-skip = 跳過 Wi-Fi 設定
 onboarding-wifi_creds-submit = 送出！
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = Wi-Fi 名稱
     .placeholder = 請輸入 Wi-Fi 名稱
 onboarding-wifi_creds-ssid-required = 必須填寫 Wi-Fi 名稱
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = 密碼
     .placeholder = 輸入密碼
 onboarding-wifi_creds-dongle-title = 透過接收器連接
@@ -1010,6 +1061,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -1338,6 +1393,7 @@ onboarding-user_height-description = 我們需要使用你的身高來計算軀�
 onboarding-user_height-need_head_tracker = 進行校正需要具備定位功能的頭戴顯示器與控制器。
 onboarding-user_height-calculate = 自動計算我的身高
 onboarding-user_height-next_step = 繼續並儲存
+onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = 手動調整軀幹比例
 onboarding-user_height-calibration-title = 校正進度
 onboarding-user_height-calibration-RECORDING_FLOOR = 以控制器前端碰觸地面
@@ -1418,7 +1474,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = 追蹤器{ $trackerName }發生錯誤
 status_system-StatusUnassignedHMD = VR 頭戴顯示器應被分配為頭部追蹤器。
-status_system-StatusPublicNetwork = 你的網路設定檔目前設為「公開」，SlimeVR 為了能正常運作，不建議如此設定。 <PublicFixLink>此處提供修正的方法。</PublicFixLink>
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1454,13 +1514,13 @@ firmware_tool-board_defaults-error-format = 格式無效
 firmware_tool-board_defaults-error-format-number = 不是數字
 firmware_tool-flash_method_step = 燒錄方法
 firmware_tool-flash_method_step-description = 選擇要使用的燒錄方法
-firmware_tool-flash_method_step-ota-v2 =
+firmware_tool-flash_method_step-ota-v2 = 
     .label = Wi-Fi
     .description = 使用 OTA 線上更新。你的追蹤器會透過 Wi-Fi 來更新韌體，只支援已經設定好的追蹤器。
 firmware_tool-flash_method_step-ota-info =
     即將使用你的 Wi-Fi 憑證來燒錄韌體，並確保一切正常。
     <b>我們不會儲存你的 Wi-Fi 憑證！</b>
-firmware_tool-flash_method_step-serial-v2 =
+firmware_tool-flash_method_step-serial-v2 = 
     .label = USB
     .description = 使用 USB 來更新追蹤器。
 firmware_tool-flashbtn_step = 進入燒錄模式
@@ -1489,6 +1549,7 @@ firmware_tool-flashing_step-description = 追蹤器燒錄中，請遵循畫面�
 firmware_tool-flashing_step-warning-v2 = 除非特別指示，燒錄中請勿移除或是關閉追蹤器，否則可能導致主板無法使用
 firmware_tool-flashing_step-flash_more = 燒錄更多追蹤器
 firmware_tool-flashing_step-exit = 離開
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
@@ -1624,7 +1685,18 @@ tracking_checklist-FULL_RESET = 進行完整重置
 tracking_checklist-FULL_RESET-desc = 有追蹤器需要進行重置
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未執行
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未執行，你要把追蹤器用在 VR 上嗎？
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = 啟動 SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = 校正追蹤器
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 追蹤器尚未進行校正。請將以黃色標記的追蹤器放置在平面上幾秒鐘。
 tracking_checklist-TRACKER_ERROR = 追蹤器出現錯誤
@@ -1635,7 +1707,18 @@ tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告
 tracking_checklist-UNASSIGNED_HMD = VR 頭戴裝置尚未分配給頭部
 tracking_checklist-UNASSIGNED_HMD-desc = VR 頭戴顯示器應被分配為頭部追蹤器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 變更網路設定檔
-tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = 你的網路設定檔目前設為「公開」，SlimeVR 為了能正常運作，不建議如此設定。 <PublicFixLink>此處提供修正的方法。</PublicFixLink>
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 開啟控制台
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 調整持續校正設定
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 記錄持續校正所使用的姿勢以減緩飄移現象

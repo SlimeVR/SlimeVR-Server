@@ -33,6 +33,10 @@ tips-failed_webgl = WebGL 초기화에 실패했습니다.
 
 ## Units
 
+unit-meter = Meter
+unit-foot = Foot
+unit-inch = Inch
+unit-cm = cm
 
 ## Body parts
 
@@ -57,6 +61,36 @@ body_part-LEFT_HAND = 왼손
 body_part-LEFT_UPPER_LEG = 왼쪽 다리 위
 body_part-LEFT_LOWER_LEG = 왼쪽 다리 아래
 body_part-LEFT_FOOT = 왼발
+body_part-LEFT_THUMB_METACARPAL = Left thumb metacarpal
+body_part-LEFT_THUMB_PROXIMAL = Left thumb proximal
+body_part-LEFT_THUMB_DISTAL = Left thumb distal
+body_part-LEFT_INDEX_PROXIMAL = Left index proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Left index intermediate
+body_part-LEFT_INDEX_DISTAL = Left index distal
+body_part-LEFT_MIDDLE_PROXIMAL = Left middle proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Left middle intermediate
+body_part-LEFT_MIDDLE_DISTAL = Left middle distal
+body_part-LEFT_RING_PROXIMAL = Left ring proximal
+body_part-LEFT_RING_INTERMEDIATE = Left ring intermediate
+body_part-LEFT_RING_DISTAL = Left ring distal
+body_part-LEFT_LITTLE_PROXIMAL = Left little proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Left little intermediate
+body_part-LEFT_LITTLE_DISTAL = Left little distal
+body_part-RIGHT_THUMB_METACARPAL = Right thumb metacarpal
+body_part-RIGHT_THUMB_PROXIMAL = Right thumb proximal
+body_part-RIGHT_THUMB_DISTAL = Right thumb distal
+body_part-RIGHT_INDEX_PROXIMAL = Right index proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Right index intermediate
+body_part-RIGHT_INDEX_DISTAL = Right index distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Right middle proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Right middle intermediate
+body_part-RIGHT_MIDDLE_DISTAL = Right middle distal
+body_part-RIGHT_RING_PROXIMAL = Right ring proximal
+body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
+body_part-RIGHT_RING_DISTAL = Right ring distal
+body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
+body_part-RIGHT_LITTLE_DISTAL = Right little distal
 
 ## BoardType
 
@@ -68,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -79,34 +115,135 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-GESTURES = Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generic nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
 skeleton_bone-NONE = 없음
 skeleton_bone-HEAD = 머리 밀림
+skeleton_bone-HEAD-desc =
+    This is the distance from your headset to the middle of your head.
+    To adjust it, shake your head left to right as if you're disagreeing and modify
+    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = 목 길이
+skeleton_bone-NECK-desc =
+    This is the distance from the middle of your head to the base of your neck.
+    To adjust it, move your head up and down as if you're nodding or tilt your head
+    to the left and right and modify it until any movement in other trackers is negligible.
 skeleton_bone-torso_group = 몸통 길이
+skeleton_bone-torso_group-desc =
+    This is the distance from the base of your neck to your hips.
+    To adjust it, modify it standing up straight until your virtual hips line
+    up with your real ones.
 skeleton_bone-UPPER_CHEST = 가슴 위쪽 길이
+skeleton_bone-UPPER_CHEST-desc =
+    This is the distance from the base of your neck to the middle of your chest.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-CHEST_OFFSET = 가슴 오프셋
+skeleton_bone-CHEST_OFFSET-desc =
+    This can be adjusted to move your virtual chest tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = 가슴 길이
+skeleton_bone-CHEST-desc =
+    This is the distance from the middle of your chest to the middle of your spine.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-WAIST = 허리 길이
+skeleton_bone-WAIST-desc =
+    This is the distance from the middle of your spine to your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = 골반 길이
+skeleton_bone-HIP-desc =
+    This is the distance from your belly button to your hips.
+    To adjust it, set your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIP_OFFSET = 골반 오프셋
+skeleton_bone-HIP_OFFSET-desc =
+    This can be adjusted to move your virtual hip tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = 골반 너비
+skeleton_bone-HIPS_WIDTH-desc =
+    This is the distance between the start of your legs.
+    To adjust it, perform a full reset with your legs straight and modify it until
+    your virtual legs match up with your real ones horizontally.
 skeleton_bone-leg_group = 다리 길이
+skeleton_bone-leg_group-desc =
+    This is the distance from your hips to your feet.
+    To adjust it, adjust your Torso Length properly and modify it
+    until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = 위쪽 다리 길이
+skeleton_bone-UPPER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = 아래쪽 다리 길이
+skeleton_bone-LOWER_LEG-desc =
+    This is the distance from your knees to your ankles.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = 발 크기
+skeleton_bone-FOOT_LENGTH-desc =
+    This is the distance from your ankles to your toes.
+    To adjust it, tiptoe and modify it until your virtual feet stay in place.
 skeleton_bone-FOOT_SHIFT = 발 밀림
+skeleton_bone-FOOT_SHIFT-desc =
+    This value is the horizontal distance from your knee to your ankle.
+    It accounts for your lower legs going backwards when standing up straight.
+    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
+    feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = 골격 오프셋
+skeleton_bone-SKELETON_OFFSET-desc =
+    This can be adjusted to offset all your trackers forward or backward.
+    It can be used to help with calibration in certain games or applications
+    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = 어깨 거리
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    This is the vertical distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = 어깨 너비
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    This is the horizontal distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up horizontally with your real shoulders.
 skeleton_bone-arm_group = 팔 길이
+skeleton_bone-arm_group-desc =
+    This is the distance from your shoulders to your wrists.
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y
+    to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = 위쪽 팔 거리
+skeleton_bone-UPPER_ARM-desc =
+    This is the distance from your shoulders to your elbows.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = 아래쪽 팔 길이
+skeleton_bone-LOWER_ARM-desc =
+    This is the distance from your elbows to your wrists.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = 손 길이 Y
+skeleton_bone-HAND_Y-desc =
+    This is the vertical distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with the middle of your hands.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = 손 길이 Z
+skeleton_bone-HAND_Z-desc =
+    This is the horizontal distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, set it to 0.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = 팔꿈치 오프셋
+skeleton_bone-ELBOW_OFFSET-desc =
+    This can be adjusted to move your virtual elbow trackers up or down in order to aid
+    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 
@@ -121,7 +258,13 @@ reset-reset_all_warning_default-v2 =
     그래도 진행하시겠습니까?
 reset-full = 전체 정렬
 reset-mounting = 착용 방향 정렬
+reset-mounting-feet = Feet Calibration
+reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw 정렬
+reset-error-no_feet_tracker = No feet tracker assigned
+reset-error-no_fingers_tracker = No finger tracker assigned
+reset-error-mounting-need_full_reset = Need a full reset before mounting
+reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 
 ## Serial detection stuff
 
@@ -141,11 +284,14 @@ navbar-trackers_assign = 트래커 위치
 navbar-mounting = 착용 방향 정렬
 navbar-onboarding = 설정 마법사
 navbar-settings = 설정
+navbar-connect_trackers = Connect Trackers
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = BVH 기록
+bvh-stop_recording = Save BVH recording
 bvh-recording = 기록중...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 
@@ -186,6 +332,7 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = 미리보기
 widget-imu_visualizer-acceleration = 가속도
 widget-imu_visualizer-position = 위치
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
@@ -208,11 +355,13 @@ tracker-table-column-name = 이름
 tracker-table-column-type = 타입
 tracker-table-column-battery = 배터리
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Packet Loss
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = 온도 °C
 tracker-table-column-linear-acceleration = X/Y/Z 가속도
 tracker-table-column-rotation = X/Y/Z 회전
 tracker-table-column-position = X/Y/Z 위치
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -248,6 +397,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] 활성화됨
        *[NOT_SUPPORTED] 지원되지 않음
     }
+tracker-infos-packet_loss = Packet Loss
+tracker-infos-packets_lost = Packets Lost
+tracker-infos-packets_received = Packets Received
 
 ## Tracker settings
 
@@ -278,9 +430,16 @@ tracker-settings-name_section-label = 트래커 이름
 tracker-settings-forget = 트래커 삭제
 tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
 tracker-settings-forget-label = 트래커 삭제
+tracker-settings-update-unavailable-v2 = No releases found
+tracker-settings-update-incompatible = Cannot update. Incompatible board or firmware version
+tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = 최신 버전
+tracker-settings-update-blocked = Update not available. No other releases available
 tracker-settings-update = 지금 업데이트
 tracker-settings-update-title = 펌웨어 버전
+tracker-settings-current-version = Current
+tracker-settings-latest-version = Latest
+tracker-settings-build-date = Build Date
 
 ## Tracker part card info
 
@@ -346,17 +505,24 @@ mounting_selection_menu-close = 닫기
 
 settings-sidebar-title = 설정
 settings-sidebar-general = 일반
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = 트래커 역학
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = 트래킹 설정
 settings-sidebar-gesture_control = 제스처 제어
 settings-sidebar-interface = 인터페이스
 settings-sidebar-osc_router = OSC 라우터
 settings-sidebar-osc_trackers = VRChat OSC 트래커
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 유틸리티
 settings-sidebar-serial = 시리얼 콘솔
 settings-sidebar-appearance = 모양
+settings-sidebar-home = Home Screen
+settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = 알림
+settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY 펌웨어 도구
+settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = 고급
 
 ## SteamVR settings
@@ -437,6 +603,28 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     호환 가능한 펌웨어가 있는 모든 트래커에서 자력계를 사용하여 안정적인 자기 환경에서 틀어짐을 줄일 수 있어요.
     트래커의 설정에서 트래커별로 비활성화할 수 있어요. <b>이 기능을 토글하는 동안 트래커를 종료하지 마세요!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 트래커에서 자력계 사용하기
+settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
+settings-stay_aligned-setup-label = Setup Stay Aligned
+settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
+settings-stay_aligned-enabled-label = Adjust trackers
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
+settings-stay_aligned-general-label = General
+settings-stay_aligned-relaxed_poses-label = Relaxed Poses
+settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
+settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
+settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a chair
+settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
+settings-stay_aligned-relaxed_poses-save_pose = Save pose
+settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
+settings-stay_aligned-relaxed_poses-close = Close
+settings-stay_aligned-debug-label = Debugging
+settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
+settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
 ## FK/Tracking settings
 
@@ -458,11 +646,19 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 플로어 클립
 settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 트래커가 없을 때, 발 트래커가 있는 것처럼 예측해서 움직여주는 기능이에요.
 settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-enforce_joint_constraints = 골격 한계
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 상수 강제 적용
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 상수를 사용해 보정
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = 관절이 최대 회전 각도를 넘어 회전 시 관절의 회전 각도를 보정합니다
+settings-general-fk_settings-ik = Position data
+settings-general-fk_settings-ik-use_position = Use Position data
+settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = 팔 트래킹
 settings-general-fk_settings-arm_fk-description = 손 컨트롤러 위치 데이터를 사용할 수 없는 경우에도 VR 헤드셋(HMD)으로부터 팔을 추적하도록 할 수 있어요.
 settings-general-fk_settings-arm_fk-force_arms = 팔을 HMD에서만 받아오기
@@ -512,12 +708,15 @@ settings-general-gesture_control-trackers = { $amount } 트래커
 settings-general-gesture_control-yawResetEnabled = 탭해서 Yaw 정렬 활성화
 settings-general-gesture_control-yawResetDelay = Yaw 정렬 딜레이
 settings-general-gesture_control-yawResetTaps = Yaw 정렬 탭 횟수
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = 탭해서 전체 정렬 활성화
 settings-general-gesture_control-fullResetDelay = 전체 정렬 딜레이
 settings-general-gesture_control-fullResetTaps = 탭해서 전체 정렬
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = 탭해서 착용 방향 정렬 활성화
 settings-general-gesture_control-mountingResetDelay = 착용 방향 정렬 딜레이
 settings-general-gesture_control-mountingResetTaps = 탭해서 착용 방향 정렬
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 트래커 감지 한계
 settings-general-gesture_control-numberTrackersOverThreshold-description = 몸을 움직이면서 제스처 제어를 하고 싶은데 잘 작동하지 않는다면 이 값을 늘리세요. 탭 탐지가 작동하는 데 필요한 값 이상으로 늘리지 마세요. 더 많은 오작동이 발생할 수 있어요.
@@ -563,6 +762,10 @@ settings-general-interface-connected_trackers_warning-label = 종료 시 작동 
 
 ## Behavior settings
 
+settings-interface-behavior = Behavior
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = 작업 표시줄로 최소화
 settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
 settings-general-interface-use_tray-label = 작업 표시줄로 최소화
@@ -575,7 +778,16 @@ settings-general-interface-discord_presence-message =
        *[other] 트래커 { $amount } 개 사용 중
     }
 settings-interface-behavior-error_tracking = Sentry.io 를 통한 오류 수집
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Do you consent to the collection of anonymized error data?</h1>
+    
+    <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
+    
+    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
 settings-interface-behavior-error_tracking-label = 개발자에게 오류 보내기
+settings-interface-behavior-bvh_directory = Directory to save BVH recordings
+settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
+settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
 
@@ -597,8 +809,19 @@ settings-serial-factory_reset-warning-cancel = 취소
 settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = 텍스트 문서
 settings-serial-save_logs = 파일에 저장
+settings-serial-send_command = Send
+settings-serial-send_command-placeholder = Command...
+settings-serial-send_command-warning = <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
+settings-serial-send_command-warning-ok = I know what I'm doing
+settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC router settings
 
@@ -615,10 +838,10 @@ settings-osc-router-network = 네트워크 포트
 settings-osc-router-network-description =
     데이터 수신 및 전송을 위한 포트 설정
     이들은 SlimeVR 서버에서 사용되는 다른 포트와 동일해도 돼요.
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = 들어오는 포트
     .placeholder = Port in (기본값: 9002)
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = 나가는 포트
     .placeholder = Port out (기본값: 9000)
 settings-osc-router-network-address = 네트워크 주소
@@ -645,10 +868,10 @@ settings-osc-vrchat-oscqueryEnabled-description =
 settings-osc-vrchat-oscqueryEnabled-label = OSCQuery 활성화
 settings-osc-vrchat-network = 네트워크 포트
 settings-osc-vrchat-network-description-v1 = 들어오는 포트와 나가는 포트 설정하기, VRChat에서 사용하려면 그냥 두세요.
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = 들어오는 포트
     .placeholder = Port in (기본값: 9001)
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = 나가는 포트
     .placeholder = Port out (기본값: 9000)
 settings-osc-vrchat-network-address = 네트워크 주소
@@ -674,10 +897,10 @@ settings-osc-vmc-enable-description = 활성화해서 데이터 송수신
 settings-osc-vmc-enable-label = 활성화
 settings-osc-vmc-network = 네트워크 포트
 settings-osc-vmc-network-description = VMC와 데이터를 송수신할 포트 설정
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = 들어오는 포트
     .placeholder = 들어오는 포트 (기본: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = 나가는 포트
     .placeholder = 나가는 포트 (기본: 39539)
 settings-osc-vmc-network-address = 네트워크 주소
@@ -696,6 +919,8 @@ settings-osc-vmc-mirror_tracking-label = 움직임 좌우 반전
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-port_banned_error = The port { $port } can't be used!
 
 ## Advanced settings
 
@@ -718,15 +943,23 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = 설정 초기화
 settings-utils-advanced-reset_warning-cancel = 취소
 settings-utils-advanced-open_data-v1 = 설정 폴더
+settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = 폴더 열기
 settings-utils-advanced-open_logs = 로그 폴더
+settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
 settings-utils-advanced-open_logs-label = 폴더 열기
 
 ## Home Screen
 
+settings-home-list-layout = Trackers list layout
+settings-home-list-layout-desc = Select one of the possible layouts of the home screen
+settings-home-list-layout-grid = Grid
+settings-home-list-layout-table = Table
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Active Steps
+settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
 ## Setup/onboarding menu
 
@@ -742,18 +975,65 @@ onboarding-setup_warning-cancel = 설정 계속하기
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
+onboarding-wifi_creds-v2 = Trackers using Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
+    
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = Wi-Fi 이름
     .placeholder = Wi-Fi 이름을 입력하세요
 onboarding-wifi_creds-ssid-required = Wi-Fi 이름을 입력하세요
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = 암호
     .placeholder = 암호를 입력하세요
+onboarding-wifi_creds-dongle-title = Trackers using a dongle
+onboarding-wifi_creds-dongle-description = If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
+onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
 
@@ -782,6 +1062,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -811,6 +1095,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = 서버 찾는 
 onboarding-connect_tracker-connection_status-connection_error = Wi-Fi에 연결할 수 없음
 onboarding-connect_tracker-connection_status-could_not_find_server = 서버를 찾을 수 없음
 onboarding-connect_tracker-connection_status-done = 서버에 연결됨
+onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
+onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
+onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
+onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
+    If this does not work:
+      - try using a different USB cable
+      - try using a different USB port
+      - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -827,6 +1122,7 @@ onboarding-connect_tracker-next = 트래커를 모두 연결했어요
 
 onboarding-calibration_tutorial = IMU 보정 튜토리얼
 onboarding-calibration_tutorial-subtitle = 트래커 틀어짐을 줄이는 데 도움이 될 거예요!
+onboarding-calibration_tutorial-description-v1 = After turning on your trackers, place them on a stable surface for a moment to allow for calibration. Calibration can be performed at any time after the trackers are powered on—this page simply provides a tutorial. To begin, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
 onboarding-calibration_tutorial-calibrate = 트래커들을 모두 올려뒀어요
 onboarding-calibration_tutorial-status-waiting = 대기 중
 onboarding-calibration_tutorial-status-calibrating = 보정 중
@@ -849,6 +1145,7 @@ onboarding-assignment_tutorial-done = 스트랩과 스티커를 트래커에 잘
 onboarding-assign_trackers-back = Wi-Fi 자격 증명으로 돌아가기
 onboarding-assign_trackers-title = 트래커 위치 지정
 onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 있는지 선택할 시간이에요. 트래커를 배치할 위치를 클릭해보세요
+onboarding-assign_trackers-unassign_all = Unassign all trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -983,19 +1280,31 @@ onboarding-automatic_mounting-done-restart = 다시 처음으로 돌아가기
 onboarding-automatic_mounting-mounting_reset-title = 착용 방향 정렬
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 몸을 굽혀 낮추세요.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. "착용 방향 재설정" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = 준비
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
 onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주세요
 onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향을 보정하기 위해 방금 할당한 트래커들을 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 각각의 트래커가 어떤 위치에 있는지 확인할 수 있어요.
 onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
+onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-title = 수동 신체 비율 설정
 onboarding-manual_proportions-fine_tuning_button = 신체 비율을 자동으로 조정
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 신체 비율 자동 조정 기능을 이용하려면 VR 헤드셋을 연결해 주세요
 onboarding-manual_proportions-export = 신체 비율 내보내기
 onboarding-manual_proportions-import = 신체 비율 가져오기
 onboarding-manual_proportions-file_type = 신체 비율 파일
+onboarding-manual_proportions-normal_increment = Normal increment
+onboarding-manual_proportions-precise_increment = Precise increment
+onboarding-manual_proportions-grouped_proportions = Grouped proportions
+onboarding-manual_proportions-all_proportions = All proportions
+onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
 
@@ -1083,13 +1392,72 @@ onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
 ## User height calibration
 
+onboarding-user_height-title = What is your height?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
+onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
+onboarding-user_height-calculate = Calculate my height automatically
+onboarding-user_height-next_step = Continue and save
+onboarding-user_height-prev_step = Back
+onboarding-user_height-manual-proportions = Manual Proportions
+onboarding-user_height-calibration-title = Calibration Progress
+onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is leveled
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the floor
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stand back up and stand still!
+onboarding-user_height-calibration-DONE = Success!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timed out, try again.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to stand straight and look forward at the end of the calibration.
+onboarding-user_height-calibration-error = Calibration Failed
+onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
+onboarding-user_height-reset-warning =
+    <b>Warning:</b> This will reset your proportions to be based on your height.
+    Are you sure you want to do this?
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Stay Aligned
+onboarding-stay_aligned-description = Configure Stay Aligned to keep your trackers aligned.
+onboarding-stay_aligned-put_trackers_on-title = Put on your trackers
+onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
+onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
+onboarding-stay_aligned-verify_mounting-title = Mounting Calibration
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Redo Mounting calibration
+onboarding-stay_aligned-preparation-title = Preparation
+onboarding-stay_aligned-preparation-tip = Make sure to stand upright. Keep looking forward with your arms down at your sides.
+onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-sitting-title = Relaxed Sitting in Chair Pose
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sit in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Sitting on Floor Pose
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-skip_step = Skip
+onboarding-stay_aligned-done-title = Stay Aligned enabled!
+onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
+onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to recalibrate the poses.
+onboarding-stay_aligned-previous_step = Previous
+onboarding-stay_aligned-next_step = Next
+onboarding-stay_aligned-restart = Restart
+onboarding-stay_aligned-done = Done
+onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 
 home-no_trackers = 감지되거나 할당된 트래커가 없어요.
+home-settings = Home Page Settings
+home-settings-close = Close
 
 ## Trackers Still On notification
 
@@ -1108,6 +1476,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발생했어요.
 status_system-StatusUnassignedHMD = VR 헤드셋은 머리 트래커로 할당되어야 해요.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1123,18 +1496,50 @@ firmware_tool = DIY 펌웨어 도구
 firmware_tool-description = DIY 트래커를 설정하고 펌웨어를 쓸 수 있습니다
 firmware_tool-not_available = 앗, 지금은 펌웨어 툴을 사용할 수 없어요. 나중에 다시 오세요!
 firmware_tool-not_compatible = 이 서버 버전은 펌웨어 도구를 지원하지 않습니다. 서버를 업데이트해 주세요!
+firmware_tool-select_source = Select the firmware to flash
+firmware_tool-select_source-description = Select the firmware you want to flash on your board
+firmware_tool-select_source-error = Unable to load Sources
+firmware_tool-select_source-board_type = Board Type
+firmware_tool-select_source-firmware = Firmware Source
+firmware_tool-select_source-version = Firmware Version
+firmware_tool-select_source-official = Official
+firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = No source selected
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
+firmware_tool-board_defaults = Configure your board
+firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
+firmware_tool-board_defaults-add = Add
+firmware_tool-board_defaults-reset = Reset to Default
+firmware_tool-board_defaults-error-required = Required field
+firmware_tool-board_defaults-error-format = Invalid format
+firmware_tool-board_defaults-error-format-number = Not a number
 firmware_tool-flash_method_step = 펌웨어 플래시 방식
 firmware_tool-flash_method_step-description = 펌웨어를 트래커에 플래시할 방법을 선택해 주세요
+firmware_tool-flash_method_step-ota-v2 = 
+    .label = Wi-Fi
+    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
+firmware_tool-flash_method_step-ota-info =
+    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your wifi credentials!</b>
+firmware_tool-flash_method_step-serial-v2 = 
+    .label = USB
+    .description = Use a USB cable to update your tracker.
 firmware_tool-flashbtn_step = BOOT 버튼 누르기
 firmware_tool-flashbtn_step-description = 다음 단계로 진행하기 전 몇 가지 작업을 해야 해요
 firmware_tool-flashbtn_step-board_SLIMEVR = 트래커를 끄고, 케이스를 제거하고 (만약 있다면), 이 컴퓨터에 USB 케이블을 연결한 후 SlimeVR 보드 버전에 따라 해당하는 작업을 수행해 주세요:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Turn on the tracker while pushing in the FLASH button on the top side of the board. The tracker LED should do a short blink.
 firmware_tool-flashbtn_step-board_OTHER =
     펌웨어를 쓰기 전에 트래커를 부트로더 모드에 진입시켜야 해요.
     대부분의 경우 이는 펌웨어 쓰기 작업이 시작되기 전 보드에 있는 BOOT 버튼을 누르면 가능합니다.
     펌웨어 쓰기 작업 초반에 시간 초과가 발생한다면 트래커가 부트로더 모드에 진입하지 않아서일 확률이 높아요.
     트래커를 부트로더 모드로 진입시키는 방법은 가지고 계신 보드의 펌웨어 쓰기 도움말을 참고해 주세요
+firmware_tool-flash_method_ota-title = Flashing over Wi-Fi
 firmware_tool-flash_method_ota-devices = 감지된 OTA 장치:
 firmware_tool-flash_method_ota-no_devices = OTA를 이용하여 업데이트할 수 있는 보드가 없습니다. 올바른 보드 버전을 선택했는지 확인해 주세요
+firmware_tool-flash_method_serial-title = Flashing over USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi 이름과 비밀번호:
 firmware_tool-flash_method_serial-devices-label = 감지된 Serial 장치:
 firmware_tool-flash_method_serial-devices-placeholder = Serial 장치 선택
@@ -1143,12 +1548,17 @@ firmware_tool-build_step = 빌드 중
 firmware_tool-build_step-description = 펌웨어를 빌드하는 중입니다. 잠시만 기다려 주세요
 firmware_tool-flashing_step = 펌웨어 쓰는 중
 firmware_tool-flashing_step-description = 트래커에 펌웨어를 쓰는 중입니다. 화면의 지시를 따라 주세요
+firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = 더 많은 트래커에 펌웨어 쓰기
 firmware_tool-flashing_step-exit = 나가기
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Waiting to build....
 firmware_tool-build-CREATING_BUILD_FOLDER = 빌드 폴더 만드는 중
+firmware_tool-build-DOWNLOADING_SOURCE = Downloading the source code
+firmware_tool-build-EXTRACTING_SOURCE = Extracting the source code
 firmware_tool-build-BUILDING = 펌웨어 빌드 중
 firmware_tool-build-SAVING = 빌드 저장 중
 firmware_tool-build-DONE = 빌드 완료
@@ -1157,6 +1567,7 @@ firmware_tool-build-ERROR = 펌웨어를 빌드할 수 없음
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 펌웨어 다운로드 중
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
 firmware_update-status-AUTHENTICATING = MCU와 연결 시도 중
 firmware_update-status-UPLOADING = 펌웨어 업로드 중
 firmware_update-status-SYNCING_WITH_MCU = MCU와 동기화 중
@@ -1207,15 +1618,125 @@ tray_or_exit_modal-cancel = 취소
 
 unknown_device-modal-title = 새로운 트래커를 찾았어요!
 unknown_device-modal-description =
-    <b>{ $deviceID }</b>의 MAC 주소를 가진 새로운 트래커를 발견했어요.
-    SlimeVR에 연결할까요?
+    There is a new tracker with MAC address <b>{ $deviceId }</b>.
+    Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = 당연하죠!
 unknown_device-modal-forget = 무시할게요
+# VRChat config warnings
+vrc_config-page-title = VRChat configuration warnings
+vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR.
+vrc_config-page-help = Can't find the settings?
+vrc_config-page-help-desc = Check out our <a>documentation on this topic!</a>
+vrc_config-page-big_menu = Tracking & IK (Big Menu)
+vrc_config-page-big_menu-desc = Settings related to IK in the big settings menu
+vrc_config-page-wrist_menu = Tracking & IK (Wrist Menu)
+vrc_config-page-wrist_menu-desc = Settings related to IK in small settings menu (wrist menu)
+vrc_config-on = On
+vrc_config-off = Off
+vrc_config-invalid = You have misconfigured VRChat settings!
+vrc_config-show_more = Show more
+vrc_config-setting_name = VRChat Setting name
+vrc_config-recommended_value = Recommended Value
+vrc_config-current_value = Current Value
+vrc_config-mute = Mute Warning
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
+vrc_config-spine_mode-UNKNOWN = Unknown
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+vrc_config-tracker_model-UNKNOWN = Unknown
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System
+vrc_config-avatar_measurement_type-UNKNOWN = Unknown
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Error collection consent modal
 
 error_collection_modal-title = 오류를 수집해도 될까요?
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = 동의해요
+error_collection_modal-cancel = I don't want to
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking Checklist
+tracking_checklist-settings = Tracking Checklist Settings
+tracking_checklist-settings-close = Close
+tracking_checklist-status-incomplete = You are not prepared to use SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] You have 1 warning!
+       *[many] You have { $count } warnings!
+    }
+tracking_checklist-status-complete = You are prepared to use SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
+tracking_checklist-FULL_RESET = Perform a full reset
+tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR disconnected
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
+tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
+tracking_checklist-TRACKER_ERROR = Trackers with Errors
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
+tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
+tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
+tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+tracking_checklist-ignore = Ignore
+preview-mocap_mode_soon = Mocap Mode (Soon™)
+preview-disable_render = Disable rendering
+preview-disabled_render = Rendering disabled
+toolbar-mounting_calibration = Mounting Calibration
+toolbar-mounting_calibration-default = Body
+toolbar-mounting_calibration-feet = Feet
+toolbar-mounting_calibration-fingers = Fingers
+toolbar-drift_reset = Drift Reset
+toolbar-assigned_trackers = { $count } trackers assigned
+toolbar-unassigned_trackers = { $count } trackers unassigned

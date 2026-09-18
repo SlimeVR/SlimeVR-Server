@@ -33,6 +33,10 @@ tips-failed_webgl = Не удалось инициализировать WebGL.
 
 ## Units
 
+unit-meter = Meter
+unit-foot = Foot
+unit-inch = Inch
+unit-cm = cm
 
 ## Body parts
 
@@ -98,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -109,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-GESTURES = Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generic nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -249,7 +260,13 @@ reset-reset_all_warning_default-v2 =
     Вы уверены, что хотите это сделать?
 reset-full = Полный сброс
 reset-mounting = Сбросить крепление
+reset-mounting-feet = Feet Calibration
+reset-mounting-fingers = Fingers Calibration
 reset-yaw = Горизонтальный сброс
+reset-error-no_feet_tracker = No feet tracker assigned
+reset-error-no_fingers_tracker = No finger tracker assigned
+reset-error-mounting-need_full_reset = Need a full reset before mounting
+reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 
 ## Serial detection stuff
 
@@ -269,11 +286,14 @@ navbar-trackers_assign = Назначение трекера
 navbar-mounting = Калибровка крепления
 navbar-onboarding = Установщик
 navbar-settings = Настройки
+navbar-connect_trackers = Connect Trackers
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Запись BVH
+bvh-stop_recording = Save BVH recording
 bvh-recording = Запись...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 
@@ -337,6 +357,7 @@ tracker-table-column-name = Имя
 tracker-table-column-type = Тип
 tracker-table-column-battery = Батарея
 tracker-table-column-ping = Пинг
+tracker-table-column-packet_loss = Packet Loss
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Темп. °C
 tracker-table-column-linear-acceleration = Ускорение X/Y/Z
@@ -378,6 +399,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Включено
        *[NOT_SUPPORTED] Не Поддерживается
     }
+tracker-infos-packet_loss = Packet Loss
+tracker-infos-packets_lost = Packets Lost
+tracker-infos-packets_received = Packets Received
 
 ## Tracker settings
 
@@ -405,10 +429,16 @@ tracker-settings-name_section-label = Имя трекера
 tracker-settings-forget = Забыть трекер
 tracker-settings-forget-description = Убирает трекер с SlimeVR Сервер и запрещает ему подключаться к серверу до того как он будет перезапущен. Конфигурация трекера не будет потеряна.
 tracker-settings-forget-label = Забыть трекер
+tracker-settings-update-unavailable-v2 = No releases found
+tracker-settings-update-incompatible = Cannot update. Incompatible board or firmware version
 tracker-settings-update-low-battery = Невозможно обновить. Заряд батареи менее 50%
 tracker-settings-update-up_to_date = Обновлено
+tracker-settings-update-blocked = Update not available. No other releases available
 tracker-settings-update = Обновить сейчас
 tracker-settings-update-title = Версия прошивки
+tracker-settings-current-version = Current
+tracker-settings-latest-version = Latest
+tracker-settings-build-date = Build Date
 
 ## Tracker part card info
 
@@ -474,6 +504,7 @@ mounting_selection_menu-close = Закрыть
 
 settings-sidebar-title = Настройки
 settings-sidebar-general = Общие
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Настройки трекеров
 settings-sidebar-stay_aligned = Оставаться выровненным
 settings-sidebar-fk_settings = Настройки отслеживания
@@ -481,9 +512,12 @@ settings-sidebar-gesture_control = Настройки жестов
 settings-sidebar-interface = Интерфейс
 settings-sidebar-osc_router = OSC роутер
 settings-sidebar-osc_trackers = VRChat OSC Трекеры
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Утилиты
 settings-sidebar-serial = Консоль
 settings-sidebar-appearance = Внешний вид
+settings-sidebar-home = Home Screen
+settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = Уведомления
 settings-sidebar-behavior = Поведение
 settings-sidebar-firmware-tool = Инструмент Прошивки DIY
@@ -569,6 +603,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Использует магнитометр на всех трекерах, которые имеют совместимую с ним прошивку, уменьшая дрифт в стабильных магнитных средах.
     Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Использовать магнитометр трекеров
+settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 settings-stay_aligned = Оставаться выровненным
 settings-stay_aligned-description = Функция "Оставаться выровненным" уменьшает дрифт, постепенно настраивая трекеры в соответствии с вашими расслабленными позами
 settings-stay_aligned-setup-label = Настройки "Оставаться выровненным"
@@ -584,6 +621,7 @@ settings-stay_aligned-relaxed_poses-sitting = Калибровка трекер�
 settings-stay_aligned-relaxed_poses-flat = Калибровка трекеров в положении сидя (на полу) или лежа (на спине)
 settings-stay_aligned-relaxed_poses-save_pose = Сохранить позу
 settings-stay_aligned-relaxed_poses-reset_pose = Сбросить позу
+settings-stay_aligned-relaxed_poses-close = Close
 settings-stay_aligned-debug-label = Отладка
 settings-stay_aligned-debug-description = Пожалуйста, укажите ваши настройки при отправке сообщения о проблемах с функцией "Оставаться выровненным".
 settings-stay_aligned-debug-copy-label = Копирование настроек в буфер обмена
@@ -608,11 +646,19 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Привязка
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap пытается угадать вращение ваших ступней, если трекеры для них не используются.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-Plant поворачивает ваши ступни так, чтобы они были параллельны земле при контакте.
 settings-general-fk_settings-leg_fk = Отслеживание ног
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-enforce_joint_constraints = Ограничения Скелета
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Применять ограничения
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Предотвращает вращение суставов за пределы их возможностей
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Исправлять с учётом ограничений
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Исправлять вращение суставов, когда оно выходит за пределы их возможностей
+settings-general-fk_settings-ik = Position data
+settings-general-fk_settings-ik-use_position = Use Position data
+settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = Отслеживание рук
 settings-general-fk_settings-arm_fk-description = Принуждает к отслеживанию рук из гарнитуры (HMD), даже если доступны данные о положении рук.
 settings-general-fk_settings-arm_fk-force_arms = Руки от HMD
@@ -671,12 +717,15 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Включить нажатие для сброса
 settings-general-gesture_control-yawResetDelay = Задержка сброса по рысканью
 settings-general-gesture_control-yawResetTaps = Нажатия для сброса
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = Включить нажатия для полного сброса
 settings-general-gesture_control-fullResetDelay = Задержка полного сброса
 settings-general-gesture_control-fullResetTaps = Нажатия для полного сброса
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = Включить нажатия для сброса крепления
 settings-general-gesture_control-mountingResetDelay = Задержка сброса крепления
 settings-general-gesture_control-mountingResetTaps = Нажатия для сброса крепления
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Трекеры, превышающие порог
 settings-general-gesture_control-numberTrackersOverThreshold-description = Увеличьте это значение, если обнаружение нажатий не работает. Не увеличивайте его выше того, чем необходимо для работы обнаружения касания, иначе это приведет к большему количеству ложных срабатываний.
@@ -723,6 +772,9 @@ settings-general-interface-connected_trackers_warning-label = Предупреж
 ## Behavior settings
 
 settings-interface-behavior = Поведение
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Свернуть в системный трей
 settings-general-interface-use_tray-description = Позволяет закрыть окно, не закрывая сервер SlimeVR, так что вы можете продолжать использовать его, не беспокоясь о графическом интерфейсе.
 settings-general-interface-use_tray-label = Свернуть в системный трей
@@ -742,6 +794,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     <b>Мы не собираем личную информацию</b>, такую как ваш IP адрес или учётные данные беспроводной сети. SlimeVR ценит вашу конфиденциальность!
     Чтобы обеспечить наилучший опыт для пользователей, мы собираем анонимные отчёты об ошибках, показатели производительности и информацию об операционной системе. Это помогает нам обнаруживать ошибки и проблемы со SlimeVR. Эти данные собираются с помощью Sentry.io.
 settings-interface-behavior-error_tracking-label = Отправлять ошибки разработчикам
+settings-interface-behavior-bvh_directory = Directory to save BVH recordings
+settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
+settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
 
@@ -763,8 +818,19 @@ settings-serial-factory_reset-warning-cancel = Отмена
 settings-serial-serial_select = Выбрать серийный порт
 settings-serial-auto_dropdown_item = Авто
 settings-serial-get_wifi_scan = Получить сканирование Wi-Fi
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = Обычный текст
 settings-serial-save_logs = Сохранить в файл
+settings-serial-send_command = Send
+settings-serial-send_command-placeholder = Command...
+settings-serial-send_command-warning = <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
+settings-serial-send_command-warning-ok = I know what I'm doing
+settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC router settings
 
@@ -781,10 +847,10 @@ settings-osc-router-network = Порты сети
 settings-osc-router-network-description =
     Установите порты для прослушивания и отправки данных.
     Они могут быть такими же, как и другие порты, используемые на сервере SlimeVR.
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = Порт Входа
     .placeholder = Порт Входа (по умолчанию: 9002)
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = Порт Выхода
     .placeholder = Порт Выхода (по умолчанию: 9000)
 settings-osc-router-network-address = Адрес сети
@@ -814,10 +880,10 @@ settings-osc-vrchat-oscqueryEnabled-description =
 settings-osc-vrchat-oscqueryEnabled-label = Включить OSCQuery
 settings-osc-vrchat-network = Порты сети
 settings-osc-vrchat-network-description-v1 = Настройте порты для прослушивания и отправки данных. Можно оставить нетронутым для VRChat.
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = Порт Входа
     .placeholder = Порт Входа (по умолчанию: 9001)
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = Порт Выхода
     .placeholder = Порт Выхода (по умолчанию: 9000)
 settings-osc-vrchat-network-address = Адрес сети
@@ -843,10 +909,10 @@ settings-osc-vmc-enable-description = Переключить отправку и
 settings-osc-vmc-enable-label = Включить
 settings-osc-vmc-network = Сетевые порты
 settings-osc-vmc-network-description = Установите порты для прослушивания и отправки данных через VMC
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = Порт Вход
     .placeholder = Порт Вход (по умолчанию: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = Порт Выход
     .placeholder = Порт Выход (по умолчанию 39539)
 settings-osc-vmc-network-address = Адрес сети
@@ -865,6 +931,8 @@ settings-osc-vmc-mirror_tracking-label = Отзеркалить отслежив
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-port_banned_error = The port { $port } can't be used!
 
 ## Advanced settings
 
@@ -901,9 +969,15 @@ settings-utils-advanced-open_logs-label = Открыть папку
 
 ## Home Screen
 
+settings-home-list-layout = Trackers list layout
+settings-home-list-layout-desc = Select one of the possible layouts of the home screen
+settings-home-list-layout-grid = Grid
+settings-home-list-layout-table = Table
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Active Steps
+settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
 ## Setup/onboarding menu
 
@@ -919,18 +993,65 @@ onboarding-setup_warning-cancel = Продолжить настройку
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
+onboarding-wifi_creds-v2 = Trackers using Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
+    
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Пропустить настройки Wi-Fi
 onboarding-wifi_creds-submit = Отправить!
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = Имя Wi-Fi
     .placeholder = Введите имя Wi-Fi
 onboarding-wifi_creds-ssid-required = Необходимо указать имя сети Wi-Fi
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = Пароль
     .placeholder = Введите пароль Wi-Fi
+onboarding-wifi_creds-dongle-title = Trackers using a dongle
+onboarding-wifi_creds-dongle-description = If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
+onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
 
@@ -959,6 +1080,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -1018,6 +1143,7 @@ onboarding-connect_tracker-next = Я подключил все трекеры
 
 onboarding-calibration_tutorial = Пособие по калибровке IMU
 onboarding-calibration_tutorial-subtitle = Это поможет уменьшить дрейф трекера!
+onboarding-calibration_tutorial-description-v1 = After turning on your trackers, place them on a stable surface for a moment to allow for calibration. Calibration can be performed at any time after the trackers are powered on—this page simply provides a tutorial. To begin, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
 onboarding-calibration_tutorial-calibrate = Я положил свои трекеры на стол
 onboarding-calibration_tutorial-status-waiting = Ждем вас
 onboarding-calibration_tutorial-status-calibrating = Калибровка
@@ -1040,6 +1166,7 @@ onboarding-assignment_tutorial-done = Я наклеил стикеры и рем
 onboarding-assign_trackers-back = Вернуться к вводу данных Wi-Fi
 onboarding-assign_trackers-title = Привязать трекеры
 onboarding-assign_trackers-description = Давайте выберем расположение ваших трекеров. Нажмите на место, где вы хотите разместить трекер
+onboarding-assign_trackers-unassign_all = Unassign all trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1187,6 +1314,8 @@ onboarding-automatic_mounting-done-restart = Вернуться к началу
 onboarding-automatic_mounting-mounting_reset-title = Сброс крепления
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Присядьте в позу "лыжника", согнув ноги, наклонив верхнюю часть тела вперед и согнув руки.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Нажмите кнопку "Сброс крепления" и подождите 3 секунды, прежде чем установочные повороты трекеров будут сброшены.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Подготовка
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Нажмите кнопку "Полный сброс"
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Встаньте прямо, вытянув руки по бокам. Убедитесь, что смотрите прямо перед собой.
@@ -1194,9 +1323,11 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Удерживайте 
 onboarding-automatic_mounting-put_trackers_on-title = Наденьте ваши трекеры
 onboarding-automatic_mounting-put_trackers_on-description = Чтобы откалибровать повороты крепления, мы будем использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
 onboarding-automatic_mounting-put_trackers_on-next = Я включил и надел все свои трекеры
+onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-title = Ручные пропорции тела
 onboarding-manual_proportions-fine_tuning_button = Автоматически точно настроить пропорции
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Пожалуйста, подключите VR-гарнитуру для использования автоматической тонкой настройки
@@ -1296,6 +1427,31 @@ onboarding-automatic_proportions-smol_warning-cancel = Вернуться
 
 ## User height calibration
 
+onboarding-user_height-title = What is your height?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
+onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
+onboarding-user_height-calculate = Calculate my height automatically
+onboarding-user_height-next_step = Continue and save
+onboarding-user_height-prev_step = Back
+onboarding-user_height-manual-proportions = Manual Proportions
+onboarding-user_height-calibration-title = Calibration Progress
+onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is leveled
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the floor
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stand back up and stand still!
+onboarding-user_height-calibration-DONE = Success!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timed out, try again.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to stand straight and look forward at the end of the calibration.
+onboarding-user_height-calibration-error = Calibration Failed
+onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
+onboarding-user_height-reset-warning =
+    <b>Warning:</b> This will reset your proportions to be based on your height.
+    Are you sure you want to do this?
 
 ## Stay Aligned setup
 
@@ -1315,10 +1471,13 @@ onboarding-stay_aligned-preparation-title = Подготовка
 onboarding-stay_aligned-preparation-tip = Убедитесь, что стоите прямо. Вам необходимо смотреть вперед, а ваши руки должны быть опущены по бокам.
 onboarding-stay_aligned-relaxed_poses-standing-title = Расслабленная поза (стоя)
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Встаньте в удобное положение. Расслабьтесь!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-sitting-title = Расслабленная поза (сидя на стуле)
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Сядьте в удобное положение. Расслабьтесь!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-flat-title = Расслабленная поза (сидя на полу)
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Сядьте на пол, расположив ноги перед собой. Расслабьтесь!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-skip_step = Пропустить
 onboarding-stay_aligned-done-title = Функция "Оставаться выровненным" включена!
 onboarding-stay_aligned-done-description = Настройка функции "Оставаться выровненным" завершена!
@@ -1327,10 +1486,13 @@ onboarding-stay_aligned-previous_step = Предыдущий
 onboarding-stay_aligned-next_step = Следующий
 onboarding-stay_aligned-restart = Перезапустить
 onboarding-stay_aligned-done = Выполнено
+onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 
 home-no_trackers = Трекеры не обнаружены и не привязаны
+home-settings = Home Page Settings
+home-settings-close = Close
 
 ## Trackers Still On notification
 
@@ -1351,7 +1513,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = В трекере { $trackerName } обнаружена ошибка.
 status_system-StatusUnassignedHMD = VR гарнитура должна быть назначена как трекер головы.
-status_system-StatusPublicNetwork = В настоящее время ваш сетевой профиль отмечен как "Общедоступный". Для корректной работы SlimeVR  не рекомендуется использовать эту настройку. <PublicFixLink>Узнать, как это исправить, здесь.</PublicFixLink>
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1367,18 +1533,50 @@ firmware_tool = Инструмент Прошивки DIY
 firmware_tool-description = Позволяет вам настроить и прошить ваши DIY трекеры
 firmware_tool-not_available = Упс! В данный момент инструмент прошивки недоступен. Возвращайтесь позже!
 firmware_tool-not_compatible = Средство прошивки несовместимо с этой версией сервера. Пожалуйста, обновите свой сервер!
+firmware_tool-select_source = Select the firmware to flash
+firmware_tool-select_source-description = Select the firmware you want to flash on your board
+firmware_tool-select_source-error = Unable to load Sources
+firmware_tool-select_source-board_type = Board Type
+firmware_tool-select_source-firmware = Firmware Source
+firmware_tool-select_source-version = Firmware Version
+firmware_tool-select_source-official = Official
+firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = No source selected
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
+firmware_tool-board_defaults = Configure your board
+firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
+firmware_tool-board_defaults-add = Add
+firmware_tool-board_defaults-reset = Reset to Default
+firmware_tool-board_defaults-error-required = Required field
+firmware_tool-board_defaults-error-format = Invalid format
+firmware_tool-board_defaults-error-format-number = Not a number
 firmware_tool-flash_method_step = Способ прошивки
 firmware_tool-flash_method_step-description = Пожалуйста, выберите способ прошивки, который вы хотите использовать
+firmware_tool-flash_method_step-ota-v2 = 
+    .label = Wi-Fi
+    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
+firmware_tool-flash_method_step-ota-info =
+    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your wifi credentials!</b>
+firmware_tool-flash_method_step-serial-v2 = 
+    .label = USB
+    .description = Use a USB cable to update your tracker.
 firmware_tool-flashbtn_step = Нажмите кнопку загрузки
 firmware_tool-flashbtn_step-description = Прежде чем перейти к следующему шагу, вам нужно сделать ещё несколько действий
 firmware_tool-flashbtn_step-board_SLIMEVR = Отключите трекер, извлеките его из корпуса (если он есть), подключите USB кабель к компьютеру, затем выполните одно из следующих действий в соответствии с ревизией вашей платы от SlimeVR:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Turn on the tracker while pushing in the FLASH button on the top side of the board. The tracker LED should do a short blink.
 firmware_tool-flashbtn_step-board_OTHER =
     Перед перепрошивкой вам, возможно, потребуется перевести трекер в режим загрузчика.
     В большинстве случаев для этого необходимо нажатие кнопки загрузки на плате перед началом процесса прошивки.
     Если в начале процесса прошивки истекло время ожидания, это, вероятно, означает, что трекер не находился в режиме загрузчика
     Пожалуйста, обратитесь к инструкции по прошивке для вашей платы, чтобы узнать, как перевести трекер в режим загрузчика
+firmware_tool-flash_method_ota-title = Flashing over Wi-Fi
 firmware_tool-flash_method_ota-devices = Обнаруженные устройства OTA:
 firmware_tool-flash_method_ota-no_devices = Нет плат, которые можно обновить с помощью OTA, убедитесь, что вы выбрали верный тип платы
+firmware_tool-flash_method_serial-title = Flashing over USB
 firmware_tool-flash_method_serial-wifi = Учетные данные Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Обнаруженные последовательные устройства:
 firmware_tool-flash_method_serial-devices-placeholder = Выберите последовательное устройство
@@ -1390,10 +1588,14 @@ firmware_tool-flashing_step-description = Ваши трекеры прошива
 firmware_tool-flashing_step-warning-v2 = Не отключайте и не выключайте трекер во время процесса загрузки, если этого не требует инструкция, иначе это может сделать вашу плату непригодной к использованию
 firmware_tool-flashing_step-flash_more = Прошить больше трекеров
 firmware_tool-flashing_step-exit = Выйти
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Waiting to build....
 firmware_tool-build-CREATING_BUILD_FOLDER = Создание папки сборки
+firmware_tool-build-DOWNLOADING_SOURCE = Downloading the source code
+firmware_tool-build-EXTRACTING_SOURCE = Extracting the source code
 firmware_tool-build-BUILDING = Сборка прошивки
 firmware_tool-build-SAVING = Сохранение сборки
 firmware_tool-build-DONE = Сборка завершена
@@ -1510,3 +1712,68 @@ error_collection_modal-cancel = Я не согласен
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking Checklist
+tracking_checklist-settings = Tracking Checklist Settings
+tracking_checklist-settings-close = Close
+tracking_checklist-status-incomplete = You are not prepared to use SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] You have 1 warning!
+       *[many] You have { $count } warnings!
+    }
+tracking_checklist-status-complete = You are prepared to use SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
+tracking_checklist-FULL_RESET = Perform a full reset
+tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR disconnected
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
+tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
+tracking_checklist-TRACKER_ERROR = Trackers with Errors
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
+tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
+tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
+tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+tracking_checklist-ignore = Ignore
+preview-mocap_mode_soon = Mocap Mode (Soon™)
+preview-disable_render = Disable rendering
+preview-disabled_render = Rendering disabled
+toolbar-mounting_calibration = Mounting Calibration
+toolbar-mounting_calibration-default = Body
+toolbar-mounting_calibration-feet = Feet
+toolbar-mounting_calibration-fingers = Fingers
+toolbar-drift_reset = Drift Reset
+toolbar-assigned_trackers = { $count } trackers assigned
+toolbar-unassigned_trackers = { $count } trackers unassigned

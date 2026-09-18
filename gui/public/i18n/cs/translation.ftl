@@ -61,11 +61,36 @@ body_part-LEFT_HAND = Levá ruka
 body_part-LEFT_UPPER_LEG = Levé stehno
 body_part-LEFT_LOWER_LEG = Levý kotník
 body_part-LEFT_FOOT = Levá noha
+body_part-LEFT_THUMB_METACARPAL = Left thumb metacarpal
+body_part-LEFT_THUMB_PROXIMAL = Left thumb proximal
 body_part-LEFT_THUMB_DISTAL = Vzdálená falanga levého palce
+body_part-LEFT_INDEX_PROXIMAL = Left index proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Left index intermediate
 body_part-LEFT_INDEX_DISTAL = Vzálená kůstka levého ukazováku
+body_part-LEFT_MIDDLE_PROXIMAL = Left middle proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Left middle intermediate
 body_part-LEFT_MIDDLE_DISTAL = Vzálená kůstka levého prostředníku
+body_part-LEFT_RING_PROXIMAL = Left ring proximal
+body_part-LEFT_RING_INTERMEDIATE = Left ring intermediate
 body_part-LEFT_RING_DISTAL = Vzálená kůstka levého prsteníku
+body_part-LEFT_LITTLE_PROXIMAL = Left little proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Left little intermediate
+body_part-LEFT_LITTLE_DISTAL = Left little distal
+body_part-RIGHT_THUMB_METACARPAL = Right thumb metacarpal
+body_part-RIGHT_THUMB_PROXIMAL = Right thumb proximal
 body_part-RIGHT_THUMB_DISTAL = Vzálená falanga pravého pacle
+body_part-RIGHT_INDEX_PROXIMAL = Right index proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Right index intermediate
+body_part-RIGHT_INDEX_DISTAL = Right index distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Right middle proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Right middle intermediate
+body_part-RIGHT_MIDDLE_DISTAL = Right middle distal
+body_part-RIGHT_RING_PROXIMAL = Right ring proximal
+body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
+body_part-RIGHT_RING_DISTAL = Right ring distal
+body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
+body_part-RIGHT_LITTLE_DISTAL = Right little distal
 
 ## BoardType
 
@@ -100,32 +125,125 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 skeleton_bone-NONE = Žádný
 skeleton_bone-HEAD = Posun hlavy
+skeleton_bone-HEAD-desc =
+    This is the distance from your headset to the middle of your head.
+    To adjust it, shake your head left to right as if you're disagreeing and modify
+    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = Délka krku
+skeleton_bone-NECK-desc =
+    This is the distance from the middle of your head to the base of your neck.
+    To adjust it, move your head up and down as if you're nodding or tilt your head
+    to the left and right and modify it until any movement in other trackers is negligible.
 skeleton_bone-torso_group = Délka trupu
+skeleton_bone-torso_group-desc =
+    This is the distance from the base of your neck to your hips.
+    To adjust it, modify it standing up straight until your virtual hips line
+    up with your real ones.
 skeleton_bone-UPPER_CHEST = Horní délka hrudníku
+skeleton_bone-UPPER_CHEST-desc =
+    This is the distance from the base of your neck to the middle of your chest.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-CHEST_OFFSET = Odsazení hrudníku
+skeleton_bone-CHEST_OFFSET-desc =
+    This can be adjusted to move your virtual chest tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = Délka hrudníku
+skeleton_bone-CHEST-desc =
+    This is the distance from the middle of your chest to the middle of your spine.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-WAIST = Délka pasu
+skeleton_bone-WAIST-desc =
+    This is the distance from the middle of your spine to your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Délka kyčlí
+skeleton_bone-HIP-desc =
+    This is the distance from your belly button to your hips.
+    To adjust it, set your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIP_OFFSET = Odsazení hrudníku
+skeleton_bone-HIP_OFFSET-desc =
+    This can be adjusted to move your virtual hip tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = Šířka kyčlí
+skeleton_bone-HIPS_WIDTH-desc =
+    This is the distance between the start of your legs.
+    To adjust it, perform a full reset with your legs straight and modify it until
+    your virtual legs match up with your real ones horizontally.
 skeleton_bone-leg_group = Délka nohy
+skeleton_bone-leg_group-desc =
+    This is the distance from your hips to your feet.
+    To adjust it, adjust your Torso Length properly and modify it
+    until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Délka horní části nohy
+skeleton_bone-UPPER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Délka dolní části nohy
+skeleton_bone-LOWER_LEG-desc =
+    This is the distance from your knees to your ankles.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Délka chodidla
 skeleton_bone-FOOT_LENGTH-desc =
     Toto je vzdálenost mezi vaši kotníky a prsty na nohou.
     Pro upravení, Choďte po špičkách dokud vaše virtuální nohy nezůstanou na místě.
 skeleton_bone-FOOT_SHIFT = Odsazení chodidla
+skeleton_bone-FOOT_SHIFT-desc =
+    This value is the horizontal distance from your knee to your ankle.
+    It accounts for your lower legs going backwards when standing up straight.
+    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
+    feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Odsazení kostry
+skeleton_bone-SKELETON_OFFSET-desc =
+    This can be adjusted to offset all your trackers forward or backward.
+    It can be used to help with calibration in certain games or applications
+    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Vzdálenost ramen
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    This is the vertical distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Šířka ramen
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    This is the horizontal distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Délka paže
+skeleton_bone-arm_group-desc =
+    This is the distance from your shoulders to your wrists.
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y
+    to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Délka nadloktí
+skeleton_bone-UPPER_ARM-desc =
+    This is the distance from your shoulders to your elbows.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Délka podloktí
+skeleton_bone-LOWER_ARM-desc =
+    This is the distance from your elbows to your wrists.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = Vzdálenost ruky na ose Y
+skeleton_bone-HAND_Y-desc =
+    This is the vertical distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with the middle of your hands.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = Vzdálenost ruky na ose Z
+skeleton_bone-HAND_Z-desc =
+    This is the horizontal distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, set it to 0.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = Odsazení loktů
+skeleton_bone-ELBOW_OFFSET-desc =
+    This can be adjusted to move your virtual elbow trackers up or down in order to aid
+    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 
@@ -145,6 +263,8 @@ reset-mounting-fingers = Obnovit pozice nasazení prstů
 reset-yaw = Rychlý reset
 reset-error-no_feet_tracker = Žádný tracker nohou nebyl přiřazen
 reset-error-no_fingers_tracker = Žádné trackery prstů nebyly přiřazeny
+reset-error-mounting-need_full_reset = Need a full reset before mounting
+reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 
 ## Serial detection stuff
 
@@ -485,6 +605,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Použít magnetometru na trackerech
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 settings-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
 settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
@@ -525,6 +647,7 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Připnutí k pod
 settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
 settings-general-fk_settings-enforce_joint_constraints = Limity kostry
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Prosazování omezení
@@ -533,10 +656,15 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Opr
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Opravit rotaci kloubů, když překročí svůj limit
 settings-general-fk_settings-ik = Data pozice
 settings-general-fk_settings-ik-use_position = Použít Data pozice
+settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = Trackování ramen
 settings-general-fk_settings-arm_fk-description = Vynutit sledování rukou z VR headsetu, i když jsou k dispozici údaje o poloze rukou z trackerů.
 settings-general-fk_settings-arm_fk-force_arms = Vynutit ruce z VR Headsetu
 settings-general-fk_settings-reset_settings = Obnovit nastavení
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's pitch (vertical rotation) upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-reset_settings-reset_hmd_pitch = Obnovit HMD pitch
 settings-general-fk_settings-arm_fk-reset_mode-description = Nastavte pózu rukou použitá pro reset nasazení.
 settings-general-fk_settings-arm_fk-back = Paže dozadu
@@ -554,6 +682,13 @@ settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Model s p
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Model s prodloužením kolene
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
 settings-general-fk_settings-skeleton_settings-ratios-description = Změňte hodnoty nastavení kostry, Po změně budete možná muset poupravit vaše proporce.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Impute waist from chest to hip
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Impute waist from chest to legs
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Impute hip from chest to legs
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Impute hip from waist to legs
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Average the hip's yaw and roll with the legs'
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Average the knee trackers' yaw and roll with the ankles'
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the knees' yaw and roll with the ankles'
 settings-general-fk_settings-self_localization-title = Režim Mocap
 settings-general-fk_settings-self_localization-description = Režim Mocap je experimentální funkce, která dokáže přibližně určit polohu vašeho těla bez VR Headsetu a dalších trackerů. Pro správnou funkci je však nutné mít trackery pro nohy a hlavu.
 
@@ -582,12 +717,15 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Povolit klepnutí pro reset odklonu
 settings-general-gesture_control-yawResetDelay = Zpoždění resetu vybočení
 settings-general-gesture_control-yawResetTaps = Klepnutí pro resetování rotace
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = Povolit klepnutí pro úplné restartování
 settings-general-gesture_control-fullResetDelay = Zpoždění úplného obnovení
 settings-general-gesture_control-fullResetTaps = Klepnutí pro úplný reset
+settings-general-gesture_control-fullResetTracker = Full reset tracker
 settings-general-gesture_control-mountingResetEnabled = Povolit klepnutí pro resetování montáže
 settings-general-gesture_control-mountingResetDelay = Zpoždění resetování montáže
 settings-general-gesture_control-mountingResetTaps = Klepnutí pro resetování montáže
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackery překročily práh
 settings-general-gesture_control-numberTrackersOverThreshold-description = Zvyšte tuto hodnotu, pokud detekce klepnutí nefunguje. Nepřekračujte ji nad hodnotu, která je potřebná k tomu, aby detekce klepnutí fungovala, protože by to mohlo způsobit více falešně pozitivních klepnutí.
@@ -634,6 +772,9 @@ settings-general-interface-connected_trackers_warning-label = Upozornění o př
 ## Behavior settings
 
 settings-interface-behavior = Chování
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimalizovat do oznamovací oblasti
 settings-general-interface-use_tray-description = Umožňuje vám zavřít okno, aniž byste zavřeli SlimeVR Server, takže ho můžete nadále používat bez rozhraní.
 settings-general-interface-use_tray-label = Minimalizovat do oznamovací oblasti
@@ -680,10 +821,17 @@ settings-serial-factory_reset-warning-cancel = Zrušit
 settings-serial-serial_select = Vyberte sériový port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skenovat WiFi
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = Prostý text
 settings-serial-save_logs = Uložit jako soubor
 settings-serial-send_command = Odeslat
 settings-serial-send_command-placeholder = Příkaz...
+settings-serial-send_command-warning = <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
 settings-serial-send_command-warning-ok = Vím, co dělám!
 settings-serial-send_command-warning-cancel = Zrušit
 
@@ -702,10 +850,10 @@ settings-osc-router-network = Síťové porty
 settings-osc-router-network-description =
     Nastavení portů pro naslouchání a odesílání dat.
     Tyto porty mohou být stejné jako ostatní porty používané v serveru SlimeVR.
-settings-osc-router-network-port_in =
+settings-osc-router-network-port_in = 
     .label = Vstup portu
     .placeholder = Vstup portu (výchozí: 9002)
-settings-osc-router-network-port_out =
+settings-osc-router-network-port_out = 
     .label = Výstup z portu
     .placeholder = Výstup z portu (výchozí: 9000)
 settings-osc-router-network-address = Síťová adresa
@@ -724,13 +872,18 @@ settings-osc-vrchat-enable = Zapnout
 settings-osc-vrchat-enable-description = Vypnutí a zapnutí odesílání a přijímání dat.
 settings-osc-vrchat-enable-label = Zapnout
 settings-osc-vrchat-oscqueryEnabled = Povolit OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery automatically detects running instances of VRChat and sends them data.
+    It can also advertise itself to them in order to receive HMD and controller data.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's settings
+    under "Tracking & IK" and enable "Allow Sending Head and Wrist VR Tracking OSC Data".
 settings-osc-vrchat-oscqueryEnabled-label = Povolit OSCQuery
 settings-osc-vrchat-network = Síťové porty
 settings-osc-vrchat-network-description-v1 = Nastavte port pro komunikaci. Může zůstat tak jak je pro VRChat.
-settings-osc-vrchat-network-port_in =
+settings-osc-vrchat-network-port_in = 
     .label = Vstup portu
     .placeholder = Vstup portu (výchozí: 9001)
-settings-osc-vrchat-network-port_out =
+settings-osc-vrchat-network-port_out = 
     .label = Výstup portu
     .placeholder = Výstup portu (výchozí: 9000)
 settings-osc-vrchat-network-address = Síťová adresa
@@ -756,10 +909,10 @@ settings-osc-vmc-enable-description = Vypnutí a zapnutí odesílání a přijí
 settings-osc-vmc-enable-label = Zapnout
 settings-osc-vmc-network = Síťové porty
 settings-osc-vmc-network-description = Nastavte porty pro poslech a odesílání dat pomocí VMC.
-settings-osc-vmc-network-port_in =
+settings-osc-vmc-network-port_in = 
     .label = Port pro příjem
     .placeholder = Port pro příjem (výchozí: 39540)
-settings-osc-vmc-network-port_out =
+settings-osc-vmc-network-port_out = 
     .label = Port pro odesílání
     .placeholder = Port pro odesílání (výchozí: 39539)
 settings-osc-vmc-network-address = Síťová adresa
@@ -778,6 +931,7 @@ settings-osc-vmc-mirror_tracking-label = Zrcadlení trackování
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
 settings-osc-common-network-port_banned_error = Port { $port } nelze použít!
 
 ## Advanced settings
@@ -823,6 +977,7 @@ settings-home-list-layout-table = Tabulka
 ## Tracking Checlist
 
 settings-tracking_checklist-active_steps = Aktivní kroky
+settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
 ## Setup/onboarding menu
 
@@ -838,20 +993,64 @@ onboarding-setup_warning-cancel = Pokračovat v nastavení
 
 ## Quiz
 
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Go back
 onboarding-wifi_creds-v2 = Trackey používající Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
+    
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Přeskočit nastavení Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
-onboarding-wifi_creds-ssid =
+onboarding-wifi_creds-ssid = 
     .label = Název Wi-Fi
     .placeholder = Zadejte název Wi-Fi
 onboarding-wifi_creds-ssid-required = Je vyžadován název sítě Wi-Fi
-onboarding-wifi_creds-password =
+onboarding-wifi_creds-password = 
     .label = Heslo
     .placeholder = Zadejte heslo
 onboarding-wifi_creds-dongle-title = Trackery používající dongle
+onboarding-wifi_creds-dongle-description = If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
 onboarding-wifi_creds-dongle-continue = Pokračovat s donglem
 
 ## Mounting setup
@@ -871,9 +1070,20 @@ onboarding-reset_tutorial-1 =
     
     Pro tuto funkci musíte stát v základní pozici (ruce podél těla). Před provedením resetu je zde 3 sekundová prodleva (lze nastavit).
     Tímto se kompletně resetuje pozice a rotace všech vašich trackerů, což by mělo vyřešit většinu problémů.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Tap the highlighted tracker { $taps } times to trigger mounting calibration.
+    
+    Mounting calibration adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
+    
+    You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 
 ## Setup start
 
@@ -908,6 +1118,12 @@ onboarding-connect_tracker-connection_status-no_serial_device_found = Nepodařil
 onboarding-connect_serial-error-modal-no_serial_log = Je tracker zapnutý?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Ujistěte se, že je tracker zapnutý a připojený k vašemu počátači
 onboarding-connect_serial-error-modal-no_serial_device_found = Nebyly nalezeny žádné trackery
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
+    If this does not work:
+      - try using a different USB cable
+      - try using a different USB port
+      - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -926,6 +1142,7 @@ onboarding-connect_tracker-next = Připojil jsem všechny své trackery
 
 onboarding-calibration_tutorial = Kalibrační návod pro IMU
 onboarding-calibration_tutorial-subtitle = Tohle pomůže snížit drift trackerů!
+onboarding-calibration_tutorial-description-v1 = After turning on your trackers, place them on a stable surface for a moment to allow for calibration. Calibration can be performed at any time after the trackers are powered on—this page simply provides a tutorial. To begin, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
 onboarding-calibration_tutorial-calibrate = Položil jsem trackery na stůl
 onboarding-calibration_tutorial-status-waiting = Čekám na tebe
 onboarding-calibration_tutorial-status-calibrating = Kalibruji
@@ -961,6 +1178,11 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Zobrazit pokročilá místa na přiřazení trackerů
 onboarding-assign_trackers-next = Přiřadil jsem všechny trackery
 onboarding-assign_trackers-mirror_view = Zrcadlit náhled
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
 onboarding-assign_trackers-option-label =
     { $mode ->
         [lower-body] Spodní část těla
@@ -993,6 +1215,58 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
         [6] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník.
        *[unknown] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen Neznámá Nepřiřazena část těla.
     }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    Right foot is assigned but you need { $unassigned ->
+        [0] the right ankle, right thigh and either the chest, hip or waist
+        [1] the right thigh and either the chest, hip or waist
+        [2] the right ankle and either the chest, hip or waist
+        [3] either the chest, hip or waist
+        [4] the right ankle and right thigh
+        [5] the right thigh
+        [6] the right ankle
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    Left ankle is assigned but you need { $unassigned ->
+        [0] the left thigh and either the chest, hip or waist
+        [1] either the chest, hip or waist
+        [2] the left thigh
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    Right ankle is assigned but you need { $unassigned ->
+        [0] the right thigh and either the chest, hip or waist
+        [1] either the chest, hip or waist
+        [2] the right thigh
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    Left thigh is assigned but you need { $unassigned ->
+        [0] either the chest, hip or waist
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    Right thigh is assigned but you need { $unassigned ->
+        [0] either the chest, hip or waist
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    Hip is assigned but you need { $unassigned ->
+        [0] the chest
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    Waist is assigned but you need { $unassigned ->
+        [0] the chest
+       *[unknown] Unknown unassigned body part
+    } to also be assigned!
 
 ## Tracker mounting method choose
 
@@ -1037,8 +1311,11 @@ onboarding-automatic_mounting-done-restart = Začít znovu
 onboarding-automatic_mounting-mounting_reset-title = Reset nasazení trackerů
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Dřepněte si, jako při lyžování: nohy pokrčte v kolenou, trup nakloňte mírně dopředu a paže pokrčte.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Stiskněte tlačítko "Resetovat nasazení trackerů" a  vyčkejte 3 sekundy. Orientace nasazení trackerů se nastaví na základní hodnoty.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Příprava
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Stiskněte tlačítko pro "Plný Reset"
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Zůstaňte v pozici, dokud 3s časovač neskončí.
 onboarding-automatic_mounting-put_trackers_on-title = Nasaďte si trackery
 onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci směru nasazení použijeme právě přiřazené trackery. Nasaďte si prosím všechny trackery. Můžete zkontrolovat jejich umístění na obrázku vpravo.
@@ -1149,30 +1426,44 @@ onboarding-automatic_proportions-smol_warning-cancel = Jít zpět
 ## User height calibration
 
 onboarding-user_height-title = Jaká je vaše výška?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
+onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Vypočítejte mou výšku automaticky
 onboarding-user_height-next_step = Uložit a pokračovat
+onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = Manuální Proporce
 onboarding-user_height-calibration-title = Průběh kalibrace
+onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
 onboarding-user_height-calibration-WAITING_FOR_RISE = Postavte se zpátky
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Ujistěte se, že je vaše hlava ve vodorovné pozici
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Nedívejte se na podlahu
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Nedívej se příliš vysoko
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
 onboarding-user_height-calibration-RECORDING_HEIGHT = Znovu se postavte a nehýbejte se!
 onboarding-user_height-calibration-DONE = Úspěch!
 onboarding-user_height-calibration-ERROR_TIMEOUT = Časový limit kalibrace vypršel, zkuste to znovu.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to stand straight and look forward at the end of the calibration.
 onboarding-user_height-calibration-error = Kalibrace selhala
+onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
+onboarding-user_height-reset-warning =
+    <b>Warning:</b> This will reset your proportions to be based on your height.
+    Are you sure you want to do this?
 
 ## Stay Aligned setup
 
 onboarding-stay_aligned-title = Zůstaň Srovnaný!
 onboarding-stay_aligned-description = Nakonfigurujte Zůstaň Srovnaný, aby byly vaše trackery srovnány.
 onboarding-stay_aligned-put_trackers_on-title = Nasaďte si trackery
+onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-stay_aligned-put_trackers_on-trackers_warning = Aktuálně máte méně než 5 připojených a přiřazených trackerů! Toto je minimální počet trackerů potřebné pro správné fungování funkce Zůstaň Srovnaný.
 onboarding-stay_aligned-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-stay_aligned-verify_mounting-title = Zkotrolujte nasazení
 onboarding-stay_aligned-verify_mounting-step-0 = Zůstaň Srovnaný vyžaduje dobré nasazení. V opačném případě nebudete mít nejlepší zážitek s Zůstaň Srovnaný.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Pohybujte se ve stoje.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Posaďte se a pohybujte nohama a chodidly.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration".
 onboarding-stay_aligned-verify_mounting-redo_mounting = Předělat kalibraci nasazení
 onboarding-stay_aligned-preparation-title = Příprava
 onboarding-stay_aligned-preparation-tip = Ujistěte se, že stojíte vzpřímeně. koukáte vpřed a máte ruce podél těla.
@@ -1183,6 +1474,7 @@ onboarding-stay_aligned-relaxed_poses-sitting-title = Uvolněná póza při seze
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Posaďte se do pohodlné pozice, Relaxujte!
 onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
 onboarding-stay_aligned-relaxed_poses-flat-title = Uvolněná pozice při sezení na zemi
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
 onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
 onboarding-stay_aligned-relaxed_poses-skip_step = Přeskočit
 onboarding-stay_aligned-done-title = Zůstaň Srovnaný zapnuto!
@@ -1219,6 +1511,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = Tracker { $trackerName } není v pořádku.
 status_system-StatusUnassignedHMD = Váš VR Headset by měl být přiřazen jako tracker hlavy.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Your network profile is currently set to Public ({ $adapters }). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many] Some of your network adapters are set to public: { $adapters }. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1235,6 +1532,7 @@ firmware_tool-description = Umožní vám konfigurovat a flashovat vaše DIY tra
 firmware_tool-not_available = Jejda, nástroj pro firmware není v momentální chvíli k dispozici, Vraťte se později!
 firmware_tool-not_compatible = Nástroj pro firmware není kompatibilní s touhle verzí serveru. Aktualizujte prosím svůj server.
 firmware_tool-select_source = Vyberte firmware k flashování
+firmware_tool-select_source-description = Select the firmware you want to flash on your board
 firmware_tool-select_source-error = Nelze načíst Zdroje
 firmware_tool-select_source-board_type = Typ desky
 firmware_tool-select_source-firmware = Zdrojový kód firmwaru
@@ -1242,7 +1540,10 @@ firmware_tool-select_source-version = Verze firmwaru
 firmware_tool-select_source-official = Oficiální
 firmware_tool-select_source-dev = Vývojářské
 firmware_tool-select_source-not_selected = Nebyl vybrán žádný zdroj
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
 firmware_tool-board_defaults = Nekonfigurujte vaší desku
+firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
 firmware_tool-board_defaults-add = Přidat
 firmware_tool-board_defaults-reset = Restartovat do výchozího nastavení
 firmware_tool-board_defaults-error-required = Povinné pole
@@ -1250,15 +1551,21 @@ firmware_tool-board_defaults-error-format = Neplatný formát
 firmware_tool-board_defaults-error-format-number = Není číslo
 firmware_tool-flash_method_step = Metoda flashování
 firmware_tool-flash_method_step-description = Prosím zvolte metodu flashování, kterou chcete použít
-firmware_tool-flash_method_step-ota-v2 =
+firmware_tool-flash_method_step-ota-v2 = 
     .label = Wi-Fi
     .description = Použijte "wireless" metodu. Vaše trackery budou používát Wi-Fi pro aktualizování jejich firmweru. Funguje pouze u trackerů, které již byly nastaveny.
-firmware_tool-flash_method_step-serial-v2 =
+firmware_tool-flash_method_step-ota-info =
+    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your wifi credentials!</b>
+firmware_tool-flash_method_step-serial-v2 = 
     .label = USB
     .description = Použíjte USB kabel k aktualizování vaších trackerů
 firmware_tool-flashbtn_step = Stiskněte tlačítko bootu btn
 firmware_tool-flashbtn_step-description = Než přejdeme na další krok, je tady pár věcí které musíte udělat
 firmware_tool-flashbtn_step-board_SLIMEVR = Vypněte tracker, vyndejte z obalu (jestli v nějakém je), Připojte USB kabel k tomuto počítači a poté následujte jeden z kroků revize odpovídající k vaší verzi desky trackeru SlimeVR:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Turn on the tracker while pushing in the FLASH button on the top side of the board. The tracker LED should do a short blink.
 firmware_tool-flashbtn_step-board_OTHER =
     Před flashováním, pravděpodobně budete muset přepnout tracker do bootloader režimu.
     Ve většině případů to znamená stisknutí boot tlačítka na desce trakeru před tím než začne proces flashování.
@@ -1279,6 +1586,7 @@ firmware_tool-flashing_step-description = Probíhá flashování vašich tracker
 firmware_tool-flashing_step-warning-v2 = Během procesu nahrávání prosíme NEVYPÍNEJTE ani NEODPOJUJTE vaše trackery pokud k tomu nejste vyzváni, učiněním můžete způsobit že deska trackeru se stane nefunkční.
 firmware_tool-flashing_step-flash_more = Flashnout více trackerů
 firmware_tool-flashing_step-exit = Odejít
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 
@@ -1402,20 +1710,60 @@ error_collection_modal-cancel = Nesouhlasím
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking Checklist
+tracking_checklist-settings = Tracking Checklist Settings
 tracking_checklist-settings-close = Zavřít
 tracking_checklist-status-incomplete = Nejste připraveni používat SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] You have 1 warning!
+       *[many] You have { $count } warnings!
+    }
 tracking_checklist-status-complete = Jste připravení k použití SlimeVR
+tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
 tracking_checklist-FULL_RESET = Proveďte plné obnovení
+tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR není zapnut
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
 tracking_checklist-TRACKER_ERROR = Trackery s chybami
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
 tracking_checklist-VRCHAT_SETTINGS = Nakonfigurujte nastavení VRChat
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
 tracking_checklist-VRCHAT_SETTINGS-open = Přejít k varování ve VRChat
+tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Your network profile is currently set to Public ({ $adapters }).
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+       *[many]
+            Some of your network adapters are set to public:
+            { $adapters }
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+    }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 tracking_checklist-ignore = Ignorovat
 preview-mocap_mode_soon = Režim Mocap (brzy™)
 preview-disable_render = Vypnout vykreslování
