@@ -18,5 +18,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PONTOON_BOT_KEY }}
         run: |
-          gh_pr_up() { gh pr create "$@" --label "Area: Translation" --base main || gh pr edit "$@"; }
+          gh_pr_up() { gh pr create "$@" --label "Area: Translation" --draft --base main || gh pr edit "$@"; }
           gh_pr_up --title "New translations" --body "Please don't squash me 🥺"
