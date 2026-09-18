@@ -14,6 +14,7 @@ import solarxr_protocol.rpc.VRCOSCInputState
 import solarxr_protocol.rpc.VRCOSCOscQueryState
 import solarxr_protocol.rpc.VRCOSCOutputState
 import solarxr_protocol.rpc.VRCOSCTargetSource
+import solarxr_protocol.rpc.VRCOSCTrackingDataState
 
 data class OscSenderTarget(
 	val address: String,
@@ -36,6 +37,8 @@ data class VRCOSCStatus(
 	val inputPort: Int? = null,
 	val inputError: String? = null,
 	val lastReceivedInputMillis: Long? = null,
+	val lastReceivedTrackingMillis: Long? = null,
+	val trackingDataState: VRCOSCTrackingDataState = VRCOSCTrackingDataState.UNKNOWN,
 
 	val outputState: VRCOSCOutputState = VRCOSCOutputState.IDLE,
 	val outputError: String? = null,
@@ -67,6 +70,8 @@ sealed interface VRCOSCActions {
 		val error: String? = null,
 	) : VRCOSCActions
 	data class SetLastReceivedInput(val millis: Long) : VRCOSCActions
+	data class SetLastReceivedTracking(val millis: Long) : VRCOSCActions
+	data class SetTrackingDataState(val state: VRCOSCTrackingDataState) : VRCOSCActions
 
 	data class SetOutput(
 		val state: VRCOSCOutputState,
@@ -111,6 +116,7 @@ class VRCOSCManager(
 				discoverServicesFlow = discoverServicesFlow,
 				serviceFactory = serviceFactory,
 			),
+			VRCOSCTrackingDataBehaviour(settings),
 		)
 
 		context.behaviours.addAll(behaviours)

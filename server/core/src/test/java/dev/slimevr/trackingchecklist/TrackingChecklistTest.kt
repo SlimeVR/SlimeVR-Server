@@ -33,6 +33,7 @@ import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistTrackerReset
+import solarxr_protocol.rpc.VRCOSCTrackingDataState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -326,6 +327,37 @@ class TrackingChecklistTest {
 		)
 
 		assertEquals(true, step.valid)
+	}
+
+	@Test
+	fun `VRCHAT_OSC_TRACKING_DISABLED is invalid while VRChat sends no tracking data`() = runTest {
+		val step = VRChatOscTrackingDisabledCheckBehaviour.computeStep(
+			enabled = true,
+			trackingDataState = VRCOSCTrackingDataState.DISABLED_IN_VRCHAT,
+		)
+
+		assertEquals(true, step.enabled)
+		assertEquals(false, step.valid)
+	}
+
+	@Test
+	fun `VRCHAT_OSC_TRACKING_DISABLED is valid once tracking data is received`() = runTest {
+		val step = VRChatOscTrackingDisabledCheckBehaviour.computeStep(
+			enabled = true,
+			trackingDataState = VRCOSCTrackingDataState.RECEIVED,
+		)
+
+		assertEquals(true, step.valid)
+	}
+
+	@Test
+	fun `VRCHAT_OSC_TRACKING_DISABLED is disabled while VRC OSC is off`() = runTest {
+		val step = VRChatOscTrackingDisabledCheckBehaviour.computeStep(
+			enabled = false,
+			trackingDataState = VRCOSCTrackingDataState.UNKNOWN,
+		)
+
+		assertEquals(false, step.enabled)
 	}
 
 	@Test

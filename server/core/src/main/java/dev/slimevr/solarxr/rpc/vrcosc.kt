@@ -78,6 +78,8 @@ internal class VrcOscBehaviour(
 		inputPort = status.inputPort?.toUShort(),
 		inputError = status.inputError,
 		lastReceivedInputMillis = status.lastReceivedInputMillis?.toULong(),
+		lastReceivedTrackingMillis = status.lastReceivedTrackingMillis?.toULong(),
+		trackingDataState = status.trackingDataState,
 		outputState = status.outputState,
 		outputError = status.outputError,
 		targetAddress = status.targetAddress,

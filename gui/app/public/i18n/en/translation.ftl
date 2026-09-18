@@ -845,12 +845,16 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip address
 ## VRChat OSC status
 settings-osc-vrchat-status-title = Status
 settings-osc-vrchat-status-input = Input
+settings-osc-vrchat-status-tracking = Tracking data
 settings-osc-vrchat-status-output = Output
 settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = Not listening
 settings-osc-vrchat-status-input-listening = Listening on port {$port}
 settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}.
 settings-osc-vrchat-status-input-no-data = No data received from VRChat yet.
+settings-osc-vrchat-status-tracking-received = Last pose received: {$elapsed}.
+settings-osc-vrchat-status-tracking-disabled = VRChat is connected, but isn't sending head/wrist tracking data. Turn on the OSC tracking data toggle in VRChat's settings. <OscTrackingLink>See how to enable it.</OscTrackingLink>
+settings-osc-vrchat-status-tracking-unknown = Waiting for VRChat to connect.
 settings-osc-vrchat-status-output-idle = No target
 settings-osc-vrchat-status-output-waiting = Target {$address}:{$port} ({$source}), no frame sent yet
 settings-osc-vrchat-status-output-sending = Sending to {$address}:{$port} ({$source})
@@ -876,6 +880,9 @@ settings-osc-vrchat-status-badge-found = Found
 settings-osc-vrchat-status-badge-searching = Searching
 settings-osc-vrchat-status-badge-disabled = Disabled
 settings-osc-vrchat-status-badge-error = Error
+settings-osc-vrchat-status-badge-received = Received
+settings-osc-vrchat-status-badge-not-sent = Not sent
+settings-osc-vrchat-status-badge-unknown = Unknown
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
@@ -1687,6 +1694,9 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED = Enable VRChat OSC tracking data
+tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-desc = VRChat is connected, but isn't sending back your head and hand tracking data. Turn on the OSC tracking-data toggle in VRChat's settings. <OscTrackingLink>See how to enable it.</OscTrackingLink>
+tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = Go to VRChat OSC Settings
 
 tracking_checklist-ignore = Ignore
 

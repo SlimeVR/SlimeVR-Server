@@ -480,6 +480,40 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]: () => {
     return <SteamVRHandsEnabled />;
   },
+  [TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED]: (
+    step,
+    { toggleSession }
+  ) => {
+    return (
+      <div className="space-y-2.5">
+        <Typography
+          id="tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-desc"
+          elems={{
+            OscTrackingLink: (
+              <A
+                className="text-background-20"
+                href="https://docs.slimevr.dev/server/osc-information.html"
+              />
+            ),
+          }}
+        />
+        <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+          <Button
+            variant="primary"
+            to="/settings/osc/vrchat"
+            id="tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open"
+          />
+          {step.ignorable && (
+            <Button
+              id="tracking_checklist-ignore"
+              variant="secondary"
+              onClick={() => toggleSession(step.id)}
+            />
+          )}
+        </div>
+      </div>
+    );
+  },
   [TrackingChecklistStepId.STANDABLE_INSTALLED]: () => {
     return <StandableInstalled />;
   },
