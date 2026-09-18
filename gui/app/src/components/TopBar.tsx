@@ -18,6 +18,7 @@ import { MaximiseIcon } from './commons/icon/MaximiseIcon';
 import { MinimiseIcon } from './commons/icon/MinimiseIcon';
 import { SlimeVRIcon } from './commons/icon/SimevrIcon';
 import { ProgressBar } from './commons/ProgressBar';
+import { Tooltip } from './commons/Tooltip';
 import { Typography } from './commons/Typography';
 import { DownloadIcon } from './commons/icon/DownloadIcon';
 import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
@@ -54,20 +55,24 @@ export function VersionTag() {
   const url = `https://github.com/${GH_REPO}/releases`;
 
   return (
-    <a
-      href={url}
-      className={classNames(
-        'flex justify-around flex-col text-standard-bold',
-        'text-status-success bg-status-success bg-opacity-20 rounded-lg',
-        'px-3 select-text cursor-pointer shrink-0 whitespace-nowrap'
-      )}
-      onClick={(e) => {
-        e.preventDefault();
-        openUrl(url);
-      }}
-    >
-      {(__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty')}
-    </a>
+    <Tooltip preferedDirection="bottom" content={
+      <span className="text-xs">{__COMMIT_HASH__}</span>
+    }>
+      <a
+        href={url}
+        className={classNames(
+          'flex justify-around flex-col text-standard-bold',
+          'text-status-success bg-status-success bg-opacity-20 rounded-lg',
+          'px-3 select-text cursor-pointer shrink-0 whitespace-nowrap'
+        )}
+        onClick={(e) => {
+          e.preventDefault();
+          openUrl(url);
+        }}
+      >
+        {(__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty')}
+      </a>
+    </Tooltip>
   );
 }
 
