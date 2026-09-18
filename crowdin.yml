@@ -2,8 +2,8 @@
 # https://developer.crowdin.com/configuration-file/
 
 files:
-  - source: /gui/public/i18n/en/translation.ftl
-    translation: /gui/public/i18n/%locale%/%original_file_name%
+  - source: /gui/app/public/i18n/en/translation.ftl
+    translation: /gui/app/public/i18n/%locale%/%original_file_name%
     update_option: update_as_unapproved
     languages_mapping:
       locale:
