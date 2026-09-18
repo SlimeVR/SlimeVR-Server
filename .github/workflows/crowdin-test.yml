@@ -24,8 +24,6 @@ jobs:
       - name: Test Crowdin Synchronization
         uses: crowdin/github-action@v2
         with:
-          crowdin_personal_token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           upload_sources: true
           upload_translations: false
           download_translations: true
