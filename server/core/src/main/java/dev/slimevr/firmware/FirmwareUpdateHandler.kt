@@ -11,6 +11,7 @@ import dev.slimevr.serial.SerialPort
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerStatusListener
+import dev.slimevr.tracking.trackers.udp.MCUType
 import dev.slimevr.tracking.trackers.udp.UDPDevice
 import io.eiren.util.logging.LogManager
 import kotlinx.coroutines.*
@@ -101,11 +102,27 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			)
 			return@suspendCancellableCoroutine
 		}
+
+// TODO:
+//  - Use the Firmware Builder to get the expected MCU
+//    It would be wrong to assume that the Target MCU is the correct one,
+//    just because the device is listening on the correct port.
+//    The Upload protocol does not verify the compatibility of the firmware with the MCU.
+
+		val port = when (udpDevice.mcuType) {
+			MCUType.ESP8266 -> 8266
+			MCUType.ESP32, MCUType.ESP32_C3 -> 3232
+			else -> error("MCU-Typ: ${udpDevice.mcuType} not supported for OTA updates")
+		}
+
+		LogManager.info("[FirmwareUpdateHandler] Starting OTA update for device ${deviceId.id} at ${udpDevice.ipAddress.hostAddress}:$port and MCU ${udpDevice.mcuType}")
+
 		val task = OTAUpdateTask(
 			part.firmware,
 			deviceId,
 			udpDevice.ipAddress,
 			::onStatusChange,
+			port,
 		)
 		c.invokeOnCancellation {
 			task.cancel()
@@ -155,6 +172,15 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				}
 				flasher.addBin(part.firmware, part.offset.toInt())
 			}
+
+// TODO:
+//  - Check if FW is able to use flashmode
+//  - Add check if the flashmode was successfully set to surpress the request
+//    for manual flashmode setting prompt in gui
+
+			server.serialHandler.openSerial(deviceId.id, false)
+			server.serialHandler.write("SET FLASHMODE\r\n".toByteArray())
+			server.serialHandler.closeSerial()
 
 			flasher.addProgressListener(object : FlashingProgressListener {
 				override fun progress(progress: Float) {
