@@ -56,32 +56,71 @@ object TrackerTestUtils {
 	/**
 	 * Gets the yaw of a rotation in radians
 	 */
-	fun yaw(rot: Quaternion): Float = posRad(rot.toEulerAngles(EulerOrder.YZX).y)
+	fun radYaw(rot: Quaternion): Float = posRad(rot.toEulerAngles(EulerOrder.YZX).y)
 
 	/**
 	 * Converts radians to degrees
 	 */
-	fun deg(rot: Float): Float = rot * FastMath.RAD_TO_DEG
+	fun radToDeg(rot: Float): Float = rot * FastMath.RAD_TO_DEG
 
-	fun deg(rot: Quaternion): Float = deg(yaw(rot))
+	fun degYaw(rot: Quaternion): Float = radToDeg(radYaw(rot))
 
-	private fun anglesApproxEqual(a: Float, b: Float): Boolean = FastMath.isApproxEqual(a, b) ||
-		FastMath.isApproxEqual(a - FastMath.TWO_PI, b) ||
-		FastMath.isApproxEqual(a, b - FastMath.TWO_PI)
+	private fun angleApproxEqual(a: Float, b: Float, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean = FastMath.isApproxEqual(a, b, tolerance) ||
+		FastMath.isApproxEqual(a - FastMath.TWO_PI, b, tolerance) ||
+		FastMath.isApproxEqual(a, b - FastMath.TWO_PI, tolerance)
 
-	fun assertAnglesApproxEqual(expected: Float, actual: Float, message: String?) {
-		if (!anglesApproxEqual(expected, actual)) {
+	fun assertAngleEquals(expected: Float, actual: Float, tolerance: Float = FastMath.ZERO_TOLERANCE, message: String? = null) {
+		if (!angleApproxEqual(expected, actual, tolerance)) {
 			AssertionFailureBuilder.assertionFailure().message(message)
 				.expected(expected).actual(actual).buildAndThrow()
 		}
 	}
 
+	fun assertAngleNotEquals(expected: Float, actual: Float, tolerance: Float = FastMath.ZERO_TOLERANCE, message: String? = null) {
+		if (angleApproxEqual(expected, actual, tolerance)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
+
+	/**
+	 * True if the quaternions are approximately equal in quaternion space, not rotation
+	 * space.
+	 */
 	fun quatApproxEqual(q1: Quaternion, q2: Quaternion, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean = FastMath.isApproxEqual(q1.w, q2.w, tolerance) &&
 		FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
 		FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
 		FastMath.isApproxEqual(q1.z, q2.z, tolerance)
 
+	fun assertQuatEquals(expected: Quaternion, actual: Quaternion, tolerance: Float = FastMath.ZERO_TOLERANCE, message: String? = null) {
+		if (!quatApproxEqual(expected, actual, tolerance)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
+
+	fun assertQuatNotEquals(expected: Quaternion, actual: Quaternion, tolerance: Float = FastMath.ZERO_TOLERANCE, message: String? = null) {
+		if (quatApproxEqual(expected, actual, tolerance)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
+
 	fun vectorApproxEqual(v1: Vector3, v2: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean = FastMath.isApproxEqual(v1.x, v2.x, tolerance) &&
 		FastMath.isApproxEqual(v1.y, v2.y, tolerance) &&
 		FastMath.isApproxEqual(v1.z, v2.z, tolerance)
+
+	fun assertVectorEquals(expected: Vector3, actual: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE, message: String? = null) {
+		if (!vectorApproxEqual(expected, actual, tolerance)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
+
+	fun assertVectorNotEquals(expected: Vector3, actual: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE, message: String? = null) {
+		if (vectorApproxEqual(expected, actual, tolerance)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
 }
