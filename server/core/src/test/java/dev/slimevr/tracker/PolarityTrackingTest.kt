@@ -13,6 +13,7 @@ class PolarityTrackingTest {
 		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRot, 0f)
 	}
 
+	// TODO test for when positional tracker
 	@Test
 	fun `Reducer Resets align polarity with reference rotation`() = ResetType.entries.forEach { resetType ->
 		// Tracker rawRotation (untracked polarity)

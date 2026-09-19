@@ -21,7 +21,7 @@ type ResetsSettingsForm = {
   armsResetMode: number;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
-  resetPositionalHeadAttitude: boolean;
+  resetHmdAttitude: boolean;
 };
 
 const defaultValues: ResetsSettingsForm = {
@@ -29,7 +29,7 @@ const defaultValues: ResetsSettingsForm = {
   armsResetMode: 0,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
-  resetPositionalHeadAttitude: false,
+  resetHmdAttitude: false,
 };
 
 const resetsSettingsAtom = atom(new ResetsSettingsResponseT());
@@ -66,8 +66,7 @@ export function ResetsSettings() {
     resetsSettings.armsResetMode = values.armsResetMode;
     resetsSettings.yawResetSmoothTime = values.yawResetSmoothTime;
     resetsSettings.saveMountingReset = values.saveMountingReset;
-    resetsSettings.resetPositionalHeadAttitude =
-      values.resetPositionalHeadAttitude;
+    resetsSettings.resetHmdAttitude = values.resetHmdAttitude;
 
     sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsSettings);
   };
@@ -206,13 +205,13 @@ export function ResetsSettings() {
       <div className="flex flex-col pt-5 gap-1">
         <Typography variant="section-title">
           {l10n.getString(
-            'settings-general-fk_settings-reset_settings-reset_positional_head_attitude'
+            'settings-general-fk_settings-reset_settings-reset_hmd_attitude'
           )}
         </Typography>
 
         <Typography>
           {l10n.getString(
-            'settings-general-fk_settings-reset_settings-reset_positional_head_attitude-description'
+            'settings-general-fk_settings-reset_settings-reset_hmd_attitude-description'
           )}
         </Typography>
 
@@ -220,9 +219,9 @@ export function ResetsSettings() {
           variant="toggle"
           outlined
           control={control}
-          name="resetPositionalHeadAttitude"
+          name="resetHmdAttitude"
           label={l10n.getString(
-            'settings-general-fk_settings-reset_settings-reset_positional_head_attitude'
+            'settings-general-fk_settings-reset_settings-reset_hmd_attitude'
           )}
         />
       </div>
