@@ -32,6 +32,19 @@ tips-failed_webgl = Не удалось инициализировать WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Закрыть
+
 ## Body parts
 
 body_part-NONE = Не привязано
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = Правое бедро
 body_part-RIGHT_LOWER_LEG = Правая голень
 body_part-RIGHT_FOOT = Правая ступня
 body_part-UPPER_CHEST = Верхняя часть груди
-body_part-CHEST = Грудь
-body_part-WAIST = Талия
 body_part-HIP = Таз
 body_part-LEFT_SHOULDER = Левое плечо
 body_part-LEFT_UPPER_ARM = Левое предплечье
@@ -89,24 +100,8 @@ body_part-RIGHT_LITTLE_DISTAL = Правый мизинец (дистальна�
 ## BoardType
 
 board_type-UNKNOWN = Неизвестно
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Кастомная Плата
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = Joycon через Wrangler
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 
@@ -131,14 +126,8 @@ skeleton_bone-UPPER_CHEST-desc =
     Это расстояние от основания вашей шеи до середины вашей груди.
     Чтобы откалибровать его,  убедитесь, что "Длина туловища" задана верно, и изменяйте её в различных
     позициях (сидя, наклонившсь, лёжа и т.д.), пока ваш виртуальный позвоночник не совпадёт с реальным.
-skeleton_bone-CHEST = Длина груди
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     Это расстояние от центра вашей груди до центра вашего позвоночника.
-    Чтобы откалибровать его,  убедитесь, что "Длина туловища" задана верно, и изменяйте значение в различных
-    позициях (сидя, наклонившись, лёжа и т.д.), пока ваш виртуальный позвоночник не совпадёт с реальным.
-skeleton_bone-WAIST = Длина талии
-skeleton_bone-WAIST-desc =
-    Это расстояние от центра вашего позвоночника до вашего пупка.
     Чтобы откалибровать его,  убедитесь, что "Длина туловища" задана верно, и изменяйте значение в различных
     позициях (сидя, наклонившись, лёжа и т.д.), пока ваш виртуальный позвоночник не совпадёт с реальным.
 skeleton_bone-HIP = Длина таза
@@ -226,16 +215,6 @@ reset-full = Полный сброс
 reset-mounting = Сбросить крепление
 reset-yaw = Горизонтальный сброс
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Обнаружено новое устройство!
-serial_detection-new_device-p1 = Заполните данные вашего Wi-Fi!
-serial_detection-new_device-p2 = Пожалуйста, выберите, что вы хотите с ним сделать
-serial_detection-open_wifi = Подключиться к Wi-Fi
-serial_detection-open_serial = Открыть консоль
-serial_detection-submit = Отправить!
-serial_detection-close = Закрыть
-
 ## Navigation bar
 
 navbar-home = Дом
@@ -261,9 +240,7 @@ widget-developer_mode = Режим разработчика
 widget-developer_mode-high_contrast = Высокая контрастность
 widget-developer_mode-precise_rotation = Точное вращение
 widget-developer_mode-fast_data_feed = Быстрый поток данных
-widget-developer_mode-sort_by_name = Сортировка по имени
 widget-developer_mode-raw_slime_rotation = Вращение без обработки
-widget-developer_mode-more_info = Дополнительная информация
 
 ## Widget: IMU Visualizer
 
@@ -292,13 +269,11 @@ tracker-table-column-name = Имя
 tracker-table-column-type = Тип
 tracker-table-column-battery = Батарея
 tracker-table-column-ping = Пинг
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Темп. °C
 tracker-table-column-linear-acceleration = Ускорение X/Y/Z
 tracker-table-column-rotation = Поворот X/Y/Z
 tracker-table-column-position = Положение X/Y/Z
 tracker-table-column-stay_aligned = Оставаться выровненным
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -358,6 +333,14 @@ tracker-settings-update-up_to_date = Обновлено
 tracker-settings-update = Обновить сейчас
 tracker-settings-update-title = Версия прошивки
 
+## Dongle settings
+
+dongle-infos-hardware_revision = Ревизия устройства
+dongle-status-disconnected = Отключен
+dongle-settings-back = Вернуться к списку трекеров
+dongle-settings-update = Обновить сейчас
+dongle-settings-update-title = Версия прошивки
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = Не привязан
@@ -371,6 +354,11 @@ body_assignment_menu-unassign_tracker = Отвязать трекер
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -389,8 +377,8 @@ mounting_selection_menu-close = Закрыть
 settings-sidebar-title = Настройки
 settings-sidebar-general = Общие
 settings-sidebar-stay_aligned = Оставаться выровненным
+settings-sidebar-trackers = Трекеры
 settings-sidebar-interface = Интерфейс
-settings-sidebar-osc_trackers = VRChat OSC Трекеры
 settings-sidebar-utils = Утилиты
 settings-sidebar-serial = Консоль
 settings-sidebar-appearance = Внешний вид
@@ -399,6 +387,16 @@ settings-sidebar-behavior = Поведение
 settings-sidebar-firmware-tool = Инструмент Прошивки DIY
 settings-sidebar-vrc_warnings = Предупреждения конфигурации VRChat
 settings-sidebar-advanced = Продвинутые
+
+## Bone routing settings
+
+settings-routing-output-badge-off = Отключено
+settings-routing-hands-warning-cancel = Отмена
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Включить
+settings-driver-status-badge-disabled = Отключено
 
 ## Tracker mechanics
 
@@ -439,9 +437,18 @@ settings-stay_aligned-relaxed_poses-sitting = Калибровка трекер�
 settings-stay_aligned-relaxed_poses-flat = Калибровка трекеров в положении сидя (на полу) или лежа (на спине)
 settings-stay_aligned-relaxed_poses-save_pose = Сохранить позу
 settings-stay_aligned-relaxed_poses-reset_pose = Сбросить позу
+settings-stay_aligned-relaxed_poses-close = Закрыть
 settings-stay_aligned-debug-label = Отладка
 settings-stay_aligned-debug-description = Пожалуйста, укажите ваши настройки при отправке сообщения о проблемах с функцией "Оставаться выровненным".
 settings-stay_aligned-debug-copy-label = Копирование настроек в буфер обмена
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Полный сброс
+settings-keybinds_yaw-reset = Горизонтальный сброс
+settings-keybinds_reset-all-button = Сбросить всё
+settings-keybinds-recorder-modal-done-button = Выполнено
+settings-keybinds-recorder-modal-cancel-button = Отмена
 
 ## FK/Tracking settings
 
@@ -537,9 +544,6 @@ settings-interface-appearance-font_size-description = Это влияет на �
 ## Notification settings
 
 settings-interface-notifications = Уведомления
-settings-general-interface-serial_detection = Обнаружение серийного устройства
-settings-general-interface-serial_detection-description = Эта опция будет показывать всплывающее окно каждый раз, когда вы подключаете новое серийное устройство, которое может быть трекером. Это помогает улучшить процесс настройки трекера.
-settings-general-interface-serial_detection-label = Обнаружение серийного устройства
 settings-general-interface-feedback_sound = Звук уведомления
 settings-general-interface-feedback_sound-description = Эта опция будет воспроизводить звук при срабатывании сброса.
 settings-general-interface-feedback_sound-label = Звук уведомления
@@ -551,6 +555,8 @@ settings-general-interface-connected_trackers_warning-label = Предупреж
 ## Behavior settings
 
 settings-interface-behavior = Поведение
+settings-general-interface-dev_mode = Режим разработчика
+settings-general-interface-dev_mode-label = Режим разработчика
 settings-general-interface-use_tray = Свернуть в системный трей
 settings-general-interface-use_tray-description = Позволяет закрыть окно, не закрывая сервер SlimeVR, так что вы можете продолжать использовать его, не беспокоясь о графическом интерфейсе.
 settings-general-interface-use_tray-label = Свернуть в системный трей
@@ -592,6 +598,8 @@ settings-serial-serial_select = Выбрать серийный порт
 settings-serial-auto_dropdown_item = Авто
 settings-serial-get_wifi_scan = Получить сканирование Wi-Fi
 settings-serial-save_logs = Сохранить в файл
+settings-serial-send_command-warning-ok = Я знаю, что я делаю
+settings-serial-send_command-warning-cancel = Отмена
 
 ## OSC VRChat settings
 
@@ -616,6 +624,12 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Адрес сети
 settings-osc-vrchat-network-address-description-v1 = Выберите, на какой адрес отправлять данные. Можно оставить нетронутым для VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat IP адрес
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Вращение
+settings-osc-vrchat-status-badge-error = Ошибка
+settings-osc-vrchat-status-badge-unknown = Неизвестно
 
 ## VMC OSC settings
 
@@ -648,6 +662,7 @@ settings-osc-vmc-anchor_hip-label = Привязать к бедрам
 settings-osc-vmc-mirror_tracking = Отзеркалить отслеживание
 settings-osc-vmc-mirror_tracking-description = Отзеркалить отслеживание горизонтально.
 settings-osc-vmc-mirror_tracking-label = Отзеркалить отслеживание
+settings-osc-vmc-status-badge-error = Ошибка
 
 ## Common OSC settings
 
@@ -688,7 +703,7 @@ settings-utils-advanced-open_logs-label = Открыть папку
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -704,12 +719,17 @@ onboarding-setup_warning-cancel = Продолжить настройку
 
 ## Quiz
 
+onboarding-quiz_continue = Продолжить
+onboarding-quiz_back = Назад
+onboarding-quiz-mocap_preferences-head_tracker-yes = Да
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Вернуться
 onboarding-wifi_creds-submit = Отправить!
+onboarding-wifi_creds-retry = Повторить
+onboarding-wifi_creds-ssid-label = Имя Wi-Fi
 onboarding-wifi_creds-ssid =
-    .label = Имя Wi-Fi
     .placeholder = Введите имя Wi-Fi
 onboarding-wifi_creds-ssid-required = Необходимо указать имя сети Wi-Fi
 onboarding-wifi_creds-password =
@@ -718,6 +738,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Закрыть
 
 ## Setup start
 
@@ -729,6 +750,7 @@ onboarding-home-start = Давайте все настроим!
 onboarding-connect_tracker-title = Подключите трекеры
 onboarding-connect_tracker-issue-serial = У меня проблемы с подключением!
 onboarding-connect_tracker-usb = USB трекер
+onboarding-connect_tracker-close = Закрыть
 onboarding-connect_tracker-connection_status-serial_init = Подключение к устройству
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Получение MAC адреса трекера
 onboarding-connect_tracker-connection_status-provisioning = Отправка данных Wi-Fi
@@ -770,6 +792,11 @@ onboarding-assign_trackers-assigned =
         [many] { $assigned } из { $trackers } трекеров привязано
        *[other] { $assigned } из { $trackers } трекеров привязано
     }
+onboarding-assign_trackers-tap_modal-cancel = Отмена
+onboarding-assign_trackers-side-right = Справа
+onboarding-assign_trackers-side-left = Слева
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Зеркальный вид
 
 ## Tracker assignment warnings
 
@@ -878,6 +905,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Удерживайте 
 onboarding-automatic_mounting-put_trackers_on-title = Наденьте ваши трекеры
 onboarding-automatic_mounting-put_trackers_on-description = Чтобы откалибровать повороты крепления, мы будем использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
 onboarding-automatic_mounting-put_trackers_on-next = Я включил и надел все свои трекеры
+onboarding-automatic_mounting-return-home = Выполнено
 
 ## Tracker manual proportions setupa
 
@@ -978,6 +1006,12 @@ onboarding-stay_aligned-previous_step = Предыдущий
 onboarding-stay_aligned-next_step = Следующий
 onboarding-stay_aligned-restart = Перезапустить
 onboarding-stay_aligned-done = Выполнено
+onboarding-stay_aligned-manual_mounting-done = Выполнено
+
+## Home
+
+home-settings-close = Закрыть
+home-no_trackers-connect = Подключите трекеры
 
 ## Trackers Still On notification
 
@@ -1002,6 +1036,7 @@ firmware_tool = Инструмент Прошивки DIY
 firmware_tool-description = Позволяет вам настроить и прошить ваши DIY трекеры
 firmware_tool-not_available = Упс! В данный момент инструмент прошивки недоступен. Возвращайтесь позже!
 firmware_tool-not_compatible = Средство прошивки несовместимо с этой версией сервера. Пожалуйста, обновите свой сервер!
+firmware_tool-select_source-version = Версия прошивки
 firmware_tool-flash_method_step = Способ прошивки
 firmware_tool-flash_method_step-description = Пожалуйста, выберите способ прошивки, который вы хотите использовать
 firmware_tool-flashbtn_step = Нажмите кнопку загрузки
@@ -1143,3 +1178,7 @@ error_collection_modal-cancel = Я не согласен
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Закрыть
+tracking_checklist-UNASSIGNED_HMD-desc = VR гарнитура должна быть назначена как трекер головы.
+toolbar-mounting_calibration = Проверьте ваше крепление
+toolbar-mounting_calibration-feet = Ступни

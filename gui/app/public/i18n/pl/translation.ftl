@@ -34,7 +34,19 @@ tips-failed_webgl = Nie udało się zainicjalizować WebGL.
 unit-meter = Metr
 unit-foot = Stopa
 unit-inch = Cal
-unit-cm = cm
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Zamknij
 
 ## Body parts
 
@@ -49,8 +61,6 @@ body_part-RIGHT_UPPER_LEG = Prawe udo
 body_part-RIGHT_LOWER_LEG = Prawa kostka
 body_part-RIGHT_FOOT = Prawa stopa
 body_part-UPPER_CHEST = Górna część klatki piersiowej
-body_part-CHEST = Klatka piersiowa
-body_part-WAIST = Talia
 body_part-HIP = Biodra
 body_part-LEFT_SHOULDER = Lewe ramię
 body_part-LEFT_UPPER_ARM = Lewy biceps
@@ -95,23 +105,9 @@ body_part-RIGHT_LITTLE_DISTAL = Prawy mały dystalny
 board_type-UNKNOWN = Nieznany
 board_type-NODEMCU = Kontroler NodeMCU
 board_type-CUSTOM = Płytka niestandardowa
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = Podstawa T TTGO
 board_type-ESP01 = Zobacz materiał ESP-01
-board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_DEV = SlimeVR Płytka Deweloperska
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = Rękawica SlimeVR Dev IMU
 
 ## Proportions
@@ -136,14 +132,8 @@ skeleton_bone-UPPER_CHEST-desc =
     To jest odległość od podstawy szyi do środka klatki piersiowej.
     Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
     (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
-skeleton_bone-CHEST = Długość klatki piersiowej
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     To jest odległość od środka klatki piersiowej do środka kręgosłupa.
-    Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
-    (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
-skeleton_bone-WAIST = Długość talii
-skeleton_bone-WAIST-desc =
-    To jest odległość od środka kręgosłupa do przycisku brzucha.
     Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
     (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
 skeleton_bone-HIP = Długość bioder
@@ -233,16 +223,6 @@ reset-yaw = Reset odchylenia
 reset-error-mounting-need_full_reset = Potrzebny jest pełny reset przed montażem
 reset-error-yaw-need_full_reset = Potrzebny jest pełny reset przed resetem obrotu
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Wykryto nowe urządzenie!
-serial_detection-new_device-p1 = Wprowadź dane Wi-Fi!
-serial_detection-new_device-p2 = Wybierz co chcesz z nim zrobić.
-serial_detection-open_wifi = Połącz z Wi-Fi
-serial_detection-open_serial = Otwórz Konsolę
-serial_detection-submit = Potwierdź!
-serial_detection-close = Zamknij
-
 ## Navigation bar
 
 navbar-home = Strona Główna
@@ -271,9 +251,7 @@ widget-developer_mode = Tryb deweloperski
 widget-developer_mode-high_contrast = Wysoki kontrast
 widget-developer_mode-precise_rotation = Wyświetlanie dokładniejszej rotacji
 widget-developer_mode-fast_data_feed = Szybkie przesyłanie danych
-widget-developer_mode-sort_by_name = Sortuj według nazwy
 widget-developer_mode-raw_slime_rotation = Surowa rotacja
-widget-developer_mode-more_info = Więcej info
 
 ## Widget: IMU Visualizer
 
@@ -293,7 +271,6 @@ tracker-status-busy = Zajęty
 tracker-status-error = Błąd
 tracker-status-disconnected = Rozłączono
 tracker-status-occluded = Zasłonięty
-tracker-status-ok = OK
 tracker-status-timed_out = Wygasły
 
 ## Tracker status columns
@@ -301,14 +278,10 @@ tracker-status-timed_out = Wygasły
 tracker-table-column-name = Nazwa
 tracker-table-column-type = Typ
 tracker-table-column-battery = Bateria
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Akceleracja X/Y/Z
 tracker-table-column-rotation = Rotacja X/Y/Z
 tracker-table-column-position = Pozycja X/Y/Z
 tracker-table-column-stay_aligned = Wyrównywanie
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -327,12 +300,10 @@ tracker-rotation-custom = Własne
 tracker-infos-manufacturer = Producent
 tracker-infos-display_name = Wyświetlana Nazwa
 tracker-infos-custom_name = Niestandardowa Nazwa
-tracker-infos-url = Tracker URL
 tracker-infos-hardware_identifier = Identyfikator sprzętu
 tracker-infos-imu = Czujnik IMU
 tracker-infos-board_type = Płyta główna
 tracker-infos-network_version = Wersja protokołu
-tracker-infos-magnetometer = Magnetometer
 tracker-infos-magnetometer-status-v1 =
     { $status ->
         [DISABLED] Wyłączony
@@ -376,6 +347,14 @@ tracker-settings-update-title = Wersja oprogramowania
 tracker-settings-current-version = Aktualny
 tracker-settings-latest-version = Najnowszy
 
+## Dongle settings
+
+dongle-infos-hardware_revision = Rewizja sprzętu
+dongle-status-disconnected = Rozłączono
+dongle-settings-back = Wróć do listy trackerów
+dongle-settings-update = Zaktualizuj teraz
+dongle-settings-update-title = Wersja oprogramowania
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = Nieprzydzielony
@@ -389,6 +368,11 @@ body_assignment_menu-unassign_tracker = Usuń przydzielenie
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -408,8 +392,6 @@ settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
 settings-sidebar-stay_aligned = Wyrównywanie
 settings-sidebar-interface = Interfejs
-settings-sidebar-osc_trackers = Śledzenie VRChat OSC
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola szeregowa
 settings-sidebar-appearance = Wygląd
@@ -420,6 +402,17 @@ settings-sidebar-behavior = Zachowanie
 settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
 settings-sidebar-vrc_warnings = Ostrzeżenia dotyczące konfiguracji VRChat
 settings-sidebar-advanced = Zaawansowany
+
+## Bone routing settings
+
+settings-routing-output-badge-off = Od
+settings-routing-group-fingers = Palce
+settings-routing-hands-warning-cancel = Anuluj
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Umożliwiać
+settings-driver-status-badge-disabled = Od
 
 ## Tracker mechanics
 
@@ -465,6 +458,14 @@ settings-stay_aligned-debug-label = Debugowanie
 settings-stay_aligned-debug-description = Proszę dołączać ustawienia, podczas zgłaszania problemów z opcją Wyrównywania.
 settings-stay_aligned-debug-copy-label = Skopiuj ustawienia do schowka
 
+## Keybinds Page
+
+settings-keybinds_full-reset = Pełny Reset
+settings-keybinds_yaw-reset = Reset odchylenia
+settings-keybinds_reset-all-button = Zresetuj wszystko
+settings-keybinds-recorder-modal-done-button = Gotowy
+settings-keybinds-recorder-modal-cancel-button = Anuluj
+
 ## FK/Tracking settings
 
 settings-general-fk_settings = Ustawienia śledzenia
@@ -485,8 +486,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Wymuś kalibracje montażu stóp podczas kalibracji pozycji.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Wymuś kalibracje mocowania stóp
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Wymuś kalibracje montażu stóp podczas kalibracji pozycji.
 settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Wymuszanie ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
@@ -564,9 +565,6 @@ settings-interface-appearance-font_size-description = Wpływa to na rozmiar czci
 ## Notification settings
 
 settings-interface-notifications = Powiadomienia
-settings-general-interface-serial_detection = Wykrywanie urządzeń
-settings-general-interface-serial_detection-description = Ta opcja otworzy okienko, jeżeli serwer wykryje podłaczenie urządzenia, które może być trackerem.
-settings-general-interface-serial_detection-label = Wykrywanie urządzeń
 settings-general-interface-feedback_sound = Dźwięk zwrotny
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
@@ -578,6 +576,8 @@ settings-general-interface-connected_trackers_warning-label = Ostrzeżenie o pod
 ## Behavior settings
 
 settings-interface-behavior = Zachowanie
+settings-general-interface-dev_mode = Tryb Dewelopera
+settings-general-interface-dev_mode-label = Tryb Dewelopera
 settings-general-interface-use_tray = Minimalizuj do zasobnika systemowego
 settings-general-interface-use_tray-description = Pozwala zamknąć okno bez wyłączania serwera SlimeVR, aby używać trackerów bez interfejsu graficznego.
 settings-general-interface-use_tray-label = Minimalizuj do zasobnika systemowego
@@ -621,7 +621,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Wiem co robię
 settings-serial-factory_reset-warning-cancel = Anuluj
 settings-serial-serial_select = Wybierz port szeregowy
-settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
 settings-serial-save_logs = Zapisz do pliku
 settings-serial-send_command = Wyślij
@@ -645,18 +644,23 @@ settings-osc-vrchat-enable-description = Zezwól na wysyłanie i odbieranie dany
 settings-osc-vrchat-enable-label = Zezwól
 settings-osc-vrchat-network = Porty sieciowe
 settings-osc-vrchat-network-port_in =
-    .label = Port In
+    .label = Port Wejścia
     .placeholder = Port in (default: 9001)
 settings-osc-vrchat-network-port_out =
-    .label = Port Out
-    .placeholder = Port out (default: 9000)
+    .label = Port Wyjścia
+    .placeholder = Port wyjściowy (domyślnie: 9000)
 settings-osc-vrchat-network-address = Adres sieciowy
 settings-osc-vrchat-network-address-description-v1 = Wybierz adres, na który mają być wysyłane dane. Można pozostawić domyślnie dla VRChata.
 settings-osc-vrchat-network-address-placeholder = Adres IP VRChata
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotacja
+settings-osc-vrchat-status-badge-error = Błąd
+settings-osc-vrchat-status-badge-unknown = Nieznany
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Zmień ustawienia specyficzne dla protokołu VMC (Virtual Motion Capture).
@@ -685,6 +689,7 @@ settings-osc-vmc-anchor_hip-label = Blokada na biodrach
 settings-osc-vmc-mirror_tracking = Odbicie lustrzane śledzenia
 settings-osc-vmc-mirror_tracking-description = Odbij śledzenie w poziomie.
 settings-osc-vmc-mirror_tracking-label = Odbicie lustrzane śledzenia
+settings-osc-vmc-status-badge-error = Błąd
 
 ## Common OSC settings
 
@@ -726,7 +731,7 @@ settings-home-list-layout-desc = Wybierz jeden z możliwych układów ekranu gł
 settings-home-list-layout-grid = Siatka
 settings-home-list-layout-table = Tabela
 
-## Tracking Checlist
+## Tracking Checklist
 
 settings-tracking_checklist-active_steps = Aktywne Kroki
 settings-tracking_checklist-active_steps-desc = Lista wszystkich kroków kontrolnych. Możesz wyłączyć konkretne punkty.
@@ -744,12 +749,17 @@ onboarding-setup_warning-cancel = Kontynuuj konfigurację
 
 ## Quiz
 
+onboarding-quiz_continue = Kontynuuj
+onboarding-quiz_back = Wstecz
+onboarding-quiz-mocap_preferences-head_tracker-yes = Tak
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Przejdź wstecz
 onboarding-wifi_creds-submit = Potwierdź!
+onboarding-wifi_creds-retry = Spróbować ponownie
+onboarding-wifi_creds-ssid-label = SSID
 onboarding-wifi_creds-ssid =
-    .label = SSID
     .placeholder = Enter SSID
 onboarding-wifi_creds-ssid-required = Nazwa Wi-Fi jest wymagana
 onboarding-wifi_creds-password =
@@ -758,6 +768,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Zamknij
 
 ## Setup start
 
@@ -768,7 +779,7 @@ onboarding-home-start = Zaczynajmy!
 
 onboarding-connect_tracker-title = Połącz trackery
 onboarding-connect_tracker-issue-serial = Mam problemy z połączeniem!
-onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-close = Zamknij
 onboarding-connect_tracker-connection_status-serial_init = Łączenie z urządzeniem szeregowym
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Uzyskiwanie adresu MAC modułu śledzącego
 onboarding-connect_tracker-connection_status-provisioning = Wysyłanie danych Wi-Fi
@@ -810,6 +821,13 @@ onboarding-assign_trackers-assigned =
         [many] Przypisano { $assigned } z { $trackers } trackerów
        *[other] Przypisano { $assigned } z { $trackers } trackerów
     }
+onboarding-assign_trackers-tap_modal-cancel = Anuluj
+onboarding-assign_trackers-tab-body = Ciało
+onboarding-assign_trackers-tab-fingers = Palce
+onboarding-assign_trackers-side-right = Prawy
+onboarding-assign_trackers-side-left = Lewy
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Widok lustrzany
 
 ## Tracker assignment warnings
 
@@ -956,7 +974,6 @@ onboarding-automatic_proportions-requirements-next = Zapoznałem się z wymagani
 onboarding-automatic_proportions-start_recording-title = Bądź gotowy żeby się ruszać
 onboarding-automatic_proportions-start_recording-description = Będziemy teraz nagrywać specyficzne pozycje i ruchy. Będą one pokazane w następnym okienku. Bądź gotowy po naciśnięciu przycisku!
 onboarding-automatic_proportions-start_recording-next = Uruchom nagrywanie
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Nagrywanie w toku...
 onboarding-automatic_proportions-recording-description-p1 = Wykonuj ruchy pokazane niżej:
 # Each line of text is a different list item
@@ -1046,13 +1063,14 @@ onboarding-stay_aligned-done-description = Konfiguracja Wyrównywania jest zako�
 onboarding-stay_aligned-done-description-2 = Konfiguracja została zakończona! Możesz ponownie uruchomić proces, jeśli chcesz ponownie skalibrować pozy.
 onboarding-stay_aligned-previous_step = Poprzednie
 onboarding-stay_aligned-next_step = Następne
-onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Gotowy
+onboarding-stay_aligned-manual_mounting-done = Gotowy
 
 ## Home
 
 home-settings = Ustawienia strony głównej
 home-settings-close = Zamknij
+home-no_trackers-connect = Połącz trackery
 
 ## Trackers Still On notification
 
@@ -1085,6 +1103,7 @@ firmware_tool-select_source-firmware = Źródło oprogramowania
 firmware_tool-select_source-version = Wersja oprogramowania
 firmware_tool-select_source-official = Oficjalny
 firmware_tool-select_source-dev = Deweloperski
+firmware_tool-select_source-latest = Najnowszy
 firmware_tool-board_defaults = Skonfiguruj swoje urządzenie
 firmware_tool-board_defaults-description = Ustaw piny lub ustawienia do twojego urządzenia
 firmware_tool-board_defaults-add = Dodaj
@@ -1125,9 +1144,7 @@ firmware_tool-flash_method_serial-wifi = Dane uwierzytelniające Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Wykryte urządzenia szeregowe:
 firmware_tool-flash_method_serial-devices-placeholder = Wybierz urządzenie szeregowe
 firmware_tool-flash_method_serial-no_devices = Nie wykryto kompatybilnych urządzeń szeregowych. Upewnij się, że tracker jest podłączony
-firmware_tool-build_step = Building
 firmware_tool-build_step-description = Trwa tworzenie oprogramowania sprzętowego. Proszę czekać
-firmware_tool-flashing_step = Flashing
 firmware_tool-flashing_step-description = Twoje trackery migają. Postępuj zgodnie z instrukcjami wyświetlanymi na ekranie
 firmware_tool-flashing_step-warning-v2 = Nie odłączaj ani nie wyłączaj trackera podczas procesu przesyłania, chyba że zostaniesz o to poproszony, może to spowodować, że twoje urządzenie stanie się bezużyteczne.
 firmware_tool-flashing_step-flash_more = Flashuj więcej trackerów
@@ -1236,7 +1253,6 @@ vrc_config-tracker_model-UNKNOWN = Nieznany
 vrc_config-tracker_model-AXIS = Oś
 vrc_config-tracker_model-BOX = Pudełko
 vrc_config-tracker_model-SPHERE = Sfera
-vrc_config-tracker_model-SYSTEM = System
 vrc_config-avatar_measurement_type-UNKNOWN = Nieznany
 vrc_config-avatar_measurement_type-HEIGHT = Wysokość
 vrc_config-avatar_measurement_type-ARM_SPAN = Rozpiętość ramion

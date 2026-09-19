@@ -32,9 +32,20 @@ tips-failed_webgl = Načtení WebGL selhalo.
 ## Units
 
 unit-meter = Metr
-unit-foot = Foot
 unit-inch = Palec
-unit-cm = cm
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Zavřít
 
 ## Body parts
 
@@ -49,8 +60,6 @@ body_part-RIGHT_UPPER_LEG = Pravé stehno
 body_part-RIGHT_LOWER_LEG = Pravý kotník
 body_part-RIGHT_FOOT = Pravá noha
 body_part-UPPER_CHEST = Horní část hrudníku
-body_part-CHEST = Hrudník
-body_part-WAIST = Pás
 body_part-HIP = Kyčel
 body_part-LEFT_SHOULDER = Levé rameno
 body_part-LEFT_UPPER_ARM = Levé nadloktí
@@ -68,31 +77,11 @@ body_part-RIGHT_THUMB_DISTAL = Vzálená falanga pravého pacle
 ## BoardType
 
 board_type-UNKNOWN = Neznámý
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Vlastní deska
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR Dev Board
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = Wrangler Joycony
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR vývojářská IMU rukavice
 board_type-GESTURES = Gesta
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = Obecné nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -101,8 +90,6 @@ skeleton_bone-HEAD = Posun hlavy
 skeleton_bone-NECK = Délka krku
 skeleton_bone-torso_group = Délka trupu
 skeleton_bone-UPPER_CHEST = Horní délka hrudníku
-skeleton_bone-CHEST = Délka hrudníku
-skeleton_bone-WAIST = Délka pasu
 skeleton_bone-HIP = Délka kyčlí
 skeleton_bone-HIPS_WIDTH = Šířka kyčlí
 skeleton_bone-leg_group = Délka nohy
@@ -132,16 +119,6 @@ reset-mounting-feet = Obnovit pozice nasazení nohou
 reset-mounting-fingers = Obnovit pozice nasazení prstů
 reset-yaw = Rychlý reset
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Bylo detekováno nové sériové zařízení!
-serial_detection-new_device-p1 = Zadejte přihlašovací údaje Wi-Fi!
-serial_detection-new_device-p2 = Vyberte akci kterou chcete vykonat.
-serial_detection-open_wifi = Připojit se k Wi-Fi
-serial_detection-open_serial = Otevřít sériovou konzoly
-serial_detection-submit = Odeslat!
-serial_detection-close = Zavřít
-
 ## Navigation bar
 
 navbar-home = Domů
@@ -170,9 +147,7 @@ widget-developer_mode = Vývojářský režim
 widget-developer_mode-high_contrast = Vysoký kontrast
 widget-developer_mode-precise_rotation = Přesná rotace
 widget-developer_mode-fast_data_feed = Rychlý přenos dat
-widget-developer_mode-sort_by_name = Seřadit podle názvu
 widget-developer_mode-raw_slime_rotation = Nezpracovaná rotace
-widget-developer_mode-more_info = Více informací
 
 ## Widget: IMU Visualizer
 
@@ -192,7 +167,6 @@ tracker-status-busy = Zaneprázdněný
 tracker-status-error = Chyba
 tracker-status-disconnected = Odpojeno
 tracker-status-occluded = Zakrytý
-tracker-status-ok = OK
 tracker-status-timed_out = Spojení přerušeno
 
 ## Tracker status columns
@@ -200,14 +174,11 @@ tracker-status-timed_out = Spojení přerušeno
 tracker-table-column-name = Název
 tracker-table-column-type = Typ
 tracker-table-column-battery = Baterie
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Teplota °C
 tracker-table-column-linear-acceleration = Akcel. X/Y/Z
 tracker-table-column-rotation = Rotace X/Y/Z
 tracker-table-column-position = Pozice X/Y/Z
 tracker-table-column-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -279,6 +250,15 @@ tracker-settings-current-version = Současný
 tracker-settings-latest-version = Nejnovější
 tracker-settings-build-date = Datum sestavení
 
+## Dongle settings
+
+dongle-infos-hardware_revision = Revize hardwaru
+dongle-status-disconnected = Odpojeno
+dongle-settings-back = Zpět na seznam trackerů
+dongle-settings-name_section-description = Třeba nějakou roztomilou přezdívku :)
+dongle-settings-update = Aktualizovat nyní
+dongle-settings-update-title = Verze Firmwareu
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = Nepřiřazeno
@@ -292,6 +272,11 @@ body_assignment_menu-unassign_tracker = Zrušit přiřazení trackeru
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -310,9 +295,9 @@ mounting_selection_menu-close = Zavřít
 settings-sidebar-title = Nastavení
 settings-sidebar-general = Obecné
 settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
+settings-sidebar-trackers = Trackery
 settings-sidebar-interface = Rozhraní
-settings-sidebar-osc_trackers = VRChat OSC tracker
-settings-sidebar-osc_vmc = VMC
+settings-sidebar-vrchat_osc = Trackery VRChat OSC
 settings-sidebar-utils = Nástroje
 settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
@@ -323,6 +308,18 @@ settings-sidebar-behavior = Chování
 settings-sidebar-firmware-tool = Nástroj pro DIY firmware
 settings-sidebar-vrc_warnings = Varovaní VRChat konfigurace
 settings-sidebar-advanced = Pokročilé
+
+## Bone routing settings
+
+settings-routing-output-vrc_osc = Trackery VRChat OSC
+settings-routing-output-badge-off = Vypnuto
+settings-routing-group-fingers = Prsty
+settings-routing-hands-warning-cancel = Zrušit
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Zapnout
+settings-driver-status-badge-disabled = Vypnuto
 
 ## Tracker mechanics
 
@@ -368,6 +365,14 @@ settings-stay_aligned-relaxed_poses-close = Zavřít
 settings-stay_aligned-debug-label = Ladění
 settings-stay_aligned-debug-description = Při nahlašování problémů s Zůstaň Srovnaný, prosím zahrňte vaše nastavení.
 settings-stay_aligned-debug-copy-label = Zkopírovat nastavení do schránky
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Plný Reset
+settings-keybinds_yaw-reset = Rychlý reset
+settings-keybinds_reset-all-button = Obnovit vše
+settings-keybinds-recorder-modal-done-button = Hotovo
+settings-keybinds-recorder-modal-cancel-button = Zrušit
 
 ## FK/Tracking settings
 
@@ -465,9 +470,6 @@ settings-interface-appearance-font_size-description = Toto ovlivňuje velikost p
 ## Notification settings
 
 settings-interface-notifications = Notifikace
-settings-general-interface-serial_detection = Detekce sériových zařízení
-settings-general-interface-serial_detection-description = Tato možnost zobrazí pop-up pokaždé, když připojíte nové sériové zařízení, které by mohlo být trackerem. Pomáhá zlepšit proces nastavení trackeru.
-settings-general-interface-serial_detection-label = Detekce sériových zařízení
 settings-general-interface-feedback_sound = Zvuk zpětné vazby
 settings-general-interface-feedback_sound-description = Tato možnost spustí zvuk, když je aktivován reset.
 settings-general-interface-feedback_sound-label = Zvuk zpětné vazby
@@ -479,6 +481,8 @@ settings-general-interface-connected_trackers_warning-label = Upozornění o př
 ## Behavior settings
 
 settings-interface-behavior = Chování
+settings-general-interface-dev_mode = Vývojářský režim
+settings-general-interface-dev_mode-label = Vývojářský režim
 settings-general-interface-use_tray = Minimalizovat do oznamovací oblasti
 settings-general-interface-use_tray-description = Umožňuje vám zavřít okno, aniž byste zavřeli SlimeVR Server, takže ho můžete nadále používat bez rozhraní.
 settings-general-interface-use_tray-label = Minimalizovat do oznamovací oblasti
@@ -523,7 +527,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Vím, co dělám
 settings-serial-factory_reset-warning-cancel = Zrušit
 settings-serial-serial_select = Vyberte sériový port
-settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skenovat WiFi
 settings-serial-save_logs = Uložit jako soubor
 settings-serial-send_command = Odeslat
@@ -553,6 +556,12 @@ settings-osc-vrchat-network-address = Síťová adresa
 settings-osc-vrchat-network-address-description-v1 = Zvolte na jakou adresu zasílat data, Může zůstat nezměneno pro Vrchat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip adresa
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotace
+settings-osc-vrchat-status-badge-error = Chyba
+settings-osc-vrchat-status-badge-unknown = Neznýmý
+
 ## VMC OSC settings
 
 settings-osc-vmc = Virtuální snímání pohybu (Také známo jako Virtual Motion Capture)
@@ -574,7 +583,6 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = Síťová adresa
 settings-osc-vmc-network-address-description = Vyberte, na kterou adresu odesílat data pomocí VMC.
 settings-osc-vmc-network-address-placeholder = Adresa IPV4
-settings-osc-vmc-vrm = VRM Model
 settings-osc-vmc-vrm-description = Načtěte VRM model, k umožnení lepšímu sledování hlavy a zlepšení kompatibility s dalšími aplikacemi.
 settings-osc-vmc-vrm-untitled_model = Nepojmenovaný model
 settings-osc-vmc-vrm-file_select = Přetáhněte zde model, který chcete použít, nebo <u>procházejte</u>
@@ -584,6 +592,7 @@ settings-osc-vmc-anchor_hip-label = Zakotvit v bocích
 settings-osc-vmc-mirror_tracking = Zrcadlení sledování
 settings-osc-vmc-mirror_tracking-description = Zrcadlit trakování horizontálně.
 settings-osc-vmc-mirror_tracking-label = Zrcadlení trackování
+settings-osc-vmc-status-badge-error = Chyba
 
 ## Common OSC settings
 
@@ -629,7 +638,7 @@ settings-home-list-layout-desc = Vyberte jedno z možných uspořádání domovs
 settings-home-list-layout-grid = Mřížka
 settings-home-list-layout-table = Tabulka
 
-## Tracking Checlist
+## Tracking Checklist
 
 settings-tracking_checklist-active_steps = Aktivní kroky
 
@@ -646,13 +655,18 @@ onboarding-setup_warning-cancel = Pokračovat v nastavení
 
 ## Quiz
 
+onboarding-quiz_continue = Pokračovat
+onboarding-quiz_back = Paže dozadu
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ano
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Jít zpět
 onboarding-wifi_creds-v2 = Trackey používající Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
+onboarding-wifi_creds-retry = Opakovat
+onboarding-wifi_creds-ssid-label = Název Wi-Fi
 onboarding-wifi_creds-ssid =
-    .label = Název Wi-Fi
     .placeholder = Zadejte název Wi-Fi
 onboarding-wifi_creds-ssid-required = Je vyžadován název sítě Wi-Fi
 onboarding-wifi_creds-password =
@@ -663,6 +677,7 @@ onboarding-wifi_creds-dongle-continue = Pokračovat s donglem
 
 ## Install info
 
+install-info_udev-rules_modal_button = Zavřít
 
 ## Setup start
 
@@ -673,7 +688,7 @@ onboarding-home-start = Pusťme se do toho!
 
 onboarding-connect_tracker-title = Připojení trackerů
 onboarding-connect_tracker-issue-serial = Mám potíže s připojením!
-onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-close = Zavřít
 onboarding-connect_tracker-connection_status-serial_init = Připojuji se k sériovému zařízení
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Získávání MAC adresy trackeru
 onboarding-connect_tracker-connection_status-provisioning = Odesílám přihlašovací údaje WiFi
@@ -713,6 +728,13 @@ onboarding-assign_trackers-assigned =
         [few] { $assigned } z { $trackers } trackerů bylo přiřazeno
        *[other] { $assigned } z { $trackers } trackerů bylo přiřazeno
     }
+onboarding-assign_trackers-tap_modal-cancel = Zrušit
+onboarding-assign_trackers-tab-body = Tělo
+onboarding-assign_trackers-tab-fingers = Prsty
+onboarding-assign_trackers-side-right = Pravá
+onboarding-assign_trackers-side-left = Levá
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Zrcadlit náhled
 
 ## Tracker assignment warnings
 
@@ -881,7 +903,6 @@ onboarding-stay_aligned-done-description = Váš nastavení Zůstaň Srovnaný j
 onboarding-stay_aligned-done-description-2 = Vaše nastavení je dokončeno! Pokud chcete vaše pózy znovu zkalibrovat, můžete proces zopakovat.
 onboarding-stay_aligned-previous_step = Předchozí
 onboarding-stay_aligned-next_step = Další
-onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Hotovo
 onboarding-stay_aligned-manual_mounting-done = Hotovo
 
@@ -889,6 +910,7 @@ onboarding-stay_aligned-manual_mounting-done = Hotovo
 
 home-settings = Nastavení domovské stránky
 home-settings-close = Zavřít
+home-no_trackers-connect = Připojení trackerů
 
 ## Trackers Still On notification
 
@@ -920,6 +942,7 @@ firmware_tool-select_source-firmware = Zdrojový kód firmwaru
 firmware_tool-select_source-version = Verze firmwaru
 firmware_tool-select_source-official = Oficiální
 firmware_tool-select_source-dev = Vývojářské
+firmware_tool-select_source-latest = Nejnovější
 firmware_tool-select_source-not_selected = Nebyl vybrán žádný zdroj
 firmware_tool-board_defaults = Nekonfigurujte vaší desku
 firmware_tool-board_defaults-add = Přidat
@@ -1060,7 +1083,6 @@ vrc_config-spine_mode-LOCK_HEAD = Uzamknout hlavu
 vrc_config-spine_mode-LOCK_HIP = Uzamknout boky
 vrc_config-tracker_model-UNKNOWN = Neznýmý
 vrc_config-tracker_model-AXIS = Osy
-vrc_config-tracker_model-BOX = Box
 vrc_config-tracker_model-SPHERE = Sféra
 vrc_config-tracker_model-SYSTEM = Systém
 vrc_config-avatar_measurement_type-UNKNOWN = Neznámý
@@ -1090,6 +1112,7 @@ tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
 tracking_checklist-TRACKER_ERROR = Trackery s chybami
 tracking_checklist-VRCHAT_SETTINGS = Nakonfigurujte nastavení VRChat
 tracking_checklist-VRCHAT_SETTINGS-open = Přejít k varování ve VRChat
+tracking_checklist-UNASSIGNED_HMD-desc = Váš VR Headset by měl být přiřazen jako tracker hlavy.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný

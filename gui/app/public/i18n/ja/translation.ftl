@@ -9,6 +9,7 @@
 
 websocket-connecting = サーバー接続中
 websocket-connection_lost = サーバーへの接続が失われました。再接続を試みています...
+websocket-error-close = SlimeVRを終了する
 
 ## Update notification
 
@@ -27,6 +28,19 @@ tips-failed_webgl = WebGLの初期化に失敗しました。
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = 閉じる
+
 ## Body parts
 
 body_part-NONE = 未設定
@@ -40,8 +54,6 @@ body_part-RIGHT_UPPER_LEG = 右膝
 body_part-RIGHT_LOWER_LEG = 右足
 body_part-RIGHT_FOOT = 右足先
 body_part-UPPER_CHEST = 上胸
-body_part-CHEST = 胸
-body_part-WAIST = 胴体
 body_part-HIP = 腰
 body_part-LEFT_SHOULDER = 左肩
 body_part-LEFT_UPPER_ARM = 左上腕
@@ -81,6 +93,7 @@ body_part-RIGHT_LITTLE_DISTAL = 右小指遠位部
 
 ## BoardType
 
+board_type-UNKNOWN = 不明
 
 ## Proportions
 
@@ -89,8 +102,6 @@ skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
 skeleton_bone-torso_group = 胴体の長さ
 skeleton_bone-UPPER_CHEST = 上胸の長さ
-skeleton_bone-CHEST = 胸囲
-skeleton_bone-WAIST = ウエスト長さ
 skeleton_bone-HIP = ヒップ長さ
 skeleton_bone-HIPS_WIDTH = ヒップ幅
 skeleton_bone-leg_group = 股下の長さ
@@ -109,19 +120,10 @@ skeleton_bone-HAND_Z = 手の距離Z
 ## Tracker reset buttons
 
 reset-reset_all = すべてのプロポーションをリセット
+reset-reset_all_warning-cancel = キャンセル
 reset-full = リセット
 reset-mounting = リセットマウンティング
 reset-yaw = ヨーリセット
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = 新しいシリアルデバイスを検出しました！
-serial_detection-new_device-p1 = Wi-Fiの認証情報を入力してください！
-serial_detection-new_device-p2 = 何をするか選択してください
-serial_detection-open_wifi = Wi-Fiに接続
-serial_detection-open_serial = シリアルコンソールを開く
-serial_detection-submit = 実行！
-serial_detection-close = 閉じる
 
 ## Navigation bar
 
@@ -148,23 +150,20 @@ widget-developer_mode = 開発者モード
 widget-developer_mode-high_contrast = ハイ コントラスト
 widget-developer_mode-precise_rotation = 正確な回転角度を表示
 widget-developer_mode-fast_data_feed = 高速表示モード
-widget-developer_mode-sort_by_name = 表示名順
 widget-developer_mode-raw_slime_rotation = 元の回転角度
-widget-developer_mode-more_info = 他情報
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = 回転
+widget-imu_visualizer-hide = 隠す
 widget-imu_visualizer-rotation_raw = 生
 widget-imu_visualizer-rotation_preview = 生
 
 ## Tracker status
 
 tracker-status-none = ステータスなし
-tracker-status-busy = Busy
 tracker-status-error = エラー
 tracker-status-disconnected = 切断
-tracker-status-occluded = Occluded
 tracker-status-ok = 接続中
 tracker-status-timed_out = タイムアウト
 
@@ -173,13 +172,10 @@ tracker-status-timed_out = タイムアウト
 tracker-table-column-name = 名前
 tracker-table-column-type = タイプ
 tracker-table-column-battery = バッテリー
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = 温度. °C
 tracker-table-column-linear-acceleration = 加速度. X/Y/Z
 tracker-table-column-rotation = 回転 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -223,10 +219,16 @@ tracker-settings-use_mag-description =
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
-tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-name_section-label = トラッカー名称
 tracker-settings-forget = フォーゲット・トラッカー
 tracker-settings-forget-description = スライムVRサーバーからトラッカーを削除し、サーバーが再起動するまで接続できないようにします。トラッカーの設定は失われません。
 tracker-settings-forget-label = フォーゲット・トラッカー
+
+## Dongle settings
+
+dongle-infos-hardware_revision = ハードウエアのリビジョン
+dongle-status-disconnected = 切断
+dongle-settings-back = トラッカーリストへ戻る
 
 ## Tracker part card info
 
@@ -241,6 +243,11 @@ body_assignment_menu-unassign_tracker = トラッカーの割り当て解除
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning = <b>警告：</b>首のトラッカーを締め付けすぎると、頭部の血液循環に危険が生じる可能性があります！
@@ -256,12 +263,20 @@ mounting_selection_menu-close = 閉じる
 
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般
+settings-sidebar-trackers = トラッカー
 settings-sidebar-interface = インターフェース
-settings-sidebar-osc_trackers = VRChatOSCトラッカー
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 settings-sidebar-appearance = 外観
 settings-sidebar-notifications = 通知
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = キャンセル
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = 有効
 
 ## Tracker mechanics
 
@@ -278,6 +293,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 動き
 settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
+settings-stay_aligned-general-label = 一般
+settings-stay_aligned-relaxed_poses-close = 閉じる
+
+## Keybinds Page
+
+settings-keybinds_full-reset = リセット
+settings-keybinds_yaw-reset = ヨーリセット
+settings-keybinds-recorder-modal-cancel-button = キャンセル
 
 ## FK/Tracking settings
 
@@ -354,9 +377,6 @@ settings-interface-appearance-font-slime_font = デフォルトフォント
 ## Notification settings
 
 settings-interface-notifications = 通知
-settings-general-interface-serial_detection = シリアルデバイスの検出
-settings-general-interface-serial_detection-description = このオプションは、トラッカーとなり得る新しいシリアルデバイスを接続するたびにポップアップを表示します。これはトラッカーの設定プロセスを改善するのに役立ちます。
-settings-general-interface-serial_detection-label = シリアルデバイスの検出
 settings-general-interface-feedback_sound = フィードバック音
 settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
@@ -364,6 +384,9 @@ settings-general-interface-connected_trackers_warning = 接続されたトラッ
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = 開発者モード
+settings-general-interface-dev_mode-label = 開発者モード
+settings-general-interface-use_tray = システムトレイに最小化する
 settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
@@ -380,6 +403,8 @@ settings-serial-factory_reset-warning-ok = 自分が何しているかを知っ�
 settings-serial-factory_reset-warning-cancel = キャンセル
 settings-serial-serial_select = シリアルポートを選択
 settings-serial-auto_dropdown_item = 自動
+settings-serial-send_command-warning-ok = 自分が何しているかを知っています。
+settings-serial-send_command-warning-cancel = キャンセル
 
 ## OSC VRChat settings
 
@@ -397,10 +422,17 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = ネットワークアドレス
 settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = 回転
+settings-osc-vrchat-status-badge-error = エラー
+settings-osc-vrchat-status-badge-unknown = 不明
+
 ## VMC OSC settings
 
 settings-osc-vmc = バーチャルモーションキャプチャ
 settings-osc-vmc-enable = 有効
+settings-osc-vmc-enable-description = データの送受信を切り替える。
 settings-osc-vmc-enable-label = 有効
 settings-osc-vmc-network = ネットワークポート
 settings-osc-vmc-network-port_in =
@@ -412,34 +444,40 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = ネットワークアドレス
 settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
+settings-osc-vmc-status-badge-error = エラー
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-cancel = キャンセル
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
 
 onboarding-skip = 設定をスキップする
 onboarding-continue = 続ける
+onboarding-previous_step = 前のステップ
 onboarding-setup_warning-skip = セットアップをスキップする
 onboarding-setup_warning-cancel = セットアップを続行する
 
 ## Quiz
 
+onboarding-quiz_continue = 続ける
+onboarding-quiz_back = 後ろ
+onboarding-quiz-mocap_preferences-head_tracker-yes = はい
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = 実行！
+onboarding-wifi_creds-ssid-label = Wi-Fi名
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi名
     .placeholder = Enter Wi-Fi名
 onboarding-wifi_creds-password =
     .label = Password
@@ -447,6 +485,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = 閉じる
 
 ## Setup start
 
@@ -458,6 +497,7 @@ onboarding-home-start = セットアップ開始！
 onboarding-connect_tracker-title = 接続中のトラッカー
 onboarding-connect_tracker-issue-serial = 接続に問題があります！
 onboarding-connect_tracker-usb = USBトラッカー
+onboarding-connect_tracker-close = 閉じる
 onboarding-connect_tracker-connection_status-connecting = Wi-Fiの認証情報を送信中
 onboarding-connect_tracker-connection_status-looking_for_server = サーバーを探しています
 onboarding-connect_tracker-connection_status-connection_error = Wi-Fiに接続できません
@@ -488,8 +528,17 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } of 1 tracker assigned
        *[other] { $assigned } of { $trackers } trackers assigned
     }
+onboarding-assign_trackers-tap_modal-cancel = キャンセル
+onboarding-assign_trackers-side-right = 右
+onboarding-assign_trackers-side-left = 左
 
 ## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
+onboarding-choose_mounting-auto_mounting = 自動マウント
+onboarding-choose_mounting-manual_mounting = マニュアルマウント
 
 ## Tracker manual mounting setup
 
@@ -516,6 +565,9 @@ onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着�
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
+## Tracker manual proportions setupa
+
+
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = チュートリアルをリセットする
@@ -530,16 +582,9 @@ onboarding-automatic_proportions-requirements-next = 要件を読みました
 onboarding-automatic_proportions-start_recording-title = 測定の準備をする
 onboarding-automatic_proportions-start_recording-description = これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！
 onboarding-automatic_proportions-start_recording-next = レコーディングスタート
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = レコーディング中...
 onboarding-automatic_proportions-recording-description-p1 = 以下に示すような動きをします。
 onboarding-automatic_proportions-recording-processing = 結果を処理中
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
-onboarding-automatic_proportions-recording-timer =
-    { $time ->
-        [one] 1 second left
-       *[other] { $time } seconds left
-    }
 onboarding-automatic_proportions-verify_results-title = 結果を確認
 onboarding-automatic_proportions-verify_results-description = 以下の結果を確認してください。正しく表示されていますか？
 onboarding-automatic_proportions-verify_results-results = 記録結果
@@ -555,6 +600,16 @@ onboarding-automatic_proportions-error_modal-confirm = 了解!
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = トラッカーを装着する
+onboarding-stay_aligned-put_trackers_on-next = すべてのトラッカーを装着しました
+onboarding-stay_aligned-verify_mounting-title = マウントリセット
+onboarding-stay_aligned-preparation-title = 準備
+
+## Home
+
+home-settings-close = 閉じる
+home-no_trackers-connect = 接続中のトラッカー
+
 ## Trackers Still On notification
 
 trackers_still_on-modal-confirm = SlimeVRを終了する
@@ -562,9 +617,11 @@ trackers_still_on-modal-cancel = ちょっと待って...
 
 ## Firmware tool globals
 
+firmware_tool-loading = サーバー接続中
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = ファームウェアバージョン
 
 ## firmware tool build status
 
@@ -583,6 +640,7 @@ tray_menu-quit = 辞める
 
 ## First exit modal
 
+tray_or_exit_modal-radio-tray = システムトレイに最小化する
 tray_or_exit_modal-submit = セーブ
 tray_or_exit_modal-cancel = キャンセル
 
@@ -590,9 +648,15 @@ tray_or_exit_modal-cancel = キャンセル
 
 unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
+vrc_config-spine_mode-UNKNOWN = 不明
+vrc_config-tracker_model-UNKNOWN = 不明
+vrc_config-avatar_measurement_type-UNKNOWN = 不明
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = 閉じる
+toolbar-mounting_calibration = マウントリセット
+toolbar-mounting_calibration-feet = 足

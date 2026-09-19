@@ -36,6 +36,19 @@ unit-foot = 英尺
 unit-inch = 英寸
 unit-cm = 厘米
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = 关闭
+
 ## Body parts
 
 body_part-NONE = 未分配
@@ -49,8 +62,6 @@ body_part-RIGHT_UPPER_LEG = 右大腿
 body_part-RIGHT_LOWER_LEG = 右小腿
 body_part-RIGHT_FOOT = 右脚
 body_part-UPPER_CHEST = 上胸
-body_part-CHEST = 胸部
-body_part-WAIST = 腰部
 body_part-HIP = 髋部
 body_part-LEFT_SHOULDER = 左肩
 body_part-LEFT_UPPER_ARM = 左大臂
@@ -93,28 +104,11 @@ body_part-RIGHT_LITTLE_DISTAL = 右小指远端
 ## BoardType
 
 board_type-UNKNOWN = 未知
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = 自定义开发板
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_DEV = SlimeVR 开发板
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
 board_type-MOCOPI = 索尼 Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR开发版IMU手套
 board_type-GESTURES = 手势
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = nRF系列
 board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR蝴蝶 开发版
 board_type-SLIMEVR_BUTTERFLY = SlimeVR蝴蝶
@@ -140,14 +134,8 @@ skeleton_bone-UPPER_CHEST-desc =
     从脖子根部到胸部中部的距离。
     调节时，先完成躯干长度的设置，再修改此参数，
     并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
-skeleton_bone-CHEST = 胸部长度
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     从胸部中部到脊椎中部的距离。
-    调节时，先完成躯干长度的设置，再修改此参数，
-    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
-skeleton_bone-WAIST = 腰部长度
-skeleton_bone-WAIST-desc =
-    从脊椎中部到肚脐的距离。
     调节时，先完成躯干长度的设置，再修改此参数，
     并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-HIP = 髋部长度
@@ -237,16 +225,6 @@ reset-yaw = 重置航向轴
 reset-error-mounting-need_full_reset = 佩戴校准前需要先执行完整重置
 reset-error-yaw-need_full_reset = 航向轴重置前需要先执行完整重置
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = 检测到了新的串口设备!
-serial_detection-new_device-p1 = 输入你的 Wi-Fi 凭据!
-serial_detection-new_device-p2 = 请选择你想对它做什么
-serial_detection-open_wifi = 连接到 Wi-Fi
-serial_detection-open_serial = 打开串口控制台
-serial_detection-submit = 提交!
-serial_detection-close = 关闭
-
 ## Navigation bar
 
 navbar-home = 主界面
@@ -275,9 +253,7 @@ widget-developer_mode = 开发者选项
 widget-developer_mode-high_contrast = 高对比度
 widget-developer_mode-precise_rotation = 显示精确旋转
 widget-developer_mode-fast_data_feed = 快速数据更新
-widget-developer_mode-sort_by_name = 根据名称排序
 widget-developer_mode-raw_slime_rotation = 显示原始旋转
-widget-developer_mode-more_info = 显示更多信息
 
 ## Widget: IMU Visualizer
 
@@ -306,7 +282,6 @@ tracker-table-column-name = 名字
 tracker-table-column-type = 类型
 tracker-table-column-battery = 电量
 tracker-table-column-ping = 延迟
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = 温度 °C
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋转 X/Y/Z
@@ -384,6 +359,14 @@ tracker-settings-current-version = 当前版本
 tracker-settings-latest-version = 最新版本
 tracker-settings-build-date = 生成日期
 
+## Dongle settings
+
+dongle-infos-hardware_revision = 硬件版本
+dongle-status-disconnected = 断开连接
+dongle-settings-back = 返回追踪器列表
+dongle-settings-update = 立即更新
+dongle-settings-update-title = 固件版本
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = 未分配
@@ -397,6 +380,11 @@ body_assignment_menu-unassign_tracker = 取消分配追踪器
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -415,9 +403,8 @@ mounting_selection_menu-close = 关闭
 settings-sidebar-title = 设置
 settings-sidebar-general = 通用设置
 settings-sidebar-stay_aligned = 持续校准
+settings-sidebar-trackers = 追踪器
 settings-sidebar-interface = 交互界面
-settings-sidebar-osc_trackers = VRChat OSC 追踪器
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 串口控制台
 settings-sidebar-appearance = 外观
@@ -428,6 +415,17 @@ settings-sidebar-behavior = 行为
 settings-sidebar-firmware-tool = DIY固件工具
 settings-sidebar-vrc_warnings = VRChat设置警告
 settings-sidebar-advanced = 高级选项
+
+## Bone routing settings
+
+settings-routing-output-badge-off = 关
+settings-routing-group-fingers = 手指
+settings-routing-hands-warning-cancel = 取消
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = 启用
+settings-driver-status-badge-disabled = 关
 
 ## Tracker mechanics
 
@@ -476,6 +474,14 @@ settings-stay_aligned-debug-label = 调试
 settings-stay_aligned-debug-description = 在报告持续校准相关问题时，请包含您的以下设置信息
 settings-stay_aligned-debug-copy-label = 复制设置信息到剪贴板
 
+## Keybinds Page
+
+settings-keybinds_full-reset = 完整重置
+settings-keybinds_yaw-reset = 重置航向轴
+settings-keybinds_reset-all-button = 重置所有设置
+settings-keybinds-recorder-modal-done-button = 完成
+settings-keybinds-recorder-modal-cancel-button = 取消
+
 ## FK/Tracking settings
 
 settings-general-fk_settings = FK 设置
@@ -496,8 +502,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 强制脚部佩戴重置
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
 settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 强制约束
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
@@ -566,9 +572,6 @@ settings-interface-appearance-font_size-description = 这会影响除此设置�
 ## Notification settings
 
 settings-interface-notifications = 通知
-settings-general-interface-serial_detection = 串口设备检测
-settings-general-interface-serial_detection-description = 每次插入可能是追踪器的新串口设备时，此选项都会显示一个弹出窗口。这有助于改进追踪器的设置过程。
-settings-general-interface-serial_detection-label = 串口设备检测
 settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
 settings-general-interface-feedback_sound-label = 声音反馈
@@ -580,6 +583,8 @@ settings-general-interface-connected_trackers_warning-label = 退出时，有追
 ## Behavior settings
 
 settings-interface-behavior = 行为
+settings-general-interface-dev_mode = 开发者模式
+settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
 settings-general-interface-use_tray-label = 最小化至任务栏
@@ -653,9 +658,14 @@ settings-osc-vrchat-network-address = 网络地址
 settings-osc-vrchat-network-address-description-v1 = 选择传输OSC数据的IP地址。用于VRChat时无需修改。
 settings-osc-vrchat-network-address-placeholder = VRChat IP 地址
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = 旋转
+settings-osc-vrchat-status-badge-error = 错误
+settings-osc-vrchat-status-badge-unknown = 未知
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     修改 VMC (Virtual Motion Capture) 协定的相关设置
@@ -684,6 +694,7 @@ settings-osc-vmc-anchor_hip-label = 髋部锚定
 settings-osc-vmc-mirror_tracking = 镜像追踪
 settings-osc-vmc-mirror_tracking-description = 水平镜像追踪结果
 settings-osc-vmc-mirror_tracking-label = 镜像追踪
+settings-osc-vmc-status-badge-error = 错误
 
 ## Common OSC settings
 
@@ -729,7 +740,7 @@ settings-home-list-layout-desc = 选择主界面的显示布局
 settings-home-list-layout-grid = 网格
 settings-home-list-layout-table = 列表
 
-## Tracking Checlist
+## Tracking Checklist
 
 settings-tracking_checklist-active_steps = 启用的检查项
 settings-tracking_checklist-active_steps-desc = 追踪检查清单中所有项目的列表。您可以禁用不需要的步骤。
@@ -766,7 +777,6 @@ onboarding-quiz-usage-description = 如果打算将SlimeVR用至不同用途，�
 onboarding-quiz-usage-answer-VRC = VR游戏（如VRChat）
 onboarding-quiz-usage-answer-mocap_vtubing = 动作捕捉与虚拟偶像直播
 onboarding-quiz-runtime-title = 将通过SteamVR运行游戏，还是在直接在头显上运行？
-onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = 头显独立运行
 onboarding-quiz-mocap_preferences-title = 动作捕捉偏好
 onboarding-quiz-mocap_preferences-desc = 设置使用SlimeVR进行动作捕捉或虚拟偶像直播的方式
@@ -794,8 +804,9 @@ onboarding-wifi_creds-description-v2 =
     
     请确保输入的是 2.4GHz 频段的 Wi-Fi 凭证！
 onboarding-wifi_creds-submit = 提交！
+onboarding-wifi_creds-retry = 重试
+onboarding-wifi_creds-ssid-label = SSID
 onboarding-wifi_creds-ssid =
-    .label = SSID
     .placeholder = 输入 SSID
 onboarding-wifi_creds-ssid-required = Wi-Fi 名称为必填项
 onboarding-wifi_creds-password =
@@ -823,6 +834,7 @@ onboarding-home-start = 我准备好了！
 onboarding-connect_tracker-title = 连接追踪器
 onboarding-connect_tracker-issue-serial = QAQ 我在连接时遇到问题！
 onboarding-connect_tracker-usb = USB 追踪器
+onboarding-connect_tracker-close = 关闭
 onboarding-connect_tracker-connection_status-serial_init = 正在连接到串口设备
 onboarding-connect_tracker-connection_status-obtaining_mac_address = 获取追踪器的mac地址
 onboarding-connect_tracker-connection_status-provisioning = 正在发送 Wi-Fi 凭据
@@ -855,6 +867,13 @@ onboarding-assign_trackers-description = 让我们选择追踪器的佩戴位置
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 个追踪器已分配
+onboarding-assign_trackers-tap_modal-cancel = 取消
+onboarding-assign_trackers-tab-body = 身体
+onboarding-assign_trackers-tab-fingers = 手指
+onboarding-assign_trackers-side-right = 右
+onboarding-assign_trackers-side-left = 左
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = 镜像显示
 
 ## Tracker assignment warnings
 
@@ -1001,7 +1020,6 @@ onboarding-automatic_proportions-requirements-next = 我已阅读
 onboarding-automatic_proportions-start_recording-title = 准备录制运动
 onboarding-automatic_proportions-start_recording-description = 我们现在要记录一些特定的姿势和动作。这些将在下一个屏幕中提示。当按钮被按下时，准备好开始！
 onboarding-automatic_proportions-start_recording-next = 开始录制
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = 录制中...
 onboarding-automatic_proportions-recording-description-p1 = 依次做出以下动作:
 # Each line of text is a different list item
@@ -1093,6 +1111,7 @@ onboarding-stay_aligned-manual_mounting-done = 完成
 
 home-settings = 主界面设置
 home-settings-close = 关闭
+home-no_trackers-connect = 连接追踪器
 
 ## Trackers Still On notification
 
@@ -1125,6 +1144,7 @@ firmware_tool-select_source-firmware = 固件来源
 firmware_tool-select_source-version = 固件版本
 firmware_tool-select_source-official = 官方
 firmware_tool-select_source-dev = 开发版
+firmware_tool-select_source-latest = 最新版本
 firmware_tool-select_source-not_selected = 未选择来源
 firmware_tool-select_source-no_boards = 此来源无可用的开发板
 firmware_tool-select_source-no_versions = 此来源无可用的版本
@@ -1316,11 +1336,6 @@ tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告页面
 tracking_checklist-UNASSIGNED_HMD = VR 头戴显示器未分配给头部
 tracking_checklist-UNASSIGNED_HMD-desc = VR 头戴显示器应该被分配为头部追踪器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 更改网络配置文件类型
-tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
-    检测到您的部分网卡被设为“公用网络”：
-    { $adapters }
-    这可能会影响 SlimeVR 的正常运行。
-    <PublicFixLink>点击此处查看如何更改设置。</PublicFixLink>
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 记录持续校准所使用的姿势以减缓漂移现象

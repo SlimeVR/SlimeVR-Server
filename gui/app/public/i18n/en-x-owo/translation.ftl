@@ -32,6 +32,19 @@ tips-failed_webgl = oh nooooo :( faiwled to initiawizwe WebGL...
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = cwose
+
 ## Body parts
 
 body_part-NONE = unassyigned
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = wight uppew weg
 body_part-RIGHT_LOWER_LEG = wight wowwe weg
 body_part-RIGHT_FOOT = wight pawb
 body_part-UPPER_CHEST = uppew chest
-body_part-CHEST = chwest~
-body_part-WAIST = wyayst~
 body_part-HIP = hyip
 body_part-LEFT_SHOULDER = weft shouwder~
 body_part-LEFT_UPPER_ARM = weft uppew awm
@@ -115,8 +126,6 @@ skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
 skeleton_bone-torso_group = towso wength
 skeleton_bone-UPPER_CHEST = uppew chest wength
-skeleton_bone-CHEST = chwest wength
-skeleton_bone-WAIST = weyst wength
 skeleton_bone-HIP = hip wength
 skeleton_bone-HIPS_WIDTH = hyips wiwdth
 skeleton_bone-leg_group = weg wength
@@ -140,16 +149,6 @@ reset-reset_all_warning-cancel = cancew :o
 reset-full = fuww weset~
 reset-mounting = weset meownting
 reset-yaw = yaw weset
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = nyu sewiaw device detected~!
-serial_detection-new_device-p1 = entaw youw wi-fi cwedentiaws~!
-serial_detection-new_device-p2 = pwease sewect what youw want to do wit it
-serial_detection-open_wifi = cownnyect to wyfy~
-serial_detection-open_serial = awpen sewiaw console >w<
-serial_detection-submit = suwbmyt~!
-serial_detection-close = cwose
 
 ## Navigation bar
 
@@ -176,9 +175,7 @@ widget-developer_mode = devwowwewow mode
 widget-developer_mode-high_contrast = high contwast
 widget-developer_mode-precise_rotation = pwecise wotation
 widget-developer_mode-fast_data_feed = fast data feed
-widget-developer_mode-sort_by_name = sowt by nyame
 widget-developer_mode-raw_slime_rotation = waw wotation
-widget-developer_mode-more_info = mowe info
 
 ## Widget: IMU Visualizer
 
@@ -267,6 +264,13 @@ tracker-settings-forget-label = *forgors the tracker*
 tracker-settings-update-up_to_date = up to dayte!! ^w^
 tracker-settings-update = uwupdate meow!
 
+## Dongle settings
+
+dongle-infos-hardware_revision = hawdwawe revision
+dongle-status-disconnected = disconnyected
+dongle-settings-back = go bak to twackaws liwst
+dongle-settings-update = uwupdate meow!
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = unassigwed
@@ -280,6 +284,11 @@ body_assignment_menu-unassign_tracker = unassyign twayckaw
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -297,13 +306,21 @@ mounting_selection_menu-close = cwose
 
 settings-sidebar-title = settyings~
 settings-sidebar-general = genyawaw
+settings-sidebar-trackers = trayckawws
 settings-sidebar-interface = intyawface~
-settings-sidebar-osc_trackers = VRChawt OSC Twayckaws
 settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 settings-sidebar-appearance = appeawance
 settings-sidebar-notifications = notificashuns
 settings-sidebar-behavior = behavur
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = cancew
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = enaybwe
 
 ## Tracker mechanics
 
@@ -330,6 +347,14 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
     can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = use mangenmometer on twackews
+settings-stay_aligned-general-label = genyawaw
+settings-stay_aligned-relaxed_poses-close = cwose
+
+## Keybinds Page
+
+settings-keybinds_full-reset = fuww weset~
+settings-keybinds_yaw-reset = yaw weset
+settings-keybinds-recorder-modal-cancel-button = cancew
 
 ## FK/Tracking settings
 
@@ -357,9 +382,7 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which awm pose is expected fow meownting weset.
 settings-general-fk_settings-arm_fk-back = bak
 settings-general-fk_settings-arm_fk-back-description = The defauwt mode, wit da uppew awms going back and wowew awms going fowwawd.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
 settings-general-fk_settings-arm_fk-tpose_up-description = Expects youw awms to be down on the sides duwing Fuww Weset, and 90 degwees up to the sides duwing Meownting Weset.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
 settings-general-fk_settings-arm_fk-tpose_down-description = Expects youw awms to be 90 degwees up to the sides duwing Fuww Weset, and down on the sides duwing Meownting Weset.
 settings-general-fk_settings-arm_fk-forward = Fowwawd
 settings-general-fk_settings-arm_fk-forward-description = Expects youw awms to be up 90 degwees fowwawd. Usefuw fow VTubing.
@@ -421,9 +444,6 @@ settings-interface-appearance-font_size-description = dis affects da fawnt size 
 ## Notification settings
 
 settings-interface-notifications = notificashuns
-settings-general-interface-serial_detection = shewyaw device deteccion
-settings-general-interface-serial_detection-description = this option will shaww a pawp-up evewy time yuw pwug a new shewyaw device that cawwld be a twayckaw. it helps iympwooving teh setup pwocess of a twayckaw
-settings-general-interface-serial_detection-label = shewyaw device deteccion
 settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
 settings-general-interface-feedback_sound-label = feeback sownd
@@ -435,6 +455,8 @@ settings-general-interface-connected_trackers_warning-label = Connected twackews
 ## Behavior settings
 
 settings-interface-behavior = behavur
+settings-general-interface-dev_mode = devwowwewow mode
+settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-use_tray = minimaize to systewm tway
 settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
 settings-general-interface-use_tray-label = minimaize to systewm tway
@@ -469,6 +491,8 @@ settings-serial-serial_select = sewect a shewyaw pawt
 settings-serial-auto_dropdown_item = awto
 settings-serial-get_wifi_scan = get wifi scan uwu
 settings-serial-save_logs = saeve to file
+settings-serial-send_command-warning-ok = i know what I'm doing :3
+settings-serial-send_command-warning-cancel = cancew
 
 ## OSC VRChat settings
 
@@ -486,6 +510,12 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = network addwess
 settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = wotation
+settings-osc-vrchat-status-badge-error = ewwow
+settings-osc-vrchat-status-badge-unknown = unnown
+
 ## VMC OSC settings
 
 settings-osc-vmc = viwtuaw motion captuwe
@@ -496,7 +526,7 @@ settings-osc-vmc-description =
 settings-osc-vmc-enable = enaybwe
 settings-osc-vmc-enable-description = toggle teh sending awnd wweceiving of data
 settings-osc-vmc-enable-label = enaybwe
-settings-osc-vmc-network = Network ports
+settings-osc-vmc-network = newtwowk pawts
 settings-osc-vmc-network-description = set the pawts fow wistening awnd sending data via vmc
 settings-osc-vmc-network-port_in =
     .label = pawt in
@@ -516,6 +546,7 @@ settings-osc-vmc-anchor_hip-label = anchow at hips
 settings-osc-vmc-mirror_tracking = miwwow twacking
 settings-osc-vmc-mirror_tracking-description = miwwow da twacking howizawntawwy.
 settings-osc-vmc-mirror_tracking-label = miwwow twacking
+settings-osc-vmc-status-badge-error = ewwow
 
 ## Common OSC settings
 
@@ -546,7 +577,7 @@ settings-utils-advanced-open_logs-label = open fowdew
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -562,12 +593,18 @@ onboarding-setup_warning-cancel = continu setup
 
 ## Quiz
 
+onboarding-quiz_continue = continyue
+onboarding-quiz_back = bak
+onboarding-quiz-runtime-answer-steamvr = steawmvr~
+onboarding-quiz-mocap_preferences-head_tracker-yes = yes!!
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = go bak
 onboarding-wifi_creds-submit = suwbmyt!
+onboarding-wifi_creds-retry = wetwy
+onboarding-wifi_creds-ssid-label = wi-fi nawme
 onboarding-wifi_creds-ssid =
-    .label = wi-fi nawme
     .placeholder = entew wi-fi nawme
 onboarding-wifi_creds-ssid-required = wifi name is wequiwed!!
 onboarding-wifi_creds-password =
@@ -576,6 +613,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = cwose
 
 ## Setup start
 
@@ -587,6 +625,7 @@ onboarding-home-start = wets get set up!
 onboarding-connect_tracker-title = connect twackaws
 onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twackew
+onboarding-connect_tracker-close = cwose
 onboarding-connect_tracker-connection_status-serial_init = conectin too da sewiaw dewise
 onboarding-connect_tracker-connection_status-obtaining_mac_address = obtainin teh twacker mac addwess
 onboarding-connect_tracker-connection_status-provisioning = sending wi-fi cwedentials
@@ -620,6 +659,11 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } of 1 twackaws assigned
        *[other] { $assigned } of { $trackers } twackaws assigned
     }
+onboarding-assign_trackers-tap_modal-cancel = cancew
+onboarding-assign_trackers-side-right = wight
+onboarding-assign_trackers-side-left = lewft
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = miwwow vyew
 
 ## Tracker assignment warnings
 
@@ -793,6 +837,16 @@ onboarding-automatic_proportions-smol_warning-cancel = go bak
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = put on yowuw twackaws
+onboarding-stay_aligned-put_trackers_on-next = i have awl my twackaws on
+onboarding-stay_aligned-verify_mounting-title = meownting weset
+onboarding-stay_aligned-preparation-title = pwepaiwation
+
+## Home
+
+home-settings-close = cwose
+home-no_trackers-connect = connect twackaws
+
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Twackews stiww on
@@ -816,6 +870,7 @@ firmware_tool = DIY fiwmwawe toow
 firmware_tool-description = awwows u to configuwe an fwash youw DIY twackews
 firmware_tool-not_available = oopsie woopsie! da fiwmwawe toow iz nawt avaiwabwe wight meow :3 twy agen laitew!
 firmware_tool-not_compatible = teh fiwmwawe toow iz nawt compatibwe wit dis vershun of teh sewvew. pwease uwupdate youw sewvew!
+firmware_tool-select_source-version = fiwmwawe vewsion
 firmware_tool-flash_method_step = fwashin mefod
 firmware_tool-flash_method_step-description = pwease sewect teh fwashin mefod u wanna use
 firmware_tool-flashbtn_step = pwess da buwut buddon
@@ -904,9 +959,16 @@ unknown_device-modal-description =
     d-do u wanna conect it to SwimeVR?
 unknown_device-modal-confirm = sure!!
 unknown_device-modal-forget = ignowe it
+vrc_config-spine_mode-UNKNOWN = unnown
+vrc_config-tracker_model-UNKNOWN = unnown
+vrc_config-avatar_measurement_type-UNKNOWN = unnown
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = cwose
+tracking_checklist-UNASSIGNED_HMD-desc = teh VR hedset shud be awssaignd as a hed twackew.
+toolbar-mounting_calibration = meownting weset
+toolbar-mounting_calibration-feet = pweets~
