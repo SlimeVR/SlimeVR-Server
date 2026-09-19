@@ -34,18 +34,33 @@ tips-failed_webgl = Échec de l'initialisation de WebGL.
 unit-meter = Mètre
 unit-foot = Pied
 unit-inch = Pouce
+unit-cm = cm
 
 ## Dropdown
 
+dropdown_select-all = Tout sélectionner
+dropdown_unselect-all = Tout désélectionner
 
 ## Text input
 
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = Voir le mot de passe
+input-password-hide = Cacher le mot de passe
 
 ## File input
 
+# Accessible name and tooltip for the icon-only button that clears a picked path
+file_input-clear = Désélectionner le fichier
+file_input-clear_folder = Désélectionner le dossier
 
 ## Window controls
 
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = Ouvrir la documentation
+titlebar-settings = Ouvrir les paramètres
+titlebar-update = Télécharger la mise à jour
+titlebar-minimize = Réduire
+titlebar-maximize = Agrandir
 titlebar-close = Fermer
 
 ## Body parts
@@ -61,6 +76,9 @@ body_part-RIGHT_UPPER_LEG = Cuisse droite
 body_part-RIGHT_LOWER_LEG = Cheville droite
 body_part-RIGHT_FOOT = Pied droit
 body_part-UPPER_CHEST = Poitrine supérieure
+body_part-LOWER_CHEST = Poitrine inférieure
+body_part-UPPER_WAIST = Taille supérieure
+body_part-LOWER_WAIST = Taille inférieure
 body_part-HIP = Hanche
 body_part-LEFT_SHOULDER = Épaule gauche
 body_part-LEFT_UPPER_ARM = Bras gauche
@@ -99,15 +117,46 @@ body_part-RIGHT_RING_DISTAL = Annulaire droit distal
 body_part-RIGHT_LITTLE_PROXIMAL = Auriculaire droit proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Auriculaire droit intermédiaire
 body_part-RIGHT_LITTLE_DISTAL = Auriculaire droit distal
+body_part-LEFT_BIG_TOE = Gros orteil gauche
+body_part-LEFT_INDEX_TOE = Orteil de l'index gauche
+body_part-LEFT_MIDDLE_TOE = Orteil central gauche
+body_part-LEFT_RING_TOE = Orteil annulaire gauche
+body_part-LEFT_LITTLE_TOE = Petit orteil gauche
+body_part-RIGHT_TOES = Orteils droit
+body_part-RIGHT_BIG_TOE = Grand orteil droit
+body_part-RIGHT_INDEX_TOE = Orteil de l'index droit
+body_part-RIGHT_MIDDLE_TOE = Orteil central droit
+body_part-RIGHT_RING_TOE = Orteil annulaire droit
+body_part-RIGHT_LITTLE_TOE = Petit orteil droit
 
 ## BoardType
 
 board_type-UNKNOWN = Inconnu
+board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Carte personnalisée
+board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_DEV = Carte de développement SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 board_type-GESTURES = Gestes
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = nRF Générique
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -132,8 +181,19 @@ skeleton_bone-UPPER_CHEST-desc =
     Ceci la distance entre la base de votre cou et le milieu de votre poitrine.
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
+skeleton_bone-LOWER_CHEST = Longueur de la poitrine supérieure
 skeleton_bone-LOWER_CHEST-desc =
     Ceci est la distance entre le milieu de votre poitrine et le milieu de votre colonne vertébrale.
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
+skeleton_bone-UPPER_WAIST = Longueur de la taille supérieure
+skeleton_bone-UPPER_WAIST-desc =
+    Ceci est la distance entre le milieu de votre colonne vertébrale et votre nombril.
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
+skeleton_bone-LOWER_WAIST = Longueur de la taille inférieure
+skeleton_bone-LOWER_WAIST-desc =
+    Ceci est la distance entre votre nombril et vos hanches
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-HIP = Longueur des hanches
@@ -222,6 +282,7 @@ reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
 reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
 reset-error-yaw-need_full_reset = Nécessite une réinitialisation complète avant une réinitialisation horizontale
+reset-error-no_feet_tracker = Aucun traqueur de pieds assigné / disponible
 
 ## Navigation bar
 
@@ -357,6 +418,10 @@ dongle-settings-back = Retour à la liste des capteurs
 dongle-settings-name_section-description = Donnez-lui un joli surnom :3
 dongle-settings-update = Mettre à jour maintenant
 dongle-settings-update-title = Version du micrologiciel
+dongle-settings-pair = Appairer un capteur
+dongle-settings-forget_tracker = Oublier
+dongle-settings-telemetry-title = Télémétrie en direct
+dongle-settings-telemetry-select_trackers = Sélectionner les capteurs
 
 ## Tracker part card info
 
