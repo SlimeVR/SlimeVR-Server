@@ -65,6 +65,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			isImu = tracker.imuType != null,
 			imuType = tracker.imuType ?: ImuType.UNKNOWN,
 			bodyPart = tracker.bodyPart ?: BodyPart.NONE,
+			intendedBodyPart = tracker.intendedBodyPart ?: BodyPart.NONE,
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			mountingResetOrientation = tracker.sessionCalibration.headingAlignment.let { Quat(it.x, it.y, it.z, it.w) },
 			displayName = tracker.name,

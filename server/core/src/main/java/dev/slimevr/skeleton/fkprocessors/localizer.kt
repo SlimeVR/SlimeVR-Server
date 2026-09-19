@@ -53,6 +53,7 @@ private fun isUserSitting(fk: ComputedSkeleton): Boolean {
 private fun isFootOnGround(fk: ComputedSkeleton): Boolean {
 	val leftFoot = fk[BodyPart.LEFT_FOOT] ?: return false
 	val rightFoot = fk[BodyPart.RIGHT_FOOT] ?: return false
+	// TODO should use FLOOR_CALIBRATION_OFFSET?
 	return leftFoot.headPosition.y <= 0f ||
 		rightFoot.headPosition.y <= 0f ||
 		leftFoot.tailPosition.y <= 0f ||
@@ -120,8 +121,8 @@ object FootLocalizer {
 		val rightLowerLeg = fk[BodyPart.RIGHT_LOWER_LEG] ?: return PlantedFoot.NONE
 
 		// If foot is locked, use that TODO should maybe not use that and just check y position instead
-//		if (isFootLocked(leftLowerLeg, lastPlantedFoot)) return PlantedFoot.LEFT
-//		if (isFootLocked(rightLowerLeg, lastPlantedFoot)) return PlantedFoot.RIGHT
+// 		if (isFootLocked(leftLowerLeg, lastPlantedFoot)) return PlantedFoot.LEFT
+// 		if (isFootLocked(rightLowerLeg, lastPlantedFoot)) return PlantedFoot.RIGHT
 
 		// Else, use velocity and accel to pick the foot who moves the least
 		val leftVelocityAccelRatio = velocityAccelRatio(leftLowerLeg)

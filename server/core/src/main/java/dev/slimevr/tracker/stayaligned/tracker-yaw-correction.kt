@@ -5,7 +5,7 @@ import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.applyCalibration
+import dev.slimevr.tracker.applyFullCalibration
 import dev.slimevr.tracker.getAllActiveFor
 import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.YawUtils.sideYaw
@@ -298,7 +298,6 @@ object TrackerYawCorrection {
 	 */
 	private fun computeYawCorrectedRotation(yawCorrection: Angle, state: TrackerState): Quaternion {
 		val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(yawCorrection.toRad()) * state.rawRotation
-		val cal = state.sessionCalibration
-		return applyCalibration(yawCorrectedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
+		return applyFullCalibration(yawCorrectedRawRotation, state)
 	}
 }

@@ -8,6 +8,7 @@ import {
   AssignTrackerRequestT,
   BoardType,
   BodyPart,
+  DeviceOrigin,
   ForgetDeviceRequestT,
   ImuType,
   MagnetometerStatus,
@@ -436,7 +437,9 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           </div>
-          {tracker?.tracker.info?.isImu && (
+          {(tracker?.tracker.info?.isImu ||
+            (tracker?.tracker.origin == DeviceOrigin.DRIVER &&
+              tracker?.tracker.info?.intendedBodyPart != BodyPart.HEAD)) && (
             <div className="flex flex-col gap-2 w-full mt-3">
               <Typography variant="section-title">
                 {l10n.getString('tracker-settings-mounting_section')}
