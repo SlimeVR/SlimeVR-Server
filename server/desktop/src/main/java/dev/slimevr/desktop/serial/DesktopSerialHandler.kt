@@ -11,6 +11,7 @@ import java.io.IOException
 import java.io.OutputStreamWriter
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
+import java.util.Base64
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
@@ -201,14 +202,23 @@ class DesktopSerialHandler :
 		val os = currentPort?.outputStream ?: return
 		val writer = OutputStreamWriter(os)
 		try {
-			writer.append("SET WIFI \"").append(ssid).append("\" \"").append(passwd).append("\"\n")
+			val encodedSsid = encodeBase64Utf8(ssid)
+			val encodedPassword = encodeBase64Utf8(passwd).ifEmpty { "\"\"" }
+			writer.append("SET BWIFI ")
+				.append(encodedSsid)
+				.append(" ")
+				.append(encodedPassword)
+				.append("\n")
 			writer.flush()
-			addLog("-> SET WIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
+			addLog("-> SET BWIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
 		} catch (e: IOException) {
 			addLog("$e\n")
 			LogManager.warning("[SerialHandler] Serial port write error", e)
 		}
 	}
+
+	private fun encodeBase64Utf8(value: String): String = Base64.getEncoder()
+		.encodeToString(value.toByteArray(StandardCharsets.UTF_8))
 
 	fun addLog(str: String, server: Boolean = true) {
 		LogManager.info("[Serial] $str")
