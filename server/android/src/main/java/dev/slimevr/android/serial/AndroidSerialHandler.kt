@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbManager
+import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hoho.android.usbserial.driver.UsbSerialDriver
@@ -282,9 +283,16 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
-		writeSerial("SET WIFI \"${ssid}\" \"${passwd}\"")
-		addLog("-> SET WIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
+		val encodedSsid = encodeBase64Utf8(ssid)
+		val encodedPassword = encodeBase64Utf8(passwd).ifEmpty { "\"\"" }
+		writeSerial("SET BWIFI $encodedSsid $encodedPassword")
+		addLog("-> SET BWIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
 	}
+
+	private fun encodeBase64Utf8(value: String): String = Base64.encodeToString(
+		value.toByteArray(StandardCharsets.UTF_8),
+		Base64.NO_WRAP,
+	)
 
 	override fun getCurrentPort(): SlimeSerialPort? = this.currentPort
 
