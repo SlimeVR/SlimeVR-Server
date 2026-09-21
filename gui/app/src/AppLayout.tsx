@@ -26,6 +26,13 @@ export function AppLayout() {
         `${config.textSize}rem`
       );
     }
+
+    if (window.__ANDROID__?.isThere()) {
+      const color = window
+        .getComputedStyle(document.body)
+        .getPropertyValue('--background-80');
+      window.__ANDROID__?.updateInsetBackground(color);
+    }
   }, [config]);
 
   useLayoutEffect(() => {
