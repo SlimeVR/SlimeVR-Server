@@ -813,6 +813,7 @@ settings-serial-factory_reset-warning-cancel = Cancelar
 settings-serial-serial_select = Selecciona un puerto serial
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
+settings-serial-meow = Miau!
 settings-serial-file_type = Texto sin formato
 settings-serial-save_logs = Guardar en archivo
 settings-serial-send_command = Enviar
@@ -1707,10 +1708,17 @@ tracking_checklist-FULL_RESET = Realizar un reinicio completo
 tracking_checklist-FULL_RESET-desc = Algunos trackers necesitan realizar un reinicio.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR no se está ejecutando
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR no se esta ejecutando. ¿Lo estas usando para VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = El controlador está desactivado en los ajustes de SteamVR.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = El controlador no está instalado.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Activar controlador
 tracking_checklist-STEAMVR_HANDS_ENABLED = Trackers de mano activados
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Has activado los trackers de mano virtuales de SteamVR. Esto causará que los botones no funcionarán en SteamVR ni en juegos.
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = Desactívalos
+tracking_checklist-STANDABLE_INSTALLED = Standable está instalado
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frecuentemente causa problemas de tracking cuando se usa junto con SlimeVR. Standable debería estar completamente desinstalado en Steam para asegurar que no ocurran problemas.
+    Debes cerrar SteamVR antes de desinstalar Standable en Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = No realizaste una calibración para los trackers. Por favor deja reposar tus trackers (resaltados en amarillo) en una superficie estable por unos segundos.
 tracking_checklist-TRACKER_ERROR = Trackers con Errores
