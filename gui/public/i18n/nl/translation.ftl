@@ -10,7 +10,7 @@
 websocket-connecting = Verbinding maken met de server
 websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
 websocket-connection_lost-desc = Het ziet er naar uit dat de verbinding met de SlimeVR server is verbroken. Check het logboek en start het programma opnieuw.
-websocket-timedout = Kan niet verbinden met de server.
+websocket-timedout = Kan niet verbinden met de server
 websocket-timedout-desc = Het ziet er naar uit dat de SlimeVR server is gestopt. Check het logboek en start het programma opnieuw.
 websocket-error-close = SlimeVR afsluiten
 websocket-error-logs = Open het logboek.
@@ -24,7 +24,7 @@ version_update-close = Sluiten
 
 ## Tips
 
-tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het corresponderende item zal worden gemarkeerd.
+tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het bijbehorende item zal worden gemarkeerd.
 tips-do_not_move_heels = Zorg ervoor dat je hielen niet bewegen tijdens de opname!
 tips-file_select = Sleep bestanden naar hier om ze te gebruiken of <u>blader</u>.
 tips-tap_setup = Je kan langzaam 2 keer op je tracker tikken om deze te kiezen in plaats van deze in het menu te selecteren.
@@ -96,7 +96,7 @@ body_part-RIGHT_LITTLE_DISTAL = Rechter kleine vinger distaal
 
 board_type-UNKNOWN = Onbekend
 board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = Custom bord
+board_type-CUSTOM = Gemodificeerd bord
 board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
@@ -267,7 +267,7 @@ reset-error-yaw-need_full_reset = Je hebt een volledige reset nodig voordat je e
 
 serial_detection-new_device-p0 = Nieuw serieel apparaat gedetecteerd!
 serial_detection-new_device-p1 = Voer je WiFi-inloggegevens in!
-serial_detection-new_device-p2 = Selecteer wat je wil doen
+serial_detection-new_device-p2 = Selecteer wat je hiermee wilt doen
 serial_detection-open_wifi = Verbind met Wi-Fi
 serial_detection-open_serial = Seriële console openen
 serial_detection-submit = Verzenden!
@@ -311,7 +311,7 @@ widget-clear_mounting = Reset montage legen
 
 ## Widget: Developer settings
 
-widget-developer_mode = Developer Mode
+widget-developer_mode = Ontwikkelaarsstand
 widget-developer_mode-high_contrast = Hoog contrast
 widget-developer_mode-precise_rotation = Precieze rotatie
 widget-developer_mode-fast_data_feed = Snelle data feed
@@ -325,7 +325,7 @@ widget-developer_mode-more_info = Meer informatie
 widget-imu_visualizer = Rotatie
 widget-imu_visualizer-preview = Voorbeeld
 widget-imu_visualizer-hide = Verbergen
-widget-imu_visualizer-rotation_raw = Rauw
+widget-imu_visualizer-rotation_raw = Ruwe rotatie
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-acceleration = Versnelling
 widget-imu_visualizer-position = Positie
@@ -416,7 +416,7 @@ tracker-settings-use_mag = Sta de magnetometer toe op deze tracker.
 tracker-settings-use_mag-description =
     Wilt je dat deze tracker de magnetometer gebruikt om drift te verminderen wanneer de magnetometer is toegestaan? <b>Zet de tracker niet uit terwijl je dit aan of uit zet.</b>
     Je moet eerst de magnetometer toestemming geven,<magSetting>click hier om naar de instellingen te gaan</magSetting>.
-tracker-settings-use_mag-label = Laat magnetometer toe
+tracker-settings-use_mag-label = Sta magnetometer toe
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackernaam
@@ -514,8 +514,8 @@ settings-sidebar-utils = Hulpmiddelen
 settings-sidebar-serial = Serieel console
 settings-sidebar-appearance = Uiterlijk
 settings-sidebar-home = Startscherm
-settings-sidebar-checklist = Tracking checklist
-settings-sidebar-notifications = Notificaties
+settings-sidebar-checklist = Tracking controlelijst
+settings-sidebar-notifications = Meldingen
 settings-sidebar-behavior = Gedrag
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Configuratie-waarschuwingen
@@ -565,18 +565,19 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Maakt 
 settings-general-tracker_mechanics-filtering-type-prediction = Voorspelling
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
 settings-general-tracker_mechanics-filtering-amount = Hoeveelheid
-settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset vertraging (0s schakelt afvlakking uit)
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset vertraging (0s schakelt smoothing uit)
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     Compenseert voor IMU yaw drift door de toevoeging van een omgekeerde rotatie.
-    Veranderd de sterkte van de compensatie en hoeveel resets worden gebruikt.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
+    Veranderd de sterkte van de compensatie en de hoeveelheid resets die worden gebruikt.
+    Dit is enkel nodig indien je heel vaak moet resetten!
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensatie
 settings-general-tracker_mechanics-drift_compensation-prediction = Voorspelling van driftcompensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Voorspelt compensatie van gierdrift buiten het eerder gemeten bereik.
-    Schakel dit in als jouw trackers continu om de gier-as draaien.
+    Voorspelt compensatie van yaw drift buiten het eerder gemeten bereik.
+    Schakel dit in als jouw trackers continu om de horizontale as draaien.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Voorspelling van driftcompensatie
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Waarschuwing:</b> Gebruik alleen driftcompensatie als je heel vaak
@@ -651,6 +652,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Positie gegevens
 settings-general-fk_settings-ik-use_position = Positiegegevens gebruiken
 settings-general-fk_settings-ik-use_position-description = Maakt gebruik van positiegegevens mogelijk van de trackers die deze leveren. Zorg er voor dat je een volledige reset doet en opnieuw kalibreert in het spel wanneer je dit inschakelt.
+settings-general-fk_settings-velocity_settings = Snelheidsinstellingen
+settings-general-fk_settings-velocity_settings-description = Stuur afgeleide snelheidsgegevens naar SteamVR. Vereist voor ondersteuning van Natural Locomotion. Kan jitter veroorzaken in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Stuur afgeleide snelheid naar de driver
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
@@ -677,9 +681,9 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Ber
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Bereken taille van borst naar benen
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Bereken heup van borst naar benen
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Bereken heup van taille naar benen
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Bereken het gemiddelde van de 'yaw en roll van de heup met die van de benen'
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Bereken het gemiddelde van de 'yaw' en 'roll' van de heup met die van de benen
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Bereken het gemiddelde van de 'yaw' en 'roll' van de knie trackers met die van de enkels
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw' en 'roll' van de knie trackers met die van de enkels
 settings-general-fk_settings-self_localization-title = Mocap modus
 settings-general-fk_settings-self_localization-description = Mocap modus staat het skelet model toe om zijn eigen positie te bepalen zonder het gebruik van een headset of andere trackers. Dit vergt wel het gebruik van voet en hoofd trackers, dit is momenteel nog expirimenteel.
 
@@ -702,15 +706,18 @@ settings-general-gesture_control-trackers =
         [one] één
        *[other] anders
     }
-settings-general-gesture_control-yawResetEnabled = Activeer tikken voor horizontale reset
-settings-general-gesture_control-yawResetDelay = Vertraging horizontale reset
-settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor horizontale reset
+settings-general-gesture_control-yawResetEnabled = Activeer tikken voor yaw reset
+settings-general-gesture_control-yawResetDelay = Vertraging yaw reset
+settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor yaw reset
+settings-general-gesture_control-yawResetTracker = Yaw Reset Tracker
 settings-general-gesture_control-fullResetEnabled = Activeer tikken voor volledige reset
 settings-general-gesture_control-fullResetDelay = Vertraging volledige reset
 settings-general-gesture_control-fullResetTaps = Hoeveelheid tikken voor volledige reset
+settings-general-gesture_control-fullResetTracker = Volledige resettracker
 settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor montage-kalibratie
 settings-general-gesture_control-mountingResetDelay = Vertraging montage-kalibratie
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor montage-kalibratie
+settings-general-gesture_control-mountingResetTracker = Montage resettracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over drempelwaarde
 settings-general-gesture_control-numberTrackersOverThreshold-description = Verhoog deze waarde als de tik detectie niet werkt. Zet deze waarde niet te hoog om tik detectie te laten werken, dit kan vals positieve resultaten creëren.
@@ -742,7 +749,7 @@ settings-interface-appearance-decorations-label = Gebruik de native decoraties
 
 ## Notification settings
 
-settings-interface-notifications = Notificaties
+settings-interface-notifications = Meldingen
 settings-general-interface-serial_detection = Detectie van seriële apparaten
 settings-general-interface-serial_detection-description = Met deze optie verschijnt er elke keer dat je een nieuw serieel apparaat aansluit dat mogelijk een tracker is, een pop-up. Dit helpt bij het verbeteren van het instelproces van een tracker.
 settings-general-interface-serial_detection-label = Detectie van seriële apparaten
@@ -801,6 +808,12 @@ settings-serial-factory_reset-warning-cancel = Annuleren
 settings-serial-serial_select = Selecteer een seriële poort
 settings-serial-auto_dropdown_item = Automatisch
 settings-serial-get_wifi_scan = WiFi-scan uitvoeren
+settings-serial-enter_pairing = Begin pairing
+settings-serial-exit_pairing = Stop pairing
+settings-serial-calibrate = Kalibreer
+settings-serial-six_side_calibrate = 6-zijdige kalibratie
+settings-serial-dfu = Begin DFU
+settings-serial-meow = Miauw!
 settings-serial-file_type = Gewone tekst
 settings-serial-save_logs = Opslaan in bestand
 settings-serial-send_command = Verzenden
@@ -964,9 +977,45 @@ onboarding-setup_warning-cancel = Doorgaan met setupgids
 
 ## Quiz
 
+onboarding-quiz_continue = Doorgaan
+onboarding-quiz_back = Terug
+onboarding-quiz-more_sets_modal-title = Heb je al je trackers verbonden?
+onboarding-quiz-more_sets_modal-desc = Als je sets van verschillende modellen hebt, kunnen we ze nu meteen verbinden!
+onboarding-quiz-more_sets_modal-confirm = Ik heb al mijn trackers verbonden
+onboarding-quiz-more_sets_modal-cancel = Ik wil meer trackers verbinden
+onboarding-quiz-slimeset-title = Wat voor soort trackers verbind je?
+onboarding-quiz-slimeset-description = Als je meerdere sets hebt, word je later in het proces opnieuw gevraagd
+onboarding-quiz-slimeset-official-sets = Officiële SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Trackers van derden of doe-het-zelf
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-gebaseerde Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-gebaseerde Slime
+onboarding-quiz-usage-title = Waar gebruik je je trackers voor?
+onboarding-quiz-usage-description = Als je van plan bent SlimeVR voor meerdere doeleinden te gebruiken, kan je later deze instellingen aanpassen.
+onboarding-quiz-usage-answer-VRC = VR-gaming (bijv. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap en VTubing
+onboarding-quiz-runtime-title = Speel je games via SteamVR, of op de headset zelf (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap-voorkeuren
+onboarding-quiz-mocap_preferences-desc = Specificeer hoe je SlimeVR wilt gebruiken voor mocap of VTubing
+onboarding-quiz-mocap_preferences-playspace-title = Wat is jouw speelruimte?
+onboarding-quiz-mocap_preferences-playspace-desc = Als je staat, probeert SlimeVR je loopbeweging te volgen in plaats van je op één plek te verankeren.
+onboarding-quiz-mocap_preferences-playspace-sitting = Zitten
+onboarding-quiz-mocap_preferences-playspace-standing = Staan
+onboarding-quiz-mocap_preferences-vrm_model-title = (Optioneel) Heb je een VRM-model?
+onboarding-quiz-mocap_preferences-vrm_model-desc = Het laden van een VRM-model verbetert de tracking quality en compatibiliteit met applicaties die VMC gebruiken.
+onboarding-quiz-mocap_preferences-head_tracker-title = Draag je een tracker of VR-headset op je hoofd?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
+onboarding-quiz-mocap_preferences-head_tracker-no = Nee
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Waar bevindt je hoofdtracker?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Voorhoofd
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Gezicht
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Ga terug
 onboarding-wifi_creds-v2 = Trackers die Wi-Fi gebruiken
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1015,6 +1064,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev toegangsregels niet gevonden
+install-info_udev-rules_warning = Toegangsregels via udev zijn vereist voor seriële console-toegang en dongleverbinding. Plak het volgende commando in je terminal om de udev-regels toe te voegen.
+install-info_udev-rules_modal_button = Sluiten
+install-info_udev-rules_modal-dont-show-again_checkbox = Niet opnieuw tonen
 
 ## Setup start
 
@@ -1095,7 +1148,7 @@ onboarding-assignment_tutorial-done = Ik heb stickers en riemen geplaatst!
 onboarding-assign_trackers-back = Ga terug naar de instellingen voor WiFi-configuratie
 onboarding-assign_trackers-title = Trackers toewijzen
 onboarding-assign_trackers-description = Laten we de bevesteging van je trackers bepalen. Klik op de lichaamslocatie waar je een tracker wilt toewijzen.
-onboarding-assign_trackers-unassign_all = Alle trackers toewijzing verwijderen
+onboarding-assign_trackers-unassign_all = Verwijder alle tracker toewijzingen
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1349,6 +1402,7 @@ onboarding-user_height-description = We hebben je lengte nodig om je lichaamspro
 onboarding-user_height-need_head_tracker = Voor de kalibratie zijn een headset en controllers met positionele tracking vereist.
 onboarding-user_height-calculate = Bereken mijn lengte automatisch
 onboarding-user_height-next_step = Doorgaan en opslaan
+onboarding-user_height-prev_step = Terug
 onboarding-user_height-manual-proportions = Handmatige lichaamsverhoudingen
 onboarding-user_height-calibration-title = Vooruitgang van de kalibratie
 onboarding-user_height-calibration-RECORDING_FLOOR = Raak de vloer aan met de punt van je controller
@@ -1504,6 +1558,7 @@ firmware_tool-flashing_step-description = Je trackers worden geflashed, volg de 
 firmware_tool-flashing_step-warning-v2 = Koppel de tracker niet los en zet hem niet uit tijdens het uploadproces, tenzij dit wordt aangegeven. Dit kan je apparaat onbruikbaar maken.
 firmware_tool-flashing_step-flash_more = Flash meer trackers
 firmware_tool-flashing_step-exit = Sluit
+firmware_tool-flashing_step-onboarding_continue = Doorgaan
 
 ## firmware tool build status
 
@@ -1641,7 +1696,18 @@ tracking_checklist-FULL_RESET = Voer een volledige reset uit
 tracking_checklist-FULL_RESET-desc = Sommige trackers hebben een reset nodig
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR draait niet
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR draait niet. Gebruik je het voor VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = De driver is door SteamVR geblokkeerd vanwege een eerdere crash van SteamVR.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = De driver is uitgeschakeld in de SteamVR-instellingen.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = De driver is niet geïnstalleerd.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Open SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Schakel de driver in
+tracking_checklist-STEAMVR_HANDS_ENABLED = Handtrackers ingeschakeld
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Je hebt de virtuele handtrackers van SteamVR ingeschakeld. Dit zorgt ervoor dat knopinvoer niet werkt in SteamVR en in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Schakel ze uit
+tracking_checklist-STANDABLE_INSTALLED = Standable is geïnstalleerd
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable veroorzaakt vaak trackingproblemen wanneer het samen met SlimeVR wordt gebruikt. Standable moet volledig verwijderd zijn in Steam om te voorkomen dat er problemen ontstaan.
+    Je moet SteamVR afsluiten voordat je Standable in Steam verwijdert.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibreer je trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Je hebt geen tracker kalibratie uitgevoerd. Laat je Slimes (gemarkeerd met geel) rusten op een stabiele ondergrond voor een paar secondes.
 tracking_checklist-TRACKER_ERROR = Trackers met fouten
