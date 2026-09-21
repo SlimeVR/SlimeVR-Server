@@ -9,6 +9,7 @@ interface Window {
   readonly __ANDROID__:
     | {
         isThere: () => boolean;
+        updateInsetBackground: (c: string) => void;
       }
     | undefined;
 }

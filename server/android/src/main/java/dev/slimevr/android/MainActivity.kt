@@ -6,9 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowInsetsController
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -16,13 +18,19 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import java.io.IOException
 import java.net.URLConnection
 
-class AndroidJsObject {
+class AndroidJsObject(val updateBackground: (String) -> Unit) {
 	@JavascriptInterface
 	fun isThere(): Boolean = true
+
+	@JavascriptInterface
+	fun updateInsetBackground(color: String) = updateBackground(color)
 }
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +40,30 @@ class MainActivity : AppCompatActivity() {
 
 	private val finishReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) = finishAndRemoveTask()
+	}
+
+	private fun updateBackground(newColor: String) {
+		val rgb = newColor.split(",").map { it.trim().toInt() }
+		if (rgb.size != 3) {
+			Log.e(TAG, "RGB string is malformed: $newColor")
+			return
+		}
+
+		val colorInt = Color.rgb(rgb[0], rgb[1], rgb[2])
+
+		val parentView = findViewById<ConstraintLayout>(R.id.constraintLayoutView)
+		parentView.setBackgroundColor(colorInt)
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			window.isNavigationBarContrastEnforced = false
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			val mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+			val appearance = if (Color.luminance(colorInt) > 0.5) mask else 0
+
+			window.decorView.windowInsetsController?.setSystemBarsAppearance(appearance, mask)
+		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +121,27 @@ class MainActivity : AppCompatActivity() {
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
 
-		guiWebView.addJavascriptInterface(AndroidJsObject(), "__ANDROID__")
+		val parentView = findViewById<ConstraintLayout>(R.id.constraintLayoutView)
+
+		ViewCompat.setOnApplyWindowInsetsListener(parentView) { v, windowInsets ->
+			val insets = windowInsets.getInsets(
+				WindowInsetsCompat.Type.systemBars()
+					or WindowInsetsCompat.Type.displayCutout()
+					or WindowInsetsCompat.Type.ime(),
+			)
+
+			v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+			WindowInsetsCompat.CONSUMED
+		}
+
+		guiWebView.addJavascriptInterface(
+			AndroidJsObject(updateBackground = { newColor ->
+				parentView.post {
+					updateBackground(newColor)
+				}
+			}),
+			"__ANDROID__",
+		)
 
 		guiWebView.settings.setSupportZoom(true)
 		guiWebView.settings.useWideViewPort = true
