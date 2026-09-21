@@ -231,15 +231,11 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		in ResetBodyParts.ARMS if armsResetMode == ArmsResetMode.FORWARD -> 0f
 
 		// Going left/
-		in ResetBodyParts.RIGHT_FINGERS_NO_THUMB -> -FastMath.HALF_PI
-
 		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
 
 		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
 
 		// Going right
-		in ResetBodyParts.LEFT_FINGERS_NO_THUMB -> FastMath.HALF_PI
-
 		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
 
 		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
