@@ -25,8 +25,7 @@ val DEFAULT_PROPORTIONS = mapOf(
 	SkeletonBone.SHOULDERS_WIDTH to 0.35f,
 	SkeletonBone.UPPER_ARM to 0.26f,
 	SkeletonBone.LOWER_ARM to 0.26f,
-	SkeletonBone.HAND_Y to 0.08f,
-	SkeletonBone.HAND_Z to 0f,
+	SkeletonBone.HAND to 0.08f,
 )
 
 // Set of SkeletonBones whose lengths sum to standing height (spine + legs).
@@ -59,8 +58,7 @@ private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = map
 	SkeletonBone.SHOULDERS_WIDTH to BodyPartMap(mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_X / 2f, BodyPart.RIGHT_SHOULDER to Vector3.POS_X / 2f)),
 	SkeletonBone.UPPER_ARM to BodyPartMap(mapOf(BodyPart.LEFT_UPPER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_ARM to Vector3.NEG_Y)),
 	SkeletonBone.LOWER_ARM to BodyPartMap(mapOf(BodyPart.LEFT_LOWER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_ARM to Vector3.NEG_Y)),
-	SkeletonBone.HAND_Y to BodyPartMap(mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Y, BodyPart.RIGHT_HAND to Vector3.NEG_Y)),
-	SkeletonBone.HAND_Z to BodyPartMap(mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Z, BodyPart.RIGHT_HAND to Vector3.NEG_Z)),
+	SkeletonBone.HAND to BodyPartMap(mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Y, BodyPart.RIGHT_HAND to Vector3.NEG_Y)),
 )
 
 private val BONE_VALUE_TO_HEAD_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = mapOf(
@@ -88,7 +86,7 @@ val DEFAULT_HEIGHT = DEFAULT_PROPORTIONS.height()
 // whose length scales with user height.
 // Non-height bones (HEAD, HIPS_WIDTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
 private val HEIGHT_SCALED_BONE_RATIOS: Map<SkeletonBone, Float> = (
-	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM, SkeletonBone.HAND_Y, SkeletonBone.FOOT_LENGTH)
+	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM, SkeletonBone.HAND, SkeletonBone.FOOT_LENGTH)
 	).associateWith { (DEFAULT_PROPORTIONS[it] ?: 0f) / DEFAULT_HEIGHT }
 
 // Sums the HEIGHT_CONTRIBUTING_BONES lengths to derive standing height.
@@ -123,7 +121,7 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 		BONE_VALUE_TO_OFFSETS[cfg]?.let { for ((bone, vec) in it) tail[bone] = (tail[bone] ?: Vector3.ZERO) + length * vec }
 		BONE_VALUE_TO_HEAD_OFFSETS[cfg]?.let { for ((bone, vec) in it) head[bone] = (head[bone] ?: Vector3.ZERO) + length * vec }
 	}
-	lengths[SkeletonBone.HAND_Y]?.let {
+	lengths[SkeletonBone.HAND]?.let {
 		tail.putAll(getFingerOffsets(it))
 		head.putAll(getFingerHeadOffsets(it))
 	}

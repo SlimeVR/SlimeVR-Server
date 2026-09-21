@@ -16,14 +16,12 @@ import {
   ResetsSettingsRequestT,
   ResetsSettingsResponseT,
   RpcMessage,
-  SkeletonBone,
   SkeletonSettingsRequestT,
   SkeletonSettingsResponseT,
   SkeletonTogglesT,
   VRCOSCSettingsRequestT,
   VRCOSCSettingsResponseT,
 } from 'solarxr-protocol';
-import { useManualProportions } from './manual-proportions';
 
 type OnboardingAction =
   | { type: 'progress'; value: number }
@@ -116,10 +114,6 @@ export function useProvideOnboarding() {
     }
   );
 
-  const { changeBoneValue } = useManualProportions({
-    type: 'linear',
-  });
-
   const onboardingEnded = () => {
     setConfig({ doneOnboarding: true });
     if (!skeletonSettings || !resetsSettings || !vrcOscSettings) return;
@@ -142,10 +136,6 @@ export function useProvideOnboarding() {
     const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;
     sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, osc);
-
-    if (mocap) {
-      changeBoneValue({ bone: SkeletonBone.HAND_Z, type: 'bone', newValue: 0 });
-    }
   };
 
   const onboardingStarted = () => {
