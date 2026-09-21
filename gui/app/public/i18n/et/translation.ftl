@@ -26,6 +26,19 @@ tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Sulge
+
 ## Body parts
 
 body_part-NONE = Määramata
@@ -39,8 +52,6 @@ body_part-RIGHT_UPPER_LEG = Parem reis
 body_part-RIGHT_LOWER_LEG = Parem säär
 body_part-RIGHT_FOOT = Parem jalg
 body_part-UPPER_CHEST = Rinna ülaosa
-body_part-CHEST = Rind
-body_part-WAIST = Vöökoht
 body_part-HIP = Puus
 body_part-LEFT_SHOULDER = Vasak õlg
 body_part-LEFT_UPPER_ARM = Vasak õlavars
@@ -52,6 +63,7 @@ body_part-LEFT_FOOT = Vasak jalg
 
 ## BoardType
 
+board_type-UNKNOWN = Tundmatu
 
 ## Proportions
 
@@ -60,13 +72,10 @@ skeleton_bone-HEAD = Pea Nihe
 skeleton_bone-NECK = Kaela Pikkus
 skeleton_bone-torso_group = Torso pikkus
 skeleton_bone-UPPER_CHEST = Rinna ülaosa pikkus
-skeleton_bone-CHEST = Rinna pikkus
-skeleton_bone-WAIST = Vööümbermõõt
 skeleton_bone-HIP = Puusa pikkus
 skeleton_bone-HIPS_WIDTH = Puusa Laius
 skeleton_bone-leg_group = Jala pikkus
 skeleton_bone-UPPER_LEG = Jala ülaosa pikkus
-skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Jala Pikkus
 skeleton_bone-FOOT_SHIFT = Jala Nihe
 skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
@@ -74,25 +83,14 @@ skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
 skeleton_bone-arm_group = Käe pikkus
 skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
-skeleton_bone-HAND_Y = Käte kaugus Y
-skeleton_bone-HAND_Z = Käte kaugus Z
 
 ## Tracker reset buttons
 
 reset-reset_all = Lähtesta kõik proportsioonid
+reset-reset_all_warning-cancel = Tühista
 reset-full = Lähtesta
 reset-mounting = Lähtesta Paigaldusasend
 reset-yaw = Lähtesta lengerdus
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Uus jadaseade tuvastatud!
-serial_detection-new_device-p1 = Sisestage enda Wi-Fi andmed!
-serial_detection-new_device-p2 = Palun valige, mida te soovite sellega teha
-serial_detection-open_wifi = Ühendage Wi-Fi-ga
-serial_detection-open_serial = Avage Jadakonsool
-serial_detection-submit = Jätka!
-serial_detection-close = Sulge
 
 ## Navigation bar
 
@@ -119,18 +117,13 @@ widget-developer_mode = Arendaja režiim
 widget-developer_mode-high_contrast = Kõrge kontrastsus
 widget-developer_mode-precise_rotation = Täpne pööre
 widget-developer_mode-fast_data_feed = Kiire andmevoog
-widget-developer_mode-sort_by_name = Sorteeri nime järgi
 widget-developer_mode-raw_slime_rotation = Toores pööre
-widget-developer_mode-more_info = Rohkem infot
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotatsiooni
 widget-imu_visualizer-rotation_raw = Toores
 widget-imu_visualizer-rotation_preview = Eelvaade
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -139,20 +132,14 @@ tracker-status-busy = Hõivatud
 tracker-status-error = Viga
 tracker-status-disconnected = Ühendus katkestatud
 tracker-status-occluded = Jälgija kadunud
-tracker-status-ok = OK
 
 ## Tracker status columns
 
 tracker-table-column-name = Nimi
 tracker-table-column-type = Tüüp
 tracker-table-column-battery = Patarei
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Pööre X/Y/Z
 tracker-table-column-position = Positsioon X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -191,6 +178,13 @@ tracker-settings-mounting_section-edit = Muuda paigaldusasendit
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
 tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
+tracker-settings-name_section-label = Jälgija Nimi
+
+## Dongle settings
+
+dongle-infos-hardware_revision = Riistvara revisjon
+dongle-status-disconnected = Ühendus katkestatud
+dongle-settings-back = Minge tagasi jälgija loendise
 
 ## Tracker part card info
 
@@ -205,6 +199,11 @@ body_assignment_menu-unassign_tracker = Tühista jälgija määramine
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -222,12 +221,20 @@ mounting_selection_menu-close = Sulge
 
 settings-sidebar-title = Seaded
 settings-sidebar-general = Tavaline
+settings-sidebar-trackers = Jälgia
 settings-sidebar-interface = Liides
-settings-sidebar-osc_trackers = VRChati OSC Jälgija
 settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
 settings-sidebar-appearance = Välimus
 settings-sidebar-notifications = Teavitused
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Tühista
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Luba
 
 ## Tracker mechanics
 
@@ -244,6 +251,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb l
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
 settings-general-tracker_mechanics-filtering-amount = Amount
+settings-stay_aligned-general-label = Tavaline
+settings-stay_aligned-relaxed_poses-close = Sulge
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Lähtesta
+settings-keybinds_yaw-reset = Lähtesta lengerdus
+settings-keybinds-recorder-modal-cancel-button = Tühista
 
 ## FK/Tracking settings
 
@@ -265,6 +280,7 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Põrandaklõpsat
 settings-general-fk_settings-leg_tweak-toe_snap-description = Varvaste klõpsatus maha üritab ära arvata jalgade pöörlemist, kui jalgade jälgijaid ei kasutata.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Jalg-maas pöörab jalad kokkupuutel maapinnaga paralleelseks.
 settings-general-fk_settings-leg_fk = Jalgade jälgimine
+settings-general-fk_settings-arm_fk-back = Taga
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
 settings-general-fk_settings-skeleton_settings-ratios-description = Muutke skeleti seadete väärtusi. Võimalik, et peate pärast nende muutmist oma proportsioone kohandama.
 settings-general-fk_settings-self_localization-title = Mocapi režiim
@@ -311,8 +327,6 @@ settings-general-interface-theme = Värviteema
 settings-general-interface-lang = Vaikekeel
 settings-general-interface-lang-description = Muutke vaikekeelt, mida soovite kasutada.
 settings-general-interface-lang-placeholder = Vali keel, mida kasutada
-# Keep the font name untranslated
-settings-interface-appearance-font = GUI font
 settings-interface-appearance-font-description = See muudab liidese kasutatavat fonti.
 settings-interface-appearance-font-placeholder = Vaikimisi font
 settings-interface-appearance-font-os_font = OS-i font
@@ -323,9 +337,6 @@ settings-interface-appearance-font_size-description = See mõjutab kogu liidese 
 ## Notification settings
 
 settings-interface-notifications = Teavitused
-settings-general-interface-serial_detection = Jadaseadme märkamine
-settings-general-interface-serial_detection-description = See valik näitab hüpikakent iga kord kui panna sisse uus jada seade, mis võib olla jälgija. See aitab jälgija seadistusprotsessi parandada.
-settings-general-interface-serial_detection-label = Jadaseadme märkamine
 settings-general-interface-feedback_sound = Tagasiside heli
 settings-general-interface-feedback_sound-description = See suvand esitab lähtestamise käivitamisel heli.
 settings-general-interface-feedback_sound-label = Tagasiside heli
@@ -333,6 +344,8 @@ settings-general-interface-feedback_sound-volume = Tagasiside helitugevus
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Arendaja režiim
+settings-general-interface-dev_mode-label = Arendaja režiim
 
 ## Serial settings
 
@@ -352,7 +365,8 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Ma tean mida ma teen
 settings-serial-factory_reset-warning-cancel = Tühista
 settings-serial-serial_select = Valige jadaport
-settings-serial-auto_dropdown_item = Auto
+settings-serial-send_command-warning-ok = Ma tean mida ma teen
+settings-serial-send_command-warning-cancel = Tühista
 
 ## OSC VRChat settings
 
@@ -370,9 +384,14 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Võrgu aadress
 settings-osc-vrchat-network-address-placeholder = VRChat ip aadress
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotatsiooni
+settings-osc-vrchat-status-badge-error = Viga
+settings-osc-vrchat-status-badge-unknown = Tundmatu
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     VMC (Virtual Motion Capture) protokollile omaste sätete muutmine
@@ -397,17 +416,19 @@ settings-osc-vmc-vrm-file_select = Kasutatava mudeli pukseerimine või <u>sirvim
 settings-osc-vmc-anchor_hip = Ankurda puusadel
 settings-osc-vmc-anchor_hip-description = Ankurdage jälgimine puusadele, mis on kasulik istuva VTubingu jaoks. Keelamise korral laadige VRM-mudel.
 settings-osc-vmc-anchor_hip-label = Ankurda puusadel
+settings-osc-vmc-status-badge-error = Viga
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-cancel = Tühista
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -423,12 +444,14 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 
 ## Quiz
 
+onboarding-quiz_continue = Jätka
+onboarding-quiz_back = Taga
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Jätka!
+onboarding-wifi_creds-ssid-label = SSID
 onboarding-wifi_creds-ssid =
-    .label = SSID
     .placeholder = Sisesta SSID
 onboarding-wifi_creds-password =
     .label = Parool
@@ -436,6 +459,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Sulge
 
 ## Setup start
 
@@ -447,6 +471,7 @@ onboarding-home-start = Hakkame sättima!
 onboarding-connect_tracker-title = Ühendage jälgijad
 onboarding-connect_tracker-issue-serial = Mul on probleeme ühenduse loomisega!
 onboarding-connect_tracker-usb = USB Jälgija
+onboarding-connect_tracker-close = Sulge
 onboarding-connect_tracker-connection_status-serial_init = Ühenduse loomine jadaseadmega
 onboarding-connect_tracker-connection_status-provisioning = Saadame Wi-Fi andmeid
 onboarding-connect_tracker-connection_status-connecting = Saadame Wi-Fi andmeid
@@ -479,6 +504,9 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } of 1 jälgija assigned
        *[other] { $assigned } of { $trackers } jälgijat assigned
     }
+onboarding-assign_trackers-tap_modal-cancel = Tühista
+onboarding-assign_trackers-side-right = Parem
+onboarding-assign_trackers-side-left = Vasak
 
 ## Tracker assignment warnings
 
@@ -515,6 +543,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peal
 onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
 onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
+## Tracker manual proportions setupa
+
+
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Mine tagasi lähtestamise õppetusse
@@ -529,7 +560,6 @@ onboarding-automatic_proportions-requirements-next = Olen lugenud nõudeid
 onboarding-automatic_proportions-start_recording-title = Olge valmis liikuma
 onboarding-automatic_proportions-start_recording-description = Me nüüd salvestame teatud poose ja liigutusi neid näete järgmisel ekraanil. Olge valmis, kui te vajutate nuppu!
 onboarding-automatic_proportions-start_recording-next = Alusta salvestamist
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Salvestamine on pooleli...
 onboarding-automatic_proportions-recording-description-p1 = Tehke allpool näidatud liigutusi:
 # Each line of text is a different list item
@@ -562,13 +592,26 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = Pange kõik jälgijad peale
+onboarding-stay_aligned-put_trackers_on-next = Mul on kõik jälgijad küljes
+onboarding-stay_aligned-verify_mounting-title = Paigalduse lähtestamine
+onboarding-stay_aligned-preparation-title = Ettevalmistus
+
+## Home
+
+home-settings-close = Sulge
+home-no_trackers-connect = Ühendage jälgijad
+
 ## Trackers Still On notification
+
 
 ## Firmware tool globals
 
+firmware_tool-loading = Serveriga ühendamine
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Püsivara versioon
 
 ## firmware tool build status
 
@@ -584,12 +627,19 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## First exit modal
 
+tray_or_exit_modal-cancel = Tühista
 
 ## Unknown device modal
 
+vrc_config-spine_mode-UNKNOWN = Tundmatu
+vrc_config-tracker_model-UNKNOWN = Tundmatu
+vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Sulge
+toolbar-mounting_calibration = Paigalduse lähtestamine
+toolbar-mounting_calibration-feet = Jalad

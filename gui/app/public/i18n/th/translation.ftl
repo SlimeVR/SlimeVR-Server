@@ -36,6 +36,19 @@ unit-foot = ฟุต
 unit-inch = นิ้ว
 unit-cm = ซม.
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = ปิด
+
 ## Body parts
 
 body_part-NONE = ไม่ได้กำหนด
@@ -49,8 +62,6 @@ body_part-RIGHT_UPPER_LEG = ต้นขาขวา
 body_part-RIGHT_LOWER_LEG = ข้อเท้าขวา
 body_part-RIGHT_FOOT = เท้าขวา
 body_part-UPPER_CHEST = หน้าอกส่วนบน
-body_part-CHEST = หน้าอก
-body_part-WAIST = เอว
 body_part-HIP = สะโพก
 body_part-LEFT_SHOULDER = ไหล่ซ้าย
 body_part-LEFT_UPPER_ARM = แขนซ้ายส่วนบน
@@ -93,31 +104,11 @@ body_part-RIGHT_LITTLE_DISTAL = ปลายนิ้วก้อยขวา
 ## BoardType
 
 board_type-UNKNOWN = ไม่ทราบ
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = บอร์ดปรับแต่ง
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_DEV = บอร์ดพัฒนา SlimeVR
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = บอร์ดพัฒนาถุงมือ IMU SlimeVR
 board_type-GESTURES = ท่าทางสัมผัส
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = บอร์ด NRF ทั่วไป
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -141,15 +132,9 @@ skeleton_bone-UPPER_CHEST-desc =
     นี่เป็นระยะห่างจากฐานของคอถึงกลางหน้าอก
     ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสมก่อน แล้วจึงปรับค่านี้ในท่าต่างๆ
     (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
-skeleton_bone-CHEST = ความยาวหน้าอก
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     นี่เป็นระยะห่างจากกลางหน้าอกถึงกลางกระดูกสันหลัง
     ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสม แล้วปรับค่านี้ในท่าต่างๆ
-    (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
-skeleton_bone-WAIST = ความยาวเอว
-skeleton_bone-WAIST-desc =
-    นี่เป็นระยะห่างจากตรงกลางกระดูกสันหลังถึงสะดือ
-    ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสมก่อน แล้วปรับค่านี้ในท่าต่างๆ
     (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
 skeleton_bone-HIP = ความยาวสะโพก
 skeleton_bone-HIP-desc =
@@ -211,19 +196,6 @@ skeleton_bone-LOWER_ARM-desc =
     นี่เป็นระยะห่างจากข้อศอกถึงข้อมือของคุณ
     ปรับโดยเริ่มจากการปรับความยาวของแขนให้เหมาะสมก่อน แล้วปรับค่านี้จนกว่า
     แทร็กเกอร์ที่ข้อศอกคุณตรงกับข้อศอกจริง
-skeleton_bone-HAND_Y = ระยะมือแนวตั้ง (แกน Y)
-skeleton_bone-HAND_Y-desc =
-    นี่เป็นระยะห่างในแนวตั้งจากข้อมือถึงกลางมือของคุณ
-    หากใช้สำหรับ Motion Capture ให้เริ่มจากปรับความยาวแขนให้เหมาะสม แล้วปรับค่านี้จนกว่า
-    แทร็กเกอร์เสมือนของมือนั้นอยู่ในแนวตั้งเดียวกับกลางมือจริง
-    หากใช้สำหรับจับตำแหน่งข้อศอกจากคอนโทรลเลอร์ ให้เริ่มจากตั้งความยาวแขน เป็น 0
-    และปรับค่าจนกว่าแทร็กเกอร์ข้อศอกนั้นอยู่ในแนวตั้งเดียวกับข้อมือจริง
-skeleton_bone-HAND_Z = ระยะมือแนวราบ (แกน Z)
-skeleton_bone-HAND_Z-desc =
-    นี่เป็นระยะห่างแนวนอนจากข้อมือถึงกลางมือของคุณ
-    หากใช้สำหรับ Motion capture ให้ตั้งค่านี้เป็น 0
-    หากใช้สำหรับจับตำแหน่งข้อศอกจากคอนโทรลเลอร์ ให้เริ่มจากตั้งความยาวแขนเป็น 0 
-    และปรับค่าจนกว่าแทร็กเกอร์ข้อศอกนั้นอยู่ในแนวราบเดียวกับข้อมือจริงของคุณ
 
 ## Tracker reset buttons
 
@@ -237,16 +209,6 @@ reset-mounting-fingers = รีเซ็ตการติดตั้งนิ�
 reset-yaw = รีเซ็ตแกนตั้ง
 reset-error-mounting-need_full_reset = ต้องรีเซ็ตทั้งหมดก่อนการตั้งศูนย์การติดตั้ง
 reset-error-yaw-need_full_reset = ต้องรีเซ็ตทั้งหมดก่อนรีเซ็ตแกนตั้ง
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = ตรวจพบอุปกรณ์ Serial ใหม่!
-serial_detection-new_device-p1 = ใส่ข้อมูลเครือข่าย Wi-Fi ของคุณ!
-serial_detection-new_device-p2 = กรุณาเลือกสิ่งที่คุณต้องการทำกับอุปกรณ์
-serial_detection-open_wifi = เชื่อมต่อกับ Wi-Fi
-serial_detection-open_serial = เปิดหน้าคอนโซล Serial
-serial_detection-submit = ยืนยัน!
-serial_detection-close = ปิด
 
 ## Navigation bar
 
@@ -276,9 +238,7 @@ widget-developer_mode = โหมดนักพัฒนา
 widget-developer_mode-high_contrast = สีคอนทราสต์สูง
 widget-developer_mode-precise_rotation = ค่าหมุนแบบแม่นยำ
 widget-developer_mode-fast_data_feed = ฟีดข้อมูลความเร็วสูง
-widget-developer_mode-sort_by_name = เรียงตามชื่อ
 widget-developer_mode-raw_slime_rotation = ค่าการหมุนแบบดิบ
-widget-developer_mode-more_info = ข้อมูลเพิ่มเติม
 
 ## Widget: IMU Visualizer
 
@@ -289,7 +249,6 @@ widget-imu_visualizer-rotation_raw = ค่าการหมุนดิบ
 widget-imu_visualizer-rotation_preview = ค่าตัวอย่างการหมุน
 widget-imu_visualizer-acceleration = ความเร่ง
 widget-imu_visualizer-position = ตำแหน่ง
-widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Tracker status
 
@@ -298,7 +257,6 @@ tracker-status-busy = ไม่ว่าง
 tracker-status-error = มีปัญหา
 tracker-status-disconnected = ขาดการเชื่อมต่อ
 tracker-status-occluded = ถูกบดบัง
-tracker-status-ok = OK
 tracker-status-timed_out = หมดเวลาเชื่อมต่อ
 
 ## Tracker status columns
@@ -306,14 +264,10 @@ tracker-status-timed_out = หมดเวลาเชื่อมต่อ
 tracker-table-column-name = ชื่อ
 tracker-table-column-type = ชนิด
 tracker-table-column-battery = แบตเตอรี่
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = อุณหภูมิ °C
 tracker-table-column-linear-acceleration = ความเร่ง X/Y/Z
 tracker-table-column-rotation = การหมุน X/Y/Z
 tracker-table-column-position = ตำแหน่ง X/Y/Z
-tracker-table-column-stay_aligned = Stay Aligned
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -384,6 +338,14 @@ tracker-settings-current-version = ปัจจุบัน
 tracker-settings-latest-version = ล่าสุด
 tracker-settings-build-date = วันที่สร้าง
 
+## Dongle settings
+
+dongle-infos-hardware_revision = เวอร์ชันฮาร์ดแวร์
+dongle-status-disconnected = ขาดการเชื่อมต่อ
+dongle-settings-back = กลับไปที่รายการแทร็กเกอร์
+dongle-settings-update = อัปเดตทันที
+dongle-settings-update-title = เวอร์ชันเฟิร์มแวร์
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = ไม่ได้กำหนด
@@ -397,6 +359,11 @@ body_assignment_menu-unassign_tracker = ยกเลิกการกำหน�
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -414,10 +381,8 @@ mounting_selection_menu-close = ปิด
 
 settings-sidebar-title = การตั้งค่า
 settings-sidebar-general = ทั่วไป
-settings-sidebar-stay_aligned = Stay Aligned
+settings-sidebar-trackers = แทร็กเกอร์
 settings-sidebar-interface = อินเทอร์เฟซ
-settings-sidebar-osc_trackers = แทร็กเกอร์ VRChat OSC
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = เครื่องมือ
 settings-sidebar-serial = คอนโซล Serial
 settings-sidebar-appearance = รูปแบบ
@@ -428,6 +393,17 @@ settings-sidebar-behavior = พฤติกรรมการทำงาน
 settings-sidebar-firmware-tool = เครื่องมือเฟิร์มแวร์ DIY
 settings-sidebar-vrc_warnings = คำเตือนการตั้งค่า VRChat
 settings-sidebar-advanced = ขั้นสูง
+
+## Bone routing settings
+
+settings-routing-output-badge-off = ปิด
+settings-routing-group-fingers = นิ้ว
+settings-routing-hands-warning-cancel = ยกเลิก
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = เปิดใช้งาน
+settings-driver-status-badge-disabled = ปิด
 
 ## Tracker mechanics
 
@@ -476,6 +452,14 @@ settings-stay_aligned-debug-label = การดีบัก
 settings-stay_aligned-debug-description = กรุณาระบุการตั้งค่าของคุณเมื่อรายงานปัญหาเกี่ยวกับ Stay Aligned ด้วย
 settings-stay_aligned-debug-copy-label = คัดลอกการตั้งค่าไปยังคลิปบอร์ด
 
+## Keybinds Page
+
+settings-keybinds_full-reset = รีเซ็ตทั้งหมด
+settings-keybinds_yaw-reset = รีเซ็ตแกนตั้ง
+settings-keybinds_reset-all-button = รีเซ็ตทั้งหมด
+settings-keybinds-recorder-modal-done-button = เสร็จแล้ว
+settings-keybinds-recorder-modal-cancel-button = ยกเลิก
+
 ## FK/Tracking settings
 
 settings-general-fk_settings = การตั้งค่าการติดตาม
@@ -496,8 +480,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = การล็�
 settings-general-fk_settings-leg_tweak-toe_snap-description = การเดาการหมุนของเท้า จะพยายามคาดเดาการหมุนของเท้า หากไม่ได้ใช้แทร็กเกอร์เท้า
 settings-general-fk_settings-leg_tweak-foot_plant-description = การปรับสมดุลเท้า จะหมุนเท้าให้ขนานกับพื้นเมื่อมีการสัมผัสพื้น
 settings-general-fk_settings-leg_fk = การจับตำแหน่งขา
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = บังคับรีเซ็ตการติดตั้งเท้าในระหว่างการรีเซ็ตการติดตั้งทั่วไป
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = บังคับรีเซ็ตการติดตั้งเท้า
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = บังคับรีเซ็ตการติดตั้งเท้าในระหว่างการรีเซ็ตการติดตั้งทั่วไป
 settings-general-fk_settings-enforce_joint_constraints = ขีดจำกัดโครงกระดูก
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = บังคับใช้ขีดจำกัด
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = ป้องกันไม่ให้ข้อต่อหมุนเกินขีดจำกัด
@@ -563,9 +547,6 @@ settings-interface-appearance-font_size-description = ตัวเลือก�
 ## Notification settings
 
 settings-interface-notifications = การแจ้งเตือน
-settings-general-interface-serial_detection = การตรวจจับอุปกรณ์ Serial
-settings-general-interface-serial_detection-description = ตัวเลือกนี้จะแสดงหน้าต่างป๊อปอัพทุกครั้งที่คุณเสียบอุปกรณ์ Serial ใหม่ที่อาจเป็นแทร็กเกอร์ ช่วยลดขั้นตอนการตั้งค่าแทร็กเกอร์
-settings-general-interface-serial_detection-label = ใช้การตรวจจับอุปกรณ์ Serial
 settings-general-interface-feedback_sound = การแจ้งเตือนด้วยเสียง
 settings-general-interface-feedback_sound-description = ตัวเลือกนี้จะเล่นเสียงเมื่อมีการใช้การรีเซ็ต
 settings-general-interface-feedback_sound-label = แจ้งเตือนด้วยเสียง
@@ -577,6 +558,8 @@ settings-general-interface-connected_trackers_warning-label = เตือนแ
 ## Behavior settings
 
 settings-interface-behavior = พฤติกรรมการทำงาน
+settings-general-interface-dev_mode = โหมดนักพัฒนา
+settings-general-interface-dev_mode-label = โหมดนักพัฒนา
 settings-general-interface-use_tray = ย่อไปที่ถาดระบบ
 settings-general-interface-use_tray-description = ช่วยให้คุณสามารถปิดหน้าต่างโดยไม่ต้องปิด SlimeVR Server คุณจึงสามารถใช้งานต่อได้โดยไม่มี GUI รบกวน
 settings-general-interface-use_tray-label = ย่อไปที่ถาดระบบ
@@ -649,9 +632,14 @@ settings-osc-vrchat-network-address = ที่อยู่เครือข่
 settings-osc-vrchat-network-address-description-v1 = เลือกที่อยู่ที่จะส่งข้อมูลออกไป สามารถปล่อยว่างไว้สำหรับ VRChat
 settings-osc-vrchat-network-address-placeholder = ที่อยู่ IP VRChat
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = ข้อมูลแทร็กเกอร์
+settings-osc-vrchat-status-badge-error = มีปัญหา
+settings-osc-vrchat-status-badge-unknown = ไม่ทราบ
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     เปลี่ยนการตั้งค่าเฉพาะสำหรับโปรโตคอล VMC (Virtual Motion Capture)
@@ -680,6 +668,7 @@ settings-osc-vmc-anchor_hip-label = ยึดแหน่งที่สะโ�
 settings-osc-vmc-mirror_tracking = สะท้อนตำแหน่งการติดตาม
 settings-osc-vmc-mirror_tracking-description = สะท้อนการติดตามในแนวนอน
 settings-osc-vmc-mirror_tracking-label = สะท้อนตำแหน่งการติดตาม
+settings-osc-vmc-status-badge-error = มีปัญหา
 
 ## Common OSC settings
 
@@ -719,7 +708,7 @@ settings-home-list-layout-desc = เลือกรูปแบบการจ�
 settings-home-list-layout-grid = แบบตาราง
 settings-home-list-layout-table = แบบรายการ
 
-## Tracking Checlist
+## Tracking Checklist
 
 settings-tracking_checklist-active_steps = รายการที่ต้องดำเนินการ
 settings-tracking_checklist-active_steps-desc = รายการขั้นตอนทั้งหมดในการเตรียมพร้อมแทร็กเกอร์ของคุณ สามารถเลือกที่จะปิดคำแนะนำขั้นตอนใดขั้นตอนหนึ่งได้
@@ -737,9 +726,13 @@ onboarding-setup_warning-cancel = ดำเนินการตั้งค่�
 
 ## Quiz
 
+onboarding-quiz_continue = ดำเนินการต่อ
+onboarding-quiz_back = ยื่นไปด้านหลัง
+onboarding-quiz-mocap_preferences-head_tracker-yes = ตกลง
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = ย้อนกลับ
 onboarding-wifi_creds-v2 = แทร็กเกอร์ที่ใช้ Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -748,8 +741,9 @@ onboarding-wifi_creds-description-v2 =
     
     และตรวจสอบให้แน่ใจว่าคุณใช้การเชื่อมต่อ Wi-Fi  เป็นคลื่น 2.4GHz กับแทร็กเกอร์นี้
 onboarding-wifi_creds-submit = ยืนยัน!
+onboarding-wifi_creds-retry = ลองอีกครั้ง
+onboarding-wifi_creds-ssid-label = ชื่อ Wi-Fi
 onboarding-wifi_creds-ssid =
-    .label = ชื่อ Wi-Fi
     .placeholder = ใส่ชื่อ Wi-Fi
 onboarding-wifi_creds-ssid-required = ต้องระบุชื่อ Wi-Fi
 onboarding-wifi_creds-password =
@@ -762,6 +756,7 @@ onboarding-wifi_creds-dongle-continue = ดำเนินการต่อด�
 
 ## Install info
 
+install-info_udev-rules_modal_button = ปิด
 
 ## Setup start
 
@@ -773,6 +768,7 @@ onboarding-home-start = มาเริ่มการใช้งานกั�
 onboarding-connect_tracker-title = เชื่อมต่อแทร็กเกอร์
 onboarding-connect_tracker-issue-serial = ฉันมีปัญหาในการเชื่อมต่อ!
 onboarding-connect_tracker-usb = USB แทร็กเกอร์
+onboarding-connect_tracker-close = ปิด
 onboarding-connect_tracker-connection_status-serial_init = กำลังเชื่อมต่อกับอุปกรณ์ Serial
 onboarding-connect_tracker-connection_status-obtaining_mac_address = กำลังรับ MAC address ของแทร็กเกอร์
 onboarding-connect_tracker-connection_status-provisioning = กำลังส่งข้อมูลเครือข่าย Wi-Fi
@@ -805,6 +801,13 @@ onboarding-assign_trackers-description = มาเลือกกันเลย
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = แทร็กเกอร์ { $assigned } จาก { $trackers } ตัว ได้ถูกกำหนดตำแหน่งแล้ว
+onboarding-assign_trackers-tap_modal-cancel = ยกเลิก
+onboarding-assign_trackers-tab-body = ร่างกาย
+onboarding-assign_trackers-tab-fingers = นิ้ว
+onboarding-assign_trackers-side-right = ขวา
+onboarding-assign_trackers-side-left = ซ้าย
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = มุมมองภาพสะท้อน
 
 ## Tracker assignment warnings
 
@@ -951,7 +954,6 @@ onboarding-automatic_proportions-requirements-next = ฉันได้อ่า
 onboarding-automatic_proportions-start_recording-title = เตรียมพร้อมสำหรับการเคลื่อนไหว
 onboarding-automatic_proportions-start_recording-description = เราจะทำการบันทึกท่าทางและการเคลื่อนไหวเฉพาะบางอย่าง ซึ่งจะปรากฏขึ้นบนหน้าจอถัดไป โปรดเตรียมพร้อมที่จะเริ่มทันทีเมื่อกดปุ่ม!
 onboarding-automatic_proportions-start_recording-next = เริ่มการบันทึก
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = กำลังบันทึก...
 onboarding-automatic_proportions-recording-description-p1 = โปรดทำท่าทางการเคลื่อนไหวที่แสดงด้านล่างนี้:
 # Each line of text is a different list item
@@ -1009,7 +1011,6 @@ onboarding-user_height-reset-warning = คุณได้ตั้งค่า�
 
 ## Stay Aligned setup
 
-onboarding-stay_aligned-title = Stay Aligned
 onboarding-stay_aligned-description = ตั้งค่า Stay Aligned เพื่อรักษาตำแหน่งแทร็กเกอร์ให้ตรงอยู่เสมอ
 onboarding-stay_aligned-put_trackers_on-title = ใส่แทร็กเกอร์ของคุณ
 onboarding-stay_aligned-put_trackers_on-description = เพื่อบันทึกท่าทางผ่อนคลายของคุณ เราจะใช้ข้อมูลจากแทร็กเกอร์ที่คุณเพิ่งระบุตำแหน่งไปเมื่อสักครู่ ให้คุณสวมใส่แทร็กเกอร์ทั้งหมด โดยคุณสามารถดูได้ว่าตัวไหนเป็นตัวไหนจากรูปภาพทางด้านขวา
@@ -1041,6 +1042,7 @@ onboarding-stay_aligned-manual_mounting-done = เสร็จแล้ว
 
 home-settings = การตั้งค่าหน้าหลัก
 home-settings-close = ปิด
+home-no_trackers-connect = เชื่อมต่อแทร็กเกอร์
 
 ## Trackers Still On notification
 
@@ -1073,6 +1075,7 @@ firmware_tool-select_source-firmware = แหล่งที่มาของ�
 firmware_tool-select_source-version = เวอร์ชันของเฟิร์มแวร์
 firmware_tool-select_source-official = ทางการ
 firmware_tool-select_source-dev = รุ่นพัฒนา
+firmware_tool-select_source-latest = ล่าสุด
 firmware_tool-select_source-not_selected = ยังไม่ได้กำหนดแหล่งเฟิร์มแวร์
 firmware_tool-select_source-no_boards = ไม่มีเฟิร์มแวร์บอร์ดสำหรับแหล่งนี้
 firmware_tool-select_source-no_versions = ไม่มีเวอร์ชั่นที่ใช้ได้สำหรับแหล่งนี้
@@ -1263,9 +1266,6 @@ tracking_checklist-VRCHAT_SETTINGS-open = ไปยังคำเตือน�
 tracking_checklist-UNASSIGNED_HMD = เฮดเซ็ท VR ไม่ได้ถูกกำหนดที่ส่วนหัว
 tracking_checklist-UNASSIGNED_HMD-desc = ควรระบุเฮตเซ็ท VR ให้เป็นแทร็กเกอร์ส่วนหัว
 tracking_checklist-NETWORK_PROFILE_PUBLIC = แก้ไขโปรไฟล์เครือข่าย
-tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
-    โปรไฟล์เครือข่ายของคุณ ({ $adapters }) ถูกตั้งค่าเป็น สาธารณะ (Public) อยู่ในขณะนี้ ซึ่งไม่แนะนำสำหรับการทำงานที่ถูกต้องของ SlimeVR
-    <PublicFixLink>ดูวิธีการแก้ไขได้ที่นี่</PublicFixLink>
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = เปิด Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = ตั้งค่า Stay Aligned
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = บันทึกท่าท่างใน Stay Aligned เพื่อลดการดริฟท์
