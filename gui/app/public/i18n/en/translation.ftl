@@ -249,19 +249,11 @@ skeleton_bone-LOWER_ARM-desc =
     This is the distance from your elbows to your wrists.
     To adjust it, adjust Arm Length properly and modify it until
     your elbow trackers line up with your real elbows.
-skeleton_bone-HAND_Y = Hand Distance Y
-skeleton_bone-HAND_Y-desc =
-    This is the vertical distance from your wrists to the middle of your hand.
-    To adjust it for motion capture, adjust Arm Length properly and modify it until your
-    hand trackers line up vertically with the middle of your hands.
-    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
-    modify it until your elbow trackers line up vertically with your wrists.
-skeleton_bone-HAND_Z = Hand Distance Z
-skeleton_bone-HAND_Z-desc =
-    This is the horizontal distance from your wrists to the middle of your hand.
-    To adjust it for motion capture, set it to 0.
-    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
-    modify it until your elbow trackers line up horizontally with your wrists.
+skeleton_bone-HAND = Hand Length
+skeleton_bone-HAND-desc =
+    This is the distance from your wrists to your knuckles.
+    To adjust it, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with your knuckles.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
