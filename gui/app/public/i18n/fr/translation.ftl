@@ -36,6 +36,33 @@ unit-foot = Pied
 unit-inch = Pouce
 unit-cm = cm
 
+## Dropdown
+
+dropdown_select-all = Tout sélectionner
+dropdown_unselect-all = Tout désélectionner
+
+## Text input
+
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = Voir le mot de passe
+input-password-hide = Cacher le mot de passe
+
+## File input
+
+# Accessible name and tooltip for the icon-only button that clears a picked path
+file_input-clear = Désélectionner le fichier
+file_input-clear_folder = Désélectionner le dossier
+
+## Window controls
+
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = Ouvrir la documentation
+titlebar-settings = Ouvrir les paramètres
+titlebar-update = Télécharger la mise à jour
+titlebar-minimize = Réduire
+titlebar-maximize = Agrandir
+titlebar-close = Fermer
+
 ## Body parts
 
 body_part-NONE = Non-attribué
@@ -49,8 +76,9 @@ body_part-RIGHT_UPPER_LEG = Cuisse droite
 body_part-RIGHT_LOWER_LEG = Cheville droite
 body_part-RIGHT_FOOT = Pied droit
 body_part-UPPER_CHEST = Poitrine supérieure
-body_part-CHEST = Poitrine
-body_part-WAIST = Taille
+body_part-LOWER_CHEST = Poitrine inférieure
+body_part-UPPER_WAIST = Taille supérieure
+body_part-LOWER_WAIST = Taille inférieure
 body_part-HIP = Hanche
 body_part-LEFT_SHOULDER = Épaule gauche
 body_part-LEFT_UPPER_ARM = Bras gauche
@@ -89,6 +117,17 @@ body_part-RIGHT_RING_DISTAL = Annulaire droit distal
 body_part-RIGHT_LITTLE_PROXIMAL = Auriculaire droit proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Auriculaire droit intermédiaire
 body_part-RIGHT_LITTLE_DISTAL = Auriculaire droit distal
+body_part-LEFT_BIG_TOE = Gros orteil gauche
+body_part-LEFT_INDEX_TOE = Orteil de l'index gauche
+body_part-LEFT_MIDDLE_TOE = Orteil central gauche
+body_part-LEFT_RING_TOE = Orteil annulaire gauche
+body_part-LEFT_LITTLE_TOE = Petit orteil gauche
+body_part-RIGHT_TOES = Orteils droit
+body_part-RIGHT_BIG_TOE = Grand orteil droit
+body_part-RIGHT_INDEX_TOE = Orteil de l'index droit
+body_part-RIGHT_MIDDLE_TOE = Orteil central droit
+body_part-RIGHT_RING_TOE = Orteil annulaire droit
+body_part-RIGHT_LITTLE_TOE = Petit orteil droit
 
 ## BoardType
 
@@ -142,14 +181,19 @@ skeleton_bone-UPPER_CHEST-desc =
     Ceci la distance entre la base de votre cou et le milieu de votre poitrine.
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
-skeleton_bone-CHEST = Longueur de la poitrine
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST = Longueur de la poitrine supérieure
+skeleton_bone-LOWER_CHEST-desc =
     Ceci est la distance entre le milieu de votre poitrine et le milieu de votre colonne vertébrale.
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
-skeleton_bone-WAIST = Longueur de la taille
-skeleton_bone-WAIST-desc =
+skeleton_bone-UPPER_WAIST = Longueur de la taille supérieure
+skeleton_bone-UPPER_WAIST-desc =
     Ceci est la distance entre le milieu de votre colonne vertébrale et votre nombril.
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
+skeleton_bone-LOWER_WAIST = Longueur de la taille inférieure
+skeleton_bone-LOWER_WAIST-desc =
+    Ceci est la distance entre votre nombril et vos hanches
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-HIP = Longueur des hanches
@@ -212,19 +256,6 @@ skeleton_bone-LOWER_ARM-desc =
     Ceci est la distance entre vos coudes et vos poignets.
     Pour l’ajuster, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que
     vos capteurs de coude soient alignés avec vos vrais coudes.
-skeleton_bone-HAND_Y = Distance Y des mains
-skeleton_bone-HAND_Y-desc =
-    Ceci est la distance verticale entre vos poignets et le milieu de vos main.
-    Pour l’ajuster pour la capture de mouvement, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que vos
-    capteurs de main soient alignés verticalement avec le milieu de vos mains.
-    Pour l’ajuster pour le suivi des coudes à partir de vos manettes, réglez la longueur des bras à 0 et
-    modifiez-la jusqu’à ce que vos capteurs de coude soient alignés verticalement avec vos poignets.
-skeleton_bone-HAND_Z = Distance Z des mains
-skeleton_bone-HAND_Z-desc =
-    Ceci est la distance horizontale entre vos poignets et le milieu de votre main.
-    Pour l’ajuster pour la capture de mouvement, réglez-la à 0.
-    Pour l’ajuster pour le suivi du coude à partir de vos manettes, réglez la longueur des bras à 0 et
-    modifiez-la jusqu’à ce que vos capteurs de coude soient alignés horizontalement avec vos poignets.
 
 ## Tracker reset buttons
 
@@ -238,16 +269,7 @@ reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
 reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
 reset-error-yaw-need_full_reset = Nécessite une réinitialisation complète avant une réinitialisation horizontale
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Nouveau périphérique détecté !
-serial_detection-new_device-p1 = Entrez vos identifiants Wi-Fi !
-serial_detection-new_device-p2 = Veuillez sélectionner quoi en faire
-serial_detection-open_wifi = Connecter au Wi-Fi
-serial_detection-open_serial = Ouvrir la console série
-serial_detection-submit = Soumettre !
-serial_detection-close = Fermer
+reset-error-no_feet_tracker = Aucun traqueur de pieds assigné / disponible
 
 ## Navigation bar
 
@@ -277,9 +299,7 @@ widget-developer_mode = Mode développeur
 widget-developer_mode-high_contrast = Contraste élevé
 widget-developer_mode-precise_rotation = Rotation précise
 widget-developer_mode-fast_data_feed = Flux de données rapide
-widget-developer_mode-sort_by_name = Trier par nom
 widget-developer_mode-raw_slime_rotation = Rotation brute
-widget-developer_mode-more_info = Plus d'informations
 
 ## Widget: IMU Visualizer
 
@@ -289,7 +309,6 @@ widget-imu_visualizer-hide = Masquer
 widget-imu_visualizer-rotation_raw = Brute
 widget-imu_visualizer-rotation_preview = Aperçu
 widget-imu_visualizer-acceleration = Accélération
-widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Garder Aligné
 
 ## Tracker status
@@ -299,22 +318,14 @@ tracker-status-busy = Occupé
 tracker-status-error = Erreur
 tracker-status-disconnected = Déconnecté
 tracker-status-occluded = Obstrué
-tracker-status-ok = OK
 tracker-status-timed_out = Délai expiré
 
 ## Tracker status columns
 
 tracker-table-column-name = Nom
-tracker-table-column-type = Type
 tracker-table-column-battery = Batterie
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accél. X/Y/Z
-tracker-table-column-rotation = Rotation X/Y/Z
-tracker-table-column-position = Position X/Y/Z
 tracker-table-column-stay_aligned = Garder Aligné
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -386,6 +397,19 @@ tracker-settings-current-version = Actuel
 tracker-settings-latest-version = Dernière version
 tracker-settings-build-date = Date de build
 
+## Dongle settings
+
+dongle-infos-hardware_revision = Révision du hardware
+dongle-status-disconnected = Déconnecté
+dongle-settings-back = Retour à la liste des capteurs
+dongle-settings-name_section-description = Donnez-lui un joli surnom :3
+dongle-settings-update = Mettre à jour maintenant
+dongle-settings-update-title = Version du micrologiciel
+dongle-settings-pair = Appairer un capteur
+dongle-settings-forget_tracker = Oublier
+dongle-settings-telemetry-title = Télémétrie en direct
+dongle-settings-telemetry-select_trackers = Sélectionner les capteurs
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = Non-attribué
@@ -399,6 +423,11 @@ body_assignment_menu-unassign_tracker = Désattribuer
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -417,19 +446,29 @@ mounting_selection_menu-close = Fermer
 settings-sidebar-title = Réglages
 settings-sidebar-general = Général
 settings-sidebar-stay_aligned = Garder Aligné
-settings-sidebar-interface = Interface
-settings-sidebar-osc_trackers = Capteurs OSC VRChat
-settings-sidebar-osc_vmc = VMC
+settings-sidebar-trackers = Capteurs
+settings-sidebar-vrchat_osc = Capteurs OSC VRChat
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
 settings-sidebar-home = Ecran d'accueil
 settings-sidebar-checklist = Checklist de suivi
-settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
 settings-sidebar-vrc_warnings = Avertissements de configuration VRChat
 settings-sidebar-advanced = Avancé
+
+## Bone routing settings
+
+settings-routing-output-vrc_osc = Capteurs OSC VRChat
+settings-routing-output-badge-off = Désactivé
+settings-routing-group-fingers = Doigts
+settings-routing-hands-warning-cancel = Annuler
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Activer
+settings-driver-status-badge-disabled = Désactivé
 
 ## Tracker mechanics
 
@@ -478,6 +517,14 @@ settings-stay_aligned-debug-label = Débogage
 settings-stay_aligned-debug-description = Veuillez inclure vos paramètres lorsque vous signalez des problèmes concernant Garder Aligné.
 settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-papiers
 
+## Keybinds Page
+
+settings-keybinds_full-reset = Réinitialisation complète
+settings-keybinds_yaw-reset = Réinitialisation horizontale
+settings-keybinds_reset-all-button = Tout réinitialiser
+settings-keybinds-recorder-modal-done-button = Fait
+settings-keybinds-recorder-modal-cancel-button = Annuler
+
 ## FK/Tracking settings
 
 settings-general-fk_settings = Paramètres de la capture
@@ -498,8 +545,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au s
 settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
 settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
@@ -524,13 +571,6 @@ settings-general-fk_settings-self_localization-description = Le mode Mocap perme
 
 settings-general-gesture_control-subtitle = Double tape pour réinitialisation rapide
 settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
-# This is a unit: 3 taps, 2 taps, 1 tap
-# $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps =
-    { $amount ->
-        [one] 1 tap
-       *[other] { $amount } taps
-    }
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers =
@@ -572,10 +612,6 @@ settings-interface-appearance-font_size-description = Cela affecte la taille du 
 
 ## Notification settings
 
-settings-interface-notifications = Notifications
-settings-general-interface-serial_detection = Détection de périphérique série
-settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.
-settings-general-interface-serial_detection-label = Détection de périphérique série
 settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
 settings-general-interface-feedback_sound-label = Son de retour
@@ -587,6 +623,8 @@ settings-general-interface-connected_trackers_warning-label = Avertissement de c
 ## Behavior settings
 
 settings-interface-behavior = Comportement
+settings-general-interface-dev_mode = Mode développeur
+settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
 settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
@@ -660,9 +698,14 @@ settings-osc-vrchat-network-address = Adresse réseau
 settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotation
+settings-osc-vrchat-status-badge-error = Erreur
+settings-osc-vrchat-status-badge-unknown = Inconnu
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Modifier les paramètres spécifique au protocole VMC (Virtual Motion Capture)
@@ -691,6 +734,7 @@ settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
 settings-osc-vmc-mirror_tracking = Inverser les mouvements
 settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
 settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
+settings-osc-vmc-status-badge-error = Erreur
 
 ## Common OSC settings
 
@@ -736,7 +780,7 @@ settings-home-list-layout-desc = Sélectionnez l'une des dispositions possibles 
 settings-home-list-layout-grid = Grille
 settings-home-list-layout-table = Tableau
 
-## Tracking Checlist
+## Tracking Checklist
 
 settings-tracking_checklist-active_steps = Etapes actives
 settings-tracking_checklist-active_steps-desc = Liste de toutes les étapes de la checklist de suivi. Vous pouvez choisir de désactiver certaines étapes.
@@ -754,9 +798,13 @@ onboarding-setup_warning-cancel = Continuer la configuration
 
 ## Quiz
 
+onboarding-quiz_continue = Continuer
+onboarding-quiz_back = En arrière
+onboarding-quiz-mocap_preferences-head_tracker-yes = Oui
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Retour
 onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -765,8 +813,9 @@ onboarding-wifi_creds-description-v2 =
     
     Assurez-vous d’utiliser une connexion Wi-Fi 2,4 GHz pour vos capteurs !
 onboarding-wifi_creds-submit = Valider
+onboarding-wifi_creds-retry = Réessayer
+onboarding-wifi_creds-ssid-label = Nom du Wi-Fi
 onboarding-wifi_creds-ssid =
-    .label = Nom du Wi-Fi
     .placeholder = Nom
 onboarding-wifi_creds-ssid-required = Le nom du Wi-Fi est requis
 onboarding-wifi_creds-password =
@@ -779,6 +828,7 @@ onboarding-wifi_creds-dongle-continue = Continuer avec un dongle
 
 ## Install info
 
+install-info_udev-rules_modal_button = Fermer
 
 ## Setup start
 
@@ -790,6 +840,7 @@ onboarding-home-start = Commencer
 onboarding-connect_tracker-title = Connecter les capteurs
 onboarding-connect_tracker-issue-serial = J'ai des problèmes de connexion !
 onboarding-connect_tracker-usb = Capteur USB
+onboarding-connect_tracker-close = Fermer
 onboarding-connect_tracker-connection_status-serial_init = Connexion au périphérique en série
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtention de l'adresse mac du capteur
 onboarding-connect_tracker-connection_status-provisioning = Envoi des identifiants Wi-Fi
@@ -827,6 +878,13 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } sur 1 capteur attribué
        *[other] { $assigned } sur { $trackers } capteurs attribués
     }
+onboarding-assign_trackers-tap_modal-cancel = Annuler
+onboarding-assign_trackers-tab-body = Corps
+onboarding-assign_trackers-tab-fingers = Doigts
+onboarding-assign_trackers-side-right = Droite
+onboarding-assign_trackers-side-left = Gauche
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Vue miroir
 
 ## Tracker assignment warnings
 
@@ -1069,6 +1127,7 @@ onboarding-stay_aligned-manual_mounting-done = Terminé
 
 home-settings = Paramètres de la page d'accueil
 home-settings-close = Fermer
+home-no_trackers-connect = Connecter les capteurs
 
 ## Trackers Still On notification
 
@@ -1100,7 +1159,7 @@ firmware_tool-select_source-board_type = Type de carte
 firmware_tool-select_source-firmware = Source du micrologiciel
 firmware_tool-select_source-version = Version du micrologiciel
 firmware_tool-select_source-official = Officiel
-firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-latest = Dernière version
 firmware_tool-select_source-not_selected = Aucune source sélectionnée
 firmware_tool-select_source-no_boards = Aucune carte disponible pour cette source
 firmware_tool-select_source-no_versions = Aucune version disponible pour cette source

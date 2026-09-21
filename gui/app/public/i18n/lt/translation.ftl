@@ -32,6 +32,19 @@ tips-failed_webgl = Įvyko techninė klaida inicijuojant WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Uždaryti
+
 ## Body parts
 
 body_part-NONE = Nepriskirta
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = Dešinioji šlaunis
 body_part-RIGHT_LOWER_LEG = Dešinioji blauzda
 body_part-RIGHT_FOOT = Dešinioji pėda
 body_part-UPPER_CHEST = Viršutinė krūtinės dalis
-body_part-CHEST = Krūtinė
-body_part-WAIST = Liemuo
 body_part-HIP = Klubai
 body_part-LEFT_SHOULDER = Kairysis petys
 body_part-LEFT_UPPER_ARM = Kairysis žastas
@@ -89,24 +100,8 @@ body_part-RIGHT_LITTLE_DISTAL = Dešiniojo mažylio tolimiausioji dalis
 ## BoardType
 
 board_type-UNKNOWN = Nežinoma
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Nestandartinė plokštė
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = „Wrangler“ Joycon'ai
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 
@@ -131,14 +126,8 @@ skeleton_bone-UPPER_CHEST-desc =
     Tai atstumas nuo kaklo pagrindo iki krūtinės vidurio.
     Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
     (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
-skeleton_bone-CHEST = Krūtinės ilgis
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     Tai atstumas nuo krūtinės vidurio iki stuburo centro.
-    Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
-    (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
-skeleton_bone-WAIST = Juosmens ilgis
-skeleton_bone-WAIST-desc =
-    Tai atstumas nuo stuburo centro iki bambos.
     Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
     (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
 skeleton_bone-HIP = Klubų ilgis
@@ -173,8 +162,6 @@ skeleton_bone-SHOULDERS_WIDTH = Pečių plotis
 skeleton_bone-arm_group = Rankų ilgis
 skeleton_bone-UPPER_ARM = Žasto ilgis
 skeleton_bone-LOWER_ARM = Dilbio ilgis
-skeleton_bone-HAND_Y = Rankos atstumas Y
-skeleton_bone-HAND_Z = Rankos atstumas Z
 
 ## Tracker reset buttons
 
@@ -184,16 +171,6 @@ reset-reset_all_warning-cancel = Atšaukti
 reset-full = Pilnas atstatymas
 reset-mounting = Tvirtinimo pozicijų atstatymas
 reset-yaw = Horizontalus atstatymas
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Aptiktas naujas serijinis įrenginys!
-serial_detection-new_device-p1 = Įveskite savo „Wi-Fi“ prisijungimo duomenis!
-serial_detection-new_device-p2 = Pasirinkite, ką norite su juo daryti
-serial_detection-open_wifi = Prijungti prie „Wi-Fi“
-serial_detection-open_serial = Atidaryti serijinę konsolę
-serial_detection-submit = Patvirtinti!
-serial_detection-close = Uždaryti
 
 ## Navigation bar
 
@@ -220,9 +197,7 @@ widget-developer_mode = Kūrėjo režimas
 widget-developer_mode-high_contrast = Didelis kontrastas
 widget-developer_mode-precise_rotation = Tiksli rotacija
 widget-developer_mode-fast_data_feed = Greitas duomenų perdavimas
-widget-developer_mode-sort_by_name = Rikiuoti pagal pavadinimą
 widget-developer_mode-raw_slime_rotation = Neapdorota rotacija
-widget-developer_mode-more_info = Daugiau informacijos
 
 ## Widget: IMU Visualizer
 
@@ -249,13 +224,9 @@ tracker-status-timed_out = Nebepasiekiamas
 tracker-table-column-name = Pavadinimas
 tracker-table-column-type = Tipas
 tracker-table-column-battery = Baterija
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Akcel. X/Y/Z
 tracker-table-column-rotation = Rotacija X/Y/Z
 tracker-table-column-position = Pozicija X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -318,6 +289,14 @@ tracker-settings-update-up_to_date = Atnaujinta
 tracker-settings-update = Atnaujinti dabar
 tracker-settings-update-title = Programinės įrangos versija
 
+## Dongle settings
+
+dongle-infos-hardware_revision = Įrenginio revizija
+dongle-status-disconnected = Atjungtas
+dongle-settings-back = Grįžti į sekiklio sąrašą
+dongle-settings-update = Atnaujinti dabar
+dongle-settings-update-title = Programinės įrangos versija
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = Nepriskirtas
@@ -331,6 +310,11 @@ body_assignment_menu-unassign_tracker = Išvalyti sekiklio priskyrimą
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -349,7 +333,6 @@ mounting_selection_menu-close = Uždaryti
 settings-sidebar-title = Nustatymai
 settings-sidebar-general = Bendrieji
 settings-sidebar-interface = Sąsaja
-settings-sidebar-osc_trackers = VRChat OSC sekikliai
 settings-sidebar-utils = Įrankiai
 settings-sidebar-serial = Serijinė konsolė
 settings-sidebar-appearance = Išvaizda
@@ -357,6 +340,13 @@ settings-sidebar-notifications = Pranešimai
 settings-sidebar-behavior = Elgsena
 settings-sidebar-firmware-tool = DIY sekiklių programinės įrangos įrankis
 settings-sidebar-advanced = Išplėstiniai
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Atšaukti
+
+## SteamVR / Monado output settings
+
 
 ## Tracker mechanics
 
@@ -384,6 +374,14 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Naudoja magnetometrą visuose sekikliuose, kurių programinė įrangą jį palaiko. Tai sumažiną dreifą jeigu magnetinė aplinka stabili.
     Galima individualiai tai išjungti kiekvieno sekiklio nustatymuose. <b>Neišjunkite sekiklių keisdami šį nustatymą!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Naudoti magnetometrą sekikliuose
+settings-stay_aligned-general-label = Bendrieji
+settings-stay_aligned-relaxed_poses-close = Uždaryti
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Pilnas atstatymas
+settings-keybinds_yaw-reset = Horizontalus atstatymas
+settings-keybinds-recorder-modal-cancel-button = Atšaukti
 
 ## FK/Tracking settings
 
@@ -408,6 +406,7 @@ settings-general-fk_settings-leg_fk = Kojų sekimas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
+settings-general-fk_settings-arm_fk-back = Gale
 
 ## Gesture control settings (tracker tapping)
 
@@ -434,35 +433,50 @@ settings-general-gesture_control-trackers =
 
 ## Appearance settings
 
+settings-interface-appearance = Išvaizda
+settings-general-interface-dev_mode = Kūrėjo režimas
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Notification settings
 
+settings-interface-notifications = Pranešimai
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Kūrėjo režimas
+settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Serial settings
 
-
-## OSC router settings
-
+settings-serial-factory_reset-warning-cancel = Atšaukti
+settings-serial-send_command-warning-cancel = Atšaukti
 
 ## OSC VRChat settings
 
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Sekimo duomenys
+settings-osc-vrchat-status-badge-error = Klaida
+settings-osc-vrchat-status-badge-unknown = Nežinoma
+
 ## VMC OSC settings
 
+settings-osc-vmc-status-badge-error = Klaida
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced = Išplėstiniai
+settings-utils-advanced-reset_warning-cancel = Atšaukti
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -470,33 +484,29 @@ settings-general-gesture_control-trackers =
 
 ## Quiz
 
+onboarding-quiz_back = Gale
+onboarding-quiz-mocap_preferences-head_tracker-yes = Taip
 
 ## Wi-Fi setup
 
-
-## Mounting setup
-
+onboarding-wifi_creds-submit = Patvirtinti!
 
 ## Install info
 
+install-info_udev-rules_modal_button = Uždaryti
 
 ## Setup start
 
 
-## Setup done
-
-
 ## Tracker connection setup
 
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
+onboarding-connect_tracker-close = Uždaryti
 
 ## Tracker assignment setup
 
+onboarding-assign_trackers-tap_modal-cancel = Atšaukti
+onboarding-assign_trackers-side-right = Dešinėje
+onboarding-assign_trackers-side-left = Kairėje
 
 ## Tracker assignment warnings
 
@@ -509,6 +519,8 @@ settings-general-gesture_control-trackers =
 
 ## Tracker automatic mounting setup
 
+onboarding-automatic_mounting-title = Tvirtinimo kalibravimas
+onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
 
 ## Tracker manual proportions setupa
 
@@ -521,21 +533,23 @@ settings-general-gesture_control-trackers =
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-verify_mounting-title = Tvirtinimo kalibravimas
 
 ## Home
 
+home-settings-close = Uždaryti
 
 ## Trackers Still On notification
 
-
-## Status system
-
+trackers_still_on-modal-confirm = Uždaryti SlimeVR
 
 ## Firmware tool globals
 
+firmware_tool-loading = Įkeliama...
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Programinės įrangos versija
 
 ## firmware tool build status
 
@@ -548,12 +562,17 @@ settings-general-gesture_control-trackers =
 
 ## Tray Menu
 
+tray_menu-hide = Slėpti
 
 ## First exit modal
 
+tray_or_exit_modal-cancel = Atšaukti
 
 ## Unknown device modal
 
+vrc_config-spine_mode-UNKNOWN = Nežinoma
+vrc_config-tracker_model-UNKNOWN = Nežinoma
+vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
 
 ## Error collection consent modal
 
@@ -562,3 +581,5 @@ error_collection_modal-cancel = Nesutinku
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Uždaryti
+toolbar-mounting_calibration = Tvirtinimo kalibravimas

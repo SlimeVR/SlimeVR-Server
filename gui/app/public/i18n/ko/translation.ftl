@@ -32,6 +32,19 @@ tips-failed_webgl = WebGL 초기화에 실패했습니다.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = 닫기
+
 ## Body parts
 
 body_part-NONE = 할당되지 않음
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = 오른쪽 다리 위
 body_part-RIGHT_LOWER_LEG = 오른쪽 다리 아래
 body_part-RIGHT_FOOT = 오른발
 body_part-UPPER_CHEST = 가슴 위
-body_part-CHEST = 가슴
-body_part-WAIST = 허리
 body_part-HIP = 골반
 body_part-LEFT_SHOULDER = 오른쪽 어깨
 body_part-LEFT_UPPER_ARM = 왼쪽 팔 위
@@ -59,24 +70,7 @@ body_part-LEFT_FOOT = 왼발
 ## BoardType
 
 board_type-UNKNOWN = 알 수 없음
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = 커스텀 보드
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 
@@ -85,8 +79,6 @@ skeleton_bone-HEAD = 머리 밀림
 skeleton_bone-NECK = 목 길이
 skeleton_bone-torso_group = 몸통 길이
 skeleton_bone-UPPER_CHEST = 가슴 위쪽 길이
-skeleton_bone-CHEST = 가슴 길이
-skeleton_bone-WAIST = 허리 길이
 skeleton_bone-HIP = 골반 길이
 skeleton_bone-HIPS_WIDTH = 골반 너비
 skeleton_bone-leg_group = 다리 길이
@@ -99,8 +91,6 @@ skeleton_bone-SHOULDERS_WIDTH = 어깨 너비
 skeleton_bone-arm_group = 팔 길이
 skeleton_bone-UPPER_ARM = 위쪽 팔 거리
 skeleton_bone-LOWER_ARM = 아래쪽 팔 길이
-skeleton_bone-HAND_Y = 손 길이 Y
-skeleton_bone-HAND_Z = 손 길이 Z
 
 ## Tracker reset buttons
 
@@ -110,16 +100,6 @@ reset-reset_all_warning-cancel = 취소
 reset-full = 전체 정렬
 reset-mounting = 착용 방향 정렬
 reset-yaw = Yaw 정렬
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = 새로운 시리얼 디바이스 감지됨!
-serial_detection-new_device-p1 = Wi-Fi 자격 증명을 입력해주세요!
-serial_detection-new_device-p2 = 원하는 작업을 선택하세요
-serial_detection-open_wifi = Wi-Fi 연결
-serial_detection-open_serial = 시리얼 콘솔 열기
-serial_detection-submit = 저장!
-serial_detection-close = 닫기
 
 ## Navigation bar
 
@@ -146,9 +126,7 @@ widget-developer_mode = 개발자 모드
 widget-developer_mode-high_contrast = 고대비
 widget-developer_mode-precise_rotation = 회전 자세히 보기
 widget-developer_mode-fast_data_feed = 빠른 데이터 피드
-widget-developer_mode-sort_by_name = 이름순으로 정렬
 widget-developer_mode-raw_slime_rotation = 원시 회전값 보기
-widget-developer_mode-more_info = 더 많은 정보 보기
 
 ## Widget: IMU Visualizer
 
@@ -175,13 +153,10 @@ tracker-status-timed_out = 시간 초과
 tracker-table-column-name = 이름
 tracker-table-column-type = 타입
 tracker-table-column-battery = 배터리
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = 온도 °C
 tracker-table-column-linear-acceleration = X/Y/Z 가속도
 tracker-table-column-rotation = X/Y/Z 회전
 tracker-table-column-position = X/Y/Z 위치
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -234,7 +209,6 @@ tracker-settings-use_mag-label = 자력계 활성화
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
-tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = 트래커 이름
 tracker-settings-forget = 트래커 삭제
 tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
@@ -242,6 +216,14 @@ tracker-settings-forget-label = 트래커 삭제
 tracker-settings-update-up_to_date = 최신 버전
 tracker-settings-update = 지금 업데이트
 tracker-settings-update-title = 펌웨어 버전
+
+## Dongle settings
+
+dongle-infos-hardware_revision = 하드웨어 리비전
+dongle-status-disconnected = 연결되지 않음
+dongle-settings-back = 트래커 목록으로 돌아가기
+dongle-settings-update = 지금 업데이트
+dongle-settings-update-title = 펌웨어 버전
 
 ## Tracker part card info
 
@@ -256,6 +238,11 @@ body_assignment_menu-unassign_tracker = 할당하지 않기
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -273,14 +260,22 @@ mounting_selection_menu-close = 닫기
 
 settings-sidebar-title = 설정
 settings-sidebar-general = 일반
+settings-sidebar-trackers = 트래커
 settings-sidebar-interface = 인터페이스
-settings-sidebar-osc_trackers = VRChat OSC 트래커
 settings-sidebar-utils = 유틸리티
 settings-sidebar-serial = 시리얼 콘솔
 settings-sidebar-appearance = 모양
 settings-sidebar-notifications = 알림
 settings-sidebar-firmware-tool = DIY 펌웨어 도구
 settings-sidebar-advanced = 고급
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = 취소
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = 활성화
 
 ## Tracker mechanics
 
@@ -292,9 +287,7 @@ settings-general-tracker_mechanics-filtering-description =
 settings-general-tracker_mechanics-filtering-type = 필터링 타입
 settings-general-tracker_mechanics-filtering-type-none = 필터링 없음
 settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
-settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
-settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
 settings-general-tracker_mechanics-filtering-amount = 강도
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw 정렬할 때 부드럽게 움직이는 시간 (비활성화: 0초)
@@ -308,6 +301,15 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     호환 가능한 펌웨어가 있는 모든 트래커에서 자력계를 사용하여 안정적인 자기 환경에서 틀어짐을 줄일 수 있어요.
     트래커의 설정에서 트래커별로 비활성화할 수 있어요. <b>이 기능을 토글하는 동안 트래커를 종료하지 마세요!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 트래커에서 자력계 사용하기
+settings-stay_aligned-general-label = 일반
+settings-stay_aligned-relaxed_poses-close = 닫기
+
+## Keybinds Page
+
+settings-keybinds_full-reset = 전체 정렬
+settings-keybinds_yaw-reset = Yaw 정렬
+settings-keybinds_reset-all-button = 모든 설정 초기화
+settings-keybinds-recorder-modal-cancel-button = 취소
 
 ## FK/Tracking settings
 
@@ -394,9 +396,6 @@ settings-interface-appearance-font_size-description = 변경하면 이 설정 �
 ## Notification settings
 
 settings-interface-notifications = 알림
-settings-general-interface-serial_detection = 시리얼 디바이스 감지
-settings-general-interface-serial_detection-description = 이 옵션은 트래커일 수도 있는 새로운 시리얼 디바이스를 연결할 때마다 팝업을 표시해요. 트래커 설정 프로세스를 개선하는 데 도움이 될 거예요.
-settings-general-interface-serial_detection-label = 시리얼 디바이스 감지
 settings-general-interface-feedback_sound = 피드백 사운드
 settings-general-interface-feedback_sound-description = 이 옵션을 켜면 트래커를 정렬할 때 효과음을 재생해요
 settings-general-interface-feedback_sound-label = 피드백 사운드
@@ -407,6 +406,8 @@ settings-general-interface-connected_trackers_warning-label = 종료 시 작동 
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = 개발자 모드
+settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-use_tray = 작업 표시줄로 최소화
 settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
 settings-general-interface-use_tray-label = 작업 표시줄로 최소화
@@ -442,6 +443,8 @@ settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
 settings-serial-save_logs = 파일에 저장
+settings-serial-send_command-warning-ok = 네! 알고 있어요.
+settings-serial-send_command-warning-cancel = 취소
 
 ## OSC VRChat settings
 
@@ -465,9 +468,14 @@ settings-osc-vrchat-network-address = 네트워크 주소
 settings-osc-vrchat-network-address-description-v1 = OSC 데이터를 보낼 주소, VRChat에서 사용하려면 그냥 두세요.
 settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = 회전
+settings-osc-vrchat-status-badge-error = 오류
+settings-osc-vrchat-status-badge-unknown = 알 수 없음
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     SlimeVR의 골격 데이터를 보내고 다른 앱에서 이 데이터를 수신하기 위해
@@ -496,6 +504,7 @@ settings-osc-vmc-anchor_hip-label = 골반에 앵커 설정
 settings-osc-vmc-mirror_tracking = 움직임 좌우 반전
 settings-osc-vmc-mirror_tracking-description = 움직임을 수평 방향으로 반전시킵니다.
 settings-osc-vmc-mirror_tracking-label = 움직임 좌우 반전
+settings-osc-vmc-status-badge-error = 오류
 
 ## Common OSC settings
 
@@ -528,7 +537,7 @@ settings-utils-advanced-open_logs-label = 폴더 열기
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -544,12 +553,17 @@ onboarding-setup_warning-cancel = 설정 계속하기
 
 ## Quiz
 
+onboarding-quiz_continue = 계속하기
+onboarding-quiz_back = 뒤쪽
+onboarding-quiz-mocap_preferences-head_tracker-yes = 확인
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = 돌아가기
 onboarding-wifi_creds-submit = 저장!
+onboarding-wifi_creds-retry = 재시도
+onboarding-wifi_creds-ssid-label = Wi-Fi 이름
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi 이름
     .placeholder = Wi-Fi 이름을 입력하세요
 onboarding-wifi_creds-ssid-required = Wi-Fi 이름을 입력하세요
 onboarding-wifi_creds-password =
@@ -558,6 +572,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = 닫기
 
 ## Setup start
 
@@ -569,6 +584,7 @@ onboarding-home-start = 설정하러 가보죠!
 onboarding-connect_tracker-title = 트래커 연결
 onboarding-connect_tracker-issue-serial = 연결하는 데 문제가 생겼어요!
 onboarding-connect_tracker-usb = USB 트래커
+onboarding-connect_tracker-close = 닫기
 onboarding-connect_tracker-connection_status-serial_init = 시리얼 디바이스에 연결 중
 onboarding-connect_tracker-connection_status-obtaining_mac_address = 트래커 MAC 주소를 가져오는 중
 onboarding-connect_tracker-connection_status-provisioning = Wi-Fi 자격 증명 전송 중
@@ -597,6 +613,11 @@ onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 �
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = 트래커 { $trackers }개 중 { $assigned }개 연결됨
+onboarding-assign_trackers-tap_modal-cancel = 취소
+onboarding-assign_trackers-side-right = 오른쪽
+onboarding-assign_trackers-side-left = 왼쪽
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = 좌우 반전
 
 ## Tracker assignment warnings
 
@@ -731,7 +752,6 @@ onboarding-automatic_proportions-requirements-next = 요구사항을 모두 읽�
 onboarding-automatic_proportions-start_recording-title = 움직일 준비를 해요
 onboarding-automatic_proportions-start_recording-description = 이제 몇 가지 특정 포즈와 동작을 기록할 거예요. 다음 화면에서 메시지가 표시되면 버튼을 눌러서 시작하세요!
 onboarding-automatic_proportions-start_recording-next = 기록 시작하기
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = 기록하는 중...
 onboarding-automatic_proportions-recording-description-p1 = 아래에 표시된 동작을 따라 하세요
 # Each line of text is a different list item
@@ -771,6 +791,16 @@ onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = 트래커를 착용하세요
+onboarding-stay_aligned-put_trackers_on-next = 트래커를 모두 착용했어요
+onboarding-stay_aligned-verify_mounting-title = 착용 방향 정렬
+onboarding-stay_aligned-preparation-title = 준비
+
+## Home
+
+home-settings-close = 닫기
+home-no_trackers-connect = 트래커 연결
+
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = 트래커가 아직 켜져 있어요!
@@ -792,6 +822,7 @@ firmware_tool = DIY 펌웨어 도구
 firmware_tool-description = DIY 트래커를 설정하고 펌웨어를 쓸 수 있습니다
 firmware_tool-not_available = 앗, 지금은 펌웨어 툴을 사용할 수 없어요. 나중에 다시 오세요!
 firmware_tool-not_compatible = 이 서버 버전은 펌웨어 도구를 지원하지 않습니다. 서버를 업데이트해 주세요!
+firmware_tool-select_source-version = 펌웨어 버전
 firmware_tool-flash_method_step = 펌웨어 플래시 방식
 firmware_tool-flash_method_step-description = 펌웨어를 트래커에 플래시할 방법을 선택해 주세요
 firmware_tool-flashbtn_step = BOOT 버튼 누르기
@@ -875,11 +906,11 @@ tray_or_exit_modal-cancel = 취소
 ## Unknown device modal
 
 unknown_device-modal-title = 새로운 트래커를 찾았어요!
-unknown_device-modal-description =
-    <b>{ $deviceID }</b>의 MAC 주소를 가진 새로운 트래커를 발견했어요.
-    SlimeVR에 연결할까요?
 unknown_device-modal-confirm = 당연하죠!
 unknown_device-modal-forget = 무시할게요
+vrc_config-spine_mode-UNKNOWN = 알 수 없음
+vrc_config-tracker_model-UNKNOWN = 알 수 없음
+vrc_config-avatar_measurement_type-UNKNOWN = 알 수 없음
 
 ## Error collection consent modal
 
@@ -888,3 +919,6 @@ error_collection_modal-confirm = 동의해요
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = 닫기
+tracking_checklist-UNASSIGNED_HMD-desc = VR 헤드셋은 머리 트래커로 할당되어야 해요.
+toolbar-mounting_calibration = 착용 방향 정렬

@@ -12,6 +12,7 @@ websocket-connection_lost = Η σύνδεση μεταξύ του διακομι
 
 ## Update notification
 
+version_update-close = Κλείσιμο
 
 ## Tips
 
@@ -20,6 +21,19 @@ tips-do_not_move_heels = Βεβαιωθείτε ότι οι φτέρνες σα�
 
 ## Units
 
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Κλείσιμο
 
 ## Body parts
 
@@ -33,8 +47,6 @@ body_part-RIGHT_HAND = Δεξί χέρι
 body_part-RIGHT_UPPER_LEG = Δεξιός μηρός
 body_part-RIGHT_LOWER_LEG = Δεξιός αστράγαλος
 body_part-RIGHT_FOOT = Δεξί πόδι
-body_part-CHEST = Στήθος
-body_part-WAIST = Μέση
 body_part-HIP = Γοφοί
 body_part-LEFT_SHOULDER = Αριστερός ώμος
 body_part-LEFT_UPPER_ARM = Αριστερό μπράτσο
@@ -52,8 +64,6 @@ body_part-LEFT_FOOT = Αριστερό πόδι
 skeleton_bone-NONE = Τίποτα
 skeleton_bone-HEAD = Μετατόπιση κεφαλής
 skeleton_bone-NECK = Μήκος λαιμού
-skeleton_bone-CHEST = Μήκος στήθους
-skeleton_bone-WAIST = Μήκος μέσης
 skeleton_bone-HIP = Μήκος γοφών
 skeleton_bone-HIPS_WIDTH = Πλάτος γοφών
 skeleton_bone-UPPER_LEG = Μήκος άνω ποδιού
@@ -71,16 +81,6 @@ reset-reset_all = Επαναφορά όλων των αναλογιών
 reset-full = Επαναφορά
 reset-mounting = Επαναφορά τοποθέτησης
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Εντοπίστηκε νέα σειριακή συσκευή!
-serial_detection-new_device-p1 = Εισαγάγετε τα στοιχεία Wi-Fi σας !
-serial_detection-new_device-p2 = Επιλέξτε τι θέλετε να κάνετε με αυτό
-serial_detection-open_wifi = Συνδέστε στο δίκτυο Wi-Fi
-serial_detection-open_serial = Ανοίξτε της σειριακής κονσόλας
-serial_detection-submit = Υπόβαλλε!
-serial_detection-close = Κλείσιμο
-
 ## Navigation bar
 
 navbar-home = Αρχική σελίδα
@@ -97,8 +97,6 @@ bvh-recording = Γίνεται εγγραφή...
 
 ## Tracking pause
 
-## Widget: Clear Mounting calibration
-
 
 ## Widget: Developer settings
 
@@ -106,18 +104,13 @@ widget-developer_mode = Λειτουργία προγραμματιστή
 widget-developer_mode-high_contrast = Υψηλή αντίθεση
 widget-developer_mode-precise_rotation = Ακριβής περιστροφή
 widget-developer_mode-fast_data_feed = Γρήγορη ροή δεδομένων
-widget-developer_mode-sort_by_name = Ταξινόμηση κατά όνομα
 widget-developer_mode-raw_slime_rotation = Ακατέργαστη περιστροφή
-widget-developer_mode-more_info = Περισσότερες πληροφορίες
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Περιστροφή
 widget-imu_visualizer-rotation_raw = Ακατέργαστο
 widget-imu_visualizer-rotation_preview = Προεπισκόπηση
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -126,7 +119,6 @@ tracker-status-busy = Απασχολημένο
 tracker-status-error = σφάλμα
 tracker-status-disconnected = αποσυνδεδεμένο
 tracker-status-occluded = Αποφραγμένo
-tracker-status-ok = OK
 
 ## Tracker status columns
 
@@ -134,7 +126,6 @@ tracker-table-column-name = Όνομα
 tracker-table-column-type = τύπος
 tracker-table-column-battery = Μπαταρία
 tracker-table-column-ping = ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Θερμοκρασία °C
 tracker-table-column-linear-acceleration = Eπιταχυνσιόμετρο X/Y/Z
 tracker-table-column-rotation = Περιστροφή Χ/Υ/Ζ
@@ -170,6 +161,12 @@ tracker-settings-mounting_section-edit = Επεξεργασία τοποθέτη
 tracker-settings-name_section = Όνομα ανιχνευτή
 tracker-settings-name_section-description = Δώστε του ένα χαριτωμένο ψευδώνυμο :)
 tracker-settings-name_section-placeholder = Το αριστερό πόδι του NightyBeast
+tracker-settings-name_section-label = Όνομα ανιχνευτή
+
+## Dongle settings
+
+dongle-status-disconnected = αποσυνδεδεμένο
+dongle-settings-back = Επιστροφή στη λίστα ανιχνευτών
 
 ## Tracker part card info
 
@@ -182,36 +179,66 @@ body_assignment_menu-description = Επιλέξτε μια θέση στην ο�
 body_assignment_menu-manage_trackers = Διαχείριση όλων των ανιχνευτών
 body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνευτής
 
+## Tracker assignment menu
+
+
 ## Mounting menu
 
+mounting_selection_menu-close = Κλείσιμο
 
 ## Sidebar settings
 
+settings-sidebar-title = Ρυθμίσεις
+
+## Bone routing settings
+
+
+## SteamVR / Monado output settings
+
+
 ## Tracker mechanics
 
+settings-stay_aligned-relaxed_poses-close = Κλείσιμο
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Επαναφορά
 
 ## FK/Tracking settings
 
+settings-general-fk_settings-arm_fk-back = Πίσω
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
+settings-general-interface-dev_mode = Λειτουργία προγραμματιστή
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Λειτουργία προγραμματιστή
 
 ## Notification settings
 
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Λειτουργία προγραμματιστή
+settings-general-interface-dev_mode-label = Λειτουργία προγραμματιστή
 
 ## Serial settings
 
 
-## OSC router settings
+## OSC VRChat settings
+
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Περιστροφή
+settings-osc-vrchat-status-badge-error = σφάλμα
 
 ## VMC OSC settings
 
+settings-osc-vmc-status-badge-error = σφάλμα
 
 ## Common OSC settings
 
@@ -222,7 +249,7 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -230,33 +257,27 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 
 ## Quiz
 
+onboarding-quiz_back = Πίσω
 
 ## Wi-Fi setup
 
-
-## Mounting setup
-
+onboarding-wifi_creds-submit = Υπόβαλλε!
 
 ## Install info
 
+install-info_udev-rules_modal_button = Κλείσιμο
 
 ## Setup start
 
 
-## Setup done
-
-
 ## Tracker connection setup
 
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
+onboarding-connect_tracker-close = Κλείσιμο
 
 ## Tracker assignment setup
 
+onboarding-assign_trackers-side-right = Δεξιά
+onboarding-assign_trackers-side-left = Αριστερά
 
 ## Tracker assignment warnings
 
@@ -269,6 +290,8 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 
 ## Tracker automatic mounting setup
 
+onboarding-automatic_mounting-title = Βαθμονόμηση τοποθέτησης
+onboarding-automatic_mounting-mounting_reset-title = Βαθμονόμηση τοποθέτησης
 
 ## Tracker manual proportions setupa
 
@@ -281,18 +304,18 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-verify_mounting-title = Βαθμονόμηση τοποθέτησης
 
 ## Home
 
+home-settings-close = Κλείσιμο
 
 ## Trackers Still On notification
 
 
-## Status system
-
-
 ## Firmware tool globals
 
+firmware_tool-loading = Σύνδεση με τον διακομιστή
 
 ## Firmware tool Steps
 
@@ -320,3 +343,6 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Κλείσιμο
+toolbar-mounting_calibration = Βαθμονόμηση τοποθέτησης
+toolbar-mounting_calibration-feet = Πόδια
