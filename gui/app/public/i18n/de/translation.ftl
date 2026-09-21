@@ -31,21 +31,36 @@ tips-failed_webgl = Fehler beim Initialisieren von WebGL.
 
 ## Units
 
+unit-meter = Meter
 unit-foot = Fuß
 unit-inch = Zoll
 unit-cm = Zentimeter
 
 ## Dropdown
 
+dropdown_select-all = Alles auswählen
+dropdown_unselect-all = Alles abwählen
 
 ## Text input
 
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = Passwort anzeigen
+input-password-hide = Passwort verstecken
 
 ## File input
 
+# Accessible name and tooltip for the icon-only button that clears a picked path
+file_input-clear = Datei leeren
+file_input-clear_folder = Ordner leeren
 
 ## Window controls
 
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = Dokumentation öffnen
+titlebar-settings = Einstellungen öffnen
+titlebar-update = Update herunterladen
+titlebar-minimize = Minimieren
+titlebar-maximize = Maximieren
 titlebar-close = Schließen
 
 ## Body parts
@@ -61,6 +76,9 @@ body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
 body_part-RIGHT_LOWER_LEG = Rechter Knöchel
 body_part-RIGHT_FOOT = Rechter Fuß
 body_part-UPPER_CHEST = Obere Brust
+body_part-LOWER_CHEST = Untere Brust
+body_part-UPPER_WAIST = Obere Taille
+body_part-LOWER_WAIST = Untere Taille
 body_part-HIP = Hüfte
 body_part-LEFT_SHOULDER = Linke Schulter
 body_part-LEFT_UPPER_ARM = Linker Oberarm
@@ -99,14 +117,46 @@ body_part-RIGHT_RING_DISTAL = Rechtes Ringfinger-Endglied
 body_part-RIGHT_LITTLE_PROXIMAL = Rechtes Kleinfinger-Grundglied
 body_part-RIGHT_LITTLE_INTERMEDIATE = Rechtes Kleinfinger-Mittelglied
 body_part-RIGHT_LITTLE_DISTAL = Rechtes Kleinfinger-Endglied
+body_part-LEFT_BIG_TOE = Linker großer Zeh
+body_part-LEFT_INDEX_TOE = Linker zweiter Zeh
+body_part-LEFT_MIDDLE_TOE = Linker dritter Zeh
+body_part-LEFT_RING_TOE = Linker vierter Zeh
+body_part-LEFT_LITTLE_TOE = Linker kleiner Zeh
+body_part-RIGHT_TOES = Rechte Zehen
+body_part-RIGHT_BIG_TOE = Rechter großer Zeh
+body_part-RIGHT_INDEX_TOE = Rechter zweiter Zeh
+body_part-RIGHT_MIDDLE_TOE = Rechter dritter Zeh
+body_part-RIGHT_RING_TOE = Rechter vierter Zeh
+body_part-RIGHT_LITTLE_TOE = Rechter kleiner Zeh
 
 ## BoardType
 
 board_type-UNKNOWN = Unbekannt
+board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Benutzerdefiniertes Board
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
 board_type-GESTURES = Gesten
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = Generisches nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -127,9 +177,12 @@ skeleton_bone-UPPER_CHEST = Obere Brustlänge
 skeleton_bone-UPPER_CHEST-desc =
     Dies ist der Abstand vom Ansatz Ihres Nackens bis zur Mitte Ihrer Brust.
     Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z. B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
+skeleton_bone-LOWER_CHEST = Untere Brustlänge
 skeleton_bone-LOWER_CHEST-desc =
     Dies ist der Abstand vom Ansatz der Brust bis zur Mitte Ihrer Wirbelsäule.
     Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z.B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
+skeleton_bone-UPPER_WAIST = Obere Taillenlänge
+skeleton_bone-LOWER_WAIST = Obere Taillenlänge
 skeleton_bone-HIP = Hüftlänge
 skeleton_bone-HIPS_WIDTH = Hüftbreite
 skeleton_bone-leg_group = Beinlänge
@@ -328,9 +381,14 @@ mounting_selection_menu-close = Schließen
 
 settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
+settings-sidebar-driver = SteamVR / Monado
+settings-sidebar-resets = Zurücksetzen
+settings-sidebar-stay_aligned = Bleibe Ausgerichtet
+settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Tracker
 settings-sidebar-interface = Bedienoberfläche
 settings-sidebar-vrchat_osc = VRChat-OSC-Trackers
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
@@ -344,13 +402,59 @@ settings-sidebar-advanced = Erweitert
 
 ## Bone routing settings
 
+settings-routing = Knochenrouting
+settings-routing-description =
+    Wählen Sie aus, was jede Ausgabe sendet.
+    SteamVR/Monado, VRChat OSC und VMC können jeweils ein anderes Set von Körperteilen erhalten.
+settings-routing-mode = Routing Modus
+settings-routing-automatic-label = Automatisches Routing
+settings-routing-mode-description = Während automatisches Routing eingeschaltet ist, wählt SlimeVR den besten Output für jeden Knochen damit nichts zweimal gesendet wird: SteamVR/Monado ist bevorzugt, VRChat OSC deckt die Knochen ab, die es nicht aufnehmen kann und VMC bekommt immer das gesamte Skelett. Schalte es aus um selbst zu entscheiden wohin welcher Knochen gehen soll, einschließlich einen Knochen zu mehreren Outputs gleichzeitig senden.
+settings-routing-bone = Knochen
+settings-routing-cell-required = Pflicht für diesen Output
+settings-routing-cell-unavailable = Output ist auf dieser Plattform nicht verfügbar
+settings-routing-cell-duplicate = Knochen wird zu mehreren Outputs geleitet, die doppelte Tracker in Anwendungen anzeigen könnten
+settings-routing-duplicate-warning =
+    { $bones } { $boneCount ->
+        [one] ist
+       *[many] sind
+    } zu mehreren Ausgängen geleitet ({ $outputs }), die doppelte Tracker in Anwendungen anzeigen können.
+settings-routing-outputs = Outputs
+settings-routing-bones = Knochen
+settings-routing-bones-description = Ein Haken bedeutet, dass der Knochen zu diesem Output gesendet wird. Ein Bindestrich bedeutet, dass der Output diesen Knochen nicht unterstützt. Deaktiviere Automatisch um selbst zu wählen.
+settings-routing-output-driver = SteamVR / Monado
 settings-routing-output-vrc_osc = VRChat-OSC-Trackers
+settings-routing-output-vmc = VMC
+settings-routing-output-bone-count = { $routed } von { $accepts } Knochen geroutet
+settings-routing-output-badge-sending = Sende
+settings-routing-output-sending-description = Verbunden und empfange Knochen.
+settings-routing-output-badge-stopped = Nicht aktiv
+settings-routing-output-stopped-description = SteamVR oder Monado Treiber nicht verbunden.
+settings-routing-output-badge-idle = Leerlauf
+settings-routing-output-idle-description = Aktiv, aber ein entfernter Endpunkt wurde nicht gefunden.
 settings-routing-output-badge-off = Aus
+settings-routing-output-off-description = In seinen Einstellungen deaktiviert.
+settings-routing-output-badge-empty = Nichts weitergeleitet
+settings-routing-output-empty-description = Aktiv, aber keine Knochen wurden geroutet.
+settings-routing-output-badge-unavailable = Nicht verfügbar
+settings-routing-output-unavailable-description = Output ist auf dieser Plattform nicht verfügbar.
+settings-routing-group-spine = Wirbelsäule & Torso
+settings-routing-group-legs = Beine
+settings-routing-group-arms = Arme
 settings-routing-group-fingers = Finger
+settings-routing-row-left_fingers = Linke Finger
+settings-routing-row-right_fingers = Rechte Finger
+settings-routing-hands-warning =
+    <b>Warnung:</b> Die Hände zu SteamVR/Monado zu leiten ersetzt den Input deiner echten Controller.
+    Tue dies nur, wenn du willst, dass SlimeVR Tracker deine Hände tracken.
+    
+    Trotzdem die Hände dorthin leiten?
 settings-routing-hands-warning-cancel = Abbruch
+settings-routing-hands-warning-done = Hände leiten
 
 ## SteamVR / Monado output settings
 
+settings-driver = SteamVR / Monado
+settings-driver-description = Einstellungen für den SlimeVR-Treiber, verwendet von SteamVR und Monado gleichermaßen.
 settings-driver-enable = Aktivieren
 settings-driver-status-badge-disabled = Aus
 
