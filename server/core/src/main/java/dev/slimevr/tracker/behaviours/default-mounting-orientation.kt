@@ -17,6 +17,11 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 	 * Returns the default mounting orientation for the body part
 	 */
 	private fun defaultMountingForBodyPart(bodyPart: BodyPart?): Quaternion = when (bodyPart) {
+		// Spine mounted on the back (TODO: hip too? Test if spine is fine)
+		BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST,
+		BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST -> Quaternion.SLIMEVR.BACK
+
+		// Left lower arm mounted left
 		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
 		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
 		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
@@ -27,6 +32,7 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 		BodyPart.LEFT_SHOULDER,
 		-> Quaternion.SLIMEVR.LEFT
 
+		// Right lower arm mounted right
 		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
 		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
 		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
@@ -37,10 +43,13 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 		BodyPart.RIGHT_SHOULDER,
 		-> Quaternion.SLIMEVR.RIGHT
 
+		// Left upper arm and ankle mounted 45d left
 		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
 
+		// Right upper arm and ankle mounted 45d right
 		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
 
+		// Everything else mounted front (upper legs, feet, thumbs, head)
 		else -> Quaternion.SLIMEVR.FRONT
 	}
 
