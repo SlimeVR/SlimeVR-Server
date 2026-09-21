@@ -83,8 +83,6 @@ skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
 skeleton_bone-arm_group = Käe pikkus
 skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
-skeleton_bone-HAND_Y = Käte kaugus Y
-skeleton_bone-HAND_Z = Käte kaugus Z
 
 ## Tracker reset buttons
 
