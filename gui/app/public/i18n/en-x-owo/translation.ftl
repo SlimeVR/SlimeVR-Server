@@ -138,8 +138,6 @@ skeleton_bone-SHOULDERS_WIDTH = shouwdews wiwdth
 skeleton_bone-arm_group = awm wength
 skeleton_bone-UPPER_ARM = uppew awm wength
 skeleton_bone-LOWER_ARM = wowwer awm wength
-skeleton_bone-HAND_Y = hawnd disance y
-skeleton_bone-HAND_Z = hawnd disance z
 
 ## Tracker reset buttons
 
