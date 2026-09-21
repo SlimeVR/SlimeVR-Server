@@ -32,6 +32,19 @@ tips-failed_webgl = Misslyckades att initiera WebGL.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Stäng
+
 ## Body parts
 
 body_part-NONE = Ej tilldelad
@@ -45,8 +58,6 @@ body_part-RIGHT_UPPER_LEG = Höger lår
 body_part-RIGHT_LOWER_LEG = Höger vrist
 body_part-RIGHT_FOOT = Höger fot
 body_part-UPPER_CHEST = Över bröst
-body_part-CHEST = Bröst
-body_part-WAIST = Midja
 body_part-HIP = Höft
 body_part-LEFT_SHOULDER = Vänster axel
 body_part-LEFT_UPPER_ARM = Vänster överarm
@@ -89,9 +100,7 @@ body_part-RIGHT_LITTLE_DISTAL = Höger lillfinger distal falang
 ## BoardType
 
 board_type-UNKNOWN = Okänd
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Anpassat kretskort
-board_type-WROOM32 = WROOM32
 
 ## Proportions
 
@@ -116,14 +125,8 @@ skeleton_bone-UPPER_CHEST-desc =
     Detta är distansen från din nackes bas till mitten av din bröstkorg.
     För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
     (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
-skeleton_bone-CHEST = Bröstkorgens längd
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     Detta är distansen från mitten av din bröstkorg till mitten av din ryggrad.
-    För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
-    (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
-skeleton_bone-WAIST = Midja Längd
-skeleton_bone-WAIST-desc =
-    Detta är distansen från mitten av din ryggrad till din navel.
     För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
     (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
 skeleton_bone-HIP = Höftlängd
@@ -186,19 +189,6 @@ skeleton_bone-LOWER_ARM-desc =
     Detta är avståndet från dina armbågar till dina handleder.
     För att justera det, justera Armlängd ordentligt och modifiera det
     tills dina armbågs-spårare matchar med dina riktiga armbågar.
-skeleton_bone-HAND_Y = Handavstånd Y
-skeleton_bone-HAND_Y-desc =
-    Detta är den vertikala distansen från dina handleder till mitten av din hand.
-    Föra att justera den till Motion Capture, justera Armlängd ordentligt och modifiera
-    den tills dina hand-sensorer är i linje vertikalt med mitten av dina händer.
-    För att justera den till Armbågs-spårning från dina dina kontroller, sätt Armlängd till 0 och
-    modifiera tills dina armbågs-sensorer är i linje vertikalt med dina handleder.
-skeleton_bone-HAND_Z = Handavstånd Z
-skeleton_bone-HAND_Z-desc =
-    Detta är den horisontella distansen från dina handleder till mitten av din hand.
-    För att justera det för Motion Capture, sätt det till 0.
-    För att justera det för armbågs-spårning från dina kontroller, sätt Armlängd till 0 och
-    modifiera tills dina armbågs-spårare är i linje horisontellt med dina handleder.
 
 ## Tracker reset buttons
 
@@ -208,16 +198,6 @@ reset-reset_all_warning-cancel = Avbryt
 reset-full = Fullständig återställning
 reset-mounting = Återställning av montering
 reset-yaw = Återställning av gir
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Ny seriell enhet upptäckt!
-serial_detection-new_device-p1 = Ange dina Wi-Fi-uppgifter!
-serial_detection-new_device-p2 = Vänligen välj vad du vill göra med den
-serial_detection-open_wifi = Anslut till Wi-Fi
-serial_detection-open_serial = Öppna seriell konsol
-serial_detection-submit = Lämna in!
-serial_detection-close = Stäng
 
 ## Navigation bar
 
@@ -244,9 +224,7 @@ widget-developer_mode = Utvecklarläge
 widget-developer_mode-high_contrast = Hög kontrast
 widget-developer_mode-precise_rotation = Exakt rotation
 widget-developer_mode-fast_data_feed = Snabb dataflöde
-widget-developer_mode-sort_by_name = Sortera efter namn
 widget-developer_mode-raw_slime_rotation = Rå rotation
-widget-developer_mode-more_info = Mer information
 
 ## Widget: IMU Visualizer
 
@@ -255,8 +233,6 @@ widget-imu_visualizer-preview = Förhandsvisa
 widget-imu_visualizer-hide = Göm
 widget-imu_visualizer-rotation_raw = Rå rotation
 widget-imu_visualizer-rotation_preview = Förhandsgranska rotation
-widget-imu_visualizer-acceleration = Acceleration
-widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Behåll inriktning
 
 ## Tracker status
@@ -274,12 +250,7 @@ tracker-status-timed_out = Tid ute
 tracker-table-column-name = Namn
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batteri
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temperatur i Celsius:
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
-tracker-table-column-rotation = Rotation X/Y/Z
-tracker-table-column-position = Position X/Y/Z
 tracker-table-column-stay_aligned = Behåll inriktning
 tracker-table-column-url = WEBBADRESS
 
@@ -305,7 +276,6 @@ tracker-infos-hardware_identifier = Hårdvaru-ID
 tracker-infos-imu = IMU-sensor
 tracker-infos-board_type = Huvudkrets
 tracker-infos-network_version = Protokollsversion
-tracker-infos-magnetometer = Magnetometer
 tracker-infos-magnetometer-status-v1 =
     { $status ->
         [DISABLED] Avaktiverad
@@ -344,6 +314,14 @@ tracker-settings-update-up_to_date = Uppdaterad
 tracker-settings-update = Uppdatera nu
 tracker-settings-update-title = Mjukvaroversion
 
+## Dongle settings
+
+dongle-infos-hardware_revision = Revision av hårdvara
+dongle-status-disconnected = Frånkopplad
+dongle-settings-back = Gå tillbaka till trackerslistan
+dongle-settings-update = Uppdatera nu
+dongle-settings-update-title = Mjukvaroversion
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = Ej tilldelad
@@ -357,6 +335,11 @@ body_assignment_menu-unassign_tracker = Ta bort tilldelning av spårare
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -375,8 +358,8 @@ mounting_selection_menu-close = Stäng
 settings-sidebar-title = Inställningar
 settings-sidebar-general = Allmänt
 settings-sidebar-stay_aligned = Behåll inriktning
+settings-sidebar-trackers = Spårare
 settings-sidebar-interface = Gränssnitt
-settings-sidebar-osc_trackers = VRChat OSC spårare
 settings-sidebar-utils = Verktyg
 settings-sidebar-serial = Seriell konsol
 settings-sidebar-appearance = Utseende
@@ -385,6 +368,16 @@ settings-sidebar-behavior = Beteende
 settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
 settings-sidebar-vrc_warnings = VRChat Config varningar
 settings-sidebar-advanced = Avancerat
+
+## Bone routing settings
+
+settings-routing-output-badge-off = Av
+settings-routing-hands-warning-cancel = Avbryt
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Aktivera
+settings-driver-status-badge-disabled = Av
 
 ## Tracker mechanics
 
@@ -427,6 +420,13 @@ settings-stay_aligned-relaxed_poses-close = Stäng
 settings-stay_aligned-debug-label = Avbuggning
 settings-stay_aligned-debug-description = Var vänlig inkludera dina inställningar när du rapporterar problem om Behåll inriktning.
 settings-stay_aligned-debug-copy-label = Kopiera inställningar till urklipp
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Fullständig återställning
+settings-keybinds_yaw-reset = Återställning av gir
+settings-keybinds_reset-all-button = Återställ allt
+settings-keybinds-recorder-modal-cancel-button = Avbryt
 
 ## FK/Tracking settings
 
@@ -504,9 +504,6 @@ settings-interface-appearance-font_size-description = Detta påverkar teckenstor
 ## Notification settings
 
 settings-interface-notifications = Meddelanden
-settings-general-interface-serial_detection = Detektering av seriell enhet
-settings-general-interface-serial_detection-description = Det här alternativet visar ett popup-fönster varje gång du ansluter en ny seriell enhet som kan vara en spårare. Det hjälper till att förbättra installationsprocessen för en tracker.
-settings-general-interface-serial_detection-label = Detektering av seriell enhet
 settings-general-interface-feedback_sound = Feedback-ljud
 settings-general-interface-feedback_sound-description = Detta alternativ spelar upp ett ljud när en återställning utlöses.
 settings-general-interface-feedback_sound-label = Feedback-ljud
@@ -518,6 +515,8 @@ settings-general-interface-connected_trackers_warning-label = Varning för uppko
 ## Behavior settings
 
 settings-interface-behavior = Beteende
+settings-general-interface-dev_mode = Utvecklarläge
+settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-use_tray = Minimera till systemfältet
 settings-general-interface-use_tray-description = Låter dig stänga fönstret utan att stänga SlimeVR-servern så att du kan fortsätta använda den utan att GUI stör dig.
 settings-general-interface-use_tray-label = Minimera till systemfältet
@@ -552,6 +551,8 @@ settings-serial-serial_select = Välj en serieport
 settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
 settings-serial-save_logs = Spara till fil
+settings-serial-send_command-warning-ok = Jag vet vad jag gör
+settings-serial-send_command-warning-cancel = Avbryt
 
 ## OSC VRChat settings
 
@@ -561,7 +562,7 @@ settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning 
 settings-osc-vrchat-enable-label = Aktivera
 settings-osc-vrchat-network = Nätverksportar
 settings-osc-vrchat-network-port_in =
-    .label = Port In
+    .label = Port in
     .placeholder = Port in (default: 9001)
 settings-osc-vrchat-network-port_out =
     .label = Port Ut
@@ -569,6 +570,12 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Nätverksadress
 settings-osc-vrchat-network-address-description-v1 = Välj vilken adress du vill skicka data till. Kan lämnas orörd för VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip-adress
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotation
+settings-osc-vrchat-status-badge-error = Fel
+settings-osc-vrchat-status-badge-unknown = Okänd
 
 ## VMC OSC settings
 
@@ -597,6 +604,7 @@ settings-osc-vmc-anchor_hip-label = Förankring vid höfterna
 settings-osc-vmc-mirror_tracking = Spegla spårning
 settings-osc-vmc-mirror_tracking-description = Spegla spårning horisontellt.
 settings-osc-vmc-mirror_tracking-label = Spegla spårning
+settings-osc-vmc-status-badge-error = Fel
 
 ## Common OSC settings
 
@@ -637,7 +645,7 @@ settings-utils-advanced-open_logs-label = Öppna mapp
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -653,12 +661,15 @@ onboarding-setup_warning-cancel = Fortsätt inställning
 
 ## Quiz
 
+onboarding-quiz_continue = Fortsätt
+onboarding-quiz_back = Tillbaka
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Överlämna!
+onboarding-wifi_creds-ssid-label = Wi-Fi namn
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi namn
     .placeholder = Fyll i Wi-Fi namn
 onboarding-wifi_creds-ssid-required = Wi-Fi namn är nödvändigt
 onboarding-wifi_creds-password =
@@ -667,6 +678,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Stäng
 
 ## Setup start
 
@@ -678,6 +690,7 @@ onboarding-home-start = Låt oss komma igång!
 onboarding-connect_tracker-title = Ansluta spårare
 onboarding-connect_tracker-issue-serial = Jag har problem med att ansluta!
 onboarding-connect_tracker-usb = USB spårare
+onboarding-connect_tracker-close = Stäng
 onboarding-connect_tracker-connection_status-serial_init = Anslutning till seriell enhet
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Får sensorns mac adress
 onboarding-connect_tracker-connection_status-provisioning = Skicka Wi-Fi-autentiseringsuppgifter
@@ -707,6 +720,11 @@ onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
 
 onboarding-assign_trackers-title = Utse trackers
 onboarding-assign_trackers-description = Låt oss välja vilken tracker som ska sitta var. Klicka på en plats där du vill placera en tracker
+onboarding-assign_trackers-tap_modal-cancel = Avbryt
+onboarding-assign_trackers-side-right = Höger
+onboarding-assign_trackers-side-left = Vänster
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Spegla vy
 
 ## Tracker assignment warnings
 
@@ -836,6 +854,7 @@ onboarding-automatic_proportions-description = För att SlimeVR-trackers ska fun
 onboarding-automatic_proportions-prev_step = Föregående steg
 onboarding-automatic_proportions-put_trackers_on-title = Sätt på alla dina trackers
 onboarding-automatic_proportions-put_trackers_on-description = För att kalibrera proportionerna ska vi använda de trackers du just tilldelade. Sätt på dig alla dina trackers, du kan se vilka som är vilka i figuren till höger.
+onboarding-automatic_proportions-put_trackers_on-next = Jag har på mig alla trackers
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
 
 ## User height calibration
@@ -843,21 +862,28 @@ onboarding-automatic_proportions-start_recording-description = Vi kommer nu att 
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Behåll inriktning
+onboarding-stay_aligned-put_trackers_on-title = Sätt på alla dina trackers
+onboarding-stay_aligned-put_trackers_on-next = Jag har på mig alla trackers
+onboarding-stay_aligned-verify_mounting-title = Monterings-återställning
+onboarding-stay_aligned-preparation-title = Förberedning
 
 ## Home
 
+home-settings-close = Stäng
+home-no_trackers-connect = Ansluta spårare
 
 ## Trackers Still On notification
 
-
-## Status system
-
+trackers_still_on-modal-confirm = Stäng SlimeVR
 
 ## Firmware tool globals
 
+firmware_tool-loading = Ansluter till server
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Firmware-version
 firmware_tool-flash_method_ota-devices = Upptäckta OTA enheter:
 firmware_tool-flash_method_ota-no_devices = Det finns inga kort som kan uppdateras med OTA, se till att du valde rätt kort-typ
 firmware_tool-flash_method_serial-wifi = Wi-Fi information:
@@ -903,14 +929,18 @@ firmware_update-status-ERROR_UNKNOWN = Okänd errror
 
 firmware_update-title = Mjukvaro-uppdatering
 firmware_update-devices = Tillgängliga enheter
+firmware_update-exit = Stäng
 
 ## Tray Menu
 
+tray_menu-hide = Göm
 
 ## First exit modal
 
 # Multiline text
 tray_or_exit_modal-description = Detta gör att du kan välja om du vill avsluta servern eller minimera den till facket när du trycker på stäng-knappen. Du kan ändra detta senare i gränssnittsinställningarna!
+tray_or_exit_modal-radio-tray = Minimera till systemfältet
+tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
@@ -948,7 +978,6 @@ vrc_config-tracker_model-UNKNOWN = Okänd
 vrc_config-tracker_model-AXIS = Vridaxel
 vrc_config-tracker_model-BOX = Låda
 vrc_config-tracker_model-SPHERE = Sfär
-vrc_config-tracker_model-SYSTEM = System
 vrc_config-avatar_measurement_type-UNKNOWN = Okänd
 vrc_config-avatar_measurement_type-HEIGHT = Längd
 vrc_config-avatar_measurement_type-ARM_SPAN = Armspann
@@ -965,3 +994,6 @@ error_collection_modal-cancel = Jag vill inte
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Stäng
+toolbar-mounting_calibration = Monterings-återställning
+toolbar-mounting_calibration-feet = Fötter

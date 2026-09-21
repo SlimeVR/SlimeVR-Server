@@ -12,6 +12,7 @@ websocket-connection_lost = החיבור לשרת אבד. מנסה להתחבר 
 
 ## Update notification
 
+version_update-close = סגור
 
 ## Tips
 
@@ -20,6 +21,19 @@ tips-do_not_move_heels = אנא וודא שהעקבים שלך לא זזות ב�
 
 ## Units
 
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = סגור
 
 ## Body parts
 
@@ -33,8 +47,6 @@ body_part-RIGHT_HAND = יד ימין
 body_part-RIGHT_UPPER_LEG = ירך ימין
 body_part-RIGHT_LOWER_LEG = קרסול ימין
 body_part-RIGHT_FOOT = רגל ימין
-body_part-CHEST = חזה
-body_part-WAIST = מותניים
 body_part-HIP = ירך
 body_part-LEFT_SHOULDER = כתף שמאל
 body_part-LEFT_UPPER_ARM = זרוע עליונה שמאלית
@@ -51,8 +63,6 @@ body_part-LEFT_FOOT = רגל שמאל
 
 skeleton_bone-NONE = לא נבחר
 skeleton_bone-NECK = אורך צוואר
-skeleton_bone-CHEST = אורך החזה
-skeleton_bone-WAIST = אורך המותניים
 skeleton_bone-HIP = אורך הירך
 skeleton_bone-HIPS_WIDTH = רוחב הירכיים
 skeleton_bone-UPPER_LEG = אורך הרגל העליונה
@@ -66,18 +76,9 @@ skeleton_bone-LOWER_ARM = אורך זרוע תחתונה
 ## Tracker reset buttons
 
 reset-reset_all = איפוס כל הפרופורציות
+reset-reset_all_warning-cancel = ביטול
 reset-full = איפוס
 reset-mounting = איפוס הרכבה
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = זוהה מכשיר סידורי חדש!
-serial_detection-new_device-p1 = הכנס את פרטי הWi-Fi שלך!
-serial_detection-new_device-p2 = בחר בבקשה מה אתה רוצה לעשות עם זה
-serial_detection-open_wifi = מתחבר לWi-Fi
-serial_detection-open_serial = פתח טרמינל סידרתי
-serial_detection-submit = שלח!
-serial_detection-close = סגור
 
 ## Navigation bar
 
@@ -95,27 +96,17 @@ bvh-recording = מקליט...
 
 ## Tracking pause
 
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
 
 ## Widget: Developer settings
 
 widget-developer_mode = מצב מפתח
 widget-developer_mode-high_contrast = ניגודיות גבוהה
 widget-developer_mode-fast_data_feed = פיד נתונים מהיר
-widget-developer_mode-sort_by_name = מיון לפי שם
-widget-developer_mode-more_info = הצג עוד מידע
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = סיבוב
 widget-imu_visualizer-rotation_preview = תצוגה מקדימה
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -132,7 +123,6 @@ tracker-table-column-name = שם
 tracker-table-column-type = סוג
 tracker-table-column-battery = סוללה
 tracker-table-column-ping = פינג
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = טמפ' °C
 tracker-table-column-linear-acceleration = תאוצה X/Y/Z
 tracker-table-column-rotation = סיבוב X/Y/Z
@@ -162,9 +152,16 @@ tracker-settings-mounting_section-edit = עריכת הרכבה
 tracker-settings-name_section-description = תן לו כינוי חמוד :)
 tracker-settings-name_section-placeholder = רגל שמאלית של NightyBeast
 
+## Dongle settings
+
+dongle-status-disconnected = מנותק
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = לא הוקצה
+
+## Body assignment menu
+
 
 ## Tracker assignment menu
 
@@ -183,6 +180,13 @@ settings-sidebar-interface = ממשק
 settings-sidebar-utils = כלי שירות
 settings-sidebar-serial = טרמינל סידרתי
 
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = ביטול
+
+## SteamVR / Monado output settings
+
+
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = סינון
@@ -194,40 +198,64 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = מחל
 settings-general-tracker_mechanics-filtering-type-prediction = חיזוי
 settings-general-tracker_mechanics-filtering-type-prediction-description = מפחית את ההשהיה ומפיק תנועות הדוקות , אך עלול להגביר את הריצוד.
 settings-general-tracker_mechanics-filtering-amount = כמות
+settings-stay_aligned-general-label = כללי
+settings-stay_aligned-relaxed_poses-close = סגור
+
+## Keybinds Page
+
+settings-keybinds_full-reset = איפוס
+settings-keybinds-recorder-modal-cancel-button = ביטול
 
 ## FK/Tracking settings
 
+settings-general-fk_settings-arm_fk-back = אחורה
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
+settings-general-interface-dev_mode = מצב מפתח
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = מצב מפתח
 
 ## Notification settings
 
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = מצב מפתח
+settings-general-interface-dev_mode-label = מצב מפתח
 
 ## Serial settings
 
+settings-serial = טרמינל סידרתי
+settings-serial-factory_reset-warning-cancel = ביטול
+settings-serial-send_command-warning-cancel = ביטול
 
-## OSC router settings
+## OSC VRChat settings
+
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = סיבוב
+settings-osc-vrchat-status-badge-error = שגיאה
 
 ## VMC OSC settings
 
+settings-osc-vmc-status-badge-error = שגיאה
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-cancel = ביטול
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -235,33 +263,28 @@ settings-general-tracker_mechanics-filtering-amount = כמות
 
 ## Quiz
 
+onboarding-quiz_back = אחורה
 
 ## Wi-Fi setup
 
-
-## Mounting setup
-
+onboarding-wifi_creds-submit = שלח!
 
 ## Install info
 
+install-info_udev-rules_modal_button = סגור
 
 ## Setup start
 
 
-## Setup done
-
-
 ## Tracker connection setup
 
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
+onboarding-connect_tracker-close = סגור
 
 ## Tracker assignment setup
 
+onboarding-assign_trackers-tap_modal-cancel = ביטול
+onboarding-assign_trackers-side-right = ימין
+onboarding-assign_trackers-side-left = שמאל
 
 ## Tracker assignment warnings
 
@@ -274,6 +297,8 @@ settings-general-tracker_mechanics-filtering-amount = כמות
 
 ## Tracker automatic mounting setup
 
+onboarding-automatic_mounting-title = כיול ההרכבה
+onboarding-automatic_mounting-mounting_reset-title = כיול ההרכבה
 
 ## Tracker manual proportions setupa
 
@@ -295,14 +320,18 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-verify_mounting-title = כיול ההרכבה
+
+## Home
+
+home-settings-close = סגור
+
 ## Trackers Still On notification
-
-
-## Status system
 
 
 ## Firmware tool globals
 
+firmware_tool-loading = מתחבר לשרת
 
 ## Firmware tool Steps
 
@@ -321,6 +350,7 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 
 ## First exit modal
 
+tray_or_exit_modal-cancel = ביטול
 
 ## Unknown device modal
 
@@ -330,3 +360,6 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = סגור
+toolbar-mounting_calibration = כיול ההרכבה
+toolbar-mounting_calibration-feet = רגל
