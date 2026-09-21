@@ -19,7 +19,8 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 	private fun defaultMountingForBodyPart(bodyPart: BodyPart?): Quaternion = when (bodyPart) {
 		// Spine mounted on the back (TODO: hip too? Test if spine is fine)
 		BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST,
-		BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST -> Quaternion.SLIMEVR.BACK
+		BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST,
+		-> Quaternion.SLIMEVR.BACK
 
 		// Left lower arm mounted left
 		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
