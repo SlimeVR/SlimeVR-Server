@@ -36,6 +36,19 @@ unit-foot = 英尺
 unit-inch = 英吋
 unit-cm = 公分
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = 關閉
+
 ## Body parts
 
 body_part-NONE = 未分配
@@ -49,8 +62,6 @@ body_part-RIGHT_UPPER_LEG = 右大腿
 body_part-RIGHT_LOWER_LEG = 右腳踝
 body_part-RIGHT_FOOT = 右腳
 body_part-UPPER_CHEST = 上胸
-body_part-CHEST = 胸部
-body_part-WAIST = 腰部
 body_part-HIP = 臀部
 body_part-LEFT_SHOULDER = 左肩
 body_part-LEFT_UPPER_ARM = 左上臂
@@ -93,31 +104,14 @@ body_part-RIGHT_LITTLE_DISTAL = 右小指遠端
 ## BoardType
 
 board_type-UNKNOWN = 不明
-board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = 自訂主板
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_DEV = SlimeVR 開發板
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = Wrangler Joy-Con
 board_type-MOCOPI = Sony mocopi
 board_type-WEMOSWROOM02 = WeMos WROOM-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 board_type-GESTURES = litten Yº by Gestures
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = 通用 nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -141,14 +135,8 @@ skeleton_bone-UPPER_CHEST-desc =
     這是從脖子底部到胸部中間的距離。
     若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
     修改，直到虛擬的脊椎與實際脊椎對齊。
-skeleton_bone-CHEST = 胸部長度
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     這是從胸部中間到脊椎中間的距離。
-    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
-    修改，直到虛擬的脊椎與實際脊椎對齊。
-skeleton_bone-WAIST = 腰部長度
-skeleton_bone-WAIST-desc =
-    這是從脊椎中間到肚臍的距離。
     若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
     修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP = 臀部長度
@@ -210,19 +198,6 @@ skeleton_bone-LOWER_ARM-desc =
     這是從手肘到手腕的距離。
     若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
     手肘追蹤器與實際手肘的位置一致。
-skeleton_bone-HAND_Y = 手部距離Y
-skeleton_bone-HAND_Y-desc =
-    這是從手腕到手中間的垂直距離。
-    若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
-    與實際的手中間垂直對齊。
-    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
-    部追蹤器與實際的手腕垂直對齊。
-skeleton_bone-HAND_Z = 手部距離Z
-skeleton_bone-HAND_Z-desc =
-    這是從手腕到手中間的水平距離。
-    若要調整以進行動作捕捉，請將此值設定為 0。
-    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
-    部追蹤器與實際的手腕水平對齊。
 
 ## Tracker reset buttons
 
@@ -236,16 +211,6 @@ reset-mounting-fingers = 重置手指配戴
 reset-yaw = 左右偏擺重置
 reset-error-mounting-need_full_reset = 配戴校正前需要完整重置
 reset-error-yaw-need_full_reset = 左右偏擺重置前需要完整重置
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = 偵測到了新的序列埠裝置！
-serial_detection-new_device-p1 = 輸入你的 Wi-Fi 認證資訊！
-serial_detection-new_device-p2 = 請選擇你想對它做什麼
-serial_detection-open_wifi = 連線到 Wi-Fi
-serial_detection-open_serial = 開啟序列埠終端
-serial_detection-submit = 送出！
-serial_detection-close = 關閉
 
 ## Navigation bar
 
@@ -275,9 +240,7 @@ widget-developer_mode = 開發者選項
 widget-developer_mode-high_contrast = 高對比 UI
 widget-developer_mode-precise_rotation = 顯示精確旋轉
 widget-developer_mode-fast_data_feed = 快速資料更新
-widget-developer_mode-sort_by_name = 依名稱排序
 widget-developer_mode-raw_slime_rotation = 顯示原始旋轉
-widget-developer_mode-more_info = 更多資訊
 
 ## Widget: IMU Visualizer
 
@@ -305,14 +268,11 @@ tracker-status-timed_out = 已逾時
 tracker-table-column-name = 名稱
 tracker-table-column-type = 類型
 tracker-table-column-battery = 電量
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = 溫度 ℃
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋轉 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-stay_aligned = 持續校正
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -384,6 +344,14 @@ tracker-settings-current-version = 目前版本
 tracker-settings-latest-version = 最新版本
 tracker-settings-build-date = 建置日期
 
+## Dongle settings
+
+dongle-infos-hardware_revision = 硬體版本
+dongle-status-disconnected = 連線中斷
+dongle-settings-back = 返回追蹤器列表
+dongle-settings-update = 立即更新
+dongle-settings-update-title = 韌體版本
+
 ## Tracker part card info
 
 tracker-part_card-unassigned = 未分配
@@ -397,6 +365,11 @@ body_assignment_menu-unassign_tracker = 解除分配
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -415,9 +388,8 @@ mounting_selection_menu-close = 關閉
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-stay_aligned = 持續校正
+settings-sidebar-trackers = 追蹤器
 settings-sidebar-interface = 使用者介面
-settings-sidebar-osc_trackers = VRChat OSC 追蹤器
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
@@ -428,6 +400,17 @@ settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
 settings-sidebar-vrc_warnings = VRChat 配置警告
 settings-sidebar-advanced = 進階
+
+## Bone routing settings
+
+settings-routing-output-badge-off = 關閉
+settings-routing-group-fingers = 手指
+settings-routing-hands-warning-cancel = 取消
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = 啟用
+settings-driver-status-badge-disabled = 關閉
 
 ## Tracker mechanics
 
@@ -476,6 +459,14 @@ settings-stay_aligned-debug-label = 除錯資訊
 settings-stay_aligned-debug-description = 在回報與持續校正相關的問題時，請附上以下設定參數。
 settings-stay_aligned-debug-copy-label = 複製設定參數進剪貼簿
 
+## Keybinds Page
+
+settings-keybinds_full-reset = 完整重置
+settings-keybinds_yaw-reset = 左右偏擺重置
+settings-keybinds_reset-all-button = 重置全部設定
+settings-keybinds-recorder-modal-done-button = 完成
+settings-keybinds-recorder-modal-cancel-button = 取消
+
 ## FK/Tracking settings
 
 settings-general-fk_settings = 追蹤設定
@@ -496,8 +487,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
 settings-general-fk_settings-leg_fk = 腿部追蹤
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的配戴重置時，強制重置腳部配戴。
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 強制重置腳部配戴
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的配戴重置時，強制重置腳部配戴。
 settings-general-fk_settings-enforce_joint_constraints = 骨架限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
@@ -566,9 +557,6 @@ settings-interface-appearance-font_size-description = 本設定會影響整個 U
 ## Notification settings
 
 settings-interface-notifications = 通知
-settings-general-interface-serial_detection = 序列埠裝置檢測
-settings-general-interface-serial_detection-description = 每次插入新序列埠的裝置（可能是追蹤器）時，此選項會顯示一個彈出視窗。這有助於改進追蹤器的設定流程。
-settings-general-interface-serial_detection-label = 序列埠裝置檢測
 settings-general-interface-feedback_sound = 聲音回饋
 settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音。
 settings-general-interface-feedback_sound-label = 聲音回饋
@@ -580,6 +568,8 @@ settings-general-interface-connected_trackers_warning-label = 當退出程式時
 ## Behavior settings
 
 settings-interface-behavior = 行為
+settings-general-interface-dev_mode = 開發者模式
+settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓你在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓你在不受圖形介面的打擾下繼續使用追蹤器。
 settings-general-interface-use_tray-label = 最小化到系統列
@@ -649,9 +639,14 @@ settings-osc-vrchat-network-address = 網路位址
 settings-osc-vrchat-network-address-description-v1 = 設定收發追蹤器資料的 IP 位址，使用 VRChat 不須更改。
 settings-osc-vrchat-network-address-placeholder = VRChat IP 位址
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = 旋轉
+settings-osc-vrchat-status-badge-error = 錯誤
+settings-osc-vrchat-status-badge-unknown = 不明
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     修改 VMC (Virtual Motion Capture) 協定的相關設定，
@@ -680,6 +675,7 @@ settings-osc-vmc-anchor_hip-label = 臀部錨定
 settings-osc-vmc-mirror_tracking = 鏡像追蹤
 settings-osc-vmc-mirror_tracking-description = 將追蹤的結果水平鏡像。
 settings-osc-vmc-mirror_tracking-label = 鏡像追蹤
+settings-osc-vmc-status-badge-error = 錯誤
 
 ## Common OSC settings
 
@@ -725,7 +721,7 @@ settings-home-list-layout-desc = 請從以下選項選擇一個主畫面的檢�
 settings-home-list-layout-grid = 格狀
 settings-home-list-layout-table = 表格
 
-## Tracking Checlist
+## Tracking Checklist
 
 settings-tracking_checklist-active_steps = 列出的追蹤清單項目
 settings-tracking_checklist-active_steps-desc = 列出所有會在追蹤清單中顯示的步驟，你可以停用或啟用可忽略的步驟。
@@ -743,9 +739,13 @@ onboarding-setup_warning-cancel = 繼續設定
 
 ## Quiz
 
+onboarding-quiz_continue = 繼續
+onboarding-quiz_back = 向後彎折
+onboarding-quiz-mocap_preferences-head_tracker-yes = 確定
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = 返回
 onboarding-wifi_creds-v2 = 透過 Wi-Fi 連接
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -754,8 +754,9 @@ onboarding-wifi_creds-description-v2 =
     
     請確保輸入的是 2.4 GHz 頻道的 Wi-Fi 憑證。
 onboarding-wifi_creds-submit = 送出！
+onboarding-wifi_creds-retry = 重試
+onboarding-wifi_creds-ssid-label = Wi-Fi 名稱
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi 名稱
     .placeholder = 請輸入 Wi-Fi 名稱
 onboarding-wifi_creds-ssid-required = 必須填寫 Wi-Fi 名稱
 onboarding-wifi_creds-password =
@@ -768,6 +769,7 @@ onboarding-wifi_creds-dongle-continue = 使用接收器繼續
 
 ## Install info
 
+install-info_udev-rules_modal_button = 關閉
 
 ## Setup start
 
@@ -779,6 +781,7 @@ onboarding-home-start = 來開始設定吧！
 onboarding-connect_tracker-title = 連接追蹤器
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
+onboarding-connect_tracker-close = 關閉
 onboarding-connect_tracker-connection_status-serial_init = 正在連線到序列埠裝置
 onboarding-connect_tracker-connection_status-obtaining_mac_address = 正在取得追蹤器的 MAC 位址
 onboarding-connect_tracker-connection_status-provisioning = 正在傳送 Wi-Fi 認證資訊
@@ -811,6 +814,13 @@ onboarding-assign_trackers-description = 這些追蹤器要放在身上的哪個
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 個追蹤器已分配
+onboarding-assign_trackers-tap_modal-cancel = 取消
+onboarding-assign_trackers-tab-body = 身體
+onboarding-assign_trackers-tab-fingers = 手指
+onboarding-assign_trackers-side-right = 右
+onboarding-assign_trackers-side-left = 左
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = 鏡像顯示
 
 ## Tracker assignment warnings
 
@@ -959,7 +969,6 @@ onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
 onboarding-automatic_proportions-start_recording-title = 準備擺動作囉
 onboarding-automatic_proportions-start_recording-description = 我們現在要記錄一些特定的姿勢和動作，將會在下一個畫面中提示。當按鈕被按下時，準備好開始！
 onboarding-automatic_proportions-start_recording-next = 開始錄製
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = 正在錄製中……
 onboarding-automatic_proportions-recording-description-p1 = 請做出以下動作:
 # Each line of text is a different list item
@@ -1051,6 +1060,7 @@ onboarding-stay_aligned-manual_mounting-done = 完成
 
 home-settings = 主畫面設定
 home-settings-close = 關閉
+home-no_trackers-connect = 連接追蹤器
 
 ## Trackers Still On notification
 
@@ -1083,6 +1093,7 @@ firmware_tool-select_source-firmware = 韌體來源
 firmware_tool-select_source-version = 韌體版本
 firmware_tool-select_source-official = 正式版
 firmware_tool-select_source-dev = 開發版
+firmware_tool-select_source-latest = 最新版本
 firmware_tool-select_source-not_selected = 未選擇來源
 firmware_tool-select_source-no_boards = 此來源沒有可用的開發板
 firmware_tool-select_source-no_versions = 此來源沒有可用的版本
@@ -1274,7 +1285,6 @@ tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告
 tracking_checklist-UNASSIGNED_HMD = VR 頭戴裝置尚未分配給頭部
 tracking_checklist-UNASSIGNED_HMD-desc = VR 頭戴顯示器應被分配為頭部追蹤器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 變更網路設定檔
-tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = 你的網路設定檔目前設為「公開」，SlimeVR 為了能正常運作，不建議如此設定。 <PublicFixLink>此處提供修正的方法。</PublicFixLink>
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 開啟控制台
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 調整持續校正設定
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 記錄持續校正所使用的姿勢以減緩飄移現象

@@ -34,7 +34,19 @@ tips-failed_webgl = WebGL başlatılamadı.
 unit-meter = Metre
 unit-foot = Ayak
 unit-inch = Inç
-unit-cm = cm
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Kapat
 
 ## Body parts
 
@@ -49,8 +61,6 @@ body_part-RIGHT_UPPER_LEG = Sağ Uyluk
 body_part-RIGHT_LOWER_LEG = Sağ Ayak Bileği
 body_part-RIGHT_FOOT = Sağ Ayak
 body_part-UPPER_CHEST = Üst Göğüs
-body_part-CHEST = Göğüs
-body_part-WAIST = Bel
 body_part-HIP = Kalça
 body_part-LEFT_SHOULDER = Sol Omuz
 body_part-LEFT_UPPER_ARM = Sol Üst Kol
@@ -93,30 +103,9 @@ body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 ## BoardType
 
 board_type-UNKNOWN = Bilinmeyen
-board_type-NODEMCU = NodeMCU
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR Dev Board
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
 board_type-GESTURES = Hareketler
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = Jenerik nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -140,14 +129,8 @@ skeleton_bone-UPPER_CHEST-desc =
     Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
     Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
     gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-CHEST = Göğüs Uzunluğu
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST-desc =
     Bu, göğsünün ortasından omurganın ortasına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-WAIST = Bel Uzunluğu
-skeleton_bone-WAIST-desc =
-    Bu, omurganın ortasından göbek deliğine kadar olan mesafedir.
     Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
     gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-HIP = Kalça Uzunluğu
@@ -199,16 +182,6 @@ reset-full = Sıfırlama
 reset-mounting-feet = Ayak Kalibrasyonu
 reset-mounting-fingers = Parmak Kalibrasyonu
 
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Yeni seri cihaz algılandı!
-serial_detection-new_device-p1 = Wi-Fi bilgilerinizi girin!
-serial_detection-new_device-p2 = Lütfen onunla ne yapmak istediğinizi seçin
-serial_detection-open_wifi = Wi-Fi'ye bağlan
-serial_detection-open_serial = Seri Konsolu Aç
-serial_detection-submit = Gönder!
-serial_detection-close = Kapat
-
 ## Navigation bar
 
 navbar-home = Ana Menü
@@ -225,22 +198,11 @@ bvh-recording = Kaydediliyor
 
 tracking-unpaused = Takibi duraklat
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Geliştirici Modu
 widget-developer_mode-high_contrast = Yüksek kontrast
 widget-developer_mode-precise_rotation = Hassas dönüş
-widget-developer_mode-sort_by_name = Ada göre sırala
-widget-developer_mode-more_info = Daha fazla bilgi
 
 ## Widget: IMU Visualizer
 
@@ -263,11 +225,9 @@ tracker-status-timed_out = Zaman aşımı
 tracker-table-column-name = İsim
 tracker-table-column-type = Tür
 tracker-table-column-battery = Pil
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Sıcaklık °C
 tracker-table-column-rotation = Rotasyon X/Y/Z
 tracker-table-column-position = Pozisyon X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -295,6 +255,13 @@ tracker-settings-assignment_section-description = Tracker'in vücudun hangi kıs
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Takipçi adı
 tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
+tracker-settings-name_section-label = Takipçi adı
+
+## Dongle settings
+
+dongle-infos-hardware_revision = Donanım Revizyonu
+dongle-status-disconnected = Bağlantı kesildi
+dongle-settings-back = Takipçi listesine geri dön
 
 ## Tracker part card info
 
@@ -320,28 +287,48 @@ mounting_selection_menu-close = Kapat
 settings-sidebar-title = Ayarlar
 settings-sidebar-general = Genel
 settings-sidebar-interface = Arayüz
-settings-sidebar-osc_trackers = VRChat OSC Takipçileri
 settings-sidebar-serial = Seri konsol
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = İptal
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Etkinleştir
 
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering-amount = Miktar
+settings-stay_aligned-general-label = Genel
+settings-stay_aligned-relaxed_poses-close = Kapat
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Sıfırlama
+settings-keybinds-recorder-modal-cancel-button = İptal
 
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_fk = Bacak takibi
+settings-general-fk_settings-arm_fk-back = Arka
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
+settings-general-interface-dev_mode = Geliştirici Modu
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Notification settings
 
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Geliştirici Modu
+settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Serial settings
 
@@ -349,6 +336,8 @@ settings-serial-reboot = Yeniden Başlat
 settings-serial-factory_reset-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-factory_reset-warning-cancel = İptal et
 settings-serial-auto_dropdown_item = Otomatik
+settings-serial-send_command-warning-ok = Ben ne yaptığımı biliyorum
+settings-serial-send_command-warning-cancel = İptal
 
 ## OSC VRChat settings
 
@@ -356,19 +345,30 @@ settings-osc-vrchat-enable = Etkinleştir
 settings-osc-vrchat-enable-label = Etkinleştir
 settings-osc-vrchat-network-address = Ağ adresi
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotasyon
+settings-osc-vrchat-status-badge-error = Hata
+settings-osc-vrchat-status-badge-unknown = Bilinmeyen
+
 ## VMC OSC settings
 
+settings-osc-vmc-enable = Etkinleştir
+settings-osc-vmc-enable-label = Etkinleştir
+settings-osc-vmc-network-address = Ağ adresi
+settings-osc-vmc-status-badge-error = Hata
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-cancel = İptal
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -376,33 +376,28 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 ## Quiz
 
+onboarding-quiz_back = Arka
 
 ## Wi-Fi setup
 
-
-## Mounting setup
-
+onboarding-wifi_creds-submit = Gönder!
 
 ## Install info
 
+install-info_udev-rules_modal_button = Kapat
 
 ## Setup start
 
 
-## Setup done
-
-
 ## Tracker connection setup
 
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
+onboarding-connect_tracker-close = Kapat
 
 ## Tracker assignment setup
 
+onboarding-assign_trackers-tap_modal-cancel = İptal
+onboarding-assign_trackers-side-right = Sağ
+onboarding-assign_trackers-side-left = Sol
 
 ## Tracker assignment warnings
 
@@ -430,18 +425,19 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 ## Home
 
+home-settings-close = Kapat
 
 ## Trackers Still On notification
 
-
-## Status system
-
+trackers_still_on-modal-confirm = SlimeVR'ı kapat
 
 ## Firmware tool globals
 
+firmware_tool-loading = Sunucuya bağlanılıyor...
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Yazılım Sürümü
 
 ## firmware tool build status
 
@@ -454,15 +450,21 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 ## Tray Menu
 
+tray_menu-hide = Gizle
 
 ## First exit modal
 
+tray_or_exit_modal-cancel = İptal
 
 ## Unknown device modal
 
+vrc_config-spine_mode-UNKNOWN = Bilinmeyen
+vrc_config-tracker_model-UNKNOWN = Bilinmeyen
+vrc_config-avatar_measurement_type-UNKNOWN = Bilinmeyen
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Kapat
