@@ -8,17 +8,17 @@ import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.abs
 
-class BustInputProcessor : SkeletonInputProcessor {
+class PosteriorInputProcessor : SkeletonInputProcessor {
 
-	private data class BustMotionState(
+	private data class PosteriorMotionState(
 		var pitchOffset: Float = 0f,
 		var pitchVelocity: Float = 0f,
 		var verticalAcceleration: Float = 0f,
 	)
 
 	private val states = mutableMapOf(
-		BodyPart.LEFT_BUST to BustMotionState(),
-		BodyPart.RIGHT_BUST to BustMotionState(),
+		BodyPart.LEFT_POSTERIOR to PosteriorMotionState(),
+		BodyPart.RIGHT_POSTERIOR to PosteriorMotionState(),
 	)
 
 	private var lastUpdateNanos = System.nanoTime()
@@ -52,36 +52,36 @@ class BustInputProcessor : SkeletonInputProcessor {
 		lastUpdateNanos = now
 		deltaTime = deltaTime.coerceIn(0f, MAX_DELTA_TIME)
 
-		val chest =
-			mutableInputSkeleton[BodyPart.UPPER_CHEST]
+		val hip =
+			mutableInputSkeleton[BodyPart.HIP]
 				?: return
 
-		val chestRotation = chest.rotation
+		val hipRotation = hip.rotation
 
-		for (bodyPart in arrayOf(BodyPart.LEFT_BUST, BodyPart.RIGHT_BUST)) {
+		for (bodyPart in arrayOf(BodyPart.LEFT_POSTERIOR, BodyPart.RIGHT_POSTERIOR)) {
 			val bone = mutableInputSkeleton[bodyPart] ?: continue
 			if (!bone.isRotationActive) {
-				mutableInputSkeleton[bodyPart] = bone.copy(rotation = chestRotation)
+				mutableInputSkeleton[bodyPart] = bone.copy(rotation = hipRotation)
 				continue
 			}
 			val state = states.getValue(bodyPart)
 
 			updateMotion(state, deltaTime)
 
-			// Convert absolute bust rotation into chest-local rotation.
+			// Convert absolute posterior rotation into hip-local rotation.
 			val localRotation =
-				chestRotation.inv() * bone.rotation
+				hipRotation.inv() * bone.rotation
 
-			// Modify only the rotation relative to the chest.
+			// Modify only the rotation relative to the hip.
 			val correctedLocalRotation =
-				applyBustRotation(
+				applyPosteriorRotation(
 					localRotation,
 					state.pitchOffset,
 				)
 
 			// Convert back to absolute/skeleton rotation.
 			val finalRotation =
-				chestRotation * correctedLocalRotation
+				hipRotation * correctedLocalRotation
 
 			mutableInputSkeleton[bodyPart] =
 				bone.copy(rotation = finalRotation)
@@ -89,7 +89,7 @@ class BustInputProcessor : SkeletonInputProcessor {
 	}
 
 	private fun updateMotion(
-		state: BustMotionState,
+		state: PosteriorMotionState,
 		deltaTime: Float,
 	) {
 		if (deltaTime <= 0f) {
@@ -131,7 +131,7 @@ class BustInputProcessor : SkeletonInputProcessor {
 		}
 	}
 
-	private fun applyBustRotation(
+	private fun applyPosteriorRotation(
 		rotation: Quaternion,
 		pitchOffset: Float,
 	): Quaternion {
