@@ -9,6 +9,7 @@
 
 websocket-connecting = Yhdistetään palvelimeen
 websocket-connection_lost = Yhteys epäonnistui. Yritetään uudelleen...
+websocket-error-close = Poistu SlimeVR:stä
 
 ## Update notification
 
@@ -26,6 +27,19 @@ tips-file_select = Vedä ja pudota käytettäviä tiedostoja tai <u>selaa</u>.
 ## Units
 
 
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Sulje
+
 ## Body parts
 
 body_part-NONE = Ei määritetty
@@ -39,8 +53,6 @@ body_part-RIGHT_UPPER_LEG = Oikea reisi
 body_part-RIGHT_LOWER_LEG = Oikea nilkka
 body_part-RIGHT_FOOT = Oikea jalkaterä
 body_part-UPPER_CHEST = Ylärinta
-body_part-CHEST = Rinta
-body_part-WAIST = Vyötärö
 body_part-HIP = Lonkka
 body_part-LEFT_SHOULDER = Vasen olkapää
 body_part-LEFT_UPPER_ARM = Vasen olkavarsi
@@ -52,6 +64,7 @@ body_part-LEFT_FOOT = Vasen jalkaterä
 
 ## BoardType
 
+board_type-UNKNOWN = Tuntematon
 
 ## Proportions
 
@@ -60,8 +73,6 @@ skeleton_bone-HEAD = Pään säätö
 skeleton_bone-NECK = Kaulan pituus
 skeleton_bone-torso_group = Vartalon pituus
 skeleton_bone-UPPER_CHEST = Ylärinnan pituus
-skeleton_bone-CHEST = Rinnan pituus
-skeleton_bone-WAIST = Vyötärön pituus
 skeleton_bone-HIP = Lonkan pituus
 skeleton_bone-HIPS_WIDTH = Lonkan leveys
 skeleton_bone-leg_group = Jalan pituus
@@ -74,25 +85,14 @@ skeleton_bone-SHOULDERS_WIDTH = Olkapäiden leveys
 skeleton_bone-arm_group = Käsivarren pituus
 skeleton_bone-UPPER_ARM = Olkavarren pituus
 skeleton_bone-LOWER_ARM = Kyynärvarren pituus
-skeleton_bone-HAND_Y = Käden Etäisyys Y
-skeleton_bone-HAND_Z = Käden Etäisyys Z
 
 ## Tracker reset buttons
 
 reset-reset_all = Nollaa kaikki mittasuhteet
+reset-reset_all_warning-cancel = Peruuta
 reset-full = Täysinollaus
 reset-mounting = Nollaa Asennus
 reset-yaw = Nollaa Kallistuma
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Uusi sarjalaite havaittu!
-serial_detection-new_device-p1 = Anna Wi-Fi-kirjautumistietosi!
-serial_detection-new_device-p2 = Valitse, mitä haluat tehdä sillä
-serial_detection-open_wifi = Yhdistä Wi-Fi-verkkoon
-serial_detection-open_serial = Avaa sarjakonsoli
-serial_detection-submit = Lähetä!
-serial_detection-close = Sulje
 
 ## Navigation bar
 
@@ -119,13 +119,12 @@ widget-developer_mode = Kehittäjätila
 widget-developer_mode-high_contrast = Suuri kontrasti
 widget-developer_mode-precise_rotation = Tarkka kierto
 widget-developer_mode-fast_data_feed = Nopea tietosyöte
-widget-developer_mode-sort_by_name = Lajittele nimen mukaan
 widget-developer_mode-raw_slime_rotation = Käsittelemätön kierto
-widget-developer_mode-more_info = Lisätietoja
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Kierto
+widget-imu_visualizer-hide = Piilota
 widget-imu_visualizer-rotation_raw = Käsittelemätön
 widget-imu_visualizer-rotation_preview = Esikatselu
 
@@ -136,7 +135,6 @@ tracker-status-busy = Varattu
 tracker-status-error = Virhe
 tracker-status-disconnected = Katkaistu
 tracker-status-occluded = Peittynyt
-tracker-status-ok = OK
 tracker-status-timed_out = Aikakatkaistiin
 
 ## Tracker status columns
@@ -144,13 +142,10 @@ tracker-status-timed_out = Aikakatkaistiin
 tracker-table-column-name = Nimi
 tracker-table-column-type = Tyyppi
 tracker-table-column-battery = Akkuvirta
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
 tracker-table-column-temperature = Lämpötila °C
 tracker-table-column-linear-acceleration = Kiihtyvyys X/Y/Z
 tracker-table-column-rotation = Kierto X/Y/Z
 tracker-table-column-position = Sijainti X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -190,6 +185,13 @@ tracker-settings-mounting_section-edit = Muokkaa asennusta
 tracker-settings-name_section = Jäljittimen nimi
 tracker-settings-name_section-description = Anna sille söpö lempinimi :)
 tracker-settings-name_section-placeholder = NightyBeast vasen jalka
+tracker-settings-name_section-label = Jäljittimen nimi
+
+## Dongle settings
+
+dongle-infos-hardware_revision = Laitteston Tarkistus
+dongle-status-disconnected = Katkaistu
+dongle-settings-back = Palaa jäljittimien luetteloon
 
 ## Tracker part card info
 
@@ -204,6 +206,11 @@ body_assignment_menu-unassign_tracker = Poista jäljittimen määritys
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -221,12 +228,20 @@ mounting_selection_menu-close = Sulje
 
 settings-sidebar-title = Asetukset
 settings-sidebar-general = Yleistä
+settings-sidebar-trackers = Jäljittimet
 settings-sidebar-interface = Käyttöliittymä
-settings-sidebar-osc_trackers = VRChat OSC-jäljittimet
 settings-sidebar-utils = Lisäohjelmat
 settings-sidebar-serial = Sarjakonsoli
 settings-sidebar-appearance = Ulkonäkö
 settings-sidebar-notifications = Ilmoitukset
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Peruuta
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Käytä
 
 ## Tracker mechanics
 
@@ -243,21 +258,18 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoit
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähentää viivettä ja tekee liikeistä näppärämpiä, mutta voi lisätä värinää.
 settings-general-tracker_mechanics-filtering-amount = Määrä
+settings-stay_aligned-general-label = Yleistä
+settings-stay_aligned-relaxed_poses-close = Sulje
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Täysinollaus
+settings-keybinds_yaw-reset = Nollaa Kallistuma
+settings-keybinds-recorder-modal-cancel-button = Peruuta
 
 ## FK/Tracking settings
 
 settings-general-fk_settings = Jäljityksen asetukset
-# Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
-settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
-# Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
-settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
-settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction vahvuus
 settings-general-fk_settings-leg_tweak-skating_correction-description = Skating correction helpottaa jalkojen luistelua, mutta voi heikentää tarkkuutta tietyissä liikekuvioissa. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
 settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi vähentää tai korjata jalan kulun lattian läpi. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
@@ -327,9 +339,6 @@ settings-interface-appearance-font_size-description = Tämä vaikuttaa koko käy
 ## Notification settings
 
 settings-interface-notifications = Ilmoitukset
-settings-general-interface-serial_detection = Sarjalaitteen tunnistus
-settings-general-interface-serial_detection-description = Tämä vaihtoehto näyttää ponnahdusikkunan aina, kun liität uuden sarjalaitteen, joka voi olla jäljitin. Se auttaa parantamaan jäljittimen asennusprosessia.
-settings-general-interface-serial_detection-label = Sarjalaitteen tunnistus
 settings-general-interface-feedback_sound = Palaute ääni
 settings-general-interface-feedback_sound-description = Tämä asetus toistaa äänen nollauksen tapahtuessa.
 settings-general-interface-feedback_sound-label = Palaute ääni
@@ -339,6 +348,8 @@ settings-general-interface-connected_trackers_warning-description = Tämä vaiht
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Kehittäjätila
+settings-general-interface-dev_mode-label = Kehittäjätila
 settings-general-interface-use_tray = Pienennä ilmaisinalueelle
 settings-general-interface-use_tray-description = Voit sulkea ikkunan sulkematta SlimeVR-palvelinta, jotta voit jatkaa sen käyttöä ilman, että graafinen käyttöliittymä häiritsee sinua.
 settings-general-interface-use_tray-label = Pienennä ilmaisinalueelle
@@ -366,6 +377,8 @@ settings-serial-factory_reset-warning-cancel = Peruuta
 settings-serial-serial_select = Valitse sarjaportti
 settings-serial-auto_dropdown_item = Autom.
 settings-serial-save_logs = Tallenna tiedostoon
+settings-serial-send_command-warning-ok = Tiedän mitä teen
+settings-serial-send_command-warning-cancel = Peruuta
 
 ## OSC VRChat settings
 
@@ -384,9 +397,14 @@ settings-osc-vrchat-network-address = Verkon osoite
 settings-osc-vrchat-network-address-description-v1 = Valitse, mihin osoitteeseen tiedot lähetetään. Voidaan jättää koskematta VRChatille.
 settings-osc-vrchat-network-address-placeholder = VRChat IP-osoite
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Kierto
+settings-osc-vrchat-status-badge-error = Virhe
+settings-osc-vrchat-status-badge-unknown = Tuntematon
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Muuta VMC (Virtual Motion Capture) -protokollan asetuksia
@@ -411,17 +429,20 @@ settings-osc-vmc-vrm-file_select = Vedä ja pudota mallia käytettäväksi tai <
 settings-osc-vmc-anchor_hip = Ankkuri lantiolla
 settings-osc-vmc-anchor_hip-description = Ankkuroi jäljitin lonkalle, hyödyllinen istuvaan VTubing. Jos poistat käytöstä, lataa VRM-malli.
 settings-osc-vmc-anchor_hip-label = Ankkuroi lonkalle
+settings-osc-vmc-status-badge-error = Virhe
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-reset = Palauta asetukset
+settings-utils-advanced-reset_warning-cancel = Peruuta
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -437,12 +458,15 @@ onboarding-setup_warning-cancel = Jatka asennusta
 
 ## Quiz
 
+onboarding-quiz_continue = Jatka
+onboarding-quiz_back = Takaisin
+onboarding-quiz-mocap_preferences-head_tracker-yes = Kyllä
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Lähetä!
+onboarding-wifi_creds-ssid-label = Wi-Fi nimi
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi nimi
     .placeholder = Syötä Wi-Fi nimi
 onboarding-wifi_creds-password =
     .label = Salasana
@@ -450,6 +474,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Sulje
 
 ## Setup start
 
@@ -461,6 +486,7 @@ onboarding-home-start = Mennään asentamaan!
 onboarding-connect_tracker-title = Yhdistä jäljittimet
 onboarding-connect_tracker-issue-serial = Minulla on ongelmia yhteyden muodostamisessa!
 onboarding-connect_tracker-usb = USB-jäljitin
+onboarding-connect_tracker-close = Sulje
 onboarding-connect_tracker-connection_status-serial_init = Yhdistetään sarjalaitteeseen
 onboarding-connect_tracker-connection_status-provisioning = Lähetetään Wi-Fi-tunnistetietoja
 onboarding-connect_tracker-connection_status-connecting = Yritetään muodostaa yhteys Wi-Fi-verkkoon
@@ -493,6 +519,9 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } / 1 jäljitintä määritetty
        *[other] { $assigned } / { $trackers } jäljittimiä määritetty
     }
+onboarding-assign_trackers-tap_modal-cancel = Peruuta
+onboarding-assign_trackers-side-right = Oikea
+onboarding-assign_trackers-side-left = Vasen
 
 ## Tracker assignment warnings
 
@@ -597,6 +626,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Laita jäljittimet pääll
 onboarding-automatic_mounting-put_trackers_on-description = Kalibroidaksemme asennuskierrokset käytämme juuri määrittämiäsi jäljittimiä. Laita kaikki jäljittimet päällesi, näet mitkä ovat mitäkin oikealla olevassa kuvassa.
 onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
 
+## Tracker manual proportions setupa
+
+
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-title = Mittaa kehosi
@@ -608,7 +640,6 @@ onboarding-automatic_proportions-requirements-next = Olen lukenut vaatimukset
 onboarding-automatic_proportions-start_recording-title = Valmistaudu liikkumaan
 onboarding-automatic_proportions-start_recording-description = Aiomme nyt tallentaa joitain tiettyä asentoja ja liikkeitä. Näitä kysytään seuraavassa näytössä. Ole valmis aloittamaan, kun painat nappia!
 onboarding-automatic_proportions-start_recording-next = Aloita tallennus
-onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Tallennus käynnissä...
 onboarding-automatic_proportions-recording-description-p1 = Tee alla esitetyt liikkeet:
 onboarding-automatic_proportions-recording-processing = Käsitellään tuloksia
@@ -633,6 +664,16 @@ onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = Laita jäljittimet päällesi
+onboarding-stay_aligned-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
+onboarding-stay_aligned-verify_mounting-title = Asennuksen Nollaus
+onboarding-stay_aligned-preparation-title = Valmistelu
+
+## Home
+
+home-settings-close = Sulje
+home-no_trackers-connect = Yhdistä jäljittimet
+
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Jäljittimet ovat vielä päällä
@@ -644,9 +685,11 @@ trackers_still_on-modal-cancel = Odota...
 
 ## Firmware tool globals
 
+firmware_tool-loading = Yhdistetään palvelimeen
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-version = Laiteohjelmiston Versio
 
 ## firmware tool build status
 
@@ -659,15 +702,24 @@ trackers_still_on-modal-cancel = Odota...
 
 ## Tray Menu
 
+tray_menu-hide = Piilota
 
 ## First exit modal
 
+tray_or_exit_modal-radio-tray = Pienennä ilmaisinalueelle
+tray_or_exit_modal-cancel = Peruuta
 
 ## Unknown device modal
 
+vrc_config-spine_mode-UNKNOWN = Tuntematon
+vrc_config-tracker_model-UNKNOWN = Tuntematon
+vrc_config-avatar_measurement_type-UNKNOWN = Tuntematon
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Sulje
+toolbar-mounting_calibration = Asennuksen Nollaus
+toolbar-mounting_calibration-feet = Jalat

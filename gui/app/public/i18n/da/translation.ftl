@@ -13,7 +13,6 @@ websocket-connection_lost = Forbindelse mistet til serveren. Forsøger at oprett
 ## Update notification
 
 version_update-title = Ny version tilgængelig: { $version }
-version_update-description = Ved at klikke på "Opdater" downloades SlimeVR-installationsprogrammet for dig.
 version_update-update = Opdater
 version_update-close = Luk
 
@@ -25,6 +24,19 @@ tips-file_select = Træk og slip filer for at bruge, eller <u>gennemse</u>.
 
 ## Units
 
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Tæt
 
 ## Body parts
 
@@ -38,8 +50,6 @@ body_part-RIGHT_HAND = Højre hånd
 body_part-RIGHT_UPPER_LEG = Højre lår
 body_part-RIGHT_LOWER_LEG = Højre ankel
 body_part-RIGHT_FOOT = Højre fod
-body_part-CHEST = Bryst
-body_part-WAIST = Talje
 body_part-HIP = Hofte
 body_part-LEFT_SHOULDER = Venstre skulder
 body_part-LEFT_UPPER_ARM = Venstre overarm
@@ -58,8 +68,6 @@ skeleton_bone-NONE = Ingen
 skeleton_bone-HEAD = Hoved skift
 skeleton_bone-NECK = Hals længde
 skeleton_bone-torso_group = Torso Længde
-skeleton_bone-CHEST = Bryst Længde
-skeleton_bone-WAIST = Taljelængde
 skeleton_bone-HIP = Hoftelængde
 skeleton_bone-HIPS_WIDTH = Hoftebredde
 skeleton_bone-leg_group = Benlængde
@@ -72,25 +80,14 @@ skeleton_bone-SHOULDERS_WIDTH = Skulder Bredde
 skeleton_bone-arm_group = Armlængde
 skeleton_bone-UPPER_ARM = Overarmslængde
 skeleton_bone-LOWER_ARM = Nedre armlængde
-skeleton_bone-HAND_Y = Håndafstand Y
-skeleton_bone-HAND_Z = Håndafstand Z
 
 ## Tracker reset buttons
 
 reset-reset_all = Nulstil alle proportioner
+reset-reset_all_warning-cancel = Annuller
 reset-full = Fuld nulstilling
 reset-mounting = Nulstil Montage
 reset-yaw = Yaw Nulstil
-
-## Serial detection stuff
-
-serial_detection-new_device-p0 = Ny seriel enhed fundet!
-serial_detection-new_device-p1 = Indtast dine Wi-Fi-legitimationsoplysninger!
-serial_detection-new_device-p2 = Vælg venligst hvad du vil gøre med det
-serial_detection-open_wifi = Opret forbindelse til Wi-Fi
-serial_detection-open_serial = Åbn seriel konsol
-serial_detection-submit = Indsend!
-serial_detection-close = Tæt
 
 ## Navigation bar
 
@@ -108,8 +105,6 @@ bvh-recording = Optager...
 
 ## Tracking pause
 
-## Widget: Clear Mounting calibration
-
 
 ## Widget: Developer settings
 
@@ -117,18 +112,13 @@ widget-developer_mode = Udviklertilstand
 widget-developer_mode-high_contrast = Høj kontrast
 widget-developer_mode-precise_rotation = Præcis rotation
 widget-developer_mode-fast_data_feed = Hurtig datatilførsel
-widget-developer_mode-sort_by_name = Sorter efter navn
 widget-developer_mode-raw_slime_rotation = Rå rotation
-widget-developer_mode-more_info = Mere info
 
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Rå
 widget-imu_visualizer-rotation_preview = Forhåndsvisning
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -142,15 +132,7 @@ tracker-status-ok = Okay
 ## Tracker status columns
 
 tracker-table-column-name = Navn
-tracker-table-column-type = Type
 tracker-table-column-battery = Batteri
-tracker-table-column-ping = Ping
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
-tracker-table-column-rotation = Rotation X/Y/Z
-tracker-table-column-position = Position X/Y/Z
-tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -164,8 +146,6 @@ tracker-rotation-back = Tilbage
 tracker-infos-manufacturer = Fabrikant
 tracker-infos-display_name = Display navn
 tracker-infos-custom_name = Brugerdefineret navn
-tracker-infos-url = Tracker URL
-tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU-sensor
 
 ## Tracker settings
@@ -183,6 +163,13 @@ tracker-settings-mounting_section-edit = Rediger montering
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Giv den et sødt kælenavn :)
 tracker-settings-name_section-placeholder = NightyBeast's venstre ben
+tracker-settings-name_section-label = Tracker navn
+
+## Dongle settings
+
+dongle-status-disconnected = Afbrudt
+dongle-settings-back = Gå tilbage til trackerlisten
+dongle-settings-name_section-description = Giv den et sødt kælenavn :)
 
 ## Tracker part card info
 
@@ -197,6 +184,11 @@ body_assignment_menu-unassign_tracker = Fjern tildeling af tracker
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -214,10 +206,20 @@ mounting_selection_menu-close = Luk
 
 settings-sidebar-title = Indstillinger
 settings-sidebar-general = Generel
+settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Brugergrænseflade
-settings-sidebar-osc_trackers = VRChat OSC trackere
+settings-sidebar-vrchat_osc = VRChat OSC trackere
 settings-sidebar-utils = Hjælpeprogrammer
 settings-sidebar-serial = Seriel konsol
+
+## Bone routing settings
+
+settings-routing-output-vrc_osc = VRChat OSC trackere
+settings-routing-hands-warning-cancel = Annuller
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = Aktiver
 
 ## Tracker mechanics
 
@@ -234,6 +236,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Udjæv
 settings-general-tracker_mechanics-filtering-type-prediction = Forudsigelse
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reducerer latens og gør bevægelser hutigere, men kan forårsage rystelser.
 settings-general-tracker_mechanics-filtering-amount = Mængde
+settings-stay_aligned-general-label = Generel
+settings-stay_aligned-relaxed_poses-close = Tæt
+
+## Keybinds Page
+
+settings-keybinds_full-reset = Fuld nulstilling
+settings-keybinds_yaw-reset = Yaw Nulstil
+settings-keybinds-recorder-modal-cancel-button = Annuller
 
 ## FK/Tracking settings
 
@@ -250,6 +260,7 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan r
 settings-general-fk_settings-leg_tweak-toe_snap-description = Tå-snap forsøger at gætte rotationen af dine fødder, hvis fodtrackere ikke er i brug.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roterer dine fødder så de er parallelle med jorden, når de er i kontakt med jorden.
 settings-general-fk_settings-leg_fk = Bensporing
+settings-general-fk_settings-arm_fk-back = Tilbage
 
 ## Gesture control settings (tracker tapping)
 
@@ -275,9 +286,6 @@ settings-general-interface-lang-placeholder = Vælg det sprog, der skal bruges
 
 ## Notification settings
 
-settings-general-interface-serial_detection = Seriel enhedsregistrering
-settings-general-interface-serial_detection-description = Denne mulighed viser en pop-up, hver gang du tilslutter en ny seriel enhed, der kan være en tracker. Det hjælper med at forbedre opsætningsprocessen for en tracker.
-settings-general-interface-serial_detection-label = Seriel enhedsregistrering
 settings-general-interface-feedback_sound = Feedback lyd
 settings-general-interface-feedback_sound-description = Denne indstilling afspiller en lyd, når du nulstiller
 settings-general-interface-feedback_sound-label = Feedback lyd
@@ -285,6 +293,8 @@ settings-general-interface-feedback_sound-volume = Feedback lydstyrke
 
 ## Behavior settings
 
+settings-general-interface-dev_mode = Udvikler-tilstand
+settings-general-interface-dev_mode-label = Udvikler-tilstand
 
 ## Serial settings
 
@@ -300,12 +310,14 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Jeg ved hvad jeg laver
 settings-serial-factory_reset-warning-cancel = Annuller
 settings-serial-serial_select = Vælg en seriel port
-settings-serial-auto_dropdown_item = Auto
+settings-serial-send_command-warning-ok = Jeg ved hvad jeg laver
+settings-serial-send_command-warning-cancel = Annuller
 
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC trackere
 settings-osc-vrchat-enable = Aktiver
+settings-osc-vrchat-enable-description = Skift afsendelse og modtagelse af data.
 settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Netværksporte
 settings-osc-vrchat-network-port_in =
@@ -317,9 +329,13 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Netværksadresse
 settings-osc-vrchat-network-address-placeholder = VRChat ip-adresse
 
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Rotation
+settings-osc-vrchat-status-badge-error = Fejl
+
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Skift indstillinger, der er specifikke for VMC-protokollen (Virtual Motion Capture)
@@ -341,17 +357,19 @@ settings-osc-vmc-network-address-placeholder = IPV4-adresse
 settings-osc-vmc-vrm = VRM-model
 settings-osc-vmc-vrm-description = Indlæs en VRM-model for at tillade hovedanker og muliggøre en højere kompatibilitet med andre applikationer
 settings-osc-vmc-vrm-file_select = Træk og slip en model, du vil bruge, eller <u>gennemse</u>
+settings-osc-vmc-status-badge-error = Fejl
 
 ## Common OSC settings
 
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-cancel = Annuller
 
 ## Home Screen
 
 
-## Tracking Checlist
+## Tracking Checklist
 
 
 ## Setup/onboarding menu
@@ -367,12 +385,14 @@ onboarding-setup_warning-cancel = Fortsæt konfigurationen
 
 ## Quiz
 
+onboarding-quiz_continue = Fortsæt
+onboarding-quiz_back = Tilbage
 
 ## Wi-Fi setup
 
 onboarding-wifi_creds-submit = Færdig!
+onboarding-wifi_creds-ssid-label = Wi-Fi-navn
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi-navn
     .placeholder = Indtast Wi-Fi-navn
 onboarding-wifi_creds-password =
     .label = Kodeord
@@ -380,6 +400,7 @@ onboarding-wifi_creds-password =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Tæt
 
 ## Setup start
 
@@ -391,6 +412,7 @@ onboarding-home-start = Lad os komme i gang!
 onboarding-connect_tracker-title = Tilslut trackere
 onboarding-connect_tracker-issue-serial = Jeg har problemer med at oprette forbindelse!
 onboarding-connect_tracker-usb = USB-tracker
+onboarding-connect_tracker-close = Tæt
 onboarding-connect_tracker-connection_status-serial_init = Tilslutter seriel enhed
 onboarding-connect_tracker-connection_status-provisioning = Sender Wi-Fi-oplysninger
 onboarding-connect_tracker-connection_status-connecting = Forsøger at oprette forbindelse til Wi-Fi
@@ -411,12 +433,6 @@ onboarding-connect_tracker-connected_trackers =
     }
 onboarding-connect_tracker-next = Jeg har tilsluttet alle mine trackere
 
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
-
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Tildel trackere
@@ -429,6 +445,9 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } af en tracker tildelt
        *[other] { $assigned } af { $trackers } trackere tildelt
     }
+onboarding-assign_trackers-tap_modal-cancel = Annuller
+onboarding-assign_trackers-side-right = Højre
+onboarding-assign_trackers-side-left = Venstre
 
 ## Tracker assignment warnings
 
@@ -450,9 +469,12 @@ onboarding-manual_mounting-next = Næste trin
 
 ## Tracker automatic mounting setup
 
+onboarding-automatic_mounting-title = Montage Kalibrering
+onboarding-automatic_mounting-manual_mounting = Manuel montering
 onboarding-automatic_mounting-next = Næste trin
 onboarding-automatic_mounting-prev_step = Forrige trin
 onboarding-automatic_mounting-done-restart = Prøv igen
+onboarding-automatic_mounting-mounting_reset-title = Montage Kalibrering
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Sæt dig på hug i en "skiløb" -stilling med bøjede ben, din overkrop vippet fremad og dine arme bøjet.
 onboarding-automatic_mounting-preparation-title = Forberedelse
 onboarding-automatic_mounting-put_trackers_on-title = Tag dine trackere på
@@ -464,6 +486,9 @@ onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere 
 
 ## Tracker automatic proportions setup
 
+onboarding-automatic_proportions-prev_step = Forrige trin
+onboarding-automatic_proportions-put_trackers_on-title = Tag dine trackere på
+onboarding-automatic_proportions-put_trackers_on-next = Jeg har alle mine trackere på
 onboarding-automatic_proportions-requirements-next = Jeg har læst kravene
 onboarding-automatic_proportions-start_recording-next = Start optagelse
 onboarding-automatic_proportions-recording-description-p0 = Optagelse i gang...
@@ -487,14 +512,22 @@ onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsp
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-put_trackers_on-title = Tag dine trackere på
+onboarding-stay_aligned-put_trackers_on-next = Jeg har alle mine trackere på
+onboarding-stay_aligned-verify_mounting-title = Montage Kalibrering
+onboarding-stay_aligned-preparation-title = Forberedelse
+
+## Home
+
+home-settings-close = Tæt
+home-no_trackers-connect = Tilslut trackere
+
 ## Trackers Still On notification
-
-
-## Status system
 
 
 ## Firmware tool globals
 
+firmware_tool-loading = Tilslutter til serveren
 
 ## Firmware tool Steps
 
@@ -513,6 +546,7 @@ onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsp
 
 ## First exit modal
 
+tray_or_exit_modal-cancel = Annuller
 
 ## Unknown device modal
 
@@ -522,3 +556,6 @@ onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsp
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Tæt
+toolbar-mounting_calibration = Montage Kalibrering
+toolbar-mounting_calibration-feet = Fødder

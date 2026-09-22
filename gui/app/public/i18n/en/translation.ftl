@@ -254,19 +254,11 @@ skeleton_bone-LOWER_ARM-desc =
     This is the distance from your elbows to your wrists.
     To adjust it, adjust Arm Length properly and modify it until
     your elbow trackers line up with your real elbows.
-skeleton_bone-HAND_Y = Hand Distance Y
-skeleton_bone-HAND_Y-desc =
-    This is the vertical distance from your wrists to the middle of your hand.
-    To adjust it for motion capture, adjust Arm Length properly and modify it until your
-    hand trackers line up vertically with the middle of your hands.
-    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
-    modify it until your elbow trackers line up vertically with your wrists.
-skeleton_bone-HAND_Z = Hand Distance Z
-skeleton_bone-HAND_Z-desc =
-    This is the horizontal distance from your wrists to the middle of your hand.
-    To adjust it for motion capture, set it to 0.
-    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
-    modify it until your elbow trackers line up horizontally with your wrists.
+skeleton_bone-HAND = Hand Length
+skeleton_bone-HAND-desc =
+    This is the distance from your wrists to your knuckles.
+    To adjust it, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with your knuckles.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
@@ -276,6 +268,7 @@ reset-reset_all_warning-cancel = Cancel
 reset-full = Full Reset
 reset-mounting = Mounting Calibration
 reset-mounting-feet = Feet Calibration
+reset-mounting-toes = Toes Calibration
 reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
@@ -534,6 +527,9 @@ settings-routing-group-arms = Arms
 settings-routing-group-fingers = Fingers
 settings-routing-row-left_fingers = Left fingers
 settings-routing-row-right_fingers = Right fingers
+settings-routing-group-toes = Toes
+settings-routing-row-left_toes = Left toes
+settings-routing-row-right_toes = Right toes
 settings-routing-hands-warning = <b>Warning:</b> Routing your hands to SteamVR/Monado replaces the input from your real controllers.
     Only do this if you want SlimeVR trackers to track your hands.
 
@@ -678,8 +674,8 @@ settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
 settings-general-fk_settings-resets_settings = Resets Settings
-settings-general-fk_settings-reset_settings-reset_positional_head_attitude = Reset positional head attitude
-settings-general-fk_settings-reset_settings-reset_positional_head_attitude-description = Reset a positional head tracker's vertical rotation upon doing a full reset. Useful if wearing a Vive tracker or HMD on the forehead for VTubing or mocap. Do not enable for VR.
+settings-general-fk_settings-reset_settings-reset_hmd_attitude = Reset HMD attitude
+settings-general-fk_settings-reset_settings-reset_hmd_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-arm_fk-reset_mode = Arms reset mode
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for resets.
 settings-general-fk_settings-arm_fk-back = Back
@@ -1174,7 +1170,7 @@ onboarding-assign_trackers-no_trackers-description = Connect a tracker to start 
 onboarding-assign_trackers-show_all = Show all body parts
 onboarding-assign_trackers-show_all-short = Show all parts
 onboarding-assign_trackers-tap_modal-title = Tap to assign
-onboarding-assign_trackers-tap_modal-description = Tap the tracker you want to assign twice. You can also drag a tracker from the list instead.
+onboarding-assign_trackers-tap_modal-description = Tap the tracker you want to assign twice, or press its button once. You can also drag a tracker from the list instead.
 onboarding-assign_trackers-tap_modal-cancel = Cancel
 onboarding-assign_trackers-mobile-idle_title = { $remaining ->
     [one] 1 tracker left to assign
@@ -1732,6 +1728,7 @@ preview-mocap_mode_soon = Mocap Mode (Soon™)
 preview-disable_render = Disable rendering
 preview-disabled_render = Rendering disabled
 preview-render_mode = Change rendering mode
+preview-reset_camera = Reset camera
 
 toolbar-mounting_calibration = Mounting Calibration
 toolbar-mounting_calibration-default = Body

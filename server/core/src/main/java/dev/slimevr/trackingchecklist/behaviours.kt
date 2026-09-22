@@ -77,7 +77,7 @@ data class ChecklistTracker(
 	val origin: DeviceOrigin,
 	val status: TrackerStatus,
 	val bodyPart: BodyPart?,
-	val intendedBodyPart: BodyPart?,
+	val isHmd: Boolean,
 	val imuType: ImuType?,
 	val completedRestCalibration: Boolean?,
 	// Deliberately not the position itself: the checks only ask whether there is one, and carrying the
@@ -90,7 +90,7 @@ fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	origin = tracker.origin,
 	status = tracker.status,
 	bodyPart = tracker.bodyPart,
-	intendedBodyPart = tracker.intendedBodyPart,
+	isHmd = tracker.isHmd,
 	imuType = tracker.imuType,
 	completedRestCalibration = tracker.completedRestCalibration,
 	hasPosition = tracker.position != null,
@@ -102,7 +102,7 @@ internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> =
 
 class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
-		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.intendedBodyPart == BodyPart.HEAD }
+		val hmdTracker = trackers.firstOrNull { tracker -> tracker.isHmd }
 		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
 		return TrackingChecklistStep(
 			valid = isAssigned,

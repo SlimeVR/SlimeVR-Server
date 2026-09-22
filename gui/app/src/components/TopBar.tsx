@@ -55,9 +55,10 @@ export function VersionTag() {
   const url = `https://github.com/${GH_REPO}/releases`;
 
   return (
-    <Tooltip preferedDirection="bottom" content={
-      <span className="text-xs">{__COMMIT_HASH__}</span>
-    }>
+    <Tooltip
+      preferedDirection="bottom"
+      content={<span className="text-xs">{__COMMIT_HASH__}</span>}
+    >
       <a
         href={url}
         className={classNames(

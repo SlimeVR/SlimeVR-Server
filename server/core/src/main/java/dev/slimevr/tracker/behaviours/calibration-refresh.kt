@@ -11,13 +11,13 @@ class TrackerCalibrationRefreshBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
 			.distinctUntilChanged { old, new ->
-				old.sessionCalibration == new.sessionCalibration &&
-					old.restOrientation == new.restOrientation &&
-					old.mountingOrientation == new.mountingOrientation
+				old.rotationDirty == new.rotationDirty
 			}
 			.onEach {
-				// Make sure to send the raw data to have calibration re-apply
-				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, refresh = true))
+				if (it.rotationDirty) {
+					// Make sure to send the raw data to have calibration re-apply
+					receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, refresh = true))
+				}
 			}.launchIn(receiver.context.scope)
 	}
 }

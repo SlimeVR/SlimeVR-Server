@@ -13,7 +13,7 @@ fun slideContributionWeight(ankleA: Vector3, ankleB: Vector3, localBoneTailA: Ve
 	// if +, shorten bone, if -, lengthen bone
 	// sum all contribution weights, divide each bone's weight by the sum, then multiply
 	//  by the slide magnitude in order to find the corresponding bone change
-	return localBoneTailAToB.len() * -boneToSlideDirectionRatio
+	return localBoneTailAToB.len() * boneToSlideDirectionRatio
 }
 
 // TODO This is a placeholder
@@ -48,19 +48,19 @@ fun step(skeletonA: ComputedSkeleton, skeletonB: ComputedSkeleton) {
 		)
 	}.filter { it > 0f }
 
+	// TODO This is a placeholder
+	val slideMag = 1f
+
 	val contributionSum = contributions.sum()
-	val normalizedContributions = contributions.map {
-		it / contributionSum
+	val perBoneSlide = contributions.map {
+		(it * slideMag) / contributionSum
 	}
 
 	// TODO This is a placeholder
 	val config = 1f
-	// TODO This is a placeholder
-	val contribution = 1f
-	val adjustVal = contribution * config
-
-	// TODO Apply config
-	val newConfig = config + adjustVal
+	val newConfigs = perBoneSlide.map {
+		config + it
+	}
 
 	// TODO Test new config to see if it actually reduces error? Or do we just
 	//  accept the changes? The contribution scales for each frame and considers

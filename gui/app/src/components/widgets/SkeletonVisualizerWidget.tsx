@@ -51,6 +51,7 @@ export type SkeletonPreviewView = {
   controls: OrbitControls;
   hidden: boolean;
   tween: Tween<Vector3>;
+  initialPosition: Vector3;
   onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
 };
 
@@ -62,14 +63,18 @@ function createRadialFloorMesh(size = 8.0): Mesh {
     uniforms: {
       uColorGround: { value: new Color('#14283d') },
       uColorGridMinor: { value: new Color('#6fa3cc') },
-      uColorGridMajor: { value: new Color('#b588f7') },
+      uColorGridMajor: { value: new Color('#d6ecff') },
       uColorRing: { value: new Color('#48e59b') },
       uColorAxis: { value: new Color('#bca5e8') },
+      uColorGlow: { value: new Color('#7ff2ff') },
       uRadius: { value: size / 2 },
+      uGlowRadius: { value: 1.1 },
     },
     vertexShader: `
       varying vec3 vWorldPosition;
+      varying vec2 vLocalPosition;
       void main() {
+        vLocalPosition = position.xy;
         vec4 worldPos = modelMatrix * vec4(position, 1.0);
         vWorldPosition = worldPos.xyz;
         gl_Position = projectionMatrix * viewMatrix * worldPos;
@@ -77,12 +82,15 @@ function createRadialFloorMesh(size = 8.0): Mesh {
     `,
     fragmentShader: `
       varying vec3 vWorldPosition;
+      varying vec2 vLocalPosition;
       uniform vec3 uColorGround;
       uniform vec3 uColorGridMinor;
       uniform vec3 uColorGridMajor;
       uniform vec3 uColorRing;
       uniform vec3 uColorAxis;
+      uniform vec3 uColorGlow;
       uniform float uRadius;
+      uniform float uGlowRadius;
 
       // Screen-space anti-aliased Cartesian grid
       float getGrid(vec2 pos, float spacing, float pixelWidth) {
@@ -99,38 +107,48 @@ function createRadialFloorMesh(size = 8.0): Mesh {
       }
 
       void main() {
-        vec2 pos = vWorldPosition.xz;
-        float dist = length(pos);
-        if (dist > uRadius) discard;
+        vec2 worldPos = vWorldPosition.xz;
 
-        // Smooth radial horizon falloff with gentle ambient glow
-        float normDist = dist / uRadius;
+        vec2 localPos = vLocalPosition;
+        float localDist = length(localPos);
+        if (localDist > uRadius) discard;
+
+        // Smooth radial horizon falloff with gentle ambient glow, centered on the player
+        float normDist = localDist / uRadius;
         float horizonFade = pow(clamp(1.0 - normDist, 0.0, 1.0), 1.2);
         float groundGlow = pow(clamp(1.0 - normDist, 0.0, 1.0), 1.8) * 0.15;
 
-        float minorGrid = getGrid(pos, 0.5, 1.45) * 0.82;
-        float majorGrid = getGrid(pos, 1.0, 2.2) * 1.00;
+        float minorGrid = getGrid(worldPos, 0.5, 1.45) * 0.82;
+        float majorGrid = getGrid(worldPos, 1.0, 2.2) * 1.00;
 
-        // Concentric Metric Rings
-        float ring05 = getRing(dist, 0.5, 1.6) * 0.65; // 0.5m standing circle
-        float ring10 = getRing(dist, 1.0, 1.6) * 0.75; // 1.0m metric circle
-        float ring20 = getRing(dist, 2.0, 1.5) * 0.60; // 2.0m metric circle
-        float ring30 = getRing(dist, 3.0, 1.4) * 0.45; // 3.0m metric circle
+        // Concentric standing circles around the player
+        float ring05 = getRing(localDist, 0.5, 1.6) * 0.65; // 0.5m standing circle
+        float ring10 = getRing(localDist, 1.0, 1.6) * 0.75; // 1.0m metric circle
+        float ring20 = getRing(localDist, 2.0, 1.5) * 0.60; // 2.0m metric circle
+        float ring30 = getRing(localDist, 3.0, 1.4) * 0.45; // 3.0m metric circle
         float allRings = max(ring05, max(ring10, max(ring20, ring30)));
 
-        vec2 axisCoord = abs(pos) / fwidth(pos);
+        vec2 axisCoord = abs(localPos) / fwidth(localPos);
         float axisX = 1.0 - min(axisCoord.y / 2.0, 1.0);
         float axisZ = 1.0 - min(axisCoord.x / 2.0, 1.0);
         float axes = max(axisX, axisZ) * 0.70;
+
+        // Bright light-up directly under the player
+        float glow = pow(clamp(1.0 - localDist / uGlowRadius, 0.0, 1.0), 2.4) * 0.6;
+        float glowRing = getRing(localDist, uGlowRadius, 1.4) * 0.4;
 
         vec3 col = uColorGround;
         col = mix(col, uColorGridMinor, minorGrid);
         col = mix(col, uColorGridMajor, majorGrid);
         col = mix(col, uColorRing, allRings);
         col = mix(col, uColorAxis, axes);
+        col = mix(col, uColorGlow, clamp(glow * 0.35 + glowRing, 0.0, 1.0));
+        // Brighten grid lines caught inside the glow
+        col += uColorGlow * (minorGrid + majorGrid) * glow * 0.35;
 
         float linesAlpha = max(minorGrid * 0.78, max(majorGrid * 0.98, max(allRings * 0.85, axes * 0.85)));
         float alpha = (groundGlow * 0.25 + linesAlpha) * horizonFade;
+        alpha = max(alpha, (glow * 0.25 + glowRing) * horizonFade);
         alpha = clamp(alpha, 0.0, 0.98);
 
         gl_FragColor = vec4(col, alpha);
@@ -147,13 +165,22 @@ function createRadialFloorMesh(size = 8.0): Mesh {
 function initializePreview(
   canvas: HTMLCanvasElement,
   bones: Map<BodyPart, BoneT>,
-  initialStyle: Config['skeletonPreviewStyle']
+  initialStyle: Config['skeletonPreviewStyle'],
+  onFollowLockChange?: (locked: boolean) => void
 ) {
   let style = initialStyle;
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
 
   const views: SkeletonPreviewView[] = [];
+  const abortController = new AbortController();
+
+  let followLocked = true;
+  const setFollowLocked = (locked: boolean) => {
+    if (followLocked === locked) return;
+    followLocked = locked;
+    onFollowLockChange?.(followLocked);
+  };
 
   const resolution = new Vector2(canvas.clientWidth, canvas.clientHeight);
   const scene = new Scene();
@@ -246,13 +273,22 @@ function initializePreview(
 
   const render = (delta: number) => {
     computeFollow(desiredFollow);
-    followDelta.subVectors(desiredFollow, followOffset);
-    if (followDelta.lengthSq() > 0) {
-      views.forEach((v) => {
-        v.camera.position.add(followDelta);
-        v.controls.target.add(followDelta);
-      });
-      followOffset.copy(desiredFollow);
+
+    if (followLocked) {
+      followDelta.subVectors(desiredFollow, followOffset);
+      if (followDelta.lengthSq() > 0) {
+        views.forEach((v) => {
+          v.camera.position.add(followDelta);
+          v.controls.target.add(followDelta);
+        });
+        // Move the floor by the same delta as the camera so the grid
+        // (and its glow) stays under the player while following, but
+        // freezes in place along with the camera when the user unlocks
+        // it to orbit freely - otherwise the grid would keep sliding
+        // underneath a camera that's supposed to be locked in place.
+        floor.position.add(followDelta);
+        followOffset.copy(desiredFollow);
+      }
     }
 
     views.forEach((v) => {
@@ -291,21 +327,65 @@ function initializePreview(
   animationFrameId = requestAnimationFrame(animate);
 
   // Make sure orbit controls works only on the current view
-  canvas.addEventListener('pointermove', (event) => {
-    const x = event.offsetX / resolution.x;
-    const y = 1 - event.offsetY / resolution.y;
-    views.forEach((v) => {
-      if (
-        x >= v.left &&
-        x <= v.left + v.width &&
-        y >= v.bottom &&
-        y <= v.bottom + v.height
-      ) {
-        v.controls.enabled = true;
-      } else {
-        v.controls.enabled = false;
+  canvas.addEventListener(
+    'pointermove',
+    (event) => {
+      const x = event.offsetX / resolution.x;
+      const y = 1 - event.offsetY / resolution.y;
+      views.forEach((v) => {
+        if (
+          x >= v.left &&
+          x <= v.left + v.width &&
+          y >= v.bottom &&
+          y <= v.bottom + v.height
+        ) {
+          v.controls.enabled = true;
+        } else {
+          v.controls.enabled = false;
+        }
+      });
+    },
+    { signal: abortController.signal }
+  );
+
+  const RIGHT_DRAG_THRESHOLD = 4;
+  let rightDragArmed = false;
+  const rightDragStart = new Vector2();
+
+  canvas.addEventListener(
+    'pointerdown',
+    (event) => {
+      if (event.button !== 2) return;
+      if (!views.some((v) => v.controls.enabled && !v.hidden)) return;
+      rightDragArmed = true;
+      rightDragStart.set(event.clientX, event.clientY);
+    },
+    { signal: abortController.signal }
+  );
+
+  canvas.addEventListener(
+    'pointermove',
+    (event) => {
+      if (!rightDragArmed) return;
+      const dx = event.clientX - rightDragStart.x;
+      const dy = event.clientY - rightDragStart.y;
+      if (dx * dx + dy * dy < RIGHT_DRAG_THRESHOLD * RIGHT_DRAG_THRESHOLD) {
+        return;
       }
-    });
+      rightDragArmed = false;
+      setFollowLocked(false);
+    },
+    { signal: abortController.signal }
+  );
+
+  const disarmRightDrag = () => {
+    rightDragArmed = false;
+  };
+  canvas.addEventListener('pointerup', disarmRightDrag, {
+    signal: abortController.signal,
+  });
+  canvas.addEventListener('pointercancel', disarmRightDrag, {
+    signal: abortController.signal,
   });
 
   return {
@@ -331,14 +411,37 @@ function initializePreview(
       const newHeight = computeHeadYOffset(bones);
       if (newHeight !== heightOffset) {
         heightOffset = newHeight;
-        views.forEach((v) => {
-          v.onHeightChange(v, heightOffset);
-          v.controls.target.add(followOffset);
-        });
+        // Only reframe while following; otherwise this fights the user's
+        // manual drag/zoom on every bone update (height jitters constantly).
+        if (followLocked) {
+          views.forEach((v) => {
+            v.onHeightChange(v, heightOffset);
+            v.controls.target.add(followOffset);
+          });
+        }
       }
     },
     updateTrackers,
+    resetCamera: () => {
+      computeFollow(followOffset);
+      floor.position.set(followOffset.x, 0, followOffset.z);
+      views.forEach((v) => {
+        v.tween.stop();
+        const direction = v.camera.position
+          .clone()
+          .sub(v.controls.target)
+          .normalize();
+        const homeDistance = v.initialPosition.length();
+        v.onHeightChange(v, heightOffset);
+        v.controls.target.add(followOffset);
+        v.camera.position
+          .copy(v.controls.target)
+          .addScaledVector(direction, homeDistance);
+      });
+      setFollowLocked(true);
+    },
     destroy: () => {
+      abortController.abort();
       cancelAnimationFrame(animationFrameId);
       skeletonHelper.dispose();
       floor.geometry.dispose();
@@ -396,6 +499,7 @@ function initializePreview(
         controls,
         tween,
         hidden,
+        initialPosition: position.clone(),
         onHeightChange,
       };
 
@@ -409,19 +513,23 @@ function initializePreview(
 const BASE_FRAMERATE = 60;
 const LOW_FRAMERATE = 30;
 
-type PreviewContext = ReturnType<typeof initializePreview>;
+export type PreviewContext = ReturnType<typeof initializePreview>;
 
 function SkeletonVisualizer({
   onInit,
   disabled = false,
+  onFollowLockChange,
 }: {
   onInit: (context: PreviewContext) => void;
   disabled?: boolean;
+  onFollowLockChange?: (locked: boolean) => void;
 }) {
   const { config } = useConfig();
   const style = config?.skeletonPreviewStyle ?? 'mesh';
 
   const previewContext = useRef<PreviewContext | null>(null);
+  const onFollowLockChangeRef = useRef(onFollowLockChange);
+  onFollowLockChangeRef.current = onFollowLockChange;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
@@ -503,7 +611,13 @@ function SkeletonVisualizer({
       throw 'invalid state - no canvas or container';
     resizeObserver.current.observe(containerRef.current);
 
-    previewContext.current = initializePreview(canvasRef.current, bones, style);
+    previewContext.current = initializePreview(
+      canvasRef.current,
+      bones,
+      style,
+      (locked) => onFollowLockChangeRef.current?.(locked)
+    );
+    onFollowLockChangeRef.current?.(true);
     if (!config?.devSettings.fastDataFeed)
       previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
 
@@ -550,10 +664,12 @@ export function SkeletonVisualizerWidget({
   },
   disabled = false,
   toggleDisabled,
+  onFollowLockChange,
 }: {
   onInit?: (context: PreviewContext) => void;
   disabled?: boolean;
   toggleDisabled?: () => void;
+  onFollowLockChange?: (locked: boolean) => void;
 }) {
   const { l10n } = useLocalization();
   const [error, setError] = useState(false);
@@ -566,7 +682,11 @@ export function SkeletonVisualizerWidget({
         })}
       >
         <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
-          <SkeletonVisualizer onInit={onInit} disabled={disabled} />
+          <SkeletonVisualizer
+            onInit={onInit}
+            disabled={disabled}
+            onFollowLockChange={onFollowLockChange}
+          />
         </ErrorBoundary>
       </div>
       <div

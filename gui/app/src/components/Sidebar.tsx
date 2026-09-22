@@ -2,8 +2,12 @@ import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 import { NavLink } from 'react-router-dom';
 import { Clickable } from './commons/Clickable';
 import { TrackingChecklist } from './tracking-checklist/TrackingChecklist';
-import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  PreviewContext,
+  SkeletonVisualizerWidget,
+} from './widgets/SkeletonVisualizerWidget';
+import { SkeletonPreviewControls } from './widgets/SkeletonPreviewControls';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from './commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
@@ -18,13 +22,10 @@ import { Vector3 } from 'three';
 import { RecordIcon } from './commons/icon/RecordIcon';
 import { PauseIcon } from './commons/icon/PauseIcon';
 import { HumanIcon } from './commons/icon/HumanIcon';
-import { EyeIcon } from './commons/icon/EyeIcon';
 import { useConfig } from '@/hooks/config';
 import { useBHV } from '@/hooks/bvh';
 import { usePauseTracking } from '@/hooks/pause-tracking';
 import { PlayIcon } from './commons/icon/PlayIcon';
-import { CubeIcon } from './commons/icon/CubeIcon';
-import { LineIcon } from './commons/icon/LineIcon';
 
 export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
@@ -158,6 +159,8 @@ export function PreviewControls({ open }: { open: boolean }) {
 function PreviewSection({ open }: { open: boolean }) {
   const { config, setConfig } = useConfig();
   const [disabledRender, setDisabledRender] = useState(config?.skeletonPreview);
+  const [followLocked, setFollowLocked] = useState(true);
+  const previewContext = useRef<PreviewContext | null>(null);
 
   const toggleRender = () => {
     setConfig({ skeletonPreview: disabledRender });
@@ -181,7 +184,9 @@ function PreviewSection({ open }: { open: boolean }) {
       <SkeletonVisualizerWidget
         disabled={disabledRender || !open}
         toggleDisabled={() => toggleRender()}
+        onFollowLockChange={setFollowLocked}
         onInit={(context) => {
+          previewContext.current = context;
           context.addView({
             left: 0,
             bottom: 0,
@@ -196,39 +201,14 @@ function PreviewSection({ open }: { open: boolean }) {
           });
         }}
       />
-      <Tooltip
-        preferedDirection="bottom"
-        content={<Typography id="preview-disable_render" />}
-      >
-        <Clickable
-          disabled={!open}
-          aria-hidden={!open}
-          pressed={!disabledRender}
-          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
-          onClick={() => toggleRender()}
-        >
-          <EyeIcon width={18} closed={!disabledRender} />
-        </Clickable>
-      </Tooltip>
-      <Tooltip
-        preferedDirection="bottom"
-        content={<Typography id="preview-render_mode" />}
-      >
-        <Clickable
-          disabled={!open}
-          aria-hidden={!open}
-          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-14 top-2 bg-background-60 hover:bg-background-50"
-          onClick={() =>
-            setConfig({
-              skeletonPreviewStyle:
-                config?.skeletonPreviewStyle == 'lines' ? 'mesh' : 'lines',
-            })
-          }
-        >
-          {config?.skeletonPreviewStyle == 'lines' && <CubeIcon width={18} />}
-          {config?.skeletonPreviewStyle == 'mesh' && <LineIcon size={18} />}
-        </Clickable>
-      </Tooltip>
+      <SkeletonPreviewControls
+        className="absolute right-2 top-2"
+        disabled={!open}
+        followLocked={followLocked}
+        onResetCamera={() => previewContext.current?.resetCamera()}
+        renderDisabled={disabledRender}
+        onToggleRender={toggleRender}
+      />
       <PreviewControls open={open} />
     </div>
   );

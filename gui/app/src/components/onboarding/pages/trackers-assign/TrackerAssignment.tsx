@@ -1,7 +1,9 @@
 import classNames from 'classnames';
+import { useLocalization } from '@fluent/react';
 import { createPortal } from 'react-dom';
 import { BodyPart } from 'solarxr-protocol';
 import { BaseModal } from '@/components/commons/BaseModal';
+import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
@@ -83,8 +85,11 @@ function DragGhostLayer() {
 }
 
 function TapAssignModal() {
-  const { armedPart, clearPending } = useAssignment();
+  const { l10n } = useLocalization();
+  const { armedPart, trackerByPart, unassignPart, clearPending } =
+    useAssignment();
   const isOpen = armedPart !== BodyPart.NONE;
+  const assignedTracker = isOpen ? trackerByPart[armedPart] : undefined;
 
   return (
     <BaseModal
@@ -99,19 +104,37 @@ function TapAssignModal() {
           id="onboarding-assign_trackers-tap_modal-title"
         />
         {isOpen && (
-          <Typography
-            bold
-            variant="section-title"
-            color="text-accent-background-10"
-            id={'body_part-' + BodyPart[armedPart]}
-          />
+          <div className="flex flex-col items-center gap-2">
+            <div className="p-3 rounded-2xl bg-background-60 fill-background-10">
+              <BodyPartIcon bodyPart={armedPart} width={80} />
+            </div>
+            <Typography
+              bold
+              variant="section-title"
+              color="text-accent-background-10"
+              id={'body_part-' + BodyPart[armedPart]}
+            />
+          </div>
         )}
         <Typography id="onboarding-assign_trackers-tap_modal-description" />
-        <Button
-          variant="secondary"
-          onClick={clearPending}
-          id="onboarding-assign_trackers-tap_modal-cancel"
-        />
+        <div className="flex flex-wrap items-center justify-end gap-2 w-full">
+          {assignedTracker && (
+            <Button
+              variant="tertiary"
+              className="mr-auto"
+              onClick={() => unassignPart(armedPart)}
+              id="onboarding-assign_trackers-mobile-unassign"
+              vars={{
+                part: l10n.getString('body_part-' + BodyPart[armedPart]),
+              }}
+            />
+          )}
+          <Button
+            variant="tertiary"
+            onClick={clearPending}
+            id="onboarding-assign_trackers-tap_modal-cancel"
+          />
+        </div>
       </div>
     </BaseModal>
   );

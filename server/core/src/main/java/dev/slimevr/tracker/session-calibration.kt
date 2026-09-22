@@ -2,6 +2,7 @@ package dev.slimevr.tracker
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.atan2
 
 typealias RawRotation = Quaternion
@@ -31,6 +32,22 @@ fun applyCalibration(
 	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign * restOrientation
 
+fun applyFullCalibration(
+	rawRotation: CalibratedRotation,
+	trackerState: TrackerState,
+): CalibratedRotation {
+	// Don't use heading alignment for an assigned HMD
+	val isAssignedHmd = trackerState.isHmd && trackerState.bodyPart == BodyPart.HEAD
+	val headingAlignment = if (isAssignedHmd) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
+	return applyCalibration(
+		rawRotation,
+		trackerState.sessionCalibration.headingCorrection,
+		trackerState.sessionCalibration.attitudeAlignment,
+		headingAlignment,
+		trackerState.restOrientation,
+	)
+}
+
 // We reverse the order of headingAlign and attitudeAlign here since our
 //  attitude alignment is within the raw heading frame of reference, so we must
 //  bring the orientation back into that frame of reference first. Whatever is
@@ -57,6 +74,22 @@ fun applyCalibration(
 ): CalibratedAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
 	rawAcceleration,
 )
+
+fun applyFullCalibration(
+	rawAcceleration: RawAcceleration,
+	rawRotation: RawRotation,
+	trackerState: TrackerState,
+): CalibratedAcceleration {
+	// Don't use heading alignment for an assigned HMD
+	val isAssignedHmd = trackerState.isHmd && trackerState.bodyPart == BodyPart.HEAD
+	val headingAlignment = if (isAssignedHmd) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
+	return applyCalibration(
+		rawAcceleration,
+		rawRotation,
+		trackerState.sessionCalibration.headingCorrection,
+		headingAlignment,
+	)
+}
 
 fun undoCalibration(
 	calibratedAcceleration: CalibratedAcceleration,

@@ -73,6 +73,7 @@ data class TrackerState(
 	val sessionCalibration: SessionCalibration,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
+	val rotationDirty: Boolean,
 	val rawAcceleration: RawAcceleration,
 	val acceleration: CalibratedAcceleration,
 	val rawMagnetometer: Vector3,
@@ -87,7 +88,10 @@ data class TrackerState(
 	val yawResetSmoothing: YawResetSmoothing?,
 	val stayAlignedData: StayAlignedData,
 	val pendingSkeletonResets: List<ResetType> = emptyList(),
-)
+) {
+	/** Considered an HMD if it comes from driver and driver told us it's the head. */
+	val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
+}
 
 fun List<TrackerState>.getFirstActiveFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull { it.bodyPart == bodyPart && it.status.isActive() }
 
@@ -101,10 +105,10 @@ sealed interface TrackerActions {
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val refresh: Boolean = false) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion, val resetPositionalHeadAttitude: Boolean = false) : TrackerActions
-	data class YawReset(val referenceRotation: Quaternion, val smoothTime: Duration = Duration.ZERO) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion?, val resetHmdAttitude: Boolean = false) : TrackerActions
+	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
-	data class PoseMountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
+	data class PoseMountingReset(val referenceRotation: Quaternion?, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
 	data class ClearPendingSkeletonResets(val count: Int) : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
@@ -201,6 +205,7 @@ class Tracker(
 			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,
 			rotation = Quaternion.IDENTITY,
+			rotationDirty = false,
 			rawAcceleration = Vector3.ZERO,
 			acceleration = Vector3.ZERO,
 			rawMagnetometer = Vector3.ZERO,

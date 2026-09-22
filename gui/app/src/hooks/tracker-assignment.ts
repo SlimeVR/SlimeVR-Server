@@ -142,10 +142,6 @@ export function useTrackerAssignment(mode: AssignmentMode) {
       handleDropTracker(pendingTrackerId, role);
       return;
     }
-    if (mode === 'drag' && trackerByPart[role]) {
-      unassignPart(role);
-      return;
-    }
     armPart(role);
   };
 

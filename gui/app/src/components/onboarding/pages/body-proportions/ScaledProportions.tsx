@@ -4,7 +4,7 @@ import { Button } from '@/components/commons/Button';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
   ChangeUserHeightRequestT,
@@ -21,7 +21,11 @@ import { HeightSelectionInput, formatFullHeight } from './HeightInput';
 import { useLocaleConfig } from '@/i18n/config';
 import { Tooltip } from '@/components/commons/Tooltip';
 import classNames from 'classnames';
-import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
+import {
+  PreviewContext,
+  SkeletonVisualizerWidget,
+} from '@/components/widgets/SkeletonVisualizerWidget';
+import { SkeletonPreviewControls } from '@/components/widgets/SkeletonPreviewControls';
 import { Vector3 } from 'three';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
@@ -367,6 +371,8 @@ export function ScaledProportionsPage() {
   const [resetModal, setResetModal] = useState<null | 'manual' | 'auto'>(null);
   const [heightUnit, setHeightUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
+  const [followLocked, setFollowLocked] = useState(true);
+  const previewContext = useRef<PreviewContext | null>(null);
 
   applyProgress(0.9);
 
@@ -611,7 +617,9 @@ export function ScaledProportionsPage() {
       )}
       <div className="absolute top-0 left-0 w-full h-full">
         <SkeletonVisualizerWidget
+          onFollowLockChange={setFollowLocked}
           onInit={(context) => {
+            previewContext.current = context;
             context.addView({
               left: 0,
               bottom: 0,
@@ -627,6 +635,11 @@ export function ScaledProportionsPage() {
           }}
         />
       </div>
+      <SkeletonPreviewControls
+        className="absolute right-4 top-4 z-20"
+        followLocked={followLocked}
+        onResetCamera={() => previewContext.current?.resetCamera()}
+      />
     </div>
   );
 }
