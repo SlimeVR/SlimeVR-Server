@@ -220,6 +220,4 @@ fun getForceVectorError(
 	f1: Vector3,
 	f2: Vector3,
 	centerOfMassAcceleration: Vector3,
-	// TODO Shouldn't this be `centerOfMassAcceleration + GRAVITY_VECTOR + f1 + f2`?
-	//  Gravity is -Y, then feet should be accelerating the mass +Y, cancelling out.
 ): Vector3 = centerOfMassAcceleration - (GRAVITY_VECTOR + f1 + f2)
