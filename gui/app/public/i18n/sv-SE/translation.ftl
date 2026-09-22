@@ -170,10 +170,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     För att justera det, Längd på överarm till 0 och modifiera det tills dina virituella
     axel-sensorer är i linje med dina riktiga axlar.
 skeleton_bone-SHOULDERS_WIDTH = Axlarnas bredd
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Detta är den horisontella distansen från din nackes bas till dina axlar.
-    För att justera det, ändra längd på överarm till 0 och modifiera det tills dina virtuella
-    axel-sensorer är i linje med dina riktiga axlar.
 skeleton_bone-arm_group = Armlängd
 skeleton_bone-arm_group-desc =
     Detta är avståndet från dina axlar till dina handleder.
