@@ -231,7 +231,7 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-SHOULDERS_WIDTH-desc =
-    This is the horizontal distance from the base of your neck to your shoulders.
+    This is the horizontal distance between your shoulders.
     To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
     line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Arm length
