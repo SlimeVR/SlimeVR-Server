@@ -203,6 +203,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
           part.bone.bodyPart === BodyPart.RIGHT_BUST) &&
         part.tracker
     );
+    const hasPosteriorTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.LEFT_POSTERIOR ||
+          part.bone.bodyPart === BodyPart.RIGHT_POSTERIOR) &&
+        part.tracker
+    );
     const hasTailTracker = this.parts.some(
       (part) =>
         (part.bone.bodyPart === BodyPart.TAIL ||
@@ -219,6 +225,9 @@ export class BasedSkeletonMeshHelper extends Object3D {
       const { bone, shapes } = part;
       const isBustPart =
         bone.bodyPart === BodyPart.LEFT_BUST || bone.bodyPart === BodyPart.RIGHT_BUST;
+      const isPosteriorPart =
+        bone.bodyPart === BodyPart.LEFT_POSTERIOR ||
+        bone.bodyPart === BodyPart.RIGHT_POSTERIOR;
       const isTailPart =
         bone.bodyPart === BodyPart.TAIL ||
         bone.bodyPart === BodyPart.TAIL_1 ||
@@ -228,7 +237,10 @@ export class BasedSkeletonMeshHelper extends Object3D {
         bone.bodyPart === BodyPart.TAIL_5 ||
         bone.bodyPart === BodyPart.TAIL_6;
 
-      const hidden = (isBustPart && !hasBustTracker) || (isTailPart && !hasTailTracker);
+      const hidden =
+        (isBustPart && !hasBustTracker) ||
+        (isTailPart && !hasTailTracker) ||
+        (isPosteriorPart && !hasPosteriorTracker);
 
       for (const attached of shapes) {
         attached.node.visible = !hidden;

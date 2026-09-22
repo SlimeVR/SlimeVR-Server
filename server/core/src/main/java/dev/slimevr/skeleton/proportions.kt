@@ -144,6 +144,10 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 		tail.putAll(getBustOffsets(it))
 		head.putAll(getBustHeadOffsets(it))
 	}
+	lengths[SkeletonBone.HIP]?.let { hipsWidth ->
+		tail.putAll(getPosteriorOffsets(hipsWidth))
+		head.putAll(getPosteriorHeadOffsets(hipsWidth))
+	}
 	return BoneOffsets(tail, head)
 }
 
@@ -352,5 +356,33 @@ private fun getBustHeadOffsets(bustLength: Float): Map<BodyPart, Vector3> = buil
 		val k = bust.headOffset
 		put(bust.segments.first, Vector3(k.x * -bustLength * 0.12f, k.y * bustLength, k.z * bustLength))
 		put(bust.segments.second, Vector3(-k.x * -bustLength * 0.12f, k.y * bustLength, k.z * bustLength))
+	}
+}
+
+private class Posterior(
+	val segments: Pair<BodyPart, BodyPart>,
+	val lengthFraction: Float,
+)
+
+private val POSTERIOR = listOf(
+	Posterior(
+		BodyPart.LEFT_POSTERIOR to BodyPart.RIGHT_POSTERIOR,
+		lengthFraction = 0.27f,
+	),
+)
+
+private fun getPosteriorOffsets(hipsWidth: Float): Map<BodyPart, Vector3> = buildMap {
+	for (post in POSTERIOR) {
+		val postLength = hipsWidth * post.lengthFraction
+		put(post.segments.first, Vector3(0f, 0f, -postLength * 0.25f))
+		put(post.segments.second, Vector3(0f, 0f, -postLength * 0.25f))
+	}
+}
+
+private fun getPosteriorHeadOffsets(hipsWidth: Float): Map<BodyPart, Vector3> = buildMap {
+	for (post in POSTERIOR) {
+		val kx = hipsWidth * 0.14f
+		put(post.segments.first, Vector3(kx, 0f, 0f))
+		put(post.segments.second, Vector3(-kx, 0f, 0f))
 	}
 }
