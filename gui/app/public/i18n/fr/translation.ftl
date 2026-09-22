@@ -205,10 +205,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
     soient alignés verticalement avec vos vraies épaules.
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Ceci est la distance horizontale entre la base de votre cou et vos épaules.
-    Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
-    soient alignés horizontalement avec vos vraies épaules.
 skeleton_bone-arm_group = Longueur des bras
 skeleton_bone-arm_group-desc =
     Ceci est la distance entre vos épaules et vos poignets.
