@@ -8,11 +8,13 @@ import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.behaviours.HIDReceiverConfigBehaviour
 import dev.slimevr.hid.behaviours.legacy.HIDBatteryBehaviour
+import dev.slimevr.hid.behaviours.legacy.HIDButtonLegacyBehaviour
 import dev.slimevr.hid.behaviours.legacy.HIDDeviceInfoBehaviour
 import dev.slimevr.hid.behaviours.legacy.HIDRegistrationBehaviour
 import dev.slimevr.hid.behaviours.legacy.HIDRotationBehaviour
 import dev.slimevr.hid.behaviours.legacy.HIDSleepLegacyBehaviour
 import dev.slimevr.hid.behaviours.legacy.HIDStatusBehaviour
+import dev.slimevr.hid.behaviours.v3.HIDButtonV3Behaviour
 import dev.slimevr.hid.behaviours.v3.HIDDeviceInfoV3Behaviour
 import dev.slimevr.hid.behaviours.v3.HIDDeviceStateBehaviour
 import dev.slimevr.hid.behaviours.v3.HIDDongleInfoBehaviour
@@ -84,6 +86,7 @@ private fun v3Behaviours(): List<HIDReceiverBehaviour> = listOf(
 	HIDRssiBehaviour(),
 	HIDPacketLossBehaviour(),
 	HIDSleepV3Behaviour(),
+	HIDButtonV3Behaviour(),
 )
 
 private fun legacyBehaviours(): List<HIDReceiverBehaviour> = listOf(
@@ -93,6 +96,7 @@ private fun legacyBehaviours(): List<HIDReceiverBehaviour> = listOf(
 	HIDBatteryBehaviour(),
 	HIDStatusBehaviour(),
 	HIDSleepLegacyBehaviour(),
+	HIDButtonLegacyBehaviour(),
 )
 
 class HIDReceiver(
