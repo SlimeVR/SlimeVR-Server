@@ -58,6 +58,7 @@ internal fun buildOutgoingBundle(
 		addAll(buildToeMessages(bones))
 		addAll(buildTailMessages(bones))
 		addAll(buildBustMessages(bones))
+		addAll(buildPosteriorMessages(bones))
 	}
 
 	return messages.takeIf { it.isNotEmpty() }?.let { OscBundle(1L, it) }
