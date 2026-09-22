@@ -97,6 +97,16 @@ export const RIGHT_TOE_BODY_PARTS = [
 
 export const TOE_BODY_PARTS = [...LEFT_TOE_BODY_PARTS, ...RIGHT_TOE_BODY_PARTS];
 
+export const FINGER_BODY_PARTS = [
+  ...LEFT_FINGER_BODY_PARTS,
+  ...RIGHT_FINGER_BODY_PARTS,
+];
+
+export const BUST_BODY_PARTS = [
+  BodyPart.LEFT_BUST,
+  BodyPart.RIGHT_BUST,
+];
+
 // Include TAIL body parts in ALL_BODY_PARTS for completeness
 export const ALL_BODY_PARTS = [
   BodyPart.NONE,
@@ -108,13 +118,4 @@ export const ALL_BODY_PARTS = [
   ...FINGER_BODY_PARTS,
   ...TAIL_BODY_PARTS,
   ...TOE_BODY_PARTS,
-];
-
-export const FINGER_BODY_PARTS = [
-  ...LEFT_FINGER_BODY_PARTS,
-  ...RIGHT_FINGER_BODY_PARTS,
-];
-export const BUST_BODY_PARTS = [
-  BodyPart.LEFT_BUST,
-  BodyPart.RIGHT_BUST,
 ];
