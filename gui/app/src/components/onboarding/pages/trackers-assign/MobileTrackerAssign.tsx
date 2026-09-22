@@ -1,7 +1,7 @@
 import type { FluentVariable } from '@fluent/bundle';
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { CSSProperties, ReactNode, useMemo } from 'react';
+import { CSSProperties, ReactNode, useEffect, useMemo, useRef } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { ProgressBar } from '@/components/commons/ProgressBar';
@@ -22,6 +22,7 @@ import {
   FlatDeviceTracker,
   groupTrackersByConnection,
 } from '@/store/app-store';
+import { collectFocusables } from '@/utils/focus-nav';
 import { BodyAssignmentPanel } from './BodyAssignmentPanel';
 import {
   AssignmentEmptyState,
@@ -92,6 +93,32 @@ function MobileAssignPanel({
     <div className="px-2 pb-2.5 pt-2 shrink-0">{footer}</div>
   );
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const onBackdropPressRef = useRef(onBackdropPress);
+  onBackdropPressRef.current = onBackdropPress;
+
+  useEffect(() => {
+    if (!open) return;
+    const active = document.activeElement;
+    if (active && contentRef.current?.contains(active)) return;
+    requestAnimationFrame(() => {
+      const target =
+        contentRef.current &&
+        (collectFocusables(contentRef.current)[0] ?? contentRef.current);
+      target?.focus({ preventScroll: true });
+    });
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      onBackdropPressRef.current();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open]);
+
   return (
     <>
       <div
@@ -120,6 +147,8 @@ function MobileAssignPanel({
         {headerRow}
 
         <div
+          ref={contentRef}
+          tabIndex={-1}
           className={classNames(
             'overflow-y-auto px-2 transition-all duration-200',
             open ? 'max-h-[50vh] pt-1 pb-2' : 'max-h-0'
