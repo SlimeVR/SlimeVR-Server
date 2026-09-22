@@ -179,10 +179,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     调节时，先将上臂长度设置为0，再修改此参数，
     使虚拟肘部追踪器与真实的肩膀位置在垂直方向上对齐。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    从脖子中心到肩膀的水平距离。
-    调节时，先将上臂长度设置为0，再修改此参数，
-    使虚拟肘部追踪器与真实的肩膀位置在水平方向上对齐。
 skeleton_bone-arm_group = 手臂长度
 skeleton_bone-arm_group-desc =
     从肩膀到手腕的距离。
