@@ -9,17 +9,13 @@ val BODY_PART_IK_CHAIN_MAP: BodyPartMap<IKChain> = BodyPartMap(
 			BodyPart.NECK,
 			BodyPart.HEAD,
 		),
-		BodyPart.LEFT_HAND to listOf(
-			BodyPart.LEFT_SHOULDER,
+		BodyPart.LEFT_LOWER_ARM to listOf(
 			BodyPart.LEFT_UPPER_ARM,
 			BodyPart.LEFT_LOWER_ARM,
-			BodyPart.LEFT_HAND,
 		),
-		BodyPart.RIGHT_HAND to listOf(
-			BodyPart.RIGHT_SHOULDER,
+		BodyPart.RIGHT_LOWER_ARM to listOf(
 			BodyPart.RIGHT_UPPER_ARM,
 			BodyPart.RIGHT_LOWER_ARM,
-			BodyPart.RIGHT_HAND,
 		),
 		BodyPart.HIP to listOf(
 			BodyPart.UPPER_CHEST,
