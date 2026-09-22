@@ -263,6 +263,7 @@ reset-reset_all_warning-cancel = Cancel
 reset-full = Full Reset
 reset-mounting = Mounting Calibration
 reset-mounting-feet = Feet Calibration
+reset-mounting-toes = Toes Calibration
 reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
@@ -521,6 +522,9 @@ settings-routing-group-arms = Arms
 settings-routing-group-fingers = Fingers
 settings-routing-row-left_fingers = Left fingers
 settings-routing-row-right_fingers = Right fingers
+settings-routing-group-toes = Toes
+settings-routing-row-left_toes = Left toes
+settings-routing-row-right_toes = Right toes
 settings-routing-hands-warning = <b>Warning:</b> Routing your hands to SteamVR/Monado replaces the input from your real controllers.
     Only do this if you want SlimeVR trackers to track your hands.
 

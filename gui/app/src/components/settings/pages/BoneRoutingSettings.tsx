@@ -17,8 +17,10 @@ import {
   ARM_BODY_PARTS,
   HAND_BODY_PARTS,
   LEFT_FINGER_BODY_PARTS,
+  LEFT_TOE_BODY_PARTS,
   LEG_BODY_PARTS,
   RIGHT_FINGER_BODY_PARTS,
+  RIGHT_TOE_BODY_PARTS,
   SPINE_BODY_PARTS,
 } from '@/hooks/body-parts';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -46,6 +48,7 @@ import { ChestIcon } from '@/components/commons/icon/ChestIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { RouterIcon } from '@/components/commons/icon/RouterIcon';
+import { ToesIcon } from '@/components/commons/icon/ToesIcon';
 import { UpperArmIcon } from '@/components/commons/icon/UpperArmIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { WarningBox } from '@/components/commons/TipBox';
@@ -102,6 +105,15 @@ const BONE_GROUPS: {
     rows: [
       bundleRow('left_fingers', LEFT_FINGER_BODY_PARTS),
       bundleRow('right_fingers', RIGHT_FINGER_BODY_PARTS),
+    ],
+  },
+  {
+    id: 'toes',
+    icon: <ToesIcon width={27} />,
+    defaultOpen: false,
+    rows: [
+      bundleRow('left_toes', LEFT_TOE_BODY_PARTS),
+      bundleRow('right_toes', RIGHT_TOE_BODY_PARTS),
     ],
   },
 ];
