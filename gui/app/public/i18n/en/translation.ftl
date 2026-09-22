@@ -1696,6 +1696,7 @@ preview-mocap_mode_soon = Mocap Mode (Soon™)
 preview-disable_render = Disable rendering
 preview-disabled_render = Rendering disabled
 preview-render_mode = Change rendering mode
+preview-reset_camera = Reset camera
 
 toolbar-mounting_calibration = Mounting Calibration
 toolbar-mounting_calibration-default = Body
