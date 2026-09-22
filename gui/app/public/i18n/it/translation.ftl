@@ -169,10 +169,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Imposta Lunghezza braccio superiore su 0 e modificala finché i tracker dei gomiti virtuali
     non si allineano verticalmente con le spalle reali.
 skeleton_bone-SHOULDERS_WIDTH = Larghezza delle spalle
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    La distanza orizzontale dalla base del collo alle spalle.
-    Imposta Lunghezza braccio superiore su 0 e modificala finché i tracker dei gomiti virtuali
-    non si allineano orizzontalmente con le spalle reali.
 skeleton_bone-arm_group = Lunghezza delle braccia
 skeleton_bone-arm_group-desc =
     La distanza tra le spalle e i polsi.
