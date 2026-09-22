@@ -66,11 +66,15 @@ function createRadialFloorMesh(size = 8.0): Mesh {
       uColorGridMajor: { value: new Color('#b588f7') },
       uColorRing: { value: new Color('#48e59b') },
       uColorAxis: { value: new Color('#bca5e8') },
+      uColorGlow: { value: new Color('#7ff2ff') },
       uRadius: { value: size / 2 },
+      uGlowRadius: { value: 1.1 },
     },
     vertexShader: `
       varying vec3 vWorldPosition;
+      varying vec2 vLocalPosition;
       void main() {
+        vLocalPosition = position.xy;
         vec4 worldPos = modelMatrix * vec4(position, 1.0);
         vWorldPosition = worldPos.xyz;
         gl_Position = projectionMatrix * viewMatrix * worldPos;
@@ -78,12 +82,15 @@ function createRadialFloorMesh(size = 8.0): Mesh {
     `,
     fragmentShader: `
       varying vec3 vWorldPosition;
+      varying vec2 vLocalPosition;
       uniform vec3 uColorGround;
       uniform vec3 uColorGridMinor;
       uniform vec3 uColorGridMajor;
       uniform vec3 uColorRing;
       uniform vec3 uColorAxis;
+      uniform vec3 uColorGlow;
       uniform float uRadius;
+      uniform float uGlowRadius;
 
       // Screen-space anti-aliased Cartesian grid
       float getGrid(vec2 pos, float spacing, float pixelWidth) {
@@ -100,38 +107,55 @@ function createRadialFloorMesh(size = 8.0): Mesh {
       }
 
       void main() {
-        vec2 pos = vWorldPosition.xz;
-        float dist = length(pos);
-        if (dist > uRadius) discard;
+        // World-locked: the grid lines themselves stay pinned to absolute
+        // ground position, so they scroll past as the player walks - this
+        // is what makes the floor a movement reference, not just a decal.
+        vec2 worldPos = vWorldPosition.xz;
 
-        // Smooth radial horizon falloff with gentle ambient glow
-        float normDist = dist / uRadius;
+        // Player-locked: the mesh is recentered under the player every
+        // frame, so local position is distance-from-player. Everything
+        // that should always be visible under/around the player (the
+        // disc itself, the glow, the standing rings) keys off this.
+        vec2 localPos = vLocalPosition;
+        float localDist = length(localPos);
+        if (localDist > uRadius) discard;
+
+        // Smooth radial horizon falloff with gentle ambient glow, centered on the player
+        float normDist = localDist / uRadius;
         float horizonFade = pow(clamp(1.0 - normDist, 0.0, 1.0), 1.2);
         float groundGlow = pow(clamp(1.0 - normDist, 0.0, 1.0), 1.8) * 0.15;
 
-        float minorGrid = getGrid(pos, 0.5, 1.45) * 0.82;
-        float majorGrid = getGrid(pos, 1.0, 2.2) * 1.00;
+        float minorGrid = getGrid(worldPos, 0.5, 1.45) * 0.82;
+        float majorGrid = getGrid(worldPos, 1.0, 2.2) * 1.00;
 
-        // Concentric Metric Rings
-        float ring05 = getRing(dist, 0.5, 1.6) * 0.65; // 0.5m standing circle
-        float ring10 = getRing(dist, 1.0, 1.6) * 0.75; // 1.0m metric circle
-        float ring20 = getRing(dist, 2.0, 1.5) * 0.60; // 2.0m metric circle
-        float ring30 = getRing(dist, 3.0, 1.4) * 0.45; // 3.0m metric circle
+        // Concentric standing circles around the player
+        float ring05 = getRing(localDist, 0.5, 1.6) * 0.65; // 0.5m standing circle
+        float ring10 = getRing(localDist, 1.0, 1.6) * 0.75; // 1.0m metric circle
+        float ring20 = getRing(localDist, 2.0, 1.5) * 0.60; // 2.0m metric circle
+        float ring30 = getRing(localDist, 3.0, 1.4) * 0.45; // 3.0m metric circle
         float allRings = max(ring05, max(ring10, max(ring20, ring30)));
 
-        vec2 axisCoord = abs(pos) / fwidth(pos);
+        vec2 axisCoord = abs(localPos) / fwidth(localPos);
         float axisX = 1.0 - min(axisCoord.y / 2.0, 1.0);
         float axisZ = 1.0 - min(axisCoord.x / 2.0, 1.0);
         float axes = max(axisX, axisZ) * 0.70;
+
+        // Bright light-up directly under the player
+        float glow = pow(clamp(1.0 - localDist / uGlowRadius, 0.0, 1.0), 2.4) * 0.6;
+        float glowRing = getRing(localDist, uGlowRadius, 1.4) * 0.4;
 
         vec3 col = uColorGround;
         col = mix(col, uColorGridMinor, minorGrid);
         col = mix(col, uColorGridMajor, majorGrid);
         col = mix(col, uColorRing, allRings);
         col = mix(col, uColorAxis, axes);
+        col = mix(col, uColorGlow, clamp(glow * 0.35 + glowRing, 0.0, 1.0));
+        // Brighten grid lines caught inside the glow
+        col += uColorGlow * (minorGrid + majorGrid) * glow * 0.35;
 
         float linesAlpha = max(minorGrid * 0.78, max(majorGrid * 0.98, max(allRings * 0.85, axes * 0.85)));
         float alpha = (groundGlow * 0.25 + linesAlpha) * horizonFade;
+        alpha = max(alpha, (glow * 0.25 + glowRing) * horizonFade);
         alpha = clamp(alpha, 0.0, 0.98);
 
         gl_FragColor = vec4(col, alpha);
@@ -255,14 +279,21 @@ function initializePreview(
   };
 
   const render = (delta: number) => {
+    computeFollow(desiredFollow);
+
     if (followLocked) {
-      computeFollow(desiredFollow);
       followDelta.subVectors(desiredFollow, followOffset);
       if (followDelta.lengthSq() > 0) {
         views.forEach((v) => {
           v.camera.position.add(followDelta);
           v.controls.target.add(followDelta);
         });
+        // Move the floor by the same delta as the camera so the grid
+        // (and its glow) stays under the player while following, but
+        // freezes in place along with the camera when the user unlocks
+        // it to orbit freely - otherwise the grid would keep sliding
+        // underneath a camera that's supposed to be locked in place.
+        floor.position.add(followDelta);
         followOffset.copy(desiredFollow);
       }
     }
@@ -400,6 +431,7 @@ function initializePreview(
     updateTrackers,
     resetCamera: () => {
       computeFollow(followOffset);
+      floor.position.set(followOffset.x, 0, followOffset.z);
       views.forEach((v) => {
         v.tween.stop();
         const direction = v.camera.position
