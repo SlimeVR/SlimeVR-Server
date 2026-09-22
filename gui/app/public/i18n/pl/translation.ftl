@@ -177,10 +177,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Aby go dostosować, ustaw długość górnego ramienia na 0 i zmodyfikuj go, aż wirtualne śledzenie łokci
     Ustaw pionowo z prawdziwymi ramionami.
 skeleton_bone-SHOULDERS_WIDTH = Szerokość ramion
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    To jest pozioma odległość od podstawy szyi do ramion.
-    Aby go dostosować, ustaw długość górnego ramienia na 0 i zmodyfikuj go, aż wirtualne śledzenie łokci
-    Ustaw poziomo z prawdziwymi ramionami.
 skeleton_bone-arm_group = Długość ramienia
 skeleton_bone-arm_group-desc =
     To jest odległość od ramion do nadgarstków.
