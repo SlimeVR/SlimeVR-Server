@@ -11,6 +11,7 @@ import { ReactNode } from 'react';
 import { SkiIcon } from '@/components/commons/icon/SkiIcon';
 import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
+import { ToesIcon } from '@/components/commons/icon/ToesIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 
@@ -23,7 +24,7 @@ export function ResetButtonIcon(options: UseResetOptions) {
   if (options.type === ResetType.POSE_MOUNTING) {
     if (options.group === 'default') return <SkiIcon />;
     if (options.group === 'feet') return <FootIcon />;
-    if (options.group === 'toes') return <FootIcon />;
+    if (options.group === 'toes') return <ToesIcon />;
     if (options.group === 'fingers') return <FingersIcon width={16} />;
   }
 }
