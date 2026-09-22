@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
@@ -87,6 +88,13 @@ data class BoneState(
 typealias InputSkeleton = BodyPartMap<BoneInput>
 typealias ComputedSkeleton = BodyPartMap<BoneState>
 
+data class LegTweaksTmpOverride(
+	val floorClip: Boolean? = null,
+	val skatingCorrection: Boolean? = null,
+	val toeSnap: Boolean? = null,
+	val footPlant: Boolean? = null,
+)
+
 data class SkeletonState(
 	val boneInputs: InputSkeleton,
 	val skeletonHeight: Float,
@@ -94,6 +102,7 @@ data class SkeletonState(
 	val paused: Boolean,
 	val pausedProcessedBoneInputs: InputSkeleton?,
 	val processorResets: List<ResetType> = emptyList(),
+	val legTweaksTmpOverride: LegTweaksTmpOverride = LegTweaksTmpOverride(),
 )
 
 val DEFAULT_BONE_INPUT = BoneInput(
@@ -172,6 +181,7 @@ sealed interface SkeletonActions {
 	data object ResetFloorLevel : SkeletonActions
 	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
 	data class ProcessorResetsApplied(val count: Int) : SkeletonActions
+	data class UpdateLegTweaksTmpOverride(val transform: LegTweaksTmpOverride.() -> LegTweaksTmpOverride) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -197,8 +207,22 @@ interface SkeletonTargetProcessor {
 class Skeleton(
 	val context: SkeletonContext,
 	val computed: MutableSharedFlow<ComputedSkeleton>,
+	val settings: Settings,
 ) {
 	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
+
+	val effectiveFloorClip: Boolean
+		get() = context.state.value.legTweaksTmpOverride.floorClip
+			?: settings.context.state.value.data.skeletonConfig.toggles.floorClip
+	val effectiveSkatingCorrection: Boolean
+		get() = context.state.value.legTweaksTmpOverride.skatingCorrection
+			?: settings.context.state.value.data.skeletonConfig.toggles.skatingCorrection
+	val effectiveToeSnap: Boolean
+		get() = context.state.value.legTweaksTmpOverride.toeSnap
+			?: settings.context.state.value.data.skeletonConfig.toggles.toeSnap
+	val effectiveFootPlant: Boolean
+		get() = context.state.value.legTweaksTmpOverride.footPlant
+			?: settings.context.state.value.data.skeletonConfig.toggles.footPlant
 
 	fun startObserving() = context.observeAll(this)
 
@@ -207,6 +231,21 @@ class Skeleton(
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
+
+			val context = Context.create(
+				initialState = DEFAULT_SKELETON_STATE,
+				scope = scope,
+				reducer = ::reduce,
+				name = "Skeleton",
+			)
+
+			val computed = MutableSharedFlow<ComputedSkeleton>(
+				replay = 1,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
+			computed.tryEmit(buildBones(context.state.value.boneInputs))
+
+			val skeleton = Skeleton(context, computed, settings)
 
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
@@ -234,13 +273,13 @@ class Skeleton(
 					),
 					fkProcessors = listOf(
 						LocalizerFkProcessor(settings),
-						FootPlantFkProcessor(settings),
-						ToeSnapFkProcessor(settings),
+						FootPlantFkProcessor(skeleton),
+						ToeSnapFkProcessor(skeleton),
 					),
 					targetProcessors = listOf(
 						PositionalTargetProcessor(settings),
-						SkatingCorrectionTargetProcessor(settings),
-						FloorClipTargetProcessor(settings),
+						SkatingCorrectionTargetProcessor(settings, skeleton),
+						FloorClipTargetProcessor(skeleton),
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor(),
@@ -248,21 +287,9 @@ class Skeleton(
 				),
 			)
 
-			val context = Context.create(
-				initialState = DEFAULT_SKELETON_STATE,
-				scope = scope,
-				reducer = ::reduce,
-				behaviours = behaviours,
-				name = "Skeleton",
-			)
+			context.behaviours.addAll(behaviours)
 
-			val computed = MutableSharedFlow<ComputedSkeleton>(
-				replay = 1,
-				onBufferOverflow = BufferOverflow.DROP_OLDEST,
-			)
-			computed.tryEmit(buildBones(context.state.value.boneInputs))
-
-			return Skeleton(context, computed)
+			return skeleton
 		}
 	}
 }
