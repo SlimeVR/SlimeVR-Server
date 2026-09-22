@@ -64,11 +64,9 @@ function createRadialFloorMesh(size = 8.0): Mesh {
       uColorGround: { value: new Color('#14283d') },
       uColorGridMinor: { value: new Color('#6fa3cc') },
       uColorGridMajor: { value: new Color('#d6ecff') },
-      uColorRing: { value: new Color('#48e59b') },
-      uColorAxis: { value: new Color('#bca5e8') },
-      uColorGlow: { value: new Color('#7ff2ff') },
+      uColorGlow: { value: new Color('#722c2c') },
       uRadius: { value: size / 2 },
-      uGlowRadius: { value: 1.1 },
+      uGlowRadius: { value: 1 },
     },
     vertexShader: `
       varying vec3 vWorldPosition;
@@ -86,8 +84,6 @@ function createRadialFloorMesh(size = 8.0): Mesh {
       uniform vec3 uColorGround;
       uniform vec3 uColorGridMinor;
       uniform vec3 uColorGridMajor;
-      uniform vec3 uColorRing;
-      uniform vec3 uColorAxis;
       uniform vec3 uColorGlow;
       uniform float uRadius;
       uniform float uGlowRadius;
@@ -121,34 +117,16 @@ function createRadialFloorMesh(size = 8.0): Mesh {
         float minorGrid = getGrid(worldPos, 0.5, 1.45) * 0.82;
         float majorGrid = getGrid(worldPos, 1.0, 2.2) * 1.00;
 
-        // Concentric standing circles around the player
-        float ring05 = getRing(localDist, 0.5, 1.6) * 0.65; // 0.5m standing circle
-        float ring10 = getRing(localDist, 1.0, 1.6) * 0.75; // 1.0m metric circle
-        float ring20 = getRing(localDist, 2.0, 1.5) * 0.60; // 2.0m metric circle
-        float ring30 = getRing(localDist, 3.0, 1.4) * 0.45; // 3.0m metric circle
-        float allRings = max(ring05, max(ring10, max(ring20, ring30)));
-
-        vec2 axisCoord = abs(localPos) / fwidth(localPos);
-        float axisX = 1.0 - min(axisCoord.y / 2.0, 1.0);
-        float axisZ = 1.0 - min(axisCoord.x / 2.0, 1.0);
-        float axes = max(axisX, axisZ) * 0.70;
-
         // Bright light-up directly under the player
-        float glow = pow(clamp(1.0 - localDist / uGlowRadius, 0.0, 1.0), 2.4) * 0.6;
-        float glowRing = getRing(localDist, uGlowRadius, 1.4) * 0.4;
+        float glow = pow(clamp(1.0 - localDist / uGlowRadius, 0.0, 1.0), 2.4) * 0.8;
 
         vec3 col = uColorGround;
-        col = mix(col, uColorGridMinor, minorGrid);
         col = mix(col, uColorGridMajor, majorGrid);
-        col = mix(col, uColorRing, allRings);
-        col = mix(col, uColorAxis, axes);
-        col = mix(col, uColorGlow, clamp(glow * 0.35 + glowRing, 0.0, 1.0));
-        // Brighten grid lines caught inside the glow
-        col += uColorGlow * (minorGrid + majorGrid) * glow * 0.35;
+        col += (minorGrid + majorGrid) * 0.6;
 
-        float linesAlpha = max(minorGrid * 0.78, max(majorGrid * 0.98, max(allRings * 0.85, axes * 0.85)));
-        float alpha = (groundGlow * 0.25 + linesAlpha) * horizonFade;
-        alpha = max(alpha, (glow * 0.25 + glowRing) * horizonFade);
+        float linesAlpha = max(minorGrid * 0.28, majorGrid * 0.58);
+        float alpha = (groundGlow * 0.8 + linesAlpha) * horizonFade;
+        alpha = max(alpha, (glow * 0.25) * horizonFade);
         alpha = clamp(alpha, 0.0, 0.98);
 
         gl_FragColor = vec4(col, alpha);
