@@ -16,7 +16,11 @@ import { BodyProportions } from './BodyProportions';
 import { Localized } from '@fluent/react';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
+import {
+  PreviewContext,
+  SkeletonVisualizerWidget,
+} from '@/components/widgets/SkeletonVisualizerWidget';
+import { SkeletonPreviewControls } from '@/components/widgets/SkeletonPreviewControls';
 import { ProportionsResetModal } from './ProportionsResetModal';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import { CURRENT_EXPORT_VERSION, MIN_HEIGHT } from '@/hooks/manual-proportions';
@@ -389,6 +393,8 @@ export function ManualProportionsPage() {
   const { currentLocales } = useLocaleConfig();
 
   const [userHeight, setUserHeight] = useState(0);
+  const [followLocked, setFollowLocked] = useState(true);
+  const previewContext = useRef<PreviewContext | null>(null);
 
   applyProgress(0.9);
 
@@ -447,7 +453,9 @@ export function ManualProportionsPage() {
         </div>
         <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
           <SkeletonVisualizerWidget
+            onFollowLockChange={setFollowLocked}
             onInit={(context) => {
+              previewContext.current = context;
               context.addView({
                 left: 0,
                 bottom: 0,
@@ -462,6 +470,11 @@ export function ManualProportionsPage() {
                 },
               });
             }}
+          />
+          <SkeletonPreviewControls
+            className="absolute right-2 bottom-2"
+            followLocked={followLocked}
+            onResetCamera={() => previewContext.current?.resetCamera()}
           />
 
           <div className="top-4 w-full px-4 absolute flex gap-2 flex-col lg:flex-row md:flex-wrap">

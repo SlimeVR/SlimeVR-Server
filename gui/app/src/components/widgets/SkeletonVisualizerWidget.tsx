@@ -51,6 +51,7 @@ export type SkeletonPreviewView = {
   controls: OrbitControls;
   hidden: boolean;
   tween: Tween<Vector3>;
+  initialPosition: Vector3;
   onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
 };
 
@@ -147,13 +148,22 @@ function createRadialFloorMesh(size = 8.0): Mesh {
 function initializePreview(
   canvas: HTMLCanvasElement,
   bones: Map<BodyPart, BoneT>,
-  initialStyle: Config['skeletonPreviewStyle']
+  initialStyle: Config['skeletonPreviewStyle'],
+  onFollowLockChange?: (locked: boolean) => void
 ) {
   let style = initialStyle;
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
 
   const views: SkeletonPreviewView[] = [];
+  const abortController = new AbortController();
+
+  let followLocked = true;
+  const setFollowLocked = (locked: boolean) => {
+    if (followLocked === locked) return;
+    followLocked = locked;
+    onFollowLockChange?.(followLocked);
+  };
 
   const resolution = new Vector2(canvas.clientWidth, canvas.clientHeight);
   const scene = new Scene();
@@ -245,14 +255,16 @@ function initializePreview(
   };
 
   const render = (delta: number) => {
-    computeFollow(desiredFollow);
-    followDelta.subVectors(desiredFollow, followOffset);
-    if (followDelta.lengthSq() > 0) {
-      views.forEach((v) => {
-        v.camera.position.add(followDelta);
-        v.controls.target.add(followDelta);
-      });
-      followOffset.copy(desiredFollow);
+    if (followLocked) {
+      computeFollow(desiredFollow);
+      followDelta.subVectors(desiredFollow, followOffset);
+      if (followDelta.lengthSq() > 0) {
+        views.forEach((v) => {
+          v.camera.position.add(followDelta);
+          v.controls.target.add(followDelta);
+        });
+        followOffset.copy(desiredFollow);
+      }
     }
 
     views.forEach((v) => {
@@ -291,21 +303,65 @@ function initializePreview(
   animationFrameId = requestAnimationFrame(animate);
 
   // Make sure orbit controls works only on the current view
-  canvas.addEventListener('pointermove', (event) => {
-    const x = event.offsetX / resolution.x;
-    const y = 1 - event.offsetY / resolution.y;
-    views.forEach((v) => {
-      if (
-        x >= v.left &&
-        x <= v.left + v.width &&
-        y >= v.bottom &&
-        y <= v.bottom + v.height
-      ) {
-        v.controls.enabled = true;
-      } else {
-        v.controls.enabled = false;
+  canvas.addEventListener(
+    'pointermove',
+    (event) => {
+      const x = event.offsetX / resolution.x;
+      const y = 1 - event.offsetY / resolution.y;
+      views.forEach((v) => {
+        if (
+          x >= v.left &&
+          x <= v.left + v.width &&
+          y >= v.bottom &&
+          y <= v.bottom + v.height
+        ) {
+          v.controls.enabled = true;
+        } else {
+          v.controls.enabled = false;
+        }
+      });
+    },
+    { signal: abortController.signal }
+  );
+
+  const RIGHT_DRAG_THRESHOLD = 4;
+  let rightDragArmed = false;
+  const rightDragStart = new Vector2();
+
+  canvas.addEventListener(
+    'pointerdown',
+    (event) => {
+      if (event.button !== 2) return;
+      if (!views.some((v) => v.controls.enabled && !v.hidden)) return;
+      rightDragArmed = true;
+      rightDragStart.set(event.clientX, event.clientY);
+    },
+    { signal: abortController.signal }
+  );
+
+  canvas.addEventListener(
+    'pointermove',
+    (event) => {
+      if (!rightDragArmed) return;
+      const dx = event.clientX - rightDragStart.x;
+      const dy = event.clientY - rightDragStart.y;
+      if (dx * dx + dy * dy < RIGHT_DRAG_THRESHOLD * RIGHT_DRAG_THRESHOLD) {
+        return;
       }
-    });
+      rightDragArmed = false;
+      setFollowLocked(false);
+    },
+    { signal: abortController.signal }
+  );
+
+  const disarmRightDrag = () => {
+    rightDragArmed = false;
+  };
+  canvas.addEventListener('pointerup', disarmRightDrag, {
+    signal: abortController.signal,
+  });
+  canvas.addEventListener('pointercancel', disarmRightDrag, {
+    signal: abortController.signal,
   });
 
   return {
@@ -338,7 +394,25 @@ function initializePreview(
       }
     },
     updateTrackers,
+    resetCamera: () => {
+      computeFollow(followOffset);
+      views.forEach((v) => {
+        v.tween.stop();
+        const direction = v.camera.position
+          .clone()
+          .sub(v.controls.target)
+          .normalize();
+        const homeDistance = v.initialPosition.length();
+        v.onHeightChange(v, heightOffset);
+        v.controls.target.add(followOffset);
+        v.camera.position
+          .copy(v.controls.target)
+          .addScaledVector(direction, homeDistance);
+      });
+      setFollowLocked(true);
+    },
     destroy: () => {
+      abortController.abort();
       cancelAnimationFrame(animationFrameId);
       skeletonHelper.dispose();
       floor.geometry.dispose();
@@ -396,6 +470,7 @@ function initializePreview(
         controls,
         tween,
         hidden,
+        initialPosition: position.clone(),
         onHeightChange,
       };
 
@@ -409,19 +484,23 @@ function initializePreview(
 const BASE_FRAMERATE = 60;
 const LOW_FRAMERATE = 30;
 
-type PreviewContext = ReturnType<typeof initializePreview>;
+export type PreviewContext = ReturnType<typeof initializePreview>;
 
 function SkeletonVisualizer({
   onInit,
   disabled = false,
+  onFollowLockChange,
 }: {
   onInit: (context: PreviewContext) => void;
   disabled?: boolean;
+  onFollowLockChange?: (locked: boolean) => void;
 }) {
   const { config } = useConfig();
   const style = config?.skeletonPreviewStyle ?? 'mesh';
 
   const previewContext = useRef<PreviewContext | null>(null);
+  const onFollowLockChangeRef = useRef(onFollowLockChange);
+  onFollowLockChangeRef.current = onFollowLockChange;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
@@ -503,7 +582,13 @@ function SkeletonVisualizer({
       throw 'invalid state - no canvas or container';
     resizeObserver.current.observe(containerRef.current);
 
-    previewContext.current = initializePreview(canvasRef.current, bones, style);
+    previewContext.current = initializePreview(
+      canvasRef.current,
+      bones,
+      style,
+      (locked) => onFollowLockChangeRef.current?.(locked)
+    );
+    onFollowLockChangeRef.current?.(true);
     if (!config?.devSettings.fastDataFeed)
       previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
 
@@ -550,10 +635,12 @@ export function SkeletonVisualizerWidget({
   },
   disabled = false,
   toggleDisabled,
+  onFollowLockChange,
 }: {
   onInit?: (context: PreviewContext) => void;
   disabled?: boolean;
   toggleDisabled?: () => void;
+  onFollowLockChange?: (locked: boolean) => void;
 }) {
   const { l10n } = useLocalization();
   const [error, setError] = useState(false);
@@ -566,7 +653,11 @@ export function SkeletonVisualizerWidget({
         })}
       >
         <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
-          <SkeletonVisualizer onInit={onInit} disabled={disabled} />
+          <SkeletonVisualizer
+            onInit={onInit}
+            disabled={disabled}
+            onFollowLockChange={onFollowLockChange}
+          />
         </ErrorBoundary>
       </div>
       <div
