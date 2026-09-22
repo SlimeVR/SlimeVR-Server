@@ -176,10 +176,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Para ajustá-la, defina o Comprimento do Braço Superior como 0 e faça ajustes até que
     seus trackers virtuais de cotovelo se alinhem verticalmente com os seus ombros reais.
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Esta é a distância horizontal da base do seu pescoço até os seus ombros.
-    Para ajustá-la, defina o Comprimento do Braço Superior como 0 e faça ajustes até que
-    seus trackers virtuais de cotovelo se alinhem horizontalmente com os seus ombros reais.
 skeleton_bone-arm_group = Comprimento do Braço
 skeleton_bone-arm_group-desc =
     Esta é a distância entre seus ombros e seus pulsos.
