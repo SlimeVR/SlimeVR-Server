@@ -19,6 +19,7 @@ import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
+import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
 import dev.slimevr.util.PreciseWaiter
 import io.github.axisangles.ktmath.Quaternion
@@ -190,7 +191,7 @@ interface SkeletonComputedProcessor {
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
-	fun process(mutableIkTargets: IKTargets, fk: ComputedSkeleton, floorLevel: Float)
+	fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
 }
 
 class Skeleton(
@@ -237,8 +238,9 @@ class Skeleton(
 						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
-						FloorClipTargetProcessor(settings),
+						PositionalTargetProcessor(settings),
 						SkatingCorrectionTargetProcessor(settings),
+						FloorClipTargetProcessor(settings),
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor(),

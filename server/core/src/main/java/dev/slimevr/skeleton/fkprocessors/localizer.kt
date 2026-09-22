@@ -8,8 +8,8 @@ import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.targetprocessors.FLOOR_CALIBRATION_OFFSET
-import dev.slimevr.skeleton.targetprocessors.SKATING_ACCELERATION_THRESHOLD_SQ
-import dev.slimevr.skeleton.targetprocessors.SKATING_VELOCITY_THRESHOLD_SQ
+import dev.slimevr.skeleton.targetprocessors.SKATING_ACCELERATION_THRESHOLD
+import dev.slimevr.skeleton.targetprocessors.SKATING_LINEAR_VELOCITY_THRESHOLD
 import dev.slimevr.skeleton.targetprocessors.shouldLock
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.inFloatingSeconds
@@ -111,8 +111,8 @@ object FootLocalizer {
 	 * the scaled thresholds for velocity and acceleration
 	 */
 	private fun velocityAccelRatio(bone: BoneState): Float {
-		val velocityPercentage = bone.velocity.linear.lenSq() / SKATING_VELOCITY_THRESHOLD_SQ
-		val accelerationPercentage = bone.acceleration.lenSq() / SKATING_ACCELERATION_THRESHOLD_SQ
+		val velocityPercentage = bone.velocity.linear.len() / SKATING_LINEAR_VELOCITY_THRESHOLD
+		val accelerationPercentage = bone.acceleration.len() / SKATING_ACCELERATION_THRESHOLD
 		return (velocityPercentage + accelerationPercentage) / 2f
 	}
 
