@@ -387,10 +387,14 @@ function initializePreview(
       const newHeight = computeHeadYOffset(bones);
       if (newHeight !== heightOffset) {
         heightOffset = newHeight;
-        views.forEach((v) => {
-          v.onHeightChange(v, heightOffset);
-          v.controls.target.add(followOffset);
-        });
+        // Only reframe while following; otherwise this fights the user's
+        // manual drag/zoom on every bone update (height jitters constantly).
+        if (followLocked) {
+          views.forEach((v) => {
+            v.onHeightChange(v, heightOffset);
+            v.controls.target.add(followOffset);
+          });
+        }
       }
     },
     updateTrackers,
