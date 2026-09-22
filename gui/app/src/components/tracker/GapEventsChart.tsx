@@ -89,6 +89,7 @@ function GapEventsChartComponent({
   onActiveChange: Dispatch<SetStateAction<HoveredChart>>;
   variant?: 'default' | 'modal';
 }) {
+  const visible = trackers.filter((t) => visibleIds.includes(t.deviceId));
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -285,7 +286,7 @@ function GapEventsChartComponent({
         <TelemetryPopoverTooltip
           isOpen={isActive && hoveredTime != null && clientPos != null}
           clientPos={clientPos}
-          trackers={trackers}
+          trackers={visible}
           chartData={chartData}
           hoveredTime={hoveredTime}
           eventsByTracker={eventsByTracker}

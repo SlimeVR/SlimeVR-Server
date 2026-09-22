@@ -416,7 +416,7 @@ function RssiLossChartComponent({
       <TelemetryPopoverTooltip
         isOpen={isActive && hoveredTime != null && clientPos != null}
         clientPos={clientPos}
-        trackers={trackers}
+        trackers={visible}
         chartData={chartData}
         hoveredTime={hoveredTime}
         eventsByTracker={eventsByTracker}
