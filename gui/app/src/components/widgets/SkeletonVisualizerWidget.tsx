@@ -63,7 +63,7 @@ function createRadialFloorMesh(size = 8.0): Mesh {
     uniforms: {
       uColorGround: { value: new Color('#14283d') },
       uColorGridMinor: { value: new Color('#6fa3cc') },
-      uColorGridMajor: { value: new Color('#b588f7') },
+      uColorGridMajor: { value: new Color('#d6ecff') },
       uColorRing: { value: new Color('#48e59b') },
       uColorAxis: { value: new Color('#bca5e8') },
       uColorGlow: { value: new Color('#7ff2ff') },
@@ -107,15 +107,8 @@ function createRadialFloorMesh(size = 8.0): Mesh {
       }
 
       void main() {
-        // World-locked: the grid lines themselves stay pinned to absolute
-        // ground position, so they scroll past as the player walks - this
-        // is what makes the floor a movement reference, not just a decal.
         vec2 worldPos = vWorldPosition.xz;
 
-        // Player-locked: the mesh is recentered under the player every
-        // frame, so local position is distance-from-player. Everything
-        // that should always be visible under/around the player (the
-        // disc itself, the glow, the standing rings) keys off this.
         vec2 localPos = vLocalPosition;
         float localDist = length(localPos);
         if (localDist > uRadius) discard;
