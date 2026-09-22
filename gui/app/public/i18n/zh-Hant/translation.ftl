@@ -179,10 +179,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
     實際的肩膀垂直對齊。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀寬度
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    這是從脖子底部到肩膀的水平距離。
-    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
-    實際的肩膀水平對齊。
 skeleton_bone-arm_group = 手臂長度
 skeleton_bone-arm_group-desc =
     這是從肩膀到手腕的距離。
