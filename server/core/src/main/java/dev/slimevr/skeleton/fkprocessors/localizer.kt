@@ -53,11 +53,10 @@ private fun isUserSitting(fk: ComputedSkeleton): Boolean {
 private fun isFootOnGround(fk: ComputedSkeleton): Boolean {
 	val leftFoot = fk[BodyPart.LEFT_FOOT] ?: return false
 	val rightFoot = fk[BodyPart.RIGHT_FOOT] ?: return false
-	// TODO should use FLOOR_CALIBRATION_OFFSET?
-	return leftFoot.headPosition.y <= 0f ||
-		rightFoot.headPosition.y <= 0f ||
-		leftFoot.tailPosition.y <= 0f ||
-		rightFoot.tailPosition.y <= 0f
+	return leftFoot.headPosition.y <= FLOOR_CALIBRATION_OFFSET ||
+		rightFoot.headPosition.y <= FLOOR_CALIBRATION_OFFSET ||
+		leftFoot.tailPosition.y <= FLOOR_CALIBRATION_OFFSET ||
+		rightFoot.tailPosition.y <= FLOOR_CALIBRATION_OFFSET
 }
 
 private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSitting(fk)) {
@@ -71,13 +70,12 @@ private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSi
 	FollowSource.COM
 }
 
-private fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotationActive }.map { it.key }
-
+// Feet are always considered even if inactive
+private val alwaysActiveBodyParts = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT, BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG)
+private fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotationActive }.map { it.key } + alwaysActiveBodyParts
 /** Returns the active bone closest to or furthest inside the ground */
-fun getLowestBone(inputs: InputSkeleton, fk: ComputedSkeleton): BoneState? {
-	val activeBodyParts = getActiveBodyParts(inputs)
-	return fk.filter { it.key in activeBodyParts }.minByOrNull { it.value.tailPosition.y }?.value
-}
+fun getLowestBone(inputs: InputSkeleton, fk: ComputedSkeleton) =
+	fk.filter { it.key in getActiveBodyParts(inputs) }.minByOrNull { it.value.tailPosition.y }?.value
 
 object FootLocalizer {
 	enum class PlantedFoot {
