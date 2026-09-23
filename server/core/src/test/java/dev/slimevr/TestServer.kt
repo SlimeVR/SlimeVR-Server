@@ -14,7 +14,6 @@ import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManager
-import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
@@ -32,9 +31,6 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.solarxr.SolarXRBridge
-import dev.slimevr.solarxr.SolarXRBridgeState
-import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
@@ -42,7 +38,7 @@ import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
+import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.vmc.VMCManager
@@ -179,7 +175,7 @@ fun buildTestTracker(
 		initialState = state,
 		scope = scope,
 		reducer = ::reduceTracker,
-		behaviours = listOf(TrackerCalibrationRefreshBehaviour(), TrackerTpsBehaviour()) + additionalBehaviours,
+		behaviours = listOf(TrackerRotationRefreshBehaviour(), TrackerTpsBehaviour()) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)

@@ -119,10 +119,9 @@ fun estimateHeadingAlign(
 	referenceRotation: Quaternion,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
-	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
 	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
-	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign, headingAlign)
+	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign)
 	val pitchRoll = (inverseYProjection(referenceRotation) * rotation).sandwichUnitY()
 	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
 	return Quaternion.rotationAroundYAxis(yawAngle)
