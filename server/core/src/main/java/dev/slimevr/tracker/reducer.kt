@@ -1,6 +1,7 @@
 package dev.slimevr.tracker
 
 import io.github.axisangles.ktmath.Quaternion
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
@@ -18,7 +19,7 @@ fun reduce(
 	is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
 
 	is TrackerActions.SetRotation -> {
-		val accumulatedTicks = if (!action.refresh && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
+		val accumulatedTicks = if (action.increaseTps && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
 
 		// Rotation
 		val rawRotation: RawRotation = action.rotation ?: state.rawRotation
@@ -28,7 +29,7 @@ fun reduce(
 		} else {
 			rawRotation
 		}
-		val polarityAlign = if (action.refresh) {
+		val polarityAlign = if (state.rotationDirty) {
 			// Reset polarity according to last reference rotation.
 			state.lastReference
 		} else {
@@ -88,7 +89,7 @@ fun reduce(
 		rotationDirty = true,
 	)
 
-	// TODO centaur when using a positional and an IMU tracker on spine with unreliable reference and perhaps other cases.
+	// TODO centaur when using both a positional and an IMU tracker on spine.
 	is TrackerActions.FullReset -> {
 		val alignAttitude = !state.isHmd || action.resetHmdAttitude
 		val correctHeading = !state.isHmd && action.referenceRotation != null

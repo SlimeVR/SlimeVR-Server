@@ -23,6 +23,6 @@ class TrackerRotationRefreshBehaviour : TrackerBehaviour {
 	}
 
 	companion object {
-		fun getRotationRefreshAction(trackerState: TrackerState) = TrackerActions.SetRotation(trackerState.rawRotation, trackerState.rawAcceleration, trackerState.rawMagnetometer, trackerState.position, refresh = true)
+		fun getRotationRefreshAction(trackerState: TrackerState) = TrackerActions.SetRotation(trackerState.rawRotation, trackerState.rawAcceleration, trackerState.rawMagnetometer, trackerState.position, false)
 	}
 }

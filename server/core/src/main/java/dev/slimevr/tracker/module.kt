@@ -103,7 +103,7 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val refresh: Boolean = false) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion?, val resetHmdAttitude: Boolean = false) : TrackerActions
