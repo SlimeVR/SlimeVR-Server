@@ -1,7 +1,6 @@
 import {
   Box3,
   BoxGeometry,
-  Color,
   Mesh,
   MeshStandardMaterial,
   Object3D,
@@ -24,7 +23,6 @@ import {
   ModelDimensions,
   SKELETON_PART_PRESETS,
   computeShapeScale,
-  getPartMaterial,
 } from './skeletonParts';
 import { SkeletonProportions, deriveSkeletonProportions } from './skeletonProportions';
 
@@ -92,9 +90,10 @@ export class BasedSkeletonMeshHelper extends Object3D {
   constructor(bones: Map<BodyPart, BoneT>) {
     super();
 
-    const addrObject = (modelUrl, partName) => modelUrl + ':' + partName;
-    const modelUrlsToFetch = new Set();
-    const partsByAddr = {};
+    const addrObject = (modelUrl: string, partName: string) =>
+      modelUrl + ':' + partName;
+    const modelUrlsToFetch = new Set<string>();
+    const partsByAddr: Record<string, Array<[BonePart, AttachedShape]>> = {};
 
     for (const bone of bones.values()) {
       if (bone.bodyPart === BodyPart.NONE) continue;
@@ -123,12 +122,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
         if (partName && modelUrl) {
           modelUrlsToFetch.add(modelUrl);
           const addr = addrObject(modelUrl, partName);
-
-          if (partsByAddr[addr] === undefined) {
-            partsByAddr[addr] = [[part, attached]];
-          } else {
-            partsByAddr[addr].push([part, attached]);
-          }
+          partsByAddr[addr].push([part, attached]);
         }
 
         part.shapes.push(attached);
