@@ -46,6 +46,7 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
+	val expectedTps: UShort?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val position: Vector3?,
@@ -109,6 +110,7 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
+	expectedTps = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
 	position = null,
@@ -170,13 +172,12 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 }
 
 sealed interface SkeletonActions {
-	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
-	data class SetBoneAcceleration(val bodyPart: BodyPart, val acceleration: Vector3, val setActive: Boolean = true) : SkeletonActions
-	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
+	data class SetBonePose(val bodyPart: BodyPart, val expectedTps: UShort, val rotation: Quaternion, val acceleration: Vector3, val position: Vector3?) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
+	data class SetHeadPosition(val position: Vector3?) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
 	data object ResetFloorLevel : SkeletonActions
 	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
@@ -197,7 +198,7 @@ interface SkeletonFkProcessor {
 	fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
 }
 interface SkeletonComputedProcessor {
-	fun process(mutableComputedSkeleton: ComputedSkeleton)
+	fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton)
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
@@ -251,7 +252,7 @@ class Skeleton(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 50),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,

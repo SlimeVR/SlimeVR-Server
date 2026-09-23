@@ -80,6 +80,7 @@ data class TrackerState(
 	val position: Vector3?,
 	val imuTemp: Float?,
 	val accumulatedTicks: UShort,
+	val expectedTps: UShort?,
 	val tps: UShort,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
@@ -138,6 +139,7 @@ class Tracker(
 			hardwareId: String,
 			origin: DeviceOrigin,
 			driverName: String? = null,
+			expectedTps: UShort? = null,
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
@@ -154,6 +156,7 @@ class Tracker(
 				bodyPart = bodyPart,
 				intendedBodyPart = intendedBodyPart,
 				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
+				expectedTps = expectedTps,
 			)
 			val trackerState = if (savedConfig != null) {
 				TrackerConfigBehaviour.restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -212,6 +215,7 @@ class Tracker(
 			position = null,
 			imuTemp = null,
 			accumulatedTicks = 0u,
+			expectedTps = null,
 			tps = 0u,
 			status = TrackerStatus.DISCONNECTED,
 			completedRestCalibration = false,

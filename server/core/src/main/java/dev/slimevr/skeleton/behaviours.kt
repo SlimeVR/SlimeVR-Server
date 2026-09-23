@@ -66,10 +66,10 @@ class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 	}
 }
 
-class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
+class YouSpinMeRightRoundBehaviour(val inputHz: Int = 1) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
-			val intervalMs = (1000f / inputHz).toLong()
+			val intervalMs = (1000f / inputHz.toFloat()).toLong()
 			val startTime = timeSource.markNow()
 			while (true) {
 				delay(intervalMs)
@@ -77,15 +77,21 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
-					SkeletonActions.SetBoneRotation(
+					SkeletonActions.SetBonePose(
 						BodyPart.LOWER_CHEST,
+						inputHz.toUShort(),
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
+						Vector3.ZERO,
+						null,
 					),
 				)
 				receiver.context.dispatch(
-					SkeletonActions.SetBoneRotation(
+					SkeletonActions.SetBonePose(
 						BodyPart.LEFT_LOWER_LEG,
+						inputHz.toUShort(),
 						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
+						Vector3.ZERO,
+						null,
 					),
 				)
 
@@ -94,8 +100,11 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				val circleZ = sin(elapsed * 2f) * circleRadius
 				val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
 				receiver.context.dispatch(
-					SkeletonActions.SetBonePosition(
+					SkeletonActions.SetBonePose(
 						BodyPart.HEAD,
+						inputHz.toUShort(),
+						Quaternion.IDENTITY,
+						Vector3.ZERO,
 						Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
 					),
 				)
@@ -259,7 +268,7 @@ class ComputedSkeletonBehaviour(
 						var fk = buildBones(boneInputs)
 
 						// These write into fk, not the inputs, and the rebuilds below carry their values forward
-						for (processor in fkComputedProcessors) processor.process(fk)
+						for (processor in fkComputedProcessors) processor.process(fk, boneInputs)
 
 						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
 						// which bones changed.
@@ -276,9 +285,9 @@ class ComputedSkeletonBehaviour(
 								fkChangedParts.add(bodyPart)
 								beforeFk[bodyPart] = boneInput
 
-								// For changed bones with inactive positions, update their input's position in state (needed for Localizer)
-								if (!boneInput.isPositionActive && boneInput.position != previous?.position) {
-									receiver.context.dispatch(SkeletonActions.SetBonePosition(bodyPart, boneInput.position, false))
+								// For head changed position, set the new position in state (for Localizer).
+								if (bodyPart == BodyPart.HEAD && !boneInput.isPositionActive && boneInput.position != previous?.position) {
+									receiver.context.dispatch(SkeletonActions.SetHeadPosition(boneInput.position))
 								}
 							}
 							// Inputs changed; re-run FK
@@ -305,7 +314,7 @@ class ComputedSkeletonBehaviour(
 						)
 
 						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
-						for (processor in ikComputedProcessors) processor.process(ikOutput.bones)
+						for (processor in ikComputedProcessors) processor.process(ikOutput.bones, boneInputs)
 
 						// Updated the computed skeleton with the result
 						receiver.computed.tryEmit(ikOutput.bones)

@@ -308,6 +308,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 			origin = DeviceOrigin.UDP,
 			scope = receiver.appContext.server.context.scope,
 			appContext = receiver.appContext,
+			expectedTps = 100u,
 		)
 		receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
 		receiver.context.dispatch(

@@ -43,21 +43,24 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 					.onEach { trackerState ->
 						trackerState.bodyPart?.let { bodyPart ->
 							val pendingResets = trackerState.pendingSkeletonResets
-							val poseActions = listOfNotNull(
-								SkeletonActions.SetBoneRotation(bodyPart, trackerState.rotation),
-								SkeletonActions.SetBoneAcceleration(bodyPart, trackerState.acceleration),
-								if (trackerState.position != null) SkeletonActions.SetBonePosition(bodyPart, trackerState.position) else null,
+							val bonePoseActions = SkeletonActions.SetBonePose(
+								bodyPart,
+								trackerState.expectedTps ?: trackerState.tps,
+								trackerState.rotation,
+								trackerState.acceleration,
+								trackerState.position,
 							)
-							receiver.appContext.skeleton.context.dispatchAll(
-								if (pendingResets.isEmpty()) {
-									poseActions
-								} else {
-									poseActions + pendingResets.map { SkeletonActions.RequestProcessorReset(it) }
-								},
-							)
-							if (pendingResets.isNotEmpty()) {
+
+							// Send bone data + resets (if any, to prevent allocation)
+							if (pendingResets.isEmpty()) {
+								receiver.appContext.skeleton.context.dispatch(bonePoseActions)
+							} else {
+								receiver.appContext.skeleton.context.dispatchAll(
+									listOf(bonePoseActions) + pendingResets.map { SkeletonActions.RequestProcessorReset(it) },
+								)
 								receiver.context.dispatch(TrackerActions.ClearPendingSkeletonResets(pendingResets.size))
 							}
+
 							lastBodyPartSent = trackerState.bodyPart
 						}
 					}
