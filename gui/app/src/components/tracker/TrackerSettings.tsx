@@ -439,7 +439,8 @@ export function TrackerSettingsPage() {
           </div>
           {(tracker?.tracker.info?.isImu ||
             (tracker?.tracker.origin == DeviceOrigin.DRIVER &&
-              tracker?.tracker.info?.intendedBodyPart != BodyPart.HEAD)) && (
+              tracker?.tracker.info?.intendedBodyPart !=
+                tracker?.tracker.info?.bodyPart)) && (
             <div className="flex flex-col gap-2 w-full mt-3">
               <Typography variant="section-title">
                 {l10n.getString('tracker-settings-mounting_section')}

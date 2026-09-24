@@ -168,12 +168,12 @@ fun reduce(
 	}
 
 	is TrackerActions.PoseMountingReset -> {
-		val referenceRotation = action.referenceRotation ?: state.rotation
-
 		// Positional trackers' heading is aligned on full reset, not on mounting reset, except for a reference.
 		val alignHeading = state.position == null || action.referenceRotation == null
 		// A positional reference tracker needs to correct its heading on mounting reset.
 		val correctHeading = state.position != null && action.referenceRotation == null
+
+		val referenceRotation = action.referenceRotation ?: state.rotation
 
 		val headingAlignment = if (alignHeading) {
 			estimateHeadingAlign(

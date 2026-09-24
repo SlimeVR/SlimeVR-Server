@@ -122,7 +122,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
         if (partName && modelUrl) {
           modelUrlsToFetch.add(modelUrl);
           const addr = addrObject(modelUrl, partName);
-          partsByAddr[addr].push([part, attached]);
+          (partsByAddr[addr] ??= []).push([part, attached]);
         }
 
         part.shapes.push(attached);

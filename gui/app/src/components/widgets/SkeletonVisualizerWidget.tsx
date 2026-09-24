@@ -206,7 +206,7 @@ function initializePreview(
     const root =
       bones.get(BodyPart.HEAD) ??
       bones.get(BodyPart.HIP) ??
-      bones.get(BodyPart.LOWER_WAIST);
+      bones.get(BodyPart.UPPER_CHEST);
     if (!root) return out.copy(followOffset);
     out.copy(Vector3FromVec3fT(root.headPosition));
     skeletonGroup.updateWorldMatrix(true, false);
@@ -226,8 +226,8 @@ function initializePreview(
     }
     skeletonGroup.add(skeletonHelper);
 
-    const hmd = bones.get(BodyPart.HEAD);
-    const quat = QuaternionFromQuatT(hmd?.orientation).normalize().invert();
+    const head = bones.get(BodyPart.HEAD);
+    const quat = QuaternionFromQuatT(head?.orientation).normalize().invert();
 
     // Project quat to (0x, 1y, 0z)
     const VEC_Y = new Vector3(0, 1, 0);
