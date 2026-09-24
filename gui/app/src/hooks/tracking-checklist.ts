@@ -27,7 +27,7 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
   [TrackingChecklistStepId.STEAMVR_DISCONNECTED]:
     'tracking_checklist-STEAMVR_DISCONNECTED',
   [TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE]:
-    'tracking_checklist-UNASSIGNED_RELIABLE_REFERENCE',
+    'tracking_checklist-UNASSIGNED_HMD',
   [TrackingChecklistStepId.TRACKER_ERROR]: 'tracking_checklist-TRACKER_ERROR',
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]:
     'tracking_checklist-NETWORK_PROFILE_PUBLIC',

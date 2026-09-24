@@ -1674,8 +1674,8 @@ tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Ple
 tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
 tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
 tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
-tracking_checklist-UNASSIGNED_RELIABLE_REFERENCE = VR headset not assigned to Head
-tracking_checklist-UNASSIGNED_RELIABLE_REFERENCE-desc = The VR headset (highlighted in yellow) should be assigned as a head tracker.
+tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
     [one] Your network profile is currently set to Public ({$adapters}).
