@@ -16,7 +16,7 @@ import solarxr_protocol.rpc.VRCSpineMode
 import solarxr_protocol.rpc.VRCTrackerModel
 import kotlin.math.abs
 
-// The HMD height is taken from the HMD pose, which is between the eyes.
+// The head height is usually taken from the HMD pose, which is between the eyes.
 // This compensates for the offset to the full height (top of the head).
 // From Drillis and Contini (1966)
 const val EYE_HEIGHT_TO_HEIGHT_RATIO = 0.936f

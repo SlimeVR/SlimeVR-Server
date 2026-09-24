@@ -62,9 +62,9 @@ class SkeletonProportionsBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeUserHeightRequest> { req ->
-			val hmdHeight = req.hmdHeight ?: return@on
+			val headHeight = req.headHeight ?: return@on
 			val floorHeight = req.floorHeight ?: 0f
-			val height = hmdHeight - floorHeight
+			val height = headHeight - floorHeight
 			if (height >= MIN_HEIGHT) {
 				userConfig.context.dispatch(
 					UserConfigActions.Update {

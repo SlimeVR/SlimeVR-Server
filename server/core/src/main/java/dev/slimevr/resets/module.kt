@@ -152,21 +152,19 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 	private fun getResetAction(referenceRotation: Quaternion?, resetType: ResetType, bodyPart: BodyPart?, resetsConfig: ResetsConfig) = when (resetType) {
 		ResetType.YAW -> TrackerActions.YawReset(referenceRotation, resetsConfig.yawResetSmoothTime.toDouble().seconds)
-		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetHmdAttitude)
+		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetReliableReferenceAttitude)
 		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
 	}
 
-	// TODO: currently HMD is a special case for calibration, but we should have something
-	//  more generic like "isReliable" in state or in the reset actions parameters.
-	//  Also need to make it more generic in the tracker reducer.
 	private fun getReliableReferenceTracker(allTrackers: Collection<Tracker>) = allTrackers.firstOrNull {
 		val state = it.context.state.value
-		state.isHmd && state.bodyPart == BodyPart.HEAD && state.status.isActive()
+		state.isAssignedReliableReference && state.status.isActive()
 	}
 
 	// By priority, higher value = higher priority. 0 for others.
 	private val referenceBodyParts = mapOf(
-		BodyPart.HEAD to 6,
+		BodyPart.HEAD to 7,
+		BodyPart.NECK to 6,
 		BodyPart.UPPER_CHEST to 5,
 		BodyPart.LOWER_CHEST to 4,
 		BodyPart.HIP to 3,

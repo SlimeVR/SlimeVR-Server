@@ -243,7 +243,7 @@ function UserHeightStatus({
 }
 
 function HeightControls({
-  hmdHeight,
+  headHeight,
   unit,
   onUnitChange,
   alonePage,
@@ -252,7 +252,7 @@ function HeightControls({
   onHeightChange,
   onCalculate,
 }: {
-  hmdHeight: number;
+  headHeight: number;
   unit: 'meter' | 'foot';
   onUnitChange: (unit: 'meter' | 'foot') => void;
   alonePage: boolean;
@@ -267,10 +267,10 @@ function HeightControls({
         <Typography variant="mobile-title" id="onboarding-user_height-title" />
       )}
       <HeightSelectionInput
-        hmdHeight={hmdHeight}
+        headHeight={headHeight}
         unit={unit}
         onUnitChange={onUnitChange}
-        setHmdHeight={onHeightChange}
+        setHeadHeight={onHeightChange}
       />
       <Tooltip
         disabled={canCalibrate}
@@ -357,7 +357,7 @@ function FloatingHeightPanel({
 }
 
 export function ScaledProportionsPage() {
-  const [hmdHeight, setHmdHeight] = useState(0);
+  const [headHeight, setHeadHeight] = useState(0);
   const [tmpHeight, setTmpHeight] = useState(0);
   const [lastUsed, setLastUsed] = useState<'manual' | 'auto' | null>(null);
   const { config, setConfig } = useConfig();
@@ -410,9 +410,9 @@ export function ScaledProportionsPage() {
   );
 
   const applyHeight = (newHeight: number) => {
-    setHmdHeight(newHeight);
+    setHeadHeight(newHeight);
     const skeletonSettingsRequest = new ChangeUserHeightRequestT();
-    skeletonSettingsRequest.hmdHeight = newHeight;
+    skeletonSettingsRequest.headHeight = newHeight;
     skeletonSettingsRequest.floorHeight = 0;
     sendRPCPacket(RpcMessage.ChangeUserHeightRequest, skeletonSettingsRequest);
     sendRPCPacket(
@@ -431,7 +431,7 @@ export function ScaledProportionsPage() {
       }
 
       setState(res);
-      setHmdHeight(res.hmdHeight);
+      setHeadHeight(res.headHeight);
 
       if (res.status === UserHeightCalibrationStatus.DONE) {
         setConfig({ lastUsedProportions: 'scaled' });
@@ -443,7 +443,7 @@ export function ScaledProportionsPage() {
   useRPCPacket(
     RpcMessage.SkeletonProportionsResponse,
     (res: SkeletonProportionsResponseT) => {
-      setHmdHeight(res.skeletonHeight);
+      setHeadHeight(res.skeletonHeight);
     }
   );
 
@@ -529,7 +529,7 @@ export function ScaledProportionsPage() {
 
   const controls = (
     <HeightControls
-      hmdHeight={hmdHeight}
+      headHeight={headHeight}
       unit={heightUnit}
       onUnitChange={setHeightUnit}
       alonePage={state.alonePage}
@@ -594,14 +594,14 @@ export function ScaledProportionsPage() {
                 variant="section-title"
                 id="onboarding-user_height-title"
               />
-              {hmdHeight > 0 && (
+              {headHeight > 0 && (
                 <Typography
                   bold
                   variant="section-title"
                   color="text-accent-background-10"
                   whitespace="whitespace-nowrap"
                 >
-                  {formatFullHeight(hmdHeight, heightUnit, currentLocales)}
+                  {formatFullHeight(headHeight, heightUnit, currentLocales)}
                 </Typography>
               )}
             </div>

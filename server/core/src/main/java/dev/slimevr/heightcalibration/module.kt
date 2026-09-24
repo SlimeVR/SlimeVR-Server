@@ -53,17 +53,17 @@ class HeightCalibrationManager(
 	private var sessionJob: Job? = null
 
 	// These Flows do nothing until the calibration use collect on it
-	val hmdUpdates: Flow<TrackerSnapshot> = serverContext.context.state
+	val headUpdates: Flow<TrackerSnapshot> = serverContext.context.state
 		.flatMapLatest { state ->
-			val hmd = state.trackers.values
+			val positionalHead = state.trackers.values
 				.find {
 					val state = it.context.state.value
 					state.bodyPart == BodyPart.HEAD && state.status == TrackerStatus.OK && state.position != null
 				}
 				?: return@flatMapLatest emptyFlow()
-			hmd.context.state.map { s ->
+			positionalHead.context.state.map { s ->
 				TrackerSnapshot(
-					position = s.position ?: error("head (or HMD) will always have a position in this case"),
+					position = s.position ?: error("Head will always have a position here."),
 					rotation = s.rawRotation,
 				)
 			}
@@ -89,7 +89,7 @@ class HeightCalibrationManager(
 
 	fun start() {
 		sessionJob?.cancel()
-		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, hmdUpdates, controllerUpdates) }
+		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, headUpdates, controllerUpdates) }
 	}
 
 	fun cancel() {

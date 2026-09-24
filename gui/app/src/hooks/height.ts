@@ -8,15 +8,15 @@ import {
 import { MIN_HEIGHT } from './manual-proportions';
 
 export interface HeightContext {
-  hmdHeight: number | null;
-  setHmdHeight: React.Dispatch<React.SetStateAction<number | null>>;
+  headHeight: number | null;
+  setHeadHeight: React.Dispatch<React.SetStateAction<number | null>>;
   floorHeight: number | null;
   setFloorHeight: React.Dispatch<React.SetStateAction<number | null>>;
   currentHeight: number | null;
 }
 
 export function useProvideHeightContext(): HeightContext {
-  const [hmdHeight, setHmdHeight] = useState<number | null>(null);
+  const [headHeight, setHeadHeight] = useState<number | null>(null);
   const [floorHeight, setFloorHeight] = useState<number | null>(null);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
@@ -26,21 +26,27 @@ export function useProvideHeightContext(): HeightContext {
     []
   );
   useRPCPacket(RpcMessage.UserHeightResponse, (res: UserHeightResponseT) => {
-    const hmd = res.hmdHeight;
+    const head = res.headHeight;
     const floor = res.floorHeight;
 
-    if (validateHeight(hmd, floor)) {
-      setHmdHeight(hmd ?? null);
+    if (validateHeight(head, floor)) {
+      setHeadHeight(head ?? null);
       setFloorHeight(floor ?? null);
     }
   });
 
   const currentHeight = useMemo(
-    () => computeHeight(hmdHeight, floorHeight),
-    [hmdHeight, floorHeight]
+    () => computeHeight(headHeight, floorHeight),
+    [headHeight, floorHeight]
   );
 
-  return { hmdHeight, setHmdHeight, floorHeight, setFloorHeight, currentHeight };
+  return {
+    headHeight,
+    setHeadHeight: setHeadHeight,
+    floorHeight,
+    setFloorHeight,
+    currentHeight,
+  };
 }
 
 export const HeightContextC = createContext<HeightContext>(undefined as never);
@@ -54,19 +60,19 @@ export function useHeightContext() {
 }
 
 export function validateHeight(
-  hmdHeight: number | null | undefined,
+  headHeight: number | null | undefined,
   floorHeight: number | null | undefined
 ) {
-  const height = computeHeight(hmdHeight, floorHeight);
+  const height = computeHeight(headHeight, floorHeight);
   return height != null && height >= MIN_HEIGHT;
 }
 
 export function computeHeight(
-  hmdHeight: number | null | undefined,
+  headHeight: number | null | undefined,
   floorHeight: number | null | undefined
 ) {
-  return hmdHeight !== undefined && hmdHeight !== null
-    ? hmdHeight - (floorHeight ?? 0)
+  return headHeight !== undefined && headHeight !== null
+    ? headHeight - (floorHeight ?? 0)
     : null;
 }
 

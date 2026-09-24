@@ -22,7 +22,7 @@ class ResetsBehaviour(
 					armsResetMode = config.armsResetMode,
 					yawResetSmoothTime = config.yawResetSmoothTime,
 					saveMountingReset = config.saveMountingReset,
-					resetHmdAttitude = config.resetHmdAttitude,
+					resetReliableReferenceAttitude = config.resetReliableReferenceAttitude,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -37,7 +37,7 @@ class ResetsBehaviour(
 							armsResetMode = req.armsResetMode,
 							yawResetSmoothTime = req.yawResetSmoothTime,
 							saveMountingReset = req.saveMountingReset,
-							resetHmdAttitude = req.resetHmdAttitude,
+							resetReliableReferenceAttitude = req.resetReliableReferenceAttitude,
 						),
 					)
 				},

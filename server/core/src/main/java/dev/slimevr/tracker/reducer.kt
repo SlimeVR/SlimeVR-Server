@@ -1,7 +1,6 @@
 package dev.slimevr.tracker
 
 import io.github.axisangles.ktmath.Quaternion
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
@@ -71,8 +70,6 @@ fun reduce(
 	}
 
 	is TrackerActions.SetMountingOrientation -> {
-		if (state.isHmd) return state
-
 		state.copy(
 			mountingOrientation = action.mountingOrientation,
 			sessionCalibration = state.sessionCalibration.copy(
@@ -89,11 +86,10 @@ fun reduce(
 		rotationDirty = true,
 	)
 
-	// TODO centaur when using both a positional and an IMU tracker on spine.
 	is TrackerActions.FullReset -> {
-		val alignAttitude = !state.isHmd || action.resetHmdAttitude
-		val correctHeading = !state.isHmd && action.referenceRotation != null
-		val alignHeading = !state.isHmd && state.position != null && action.referenceRotation != null
+		val alignAttitude = !state.isAssignedReliableReference || action.resetReliableReferenceAttitude
+		val correctHeading = action.referenceRotation != null
+		val alignHeading = state.position != null && action.referenceRotation != null
 
 		val referenceRotation = action.referenceRotation ?: state.rawRotation
 
@@ -110,7 +106,7 @@ fun reduce(
 					referenceRotation,
 				)
 			} else {
-				state.sessionCalibration.attitudeAlignment
+				Quaternion.IDENTITY
 			}
 		val headingAlignment =
 			if (alignHeading) {
@@ -175,9 +171,9 @@ fun reduce(
 		val referenceRotation = action.referenceRotation ?: state.rotation
 
 		// Positional trackers' heading is aligned on full reset, not on mounting reset, except for a reference.
-		val alignHeading = (state.position == null || action.referenceRotation == null) && !state.isHmd
+		val alignHeading = state.position == null || action.referenceRotation == null
 		// A positional reference tracker needs to correct its heading on mounting reset.
-		val correctHeading = state.position != null && action.referenceRotation == null && !state.isHmd
+		val correctHeading = state.position != null && action.referenceRotation == null
 
 		val headingAlignment = if (alignHeading) {
 			estimateHeadingAlign(
