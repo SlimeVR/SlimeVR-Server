@@ -116,7 +116,7 @@ object FootLocalizer {
 	}
 
 	fun getPlantedFoot(fk: ComputedSkeleton, lastPlantedFoot: PlantedFoot): PlantedFoot {
-		// TODO start with foot, fallback to ankles, else nil
+		// TODO start with foot, fallback to ankles, else it's nil
 		val leftLowerLeg = fk[BodyPart.LEFT_LOWER_LEG] ?: return PlantedFoot.NONE
 		val rightLowerLeg = fk[BodyPart.RIGHT_LOWER_LEG] ?: return PlantedFoot.NONE
 
