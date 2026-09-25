@@ -38,15 +38,29 @@ unit-cm = 公分
 
 ## Dropdown
 
+dropdown_select-all = 全部選擇
+dropdown_unselect-all = 全部取消選擇
 
 ## Text input
 
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = 顯示密碼
+input-password-hide = 隱藏密碼
 
 ## File input
 
+# Accessible name and tooltip for the icon-only button that clears a picked path
+file_input-clear = 取消選取檔案
+file_input-clear_folder = 取消選取資料夾
 
 ## Window controls
 
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = 開啟文件
+titlebar-settings = 開啟設定
+titlebar-update = 下載更新
+titlebar-minimize = 最小化
+titlebar-maximize = 最大化
 titlebar-close = 關閉
 
 ## Body parts
@@ -62,6 +76,9 @@ body_part-RIGHT_UPPER_LEG = 右大腿
 body_part-RIGHT_LOWER_LEG = 右腳踝
 body_part-RIGHT_FOOT = 右腳
 body_part-UPPER_CHEST = 上胸
+body_part-LOWER_CHEST = 下胸
+body_part-UPPER_WAIST = 上腰
+body_part-LOWER_WAIST = 下腰
 body_part-HIP = 臀部
 body_part-LEFT_SHOULDER = 左肩
 body_part-LEFT_UPPER_ARM = 左上臂
@@ -100,18 +117,46 @@ body_part-RIGHT_RING_DISTAL = 右無名指遠端
 body_part-RIGHT_LITTLE_PROXIMAL = 右小指近端
 body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中端
 body_part-RIGHT_LITTLE_DISTAL = 右小指遠端
+body_part-LEFT_BIG_TOE = 左腳大腳趾
+body_part-LEFT_INDEX_TOE = 左腳第二腳趾
+body_part-LEFT_MIDDLE_TOE = 左腳第三腳趾
+body_part-LEFT_RING_TOE = 左腳第四腳趾
+body_part-LEFT_LITTLE_TOE = 左腳小腳趾
+body_part-RIGHT_TOES = 右腳趾
+body_part-RIGHT_BIG_TOE = 右腳大腳趾
+body_part-RIGHT_INDEX_TOE = 右腳第二腳趾
+body_part-RIGHT_MIDDLE_TOE = 右腳第三腳趾
+body_part-RIGHT_RING_TOE = 右腳第四腳趾
+body_part-RIGHT_LITTLE_TOE = 右腳小腳趾
 
 ## BoardType
 
 board_type-UNKNOWN = 不明
+board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = 自訂主板
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_DEV = SlimeVR 開發板
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = Wrangler Joy-Con
 board_type-MOCOPI = Sony mocopi
 board_type-WEMOSWROOM02 = WeMos WROOM-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 board_type-GESTURES = litten Yº by Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = 通用 nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -130,8 +175,19 @@ skeleton_bone-UPPER_CHEST-desc =
     這是從脖子底部到胸部中間的距離。
     若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
     修改，直到虛擬的脊椎與實際脊椎對齊。
+skeleton_bone-LOWER_CHEST = 下胸長度
 skeleton_bone-LOWER_CHEST-desc =
     這是從胸部中間到脊椎中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
+skeleton_bone-UPPER_WAIST = 上腰長度
+skeleton_bone-UPPER_WAIST-desc =
+    這是從脊椎中間到肚臍些微上面的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
+skeleton_bone-LOWER_WAIST = 下腰長度
+skeleton_bone-LOWER_WAIST-desc =
+    這是從肚臍些微上面到肚臍些微下面的距離。
     若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
     修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP = 臀部長度
@@ -174,6 +230,10 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
     實際的肩膀垂直對齊。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀寬度
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    這是兩側肩膀的水平距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀水平對齊。
 skeleton_bone-arm_group = 手臂長度
 skeleton_bone-arm_group-desc =
     這是從肩膀到手腕的距離。
@@ -189,6 +249,11 @@ skeleton_bone-LOWER_ARM-desc =
     這是從手肘到手腕的距離。
     若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
     手肘追蹤器與實際手肘的位置一致。
+skeleton_bone-HAND = 手部長度
+skeleton_bone-HAND-desc =
+    這是從手腕到指關節的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手部追蹤器與實際手指的位置一致。
 
 ## Tracker reset buttons
 
@@ -198,10 +263,12 @@ reset-reset_all_warning-cancel = 取消
 reset-full = 完整重置
 reset-mounting = 配戴重置
 reset-mounting-feet = 重置腳部配戴
+reset-mounting-toes = 腳趾校正
 reset-mounting-fingers = 重置手指配戴
 reset-yaw = 左右偏擺重置
 reset-error-mounting-need_full_reset = 配戴校正前需要完整重置
 reset-error-yaw-need_full_reset = 左右偏擺重置前需要完整重置
+reset-error-no_feet_tracker = 未指定/沒有腳部追蹤器
 
 ## Navigation bar
 
@@ -253,17 +320,21 @@ tracker-status-disconnected = 連線中斷
 tracker-status-occluded = 被遮擋
 tracker-status-ok = 已連線
 tracker-status-timed_out = 已逾時
+tracker-status-sleeping = 睡眠中
 
 ## Tracker status columns
 
 tracker-table-column-name = 名稱
 tracker-table-column-type = 類型
 tracker-table-column-battery = 電量
+tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
 tracker-table-column-temperature = 溫度 ℃
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋轉 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-stay_aligned = 持續校正
+tracker-table-column-url = URL
 
 ## Tracker rotation
 
@@ -276,6 +347,7 @@ tracker-rotation-back = 後
 tracker-rotation-back_left = 左後方
 tracker-rotation-back_right = 右後方
 tracker-rotation-custom = 自訂
+tracker-rotation-mounting_reset = （使用配戴校正的方位）
 
 ## Tracker information
 
@@ -284,6 +356,7 @@ tracker-infos-display_name = 顯示名稱
 tracker-infos-custom_name = 自訂名稱
 tracker-infos-url = 追蹤器 URL
 tracker-infos-hardware_identifier = 硬體 ID
+tracker-infos-data_type = 資料型態
 tracker-infos-imu = 慣性測量單元 (IMU)
 tracker-infos-board_type = 主板
 tracker-infos-network_version = 通訊協定版本
@@ -337,11 +410,32 @@ tracker-settings-build-date = 建置日期
 
 ## Dongle settings
 
+dongle-infos-model = 型號
 dongle-infos-hardware_revision = 硬體版本
+dongle-status-connected = 已連接
 dongle-status-disconnected = 連線中斷
 dongle-settings-back = 返回追蹤器列表
+dongle-settings-title = 接收器設定
+dongle-settings-name_section = 接收器名稱
+dongle-settings-name_section-description = 給它起一個可愛的名字吧 owo
+dongle-settings-name_section-placeholder = 阿喵的那隻 usb
 dongle-settings-update = 立即更新
 dongle-settings-update-title = 韌體版本
+dongle-settings-paired_trackers = 已配對的追蹤器
+dongle-settings-paired_trackers-empty = 追蹤器尚未配對至此接收器。
+dongle-settings-pair = 配對追蹤器
+dongle-settings-forget_tracker = 忘記
+dongle-settings-telemetry-title = 即時遙測
+dongle-settings-telemetry-select_trackers = 選擇追蹤器
+dongle-settings-telemetry-select_trackers-summary = { $count } / { $total } 個追蹤器
+dongle-settings-telemetry-show_min_max = 最小/最大
+dongle-settings-telemetry-chart_rssi = RSSI · dBm
+dongle-settings-telemetry-chart_loss = 封包遺失率 · %
+dongle-settings-telemetry-chart_gaps = 封包遺失間隔 · 相對於 TPS 的封包間隔
+dongle-settings-telemetry-footnote = 封包遺失間隔會顯示封包更新頻率晚於追蹤器的 TPS 的區間，越寬越深的標記表示更長的封包遺失間隔。
+# Accessible name and tooltip for the icon-only button that pauses/resumes the live telemetry feed
+dongle-settings-telemetry-live-pause = 暫停即時遙測
+dongle-settings-telemetry-live-resume = 恢復即時遙測
 
 ## Tracker part card info
 
@@ -378,9 +472,16 @@ mounting_selection_menu-close = 關閉
 
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
+settings-sidebar-outputs = 輸出
+settings-sidebar-routing = 骨骼路由
+settings-sidebar-driver = SteamVR / Monado
+settings-sidebar-resets = 重置
 settings-sidebar-stay_aligned = 持續校正
+settings-sidebar-tracking = 追蹤
 settings-sidebar-trackers = 追蹤器
 settings-sidebar-interface = 使用者介面
+settings-sidebar-vrchat_osc = VRChat OSC
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
@@ -394,17 +495,85 @@ settings-sidebar-advanced = 進階
 
 ## Bone routing settings
 
+settings-routing = 骨骼路由
+settings-routing-description =
+    選擇每個輸出方法要傳送哪些資料。
+    SteamVR/Monado、VRChat OSC、VMC 可以個別接收不同組合的身體部位。
+settings-routing-mode = 路由模式
+settings-routing-automatic-label = 自動調整路由
+settings-routing-mode-description =
+    開啟自動調整路由時，SlimeVR 會挑選每個骨骼最佳的輸出方法，避免同時同一個骨骼以兩個方法輸出：優先使用 SteamVR/Monado，VRChat OSC 會接收其無法使用的部位，VMC 會取得全身骨骼。
+    關閉此選項以手動調整每個骨骼的輸出位置，也可以將同一個骨骼同時以不同方法輸出。
+settings-routing-bone = 骨骼
+settings-routing-cell-required = 此輸出方法為必要
+settings-routing-cell-unavailable = 在此平台無法使用此輸出方法
+settings-routing-cell-duplicate = 骨骼已被路由到多個輸出方法，可能導致應用程式出現重複的追蹤器
+settings-routing-duplicate-warning =
+    { $bones } { $boneCount ->
+        *[other] 已
+    }被路由到多個輸出方法（{ $outputs }），可能導致應用程式出現重複的追蹤器。
+settings-routing-outputs = 輸出方法
+settings-routing-bones = 骨骼
+settings-routing-bones-description = 勾選表示骨骼會以此方法輸出。橫線表示此輸出不支援這個骨骼。關閉自動調整路由以手動選擇。
+settings-routing-output-driver = SteamVR / Monado
+settings-routing-output-vrc_osc = VRChat OSC
+settings-routing-output-vmc = VMC
+settings-routing-output-bone-count = { $routed } / { $accepts } 骨骼已路由
+settings-routing-output-badge-sending = 發送中
+settings-routing-output-sending-description = 已連接，正在透過此輸出方法傳送骨骼資料。
+settings-routing-output-badge-stopped = 未執行
+settings-routing-output-stopped-description = SteamVR 或 Monado 驅動程式未連接。
+settings-routing-output-badge-idle = 待機中
+settings-routing-output-idle-description = 已啟用，但尚未找到遠端節點。
 settings-routing-output-badge-off = 關閉
+settings-routing-output-off-description = 在設定中已被關閉。
+settings-routing-output-badge-empty = 沒有路由
+settings-routing-output-empty-description = 已啟用，但沒有骨骼路由到這個輸出方法。
+settings-routing-output-badge-unavailable = 無法使用
+settings-routing-output-unavailable-description = 輸出方法不支援這個平台。
+settings-routing-group-spine = 脊椎與軀幹
+settings-routing-group-legs = 腿部
+settings-routing-group-arms = 手臂
 settings-routing-group-fingers = 手指
+settings-routing-row-left_fingers = 左手手指
+settings-routing-row-right_fingers = 右手手指
+settings-routing-group-toes = 腳趾
+settings-routing-row-left_toes = 左腳腳趾
+settings-routing-row-right_toes = 右腳腳趾
+settings-routing-hands-warning =
+    <b>警告：</b>將手部追蹤器路由到 SteamVR/Monado 將會取代原本的控制器輸入。
+    僅在需要用 SlimeVR 追蹤器追蹤手部時使用。
+    
+    仍要路由手部追蹤器到 SteamVR/Monado？
 settings-routing-hands-warning-cancel = 取消
+settings-routing-hands-warning-done = 路由手部追蹤器
 
 ## SteamVR / Monado output settings
 
+settings-driver = SteamVR / Monado
+settings-driver-description = SlimeVR 驅動程式的設定，用於 SteamVR 與 Monado 等。
 settings-driver-enable = 啟用
+settings-driver-enable-description = 透過 SlimeVR 驅動程式傳送追蹤器資訊到 SteamVR 或 Monado。關閉時上述環境無法接收 SlimeVR 的追蹤資訊。
+settings-driver-enable-label = 啟用 SteamVR / Monado
+settings-driver-status-title = 狀態
+settings-driver-status-connection = 驅動程式連接狀態
+settings-driver-status-badge-connected = 已連接
+settings-driver-status-badge-waiting = 等待中
 settings-driver-status-badge-disabled = 關閉
+settings-driver-status-badge-unavailable = 無法使用
+settings-driver-status-connection-connected = 驅動程式已連接並接收追蹤器資訊。
+settings-driver-status-connection-waiting = 等待 SteamVR/Monado 透過 SlimeVR 驅動程式連接追蹤器。
+settings-driver-status-connection-disabled = 已關閉，不使用此方法連接。
+settings-driver-status-connection-unavailable = 輸出方法在此平台上無法使用。
+settings-driver-bones = 傳送的骨骼
+settings-driver-bones-description = 在骨骼路由中，哪些骨骼會以此方法輸出。
+settings-driver-bones-link = 開啟骨骼路由
+settings-driver-velocity = 傳送速度
+settings-driver-velocity-description = 傳送直線速度與角速度到驅動程式，以允許 SteamVR/Monado 預測姿勢，與保持支援此資料類型的應用程式的相容性。
 
 ## Tracker mechanics
 
+settings-general-trackers_settings = 追蹤器設定
 settings-general-tracker_mechanics-filtering = 濾波
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -419,6 +588,7 @@ settings-general-tracker_mechanics-filtering-type-prediction = 預測型
 settings-general-tracker_mechanics-filtering-type-prediction-description = 減少延遲並使移動更敏捷，但可能會增加一些抖動。
 settings-general-tracker_mechanics-filtering-amount = 濾波強度
 settings-general-tracker_mechanics-yaw-reset-smooth-time = 左右偏擺重置平滑過渡時間（0秒為關閉）
+settings-general-tracker_mechanics-yaw-reset-smooth-time-description = 進行左右偏移重置時，平滑化追蹤器的旋轉角度。0 秒會關閉此選項。
 settings-general-tracker_mechanics-save_mounting_reset = 儲存自動配戴重置的校正
 settings-general-tracker_mechanics-save_mounting_reset-description =
     儲存自動配戴重置的校正，重新啟動 SlimeVR 後不需要再進行校正。
@@ -432,6 +602,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器�
 settings-general-tracker_mechanics-trackers_over_usb = 透過 USB 連接的追蹤器
 settings-general-tracker_mechanics-trackers_over_usb-description = 透過 USB 接收 HID 追蹤器的資料，請確保連接的追蹤器已啟用<b>「透過 HID 連接」</b>的功能。
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允許 HID 追蹤器透過 USB 直接連接
+settings-general-tracker_mechanics-timeout_delay = 逾時延遲
+settings-general-tracker_mechanics-timeout_delay-description = 追蹤器離線時，標記成「{ tracker-status-disconnected }」的時間。
 settings-stay_aligned = 持續校正
 settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
 settings-stay_aligned-setup-label = 設定持續校正
@@ -452,11 +624,30 @@ settings-stay_aligned-debug-copy-label = 複製設定參數進剪貼簿
 
 ## Keybinds Page
 
+settings-keybinds = 快捷鍵設定
+settings-keybinds-description = 變更不同捷徑的快捷鍵
+keybind_config-keybind_name = 快捷鍵
+keybind_config-keybind_value = 組合鍵
+keybind_config-keybind_delay = 觸發延遲秒數
 settings-keybinds_full-reset = 完整重置
 settings-keybinds_yaw-reset = 左右偏擺重置
+settings-keybinds_mounting-reset = 配戴重置
+settings-keybinds_feet-mounting-reset = 腳部配戴重置
+settings-keybinds_pause-tracking = 暫停追蹤
 settings-keybinds_reset-all-button = 重置全部設定
+settings-keybinds-system-managed-description = 你的桌面環境會管理全域快捷鍵，因此需要從系統設定中更改。
+settings-keybinds-open-system-settings-button = 開啟系統設定
+settings-keybinds-system-managed-hint = 在系統設定中設定
+settings-keybinds-unsupported-description = 此平台不支援全域快捷鍵。
+settings-sidebar-keybinds = 快捷鍵
+settings-keybinds-recorder-modal-title = 指定快捷鍵給
+settings-keybinds-recorder-modal-unbind-button = 取消設定
 settings-keybinds-recorder-modal-done-button = 完成
 settings-keybinds-recorder-modal-cancel-button = 取消
+settings-keybinds-recorder-modal-key-enter = Enter
+settings-keybinds-recorder-modal-key-backspace = Backspace
+settings-keybinds-recorder-modal-key-escape = Esc
+settings-keybinds-already-assigned = 已被 { $name } 使用
 
 ## FK/Tracking settings
 
