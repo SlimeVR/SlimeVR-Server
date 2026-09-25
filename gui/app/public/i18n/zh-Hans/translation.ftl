@@ -116,10 +116,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR蝴蝶
 ## Proportions
 
 skeleton_bone-NONE = 无
-skeleton_bone-HEAD = 头部偏移
-skeleton_bone-HEAD-desc =
-    从头戴显示器到头部中心的距离。
-    调节时，左右摇头并修改此参数，使头部移动时其他追踪器位置保持不变。
 skeleton_bone-NECK = 颈部长度
 skeleton_bone-NECK-desc =
     从头部中心到脖子根部的距离。
@@ -1302,8 +1298,6 @@ tracking_checklist-TRACKER_ERROR-desc = 有追踪器发生错误，请重启黄�
 tracking_checklist-VRCHAT_SETTINGS = 调整 VRChat 设置
 tracking_checklist-VRCHAT_SETTINGS-desc = VRChat 的设置有问题！这会影响到在 VRChat 中使用 SlimeVR 的体验。
 tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告页面
-tracking_checklist-UNASSIGNED_HMD = VR 头戴显示器未分配给头部
-tracking_checklist-UNASSIGNED_HMD-desc = VR 头戴显示器应该被分配为头部追踪器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 更改网络配置文件类型
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
