@@ -116,11 +116,6 @@ board_type-GENERIC_NRF = 通用 nRF
 ## Proportions
 
 skeleton_bone-NONE = 無
-skeleton_bone-HEAD = 頭部偏移
-skeleton_bone-HEAD-desc =
-    這是從頭戴顯示器到頭中央的距離。
-    若要調整，請左右搖頭（如不同意、否定般的樣子），檢查其他追蹤器的數值跳
-    動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-NECK = 頸部長度
 skeleton_bone-NECK-desc =
     這是從頭中央到脖子底部的距離。
@@ -1278,8 +1273,6 @@ tracking_checklist-TRACKER_ERROR-desc = 有追蹤器發生錯誤，請重啟黃�
 tracking_checklist-VRCHAT_SETTINGS = 調整 VRChat 設定
 tracking_checklist-VRCHAT_SETTINGS-desc = VRChat 的設定有問題，這會影響到在 VRChat 使用 SlimeVR 的體驗。
 tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告
-tracking_checklist-UNASSIGNED_HMD = VR 頭戴裝置尚未分配給頭部
-tracking_checklist-UNASSIGNED_HMD-desc = VR 頭戴顯示器應被分配為頭部追蹤器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 變更網路設定檔
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 開啟控制台
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 調整持續校正設定
