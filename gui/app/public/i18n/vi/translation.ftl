@@ -411,7 +411,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Tôi biết mình đang làm gì
 settings-serial-factory_reset-warning-cancel = Hủy
 settings-serial-serial_select = Chọn cổng Serial
-settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
 settings-serial-save_logs = Lưu vào tệp
 settings-serial-send_command-warning-ok = Tôi biết mình đang làm gì
