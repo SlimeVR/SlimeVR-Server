@@ -110,11 +110,6 @@ board_type-GENERIC_NRF = Jenerik nRF
 ## Proportions
 
 skeleton_bone-NONE = Yok
-skeleton_bone-HEAD = Kafa Hizası
-skeleton_bone-HEAD-desc =
-    Bu, kulaklığın ile başının ortası arasındaki mesafedir.
-    Ayarlamak için, 'hayır' der gibi başını soldan sağa ve sağdan sola salla,
-    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
 skeleton_bone-NECK = Boyun Uzunluğu
 skeleton_bone-NECK-desc =
     Bu, başının ortasından boynunun başlangıcına kadar olan mesafedir.
