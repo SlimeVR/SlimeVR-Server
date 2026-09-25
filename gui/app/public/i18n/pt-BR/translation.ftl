@@ -112,11 +112,6 @@ board_type-GENERIC_NRF = nRF genérico
 ## Proportions
 
 skeleton_bone-NONE = Nada
-skeleton_bone-HEAD = Deslocamento da Cabeça
-skeleton_bone-HEAD-desc =
-    Esta é a distância do seu headset até o centro da sua cabeça.
-    Para ajustá-la, balance a cabeça da esquerda para a direita, como se estivesse discordando, 
-    e modifique o valor até que qualquer movimento nos outros trackers seja insignificante.
 skeleton_bone-NECK = Comprimento do Pescoço
 skeleton_bone-NECK-desc =
     Esta é a distância do centro da sua cabeça até a base do seu pescoço.
@@ -1313,8 +1308,6 @@ tracking_checklist-TRACKER_ERROR-desc = Alguns trackers estão com erro. Reinici
 tracking_checklist-VRCHAT_SETTINGS = Configurar as configurações do VRChat
 tracking_checklist-VRCHAT_SETTINGS-desc = As configurações do VRChat estão configuradas incorretamente! Isso pode afetar negativamente o rastreamento.
 tracking_checklist-VRCHAT_SETTINGS-open = Ir para os alertas do VRChat
-tracking_checklist-UNASSIGNED_HMD = Headset de VR não atribuído à Cabeça
-tracking_checklist-UNASSIGNED_HMD-desc = O headset de VR deve ser atribuído como tracker de cabeça.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Altere seu perfil de rede
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->
