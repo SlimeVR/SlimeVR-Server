@@ -592,7 +592,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = ฉันรู้ว่าฉันทำอะไรอยู่
 settings-serial-factory_reset-warning-cancel = ยกเลิก
 settings-serial-serial_select = เลือกพอร์ต Serial
-settings-serial-auto_dropdown_item = อัตโนมัติ
 settings-serial-get_wifi_scan = สแกนเครือข่าย WiFi
 settings-serial-save_logs = บันทึกลงไฟล์
 settings-serial-send_command = ส่ง
