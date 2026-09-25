@@ -109,11 +109,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = قفاز SlimeVR تطوير IMU
 ## Proportions
 
 skeleton_bone-NONE = غير محدد
-skeleton_bone-HEAD = إمالة الرأس
-skeleton_bone-HEAD-desc =
-    هذه هي المسافة من سماعة الرأس إلى منتصف رأسك.
-    لضبط المسافة ، هز رأسك من اليسار إلى اليمين كما لو كنت لا توافق وقم بتعديله
-    حتى أي حركة في أجهزة التتبع الأخرى لا تكاد تذكر.
 skeleton_bone-NECK = طول العنق
 skeleton_bone-NECK-desc =
     هذه هي المسافة من منتصف رأسك إلى قاعدة رقبتك.
@@ -982,6 +977,5 @@ vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 ## Tracking checklist section
 
 tracking_checklist-settings-close = أغلق
-tracking_checklist-UNASSIGNED_HMD-desc = يجب تعيين سماعة رأس VR كجهاز تعقب للرأس.
 toolbar-mounting_calibration = معايرة التركيب
 toolbar-mounting_calibration-feet = القدمين
