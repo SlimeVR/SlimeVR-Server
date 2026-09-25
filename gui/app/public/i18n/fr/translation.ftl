@@ -134,11 +134,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 ## Proportions
 
 skeleton_bone-NONE = Aucun
-skeleton_bone-HEAD = Décalage de la tête
-skeleton_bone-HEAD-desc =
-    Ceci est la distance entre votre casque et le milieu de votre tête.
-    Pour l’ajuster, secouez votre tête de gauche à droite comme si vous disiez non et modifiez-la
-    jusqu’à ce que vos capteurs bougent le moins possible.
 skeleton_bone-NECK = Longueur du cou
 skeleton_bone-NECK-desc =
     Ceci est la distance entre le milieu de votre tête et la base de votre cou.
@@ -1310,8 +1305,6 @@ tracking_checklist-TRACKER_ERROR-desc = Certains de vos capteurs ont une erreur.
 tracking_checklist-VRCHAT_SETTINGS = Configurez les paramètres de VRChat
 tracking_checklist-VRCHAT_SETTINGS-desc = Vous avez mal configuré les paramètres de VRChat ! Cela peut dégrader votre suivi.
 tracking_checklist-VRCHAT_SETTINGS-open = Aller sur les avertissements de VRChat
-tracking_checklist-UNASSIGNED_HMD = Casque VR non attribué à la tête
-tracking_checklist-UNASSIGNED_HMD-desc = Le casque VR devrait être attribué en tant que capteur de la tête.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Modifier votre profil de réseau
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->
