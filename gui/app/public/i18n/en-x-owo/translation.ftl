@@ -122,7 +122,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
 ## Proportions
 
 skeleton_bone-NONE = none
-skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
 skeleton_bone-torso_group = towso wength
 skeleton_bone-UPPER_CHEST = uppew chest wength
