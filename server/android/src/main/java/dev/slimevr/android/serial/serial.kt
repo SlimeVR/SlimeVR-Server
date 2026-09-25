@@ -71,8 +71,7 @@ private class AndroidSerialWatcher(
 			}
 	}
 
-	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? =
-		withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, onLine, onClosed) }
+	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, onLine, onClosed) }
 
 	override fun openForFlashing(): FlashingHandler = AndroidFlashingHandler(context, usbManager)
 }
