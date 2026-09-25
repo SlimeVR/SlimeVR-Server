@@ -9,6 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
   DeviceDataT,
+  DeviceOrigin,
   FirmwareUpdateMethod,
   SerialDeviceT,
   SerialDeviceType,
@@ -199,7 +200,9 @@ function OTADevicesList({
   const allDevices = useAtomValue(devicesAtom);
 
   const devices =
-    allDevices.filter(({ hardwareInfo, trackers }) => {
+    allDevices.filter(({ hardwareInfo, trackers, origin }) => {
+      if (origin !== DeviceOrigin.UDP) return false;
+
       // filter out devices we can't update
       if (!hardwareInfo?.officialBoardType) return false;
 
