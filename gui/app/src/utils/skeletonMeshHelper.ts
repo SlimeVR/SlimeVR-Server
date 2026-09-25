@@ -1,6 +1,7 @@
 import {
   Box3,
   BoxGeometry,
+  Matrix4,
   Mesh,
   MeshStandardMaterial,
   Object3D,
@@ -27,11 +28,13 @@ import {
 import { SkeletonProportions, deriveSkeletonProportions } from './skeletonProportions';
 
 const position = new Vector3();
-const shapePos = new Vector3();
 const quat = new Quaternion();
 const localOffset = new Vector3();
 
 const modelBox = new Box3();
+const shapeBounds = new Box3();
+const shapeToBone = new Matrix4();
+const corner = new Vector3();
 const mountingNormal = new Vector3();
 const rayOrigin = new Vector3();
 const rayDirection = new Vector3();
@@ -58,8 +61,43 @@ function loadModel(url: string): Promise<Object3D | null> {
 
 interface AttachedShape {
   config: BoneShapeConfig;
+  /** On the bone: its orientation, and the shape's offset and size along its axes. */
   node: Object3D;
+  /** Under the node: the turn that puts the model onto the bone's axes. */
+  tilt: Object3D;
+  /** From the bone's head to the node, in the bone's axes. */
+  offset: Vector3;
   model: ModelDimensions | null;
+  /** The model's box in its own axes. */
+  bounds: Box3 | null;
+}
+
+/**
+ * A point inside the shape, in the bone's axes and from its head, out of a
+ * position in the shape's bounds (-1 to 1 per axis from its centre). False until
+ * the model has loaded.
+ */
+function shapeAnchor(
+  { node, tilt, offset, bounds }: AttachedShape,
+  anchor: Vector3,
+  out: Vector3
+) {
+  if (!bounds) return false;
+
+  tilt.updateMatrix();
+  shapeToBone.makeScale(node.scale.x, node.scale.y, node.scale.z).multiply(tilt.matrix);
+  shapeBounds.makeEmpty();
+  for (const x of [bounds.min.x, bounds.max.x]) {
+    for (const y of [bounds.min.y, bounds.max.y]) {
+      for (const z of [bounds.min.z, bounds.max.z]) {
+        shapeBounds.expandByPoint(corner.set(x, y, z).applyMatrix4(shapeToBone));
+      }
+    }
+  }
+  shapeBounds.getCenter(out);
+  shapeBounds.getSize(corner).multiplyScalar(0.5);
+  out.add(corner.multiply(anchor)).add(offset);
+  return true;
 }
 
 interface BonePart extends SkeletonRenderPart {
@@ -111,10 +149,16 @@ export class BasedSkeletonMeshHelper extends Object3D {
         node.matrixAutoUpdate = false;
         this.add(node);
 
+        const tilt = new Object3D();
+        node.add(tilt);
+
         const attached: AttachedShape = {
           config: shapeConfig,
           node,
+          tilt,
+          offset: new Vector3(),
           model: null,
+          bounds: null,
         };
 
         const modelUrl = shapeConfig.modelUrl ?? DefaultBoneModelUrl;
@@ -154,8 +198,9 @@ export class BasedSkeletonMeshHelper extends Object3D {
               length: Math.abs(modelBox.min.y),
             };
 
-            attached.node.clear();
-            attached.node.add(o);
+            attached.bounds = modelBox.clone();
+            attached.tilt.clear();
+            attached.tilt.add(o);
             part.surfaceDirty = true;
           }
         });
@@ -209,7 +254,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
       const boneLength = Math.max(bone.boneLength, 1e-4);
 
       for (const attached of shapes) {
-        const { config, node, model } = attached;
+        const { config, node, tilt, model } = attached;
         const size = computeShapeScale(
           config,
           this.proportions,
@@ -217,19 +262,19 @@ export class BasedSkeletonMeshHelper extends Object3D {
           model ?? undefined
         );
 
-        shapePos.copy(position);
+        attached.offset.set(0, 0, 0);
         if (config.offset && model) {
-          localOffset
-            .copy(config.offset({ model, proportions: this.proportions, boneLength }))
-            .applyQuaternion(quat);
-          shapePos.add(localOffset);
+          attached.offset.copy(
+            config.offset({ model, proportions: this.proportions, boneLength })
+          );
         }
 
-        node.position.copy(shapePos);
+        node.position.copy(attached.offset).applyQuaternion(quat).add(position);
         node.quaternion.copy(quat);
-        if (config.rotation) node.quaternion.multiply(config.rotation);
         node.scale.set(size.width, size.length, size.depth);
         node.updateMatrix();
+
+        if (config.rotation) tilt.quaternion.copy(config.rotation);
       }
 
       if (part.tracker) {
@@ -245,9 +290,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
         part.marker.scale.setScalar(getTrackerMarkerScale(bone.bodyPart));
         part.marker.quaternion.copy(quat).multiply(part.tracker.mountingOrientation);
         part.marker.position.copy(position);
-        localOffset
-          .set(0, -boneLength * part.tracker.boneOffset, 0)
-          .applyQuaternion(quat);
+        const anchor = SKELETON_PART_PRESETS[bone.bodyPart]?.trackerAnchor;
+        const anchored = anchor && shapes[0] && shapeAnchor(shapes[0], anchor, localOffset);
+        if (!anchored) {
+          localOffset.set(0, -boneLength * part.tracker.boneOffset, 0);
+        }
+        localOffset.applyQuaternion(quat);
         part.marker.position.add(localOffset);
         mountingNormal.set(0, 0, 1).applyQuaternion(part.marker.quaternion);
         if (part.surfaceDirty) {
@@ -257,11 +305,15 @@ export class BasedSkeletonMeshHelper extends Object3D {
           rayOrigin.copy(part.marker.position).applyMatrix4(this.matrixWorld);
           rayDirection.copy(mountingNormal).transformDirection(this.matrixWorld);
           surfaceRaycaster.set(rayOrigin, rayDirection);
+          // The last hit is the outermost surface: the marker starts inside the
+          // shape, and a plate's inner face comes before its outer one.
           part.surfaceDistance =
-            surfaceRaycaster.intersectObjects(
-              shapes.map(({ node }) => node),
-              true
-            )[0]?.distance ?? 0;
+            surfaceRaycaster
+              .intersectObjects(
+                shapes.map(({ node }) => node),
+                true
+              )
+              .at(-1)?.distance ?? 0;
           part.surfaceDirty = false;
         }
         part.marker.position.addScaledVector(mountingNormal, part.surfaceDistance);

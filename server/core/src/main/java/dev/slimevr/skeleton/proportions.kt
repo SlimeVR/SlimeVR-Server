@@ -259,27 +259,27 @@ private val TOES = listOf(
 	Toe(
 		BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
 		lengthFraction = 0.27f,
-		headOffset = Vector3(0.28f, 0f, 0f),
+		headOffset = Vector3(0.23f, 0f, 0f),
 	),
 	Toe(
 		BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
 		lengthFraction = 0.24f,
-		headOffset = Vector3(0.12f, 0f, 0f),
+		headOffset = Vector3(0.106f, 0f, 0f),
 	),
 	Toe(
 		BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
 		lengthFraction = 0.23f,
-		headOffset = Vector3(0f, 0f, 0f),
+		headOffset = Vector3(-0.01f, 0f, 0f),
 	),
 	Toe(
 		BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
 		lengthFraction = 0.21f,
-		headOffset = Vector3(-0.12f, 0f, 0f),
+		headOffset = Vector3(-0.122f, 0f, 0f),
 	),
 	Toe(
 		BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
 		lengthFraction = 0.18f,
-		headOffset = Vector3(-0.26f, 0f, 0f),
+		headOffset = Vector3(-0.23f, 0f, 0f),
 	),
 )
 

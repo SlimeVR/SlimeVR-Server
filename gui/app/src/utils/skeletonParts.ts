@@ -187,6 +187,12 @@ export interface BonePartConfig {
   shapes: BoneShapeConfig[];
   /** Where an assigned tracker sits from this bone's head (0) to tail (1). */
   trackerOffset?: number;
+  /**
+   * Where the marker starts inside the part's first shape, in the bone's own
+   * axes: -1 to 1 on each, 0 at the shape's centre. Used instead of
+   * `trackerOffset` for bones whose length doesn't span their shape.
+   */
+  trackerAnchor?: Vector3;
 }
 
 export const shape = (overrides: Partial<BoneShapeConfig> = {}): BoneShapeConfig => ({
@@ -217,8 +223,18 @@ const fingerRight = (file: string) =>
     model(file, { scale: otherSide(spanBone()), offset: inMetres({ width: 0.003 }) })
   );
 
-const toe = (file: string) => part(model(file));
-const toeRight = (file: string) => part(model(file, { scale: otherSide(spanBone()) }));
+// Toe bones are drawn along their local y like the foot, so +y is back toward the ankle.
+// The base of each toe mesh is a painted cap, tucked into the foot so it never
+// shows. The length ratio keeps the tip on the bone's tail despite the tuck.
+const TOE_TUCK = 0.5;
+const toeScale = (width: number, depth: number) =>
+  spanBone({ width, depth, length: 1 + TOE_TUCK });
+const toeOffset = inBoneLengths({ length: TOE_TUCK, depth: 0.11 });
+const toe = (file: string, scale = toeScale(1.3, 1.0)) =>
+  part(model(file, { scale, offset: toeOffset }));
+const toeRight = (file: string, scale = toeScale(1.3, 1.0)) =>
+  part(model(file, { scale: otherSide(scale), offset: toeOffset }));
+const bigToeScale = toeScale(1.3, 1.15);
 
 const shoulderScale = spanBone({ width: 0.8, depth: 0.8, length: 1.3 });
 const handScale = spanBone({ width: 1.0, depth: 1.0, length: 1.0 });
@@ -226,11 +242,25 @@ const upperArmScale = byCircumference(1.2, { length: 1.0 });
 const lowerArmScale = byCircumference(1.0, { length: 1.0 });
 const upperLegScale = spanBone({ girthFrom: 'hips', length: 1.0 });
 const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.9 });
-const footScale = authoredSize({ width: 0.99, depth: 1.26 });
+const REFERENCE_FOOT_LENGTH = 0.13;
+const TOE_ROW_SPREAD = 0.46;
+const TOE_ROW_EDGES = 0.028;
+const footScale: ShapeScale = {
+  compute: ({ proportions, boneLength }) => {
+    const toeRowSpan =
+      TOE_ROW_SPREAD * boneLength + TOE_ROW_EDGES * proportions.bodyScale;
+    const referenceSpan = TOE_ROW_SPREAD * REFERENCE_FOOT_LENGTH + TOE_ROW_EDGES;
+    return {
+      width: (0.9 * toeRowSpan) / referenceSpan,
+      length: (1.12 * boneLength) / REFERENCE_FOOT_LENGTH,
+      depth: 1.14 * proportions.bodyScale,
+    };
+  },
+};
+// Forward follows foot length; the drop from the ankle to the sole doesn't.
+const footOffset: ShapeOffset = ({ boneLength, proportions }) =>
+  new Vector3(0, -0.1 * boneLength, -0.1 * proportions.bodyScale);
 
-// Recommended tracker mounting positions, measured from a bone's head (0)
-// towards its tail (1). Mounting orientation still decides the front/back
-// surface; these values only choose the position along the bone.
 const CHEST_TRACKER_OFFSET = 0.2;
 const WAIST_TRACKER_OFFSET = 0.8;
 const HIP_TRACKER_OFFSET = 0.75;
@@ -238,15 +268,19 @@ const UPPER_ARM_TRACKER_OFFSET = 0.75;
 const LOWER_ARM_TRACKER_OFFSET = 0.15;
 const UPPER_LEG_TRACKER_OFFSET = 0.7;
 const LOWER_LEG_TRACKER_OFFSET = 0.75;
-const FOOT_TRACKER_OFFSET = 0.15;
+
+const FOOT_MARKER: Partial<BonePartConfig> = {
+  trackerAnchor: new Vector3(0, -0.3, 0),
+};
 
 export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.NONE]: part(shape(), { visible: false }),
   [BodyPart.HEAD]: part(
     model('head', {
-      rotation: turn({ width: 90 }),
-      offset: inBoneLengths({ length: -1, depth: 0.5 }),
-    })
+      scale: authoredSize({ length: 1.04 }),
+      offset: inMetres({ length: 0.005 }),
+    }),
+    { trackerAnchor: new Vector3(0, 0.2, 0) }
   ),
   [BodyPart.NECK]: part(
     model('neck', {
@@ -360,19 +394,19 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   ),
   [BodyPart.LEFT_FOOT]: part(
     model('foot', {
-      offset: inBoneLengths({ depth: -0.7, length: -0.2 }),
+      offset: footOffset,
       scale: footScale,
       rotation: turn({ width: -42 }),
     }),
-    { trackerOffset: FOOT_TRACKER_OFFSET }
+    FOOT_MARKER
   ),
   [BodyPart.RIGHT_FOOT]: part(
     model('foot', {
-      offset: inBoneLengths({ depth: -0.7, length: -0.2 }),
+      offset: footOffset,
       scale: otherSide(footScale),
       rotation: turn({ width: -42 }),
     }),
-    { trackerOffset: FOOT_TRACKER_OFFSET }
+    FOOT_MARKER
   ),
 
   [BodyPart.LEFT_THUMB_METACARPAL]: finger('thumb_metacarpal'),
@@ -407,12 +441,12 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: fingerRight('little_intermediate'),
   [BodyPart.RIGHT_LITTLE_DISTAL]: fingerRight('little_distal'),
 
-  [BodyPart.LEFT_BIG_TOE]: toe('big_toe'),
+  [BodyPart.LEFT_BIG_TOE]: toe('big_toe', bigToeScale),
   [BodyPart.LEFT_INDEX_TOE]: toe('index_toe'),
   [BodyPart.LEFT_MIDDLE_TOE]: toe('middle_toe'),
   [BodyPart.LEFT_RING_TOE]: toe('ring_toe'),
   [BodyPart.LEFT_LITTLE_TOE]: toe('little_toe'),
-  [BodyPart.RIGHT_BIG_TOE]: toeRight('big_toe'),
+  [BodyPart.RIGHT_BIG_TOE]: toeRight('big_toe', bigToeScale),
   [BodyPart.RIGHT_INDEX_TOE]: toeRight('index_toe'),
   [BodyPart.RIGHT_MIDDLE_TOE]: toeRight('middle_toe'),
   [BodyPart.RIGHT_RING_TOE]: toeRight('ring_toe'),
