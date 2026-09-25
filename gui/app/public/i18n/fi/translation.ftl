@@ -374,7 +374,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Tiedän mitä teen
 settings-serial-factory_reset-warning-cancel = Peruuta
 settings-serial-serial_select = Valitse sarjaportti
-settings-serial-auto_dropdown_item = Autom.
 settings-serial-save_logs = Tallenna tiedostoon
 settings-serial-send_command-warning-ok = Tiedän mitä teen
 settings-serial-send_command-warning-cancel = Peruuta
