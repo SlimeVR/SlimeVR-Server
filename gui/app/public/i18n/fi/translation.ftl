@@ -69,7 +69,6 @@ board_type-UNKNOWN = Tuntematon
 ## Proportions
 
 skeleton_bone-NONE = Ei mikään
-skeleton_bone-HEAD = Pään säätö
 skeleton_bone-NECK = Kaulan pituus
 skeleton_bone-torso_group = Vartalon pituus
 skeleton_bone-UPPER_CHEST = Ylärinnan pituus
