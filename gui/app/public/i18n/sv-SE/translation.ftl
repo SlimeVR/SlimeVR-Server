@@ -105,11 +105,6 @@ board_type-CUSTOM = Anpassat kretskort
 ## Proportions
 
 skeleton_bone-NONE = Ingen
-skeleton_bone-HEAD = Huvudskift
-skeleton_bone-HEAD-desc =
-    Detta är distansen från ditt headset till mittpunkten av ditt huvud.
-    För att justera det, skaka ditt huvud höger eller vänster, som om att du säger nej och modifiera
-    det tills någon rörelse i andra rörelsesensorer är obetydlig.
 skeleton_bone-NECK = Halsens längd
 skeleton_bone-NECK-desc =
     Detta är distansen från mittpunkten av ditt huvud till din nackes bas.
