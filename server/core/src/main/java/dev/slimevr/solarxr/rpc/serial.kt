@@ -1,20 +1,30 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.serial.SerialConnection
+import dev.slimevr.serial.SerialConsole
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.serial.SerialServerState
+import dev.slimevr.serial.sortPorts
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.CloseSerialRequest
-import solarxr_protocol.rpc.NewSerialDeviceResponse
 import solarxr_protocol.rpc.OpenSerialRequest
+import solarxr_protocol.rpc.SerialConsoleStatus
+import solarxr_protocol.rpc.SerialDevice
 import solarxr_protocol.rpc.SerialDevicesRequest
 import solarxr_protocol.rpc.SerialDevicesResponse
 import solarxr_protocol.rpc.SerialTrackerCustomCommandRequest
@@ -23,119 +33,142 @@ import solarxr_protocol.rpc.SerialTrackerGetInfoRequest
 import solarxr_protocol.rpc.SerialTrackerGetWifiScanRequest
 import solarxr_protocol.rpc.SerialTrackerRebootRequest
 import solarxr_protocol.rpc.SerialUpdateResponse
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+
+// Wait before reopening a port whose console dropped while the port stayed plugged in
+private val REOPEN_DELAY = 1.seconds
+
+private const val LOG_QUEUE_CAPACITY = 2000
+private const val MAX_BATCH_CHARS = 16_000
+
+/**
+ * Follows one port: streams its console while open, reports why it isn't otherwise, and opens it
+ * again when it comes back or a flash releases it
+ */
+private suspend fun runConsoleSession(
+	receiver: SolarXRBridge,
+	serialServer: SerialServer,
+	portLocation: String,
+	activeConsole: MutableStateFlow<SerialConsole?>,
+) = coroutineScope {
+	launch {
+		serialServer.context.state
+			.map { blockedStatus(it, portLocation) }
+			.distinctUntilChanged()
+			.filterNotNull()
+			.collect { status -> receiver.sendRpc(SerialUpdateResponse(status = status)) }
+	}
+
+	while (true) {
+		AppLogger.solarxr.info("Serial session waiting for a console on $portLocation")
+		if (isPortFree(serialServer.context.state.value, portLocation)) {
+			receiver.sendRpc(SerialUpdateResponse(status = SerialConsoleStatus.OPENING))
+		}
+		val console = serialServer.awaitConsole(portLocation, Duration.INFINITE)
+		if (console == null) {
+			// The port refused to open, so there is nothing to do until something changes
+			val before = serialServer.context.state.value
+			receiver.sendRpc(SerialUpdateResponse(status = SerialConsoleStatus.OPEN_FAILED))
+			serialServer.context.state.first { it != before }
+			continue
+		}
+
+		activeConsole.value = console
+		val device = serialServer.context.state.value.ports[portLocation]?.toSerialDevice()
+		receiver.sendRpc(SerialUpdateResponse(status = SerialConsoleStatus.OPEN, device = device))
+		val stream = launch { streamLines(receiver, console, device) }
+		console.closed.join()
+		AppLogger.solarxr.info("Serial console on $portLocation ended")
+		stream.cancel()
+		activeConsole.value = null
+
+		if (isPortFree(serialServer.context.state.value, portLocation)) delay(REOPEN_DELAY)
+	}
+}
+
+private fun blockedStatus(state: SerialServerState, portLocation: String) = when {
+	portLocation in state.flashing -> SerialConsoleStatus.BUSY
+	portLocation !in state.ports -> SerialConsoleStatus.WAITING
+	else -> null
+}
+
+private fun isPortFree(state: SerialServerState, portLocation: String) = blockedStatus(state, portLocation) == null
+
+// Lines that arrive while a send is in flight go out together, so a burst costs a few messages
+private suspend fun streamLines(
+	receiver: SolarXRBridge,
+	console: SerialConsole,
+	device: SerialDevice?,
+) = coroutineScope {
+	val queue = Channel<String>(LOG_QUEUE_CAPACITY, BufferOverflow.DROP_OLDEST)
+	launch { console.lines.collect { queue.trySend(it) } }
+
+	for (first in queue) {
+		val batch = StringBuilder().append(first).append('\n')
+		while (batch.length < MAX_BATCH_CHARS) {
+			val next = queue.tryReceive().getOrNull() ?: break
+			batch.append(next).append('\n')
+		}
+		receiver.sendRpc(SerialUpdateResponse(log = batch.toString(), device = device, status = SerialConsoleStatus.OPEN))
+	}
+}
 
 class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		val scope = receiver.context.scope
 
-		// We assume that you can only subscribe to one serial console at a time
-		var logSubscription: Job? = null
-		var activePortLocation: String? = null
+		// A client has one console open at a time
+		var session: Job? = null
+		val activeConsole = MutableStateFlow<SerialConsole?>(null)
 
-		// Notify client of new serial devices as they are detected.
-		// Existing devices at connection time are not sent here. the client
-		// should send SerialDevicesRequest to get the current list.
-		var prevPortKeys = serialServer.context.state.value.availablePorts.keys.toSet()
+		// The full list goes out on every change. Clients replace their list, so removals need no event
 		serialServer.context.state
-			.map { it.availablePorts }
+			.map { sortPorts(it.ports.values) }
 			.distinctUntilChanged()
-			.onEach { ports ->
-				(ports.keys - prevPortKeys).forEach { key ->
-					receiver.sendRpc(NewSerialDeviceResponse(device = ports.getValue(key).toSerialDevice()))
-				}
-				prevPortKeys = ports.keys.toSet()
-			}
+			.drop(1)
+			.onEach { ports -> receiver.sendRpc(SerialDevicesResponse(devices = ports.map { it.toSerialDevice() })) }
 			.launchIn(scope)
 
 		receiver.rpcDispatcher.on<SerialDevicesRequest> {
 			receiver.sendRpc(
-				SerialDevicesResponse(
-					devices = serialServer.context.state.value.availablePorts.values
-						.map { it.toSerialDevice() },
-				),
+				SerialDevicesResponse(devices = sortPorts(serialServer.context.state.value.ports.values).map { it.toSerialDevice() }),
 			)
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<OpenSerialRequest> { req ->
-			val portLocation = if (req.auto) {
-				serialServer.context.state.value.availablePorts.keys.firstOrNull()
-			} else {
-				req.port
-			} ?: return@on
-
-			logSubscription?.cancel()
-			logSubscription = null
-			activePortLocation = null
-
-			serialServer.openConnection(portLocation)
-
-			val connection = serialServer.context.state.value.connections[portLocation]
-			if (connection !is SerialConnection.Console) return@on
-
-			activePortLocation = portLocation
-			var lastSentCount = 0
-
-			logSubscription = scope.launch {
-				var disconnected = false
-				try {
-					connection.context.state.collect { connState ->
-						if (disconnected) return@collect
-
-						val device = serialServer.context.state.value.availablePorts[portLocation]?.toSerialDevice()
-						connState.logLines.drop(lastSentCount).forEach { line ->
-							receiver.sendRpc(SerialUpdateResponse(log = line + "\n", device = device))
-						}
-						lastSentCount = connState.logLines.size
-
-						if (!connState.connected) {
-							disconnected = true
-							activePortLocation = null
-							receiver.sendRpc(SerialUpdateResponse(closed = true))
-						}
-					}
-				} catch (e: CancellationException) {
-					throw e
-				} catch (e: Exception) {
-					AppLogger.solarxr.error(e, "Error streaming serial log")
-				}
-			}
+			val portLocation = req.port ?: return@on
+			AppLogger.solarxr.info("Serial console requested on $portLocation")
+			session?.cancel()
+			activeConsole.value = null
+			session = scope.launch { runConsoleSession(receiver, serialServer, portLocation, activeConsole) }
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<CloseSerialRequest> {
-			logSubscription?.cancel()
-			logSubscription = null
-			activePortLocation = null
+			session?.cancel()
+			session = null
+			activeConsole.value = null
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<SerialTrackerRebootRequest> {
-			val portLocation = activePortLocation ?: return@on
-			val c = serialServer.context.state.value.connections[portLocation]
-			if (c is SerialConnection.Console) c.handle.writeCommand("REBOOT")
+			activeConsole.value?.write("REBOOT")
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<SerialTrackerGetInfoRequest> {
-			val portLocation = activePortLocation ?: return@on
-			val c = serialServer.context.state.value.connections[portLocation]
-			if (c is SerialConnection.Console) c.handle.writeCommand("GET INFO")
+			activeConsole.value?.write("GET INFO")
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<SerialTrackerFactoryResetRequest> {
-			val portLocation = activePortLocation ?: return@on
-			val c = serialServer.context.state.value.connections[portLocation]
-			if (c is SerialConnection.Console) c.handle.writeCommand("FRST")
+			activeConsole.value?.write("FRST")
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<SerialTrackerGetWifiScanRequest> {
-			val portLocation = activePortLocation ?: return@on
-			val c = serialServer.context.state.value.connections[portLocation]
-			if (c is SerialConnection.Console) c.handle.writeCommand("GET WIFISCAN")
+			activeConsole.value?.write("GET WIFISCAN")
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<SerialTrackerCustomCommandRequest> { req ->
-			val portLocation = activePortLocation ?: return@on
 			val command = req.command ?: return@on
-			val c = serialServer.context.state.value.connections[portLocation]
-			if (c is SerialConnection.Console) c.handle.writeCommand(command)
+			activeConsole.value?.write(command)
 		}.launchIn(scope)
 	}
 }

@@ -2,52 +2,33 @@ package dev.slimevr.serial
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.hid.isCompatibleHidReceiver
-import dev.slimevr.hid.isCompatibleHidTracker
+import dev.slimevr.logging.AppLogger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import solarxr_protocol.rpc.SerialDevice
-import solarxr_protocol.rpc.SerialDeviceType
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration
 
-interface FlashingHandler {
-	fun openSerial(port: Any)
-	fun closeSerial()
-	fun write(data: ByteArray)
-	fun read(length: Int): ByteArray
-	fun setDTR(value: Boolean)
-	fun setRTS(value: Boolean)
-	fun changeBaud(baud: Int)
-	fun setReadTimeout(timeout: Long)
-	fun availableBytes(): Int
-	fun flushIOBuffers()
-}
-
-data class SerialPortInfo(
-	val portLocation: String,
-	val descriptivePortName: String,
-	val vendorId: Int,
-	val productId: Int,
-) {
-	fun toSerialDevice() = SerialDevice(
-		port = portLocation,
-		name = descriptivePortName,
-		type = when {
-			isCompatibleHidReceiver(vendorId, productId) -> SerialDeviceType.HID_RECEIVER
-			isCompatibleHidTracker(vendorId, productId) -> SerialDeviceType.HID_TRACKER
-			else -> SerialDeviceType.ESP_TRACKER
-		},
-	)
+private sealed interface Claim {
+	class Got(val console: SerialConsole) : Claim
+	data object Retry : Claim
+	data object Failed : Claim
 }
 
 data class SerialServerState(
-	val availablePorts: Map<String, SerialPortInfo>,
-	val connections: Map<String, SerialConnection>,
+	val ports: Map<String, SerialPortInfo>,
+	/** Ports a firmware flash holds. A claim outlasts the port re-enumerating mid-flash */
+	val flashing: Set<String>,
 )
 
 sealed interface SerialServerActions {
-	data class PortDetected(val info: SerialPortInfo) : SerialServerActions
-	data class PortLost(val portLocation: String) : SerialServerActions
-	data class RegisterConnection(val portLocation: String, val connection: SerialConnection) : SerialServerActions
-	data class RemoveConnection(val portLocation: String) : SerialServerActions
+	data class PortsChanged(val ports: Map<String, SerialPortInfo>) : SerialServerActions
+	data class FlashingStarted(val portLocation: String) : SerialServerActions
+	data class FlashingEnded(val portLocation: String) : SerialServerActions
 }
 
 typealias SerialServerContext = Context<SerialServerState, SerialServerActions>
@@ -55,98 +36,109 @@ typealias SerialServerBehaviour = Behaviour<SerialServer>
 
 class SerialServer(
 	val context: SerialServerContext,
-	private val openPortFactory: suspend (
-		portLocation: String,
-		onDataReceived: (portLocation: String, line: String) -> Unit,
-		onPortDisconnected: suspend (portLocation: String) -> Unit,
-	) -> SerialPortHandle?,
-	private val openFlashingPortFactory: () -> FlashingHandler,
+	private val watcher: SerialPortWatcher,
 ) {
+	private val ownership = Mutex()
+	private val consoles = mutableMapOf<String, SerialConsole>()
 
 	fun startObserving() = context.observeAll(this)
 
-	fun onPortDetected(info: SerialPortInfo) {
-		context.dispatch(SerialServerActions.PortDetected(info))
-	}
-
-	suspend fun onPortLost(portLocation: String) {
-		val conn = context.state.value.connections[portLocation]
-		if (conn is SerialConnection.Console) {
-			conn.handle.close()
+	suspend fun refresh() {
+		val found = try {
+			watcher.enumerate()
+		} catch (e: CancellationException) {
+			throw e
+		} catch (e: Exception) {
+			AppLogger.serial.error(e, "Serial port enumeration failed")
+			return
 		}
-		context.dispatchAll(
-			listOf(
-				SerialServerActions.RemoveConnection(portLocation),
-				SerialServerActions.PortLost(portLocation),
-			),
-		)
+		ownership.withLock {
+			val known = context.state.value.ports.keys
+			if (known != found.keys) {
+				AppLogger.serial.info("Serial ports changed, added ${(found.keys - known).joinToString()} removed ${(known - found.keys).joinToString()}")
+			}
+			for (location in consoles.keys.filter { it !in found }) closeConsole(location)
+			context.dispatch(SerialServerActions.PortsChanged(found))
+		}
 	}
 
-	fun onDataReceived(portLocation: String, line: String) {
-		val conn = context.state.value.connections[portLocation]
-		if (conn is SerialConnection.Console) conn.context.dispatch(SerialConnectionActions.LogLine(line))
+	suspend fun awaitConsole(portLocation: String, timeout: Duration): SerialConsole? = withTimeoutOrNull(timeout) {
+		claimConsole(portLocation)
 	}
 
-	suspend fun onPortDisconnected(portLocation: String) {
-		val conn = context.state.value.connections[portLocation]
-		if (conn !is SerialConnection.Console) return
-		conn.context.dispatch(SerialConnectionActions.Disconnected)
-		conn.handle.close()
-		context.dispatch(SerialServerActions.RemoveConnection(portLocation))
+	private suspend fun claimConsole(portLocation: String): SerialConsole? {
+		while (true) {
+			context.state.map { isFree(it, portLocation) }.first { it }
+			when (val claim = ownership.withLock { claimOnce(portLocation) }) {
+				is Claim.Got -> return claim.console
+				is Claim.Failed -> return null
+				is Claim.Retry -> {}
+			}
+		}
 	}
 
-	suspend fun openConnection(portLocation: String) {
+	private suspend fun claimOnce(portLocation: String): Claim {
+		if (!isFree(context.state.value, portLocation)) return Claim.Retry
+		consoles[portLocation]?.let { existing ->
+			if (existing.closed.isActive) return Claim.Got(existing)
+			// this port failed and the cleanup in [watchForClose] hasn't run yet
+			closeConsole(portLocation)
+		}
+		AppLogger.serial.info("Opening serial console on $portLocation")
+		val console = SerialConsole.open(watcher, portLocation) ?: return Claim.Failed
+		consoles[portLocation] = console
+		AppLogger.serial.info("Opened serial console on $portLocation")
+		watchForClose(console)
+		return Claim.Got(console)
+	}
+
+	suspend fun openForFlashing(portLocation: String): FlashingHandler? = ownership.withLock {
 		val state = context.state.value
-		if (!state.availablePorts.containsKey(portLocation) || state.connections.containsKey(portLocation)) return
-		val handle = openPortFactory(portLocation, ::onDataReceived, ::onPortDisconnected) ?: return
-		context.dispatch(SerialServerActions.RegisterConnection(portLocation, SerialConnection.Console.create(handle, context.scope)))
-	}
-
-	suspend fun closeConnection(portLocation: String) {
-		val conn = context.state.value.connections[portLocation]
-		if (conn !is SerialConnection.Console) return
-		conn.context.dispatch(SerialConnectionActions.Disconnected)
-		conn.handle.close()
-		context.dispatch(SerialServerActions.RemoveConnection(portLocation))
-	}
-
-	suspend fun openForFlashing(portLocation: String): FlashingHandler? {
-		val state = context.state.value
-		if (!state.availablePorts.containsKey(portLocation)) return null
-		if (state.connections[portLocation] is SerialConnection.Flashing) return null
-		closeConnection(portLocation)
-		val handler = openFlashingPortFactory()
-		context.dispatch(SerialServerActions.RegisterConnection(portLocation, SerialConnection.Flashing))
-		return object : FlashingHandler by handler {
+		if (portLocation !in state.ports || portLocation in state.flashing) return@withLock null
+		closeConsole(portLocation)
+		context.dispatch(SerialServerActions.FlashingStarted(portLocation))
+		val handler = watcher.openForFlashing()
+		object : FlashingHandler by handler {
 			override fun closeSerial() {
 				try {
 					handler.closeSerial()
 				} finally {
-					context.dispatch(SerialServerActions.RemoveConnection(portLocation))
+					context.dispatch(SerialServerActions.FlashingEnded(portLocation))
 				}
 			}
 		}
 	}
 
+	private suspend fun closeConsole(portLocation: String) {
+		val console = consoles.remove(portLocation) ?: return
+		AppLogger.serial.info("Closing serial console on $portLocation")
+		console.close()
+	}
+
+	private fun watchForClose(console: SerialConsole) {
+		context.scope.launch {
+			console.closed.join()
+			if (consoles[console.portLocation] === console) AppLogger.serial.warn("Serial port ${console.portLocation} reported itself closed")
+			ownership.withLock {
+				if (consoles[console.portLocation] === console) closeConsole(console.portLocation)
+			}
+		}
+	}
+
 	companion object {
-		fun create(
-			openPort: suspend (portLocation: String, onDataReceived: (String, String) -> Unit, onPortDisconnected: suspend (String) -> Unit) -> SerialPortHandle?,
-			openFlashingPort: () -> FlashingHandler,
-			scope: CoroutineScope,
-		): SerialServer {
+		fun create(watcher: SerialPortWatcher, scope: CoroutineScope): SerialServer {
 			val context = Context.create(
-				initialState = SerialServerState(availablePorts = mapOf(), connections = mapOf()),
+				initialState = SerialServerState(ports = mapOf(), flashing = setOf()),
 				scope = scope,
 				reducer = ::reduce,
+				behaviours = listOf(PortDetectionBehaviour(watcher)),
 				name = "SerialServer",
 			)
-			val server = SerialServer(
-				context = context,
-				openPortFactory = openPort,
-				openFlashingPortFactory = openFlashingPort,
-			)
+			val server = SerialServer(context = context, watcher = watcher)
 			server.startObserving()
 			return server
 		}
 	}
 }
+
+private fun isFree(state: SerialServerState, portLocation: String) = portLocation in state.ports && portLocation !in state.flashing

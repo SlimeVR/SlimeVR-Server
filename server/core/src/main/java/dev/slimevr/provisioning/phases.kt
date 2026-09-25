@@ -5,14 +5,12 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.firmware.waitForConnected
 import dev.slimevr.serial.MAC_REGEX
-import dev.slimevr.serial.SerialConnection
-import dev.slimevr.serial.SerialConnectionActions
+import dev.slimevr.serial.SerialConsole
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.serial.isKnownSerialBoard
+import dev.slimevr.serial.sortPorts
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withTimeoutOrNull
@@ -21,11 +19,13 @@ import solarxr_protocol.rpc.TrackerProvisioningStatus
 import solarxr_protocol.rpc.WifiAuthMode
 import solarxr_protocol.rpc.WifiNetwork
 import solarxr_protocol.rpc.WifiScanStatus
+import kotlin.time.Duration.Companion.seconds
 
 internal const val MAX_CONNECTION_RETRIES = 3
 
-private const val WSCAN_FAILED_MARKER = "[WSCAN] Scan failed!"
-private const val WSCAN_ACK_MARKER = "[WSCAN] Scanning for WiFi networks..."
+private const val WSCAN_LINE_MARKER = "[WSCAN]"
+private const val WSCAN_FAILED_MARKER = "$WSCAN_LINE_MARKER Scan failed!"
+private const val WSCAN_ACK_MARKER = "$WSCAN_LINE_MARKER Scanning for WiFi networks..."
 
 private val WSCAN_HEADER_REGEX = Regex("""\[WSCAN] Found (\d+) networks:""")
 private val WSCAN_ENTRY_PREFIX_REGEX = Regex("""\[WSCAN] (\d+):\s+(\d+)\s+(.*)$""")
@@ -72,6 +72,19 @@ private fun parseWifiScanOutcome(lines: List<String>): WifiScanOutcome? {
 	return WifiScanOutcome.Results(networks)
 }
 
+private suspend fun awaitWifiScanOutcome(console: SerialConsole): WifiScanOutcome {
+	val scanLines = mutableListOf<String>()
+	return console.lines
+		.mapNotNull { line ->
+			if (WSCAN_LINE_MARKER !in line) return@mapNotNull null
+			scanLines += line
+			parseWifiScanOutcome(scanLines)
+		}
+		.first()
+}
+
+private fun parseMacAddress(line: String) = MAC_REGEX.find(line)?.groupValues?.get(1)?.uppercase()
+
 private fun parseAuthMode(raw: String): WifiAuthMode = when (raw) {
 	"OPEN" -> WifiAuthMode.OPEN
 	"WEP" -> WifiAuthMode.WEP
@@ -92,7 +105,7 @@ private const val WSCAN_RESULT_TIMEOUT_MS = 15_000L
 
 internal suspend fun scanWifiNetworks(
 	context: ProvisioningManagerContext,
-	serialConn: SerialConnection.Console,
+	serialConn: SerialConsole,
 ) {
 	context.dispatch(ProvisioningActions.ScanStatusChanged(WifiScanStatus.SCANNING))
 
@@ -100,19 +113,18 @@ internal suspend fun scanWifiNetworks(
 	var attempt = 0
 
 	while (attempt < MAX_SCAN_RETRIES) {
-		serialConn.context.dispatch(SerialConnectionActions.ClearLogs)
-		serialConn.handle.writeCommand("GET WIFISCAN")
+		serialConn.clearLog()
+		serialConn.write("GET WIFISCAN")
 
 		val acked = withTimeoutOrNull(WSCAN_ACK_TIMEOUT_MS) {
-			serialConn.context.state.map { it.logLines }
-				.first { lines -> lines.any { WSCAN_ACK_MARKER in it } }
+			serialConn.lines.first { WSCAN_ACK_MARKER in it }
 		}
 
 		if (acked == null) {
-			if (serialConn.context.state.value.logLines.isEmpty()) {
+			if (serialConn.recent.isEmpty()) {
 				context.dispatch(ProvisioningActions.ScanStatusChanged(WifiScanStatus.NO_SERIAL_LOGS_ERROR))
 				// Wait until we get a log line from the device
-				serialConn.context.state.first { it.logLines.isNotEmpty() }
+				serialConn.lines.first()
 				context.dispatch(ProvisioningActions.ScanStatusChanged(WifiScanStatus.SCANNING))
 				continue
 			}
@@ -123,9 +135,7 @@ internal suspend fun scanWifiNetworks(
 		everAcked = true
 
 		val outcome = withTimeoutOrNull(WSCAN_RESULT_TIMEOUT_MS) {
-			serialConn.context.state.map { it.logLines }
-				.mapNotNull { lines -> parseWifiScanOutcome(lines) }
-				.first()
+			awaitWifiScanOutcome(serialConn)
 		}
 
 		if (outcome is WifiScanOutcome.Results) {
@@ -150,33 +160,27 @@ internal suspend fun scanWifiNetworks(
 	)
 }
 
-internal suspend fun selectAndOpenPort(
+internal suspend fun selectScanPort(
 	context: ProvisioningManagerContext,
 	serialServer: SerialServer,
 ): Boolean {
-	val portEntry = withTimeoutOrNull(15_000) {
+	val portLocation = withTimeoutOrNull(15_000) {
 		serialServer.context.state
-			.mapNotNull { state ->
-				state.availablePorts.entries.firstOrNull { (_, info) ->
-					isKnownSerialBoard(info.vendorId, info.productId) &&
-						info.toSerialDevice().type == SerialDeviceType.ESP_TRACKER
-				}
-			}
+			.mapNotNull { state -> sortPorts(state.ports.values).firstOrNull { it.type == SerialDeviceType.ESP_TRACKER }?.portLocation }
 			.first()
 	}
 
-	if (portEntry == null) {
+	if (portLocation == null) {
 		context.dispatch(ProvisioningActions.ScanStatusChanged(WifiScanStatus.NO_SERIAL_DEVICE_FOUND))
 		delay(2_000)
 		return false
 	}
 
-	val actions = mutableListOf<ProvisioningActions>(ProvisioningActions.ScanPortSelected(portEntry.key))
+	val actions = mutableListOf<ProvisioningActions>(ProvisioningActions.ScanPortSelected(portLocation))
 	if (context.state.value.scan.networks.isEmpty()) {
 		actions += ProvisioningActions.ScanStatusChanged(WifiScanStatus.SERIAL_INIT)
 	}
 	context.dispatchAll(actions)
-	serialServer.openConnection(portEntry.key)
 	return true
 }
 
@@ -190,13 +194,8 @@ internal suspend fun runProvisioningForPort(
 	password: String?,
 ) {
 	context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.SERIAL_INIT))
-	serialServer.openConnection(portLocation)
 
-	val serialConn = withTimeoutOrNull(3_000) {
-		serialServer.context.state
-			.mapNotNull { it.connections[portLocation] as? SerialConnection.Console }
-			.first()
-	}
+	val serialConn = serialServer.awaitConsole(portLocation, 3.seconds)
 
 	if (serialConn == null) {
 		context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.CONNECTION_ERROR))
@@ -210,27 +209,23 @@ internal suspend fun runProvisioningForPort(
 // Handles NO_SERIAL_LOGS_ERROR by blocking until logs appear (not counted as a retry).
 internal suspend fun obtainMacAddress(
 	context: ProvisioningManagerContext,
-	serialConn: SerialConnection.Console,
+	serialConn: SerialConsole,
 ): Boolean {
-	val portLocation = serialConn.handle.portLocation
+	val portLocation = serialConn.portLocation
 
 	// Reboot and clear logs before MAC acquisition
-	serialConn.context.dispatch(SerialConnectionActions.ClearLogs)
-	serialConn.handle.writeCommand("REBOOT")
+	serialConn.clearLog()
+	serialConn.write("REBOOT")
 	delay(2_000)
 
 	var connectRetries = 0
 
 	while (currentCoroutineContext().isActive) {
 		context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.OBTAINING_MAC_ADDRESS))
-		serialConn.handle.writeCommand("GET INFO")
+		serialConn.write("GET INFO")
 
 		val mac = withTimeoutOrNull(5_000) {
-			serialConn.context.state.map { it.logLines }
-				.mapNotNull { lines ->
-					lines.firstNotNullOfOrNull { MAC_REGEX.find(it)?.groupValues?.get(1)?.uppercase() }
-				}
-				.first()
+			serialConn.lines.mapNotNull { parseMacAddress(it) }.first()
 		}
 
 		if (mac != null) {
@@ -240,14 +235,13 @@ internal suspend fun obtainMacAddress(
 
 		// If no logs arrived at all, the tracker is connected but silent.
 		// Show the error and block until logs appear, this is not a retry.
-		if (serialConn.context.state.value.logLines.isEmpty()) {
+		if (serialConn.recent.isEmpty()) {
 			context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.NO_SERIAL_LOGS_ERROR))
-			serialConn.context.state.first { it.logLines.isNotEmpty() }
+			serialConn.lines.first()
 			context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.OBTAINING_MAC_ADDRESS))
 
 			// The GET INFO response may have arrived while we were in the error state.
-			val existingMac = serialConn.context.state.value.logLines
-				.firstNotNullOfOrNull { MAC_REGEX.find(it)?.groupValues?.get(1)?.uppercase() }
+			val existingMac = serialConn.recent.firstNotNullOfOrNull { parseMacAddress(it) }
 			if (existingMac != null) {
 				context.dispatch(ProvisioningActions.TrackerMacAddressObtained(portLocation, existingMac))
 				return true
@@ -274,19 +268,18 @@ internal suspend fun obtainMacAddress(
 // Returns false on timeout.
 internal suspend fun sendCredentials(
 	context: ProvisioningManagerContext,
-	serialConn: SerialConnection.Console,
+	serialConn: SerialConsole,
 	ssid: String,
 	password: String?,
 ): Boolean {
-	val portLocation = serialConn.handle.portLocation
+	val portLocation = serialConn.portLocation
 
-	serialConn.context.dispatch(SerialConnectionActions.ClearLogs)
+	serialConn.clearLog()
 	context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.PROVISIONING))
-	serialConn.handle.writeCommand("SET WIFI \"$ssid\" \"${password ?: ""}\"\n")
+	serialConn.write("SET WIFI \"$ssid\" \"${password ?: ""}\"\n")
 
 	val acked = withTimeoutOrNull(5_000) {
-		serialConn.context.state.map { it.logLines }
-			.first { lines -> lines.any { "new wifi credentials set" in it.lowercase() } }
+		serialConn.lines.first { "new wifi credentials set" in it.lowercase() }
 	}
 
 	if (acked == null) {
@@ -301,26 +294,22 @@ internal suspend fun sendCredentials(
 // Returns false on timeout or exhausted retries.
 internal suspend fun waitForWifiConnect(
 	context: ProvisioningManagerContext,
-	serialConn: SerialConnection.Console,
+	serialConn: SerialConsole,
 ): Boolean {
-	val portLocation = serialConn.handle.portLocation
+	val portLocation = serialConn.portLocation
 	var connectRetries = 0
 
 	while (currentCoroutineContext().isActive) {
-		serialConn.context.dispatch(SerialConnectionActions.ClearLogs)
+		serialConn.clearLog()
 		context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.CONNECTING))
 		// null = timeout, true = looking for server, false = can't connect
 		val connectResult = withTimeoutOrNull(15_000) {
-			serialConn.context.state.map { it.logLines }
-				.mapNotNull { lines ->
+			serialConn.lines
+				.mapNotNull { line ->
+					val lower = line.lowercase()
 					when {
-						lines.any {
-							"looking for the server" in it.lowercase() ||
-								"searching for the server" in it.lowercase()
-						} -> true
-
-						lines.any { "can't connect from any credentials" in it.lowercase() } -> false
-
+						"looking for the server" in lower || "searching for the server" in lower -> true
+						"can't connect from any credentials" in lower -> false
 						else -> null
 					}
 				}
@@ -334,7 +323,7 @@ internal suspend fun waitForWifiConnect(
 				connectRetries++
 				context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.CONNECTION_ERROR))
 				delay(3_000)
-				serialConn.handle.writeCommand("REBOOT")
+				serialConn.write("REBOOT")
 			}
 
 			// connectResult == false with retries exhausted, or connectResult == null (timeout)
@@ -354,11 +343,11 @@ internal suspend fun provisionPort(
 	context: ProvisioningManagerContext,
 	server: VRServer,
 	settings: Settings,
-	serialConn: SerialConnection.Console,
+	serialConn: SerialConsole,
 	ssid: String,
 	password: String?,
 ) {
-	val portLocation = serialConn.handle.portLocation
+	val portLocation = serialConn.portLocation
 
 	if (!obtainMacAddress(context, serialConn)) return
 	val macAddress = context.state.value.trackers[portLocation]?.macAddress ?: return

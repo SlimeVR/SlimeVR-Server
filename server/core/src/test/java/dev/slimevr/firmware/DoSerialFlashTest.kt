@@ -1,16 +1,16 @@
 package dev.slimevr.firmware
 
+import dev.slimevr.FakeSerialPortWatcher
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
+import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.serial.FlashingHandler
-import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
-import dev.slimevr.serial.SerialServer
 import dev.slimevr.udp.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,14 +23,7 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
-
-private fun fakePortHandle(loc: String) = SerialPortHandle(
-	portLocation = loc,
-	descriptivePortName = "Fake $loc",
-	writeCommand = {},
-	close = {},
-)
+import kotlin.time.Duration.Companion.seconds
 
 private fun fakePort(loc: String = "COM1") = SerialPortInfo(loc, "Fake $loc", 0x1A86, 0x7523)
 
@@ -55,11 +48,7 @@ private val failingFirmwareFlasher = FirmwareFlasher { portLocation, handler, _,
 private fun buildSerialServer(
 	scope: kotlinx.coroutines.CoroutineScope,
 	flashHandler: () -> FlashingHandler = ::fakeFlashHandler,
-) = SerialServer.create(
-	openPort = { loc, _, _ -> fakePortHandle(loc) },
-	openFlashingPort = flashHandler,
-	scope = scope,
-)
+) = buildTestSerial(scope, FakeSerialPortWatcher(flashingHandler = flashHandler))
 
 // VRServer's BaseBehaviour sets up infinite StateFlow collectors via launchIn(scope).
 // backgroundScope lets those run on the test scheduler but doesn't cause
@@ -72,7 +61,7 @@ class DoSerialFlashTest {
 
 	@Test
 	fun `emits ERROR_DEVICE_NOT_FOUND when port is not available`() = runTest {
-		val server = buildSerialServer(backgroundScope)
+		val serial = buildSerialServer(backgroundScope)
 		val vrServer = buildTestVrServerStub(backgroundScope)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
@@ -82,7 +71,7 @@ class DoSerialFlashTest {
 			needManualReboot = false,
 			ssid = null,
 			password = null,
-			serialServer = server,
+			serialServer = serial.server,
 			settings = buildTestSettings(backgroundScope),
 			server = vrServer,
 			flasher = failingFirmwareFlasher,
@@ -95,9 +84,9 @@ class DoSerialFlashTest {
 
 	@Test
 	fun `closes existing connection before flashing`() = runTest {
-		val server = buildSerialServer(backgroundScope)
-		server.onPortDetected(fakePort())
-		server.openConnection("COM1")
+		val serial = buildSerialServer(backgroundScope)
+		serial.plug(fakePort())
+		serial.server.awaitConsole("COM1", 5.seconds)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		doSerialFlash(
@@ -106,7 +95,7 @@ class DoSerialFlashTest {
 			needManualReboot = false,
 			ssid = null,
 			password = null,
-			serialServer = server,
+			serialServer = serial.server,
 			settings = buildTestSettings(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
 			flasher = failingFirmwareFlasher,
@@ -115,13 +104,13 @@ class DoSerialFlashTest {
 		)
 
 		assertEquals(FirmwareUpdateStatus.ERROR_UPLOAD_FAILED, statuses.last())
-		assertNull(server.context.state.value.connections["COM1"])
+		assertEquals(emptySet(), serial.server.context.state.value.flashing)
 	}
 
 	@Test
 	fun `emits ERROR_UPLOAD_FAILED when flash throws`() = runTest {
-		val server = buildSerialServer(backgroundScope, ::fakeFlashHandler)
-		server.onPortDetected(fakePort())
+		val serial = buildSerialServer(backgroundScope, ::fakeFlashHandler)
+		serial.plug(fakePort())
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		doSerialFlash(
@@ -130,7 +119,7 @@ class DoSerialFlashTest {
 			needManualReboot = false,
 			ssid = null,
 			password = null,
-			serialServer = server,
+			serialServer = serial.server,
 			settings = buildTestSettings(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
 			flasher = failingFirmwareFlasher,
@@ -139,14 +128,14 @@ class DoSerialFlashTest {
 		)
 
 		assertEquals(FirmwareUpdateStatus.ERROR_UPLOAD_FAILED, statuses.last())
-		assertNull(server.context.state.value.connections["COM1"])
+		assertEquals(emptySet(), serial.server.context.state.value.flashing)
 	}
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
 	fun `emits ERROR_DEVICE_NOT_FOUND when device has not reconnected after flash`() = runTest {
-		// Port not back in availablePorts yet, openConnection inside doSerialFlashPostFlash is a no-op
-		val server = buildSerialServer(backgroundScope)
+		// Port never comes back, so awaitConsole inside doSerialFlashPostFlash times out
+		val serial = buildSerialServer(backgroundScope)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		doSerialFlashPostFlash(
@@ -154,7 +143,7 @@ class DoSerialFlashTest {
 			needManualReboot = false,
 			ssid = "wifi",
 			password = "pass",
-			serialServer = server,
+			serialServer = serial.server,
 			settings = buildTestSettings(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
 			onStatus = { s, _ -> statuses += s },
@@ -166,9 +155,9 @@ class DoSerialFlashTest {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
 	fun `emits ERROR_PROVISIONING_FAILED when MAC not received within timeout`() = runTest {
-		val server = buildSerialServer(backgroundScope)
-		server.onPortDetected(fakePort())
-		server.openConnection("COM1")
+		val serial = buildSerialServer(backgroundScope)
+		serial.plug(fakePort())
+		serial.server.awaitConsole("COM1", 5.seconds)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		val job = launch {
@@ -177,7 +166,7 @@ class DoSerialFlashTest {
 				needManualReboot = false,
 				ssid = "wifi",
 				password = "pass",
-				serialServer = server,
+				serialServer = serial.server,
 				settings = buildTestSettings(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
@@ -193,9 +182,9 @@ class DoSerialFlashTest {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
 	fun `emits ERROR_PROVISIONING_FAILED when ssid or password is null`() = runTest {
-		val server = buildSerialServer(backgroundScope)
-		server.onPortDetected(fakePort())
-		server.openConnection("COM1")
+		val serial = buildSerialServer(backgroundScope)
+		serial.plug(fakePort())
+		serial.server.awaitConsole("COM1", 5.seconds)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		backgroundScope.launch {
@@ -204,7 +193,7 @@ class DoSerialFlashTest {
 				needManualReboot = false,
 				ssid = null,
 				password = null,
-				serialServer = server,
+				serialServer = serial.server,
 				settings = buildTestSettings(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
@@ -213,7 +202,7 @@ class DoSerialFlashTest {
 
 		backgroundScope.launch {
 			delay(100)
-			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		}
 
 		advanceTimeBy(500)
@@ -224,9 +213,9 @@ class DoSerialFlashTest {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
 	fun `emits ERROR_PROVISIONING_FAILED when wifi does not connect within timeout`() = runTest {
-		val server = buildSerialServer(backgroundScope)
-		server.onPortDetected(fakePort())
-		server.openConnection("COM1")
+		val serial = buildSerialServer(backgroundScope)
+		serial.plug(fakePort())
+		serial.server.awaitConsole("COM1", 5.seconds)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		val job = launch {
@@ -235,7 +224,7 @@ class DoSerialFlashTest {
 				needManualReboot = false,
 				ssid = "wifi",
 				password = "pass",
-				serialServer = server,
+				serialServer = serial.server,
 				settings = buildTestSettings(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
@@ -244,7 +233,7 @@ class DoSerialFlashTest {
 
 		backgroundScope.launch {
 			delay(100)
-			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		}
 
 		// MAC arrives at 100ms; wifi timeout fires 30s later
@@ -257,9 +246,9 @@ class DoSerialFlashTest {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
 	fun `emits ERROR_TIMEOUT when tracker does not appear within timeout`() = runTest {
-		val server = buildSerialServer(backgroundScope)
-		server.onPortDetected(fakePort())
-		server.openConnection("COM1")
+		val serial = buildSerialServer(backgroundScope)
+		serial.plug(fakePort())
+		serial.server.awaitConsole("COM1", 5.seconds)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		val job = launch {
@@ -268,7 +257,7 @@ class DoSerialFlashTest {
 				needManualReboot = false,
 				ssid = "wifi",
 				password = "pass",
-				serialServer = server,
+				serialServer = serial.server,
 				settings = buildTestSettings(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
@@ -277,9 +266,9 @@ class DoSerialFlashTest {
 
 		backgroundScope.launch {
 			delay(100)
-			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(200)
-			server.onDataReceived("COM1", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
 		}
 
 		// MAC at 100ms, wifi log at 200ms; tracker timeout fires 60s after wifi confirmed
@@ -292,9 +281,9 @@ class DoSerialFlashTest {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
 	fun `emits DONE when everything succeeds`() = runTest {
-		val server = buildSerialServer(backgroundScope)
-		server.onPortDetected(fakePort())
-		server.openConnection("COM1")
+		val serial = buildSerialServer(backgroundScope)
+		serial.plug(fakePort())
+		serial.server.awaitConsole("COM1", 5.seconds)
 		val vrServer = buildTestVrServerStub(backgroundScope)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
@@ -304,7 +293,7 @@ class DoSerialFlashTest {
 				needManualReboot = false,
 				ssid = "wifi",
 				password = "pass",
-				serialServer = server,
+				serialServer = serial.server,
 				settings = buildTestSettings(backgroundScope),
 				server = vrServer,
 				onStatus = { s, _ -> statuses += s },
@@ -313,9 +302,9 @@ class DoSerialFlashTest {
 
 		backgroundScope.launch {
 			delay(100)
-			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(200)
-			server.onDataReceived("COM1", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
 			delay(300)
 			val appContext = buildTestAppContext(vrServer)
 			val device = Device.create(

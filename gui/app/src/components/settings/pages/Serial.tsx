@@ -3,11 +3,9 @@ import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
   CloseSerialRequestT,
-  NewSerialDeviceResponseT,
   OpenSerialRequestT,
   RpcMessage,
-  SerialDevicesRequestT,
-  SerialDevicesResponseT,
+  SerialConsoleStatus,
   SerialDeviceT,
   SerialTrackerFactoryResetRequestT,
   SerialTrackerGetInfoRequestT,
@@ -18,6 +16,7 @@ import {
   SerialDeviceType,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSerialDevices } from '@/hooks/serial';
 import { Button } from '@/components/commons/Button';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { Typography } from '@/components/commons/Typography';
@@ -35,6 +34,22 @@ export interface SerialForm {
   customCommand: string;
 }
 
+const consoleStatusMessage: Partial<Record<SerialConsoleStatus, string>> = {
+  [SerialConsoleStatus.OPENING]: 'settings-serial-opening',
+  [SerialConsoleStatus.WAITING]: 'settings-serial-connection_lost',
+  [SerialConsoleStatus.BUSY]: 'settings-serial-busy',
+  [SerialConsoleStatus.OPEN_FAILED]: 'settings-serial-open_failed',
+};
+
+const MAX_CONSOLE_CHARS = 200_000;
+
+function appendLog(content: string, log: string) {
+  const next = content + log;
+  if (next.length <= MAX_CONSOLE_CHARS) return next;
+  const cut = next.indexOf('\n', next.length - MAX_CONSOLE_CHARS);
+  return cut === -1 ? next : next.slice(cut + 1);
+}
+
 export function Serial() {
   const { l10n } = useLocalization();
   const { state } = useLocation();
@@ -43,13 +58,12 @@ export function Serial() {
   const consoleRef = useRef<HTMLDivElement>(null);
   const [consoleContent, setConsole] = useState('');
 
+  const [consoleStatus, setConsoleStatus] =
+    useState<SerialConsoleStatus | null>(null);
   const [openedSerialDevice, setOpenedSerialDevice] = useState<Omit<
     SerialDeviceT,
     'pack'
   > | null>(null);
-  const [serialDevices, setSerialDevices] = useState<
-    Omit<SerialDeviceT, 'pack'>[]
-  >([]);
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
   const [trySendCustomCommand, setTrySendCustomCommand] = useState(false);
@@ -57,55 +71,16 @@ export function Serial() {
   const [acceptedCustomCommandWarning, setAcceptedCustomCommandWarning] =
     useState(false);
 
-  const defaultValues = { port: 'Auto' };
-  const { control, watch, reset, setValue, subscribe } = useForm<SerialForm>({
-    defaultValues,
+  const typedState: { serialPort?: string } | null = state;
+  const { control, watch, setValue } = useForm<SerialForm>({
+    defaultValues: { port: typedState?.serialPort ?? '' },
   });
 
   const port = watch('port');
   const customCommand = watch('customCommand');
-
-  useEffect(() => {
-    const callback = subscribe({
-      name: 'port',
-      exact: true,
-      formState: {
-        values: true,
-      },
-      callback: ({ values }) => {
-        openSerial(values.port);
-        setConsole('');
-      },
-    });
-
-    return () => callback();
-  }, [subscribe]);
+  const serialDevices = useSerialDevices();
 
   const [isPaused, setPaused] = useState(false);
-
-  const openSerial = (port: string) => {
-    sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
-    const req = new OpenSerialRequestT();
-    req.auto = port === 'Auto';
-    req.port = port;
-    sendRPCPacket(RpcMessage.OpenSerialRequest, req);
-  };
-
-  useEffect(() => {
-    const typedState: { serialPort: string } = state as any;
-    if (typedState?.serialPort) {
-      reset({ port: typedState.serialPort });
-    }
-
-    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
-    const interval = setInterval(() => {
-      sendRPCPacket(
-        RpcMessage.SerialDevicesRequest,
-        new SerialDevicesRequestT()
-      );
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -113,39 +88,36 @@ export function Serial() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!serialDevices?.length) return;
+    if (!serialDevices.some((device) => device.port === port)) {
+      setValue('port', serialDevices[0].port?.toString() ?? '');
+    }
+  }, [serialDevices]);
+
+  useEffect(() => {
+    if (!port) return;
+    setConsole('');
+    setOpenedSerialDevice(null);
+    setConsoleStatus(SerialConsoleStatus.OPENING);
+    const req = new OpenSerialRequestT();
+    req.port = port;
+    sendRPCPacket(RpcMessage.OpenSerialRequest, req);
+  }, [port]);
+
   useRPCPacket(
     RpcMessage.SerialUpdateResponse,
     (data: SerialUpdateResponseT) => {
-      if (data.device) setOpenedSerialDevice(data.device);
-      else if (data.closed) setOpenedSerialDevice(null);
+      setConsoleStatus(data.status);
+      if (data.status === SerialConsoleStatus.OPEN && data.device) {
+        setOpenedSerialDevice(data.device);
+      } else {
+        setOpenedSerialDevice(null);
+      }
 
       if (data.log) {
-        setConsole((console) => console + data.log);
+        setConsole((console) => appendLog(console, data.log as string));
       }
-    }
-  );
-
-  useRPCPacket(
-    RpcMessage.SerialDevicesResponse,
-    (res: SerialDevicesResponseT) => {
-      setSerialDevices([
-        {
-          name: l10n.getString('settings-serial-auto_dropdown_item'),
-          port: 'Auto',
-          type: SerialDeviceType.ESP_TRACKER,
-        },
-        ...(res.devices || []),
-      ]);
-    }
-  );
-
-  useRPCPacket(
-    RpcMessage.NewSerialDeviceResponse,
-    ({ device }: NewSerialDeviceResponseT) => {
-      if (!device?.port) return;
-      setSerialDevices((old) =>
-        old.some((d) => d.port === device.port) ? old : [...old, device]
-      );
     }
   );
 
@@ -179,20 +151,6 @@ export function Serial() {
       );
     });
   }, [consoleRef.current]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (openedSerialDevice === null) {
-        openSerial(port ?? defaultValues.port);
-      } else {
-        clearInterval(id);
-      }
-    }, 3000);
-
-    return () => {
-      clearInterval(id);
-    };
-  }, [openedSerialDevice]);
 
   const reboot = () => {
     sendRPCPacket(
@@ -299,6 +257,11 @@ export function Serial() {
     });
   };
 
+  // Pairing, DFU and calibration are HID firmware commands, unrecognized devices get none of them
+  const isHidDevice =
+    openedSerialDevice?.type === SerialDeviceType.HID_RECEIVER ||
+    openedSerialDevice?.type === SerialDeviceType.HID_TRACKER;
+
   const pauseScroll = () => {
     setPaused(!isPaused);
 
@@ -385,7 +348,11 @@ export function Serial() {
               <pre>
                 {openedSerialDevice !== null
                   ? consoleContent
-                  : l10n.getString('settings-serial-connection_lost')}
+                  : l10n.getString(
+                      (consoleStatus !== null &&
+                        consoleStatusMessage[consoleStatus]) ||
+                        'settings-serial-no_port'
+                    )}
               </pre>
             </div>
           </div>
@@ -410,8 +377,7 @@ export function Serial() {
                       </Button>
                     </>
                   )}
-                  {openedSerialDevice?.type !==
-                    SerialDeviceType.ESP_TRACKER && (
+                  {isHidDevice && (
                     <Button variant="quaternary" onClick={enterPairing}>
                       {l10n.getString('settings-serial-enter_pairing')}
                     </Button>
@@ -433,8 +399,7 @@ export function Serial() {
                       </Button>
                     </>
                   )}
-                  {openedSerialDevice?.type !==
-                    SerialDeviceType.ESP_TRACKER && (
+                  {isHidDevice && (
                     <>
                       <Button variant="quaternary" onClick={dfu}>
                         {l10n.getString('settings-serial-dfu')}
@@ -507,7 +472,7 @@ export function Serial() {
                   name="port"
                   display="block"
                   placeholder={l10n.getString('settings-serial-serial_select')}
-                  items={serialDevices.map((device) => ({
+                  items={(serialDevices ?? []).map((device) => ({
                     label: device.name?.toString() || 'error',
                     value: device.port?.toString() || 'error',
                   }))}
