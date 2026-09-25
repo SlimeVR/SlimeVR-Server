@@ -399,7 +399,6 @@ settings-serial-factory_reset = ファクトリーリセット
 settings-serial-factory_reset-warning-ok = 自分が何しているかを知っています。
 settings-serial-factory_reset-warning-cancel = キャンセル
 settings-serial-serial_select = シリアルポートを選択
-settings-serial-auto_dropdown_item = 自動
 settings-serial-send_command-warning-ok = 自分が何しているかを知っています。
 settings-serial-send_command-warning-cancel = キャンセル
 
