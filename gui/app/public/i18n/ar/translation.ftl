@@ -512,7 +512,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = أنا أعرف ماذا أفعل
 settings-serial-factory_reset-warning-cancel = إلغاء
 settings-serial-serial_select = اختر منفذ تسلسلي
-settings-serial-auto_dropdown_item = تلقائي
 settings-serial-get_wifi_scan = احصل على فحص WiFi
 settings-serial-save_logs = حفظ في ملف
 settings-serial-send_command-warning-ok = أنا أعرف ماذا أفعل
