@@ -106,11 +106,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = Guanto SlimeVR Dev IMU
 ## Proportions
 
 skeleton_bone-NONE = Nessuna selezione
-skeleton_bone-HEAD = Correzione per la testa
-skeleton_bone-HEAD-desc =
-    La distanza tra il visore e il centro della testa.
-    Scuoti la testa da sinistra a destra come se si fosse in disaccordo
-    e modificala fino a quando il movimento degli altri tracker è trascurabile.
 skeleton_bone-NECK = Lunghezza del collo
 skeleton_bone-NECK-desc =
     La distanza tra il centro della testa e la base del collo.
@@ -1150,6 +1145,5 @@ error_collection_modal-cancel = Non acconsento
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Chiudi
-tracking_checklist-UNASSIGNED_HMD-desc = Il visore deve essere assegnato come tracker della testa.
 toolbar-mounting_calibration = Controlla il posizionamento dei tuoi tracker
 toolbar-mounting_calibration-feet = Piedi
