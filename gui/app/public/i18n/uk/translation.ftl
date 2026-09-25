@@ -394,7 +394,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Я знаю, що роблю
 settings-serial-factory_reset-warning-cancel = Скасувати
 settings-serial-serial_select = Вибір послідовного порту
-settings-serial-auto_dropdown_item = Автоматично
 settings-serial-get_wifi_scan = Сканувати мережу Wi-Fi
 settings-serial-save_logs = Зберегти у файл
 settings-serial-send_command-warning-ok = Я знаю, що роблю
