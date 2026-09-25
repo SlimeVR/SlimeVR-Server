@@ -566,7 +566,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Capisco cosa sto facendo
 settings-serial-factory_reset-warning-cancel = Annulla
 settings-serial-serial_select = Seleziona una porta seriale
-settings-serial-auto_dropdown_item = Automatico
 settings-serial-get_wifi_scan = Elenca WiFi Network
 settings-serial-save_logs = Salva su file
 settings-serial-send_command-warning-ok = Capisco cosa sto facendo
