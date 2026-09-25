@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import com.jme3.math.FastMath
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
@@ -32,8 +33,8 @@ private fun processTail(
 	val baseRelative = hipRot.inv() * tailRot
 
 	val baseEuler = baseRelative.toEulerAngles(EulerOrder.XYZ)
-	val basePitch = Math.toDegrees(baseEuler.x.toDouble()).toFloat()
-	val baseYaw = Math.toDegrees(baseEuler.y.toDouble()).toFloat()
+	val basePitch = baseEuler.x * FastMath.RAD_TO_DEG
+	val baseYaw = baseEuler.y * FastMath.RAD_TO_DEG
 
 	val tailPitchValue = (basePitch / MAXIMUM_ABSOLUTE_TAIL_RANGE).coerceIn(-1f, 1f)
 	val tailYawValue = (baseYaw / MAXIMUM_ABSOLUTE_TAIL_RANGE).coerceIn(-1f, 1f)
@@ -41,8 +42,8 @@ private fun processTail(
 	// Tip rotation relative to hip
 	val tipRelative = hipRot.inv() * tailTip.rotation
 	val tipEuler = tipRelative.toEulerAngles(EulerOrder.XYZ)
-	val tipPitch = Math.toDegrees(tipEuler.x.toDouble()).toFloat()
-	val tipYaw = Math.toDegrees(tipEuler.y.toDouble()).toFloat()
+	val tipPitch = tipEuler.x * FastMath.RAD_TO_DEG
+	val tipYaw = tipEuler.y * FastMath.RAD_TO_DEG
 
 	val tailTipPitchValue = (tipPitch / MAXIMUM_ABSOLUTE_TAIL_RANGE).coerceIn(-1f, 1f)
 	val tailTipYawValue = (tipYaw / MAXIMUM_ABSOLUTE_TAIL_RANGE).coerceIn(-1f, 1f)

@@ -1,14 +1,27 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.skeleton.BoneState
-import io.github.axisangles.ktmath.EulerOrder
-import solarxr_protocol.datatypes.BodyPart
-import dev.slimevr.util.Side
+import com.jme3.math.FastMath
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.skeleton.BoneState
+import dev.slimevr.util.Side
+import io.github.axisangles.ktmath.EulerOrder
 import kotlin.math.abs
 import kotlin.math.exp
+import solarxr_protocol.datatypes.BodyPart
+
+private const val VERTICAL_ACCEL_DEADZONE = 0.025f
+private const val VERTICAL_ACCEL_GAIN = 18f
+private const val VERTICAL_SPRING = 34f
+private const val VERTICAL_DAMPING = 9f
+private const val VERTICAL_BASELINE_TIME_CONSTANT = 2.5f
+private const val DEFAULT_FRAME_DT = 1f / 60f
+private const val MIN_FRAME_DT = 1f / 240f
+private const val MAX_FRAME_DT = 0.05f
+private const val SNAP_POSITION_EPSILON = 0.0025f
+private const val SNAP_VELOCITY_EPSILON = 0.01f
+
 private val bustOutputState = BustOutputState()
 
 internal fun buildBustMessages(
@@ -88,15 +101,8 @@ private class BustOutputState {
 				EulerOrder.XYZ,
 			)
 
-		val pitch =
-			Math.toDegrees(
-				euler.x.toDouble(),
-			).toFloat()
-
-		val yaw =
-			Math.toDegrees(
-				euler.z.toDouble(),
-			).toFloat()
+		val pitch = euler.x * FastMath.RAD_TO_DEG
+		val yaw = euler.z * FastMath.RAD_TO_DEG
 
 		addFloat(
 			messages,
@@ -261,38 +267,6 @@ private class BustOutputState {
 		lastUpdateNanos = now
 
 		return dt
-	}
-
-	companion object {
-		private const val VERTICAL_ACCEL_DEADZONE =
-			0.025f
-
-		private const val VERTICAL_ACCEL_GAIN =
-			18f
-
-		private const val VERTICAL_SPRING =
-			34f
-
-		private const val VERTICAL_DAMPING =
-			9f
-
-		private const val VERTICAL_BASELINE_TIME_CONSTANT =
-			2.5f
-
-		private const val DEFAULT_FRAME_DT =
-			1f / 60f
-
-		private const val MIN_FRAME_DT =
-			1f / 240f
-
-		private const val MAX_FRAME_DT =
-			0.05f
-
-		private const val SNAP_POSITION_EPSILON =
-			0.0025f
-
-		private const val SNAP_VELOCITY_EPSILON =
-			0.01f
 	}
 }
 
