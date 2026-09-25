@@ -431,15 +431,15 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
     })
   ),
   [BodyPart.LEFT_POSTERIOR]: part(
-    model('bust', {
+    model('posterior', {
       scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
-      offset: inMetres({ width: 0.07, length: 0.05 }),
+      offset: inMetres({ width: 0.07, depth: -0.07, length: 0.05 }),
     })
   ),
   [BodyPart.RIGHT_POSTERIOR]: part(
-    model('bust', {
+    model('posterior', {
       scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
-      offset: inMetres({ width: -0.07, length: 0.05 }),
+      offset: inMetres({ width: -0.07, depth: -0.07, length: 0.05 }),
     })
   ),
   [BodyPart.TAIL]: part(
