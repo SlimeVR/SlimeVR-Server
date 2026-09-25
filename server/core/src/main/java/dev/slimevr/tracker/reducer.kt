@@ -36,11 +36,11 @@ fun reduce(
 		}
 
 		// Other inputs
-		val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
+		val rawAcceleration: RawAcceleration? = action.acceleration ?: state.rawAcceleration
 		val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
 		val position = action.position ?: state.position
 
-		// Rotation calibration
+		// Rotation calibration: going from raw rotation to rotation since reset
 		val rotation: CalibratedRotation =
 			if (action.rotation != null) {
 				applyFullCalibration(correctedRawRotation, state)
@@ -49,10 +49,11 @@ fun reduce(
 				state.rotation
 			}
 
-		// Accel calibration
-		val acceleration: CalibratedAcceleration =
+		// Accel calibration: going from raw, rotation-aligned, accel to world-aligned accel
+		// TODO: double check calibration; doesn't seem right - Erimel
+		val acceleration: CalibratedAcceleration? =
 			if (action.acceleration != null) {
-				applyFullCalibration(rawAcceleration, correctedRawRotation, state)
+				applyFullCalibration(action.acceleration, correctedRawRotation, state)
 			} else {
 				state.acceleration
 			}

@@ -7,6 +7,9 @@ import solarxr_protocol.datatypes.BodyPart
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBonePose -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
+		// Rotation always non-null and active
+		// Accel always non-null but not always active
+		// Position not always non-null and not always active
 		state.copy(
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
@@ -14,8 +17,8 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 					expectedTps = bone.expectedTps,
 					rotation = action.rotation,
 					isRotationActive = true,
-					acceleration = action.acceleration,
-					isAccelerationActive = true,
+					acceleration = action.acceleration ?: Vector3.ZERO,
+					isAccelerationActive = action.acceleration != null,
 					position = action.position,
 					isPositionActive = action.position != null,
 				)

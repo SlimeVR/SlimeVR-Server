@@ -71,8 +71,15 @@ private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSi
 	FollowSource.COM
 }
 
-// Feet are always considered even if inactive
-private val alwaysActiveBodyParts = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT, BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG)
+// Legs are always used even if inactive
+private val alwaysActiveBodyParts = arrayOf(
+	BodyPart.LEFT_FOOT,
+	BodyPart.RIGHT_FOOT,
+	BodyPart.LEFT_LOWER_LEG,
+	BodyPart.RIGHT_LOWER_LEG,
+	BodyPart.LEFT_UPPER_LEG,
+	BodyPart.RIGHT_UPPER_LEG,
+)
 private fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotationActive }.map { it.key } + alwaysActiveBodyParts
 
 /** Returns the active bone closest to or furthest inside the ground */
@@ -92,8 +99,8 @@ object FootLocalizer {
 	}
 
 	private fun whichPlantedFoot(bodyPart: BodyPart) = when (bodyPart) {
-		BodyPart.LEFT_LOWER_LEG, BodyPart.LEFT_FOOT -> PlantedFoot.LEFT
-		BodyPart.RIGHT_LOWER_LEG, BodyPart.RIGHT_FOOT -> PlantedFoot.RIGHT
+		BodyPart.LEFT_FOOT -> PlantedFoot.LEFT
+		BodyPart.RIGHT_FOOT -> PlantedFoot.RIGHT
 		else -> PlantedFoot.NONE
 	}
 
@@ -116,25 +123,24 @@ object FootLocalizer {
 	}
 
 	fun getPlantedFoot(fk: ComputedSkeleton, lastPlantedFoot: PlantedFoot): PlantedFoot {
-		// TODO start with foot, fallback to ankles, else it's nil
-		val leftLowerLeg = fk[BodyPart.LEFT_LOWER_LEG] ?: return PlantedFoot.NONE
-		val rightLowerLeg = fk[BodyPart.RIGHT_LOWER_LEG] ?: return PlantedFoot.NONE
+		val leftFoot = fk[BodyPart.LEFT_FOOT] ?: return PlantedFoot.NONE
+		val rightFoot = fk[BodyPart.RIGHT_FOOT] ?: return PlantedFoot.NONE
 
 		// If foot is locked, use that TODO should maybe not use that and just check y position instead
-// 		if (isFootLocked(leftLowerLeg, lastPlantedFoot)) return PlantedFoot.LEFT
-// 		if (isFootLocked(rightLowerLeg, lastPlantedFoot)) return PlantedFoot.RIGHT
+// 		if (isFootLocked(leftFoot, lastPlantedFoot)) return PlantedFoot.LEFT
+// 		if (isFootLocked(rightFoot, lastPlantedFoot)) return PlantedFoot.RIGHT
 
 		// Else, use velocity and accel to pick the foot who moves the least
-		val leftVelocityAccelRatio = velocityAccelRatio(leftLowerLeg)
-		val rightVelocityAccelRatio = velocityAccelRatio(rightLowerLeg)
+		val leftVelocityAccelRatio = velocityAccelRatio(leftFoot)
+		val rightVelocityAccelRatio = velocityAccelRatio(rightFoot)
 		return if (leftVelocityAccelRatio < rightVelocityAccelRatio &&
 			leftVelocityAccelRatio < MAX_FOOT_PERCENTAGE &&
-			leftLowerLeg.acceleration.y < MAX_ACCEL_UP
+			leftFoot.acceleration.y < MAX_ACCEL_UP
 		) {
 			PlantedFoot.LEFT
 		} else if (rightVelocityAccelRatio < leftVelocityAccelRatio &&
 			rightVelocityAccelRatio < MAX_FOOT_PERCENTAGE &&
-			rightLowerLeg.acceleration.y < MAX_ACCEL_UP
+			rightFoot.acceleration.y < MAX_ACCEL_UP
 		) {
 			PlantedFoot.RIGHT
 		} else {
