@@ -5,19 +5,21 @@ import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
-	is SkeletonActions.SetBoneRotation -> {
+	is SkeletonActions.SetBonePose -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(rotation = action.rotation, isRotationActive = action.setActive) })
-	}
-
-	is SkeletonActions.SetBoneAcceleration -> {
-		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(acceleration = action.acceleration, isAccelerationActive = action.setActive) })
-	}
-
-	is SkeletonActions.SetBonePosition -> {
-		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(position = action.position, isPositionActive = action.setActive) })
+		state.copy(
+			boneInputs = state.boneInputs.mutateCopy {
+				it[action.bodyPart] = bone.copy(
+					expectedTps = bone.expectedTps,
+					rotation = action.rotation,
+					isRotationActive = true,
+					acceleration = action.acceleration,
+					isAccelerationActive = true,
+					position = action.position,
+					isPositionActive = action.position != null,
+				)
+			},
+		)
 	}
 
 	is SkeletonActions.DisableBone -> {
@@ -25,6 +27,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		state.copy(
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
+					expectedTps = null,
 					rotation = Quaternion.IDENTITY,
 					acceleration = Vector3.ZERO,
 					position = null,
@@ -51,11 +54,15 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.SetPausedBoneInputs -> state.copy(pausedProcessedBoneInputs = action.pausedBoneInputs)
 
+	is SkeletonActions.SetHeadPosition -> {
+		val headBone = state.boneInputs[BodyPart.HEAD] ?: return state
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = action.position) })
+	}
+
 	is SkeletonActions.ResetHeadPosition -> {
-		val boneInputs = state.boneInputs
-		val headBone = boneInputs[BodyPart.HEAD] ?: return state
+		val headBone = state.boneInputs[BodyPart.HEAD] ?: return state
 		if (headBone.isPositionActive) return state
-		state.copy(boneInputs = boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = null) })
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = null) })
 	}
 
 	is SkeletonActions.ResetFloorLevel -> {
@@ -67,4 +74,6 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 	is SkeletonActions.RequestProcessorReset -> state.copy(processorResets = state.processorResets + action.resetType)
 
 	is SkeletonActions.ProcessorResetsApplied -> state.copy(processorResets = state.processorResets.drop(action.count))
+
+	is SkeletonActions.UpdateLegTweaksTmpOverride -> state.copy(legTweaksTmpOverride = action.transform(state.legTweaksTmpOverride))
 }

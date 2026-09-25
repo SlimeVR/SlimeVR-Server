@@ -71,13 +71,12 @@ private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSi
 	FollowSource.COM
 }
 
-private fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotationActive }.map { it.key }
+// Feet are always considered even if inactive
+private val alwaysActiveBodyParts = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT, BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG)
+private fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotationActive }.map { it.key } + alwaysActiveBodyParts
 
 /** Returns the active bone closest to or furthest inside the ground */
-fun getLowestBone(inputs: InputSkeleton, fk: ComputedSkeleton): BoneState? {
-	val activeBodyParts = getActiveBodyParts(inputs)
-	return fk.filter { it.key in activeBodyParts }.minByOrNull { it.value.tailPosition.y }?.value
-}
+fun getLowestBone(inputs: InputSkeleton, fk: ComputedSkeleton) = fk.filter { it.key in getActiveBodyParts(inputs) }.minByOrNull { it.value.tailPosition.y }?.value
 
 object FootLocalizer {
 	enum class PlantedFoot {
@@ -117,6 +116,7 @@ object FootLocalizer {
 	}
 
 	fun getPlantedFoot(fk: ComputedSkeleton, lastPlantedFoot: PlantedFoot): PlantedFoot {
+		// TODO start with foot, fallback to ankles, else it's nil
 		val leftLowerLeg = fk[BodyPart.LEFT_LOWER_LEG] ?: return PlantedFoot.NONE
 		val rightLowerLeg = fk[BodyPart.RIGHT_LOWER_LEG] ?: return PlantedFoot.NONE
 
@@ -197,15 +197,15 @@ object COMLocalizer {
 	fun computeTargetCOM(targetCOM: Vector3, comVelocity: Vector3, deltaTime: Duration) = targetCOM + (comVelocity * deltaTime.inFloatingSeconds)
 
 	fun floorAdjustTargetCOM(targetCOM: Vector3, lowestBone: BoneState?) = lowestBone?.let {
-		if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
-			Vector3(targetCOM.x, targetCOM.y + (FLOOR_CALIBRATION_OFFSET - it.tailPosition.y), targetCOM.z)
+		if (it.tailPosition.y <= FLOOR_CALIBRATION_OFFSET) {
+			Vector3(targetCOM.x, targetCOM.y - it.tailPosition.y, targetCOM.z)
 		} else {
 			targetCOM
 		}
 	} ?: targetCOM
 
 	fun floorAdjustCOMVelocity(comVelocity: Vector3, lowestBone: BoneState?) = lowestBone?.let {
-		if (it.tailPosition.y < FLOOR_CALIBRATION_OFFSET) {
+		if (it.tailPosition.y <= FLOOR_CALIBRATION_OFFSET) {
 			Vector3(comVelocity.x, 0f, comVelocity.z)
 		} else {
 			comVelocity

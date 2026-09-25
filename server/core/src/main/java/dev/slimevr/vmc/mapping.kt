@@ -176,14 +176,6 @@ val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	),
 )
 
-
-
-
-
-
-
-
-
 private class VmcBoneTree(hierarchy: BodyPartMap<Array<BodyPart>>) {
 	val order: List<BodyPart>
 	val parents: BodyPartMap<BodyPart?>

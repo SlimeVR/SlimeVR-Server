@@ -5,6 +5,7 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
+import solarxr_protocol.datatypes.BodyPart
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
 import kotlin.math.abs

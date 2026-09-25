@@ -191,7 +191,7 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_DISTAL,
 		),
 		lengthFraction = 0.72f,
-		knuckle = Vector3(0.16f, 0.3f, -0.28f),
+		knuckle = Vector3(0.16f, 0.6f, -0.4f),
 		lean = Vector3(0.05f, 0f, -0.7f),
 	),
 	Finger(

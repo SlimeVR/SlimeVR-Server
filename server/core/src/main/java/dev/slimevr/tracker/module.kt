@@ -8,11 +8,11 @@ import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
-import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
+import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
 import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
@@ -80,6 +80,7 @@ data class TrackerState(
 	val position: Vector3?,
 	val imuTemp: Float?,
 	val accumulatedTicks: UShort,
+	val expectedTps: UShort?,
 	val tps: UShort,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
@@ -89,8 +90,11 @@ data class TrackerState(
 	val stayAlignedData: StayAlignedData,
 	val pendingSkeletonResets: List<ResetType> = emptyList(),
 ) {
-	/** Considered an HMD if it comes from driver and driver told us it's the head. */
-	val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
+	private val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
+
+	/** Indicates if the tracker is a reliable reference for aligning other trackers. */
+	val isReliableReference = isHmd
+	val isAssignedReliableReference = isReliableReference && bodyPart == intendedBodyPart
 }
 
 fun List<TrackerState>.getFirstActiveFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull { it.bodyPart == bodyPart && it.status.isActive() }
@@ -102,10 +106,10 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val refresh: Boolean = false) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion?, val resetHmdAttitude: Boolean = false) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion?, val resetReliableReferenceAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion?, val yawOffset: Float) : TrackerActions
@@ -138,6 +142,7 @@ class Tracker(
 			hardwareId: String,
 			origin: DeviceOrigin,
 			driverName: String? = null,
+			expectedTps: UShort? = null,
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
@@ -154,6 +159,7 @@ class Tracker(
 				bodyPart = bodyPart,
 				intendedBodyPart = intendedBodyPart,
 				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
+				expectedTps = expectedTps,
 			)
 			val trackerState = if (savedConfig != null) {
 				TrackerConfigBehaviour.restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -162,7 +168,7 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerCalibrationRefreshBehaviour(),
+				TrackerRotationRefreshBehaviour(),
 				TrackerTpsBehaviour(),
 				TrackerAssignmentConflictBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
@@ -193,7 +199,7 @@ class Tracker(
 			driverName = null,
 			hardwareId = "defaultHardwareId",
 			name = "defaultTracker",
-			imuType = ImuType.BNO085,
+			imuType = null,
 			bodyPart = null,
 			intendedBodyPart = null,
 			customName = null,
@@ -212,6 +218,7 @@ class Tracker(
 			position = null,
 			imuTemp = null,
 			accumulatedTicks = 0u,
+			expectedTps = null,
 			tps = 0u,
 			status = TrackerStatus.DISCONNECTED,
 			completedRestCalibration = false,

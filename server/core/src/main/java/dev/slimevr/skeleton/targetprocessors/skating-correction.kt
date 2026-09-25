@@ -7,6 +7,7 @@ import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.IKTargets
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonTargetProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
@@ -199,7 +200,7 @@ fun getFootLockLikelihood(
 		)
 }
 
-class SkatingCorrectionTargetProcessor(val settings: Settings) :
+class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Skeleton) :
 	SkeletonTargetProcessor,
 	ResettableSkeletonProcessor {
 	val skatingBodyParts = arrayOf(
@@ -215,7 +216,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) :
 
 	override fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		val skeletonConfig = settings.context.state.value.data.skeletonConfig
-		if (!skeletonConfig.toggles.skatingCorrection) return
+		if (!skeleton.effectiveSkatingCorrection) return
 
 		// Update centre of mass
 		val comState = computeComState(

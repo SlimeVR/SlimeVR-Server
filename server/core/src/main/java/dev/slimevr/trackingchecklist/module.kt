@@ -29,7 +29,7 @@ class TrackingChecklist(
 			.stateIn(context.scope, SharingStarted.Eagerly, initialValue = emptyList())
 
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
-			add(HMDCheckBehaviour(trackerStates))
+			add(ReliableReferenceCheckBehaviour(trackerStates))
 			add(TrackerRestCheckBehaviour(trackerStates))
 			add(FullResetCheckBehaviour(trackerStates, appContext.resetsManager))
 			add(MountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))

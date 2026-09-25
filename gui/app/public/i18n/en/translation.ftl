@@ -236,7 +236,7 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-SHOULDERS_WIDTH-desc =
-    This is the horizontal distance from the base of your neck to your shoulders.
+    This is the horizontal distance between your shoulders.
     To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
     line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Arm length
@@ -674,8 +674,8 @@ settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
 settings-general-fk_settings-resets_settings = Resets Settings
-settings-general-fk_settings-reset_settings-reset_hmd_attitude = Reset HMD attitude
-settings-general-fk_settings-reset_settings-reset_hmd_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
+settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = Reset HMD attitude
+settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-arm_fk-reset_mode = Arms reset mode
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for resets.
 settings-general-fk_settings-arm_fk-back = Back

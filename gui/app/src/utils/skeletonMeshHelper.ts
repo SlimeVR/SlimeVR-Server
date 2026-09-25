@@ -1,7 +1,6 @@
 import {
   Box3,
   BoxGeometry,
-  Color,
   Mesh,
   MeshStandardMaterial,
   Object3D,
@@ -20,10 +19,10 @@ import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import {
   BoneShapeConfig,
+  DefaultBoneModelUrl,
   ModelDimensions,
   SKELETON_PART_PRESETS,
   computeShapeScale,
-  getPartMaterial,
 } from './skeletonParts';
 import { SkeletonProportions, deriveSkeletonProportions } from './skeletonProportions';
 
@@ -91,13 +90,15 @@ export class BasedSkeletonMeshHelper extends Object3D {
   constructor(bones: Map<BodyPart, BoneT>) {
     super();
 
-    const m0 = getPartMaterial(new Color('#cccccc'));
-    const m1 = getPartMaterial(new Color('#ad0ccc'));
+    const addrObject = (modelUrl: string, partName: string) =>
+      modelUrl + ':' + partName;
+    const modelUrlsToFetch = new Set<string>();
+    const partsByAddr: Record<string, Array<[BonePart, AttachedShape]>> = {};
 
     for (const bone of bones.values()) {
       if (bone.bodyPart === BodyPart.NONE) continue;
       const config = SKELETON_PART_PRESETS[bone.bodyPart];
-      if (!config.visible) continue;
+      if (config === undefined || !config.visible) continue;
 
       const part: BonePart = {
         bone,
@@ -116,40 +117,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
           model: null,
         };
 
-        if (shapeConfig.modelUrl) {
-          loadModel(shapeConfig.modelUrl).then((scene) => {
-            if (!scene || this.disposed) return;
-            const model = scene.clone(true);
-            model.traverse((o) => {
-              if (o !== model) {
-                // The exporter parks the model at its bone's rest pose; the
-                // part config says how it sits on the bone instead.
-                o.position.set(0, 0, 0);
-                o.quaternion.identity();
-                o.scale.set(1, 1, 1);
-              }
-              if (o instanceof Mesh) {
-                if (o.material !== undefined && o.material.color.r < 0.7) {
-                  o.material = m1;
-                } else {
-                  o.material = m0;
-                }
-
-                o.frustumCulled = false;
-              }
-            });
-            modelBox.setFromObject(model);
-            // The export writes each model in its bone's frame, running down
-            // -Y off the bone's head, so it needs no orienting here.
-            attached.model = {
-              width: modelBox.max.x - modelBox.min.x,
-              depth: modelBox.max.z - modelBox.min.z,
-              length: Math.abs(modelBox.min.y),
-            };
-            node.clear();
-            node.add(model);
-            part.surfaceDirty = true;
-          });
+        const modelUrl = shapeConfig.modelUrl ?? DefaultBoneModelUrl;
+        const partName = shapeConfig.objectName;
+        if (partName && modelUrl) {
+          modelUrlsToFetch.add(modelUrl);
+          const addr = addrObject(modelUrl, partName);
+          (partsByAddr[addr] ??= []).push([part, attached]);
         }
 
         part.shapes.push(attached);
@@ -157,6 +130,37 @@ export class BasedSkeletonMeshHelper extends Object3D {
 
       this.parts.push(part);
     }
+
+    modelUrlsToFetch.forEach((url) =>
+      loadModel(url).then((scene) => {
+        if (!scene || this.disposed) return;
+
+        scene.traverse((og) => {
+          if (og === scene) return;
+
+          const addr = addrObject(url, og.name);
+          for (const [part, attached] of partsByAddr[addr] ?? []) {
+            const o = og.clone(true);
+
+            o.position.set(0, 0, 0);
+            o.quaternion.identity();
+            o.scale.set(1, 1, 1);
+
+            modelBox.setFromObject(o);
+
+            attached.model = {
+              width: modelBox.max.x - modelBox.min.x,
+              depth: modelBox.max.z - modelBox.min.z,
+              length: Math.abs(modelBox.min.y),
+            };
+
+            attached.node.clear();
+            attached.node.add(o);
+            part.surfaceDirty = true;
+          }
+        });
+      })
+    );
   }
 
   setProportions(proportions: SkeletonProportions) {

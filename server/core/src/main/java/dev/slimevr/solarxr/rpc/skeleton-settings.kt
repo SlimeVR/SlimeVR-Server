@@ -10,6 +10,8 @@ import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
+import solarxr_protocol.rpc.LegTweaksTmpChange
+import solarxr_protocol.rpc.LegTweaksTmpClear
 import solarxr_protocol.rpc.SetPauseTrackingRequest
 import solarxr_protocol.rpc.SkeletonFiltering
 import solarxr_protocol.rpc.SkeletonRatios
@@ -111,6 +113,32 @@ class SkeletonSettingsBehaviour(
 				TrackingPauseStateResponse(
 					trackingPaused = receiver.appContext.skeleton.context.state.value.paused,
 				),
+			)
+		}.launchIn(receiver.context.scope)
+
+		receiver.rpcDispatcher.on<LegTweaksTmpChange> { req ->
+			receiver.appContext.skeleton.context.dispatch(
+				SkeletonActions.UpdateLegTweaksTmpOverride {
+					copy(
+						floorClip = req.floorClip ?: floorClip,
+						skatingCorrection = req.skatingCorrection ?: skatingCorrection,
+						toeSnap = req.toeSnap ?: toeSnap,
+						footPlant = req.footPlant ?: footPlant,
+					)
+				},
+			)
+		}.launchIn(receiver.context.scope)
+
+		receiver.rpcDispatcher.on<LegTweaksTmpClear> { req ->
+			receiver.appContext.skeleton.context.dispatch(
+				SkeletonActions.UpdateLegTweaksTmpOverride {
+					copy(
+						floorClip = if (req.floorClip) null else floorClip,
+						skatingCorrection = if (req.skatingCorrection) null else skatingCorrection,
+						toeSnap = if (req.toeSnap) null else toeSnap,
+						footPlant = if (req.footPlant) null else footPlant,
+					)
+				},
 			)
 		}.launchIn(receiver.context.scope)
 	}

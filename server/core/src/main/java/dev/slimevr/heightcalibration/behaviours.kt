@@ -25,16 +25,16 @@ import kotlin.math.sqrt
 internal const val SAMPLE_INTERVAL_MS = 16L
 
 private const val FLOOR_ALPHA = 0.1f
-private const val HMD_ALPHA = 0.1f
+private const val HEAD_ALPHA = 0.1f
 
 private const val CONTROLLER_STABILITY_THRESHOLD = 0.005f
 internal const val CONTROLLER_STABILITY_DURATION = 300_000_000L
 
-private const val HMD_STABILITY_THRESHOLD = 0.003f
+private const val HEAD_STABILITY_THRESHOLD = 0.003f
 internal const val HEAD_STABILITY_DURATION = 600_000_000L
 
 internal const val MAX_FLOOR_Y = 0.10f
-internal const val HMD_RISE_THRESHOLD = 1.2f
+internal const val HEAD_RISE_THRESHOLD = 1.2f
 internal const val HEIGHT_MIN = 1.4f
 internal const val HEIGHT_MAX = 1.936f
 
@@ -57,18 +57,18 @@ private fun isControllerPointingDown(snapshot: TrackerSnapshot): Boolean {
 	return (forward dot Vector3.NEG_Y) >= CONTROLLER_ANGLE_THRESHOLD
 }
 
-private fun isHmdLeveled(snapshot: TrackerSnapshot): Boolean {
+private fun isHeadLeveled(snapshot: TrackerSnapshot): Boolean {
 	val up = snapshot.rotation.sandwich(Vector3.POS_Y)
 	return (up dot Vector3.POS_Y) >= HEAD_ANGLE_THRESHOLD
 }
 
 class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 	fun canCalibrate(trackers: List<TrackerState>): Boolean {
-		val hasHmd = trackers.any { it.bodyPart == BodyPart.HEAD && it.position != null }
-		val hasHand = trackers.any {
+		val hasPositionalHead = trackers.any { it.bodyPart == BodyPart.HEAD && it.position != null }
+		val hasPositionalHand = trackers.any {
 			(it.bodyPart == BodyPart.LEFT_HAND || it.bodyPart == BodyPart.RIGHT_HAND) && it.position != null
 		}
-		return hasHmd && hasHand
+		return hasPositionalHead && hasPositionalHand
 	}
 
 	override fun observe(receiver: HeightCalibrationManager) {
@@ -96,7 +96,7 @@ class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 internal suspend fun runCalibrationSession(
 	context: HeightCalibrationContext,
 	userConfig: UserConfig,
-	hmdUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
+	headUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
 	controllerUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
 	clock: () -> Long = System::nanoTime,
 ) {
@@ -107,8 +107,8 @@ internal suspend fun runCalibrationSession(
 
 	var floorFiltered: Vector3? = null
 	var floorEnergyEma = 0f
-	var hmdFiltered: Vector3? = null
-	var hmdEnergyEma = 0f
+	var headFiltered: Vector3? = null
+	var headEnergyEma = 0f
 
 	fun dispatch(status: UserHeightCalibrationStatus, height: Float = currentHeight) {
 		currentHeight = height
@@ -163,43 +163,43 @@ internal suspend fun runCalibrationSession(
 			}
 
 		// Height phase: collect HMD updates until a terminal status is reached
-		hmdUpdates
+		headUpdates
 			.sample(SAMPLE_INTERVAL_MS)
 			.takeWhile { !context.state.value.status.isTerminal() }
 			.collect { snapshot ->
 				val now = clock()
 				val relativeY = snapshot.position.y - currentFloorLevel
 
-				if (relativeY <= HMD_RISE_THRESHOLD) {
+				if (relativeY <= HEAD_RISE_THRESHOLD) {
 					dispatch(UserHeightCalibrationStatus.WAITING_FOR_RISE, relativeY)
 					heightStableStart = null
-					hmdFiltered = null
-					hmdEnergyEma = 0f
+					headFiltered = null
+					headEnergyEma = 0f
 					return@collect
 				}
 
-				if (!isHmdLeveled(snapshot)) {
+				if (!isHeadLeveled(snapshot)) {
 					dispatch(UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK, relativeY)
 					heightStableStart = null
-					hmdFiltered = null
-					hmdEnergyEma = 0f
+					headFiltered = null
+					headEnergyEma = 0f
 					return@collect
 				}
 
 				dispatch(UserHeightCalibrationStatus.RECORDING_HEIGHT, relativeY)
 
 				val pos = snapshot.position
-				val prev = hmdFiltered ?: pos
-				val newFiltered = prev * (1f - HMD_ALPHA) + pos * HMD_ALPHA
-				hmdFiltered = newFiltered
+				val prev = headFiltered ?: pos
+				val newFiltered = prev * (1f - HEAD_ALPHA) + pos * HEAD_ALPHA
+				headFiltered = newFiltered
 
 				val dev = pos - newFiltered
-				hmdEnergyEma = hmdEnergyEma * (1f - HMD_ALPHA) + (dev dot dev) * HMD_ALPHA
+				headEnergyEma = headEnergyEma * (1f - HEAD_ALPHA) + (dev dot dev) * HEAD_ALPHA
 
-				if (sqrt(hmdEnergyEma) > HMD_STABILITY_THRESHOLD) {
+				if (sqrt(headEnergyEma) > HEAD_STABILITY_THRESHOLD) {
 					heightStableStart = null
-					hmdFiltered = null
-					hmdEnergyEma = 0f
+					headFiltered = null
+					headEnergyEma = 0f
 					return@collect
 				}
 

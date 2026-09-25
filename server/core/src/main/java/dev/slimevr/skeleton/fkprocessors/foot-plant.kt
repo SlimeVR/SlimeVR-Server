@@ -1,8 +1,8 @@
 package dev.slimevr.skeleton.fkprocessors
 
-import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
@@ -26,11 +26,11 @@ fun correctFootAttitude(
 	// eulerHeading is already twinNearest, so we can just use interpQ
 ): Quaternion = rotation.interpQ(rotation.eulerHeading(), correctionRatio)
 
-class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
+class FootPlantFkProcessor(val skeleton: Skeleton) : SkeletonFkProcessor {
 	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
-		if (!settings.context.state.value.data.skeletonConfig.toggles.footPlant) return
+		if (!skeleton.effectiveFootPlant) return
 
 		for (bodyPart in bodyParts) {
 			val input = mutableInputSkeleton[bodyPart] ?: continue

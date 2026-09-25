@@ -11,7 +11,9 @@ import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
+import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.util.isActive
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
@@ -126,102 +128,6 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}
 
-	private fun getResetAction(referenceRotation: Quaternion?, resetType: ResetType, bodyPart: BodyPart?, resetsConfig: ResetsConfig) = when (resetType) {
-		ResetType.YAW -> TrackerActions.YawReset(referenceRotation, resetsConfig.yawResetSmoothTime.toDouble().seconds)
-		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetHmdAttitude)
-		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
-	}
-
-	// By priority, 0 = highest priority
-	private val referenceBodyParts = mapOf(
-		BodyPart.HEAD to 0,
-		BodyPart.UPPER_CHEST to 1,
-		BodyPart.LOWER_CHEST to 2,
-		BodyPart.HIP to 3,
-		BodyPart.LOWER_WAIST to 4,
-		BodyPart.UPPER_WAIST to 5,
-	)
-
-	private fun executeTrackerResets(resetType: ResetType, bodyParts: List<BodyPart>? = null, config: ResetsConfig) {
-		val allTrackers = server.context.state.value.trackers.values
-
-		val reliableReferenceTracker = allTrackers.firstOrNull {
-			val state = it.context.state.value
-			state.isHmd && state.bodyPart == BodyPart.HEAD && state.status.isActive()
-		}
-		val referenceTracker = reliableReferenceTracker ?: allTrackers.sortedBy {
-			referenceBodyParts[it.context.state.value.bodyPart]
-		}.firstOrNull {
-			val state = it.context.state.value
-			state.bodyPart in referenceBodyParts.keys && state.position != null && state.status.isActive()
-		}
-
-		// Never null
-		val referenceRotation = referenceTracker?.let { reference ->
-			// Reset the reference before the other trackers
-			val preDispatchState = reference.context.state.value
-			reference.context.dispatchAll(
-				listOf(
-					getResetAction(null, resetType, preDispatchState.bodyPart, config),
-					TrackerActions.SetRotation(preDispatchState.rawRotation, preDispatchState.rawAcceleration, preDispatchState.rawMagnetometer, refresh = true),
-				),
-			)
-
-			// Mounting reset on a non-reliable reference tracker offsets the yaw
-			if (reference != reliableReferenceTracker && resetType == ResetType.POSE_MOUNTING) {
-				// Get the headingCorrection (yaw reset correction) delta
-				val headingCorrectionChange = reference.context.state.value.sessionCalibration.headingCorrection / preDispatchState.sessionCalibration.headingCorrection
-
-				// Apply the delta to all other trackers
-				(allTrackers - reference).forEach { otherTracker ->
-					val otherTrackerState = otherTracker.context.state.value
-					otherTracker.context.dispatchAll(
-						listOf(
-							TrackerActions.Update {
-								otherTrackerState.copy(
-									sessionCalibration = sessionCalibration.copy(
-										headingCorrection = otherTrackerState.sessionCalibration.headingCorrection * headingCorrectionChange,
-										headingAlignment = otherTrackerState.sessionCalibration.headingAlignment * headingCorrectionChange,
-									),
-									rotationDirty = true,
-								)
-							},
-							TrackerActions.SetRotation(otherTrackerState.rawRotation, otherTrackerState.rawAcceleration, otherTrackerState.rawMagnetometer, refresh = true),
-						),
-					)
-				}
-			}
-
-			// TODO should this be twinNearest against centaur
-			//  reducer may need tweaks too against centaur. adjust unit tests.
-			reference.context.state.value.rotation
-		} ?: Quaternion.IDENTITY
-
-		// Filter out the trackers that we want to reset. Reference has already been reset.
-		val trackersToReset = if (!bodyParts.isNullOrEmpty()) {
-			allTrackers.filter {
-				bodyParts.contains(it.context.state.value.bodyPart)
-			}
-		} else {
-			// Exclude feet, fingers and toes from mounting reset except if forced
-			allTrackers.filter {
-				val bodyPart = it.context.state.value.bodyPart
-				resetType != ResetType.POSE_MOUNTING ||
-					(
-						(config.resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
-							bodyPart !in ResetBodyParts.FINGERS &&
-							bodyPart !in ResetBodyParts.TOES
-						)
-			}
-		}.filter { it.context.state.value.id != referenceTracker?.context?.state?.value?.id }
-
-		// Dispatch the reset action to the trackers
-		trackersToReset.forEach {
-			// Do the actual reset
-			it.context.dispatch(getResetAction(referenceRotation, resetType, it.context.state.value.bodyPart, config))
-		}
-	}
-
 	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = when (bodyPart) {
 		// Going forward
 		in ResetBodyParts.UPPER_LEGS -> 0f
@@ -242,6 +148,122 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 		// Going back
 		else -> FastMath.PI
+	}
+
+	private fun getResetAction(referenceRotation: Quaternion?, resetType: ResetType, bodyPart: BodyPart?, resetsConfig: ResetsConfig) = when (resetType) {
+		ResetType.YAW -> TrackerActions.YawReset(referenceRotation, resetsConfig.yawResetSmoothTime.toDouble().seconds)
+		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetReliableReferenceAttitude)
+		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
+	}
+
+	private fun getReliableReferenceTracker(allTrackers: Collection<Tracker>) = allTrackers.firstOrNull {
+		val state = it.context.state.value
+		state.isAssignedReliableReference && state.status.isActive()
+	}
+
+	// By priority, higher value = higher priority. 0 for others.
+	private val referenceBodyParts = mapOf(
+		BodyPart.HEAD to 7,
+		BodyPart.NECK to 6,
+		BodyPart.UPPER_CHEST to 5,
+		BodyPart.LOWER_CHEST to 4,
+		BodyPart.HIP to 3,
+		BodyPart.LOWER_WAIST to 2,
+		BodyPart.UPPER_WAIST to 1,
+		BodyPart.LEFT_HAND to -1,
+		BodyPart.RIGHT_HAND to -1,
+	)
+	private fun getUnreliableReferenceTracker(allTrackers: Collection<Tracker>) = allTrackers.sortedBy {
+		referenceBodyParts[it.context.state.value.bodyPart]
+	}.lastOrNull {
+		val state = it.context.state.value
+		state.position != null && state.bodyPart != null && state.status.isActive()
+	}
+
+	private fun resetReferenceTracker(referenceTracker: Tracker, resetAction: TrackerActions, isReliable: Boolean, allTrackers: Collection<Tracker>) {
+		// Reset the reference tracker
+		val preDispatchState = referenceTracker.context.state.value
+		referenceTracker.context.dispatchAll(
+			listOf(
+				resetAction,
+				TrackerRotationRefreshBehaviour.getRotationRefreshAction(preDispatchState),
+			),
+		)
+
+		// Mounting reset on a non-reliable reference tracker offsets the yaw
+		if (!isReliable && resetAction is TrackerActions.PoseMountingReset) {
+			val postDispatchState = referenceTracker.context.state.value
+
+			// Get the new reference rotation
+			val referenceRotation = postDispatchState.rotation
+			// Get the headingCorrection (yaw reset correction) delta
+			val headingCorrectionChange = postDispatchState.sessionCalibration.headingCorrection / preDispatchState.sessionCalibration.headingCorrection
+
+			// Apply the delta to all other trackers
+			(allTrackers - referenceTracker).forEach { otherTracker ->
+				val otherTrackerState = otherTracker.context.state.value
+				otherTracker.context.dispatchAll(
+					listOf(
+						TrackerActions.Update {
+							otherTrackerState.copy(
+								sessionCalibration = sessionCalibration.copy(
+									headingCorrection = otherTrackerState.sessionCalibration.headingCorrection * headingCorrectionChange,
+									headingAlignment = otherTrackerState.sessionCalibration.headingAlignment * headingCorrectionChange,
+								),
+								lastReference = referenceRotation,
+								rotationDirty = true,
+							)
+						},
+						TrackerRotationRefreshBehaviour.getRotationRefreshAction(otherTrackerState),
+					),
+				)
+			}
+		}
+	}
+
+	private fun executeTrackerResets(resetType: ResetType, bodyParts: List<BodyPart>? = null, config: ResetsConfig) {
+		val allTrackers = server.context.state.value.trackers.values
+
+		// Get the reference. The reference is used to align rotation/spaces.
+		val reliableReferenceTracker = getReliableReferenceTracker(allTrackers)
+		val referenceTracker = reliableReferenceTracker ?: getUnreliableReferenceTracker(allTrackers)
+
+		// Reset the reference before the other trackers
+		if (referenceTracker != null) {
+			resetReferenceTracker(
+				referenceTracker,
+				getResetAction(null, resetType, referenceTracker.context.state.value.bodyPart, config),
+				referenceTracker == reliableReferenceTracker,
+				allTrackers,
+			)
+		}
+
+		// The reference rotation is never null for other trackers
+		val referenceRotation = referenceTracker?.context?.state?.value?.rotation ?: Quaternion.IDENTITY
+
+		// Filter out the trackers that we want to reset. Reference has already been reset.
+		val trackersToReset = if (!bodyParts.isNullOrEmpty()) {
+			allTrackers.filter {
+				bodyParts.contains(it.context.state.value.bodyPart)
+			}
+		} else {
+			// Exclude feet, fingers and toes from mounting reset except if forced
+			allTrackers.filter {
+				val bodyPart = it.context.state.value.bodyPart
+				resetType != ResetType.POSE_MOUNTING ||
+					(
+						(config.resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
+							bodyPart !in ResetBodyParts.FINGERS &&
+							bodyPart !in ResetBodyParts.TOES
+						)
+			}
+		}.filter { it != referenceTracker }
+
+		// Dispatch the reset action to the trackers
+		trackersToReset.forEach {
+			// Do the actual reset
+			it.context.dispatch(getResetAction(referenceRotation, resetType, it.context.state.value.bodyPart, config))
+		}
 	}
 
 	companion object {

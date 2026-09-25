@@ -36,12 +36,12 @@ fun applyFullCalibration(
 	rawRotation: CalibratedRotation,
 	trackerState: TrackerState,
 ): CalibratedRotation {
-	// Don't use heading alignment for an assigned HMD
-	val isAssignedHmd = trackerState.isHmd && trackerState.bodyPart == BodyPart.HEAD
-	val headingAlignment = if (isAssignedHmd) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
+	// Never use heading correction/alignment for an assigned reliable reference
+	val headingCorrection = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingCorrection
+	val headingAlignment = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
 	return applyCalibration(
 		rawRotation,
-		trackerState.sessionCalibration.headingCorrection,
+		headingCorrection,
 		trackerState.sessionCalibration.attitudeAlignment,
 		headingAlignment,
 		trackerState.restOrientation,
@@ -80,13 +80,13 @@ fun applyFullCalibration(
 	rawRotation: RawRotation,
 	trackerState: TrackerState,
 ): CalibratedAcceleration {
-	// Don't use heading alignment for an assigned HMD
-	val isAssignedHmd = trackerState.isHmd && trackerState.bodyPart == BodyPart.HEAD
-	val headingAlignment = if (isAssignedHmd) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
+	// Never use heading correction/alignment for an assigned reliable reference
+	val headingCorrection = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingCorrection
+	val headingAlignment = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
 	return applyCalibration(
 		rawAcceleration,
 		rawRotation,
-		trackerState.sessionCalibration.headingCorrection,
+		headingCorrection,
 		headingAlignment,
 	)
 }
@@ -119,10 +119,9 @@ fun estimateHeadingAlign(
 	referenceRotation: Quaternion,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
-	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
 	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
-	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign, headingAlign)
+	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign)
 	val pitchRoll = (inverseYProjection(referenceRotation) * rotation).sandwichUnitY()
 	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
 	return Quaternion.rotationAroundYAxis(yawAngle)

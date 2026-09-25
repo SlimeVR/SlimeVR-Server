@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
@@ -13,7 +14,9 @@ import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PosteriorDirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.PosteriorInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
@@ -23,8 +26,6 @@ import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
-import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
-import dev.slimevr.skeleton.inputprocessors.PosteriorInputProcessor
 import dev.slimevr.util.PreciseWaiter
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -49,6 +50,7 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
+	val expectedTps: UShort?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val position: Vector3?,
@@ -91,12 +93,20 @@ data class BoneState(
 typealias InputSkeleton = BodyPartMap<BoneInput>
 typealias ComputedSkeleton = BodyPartMap<BoneState>
 
+data class LegTweaksTmpOverride(
+	val floorClip: Boolean? = null,
+	val skatingCorrection: Boolean? = null,
+	val toeSnap: Boolean? = null,
+	val footPlant: Boolean? = null,
+)
+
 data class SkeletonState(
 	val boneInputs: InputSkeleton,
 	val skeletonHeight: Float,
 	val floorLevel: Float,
 	val paused: Boolean,
 	val pausedProcessedBoneInputs: InputSkeleton?,
+	val legTweaksTmpOverride: LegTweaksTmpOverride = LegTweaksTmpOverride(),
 	val processorResets: List<ResetType> = emptyList(),
 )
 
@@ -104,6 +114,7 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
+	expectedTps = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
 	position = null,
@@ -126,6 +137,7 @@ val DEFAULT_SKELETON_STATE = run {
 		floorLevel = 0f,
 		paused = false,
 		pausedProcessedBoneInputs = null,
+		processorResets = emptyList(),
 	)
 }
 
@@ -165,17 +177,17 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 }
 
 sealed interface SkeletonActions {
-	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
-	data class SetBoneAcceleration(val bodyPart: BodyPart, val acceleration: Vector3, val setActive: Boolean = true) : SkeletonActions
-	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
+	data class SetBonePose(val bodyPart: BodyPart, val expectedTps: UShort, val rotation: Quaternion, val acceleration: Vector3, val position: Vector3?) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
+	data class SetHeadPosition(val position: Vector3?) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
 	data object ResetFloorLevel : SkeletonActions
 	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
 	data class ProcessorResetsApplied(val count: Int) : SkeletonActions
+	data class UpdateLegTweaksTmpOverride(val transform: LegTweaksTmpOverride.() -> LegTweaksTmpOverride) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -191,7 +203,7 @@ interface SkeletonFkProcessor {
 	fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
 }
 interface SkeletonComputedProcessor {
-	fun process(mutableComputedSkeleton: ComputedSkeleton)
+	fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton)
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
@@ -201,8 +213,22 @@ interface SkeletonTargetProcessor {
 class Skeleton(
 	val context: SkeletonContext,
 	val computed: MutableSharedFlow<ComputedSkeleton>,
+	val settings: Settings,
 ) {
 	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
+
+	val effectiveFloorClip: Boolean
+		get() = context.state.value.legTweaksTmpOverride.floorClip
+			?: settings.context.state.value.data.skeletonConfig.toggles.floorClip
+	val effectiveSkatingCorrection: Boolean
+		get() = context.state.value.legTweaksTmpOverride.skatingCorrection
+			?: settings.context.state.value.data.skeletonConfig.toggles.skatingCorrection
+	val effectiveToeSnap: Boolean
+		get() = context.state.value.legTweaksTmpOverride.toeSnap
+			?: settings.context.state.value.data.skeletonConfig.toggles.toeSnap
+	val effectiveFootPlant: Boolean
+		get() = context.state.value.legTweaksTmpOverride.footPlant
+			?: settings.context.state.value.data.skeletonConfig.toggles.footPlant
 
 	fun startObserving() = context.observeAll(this)
 
@@ -212,11 +238,26 @@ class Skeleton(
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
 
+			val context = Context.create(
+				initialState = DEFAULT_SKELETON_STATE,
+				scope = scope,
+				reducer = ::reduce,
+				name = "Skeleton",
+			)
+
+			val computed = MutableSharedFlow<ComputedSkeleton>(
+				replay = 1,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
+			computed.tryEmit(buildBones(context.state.value.boneInputs))
+
+			val skeleton = Skeleton(context, computed, settings)
+
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 50),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
@@ -242,13 +283,13 @@ class Skeleton(
 					),
 					fkProcessors = listOf(
 						LocalizerFkProcessor(settings),
-						FootPlantFkProcessor(settings),
-						ToeSnapFkProcessor(settings),
+						FootPlantFkProcessor(skeleton),
+						ToeSnapFkProcessor(skeleton),
 					),
 					targetProcessors = listOf(
 						PositionalTargetProcessor(settings),
-						SkatingCorrectionTargetProcessor(settings),
-						FloorClipTargetProcessor(settings),
+						SkatingCorrectionTargetProcessor(settings, skeleton),
+						FloorClipTargetProcessor(skeleton),
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor(),
@@ -256,21 +297,9 @@ class Skeleton(
 				),
 			)
 
-			val context = Context.create(
-				initialState = DEFAULT_SKELETON_STATE,
-				scope = scope,
-				reducer = ::reduce,
-				behaviours = behaviours,
-				name = "Skeleton",
-			)
+			context.behaviours.addAll(behaviours)
 
-			val computed = MutableSharedFlow<ComputedSkeleton>(
-				replay = 1,
-				onBufferOverflow = BufferOverflow.DROP_OLDEST,
-			)
-			computed.tryEmit(buildBones(context.state.value.boneInputs))
-
-			return Skeleton(context, computed)
+			return skeleton
 		}
 	}
 }

@@ -2,18 +2,19 @@ package dev.slimevr.skeleton.computedprocessors
 
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.ZERO_VELOCITY
 import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.findFirstParent
 import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.ResetType
-import kotlin.time.Duration.Companion.milliseconds
 
 private data class VelocityData(
 	val rotation: Quaternion,
@@ -29,12 +30,13 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	)
 }
 
+// At least 1. >1 will make it smoother but less reactive.
+private const val SMOOTHING_MULTIPLIER = 3f
+
 // We smooth out the velocity since if a tracker is sending at 100tps and skeleton is at 500hz,
 //  4 frames out of 5 will have little to no velocity, so we need to smooth at least across those frames.
-// TODO: should we try to smooth less for it to be more responsive? Fine tune or find a better solution.
-private val SMOOTHING_WINDOW = 40.milliseconds.inFloatingSeconds
-private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
-	val t = (deltaTime / SMOOTHING_WINDOW).coerceAtMost(1f)
+private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float, expectedTps: UShort): Velocity {
+	val t = (deltaTime / (SMOOTHING_MULTIPLIER / expectedTps.toFloat())).coerceAtMost(1f)
 	return Velocity(
 		linear = lastVelocity.linear.lerp(currentVelocity.linear, t),
 		angular = lastVelocity.angular.lerp(currentVelocity.angular, t),
@@ -51,25 +53,28 @@ class VelocityComputedProcessor :
 	private val lastVelocityData: BodyPartMap<VelocityData> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
-	override fun process(mutableComputedSkeleton: ComputedSkeleton) {
+	override fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton) {
 		// One clock read for the whole pass, so every bone shares the same interval
 		val now = timeSource.markNow()
 		val deltaTime = (now - lastProcessTime).inFloatingSeconds
 		lastProcessTime = now
 
 		mutableComputedSkeleton.forEachBone { part, bone ->
-			val lastVelocityData = lastVelocityData[part]
-			val lastVelocity = lastVelocities[part] ?: ZERO_VELOCITY
+			// The expected TPS for the bone is its input's or its first parent that has one.
+			// If there's no available expected TPS, that means there's no movement to derive velocity from anyways.
+			val expectedTps = inputSkeleton[part]?.expectedTps
+				?: inputSkeleton[part.findFirstParent { inputSkeleton[it]?.expectedTps != null }]?.expectedTps
+				?: return@forEachBone
 
 			// Compute current velocity
 			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
-			val currentVelocity = lastVelocityData?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
+			val currentVelocity = lastVelocityData[part]?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
 
 			// Smooth velocity before setting it
-			val newVelocity = smoothVelocity(currentVelocity, lastVelocity, deltaTime)
+			val newVelocity = smoothVelocity(currentVelocity, lastVelocities[part] ?: ZERO_VELOCITY, deltaTime, expectedTps)
 			mutableComputedSkeleton[part] = bone.copy(velocity = newVelocity)
 
-			this@VelocityComputedProcessor.lastVelocityData[part] = currentVelocityData
+			lastVelocityData[part] = currentVelocityData
 			lastVelocities[part] = newVelocity
 		}
 	}

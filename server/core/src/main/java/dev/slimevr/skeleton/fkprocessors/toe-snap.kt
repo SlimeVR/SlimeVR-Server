@@ -1,8 +1,8 @@
 package dev.slimevr.skeleton.fkprocessors
 
-import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
@@ -43,11 +43,11 @@ fun snapToes(
 	return rotation.interpQ(maxCorrection, correctionRatio)
 }
 
-class ToeSnapFkProcessor(val settings: Settings) : SkeletonFkProcessor {
+class ToeSnapFkProcessor(val skeleton: Skeleton) : SkeletonFkProcessor {
 	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
-		if (!settings.context.state.value.data.skeletonConfig.toggles.toeSnap) return
+		if (!skeleton.effectiveToeSnap) return
 
 		// TODO This loop format should be turned into a function
 		for (bodyPart in bodyParts) {

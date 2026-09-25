@@ -26,11 +26,11 @@ private val POINTING_DOWN = Quaternion.fromTo(Vector3.NEG_Z, Vector3.NEG_Y)
 // Identity: controller forward is -Z, not pointing down
 private val POINTING_FORWARD = Quaternion.IDENTITY
 
-// Identity: HMD up is +Y, within 15° leveled threshold
-private val HMD_LEVEL = Quaternion.IDENTITY
+// Identity: head up is +Y, within 15° levelled threshold
+private val HEAD_LEVEL = Quaternion.IDENTITY
 
-// 90° around Z: HMD up maps to +X, failing the leveled check
-private val HMD_TILTED = Quaternion.fromTo(Vector3.POS_Y, Vector3.POS_X)
+// 90° around Z: head up maps to +X, failing the levelled check
+private val HEAD_TILTED = Quaternion.fromTo(Vector3.POS_Y, Vector3.POS_X)
 
 // Position just below the floor threshold (0.10m)
 private val FLOOR_POSITION = Vector3(0f, 0.05f, 0f)
@@ -50,13 +50,13 @@ fun testHeightCalibrationContext(scope: kotlinx.coroutines.CoroutineScope) = Hei
 // drives both the sample() operator and the stability duration checks in one unified timeline.
 private fun TestScope.launchSession(
 	context: HeightCalibrationContext,
-	hmdFlow: MutableSharedFlow<TrackerSnapshot>,
+	headFlow: MutableSharedFlow<TrackerSnapshot>,
 	controllerFlow: MutableSharedFlow<TrackerSnapshot>,
 ): Job {
 	val scope = this
 	val userConfig = buildTestUserConfig(backgroundScope)
 	return launch {
-		runCalibrationSession(context, userConfig, hmdFlow, controllerFlow, clock = { scope.currentTime * 1_000_000L })
+		runCalibrationSession(context, userConfig, headFlow, controllerFlow, clock = { scope.currentTime * 1_000_000L })
 	}
 }
 
@@ -83,12 +83,12 @@ private suspend fun TestScope.completeFloorPhase(
 	emitFor(controllerFlow, floorSnapshot, FLOOR_STABILITY_MS + SAMPLE_INTERVAL_MS * 5)
 }
 
-// Holds the HMD steady at standing height long enough for the height phase to complete.
+// Holds the head steady at standing height long enough for the height phase to complete.
 private suspend fun TestScope.completeHeightPhase(
-	hmdFlow: MutableSharedFlow<TrackerSnapshot>,
-	hmdSnapshot: TrackerSnapshot,
+	headFlow: MutableSharedFlow<TrackerSnapshot>,
+	headSnapshot: TrackerSnapshot,
 ) {
-	emitFor(hmdFlow, hmdSnapshot, HEIGHT_STABILITY_MS + SAMPLE_INTERVAL_MS * 5)
+	emitFor(headFlow, headSnapshot, HEIGHT_STABILITY_MS + SAMPLE_INTERVAL_MS * 5)
 }
 
 class HeightCalibrationReducerTest {
@@ -108,8 +108,8 @@ class HeightCalibrationSessionTest {
 	fun `session starts in RECORDING_FLOOR`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		assertEquals(UserHeightCalibrationStatus.RECORDING_FLOOR, context.state.value.status)
@@ -120,8 +120,8 @@ class HeightCalibrationSessionTest {
 	fun `controller too high does not change status`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		emitFor(controllerFlow, TrackerSnapshot(Vector3(0f, 0.5f, 0f), POINTING_DOWN), SAMPLE_INTERVAL_MS)
@@ -134,8 +134,8 @@ class HeightCalibrationSessionTest {
 	fun `controller not pointing down transitions to WAITING_FOR_CONTROLLER_PITCH`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		emitFor(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_FORWARD), SAMPLE_INTERVAL_MS)
@@ -148,8 +148,8 @@ class HeightCalibrationSessionTest {
 	fun `stable floor transitions to WAITING_FOR_RISE`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
@@ -159,47 +159,47 @@ class HeightCalibrationSessionTest {
 	}
 
 	@Test
-	fun `HMD below rise threshold stays WAITING_FOR_RISE`() = runTest {
+	fun `Head below rise threshold stays WAITING_FOR_RISE`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
 
-		emitFor(hmdFlow, TrackerSnapshot(Vector3(0f, 0.5f, 0f), HMD_LEVEL), SAMPLE_INTERVAL_MS)
+		emitFor(headFlow, TrackerSnapshot(Vector3(0f, 0.5f, 0f), HEAD_LEVEL), SAMPLE_INTERVAL_MS)
 
 		assertEquals(UserHeightCalibrationStatus.WAITING_FOR_RISE, context.state.value.status)
 		job.cancel()
 	}
 
 	@Test
-	fun `HMD not leveled transitions to WAITING_FOR_FW_LOOK`() = runTest {
+	fun `Head not leveled transitions to WAITING_FOR_FW_LOOK`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
 
-		emitFor(hmdFlow, TrackerSnapshot(STANDING_POSITION, HMD_TILTED), SAMPLE_INTERVAL_MS)
+		emitFor(headFlow, TrackerSnapshot(STANDING_POSITION, HEAD_TILTED), SAMPLE_INTERVAL_MS)
 
 		assertEquals(UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK, context.state.value.status)
 		job.cancel()
 	}
 
 	@Test
-	fun `stable HMD at valid height transitions to DONE`() = runTest {
+	fun `stable head at valid height transitions to DONE`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
-		completeHeightPhase(hmdFlow, TrackerSnapshot(STANDING_POSITION, HMD_LEVEL))
+		completeHeightPhase(headFlow, TrackerSnapshot(STANDING_POSITION, HEAD_LEVEL))
 
 		assertEquals(UserHeightCalibrationStatus.DONE, context.state.value.status)
 		assertEquals(STANDING_POSITION.y - FLOOR_POSITION.y, context.state.value.currentHeight)
@@ -207,30 +207,30 @@ class HeightCalibrationSessionTest {
 	}
 
 	@Test
-	fun `stable HMD below HEIGHT_MIN transitions to ERROR_TOO_SMALL`() = runTest {
+	fun `stable head below HEIGHT_MIN transitions to ERROR_TOO_SMALL`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(Vector3(0f, 0f, 0f), POINTING_DOWN))
-		completeHeightPhase(hmdFlow, TrackerSnapshot(Vector3(0f, 1.3f, 0f), HMD_LEVEL))
+		completeHeightPhase(headFlow, TrackerSnapshot(Vector3(0f, 1.3f, 0f), HEAD_LEVEL))
 
 		assertEquals(UserHeightCalibrationStatus.ERROR_TOO_SMALL, context.state.value.status)
 		job.cancel()
 	}
 
 	@Test
-	fun `stable HMD above HEIGHT_MAX transitions to ERROR_TOO_HIGH`() = runTest {
+	fun `stable head above HEIGHT_MAX transitions to ERROR_TOO_HIGH`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(Vector3(0f, 0f, 0f), POINTING_DOWN))
-		completeHeightPhase(hmdFlow, TrackerSnapshot(Vector3(0f, 2.0f, 0f), HMD_LEVEL))
+		completeHeightPhase(headFlow, TrackerSnapshot(Vector3(0f, 2.0f, 0f), HEAD_LEVEL))
 
 		assertEquals(UserHeightCalibrationStatus.ERROR_TOO_HIGH, context.state.value.status)
 		job.cancel()
@@ -240,8 +240,8 @@ class HeightCalibrationSessionTest {
 	fun `unstable floor sample resets controller stability window`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		val stableSnapshot = TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN)
@@ -263,28 +263,28 @@ class HeightCalibrationSessionTest {
 	}
 
 	@Test
-	fun `out-of-threshold HMD sample resets height stability window`() = runTest {
+	fun `out-of-threshold head sample resets height stability window`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
 
-		val stableSnapshot = TrackerSnapshot(STANDING_POSITION, HMD_LEVEL)
-		val unstableSnapshot = TrackerSnapshot(Vector3(0f, 1.9f, 0f), HMD_LEVEL)
+		val stableSnapshot = TrackerSnapshot(STANDING_POSITION, HEAD_LEVEL)
+		val unstableSnapshot = TrackerSnapshot(Vector3(0f, 1.9f, 0f), HEAD_LEVEL)
 
 		// Build up stability but not long enough to complete
-		emitFor(hmdFlow, stableSnapshot, HEIGHT_STABILITY_MS - SAMPLE_INTERVAL_MS * 5)
+		emitFor(headFlow, stableSnapshot, HEIGHT_STABILITY_MS - SAMPLE_INTERVAL_MS * 5)
 		assertEquals(UserHeightCalibrationStatus.RECORDING_HEIGHT, context.state.value.status)
 
 		// Unstable sample resets the stability window
-		emitFor(hmdFlow, unstableSnapshot, SAMPLE_INTERVAL_MS)
+		emitFor(headFlow, unstableSnapshot, SAMPLE_INTERVAL_MS)
 		assertEquals(UserHeightCalibrationStatus.RECORDING_HEIGHT, context.state.value.status)
 
 		// Must hold stable for the full duration again from the reset point
-		completeHeightPhase(hmdFlow, stableSnapshot)
+		completeHeightPhase(headFlow, stableSnapshot)
 		assertEquals(UserHeightCalibrationStatus.DONE, context.state.value.status)
 		job.cancel()
 	}
@@ -293,8 +293,8 @@ class HeightCalibrationSessionTest {
 	fun `timeout fires ERROR_TIMEOUT`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launch { runCalibrationSession(context, buildTestUserConfig(backgroundScope), hmdFlow, controllerFlow) }
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launch { runCalibrationSession(context, buildTestUserConfig(backgroundScope), headFlow, controllerFlow) }
 
 		advanceTimeBy(TIMEOUT_MS + 1)
 
@@ -306,8 +306,8 @@ class HeightCalibrationSessionTest {
 	fun `controller pitch recovery leads to WAITING_FOR_RISE`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		// Bad pitch triggers WAITING_FOR_CONTROLLER_PITCH
@@ -321,41 +321,41 @@ class HeightCalibrationSessionTest {
 	}
 
 	@Test
-	fun `leveling HMD after WAITING_FOR_FW_LOOK transitions to RECORDING_HEIGHT`() = runTest {
+	fun `levelling head after WAITING_FOR_FW_LOOK transitions to RECORDING_HEIGHT`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
 
-		// Tilted HMD
-		emitFor(hmdFlow, TrackerSnapshot(STANDING_POSITION, HMD_TILTED), SAMPLE_INTERVAL_MS)
+		// Tilted head
+		emitFor(headFlow, TrackerSnapshot(STANDING_POSITION, HEAD_TILTED), SAMPLE_INTERVAL_MS)
 		assertEquals(UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK, context.state.value.status)
 
-		// Recovery: level the HMD
-		emitFor(hmdFlow, TrackerSnapshot(STANDING_POSITION, HMD_LEVEL), SAMPLE_INTERVAL_MS)
+		// Recovery: level the head
+		emitFor(headFlow, TrackerSnapshot(STANDING_POSITION, HEAD_LEVEL), SAMPLE_INTERVAL_MS)
 		assertEquals(UserHeightCalibrationStatus.RECORDING_HEIGHT, context.state.value.status)
 		job.cancel()
 	}
 
 	@Test
-	fun `HMD rising above threshold transitions to RECORDING_HEIGHT`() = runTest {
+	fun `Head rising above threshold transitions to RECORDING_HEIGHT`() = runTest {
 		val context = testHeightCalibrationContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launchSession(context, hmdFlow, controllerFlow)
+		val headFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
+		val job = launchSession(context, headFlow, controllerFlow)
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(FLOOR_POSITION, POINTING_DOWN))
 
-		// HMD below threshold
-		emitFor(hmdFlow, TrackerSnapshot(Vector3(0f, 0.5f, 0f), HMD_LEVEL), SAMPLE_INTERVAL_MS)
+		// Head below threshold
+		emitFor(headFlow, TrackerSnapshot(Vector3(0f, 0.5f, 0f), HEAD_LEVEL), SAMPLE_INTERVAL_MS)
 		assertEquals(UserHeightCalibrationStatus.WAITING_FOR_RISE, context.state.value.status)
 
-		// HMD rises above threshold
-		emitFor(hmdFlow, TrackerSnapshot(STANDING_POSITION, HMD_LEVEL), SAMPLE_INTERVAL_MS)
+		// Head rises above threshold
+		emitFor(headFlow, TrackerSnapshot(STANDING_POSITION, HEAD_LEVEL), SAMPLE_INTERVAL_MS)
 		assertEquals(UserHeightCalibrationStatus.RECORDING_HEIGHT, context.state.value.status)
 		job.cancel()
 	}

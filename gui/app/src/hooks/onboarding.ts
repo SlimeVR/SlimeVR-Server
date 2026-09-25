@@ -130,7 +130,7 @@ export function useProvideOnboarding() {
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
     const resetsReq = Object.assign(new ChangeResetsSettingsRequestT(), resetsSettings);
-    resetsReq.resetHmdAttitude = mocapPos === 'forehead';
+    resetsReq.resetReliableReferenceAttitude = mocapPos === 'forehead';
     sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsReq);
 
     const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);

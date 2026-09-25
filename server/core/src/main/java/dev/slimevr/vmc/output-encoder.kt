@@ -113,7 +113,6 @@ private fun vmcMirrorSource(bodyPart: BodyPart): BodyPart {
 		else -> bodyPart
 	}
 }
-
 private fun restAdjustedWorld(
 	bone: BoneState,
 	restBodyPart: BodyPart = bone.bodyPart,

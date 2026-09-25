@@ -1,42 +1,77 @@
 package dev.slimevr.tracker
 
 import dev.slimevr.degreeToRadian
+import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.ResetType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PolarityTrackingTest {
-	private fun getResetAction(resetType: ResetType, referenceRot: Quaternion) = when (resetType) {
+	private fun getResetAction(resetType: ResetType, referenceRot: Quaternion?) = when (resetType) {
 		ResetType.FULL -> TrackerActions.FullReset(referenceRot)
 		ResetType.YAW -> TrackerActions.YawReset(referenceRot)
 		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRot, 0f)
 	}
 
-	// TODO test for when positional tracker
+	private fun assertPolarityAlignedAfterResets(
+		initialState: TrackerState,
+		referenceRot: Quaternion,
+	) {
+		ResetType.entries.forEach { resetType ->
+			val resetState = reduce(initialState, getResetAction(resetType, referenceRot))
+
+			val refreshedState =
+				reduce(resetState, TrackerRotationRefreshBehaviour.getRotationRefreshAction(resetState))
+			assertEquals(
+				refreshedState.rotation,
+				refreshedState.rotation.twinNearest(referenceRot),
+				message = "resetType $resetType, referenceRot $referenceRot, initialState $initialState",
+			)
+		}
+	}
+
 	@Test
-	fun `Reducer Resets align polarity with reference rotation`() = ResetType.entries.forEach { resetType ->
-		// Tracker rawRotation (untracked polarity)
+	fun `Resets align IMU Tracker polarity with reference`() = // Tracker rawRotation (untracked polarity)
 		untrackedHeading.forEach { rawRot ->
 			// Tracker calibrated rotation (tracked polarity)
 			trackedHeading.forEach { stateRot ->
-				// Reference rotation (assumes it is using the shortest rotation)
-				untrackedHeading.forEach { referenceRot ->
-					// Reset
-					val initialState = Tracker.DEFAULT_STATE.copy(rawRotation = rawRot, rotation = stateRot)
-					val resetState = reduce(initialState, getResetAction(resetType, referenceRot))
-
-					// Calibration refresh, polarity should match reference
-					val refreshedState = reduce(resetState, TrackerActions.SetRotation(initialState.rawRotation, refresh = true))
-					assertEquals(
-						refreshedState.rotation,
-						refreshedState.rotation.twinNearest(referenceRot),
-						message = "resetType $resetType, rawRot $rawRot, stateRot $stateRot, referenceRot $referenceRot",
+				// Reference rotation (tracked polarity)
+				trackedHeading.forEach { referenceRot ->
+					assertPolarityAlignedAfterResets(
+						Tracker.DEFAULT_STATE.copy(
+							imuType = ImuType.BNO085,
+							position = null,
+							rawRotation = rawRot,
+							rotation = stateRot,
+						),
+						referenceRot,
 					)
 				}
 			}
 		}
-	}
+
+	@Test
+	fun `Resets align Positional Tracker polarity with reference`() = // Tracker rawRotation (untracked polarity)
+		untrackedHeading.forEach { rawRot ->
+			// Tracker calibrated rotation (tracked polarity)
+			trackedHeading.forEach { stateRot ->
+				// Reference rotation (tracked polarity)
+				trackedHeading.forEach { referenceRot ->
+					assertPolarityAlignedAfterResets(
+						Tracker.DEFAULT_STATE.copy(
+							imuType = null,
+							position = Vector3.POS_Y,
+							rawRotation = rawRot,
+							rotation = stateRot,
+						),
+						referenceRot,
+					)
+				}
+			}
+		}
 
 	companion object {
 		val untrackedStep = (-180..180 step 72)

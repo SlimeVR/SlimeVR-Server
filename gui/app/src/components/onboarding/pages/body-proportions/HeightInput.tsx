@@ -118,13 +118,13 @@ function formatInFoot(meters: number, locale: string[]) {
 const round4Digit = (value: number) => Math.round(value * 10000) / 10000;
 
 export function formatFullHeight(
-  hmdHeight: number,
+  headHeight: number,
   unit: 'meter' | 'foot',
   locales: string[]
 ) {
-  if (!hmdHeight) return '--';
+  if (!headHeight) return '--';
 
-  const displayHeight = round4Digit(hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO);
+  const displayHeight = round4Digit(headHeight / EYE_HEIGHT_TO_HEIGHT_RATIO);
 
   if (unit === 'meter') {
     return new Intl.NumberFormat(locales, {
@@ -140,18 +140,18 @@ export function formatFullHeight(
 
 export function HeightSelectionInput({
   disabled = false,
-  hmdHeight,
+  headHeight,
   unit,
   onUnitChange,
-  setHmdHeight,
+  setHeadHeight,
 }: {
   disabled?: boolean;
-  hmdHeight: number;
+  headHeight: number;
   unit: 'meter' | 'foot';
   onUnitChange: (unit: 'meter' | 'foot') => void;
-  setHmdHeight: (height: number) => void;
+  setHeadHeight: (height: number) => void;
 }) {
-  if (!hmdHeight) disabled = true;
+  if (!headHeight) disabled = true;
 
   const { isXs } = useBreakpoint('xs');
   const { currentLocales } = useLocaleConfig();
@@ -160,8 +160,8 @@ export function HeightSelectionInput({
   const footRegex = /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?[″"”]?)?$/;
 
   const formattedHeight = useMemo(
-    () => formatFullHeight(hmdHeight, unit, currentLocales),
-    [hmdHeight, unit, currentLocales]
+    () => formatFullHeight(headHeight, unit, currentLocales),
+    [headHeight, unit, currentLocales]
   );
 
   const defaultValues: { height: string } = {
@@ -220,7 +220,7 @@ export function HeightSelectionInput({
     if (unit === 'meter') {
       const newFullHeight = Number(values.height.replace(/[ m]/g, ''));
 
-      setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
+      setHeadHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
     } else {
       const match = values.height.match(footRegex);
       if (!match) return;
@@ -230,7 +230,7 @@ export function HeightSelectionInput({
 
       const newFullHeight = convert(feet + inches / 12, 'foot').to('meter');
 
-      setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
+      setHeadHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
     }
   };
 
@@ -255,7 +255,7 @@ export function HeightSelectionInput({
 
   const incrementMath = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const incrementInMeters = convert(value, unit).to('meter');
-    const oldFull = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
+    const oldFull = headHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
     const newFull = oldFull + incrementInMeters;
     const newEye = newFull * EYE_HEIGHT_TO_HEIGHT_RATIO;
 
@@ -264,7 +264,7 @@ export function HeightSelectionInput({
 
   const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const newEye = incrementMath(unit, value);
-    setHmdHeight(newEye);
+    setHeadHeight(newEye);
   };
 
   const canIcrement = (
@@ -277,9 +277,9 @@ export function HeightSelectionInput({
   };
 
   const handleUnitChange = (newUnit: 'meter' | 'foot') => {
-    if (!hmdHeight || newUnit === unit) return;
+    if (!headHeight || newUnit === unit) return;
 
-    const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
+    const fullHeight = headHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
     let snappedHeight;
 
     if (newUnit === 'foot') {
@@ -296,7 +296,7 @@ export function HeightSelectionInput({
       snappedHeight * EYE_HEIGHT_TO_HEIGHT_RATIO
     );
 
-    setHmdHeight(newEyeHeight);
+    setHeadHeight(newEyeHeight);
     onUnitChange(newUnit);
   };
 

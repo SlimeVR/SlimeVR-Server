@@ -1,7 +1,6 @@
 package dev.slimevr.tracker
 
 import io.github.axisangles.ktmath.Quaternion
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
@@ -19,7 +18,7 @@ fun reduce(
 	is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
 
 	is TrackerActions.SetRotation -> {
-		val accumulatedTicks = if (!action.refresh && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
+		val accumulatedTicks = if (action.increaseTps && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
 
 		// Rotation
 		val rawRotation: RawRotation = action.rotation ?: state.rawRotation
@@ -29,7 +28,7 @@ fun reduce(
 		} else {
 			rawRotation
 		}
-		val polarityAlign = if (action.refresh) {
+		val polarityAlign = if (state.rotationDirty) {
 			// Reset polarity according to last reference rotation.
 			state.lastReference
 		} else {
@@ -71,18 +70,15 @@ fun reduce(
 	}
 
 	is TrackerActions.SetMountingOrientation -> {
-		// TODO make sure it works for positional trackers
-		if ((state.position != null && state.bodyPart != BodyPart.HEAD) || state.isHmd) {
-			// Don't set mounting orientation for non-head positional trackers and HMDs
-			state
-		} else {
-			state.copy(
-				mountingOrientation = action.mountingOrientation,
-				sessionCalibration = state.sessionCalibration.copy(headingAlignment = action.mountingOrientation),
-				lastMountingMethod = MountingMethod.MANUAL,
-				rotationDirty = true,
-			)
-		}
+		state.copy(
+			mountingOrientation = action.mountingOrientation,
+			sessionCalibration = state.sessionCalibration.copy(
+				headingCorrection = if (state.position != null) action.mountingOrientation else state.sessionCalibration.headingCorrection,
+				headingAlignment = action.mountingOrientation,
+			),
+			lastMountingMethod = MountingMethod.MANUAL,
+			rotationDirty = true,
+		)
 	}
 
 	is TrackerActions.SetRestOrientation -> state.copy(
@@ -91,9 +87,9 @@ fun reduce(
 	)
 
 	is TrackerActions.FullReset -> {
-		val alignAttitude = !state.isHmd || action.resetHmdAttitude
-		val correctHeading = alignAttitude && action.referenceRotation != null
-		val alignHeading = alignAttitude && state.bodyPart != BodyPart.HEAD && state.position != null
+		val alignAttitude = !state.isAssignedReliableReference || action.resetReliableReferenceAttitude
+		val correctHeading = action.referenceRotation != null
+		val alignHeading = state.position != null && action.referenceRotation != null
 
 		val referenceRotation = action.referenceRotation ?: state.rawRotation
 
@@ -110,7 +106,7 @@ fun reduce(
 					referenceRotation,
 				)
 			} else {
-				state.sessionCalibration.attitudeAlignment
+				Quaternion.IDENTITY
 			}
 		val headingAlignment =
 			if (alignHeading) {
@@ -125,7 +121,7 @@ fun reduce(
 				attitudeAlignment = attitudeAlignment,
 				headingAlignment = headingAlignment,
 			),
-			lastReference = action.referenceRotation ?: state.rotation,
+			lastReference = referenceRotation,
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
 			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.FULL,
@@ -134,66 +130,62 @@ fun reduce(
 	}
 
 	is TrackerActions.YawReset -> {
-		// Never yaw reset references
-		if (state.position != null || action.referenceRotation == null) {
-			return state.copy(
-				lastReference = state.rotation.twinNearest(Quaternion.IDENTITY),
-				pendingSkeletonResets = state.pendingSkeletonResets + ResetType.YAW,
-			)
-		}
+		val baseReturnState = state.copy(
+			lastReference = action.referenceRotation ?: state.rotation,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.YAW,
+			rotationDirty = true,
+		)
 
-		val headingCorrection = estimateHeadingCorrect(
+		// Only reset polarity for positional trackers and references
+		val correctHeading = state.position == null && action.referenceRotation != null
+		if (!correctHeading) return baseReturnState
+
+		// Compute the heading (yaw) correction
+		val newHeadingCorrection = estimateHeadingCorrect(
 			applyCalibration(state.rawRotation, attitudeAlign = state.sessionCalibration.attitudeAlignment, headingAlign = state.sessionCalibration.headingAlignment),
 			action.referenceRotation,
 		)
 
-		if (action.smoothTime > Duration.ZERO && state.sessionCalibration.headingCorrection != Quaternion.IDENTITY && state.sessionCalibration.headingCorrection != headingCorrection) {
-			// Smooth: only set the target. Leave the applied heading where it is
+		val lastHeadingCorrection = state.sessionCalibration.headingCorrection
+		if (action.smoothTime > Duration.ZERO && lastHeadingCorrection != Quaternion.IDENTITY && lastHeadingCorrection != newHeadingCorrection) {
+			// Yaw Reset Smoothing: only set the target. Leave the applied heading where it is
 			// TrackerYawResetSmoothingBehaviour eases sessionCalibration.headingCorrection
 			// to newHeading over smoothTime. A reset mid-ease just replaces the seed.
-			state.copy(
-				lastReference = action.referenceRotation,
+			baseReturnState.copy(
 				yawResetSmoothing = YawResetSmoothing(
-					from = state.sessionCalibration.headingCorrection,
-					to = headingCorrection,
+					from = lastHeadingCorrection,
+					to = newHeadingCorrection,
 					duration = action.smoothTime,
 				),
-				pendingSkeletonResets = state.pendingSkeletonResets + ResetType.YAW,
-				rotationDirty = true,
 			)
 		} else {
 			// Snap: apply the new heading immediately (default, no smoothing configured).
-			state.copy(
-				sessionCalibration = state.sessionCalibration.copy(headingCorrection = headingCorrection),
-				lastReference = action.referenceRotation,
+			baseReturnState.copy(
+				sessionCalibration = state.sessionCalibration.copy(headingCorrection = newHeadingCorrection),
 				yawResetSmoothing = null,
-				pendingSkeletonResets = state.pendingSkeletonResets + ResetType.YAW,
-				rotationDirty = true,
 			)
 		}
 	}
 
 	is TrackerActions.PoseMountingReset -> {
-		// Positional trackers' heading is aligned on full reset.
-		val alignHeading = state.position == null || (action.referenceRotation == null && !state.isHmd)
-		// A positional, non-hmd, head tracker needs to correct its heading on mounting reset.
-		val correctHeading = action.referenceRotation == null && !state.isHmd
-		if (!alignHeading) {
-			return state.copy(
-				lastReference = state.rotation.twinNearest(Quaternion.IDENTITY),
-			)
-		}
+		// Positional trackers' heading is aligned on full reset, not on mounting reset, except for a reference.
+		val alignHeading = state.position == null || action.referenceRotation == null
+		// A positional reference tracker needs to correct its heading on mounting reset.
+		val correctHeading = state.position != null && action.referenceRotation == null
 
-		val referenceRotation = action.referenceRotation ?: state.rotation.twinNearest(Quaternion.IDENTITY)
-		val headingAlignment = estimateHeadingAlign(
-			state.rawRotation,
-			referenceRotation,
-			state.sessionCalibration.headingCorrection,
-			state.sessionCalibration.attitudeAlignment,
-			state.mountingOrientation,
-			action.yawOffset,
-		) *
-			state.mountingOrientation
+		val referenceRotation = action.referenceRotation ?: state.rotation
+
+		val headingAlignment = if (alignHeading) {
+			estimateHeadingAlign(
+				state.rawRotation,
+				referenceRotation,
+				state.sessionCalibration.headingCorrection,
+				state.sessionCalibration.attitudeAlignment,
+				action.yawOffset,
+			)
+		} else {
+			state.sessionCalibration.headingAlignment
+		}
 
 		// Heading correction for positional tracker is the heading alignment
 		val headingCorrection = if (correctHeading) {
@@ -204,10 +196,10 @@ fun reduce(
 
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingCorrection = headingCorrection, headingAlignment = headingAlignment),
+			lastMountingMethod = if (alignHeading) MountingMethod.POSE else state.lastMountingMethod,
 			lastReference = referenceRotation,
-			lastMountingMethod = MountingMethod.POSE,
-			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.POSE_MOUNTING,
 			rotationDirty = true,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.POSE_MOUNTING,
 		)
 	}
 
