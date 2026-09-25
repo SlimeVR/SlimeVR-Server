@@ -600,7 +600,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = 我已瞭解以上風險
 settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 選擇序列埠
-settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
 settings-serial-save_logs = 儲存到檔案
 settings-serial-send_command = 傳送
