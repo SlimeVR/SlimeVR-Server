@@ -539,7 +539,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Jag vet vad jag gör
 settings-serial-factory_reset-warning-cancel = Avbryt
 settings-serial-serial_select = Välj en serieport
-settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
 settings-serial-save_logs = Spara till fil
 settings-serial-send_command-warning-ok = Jag vet vad jag gör
