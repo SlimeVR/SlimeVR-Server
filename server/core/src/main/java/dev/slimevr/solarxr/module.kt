@@ -36,6 +36,7 @@ import dev.slimevr.solarxr.rpc.TelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
 import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
 import dev.slimevr.solarxr.rpc.VmcBehaviour
+import dev.slimevr.solarxr.rpc.CustomOscBehaviour
 import dev.slimevr.solarxr.rpc.VrcBehaviour
 import dev.slimevr.solarxr.rpc.VrcOscBehaviour
 import dev.slimevr.tracker.TrackerActions
@@ -186,6 +187,7 @@ class SolarXRBridge(
 			add(TapDetectionBehaviour(appContext.config.settings, appContext.tapDetectionManager))
 			add(VrcOscBehaviour(appContext.config.settings, appContext.vrcOscManager))
 			add(VmcBehaviour(appContext.config.settings, appContext.vmcManager))
+			add(CustomOscBehaviour(appContext.config.settings))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
 			add(BoneRoutingBehaviour(appContext))

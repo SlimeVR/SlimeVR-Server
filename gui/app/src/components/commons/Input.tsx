@@ -85,7 +85,7 @@ export const InputInside = forwardRef<
 
   const computedValue = disabled
     ? placeholder
-    : value !== undefined
+    : value !== undefined && value !== null
       ? value
       : '';
 

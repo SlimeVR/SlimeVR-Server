@@ -93,6 +93,11 @@ export function SettingsSidebar() {
             scrollTo="vmc"
             id="settings-sidebar-osc_vmc"
           />
+          <SettingsLink
+            to="/settings/osc/custom"
+            scrollTo="custom"
+            id="settings-sidebar-osc_custom"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3">

@@ -246,4 +246,21 @@ class EventDispatcherTest {
 
 		assertContentEquals(listOf(1), seen)
 	}
+
+	@Test
+	fun `an exception in a handler does not stop subsequent events from being processed`() = runTest {
+		val seen = mutableListOf<Int>()
+		val dispatcher = EventDispatcher<TestEvent>("test", backgroundScope)
+
+		dispatcher.on<TestEvent.A> {
+			if (it.n == 1) error("handler error")
+			seen += it.n
+		}.launchIn(backgroundScope)
+
+		dispatcher.emit(TestEvent.A(1))
+		dispatcher.emit(TestEvent.A(2))
+		runCurrent()
+
+		assertContentEquals(listOf(2), seen)
+	}
 }

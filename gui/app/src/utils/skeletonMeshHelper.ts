@@ -201,8 +201,58 @@ export class BasedSkeletonMeshHelper extends Object3D {
   }
 
   updateMatrixWorld(force: boolean) {
+    const hasBustTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.LEFT_BUST ||
+          part.bone.bodyPart === BodyPart.RIGHT_BUST) &&
+        part.tracker
+    );
+    const hasPosteriorTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.LEFT_POSTERIOR ||
+          part.bone.bodyPart === BodyPart.RIGHT_POSTERIOR) &&
+        part.tracker
+    );
+    const hasTailTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.TAIL ||
+          part.bone.bodyPart === BodyPart.TAIL_1 ||
+          part.bone.bodyPart === BodyPart.TAIL_2 ||
+          part.bone.bodyPart === BodyPart.TAIL_3 ||
+          part.bone.bodyPart === BodyPart.TAIL_4 ||
+          part.bone.bodyPart === BodyPart.TAIL_5 ||
+          part.bone.bodyPart === BodyPart.TAIL_6) &&
+        part.tracker
+    );
+
     for (const part of this.parts) {
       const { bone, shapes } = part;
+      const isBustPart =
+        bone.bodyPart === BodyPart.LEFT_BUST || bone.bodyPart === BodyPart.RIGHT_BUST;
+      const isPosteriorPart =
+        bone.bodyPart === BodyPart.LEFT_POSTERIOR ||
+        bone.bodyPart === BodyPart.RIGHT_POSTERIOR;
+      const isTailPart =
+        bone.bodyPart === BodyPart.TAIL ||
+        bone.bodyPart === BodyPart.TAIL_1 ||
+        bone.bodyPart === BodyPart.TAIL_2 ||
+        bone.bodyPart === BodyPart.TAIL_3 ||
+        bone.bodyPart === BodyPart.TAIL_4 ||
+        bone.bodyPart === BodyPart.TAIL_5 ||
+        bone.bodyPart === BodyPart.TAIL_6;
+
+      const hidden =
+        (isBustPart && !hasBustTracker) ||
+        (isTailPart && !hasTailTracker) ||
+        (isPosteriorPart && !hasPosteriorTracker);
+
+      for (const attached of shapes) {
+        attached.node.visible = !hidden;
+      }
+      if (hidden) {
+        if (part.marker) part.marker.visible = false;
+        continue;
+      }
 
       position.copy(Vector3FromVec3fT(bone.headPosition));
       quat.copy(QuaternionFromQuatT(bone.orientation)).normalize();

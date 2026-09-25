@@ -540,6 +540,7 @@ function SkeletonVisualizer({
     const context = previewContext.current;
     if (!context || disabled) return;
     context.rebuildSkeleton(bones);
+    context.updateTrackers(trackersByPart);
   }, [bones.size, disabled]);
 
   useEffect(() => {
@@ -595,6 +596,7 @@ function SkeletonVisualizer({
       style,
       (locked) => onFollowLockChangeRef.current?.(locked)
     );
+    previewContext.current.updateTrackers(trackersByPart);
     onFollowLockChangeRef.current?.(true);
     if (!config?.devSettings.fastDataFeed)
       previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);

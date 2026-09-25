@@ -130,6 +130,21 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 		tail.putAll(getToeOffsets(it))
 		head.putAll(getToeHeadOffsets(it))
 	}
+	// Tail chain segment offsets in rest pose
+	val tailSegmentOffset = Vector3(0f, 0f, 0.1f)
+	tail[BodyPart.TAIL] = tailSegmentOffset
+	tail[BodyPart.TAIL_1] = tailSegmentOffset
+	tail[BodyPart.TAIL_2] = tailSegmentOffset
+	tail[BodyPart.TAIL_3] = tailSegmentOffset
+	tail[BodyPart.TAIL_4] = tailSegmentOffset
+	tail[BodyPart.TAIL_5] = tailSegmentOffset
+	tail[BodyPart.TAIL_6] = tailSegmentOffset
+	lengths[SkeletonBone.UPPER_CHEST]?.let {
+		tail.putAll(getBustOffsets(it))
+		head.putAll(getBustHeadOffsets(it))
+		tail.putAll(getPosteriorOffsets(it))
+		head.putAll(getPosteriorHeadOffsets(it))
+	}
 	return BoneOffsets(tail, head)
 }
 
@@ -302,4 +317,39 @@ private fun getToeHeadOffsets(footLength: Float): Map<BodyPart, Vector3> = build
 		put(toe.segments.first, Vector3(k.x * footLength, k.y * footLength, k.z * footLength))
 		put(toe.segments.second, Vector3(-k.x * footLength, k.y * footLength, k.z * footLength))
 	}
+}
+
+
+
+
+
+/**
+ * Returns the offsets for the bust bones scaled from the chest.
+ */
+private fun getBustOffsets(upperChestLength: Float) = buildMap {
+	val zOffset = -upperChestLength * 0.6f
+	put(BodyPart.LEFT_BUST, Vector3(0f, 0f, zOffset))
+	put(BodyPart.RIGHT_BUST, Vector3(0f, 0f, zOffset))
+}
+
+private fun getBustHeadOffsets(upperChestLength: Float): Map<BodyPart, Vector3> = buildMap {
+	val xOffset = upperChestLength * 0.45f
+	val yOffset = -upperChestLength * 0.15f
+	val zOffset = -upperChestLength * 0.8f
+	put(BodyPart.LEFT_BUST, Vector3(-xOffset, yOffset, zOffset))
+	put(BodyPart.RIGHT_BUST, Vector3(xOffset, yOffset, zOffset))
+}
+
+private fun getPosteriorOffsets(scale: Float) = buildMap {
+	val zOffset = scale * 0.6f
+	put(BodyPart.LEFT_POSTERIOR, Vector3(0f, 0f, zOffset))
+	put(BodyPart.RIGHT_POSTERIOR, Vector3(0f, 0f, zOffset))
+}
+
+private fun getPosteriorHeadOffsets(scale: Float): Map<BodyPart, Vector3> = buildMap {
+	val xOffset = scale * 0.45f
+	val yOffset = -scale * -0.4f
+	val zOffset = scale * 0.4f
+	put(BodyPart.LEFT_POSTERIOR, Vector3(-xOffset, yOffset, zOffset))
+	put(BodyPart.RIGHT_POSTERIOR, Vector3(xOffset, yOffset, zOffset))
 }
