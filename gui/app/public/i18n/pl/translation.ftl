@@ -113,10 +113,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = Rękawica SlimeVR Dev IMU
 ## Proportions
 
 skeleton_bone-NONE = Brak
-skeleton_bone-HEAD = Przesunięcie głowy
-skeleton_bone-HEAD-desc =
-    To jest odległość od headsetu do środka głowy.
-    Aby ją dostosować, obracaj głową(lewo i prawo) i edytuj wartość do momentu kiedy ruch innych urządzeń będzie minimalny.
 skeleton_bone-NECK = Długość szyi
 skeleton_bone-NECK-desc =
     To jest odległość od środka głowy do podstawy szyi.
@@ -1277,8 +1273,6 @@ tracking_checklist-TRACKER_ERROR-desc = Niektóre z Twoich urządzeń mają bł�
 tracking_checklist-VRCHAT_SETTINGS = Konfiguruj ustawienia do VRChat'a
 tracking_checklist-VRCHAT_SETTINGS-desc = Źle ustawiłeś ustawienia VRChat'a! Może to negatywnie wpłynąć na twoje śledzenie.
 tracking_checklist-VRCHAT_SETTINGS-open = Przejdź do ostrzeżeń VRChat
-tracking_checklist-UNASSIGNED_HMD = Zestaw VR nieprzypisany do Głowy
-tracking_checklist-UNASSIGNED_HMD-desc = Zestaw VR powinien być przypisany jako śledzenie głowy.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Zmień profil sieciowy
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->
