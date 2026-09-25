@@ -439,7 +439,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = 네! 알고 있어요.
 settings-serial-factory_reset-warning-cancel = 취소
 settings-serial-serial_select = 시리얼 포트 선택
-settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
 settings-serial-save_logs = 파일에 저장
 settings-serial-send_command-warning-ok = 네! 알고 있어요.
