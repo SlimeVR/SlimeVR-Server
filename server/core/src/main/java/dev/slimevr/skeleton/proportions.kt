@@ -9,7 +9,6 @@ import kotlin.collections.plus
 
 // TODO : Placeholder, move this to config defaults somehow
 val DEFAULT_PROPORTIONS = mapOf(
-	SkeletonBone.HEAD to 0.1f,
 	SkeletonBone.NECK to 0.1f,
 	SkeletonBone.UPPER_CHEST to 0.16f,
 	SkeletonBone.LOWER_CHEST to 0.16f,
@@ -43,7 +42,6 @@ private val HEIGHT_CONTRIBUTING_BONES: Set<SkeletonBone> = setOf(
 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton with vectors for offset directions.
 private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = mapOf(
-	SkeletonBone.HEAD to BodyPartMap(mapOf(BodyPart.HEAD to Vector3.POS_Z)),
 	SkeletonBone.NECK to BodyPartMap(mapOf(BodyPart.NECK to Vector3.NEG_Y)),
 	SkeletonBone.UPPER_CHEST to BodyPartMap(mapOf(BodyPart.UPPER_CHEST to Vector3.NEG_Y)),
 	SkeletonBone.LOWER_CHEST to BodyPartMap(mapOf(BodyPart.LOWER_CHEST to Vector3.NEG_Y)),
@@ -117,6 +115,9 @@ data class BoneOffsets(
 fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 	val tail = bodyPartMap<Vector3>()
 	val head = bodyPartMap<Vector3>()
+
+	// Set offsets (lengths) and head offsets
+	tail[BodyPart.HEAD] = Vector3.ZERO // Head has no length
 	for ((cfg, length) in lengths) {
 		BONE_VALUE_TO_OFFSETS[cfg]?.let { for ((bone, vec) in it) tail[bone] = (tail[bone] ?: Vector3.ZERO) + length * vec }
 		BONE_VALUE_TO_HEAD_OFFSETS[cfg]?.let { for ((bone, vec) in it) head[bone] = (head[bone] ?: Vector3.ZERO) + length * vec }

@@ -64,6 +64,7 @@ data class TrackerState(
 	val bodyPart: BodyPart?,
 	/** The default body part given by e.g. driver, VMC, etc. */
 	val intendedBodyPart: BodyPart?,
+	val boneOffsets: Map<BodyPart, Vector3>,
 	val customName: String?,
 	val trackerDataType: TrackerDataType, // TODO
 	val lastMountingMethod: MountingMethod,
@@ -91,9 +92,10 @@ data class TrackerState(
 	val pendingSkeletonResets: List<ResetType> = emptyList(),
 ) {
 	private val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
+	private val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
 
 	/** Indicates if the tracker is a reliable reference for aligning other trackers. */
-	val isReliableReference = isHmd
+	val isReliableReference = isHmd || isController
 	val isAssignedReliableReference = isReliableReference && bodyPart == intendedBodyPart
 }
 
@@ -137,6 +139,7 @@ class Tracker(
 			name: String = "Tracker #$id",
 			bodyPart: BodyPart? = null,
 			intendedBodyPart: BodyPart? = null,
+			intendedBoneOffset: Vector3? = null,
 			deviceId: Int,
 			imuType: ImuType? = null,
 			hardwareId: String,
@@ -158,6 +161,7 @@ class Tracker(
 				imuType = imuType,
 				bodyPart = bodyPart,
 				intendedBodyPart = intendedBodyPart,
+				boneOffsets = intendedBodyPart?.let { part -> intendedBoneOffset?.let { offset -> mapOf(part to offset) } } ?: emptyMap(),
 				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
 				expectedTps = expectedTps,
 			)
@@ -202,6 +206,7 @@ class Tracker(
 			imuType = null,
 			bodyPart = null,
 			intendedBodyPart = null,
+			boneOffsets = emptyMap(),
 			customName = null,
 			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,

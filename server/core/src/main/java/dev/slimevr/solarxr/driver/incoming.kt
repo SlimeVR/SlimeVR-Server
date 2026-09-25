@@ -6,10 +6,12 @@ import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.solarxr.toQuaternion
+import dev.slimevr.solarxr.toVector3
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.driver_protocol.AddTrackerRequest
 import solarxr_protocol.driver_protocol.AddTrackerResponse
@@ -17,6 +19,21 @@ import solarxr_protocol.driver_protocol.AddTrackerStatus
 import solarxr_protocol.driver_protocol.UpdateTrackerBattery
 import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
+import kotlin.to
+
+// TODO add more devices and retest Knuckles
+private val DISPLAY_NAME_TO_INTENDED_OFFSET = mapOf(
+	"Beyond" to Vector3(0f, 0f, 0.1f),
+	"Knuckles Left" to Vector3(0f, 0.11f, 0.08f),
+	"Knuckles Right" to Vector3(0f, 0.11f, 0.08f),
+)
+
+// Used as fallback when map above doesn't contain the entry
+private val BODY_PART_TO_INTENDED_OFFSET = mapOf(
+	BodyPart.HEAD to Vector3(0f, 0f, 0.1f),
+	BodyPart.LEFT_HAND to Vector3(0f, 0.11f, 0.08f),
+	BodyPart.RIGHT_HAND to Vector3(0f, 0.11f, 0.08f),
+)
 
 class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,
@@ -75,6 +92,7 @@ class DriverIncomingTrackersBehaviour(
 				name = req.displayName ?: "Tracker #$trackerId",
 				bodyPart = req.bodyPart,
 				intendedBodyPart = req.bodyPart,
+				intendedBoneOffset = DISPLAY_NAME_TO_INTENDED_OFFSET[req.displayName] ?: BODY_PART_TO_INTENDED_OFFSET[req.bodyPart],
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,
@@ -119,8 +137,8 @@ class DriverIncomingTrackersBehaviour(
 			// TODO: receive velocity, mapping to accel?
 			server.getTracker(trackerId)?.context?.dispatch(
 				TrackerActions.SetRotation(
-					rotation = event.rotation?.let { Quaternion(it.w, it.x, it.y, it.z) },
-					position = event.position?.let { Vector3(it.x, it.y, it.z) },
+					rotation = event.rotation?.toQuaternion(),
+					position = event.position?.toVector3(),
 				),
 			)
 		}.launchIn(receiver.context.scope)

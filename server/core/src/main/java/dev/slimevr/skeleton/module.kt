@@ -22,6 +22,7 @@ import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TailChainInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.TrackerOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
@@ -50,6 +51,7 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
+	val trackerOffset: Vector3,
 	val expectedTps: UShort?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
@@ -65,6 +67,7 @@ data class BoneState(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
+	val trackerOffset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val headPosition: Vector3,
@@ -114,6 +117,7 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
+	trackerOffset = Vector3.ZERO,
 	expectedTps = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
@@ -150,6 +154,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
 		bodyPart = bone.bodyPart,
 		headOffset = bone.headOffset,
 		offset = bone.offset,
+		trackerOffset = bone.trackerOffset,
 		rotation = bone.rotation,
 		acceleration = bone.acceleration,
 		headPosition = headPosition,
@@ -177,7 +182,7 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 }
 
 sealed interface SkeletonActions {
-	data class SetBonePose(val bodyPart: BodyPart, val expectedTps: UShort, val rotation: Quaternion, val acceleration: Vector3, val position: Vector3?) : SkeletonActions
+	data class SetBonePose(val bodyPart: BodyPart, val trackerOffset: Vector3, val expectedTps: UShort, val rotation: Quaternion, val acceleration: Vector3, val position: Vector3?) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
@@ -262,6 +267,7 @@ class Skeleton(
 					hz = hz,
 					waiter = waiter,
 					inputProcessors = listOf(
+						TrackerOffsetInputProcessor(),
 						PredictionInputProcessor(settings),
 						SmoothingInputProcessor(settings),
 						HeadPositionFallbackProcessor(settings),

@@ -12,28 +12,75 @@ import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.serial.FlashingHandler
+import dev.slimevr.serial.LineAssembler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
+import dev.slimevr.serial.SerialPortWatcher
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.serial.isKnownSerialBoard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 
 private const val TAG = "SerialServer"
 
 private const val ACTION_USB_SERIAL_PERMISSION = "dev.slimevr.android.USB_SERIAL_PERMISSION"
-private const val POLL_INTERVAL_MS = 3000L
 
-private suspend fun openAndroidPort(
+private const val BAUD_RATE = 115200
+private const val WRITE_TIMEOUT_MS = 1000
+
+private class AndroidSerialWatcher(
+	private val context: Context,
+	private val usbManager: UsbManager,
+	override val changes: Flow<Unit>,
+) : SerialPortWatcher {
+	private val permissionRequested = mutableSetOf<String>()
+	private val permissionIntent = PendingIntent.getBroadcast(
+		context,
+		0,
+		Intent(ACTION_USB_SERIAL_PERMISSION).apply { setPackage(context.packageName) },
+		PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+	)
+
+	// Devices without permission are left out. Granting it sends a change and they show up then
+	override suspend fun enumerate(): Map<String, SerialPortInfo> = withContext(Dispatchers.IO) {
+		val drivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager)
+		for (driver in drivers) {
+			val name = driver.device.deviceName
+			if (!usbManager.hasPermission(driver.device) && permissionRequested.add(name)) {
+				AppLogger.serial.info("Requesting USB serial permission for $name")
+				usbManager.requestPermission(driver.device, permissionIntent)
+			}
+		}
+		permissionRequested.retainAll(drivers.map { it.device.deviceName }.toSet())
+
+		drivers
+			.filter { usbManager.hasPermission(it.device) }
+			.associate { driver ->
+				val location = driver.device.deviceName
+				location to SerialPortInfo(
+					portLocation = location,
+					descriptivePortName = "${driver.device.productName ?: location} ($location)",
+					vendorId = driver.device.vendorId,
+					productId = driver.device.productId,
+					serialNumber = runCatching { driver.device.serialNumber }.getOrNull(),
+				)
+			}
+	}
+
+	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, onLine, onClosed) }
+
+	override fun openForFlashing(): FlashingHandler = AndroidFlashingHandler(context, usbManager)
+}
+
+private fun openAndroidPort(
 	portLocation: String,
 	usbManager: UsbManager,
-	scope: CoroutineScope,
-	onDataReceived: suspend (String, String) -> Unit,
-	onPortDisconnected: suspend (String) -> Unit,
+	onLine: (String) -> Unit,
+	onClosed: () -> Unit,
 ): SerialPortHandle? {
 	val driver = UsbSerialProber.getDefaultProber()
 		.findAllDrivers(usbManager)
@@ -47,7 +94,7 @@ private suspend fun openAndroidPort(
 
 	try {
 		port.open(connection)
-		port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
+		port.setParameters(BAUD_RATE, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
 		port.dtr = false
 		port.rts = false
 	} catch (e: Exception) {
@@ -58,26 +105,13 @@ private suspend fun openAndroidPort(
 		return null
 	}
 
-	val readBuffer = StringBuilder(1024)
-
+	val assembler = LineAssembler()
 	val ioManager = SerialInputOutputManager(
 		port,
 		object : SerialInputOutputManager.Listener {
-			override fun onNewData(data: ByteArray) {
-				readBuffer.append(data.toString(Charsets.UTF_8))
-				var newlineIdx = readBuffer.indexOf("\n")
-				while (newlineIdx >= 0) {
-					val line = readBuffer.substring(0, newlineIdx).trimEnd()
-					readBuffer.delete(0, newlineIdx + 1)
-					scope.launch { onDataReceived(portLocation, line) }
-					newlineIdx = readBuffer.indexOf("\n")
-				}
-				if (readBuffer.length >= 1024) readBuffer.clear()
-			}
+			override fun onNewData(data: ByteArray) = assembler.feed(data, data.size, onLine)
 
-			override fun onRunError(e: Exception) {
-				scope.launch { onPortDisconnected(portLocation) }
-			}
+			override fun onRunError(e: Exception) = onClosed()
 		},
 	)
 	ioManager.start()
@@ -85,104 +119,42 @@ private suspend fun openAndroidPort(
 	return SerialPortHandle(
 		portLocation = portLocation,
 		descriptivePortName = "${driver.device.productName ?: portLocation} ($portLocation)",
-		writeCommand = { text -> port.write("$text\n".toByteArray(), 0) },
+		writeCommand = { text ->
+			withContext(Dispatchers.IO) {
+				try {
+					port.write("$text\n".toByteArray(), WRITE_TIMEOUT_MS)
+				} catch (e: Exception) {
+					Log.e(TAG, "Error writing to Android serial port $portLocation", e)
+				}
+			}
+		},
 		close = {
-			ioManager.stop()
-			try {
-				port.close()
-			} catch (_: Exception) {}
+			withContext(Dispatchers.IO) {
+				ioManager.stop()
+				try {
+					port.close()
+				} catch (_: Exception) {}
+			}
 		},
 	)
 }
 
-private suspend fun runAndroidSerialPoller(
-	context: Context,
-	usbManager: UsbManager,
-	server: SerialServer,
-	wakeSignal: Channel<Unit>,
-) {
-	val permissionRequested = mutableSetOf<String>()
-	var lastKnown: Set<String> = emptySet()
-	val permissionIntent = PendingIntent.getBroadcast(
-		context,
-		0,
-		Intent(ACTION_USB_SERIAL_PERMISSION).apply { setPackage(context.packageName) },
-		PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-	)
-
-	while (true) {
-		try {
-			val current = withContext(Dispatchers.IO) {
-				UsbSerialProber.getDefaultProber()
-					.findAllDrivers(usbManager)
-					.filter { driver -> isKnownSerialBoard(driver.device.vendorId, driver.device.productId) }
-					.associateBy { driver -> driver.device.deviceName }
-			}
-
-			for ((deviceName, driver) in current) {
-				if (!usbManager.hasPermission(driver.device) && deviceName !in permissionRequested) {
-					AppLogger.serial.info("Requesting USB serial permission for $deviceName")
-					usbManager.requestPermission(driver.device, permissionIntent)
-					permissionRequested.add(deviceName)
-				}
-			}
-
-			val authorized = current.filter { (_, driver) -> usbManager.hasPermission(driver.device) }
-
-			val added = authorized.keys - lastKnown
-			val removed = lastKnown - authorized.keys
-
-			for (loc in added) {
-				val driver = authorized.getValue(loc)
-				permissionRequested.remove(loc)
-				server.onPortDetected(
-					SerialPortInfo(
-						portLocation = loc,
-						descriptivePortName = "${driver.device.productName ?: loc} ($loc)",
-						vendorId = driver.device.vendorId,
-						productId = driver.device.productId,
-					),
-				)
-			}
-			for (loc in removed) {
-				server.onPortLost(loc)
-			}
-
-			lastKnown = authorized.keys
-			permissionRequested.retainAll(current.keys)
-		} catch (e: Exception) {
-			AppLogger.serial.error(e, "Error polling Android serial ports")
+/** A change per USB attach, detach and permission result */
+private fun createUsbChanges(context: Context): Flow<Unit> = callbackFlow {
+	val receiver = object : BroadcastReceiver() {
+		override fun onReceive(ctx: Context, intent: Intent) {
+			trySend(Unit)
 		}
-
-		withTimeoutOrNull(POLL_INTERVAL_MS) { wakeSignal.receive() }
 	}
+	val filter = IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED).apply {
+		addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
+		addAction(ACTION_USB_SERIAL_PERMISSION)
+	}
+	ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+	awaitClose { context.unregisterReceiver(receiver) }
 }
 
 fun createAndroidSerialServer(context: Context, scope: CoroutineScope): SerialServer {
 	val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-	val wakeSignal = Channel<Unit>(Channel.CONFLATED)
-
-	val usbReceiver = object : BroadcastReceiver() {
-		override fun onReceive(ctx: Context, intent: Intent) {
-			wakeSignal.trySend(Unit)
-		}
-	}
-
-	val intentFilter = IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED).apply {
-		addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
-		addAction(ACTION_USB_SERIAL_PERMISSION)
-	}
-	ContextCompat.registerReceiver(context, usbReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
-
-	val server = SerialServer.create(
-		openPort = { portLocation, onDataReceived, onPortDisconnected ->
-			openAndroidPort(portLocation, usbManager, scope, onDataReceived, onPortDisconnected)
-		},
-		openFlashingPort = { AndroidFlashingHandler(context, usbManager) },
-		scope = scope,
-	)
-
-	scope.launch { runAndroidSerialPoller(context, usbManager, server, wakeSignal) }
-
-	return server
+	return SerialServer.create(AndroidSerialWatcher(context, usbManager, createUsbChanges(context)), scope)
 }

@@ -4,6 +4,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -32,6 +33,7 @@ data class TrackerConfig(
 	@Serializable(with = QuaternionSerializer::class)
 	val mountingResetOrientation: Quaternion? = null,
 	val magEnabled: Boolean? = null,
+	val boneOffsets: Map<BodyPart, Vector3> = emptyMap(),
 )
 
 @Serializable

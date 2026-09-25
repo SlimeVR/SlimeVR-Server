@@ -3,19 +3,15 @@ import { Typography } from '@/components/commons/Typography';
 import { SelectedDevice, useFirmwareTool } from '@/hooks/firmware-tool';
 import { Control, UseFormReset, UseFormWatch, useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useSerialDevices } from '@/hooks/serial';
+import { useEffect, useLayoutEffect, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
   DeviceDataT,
   FirmwareUpdateMethod,
-  NewSerialDeviceResponseT,
-  RpcMessage,
   SerialDeviceT,
   SerialDeviceType,
-  SerialDevicesRequestT,
-  SerialDevicesResponseT,
   TrackerStatus,
 } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
@@ -43,26 +39,35 @@ interface FlashingMethodForm {
 }
 
 function SerialDevicesList({
-  isActive,
   control,
   watch,
   reset,
 }: {
-  isActive: boolean;
   control: Control<FlashingMethodForm>;
   watch: UseFormWatch<FlashingMethodForm>;
   reset: UseFormReset<FlashingMethodForm>;
 }) {
   const { l10n } = useLocalization();
   const { selectDevices } = useFirmwareTool();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [devices, setDevices] = useState<Record<string, SerialDeviceT>>({});
-  const [loading, setLoading] = useState(false);
+  const serialDevices = useSerialDevices();
+  const loading = serialDevices === null;
+  // Boards we can flash, unrecognized ones included, in the server's order
+  const devices = useMemo(
+    () =>
+      Object.fromEntries(
+        (serialDevices ?? [])
+          .filter(
+            ({ type }) =>
+              type === SerialDeviceType.ESP_TRACKER ||
+              type === SerialDeviceType.UNKNOWN
+          )
+          .map((device) => [device.port?.toString() ?? 'unknown', device])
+      ) as Record<string, SerialDeviceT>,
+    [serialDevices]
+  );
   const { state, setWifiCredentials } = useOnboarding();
 
   useLayoutEffect(() => {
-    setLoading(true);
-    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
     selectDevices(null);
     reset({
       flashingMethod: FirmwareUpdateMethod.SerialFirmwareUpdate.toString(),
@@ -73,35 +78,6 @@ function SerialDevicesList({
       ota: undefined,
     });
   }, []);
-
-  useRPCPacket(
-    RpcMessage.SerialDevicesResponse,
-    (res: SerialDevicesResponseT) => {
-      setDevices(
-        res.devices.reduce((curr, device) => {
-          if (device?.type != SerialDeviceType.ESP_TRACKER) return curr;
-
-          return {
-            ...curr,
-            [device?.port?.toString() ?? 'unknown']: device,
-          };
-        }, {})
-      );
-      setLoading(false);
-    }
-  );
-
-  useRPCPacket(
-    RpcMessage.NewSerialDeviceResponse,
-    ({ device }: NewSerialDeviceResponseT) => {
-      if (device?.port && device?.type === SerialDeviceType.ESP_TRACKER)
-        setDevices((old) => ({
-          ...old,
-          [device?.port?.toString() ?? 'unknown']: device,
-        }));
-      setLoading(false);
-    }
-  );
 
   const serialValues = watch('serial');
 
@@ -130,21 +106,6 @@ function SerialDevicesList({
       selectDevices(null);
     }
   }, [JSON.stringify(serialValues), devices]);
-
-  useEffect(() => {
-    if (isActive) {
-      const id = setInterval(() => {
-        sendRPCPacket(
-          RpcMessage.SerialDevicesRequest,
-          new SerialDevicesRequestT()
-        );
-      }, 3000);
-
-      return () => {
-        clearInterval(id);
-      };
-    }
-  }, [isActive]);
 
   return (
     <div className="p-4 rounded-lg bg-background-60 w-full flex flex-col gap-3">
@@ -201,7 +162,13 @@ function SerialDevicesList({
           control={control}
           name="serial.selectedDevicePort"
           items={Object.keys(devices).map((port) => ({
-            label: devices[port].name?.toString() ?? 'unknown',
+            label:
+              devices[port].type === SerialDeviceType.UNKNOWN
+                ? l10n.getString(
+                    'firmware_tool-flash_method_serial-unknown_device',
+                    { name: devices[port].name?.toString() ?? port }
+                  )
+                : (devices[port].name?.toString() ?? 'unknown'),
             value: port,
           }))}
           placeholder={l10n.getString(
@@ -418,7 +385,6 @@ export function FlashingMethodStep({
               {flashingMethod ===
                 FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
                 <SerialDevicesList
-                  isActive={isActive}
                   control={control}
                   watch={watch}
                   reset={reset}

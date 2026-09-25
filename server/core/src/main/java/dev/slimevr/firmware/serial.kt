@@ -5,19 +5,17 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.MAC_REGEX
-import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
+import kotlin.time.Duration.Companion.seconds
 
 fun interface FirmwareFlasher {
 	suspend fun flash(
@@ -27,6 +25,8 @@ fun interface FirmwareFlasher {
 		onProgress: (Int) -> Unit,
 	)
 }
+
+private val POST_FLASH_PORT_TIMEOUT = 60.seconds
 
 suspend fun doSerialFlash(
 	portLocation: String,
@@ -123,22 +123,17 @@ internal suspend fun doSerialFlashPostFlash(
 		0,
 	)
 
-	serialServer.openConnection(portLocation)
-	val serialConn = serialServer.context.state.value.connections[portLocation]
+	// The port re-enumerates after the flash, so it may take a moment to come back
+	val serialConn = serialServer.awaitConsole(portLocation, POST_FLASH_PORT_TIMEOUT)
 	if (serialConn == null) {
 		onStatus(FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND, 0)
-		return
-	}
-	if (serialConn !is SerialConnection.Console) {
-		onStatus(FirmwareUpdateStatus.ERROR_UNKNOWN, 0)
 		return
 	}
 
 	if (needManualReboot) {
 		// wait for the device to reboot
 		val rebooted = withTimeoutOrNull(60_000) {
-			serialConn.context.state.map { it.logLines }
-				.first { logLines -> logLines.any { "starting up" in it.lowercase() } }
+			serialConn.lines.first { "starting up" in it.lowercase() }
 		}
 
 		if (rebooted == null) {
@@ -148,13 +143,11 @@ internal suspend fun doSerialFlashPostFlash(
 	}
 
 	// get MAC address by sending GET INFO and parsing the response
-	serialConn.handle.writeCommand("GET INFO")
+	serialConn.write("GET INFO")
 
 	val macAddress = withTimeoutOrNull(10_000) {
-		serialConn.context.state.map { it.logLines }.mapNotNull { logLines ->
-			logLines.firstNotNullOfOrNull { line ->
-				MAC_REGEX.find(line)?.groupValues?.get(1)?.uppercase()
-			}
+		serialConn.lines.mapNotNull { line ->
+			MAC_REGEX.find(line)?.groupValues?.get(1)?.uppercase()
 		}.first()
 	}
 
@@ -167,7 +160,7 @@ internal suspend fun doSerialFlashPostFlash(
 
 	// Remove old UDP connection for this MAC before rebooting to prevent false inactivity timeouts
 	val existingDevice = server.context.state.value.devices.values.find { d ->
-		d.context.state.value.macAddress?.uppercase() == macAddress.uppercase()
+		d.context.state.value.macAddress.equals(macAddress, ignoreCase = true)
 	}
 	if (existingDevice != null) {
 		val oldConn = existingDevice.appContext.udpServer.context.state.value.connections.values.find { c ->
@@ -186,14 +179,12 @@ internal suspend fun doSerialFlashPostFlash(
 
 	onStatus(FirmwareUpdateStatus.PROVISIONING, 0)
 	val provisionStartTime = System.currentTimeMillis()
-	serialConn.handle.writeCommand("SET WIFI \"$ssid\" \"$password\"\n")
+	serialConn.write("SET WIFI \"$ssid\" \"$password\"\n")
 
 	// Wait for Wi-Fi to connect ("looking for the server")
 	val provisioned = withTimeoutOrNull(30_000) {
-		serialConn.context.state.map { it.logLines }.first { logLines ->
-			logLines.any {
-				"looking for the server" in it.lowercase() || "searching for the server" in it.lowercase()
-			}
+		serialConn.lines.first {
+			"looking for the server" in it.lowercase() || "searching for the server" in it.lowercase()
 		}
 	}
 

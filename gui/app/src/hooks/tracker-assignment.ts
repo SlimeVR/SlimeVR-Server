@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
-  AssignTrackerRequestT,
+  UpdateTrackerRequestT,
   BodyPart,
   QuatT,
   ResetTrackerAssignmentsT,
@@ -32,11 +32,11 @@ export function useAssignTracker() {
     bodyPart: BodyPart,
     mountingOrientation: QuatT | null = null
   ) => {
-    const request = new AssignTrackerRequestT();
+    const request = new UpdateTrackerRequestT();
     request.trackerId = trackerId;
     request.bodyPosition = bodyPart;
     request.mountingOrientation = mountingOrientation;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, request);
+    sendRPCPacket(RpcMessage.UpdateTrackerRequest, request);
   };
 }
 

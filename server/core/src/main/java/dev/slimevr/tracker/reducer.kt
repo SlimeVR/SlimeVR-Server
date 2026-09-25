@@ -87,7 +87,7 @@ fun reduce(
 	)
 
 	is TrackerActions.FullReset -> {
-		val alignAttitude = !state.isAssignedReliableReference || action.resetReliableReferenceAttitude
+		val alignAttitude = !state.isAssignedReliableReference || (action.resetReliableReferenceAttitude && action.referenceRotation == null)
 		val correctHeading = action.referenceRotation != null
 		val alignHeading = state.position != null && action.referenceRotation != null
 

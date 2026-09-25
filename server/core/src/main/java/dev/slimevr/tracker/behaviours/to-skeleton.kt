@@ -5,6 +5,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.util.isActive
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -45,6 +46,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 							val pendingResets = trackerState.pendingSkeletonResets
 							val bonePoseActions = SkeletonActions.SetBonePose(
 								bodyPart,
+								trackerState.boneOffsets[bodyPart] ?: Vector3.ZERO,
 								trackerState.expectedTps ?: trackerState.tps,
 								trackerState.rotation,
 								trackerState.acceleration,

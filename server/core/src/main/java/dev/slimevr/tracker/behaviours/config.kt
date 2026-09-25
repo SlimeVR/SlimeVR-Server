@@ -51,6 +51,7 @@ class TrackerConfigBehaviour(
 				false -> MagnetometerStatus.DISABLED
 				null -> state.magStatus
 			},
+			boneOffsets = state.boneOffsets + config.boneOffsets,
 		)
 
 		private fun applyStateToConfig(config: TrackerConfig, state: TrackerState, saveMountingReset: Boolean) = config.copy(
@@ -63,6 +64,7 @@ class TrackerConfigBehaviour(
 				MagnetometerStatus.DISABLED -> false
 				MagnetometerStatus.NOT_SUPPORTED -> config.magEnabled
 			},
+			boneOffsets = state.boneOffsets,
 		)
 	}
 }

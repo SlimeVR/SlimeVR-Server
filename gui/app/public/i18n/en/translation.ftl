@@ -159,11 +159,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 skeleton_bone-NONE = None
-skeleton_bone-HEAD = Head Shift
-skeleton_bone-HEAD-desc =
-    This is the distance from your headset to the middle of your head.
-    To adjust it, shake your head left to right as if you're disagreeing and modify
-    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = Neck Length
 skeleton_bone-NECK-desc =
     This is the distance from the middle of your head to the base of your neck.
@@ -796,6 +791,10 @@ settings-serial-description =
     This is a live information feed for serial communication via USB.
     May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
+settings-serial-busy = The port is in use by a firmware update, the console will resume afterwards
+settings-serial-opening = Opening the serial port...
+settings-serial-open_failed = Could not open the serial port. Check that no other program is using it and that you have permission to access it.
+settings-serial-no_port = No serial device selected
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
 # This cares about multilines
@@ -806,7 +805,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = I know what I'm doing
 settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-serial_select = Select a serial port
-settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get Wi-Fi Scan
 settings-serial-enter_pairing = Enter Pairing
 settings-serial-exit_pairing = Exit Pairing
@@ -1538,6 +1536,7 @@ firmware_tool-flash_method_serial-title = Flashing over USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi Credentials:
 firmware_tool-flash_method_serial-devices-label = Detected Serial Devices:
 firmware_tool-flash_method_serial-devices-placeholder = Select a serial device
+firmware_tool-flash_method_serial-unknown_device = { $name } (unrecognized)
 firmware_tool-flash_method_serial-no_devices = There are no compatible serial devices detected, make sure the tracker is plugged in
 
 firmware_tool-build_step = Building

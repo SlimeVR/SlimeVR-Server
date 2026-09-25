@@ -5,9 +5,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.serial.isKnownSerialBoard
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -15,19 +13,17 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.rpc.SerialDeviceType
 import solarxr_protocol.rpc.TrackerProvisioningStatus
 import solarxr_protocol.rpc.WifiNetwork
 import solarxr_protocol.rpc.WifiScanStatus
+import kotlin.time.Duration.Companion.seconds
 
 data class ScanState(
 	val status: WifiScanStatus,
@@ -95,12 +91,10 @@ data class ProvisioningManager(
 				val trackerJobs = mutableMapOf<String, Job>()
 				val startedPorts = mutableSetOf<String>()
 
-				serialServer.context.state.map { it.availablePorts }.collect { ports ->
+				serialServer.context.state.map { it.ports }.collect { ports ->
 					ports.entries
 						.filter { (portLocation, info) ->
-							portLocation !in startedPorts &&
-								isKnownSerialBoard(info.vendorId, info.productId) &&
-								info.toSerialDevice().type == SerialDeviceType.ESP_TRACKER
+							portLocation !in startedPorts && info.type == SerialDeviceType.ESP_TRACKER
 						}
 						.forEach { (portLocation, _) ->
 							startedPorts += portLocation
@@ -131,20 +125,14 @@ data class ProvisioningManager(
 
 	suspend fun startWifiScan() {
 		val currentJob = scanJob
-		if (currentJob != null) {
-			currentJob.cancelAndJoin()
-		}
+		currentJob?.cancelAndJoin()
 		context.dispatch(ProvisioningActions.ScanClear)
 		scanJob = scope.launch {
 			while (isActive) {
-				if (!selectAndOpenPort(context, serialServer)) continue
+				if (!selectScanPort(context, serialServer)) continue
 				val portLocation = context.state.value.scan.portLocation ?: return@launch
 
-				val serialConn = withTimeoutOrNull(3_000) {
-					serialServer.context.state
-						.mapNotNull { it.connections[portLocation] as? SerialConnection.Console }
-						.first()
-				}
+				val serialConn = serialServer.awaitConsole(portLocation, 3.seconds)
 
 				if (serialConn == null) {
 					context.dispatch(ProvisioningActions.ScanStatusChanged(WifiScanStatus.NO_SERIAL_DEVICE_FOUND))
@@ -159,7 +147,7 @@ data class ProvisioningManager(
 						awaitCancellation()
 					}
 					val disconnect = async {
-						serialServer.context.state.map { it.availablePorts }.first { portLocation !in it }
+						serialServer.context.state.map { it.ports }.first { portLocation !in it }
 					}
 					select {
 						work.onAwait {}

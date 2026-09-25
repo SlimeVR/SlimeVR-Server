@@ -3,7 +3,7 @@ package dev.slimevr.provisioning
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
-import dev.slimevr.buildTestSerialServer
+import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
@@ -94,11 +94,11 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `OBTAINING_MAC_ADDRESS after port is detected and 2 second reboot delay elapses`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		advanceTimeBy(2_001)
 
@@ -107,18 +107,18 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `recovers from NO_SERIAL_LOGS_ERROR and sets macAddress when logs appear containing the MAC`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		advanceTimeBy(7_001)
 		assertEquals(TrackerProvisioningStatus.NO_SERIAL_LOGS_ERROR, manager.trackerStatus())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		}
 
 		advanceTimeBy(200)
@@ -128,15 +128,15 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `CONNECTION_ERROR when logs are present but no MAC received within 5 second timeout`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(500)
-			serialServer.onDataReceived("COM1", "some log line without a mac address")
+			serial.emitLine("COM1", "some log line without a mac address")
 		}
 
 		// A single slow/unresponsive window retries MAX_CONNECTION_RETRIES (3) times
@@ -149,15 +149,15 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `CONNECTION_ERROR when WiFi credentials not acknowledged within 5 second timeout`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			// No credential acknowledgement sent
 		}
 
@@ -169,17 +169,17 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `CONNECTION_ERROR when WiFi does not connect within 15 second timeout`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
-			serialServer.onDataReceived("COM1", "new wifi credentials set")
+			serial.emitLine("COM1", "new wifi credentials set")
 			// No WiFi connection log
 		}
 
@@ -191,19 +191,19 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `COULD_NOT_FIND_SERVER when tracker does not appear on the network within 30 second timeout`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
-			serialServer.onDataReceived("COM1", "new wifi credentials set")
+			serial.emitLine("COM1", "new wifi credentials set")
 			delay(100)
-			serialServer.onDataReceived("COM1", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
 			// No device connects to the server
 		}
 
@@ -215,20 +215,20 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `DONE when scanner succeeds and tracker sends handshake`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(vrServer, "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
-			serialServer.onDataReceived("COM1", "new wifi credentials set")
+			serial.emitLine("COM1", "new wifi credentials set")
 			delay(100)
-			serialServer.onDataReceived("COM1", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
 			delay(100)
 			connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
 		}
@@ -240,23 +240,23 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `DONE when device was previously connected and goes offline before reconnecting`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		// Device was already connected to VRServer prior to provisioning
 		connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
 
 		manager.startProvisioning(vrServer, "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
-			serialServer.onDataReceived("COM1", "new wifi credentials set")
+			serial.emitLine("COM1", "new wifi credentials set")
 			delay(100)
-			serialServer.onDataReceived("COM1", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
 			delay(100)
 			connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
 		}
@@ -268,20 +268,20 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `tracker entry is removed from the map after USB disconnect following DONE`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(vrServer, "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
-			serialServer.onDataReceived("COM1", "new wifi credentials set")
+			serial.emitLine("COM1", "new wifi credentials set")
 			delay(100)
-			serialServer.onDataReceived("COM1", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
 			delay(100)
 			connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
 		}
@@ -290,7 +290,7 @@ class ProvisioningManagerTest {
 		advanceTimeBy(5_000)
 		assertEquals(TrackerProvisioningStatus.DONE, manager.trackerStatus())
 
-		serialServer.onPortLost("COM1")
+		serial.unplug("COM1")
 		advanceTimeBy(1)
 
 		assertNull(manager.trackerStatus())
@@ -299,15 +299,15 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `does not relaunch a job for the same port after failure - waits for USB disconnect`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(500)
-			serialServer.onDataReceived("COM1", "some log without mac")
+			serial.emitLine("COM1", "some log without mac")
 		}
 
 		// Reach the true terminal CONNECTION_ERROR (after all MAX_CONNECTION_RETRIES
@@ -323,24 +323,24 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `provisions two trackers concurrently without one clobbering the other's status`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(vrServer, "wifi", "pass")
-		serialServer.onPortDetected(fakePort("COM1"))
-		serialServer.onPortDetected(fakePort("COM2"))
+		serial.plug(fakePort("COM1"))
+		serial.plug(fakePort("COM2"))
 
 		launch {
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:01")
-			serialServer.onDataReceived("COM2", "mac: AA:BB:CC:DD:EE:02")
+			serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:01")
+			serial.emitLine("COM2", "mac: AA:BB:CC:DD:EE:02")
 			delay(100)
-			serialServer.onDataReceived("COM1", "new wifi credentials set")
-			serialServer.onDataReceived("COM2", "new wifi credentials set")
+			serial.emitLine("COM1", "new wifi credentials set")
+			serial.emitLine("COM2", "new wifi credentials set")
 			delay(100)
-			serialServer.onDataReceived("COM1", "looking for the server")
-			serialServer.onDataReceived("COM2", "looking for the server")
+			serial.emitLine("COM1", "looking for the server")
+			serial.emitLine("COM2", "looking for the server")
 			delay(100)
 			connectDevice(vrServer, "AA:BB:CC:DD:EE:01", backgroundScope)
 			connectDevice(vrServer, "AA:BB:CC:DD:EE:02", backgroundScope)
@@ -356,12 +356,12 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `stopProvisioning cancels all concurrent per-port jobs and clears the trackers map`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
-		serialServer.onPortDetected(fakePort("COM1"))
-		serialServer.onPortDetected(fakePort("COM2"))
+		serial.plug(fakePort("COM1"))
+		serial.plug(fakePort("COM2"))
 
 		advanceTimeBy(2_001)
 		assertEquals(TrackerProvisioningStatus.OBTAINING_MAC_ADDRESS, manager.trackerStatus("COM1"))
@@ -373,15 +373,15 @@ class ProvisioningManagerTest {
 
 		// Confirm the jobs were actually cancelled, not just the map cleared - no further
 		// state changes should occur even if the tracker keeps talking.
-		serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+		serial.emitLine("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		advanceTimeBy(10_000)
 		assertEquals(emptyMap(), manager.context.state.value.trackers)
 	}
 
 	@Test
 	fun `startScan NO_SERIAL_DEVICE_FOUND when no port appears within 15 seconds`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
 
@@ -392,8 +392,8 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startScan keeps waiting for a port past the first 15 second window instead of giving up`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
 
@@ -402,13 +402,13 @@ class ProvisioningManagerTest {
 		assertEquals(WifiScanStatus.NO_SERIAL_DEVICE_FOUND, manager.context.state.value.scan.status)
 
 		// User plugs the tracker in well after the page loaded.
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
-			// Past selectAndOpenPort's 2s backoff delay before it retries detection.
+			// Past selectScanPort's 2s backoff delay before it retries detection.
 			delay(2_100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 0 networks:")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 0 networks:")
 		}
 		advanceTimeBy(2_200)
 
@@ -417,11 +417,11 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startScan skips an already-connected HID dongle and selects the ESP tracker instead`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		// Dongle was already plugged in before the scan started.
-		serialServer.onPortDetected(fakeDonglePort())
+		serial.plug(fakeDonglePort())
 
 		manager.startWifiScan()
 		advanceTimeBy(100)
@@ -429,12 +429,12 @@ class ProvisioningManagerTest {
 		assertEquals(null, manager.context.state.value.scan.portLocation)
 
 		// User now plugs in the actual tracker.
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 0 networks:")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 0 networks:")
 		}
 		advanceTimeBy(200)
 
@@ -444,16 +444,16 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startScan falls back to NONE when the scanned port disconnects, then picks up a replug`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 0 networks:")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 0 networks:")
 		}
 		advanceTimeBy(200)
 		assertEquals(WifiScanStatus.RESULTS, manager.context.state.value.scan.status)
@@ -461,18 +461,18 @@ class ProvisioningManagerTest {
 		// Tracker is unplugged while still sitting on the "configure Wi-Fi" step - the
 		// GUI step rail should fall back to "no tracker" (step 1) instead of keeping a
 		// stale RESULTS for a tracker that's no longer there.
-		serialServer.onPortLost("COM1")
+		serial.unplug("COM1")
 		advanceTimeBy(1)
 		assertEquals(WifiScanStatus.NONE, manager.context.state.value.scan.status)
 		assertEquals(null, manager.context.state.value.scan.portLocation)
 
 		// Replugging the same tracker is picked up automatically, same as the very
 		// first attempt.
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 0 networks:")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 0 networks:")
 		}
 		advanceTimeBy(200)
 		assertEquals(WifiScanStatus.RESULTS, manager.context.state.value.scan.status)
@@ -480,15 +480,15 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `stopWifiScan cancels the scan job so it stops reacting to further plug-replug cycles`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 0 networks:")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 0 networks:")
 		}
 		advanceTimeBy(200)
 		assertEquals(WifiScanStatus.RESULTS, manager.context.state.value.scan.status)
@@ -500,19 +500,19 @@ class ProvisioningManagerTest {
 		// this, the scan job would keep running forever (watching for disconnect/replug)
 		// even after the GUI navigated away, silently issuing scan commands to whatever
 		// tracker shows up next.
-		serialServer.onPortLost("COM1")
-		serialServer.onPortDetected(fakePort())
+		serial.unplug("COM1")
+		serial.plug(fakePort())
 		advanceTimeBy(20_000)
 		assertEquals(WifiScanStatus.NONE, manager.context.state.value.scan.status)
 	}
 
 	@Test
 	fun `startScan UNSUPPORTED when tracker logs never contain a WSCAN line within 15 seconds`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			// Each retry starts with ClearLogs, so a one-time line would be wiped before the
@@ -520,7 +520,7 @@ class ProvisioningManagerTest {
 			// that's chatty (boot logs etc.) but never prints anything WIFISCAN-tagged.
 			repeat(20) {
 				delay(500)
-				serialServer.onDataReceived("COM1", "some unrelated log line")
+				serial.emitLine("COM1", "some unrelated log line")
 			}
 		}
 
@@ -531,18 +531,18 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startScan RESULTS with correctly parsed networks`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 2 networks:")
-			serialServer.onDataReceived("COM1", "[WSCAN] 0:    09    MyNetwork    (-45)    PASS")
-			serialServer.onDataReceived("COM1", "[WSCAN] 1:    04    Open    (-70)    OPEN")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 2 networks:")
+			serial.emitLine("COM1", "[WSCAN] 0:    09    MyNetwork    (-45)    PASS")
+			serial.emitLine("COM1", "[WSCAN] 1:    04    Open    (-70)    OPEN")
 		}
 
 		advanceTimeBy(200)
@@ -559,18 +559,18 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startScan RESULTS parses the newer quoted WSCAN format (post SlimeVR-Tracker-ESP#358)`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 2 networks:")
-			serialServer.onDataReceived("COM1", "[WSCAN] 0:\t09\t'MyNetwork'\t(-45 dBm)\tWPA2_PSK")
-			serialServer.onDataReceived("COM1", "[WSCAN] 1:\t15\t'Futura's Slimes'\t(-85 dBm)\tOPEN")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 2 networks:")
+			serial.emitLine("COM1", "[WSCAN] 0:\t09\t'MyNetwork'\t(-45 dBm)\tWPA2_PSK")
+			serial.emitLine("COM1", "[WSCAN] 1:\t15\t'Futura's Slimes'\t(-85 dBm)\tOPEN")
 		}
 
 		advanceTimeBy(200)
@@ -587,21 +587,21 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startProvisioning reuses the connection opened by a prior startScan without rediscovering the port`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 0 networks:")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 0 networks:")
 		}
 		advanceTimeBy(200)
 		assertEquals(WifiScanStatus.RESULTS, manager.context.state.value.scan.status)
 
-		// The tracker is still plugged in (port never left availablePorts), so this should
+		// The tracker is still plugged in (port never left the port list), so this should
 		// proceed straight into the reboot delay instead of first waiting up to 15s to
 		// rediscover a port that's already known.
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass")
@@ -612,17 +612,17 @@ class ProvisioningManagerTest {
 
 	@Test
 	fun `startScan again after RESULTS produces a fresh scan on the same still-open connection`() = runTest {
-		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = buildManager(serialServer, backgroundScope)
+		val serial = buildTestSerial(backgroundScope)
+		val manager = buildManager(serial.server, backgroundScope)
 
 		manager.startWifiScan()
-		serialServer.onPortDetected(fakePort())
+		serial.plug(fakePort())
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 1 networks:")
-			serialServer.onDataReceived("COM1", "[WSCAN] 0:    03    Old    (-50)    OPEN")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 1 networks:")
+			serial.emitLine("COM1", "[WSCAN] 0:    03    Old    (-50)    OPEN")
 		}
 		advanceTimeBy(200)
 		assertEquals(
@@ -635,9 +635,9 @@ class ProvisioningManagerTest {
 
 		launch {
 			delay(100)
-			serialServer.onDataReceived("COM1", "[WSCAN] Scanning for WiFi networks...")
-			serialServer.onDataReceived("COM1", "[WSCAN] Found 1 networks:")
-			serialServer.onDataReceived("COM1", "[WSCAN] 0:    03    New    (-40)    OPEN")
+			serial.emitLine("COM1", "[WSCAN] Scanning for WiFi networks...")
+			serial.emitLine("COM1", "[WSCAN] Found 1 networks:")
+			serial.emitLine("COM1", "[WSCAN] 0:    03    New    (-40)    OPEN")
 		}
 		advanceTimeBy(200)
 
