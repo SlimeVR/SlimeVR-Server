@@ -68,7 +68,6 @@ body_part-LEFT_FOOT = Ліва нога
 ## Proportions
 
 skeleton_bone-NONE = Нічого
-skeleton_bone-HEAD = Зсув голови
 skeleton_bone-NECK = Довжина шиї
 skeleton_bone-torso_group = Довжина тулуба
 skeleton_bone-UPPER_CHEST = Довжина верхньої частини грудей
