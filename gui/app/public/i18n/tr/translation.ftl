@@ -330,7 +330,6 @@ settings-general-interface-dev_mode-label = Geliştirici Modu
 settings-serial-reboot = Yeniden Başlat
 settings-serial-factory_reset-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-factory_reset-warning-cancel = İptal et
-settings-serial-auto_dropdown_item = Otomatik
 settings-serial-send_command-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-send_command-warning-cancel = İptal
 
