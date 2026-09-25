@@ -134,10 +134,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 ## Proportions
 
 skeleton_bone-NONE = Keine
-skeleton_bone-HEAD = Kopfverschiebung
-skeleton_bone-HEAD-desc =
-    Dies ist der Abstand von Ihrem Headset zur Mitte Ihres Kopfes.
-    Um ihn anzupassen, bewegen Sie den Kopf von links nach rechts, als würden Sie „nein“ sagen. Ändern Sie den Wert so lange, bis sich die anderen Tracker nicht mehr mitbewegen.
 skeleton_bone-NECK = Halslänge
 skeleton_bone-NECK-desc =
     Dies ist der Abstand von der Mitte Ihres Kopfes bis zum Ansatz Ihres Nackens.
@@ -1265,8 +1261,6 @@ tracking_checklist-TRACKER_ERROR-desc = Einige deiner Tracker haben einen Fehler
 tracking_checklist-VRCHAT_SETTINGS = VRChat-Einstellungen konfigurieren
 tracking_checklist-VRCHAT_SETTINGS-desc = Du hast die VRChat-Einstellungen falsch konfiguriert! Das kann sich negativ auf dein Tracking auswirken.
 tracking_checklist-VRCHAT_SETTINGS-open = Gehen sie zu den VRChat-Warnungen
-tracking_checklist-UNASSIGNED_HMD = VR-Headset nicht dem Kopf zugewiesen
-tracking_checklist-UNASSIGNED_HMD-desc = Das VR-Headset sollte als Kopf-Tracker zugewiesen sein.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Ändere dein Netzwerkprofil
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->
