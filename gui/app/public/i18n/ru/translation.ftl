@@ -106,11 +106,6 @@ board_type-WRANGLER = Joycon через Wrangler
 ## Proportions
 
 skeleton_bone-NONE = Пусто
-skeleton_bone-HEAD = Смещение Головы
-skeleton_bone-HEAD-desc =
-    Это расстояние от вашего шлема до центра вашей головы.
-    Чтобы откалибровать его, покрутите головой из стороны в сторону, будто несогласны с чем-то, и изменяйте
-    значение, пока движение других трекеров не станет незначительным.
 skeleton_bone-NECK = Длина Шеи
 skeleton_bone-NECK-desc =
     Это расстояние от центра вашей головы до основания вашей шеи.
@@ -1161,6 +1156,5 @@ error_collection_modal-cancel = Я не согласен
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Закрыть
-tracking_checklist-UNASSIGNED_HMD-desc = VR гарнитура должна быть назначена как трекер головы.
 toolbar-mounting_calibration = Проверьте ваше крепление
 toolbar-mounting_calibration-feet = Ступни
