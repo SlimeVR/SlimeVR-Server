@@ -605,7 +605,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = 我已知晓
 settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 选择串行端口
-settings-serial-auto_dropdown_item = 自动
 settings-serial-get_wifi_scan = 扫描可用WiFi
 settings-serial-save_logs = 保存到文件
 settings-serial-send_command = 发送
