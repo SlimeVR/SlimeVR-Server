@@ -321,9 +321,7 @@ const stepContentLookup: Record<
     return <Typography id="tracking_checklist-TRACKER_ERROR-desc" />;
   },
   [TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE]: () => {
-    return (
-      <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />
-    );
+    return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (
     step,

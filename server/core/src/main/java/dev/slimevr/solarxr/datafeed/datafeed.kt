@@ -12,9 +12,12 @@ import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.createBone
+import dev.slimevr.solarxr.toQuat
+import dev.slimevr.solarxr.toVec3f
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.stripIpAddressPort
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -39,8 +42,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.datatypes.math.Quat
-import solarxr_protocol.datatypes.math.Vec3f
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
@@ -58,32 +59,33 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	deviceId = device.id.toUShort(),
 	trackerId = tracker.id.toUShort(),
 	status = if (trackerMask.status) tracker.status else TrackerStatus.NONE,
-	rotation = if (trackerMask.rotation) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-	position = if (trackerMask.position && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
+	rotation = if (trackerMask.rotation) tracker.rawRotation.toQuat() else null,
+	position = if (trackerMask.position && tracker.position != null) tracker.position.toVec3f() else null,
 	info = if (trackerMask.info) {
 		TrackerInfo(
 			isImu = tracker.imuType != null,
 			imuType = tracker.imuType ?: ImuType.UNKNOWN,
 			bodyPart = tracker.bodyPart ?: BodyPart.NONE,
 			intendedBodyPart = tracker.intendedBodyPart ?: BodyPart.NONE,
-			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
-			mountingResetOrientation = tracker.sessionCalibration.headingAlignment.let { Quat(it.x, it.y, it.z, it.w) },
+			mountingOrientation = tracker.mountingOrientation.toQuat(),
+			mountingResetOrientation = tracker.sessionCalibration.headingAlignment.toQuat(),
 			displayName = tracker.name,
 			customName = tracker.customName,
 			lastMountingMethod = tracker.lastMountingMethod,
 			magnetometer = tracker.magStatus,
 			dataType = tracker.trackerDataType,
+			boneOffset = (tracker.boneOffsets[tracker.bodyPart] ?: Vector3.ZERO).toVec3f(),
 		)
 	} else {
 		null
 	},
 	tps = if (trackerMask.tps) tracker.tps else null,
 	temp = if (trackerMask.temp && tracker.imuTemp != null) tracker.imuTemp else null,
-	rawAcceleration = if (trackerMask.rawAcceleration) tracker.rawAcceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-	linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
-	rawMagneticVector = if (trackerMask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
+	rawAcceleration = if (trackerMask.rawAcceleration) tracker.rawAcceleration.toVec3f() else null,
+	linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration.toVec3f() else null,
+	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted) tracker.rotation.toQuat() else null,
+	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted) tracker.rotation.toQuat() else null, // FIXME: uses reference adjusted
+	rawMagneticVector = if (trackerMask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.toVec3f() else null,
 	stayAligned = if (trackerMask.stayAligned) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
 	origin = if (trackerMask.origin) tracker.origin else null,
 )

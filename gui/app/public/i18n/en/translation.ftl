@@ -154,11 +154,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 skeleton_bone-NONE = None
-skeleton_bone-HEAD = Head Shift
-skeleton_bone-HEAD-desc =
-    This is the distance from your headset to the middle of your head.
-    To adjust it, shake your head left to right as if you're disagreeing and modify
-    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = Neck Length
 skeleton_bone-NECK-desc =
     This is the distance from the middle of your head to the base of your neck.

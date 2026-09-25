@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import {
-  AssignTrackerRequestT,
+  UpdateTrackerRequestT,
   BoardType,
   BodyPart,
   DeviceOrigin,
@@ -93,11 +93,11 @@ export function TrackerSettingsPage() {
     if (!tracker) return;
     if (trackerName == tracker.tracker.info?.customName) return;
 
-    const assignReq = new AssignTrackerRequestT();
+    const assignReq = new UpdateTrackerRequestT();
     assignReq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignReq.displayName = trackerName ?? null;
     assignReq.trackerId = tracker?.tracker.trackerId;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
+    sendRPCPacket(RpcMessage.UpdateTrackerRequest, assignReq);
   };
 
   const onSettingsSubmit = () => {
