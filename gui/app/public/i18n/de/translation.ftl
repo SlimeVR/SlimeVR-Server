@@ -601,7 +601,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Ich weiß, was ich tue
 settings-serial-factory_reset-warning-cancel = Abbruch
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
-settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = WLAN-Scan
 settings-serial-save_logs = In Datei speichern
 settings-serial-send_command = Senden
