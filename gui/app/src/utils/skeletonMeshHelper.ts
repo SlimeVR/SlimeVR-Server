@@ -212,7 +212,9 @@ export class BasedSkeletonMeshHelper extends Object3D {
     if (
       proportions.bodyScale !== this.proportions.bodyScale ||
       proportions.shoulderWidth !== this.proportions.shoulderWidth ||
-      proportions.hipWidth !== this.proportions.hipWidth
+      proportions.hipWidth !== this.proportions.hipWidth ||
+      proportions.handLength !== this.proportions.handLength ||
+      proportions.footLength !== this.proportions.footLength
     ) {
       for (const part of this.parts) part.surfaceDirty = true;
     }
@@ -291,7 +293,8 @@ export class BasedSkeletonMeshHelper extends Object3D {
         part.marker.quaternion.copy(quat).multiply(part.tracker.mountingOrientation);
         part.marker.position.copy(position);
         const anchor = SKELETON_PART_PRESETS[bone.bodyPart]?.trackerAnchor;
-        const anchored = anchor && shapes[0] && shapeAnchor(shapes[0], anchor, localOffset);
+        const anchored =
+          anchor && shapes[0] && shapeAnchor(shapes[0], anchor, localOffset);
         if (!anchored) {
           localOffset.set(0, -boneLength * part.tracker.boneOffset, 0);
         }

@@ -52,7 +52,7 @@ export interface ShapeScale {
  * What a part's girth follows. Height suits a limb, but the torso should widen
  * with the body it sits in rather than with how tall it is.
  */
-type GirthBasis = 'height' | 'shoulders' | 'hips';
+type GirthBasis = 'height' | 'shoulders' | 'hips' | 'hand' | 'foot';
 
 /**
  * Ratios against the model as authored, so 1 is its own size at the body's
@@ -67,6 +67,8 @@ type ModelRatios = {
 
 const RIG_SHOULDER_WIDTH = 0.338;
 const RIG_HIP_WIDTH = 0.26;
+const RIG_HAND_LENGTH = 0.08;
+const RIG_FOOT_LENGTH = 0.13;
 
 const girthScale = (proportions: SkeletonProportions, basis: GirthBasis) => {
   if (basis === 'shoulders' && proportions.shoulderWidth > 0) {
@@ -74,6 +76,12 @@ const girthScale = (proportions: SkeletonProportions, basis: GirthBasis) => {
   }
   if (basis === 'hips' && proportions.hipWidth > 0) {
     return proportions.hipWidth / RIG_HIP_WIDTH;
+  }
+  if (basis === 'hand' && proportions.handLength > 0) {
+    return proportions.handLength / RIG_HAND_LENGTH;
+  }
+  if (basis === 'foot' && proportions.footLength > 0) {
+    return proportions.footLength / RIG_FOOT_LENGTH;
   }
   return proportions.bodyScale;
 };
@@ -91,48 +99,6 @@ export const spanBone = ({
       depth: depth * girth,
       length: (boneLength / model.length) * length,
     };
-  },
-});
-
-/**
- * Keeps the model's authored length, for bones whose length isn't the span the
- * model was drawn to: the hip is a structural connector, and the head bone is
- * an offset out to the HMD rather than the skull.
- */
-export const authoredSize = ({
-  width = 1,
-  depth = 1,
-  length = 1,
-  girthFrom = 'height',
-}: ModelRatios = {}): ShapeScale => ({
-  compute: ({ proportions }) => {
-    const girth = girthScale(proportions, girthFrom);
-    return {
-      width: width * girth,
-      depth: depth * girth,
-      length: length * proportions.bodyScale,
-    };
-  },
-});
-
-/**
- * How far around a limb measures, as a fraction of its own length. Limbs are
- * measured this way, and a bone gives its length directly, so this needs no
- * body height: a short arm is thin and a long one thick, whatever the body's
- * size.
- *
- * From ANSUR II (2012 US Army survey, 4082 men and 1986 women), taking each
- * limb's circumference over the length between the joints that bound it. The
- * two sexes agree to within about 0.1, so one number per limb serves.
- */
-export const byCircumference = (
-  circumference: number,
-  { length = 1 }: { length?: number } = {}
-): ShapeScale => ({
-  compute: ({ model, boneLength }) => {
-    const modelCircumference = (Math.PI * (model.width + model.depth)) / 2;
-    const girth = (circumference * boneLength) / modelCircumference;
-    return { width: girth, depth: girth, length: (boneLength / model.length) * length };
   },
 });
 
@@ -216,11 +182,15 @@ const model = (
   ...overrides,
 });
 
+const fingerScale = spanBone({ girthFrom: 'hand' });
 const finger = (file: string) =>
-  part(model(file, { offset: inMetres({ width: -0.003 }) }));
+  part(model(file, { scale: fingerScale, offset: inMetres({ width: -0.003 }) }));
 const fingerRight = (file: string) =>
   part(
-    model(file, { scale: otherSide(spanBone()), offset: inMetres({ width: 0.003 }) })
+    model(file, {
+      scale: otherSide(fingerScale),
+      offset: inMetres({ width: 0.003 }),
+    })
   );
 
 // Toe bones are drawn along their local y like the foot, so +y is back toward the ankle.
@@ -228,7 +198,7 @@ const fingerRight = (file: string) =>
 // shows. The length ratio keeps the tip on the bone's tail despite the tuck.
 const TOE_TUCK = 0.5;
 const toeScale = (width: number, depth: number) =>
-  spanBone({ width, depth, length: 1 + TOE_TUCK });
+  spanBone({ width, depth, length: 1 + TOE_TUCK, girthFrom: 'foot' });
 const toeOffset = inBoneLengths({ length: TOE_TUCK, depth: 0.11 });
 const toe = (file: string, scale = toeScale(1.3, 1.0)) =>
   part(model(file, { scale, offset: toeOffset }));
@@ -236,25 +206,39 @@ const toeRight = (file: string, scale = toeScale(1.3, 1.0)) =>
   part(model(file, { scale: otherSide(scale), offset: toeOffset }));
 const bigToeScale = toeScale(1.3, 1.15);
 
+const HEAD_SIZE_EXPONENT = 0.25;
+const headSize = ({ bodyScale }: SkeletonProportions) =>
+  bodyScale ** HEAD_SIZE_EXPONENT;
+// The head bone has no length, so the skull keeps the size it had at the old 0.1 m bone.
+const headScale: ShapeScale = {
+  compute: ({ proportions }) => {
+    const size = headSize(proportions);
+    return { width: size, depth: size, length: 1.04 * size };
+  },
+};
+const headOffset: ShapeOffset = ({ proportions }) =>
+  new Vector3(0, 0.005 * headSize(proportions), 0);
+
+// Neck circumference goes as stature^0.59 (Snyder et al. 1977), so the neck is thicker
+// than linear scaling gives on a short body and thinner on a tall one.
+const NECK_GIRTH_EXPONENT = 0.6;
+const neckScale: ShapeScale = {
+  compute: ({ model, proportions, boneLength }) => {
+    const girth = proportions.bodyScale ** NECK_GIRTH_EXPONENT;
+    return { width: girth, depth: girth, length: boneLength / model.length };
+  },
+};
+
 const shoulderScale = spanBone({ width: 0.8, depth: 0.8, length: 1.3 });
-const handScale = spanBone({ width: 1.0, depth: 1.0, length: 1.0 });
-const upperArmScale = byCircumference(1.2, { length: 1.0 });
-const lowerArmScale = byCircumference(1.0, { length: 1.0 });
+const handScale = spanBone({ width: 1.0, depth: 1.0, length: 1.0, girthFrom: 'hand' });
+const upperArmScale = spanBone({ girthFrom: 'shoulders', width: 0.87, depth: 0.87 });
+const lowerArmScale = spanBone({ girthFrom: 'shoulders', width: 0.89, depth: 0.89 });
 const upperLegScale = spanBone({ girthFrom: 'hips', length: 1.0 });
 const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.9 });
-const REFERENCE_FOOT_LENGTH = 0.13;
-const TOE_ROW_SPREAD = 0.46;
-const TOE_ROW_EDGES = 0.028;
 const footScale: ShapeScale = {
-  compute: ({ proportions, boneLength }) => {
-    const toeRowSpan =
-      TOE_ROW_SPREAD * boneLength + TOE_ROW_EDGES * proportions.bodyScale;
-    const referenceSpan = TOE_ROW_SPREAD * REFERENCE_FOOT_LENGTH + TOE_ROW_EDGES;
-    return {
-      width: (0.9 * toeRowSpan) / referenceSpan,
-      length: (1.12 * boneLength) / REFERENCE_FOOT_LENGTH,
-      depth: 1.14 * proportions.bodyScale,
-    };
+  compute: ({ boneLength }) => {
+    const ratio = boneLength / RIG_FOOT_LENGTH;
+    return { width: 0.9 * ratio, length: 1.12 * ratio, depth: 1.14 * ratio };
   },
 };
 // Forward follows foot length; the drop from the ankle to the sole doesn't.
@@ -277,14 +261,14 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.NONE]: part(shape(), { visible: false }),
   [BodyPart.HEAD]: part(
     model('head', {
-      scale: authoredSize({ length: 1.04 }),
-      offset: inMetres({ length: 0.005 }),
+      scale: headScale,
+      offset: headOffset,
     }),
     { trackerAnchor: new Vector3(0, 0.2, 0) }
   ),
   [BodyPart.NECK]: part(
     model('neck', {
-      scale: spanBone({ width: 1, depth: 1, length: 1 }),
+      scale: neckScale,
       offset: inBoneLengths({ length: -0.0 }),
     })
   ),

@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.vrchat.EYE_HEIGHT_TO_HEIGHT_RATIO
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.times
 import solarxr_protocol.datatypes.BodyPart
@@ -7,25 +8,124 @@ import solarxr_protocol.rpc.SkeletonBone
 import kotlin.collections.map
 import kotlin.collections.plus
 
-// TODO : Placeholder, move this to config defaults somehow
-val DEFAULT_PROPORTIONS = mapOf(
-	SkeletonBone.NECK to 0.1f,
-	SkeletonBone.UPPER_CHEST to 0.16f,
-	SkeletonBone.LOWER_CHEST to 0.16f,
-	SkeletonBone.UPPER_WAIST to 0.1f,
-	SkeletonBone.LOWER_WAIST to 0.1f,
-	SkeletonBone.HIP to 0.04f,
-	SkeletonBone.HIPS_WIDTH to 0.26f,
-	SkeletonBone.UPPER_LEG to 0.42f,
-	SkeletonBone.LOWER_LEG to 0.5f,
-	SkeletonBone.FOOT_LENGTH to 0.13f,
-	SkeletonBone.FOOT_SHIFT to -0.05f,
-	SkeletonBone.SHOULDERS_DISTANCE to 0.06f,
-	SkeletonBone.SHOULDERS_WIDTH to 0.35f,
-	SkeletonBone.UPPER_ARM to 0.26f,
-	SkeletonBone.LOWER_ARM to 0.26f,
-	SkeletonBone.HAND to 0.08f,
+data class BoneSpec(val default: Float, val min: Float, val max: Float, val curve: List<Pair<Float, Float>>)
+
+private val LINEAR_WITH_HEIGHT = listOf(1f to 1f)
+
+// The curves below are generated from two public surveys:
+//  - Snyder, Schneider, Owings, Reynolds, Golomb and Schork, "Anthropometry of Infants, Children, and
+//    Youths to Age 18 for Product Safety Design" (University of Michigan Highway Safety Research
+//    Institute, 1977; US Consumer Product Safety Commission). 3,900 people from 0.7 to 2.1 m.
+//  - NHANES 2015-2016 and 2017-2018 body measurements (US National Center for Health Statistics, public
+//    domain). 18,000 people aged 2 and up. It only measures the upper arm and upper leg here.
+//
+// Each is a measurement divided by stature, averaged over people within 0.1 m of the stature given, then
+// divided by the same average for people 1.6 to 2.1 m tall. Where both surveys measure a bone the two
+// curves are averaged. Flat at 1 from where it reaches adult values. Below 0.9 m the sample is small.
+
+// Upper leg length (Snyder: trochanteric minus tibiale height; NHANES: upper leg length). NHANES has
+// no one under 1.2 m.
+private val UPPER_LEG_LENGTH_BY_STATURE = listOf(
+	0.9f to 0.864f,
+	1.0f to 0.889f,
+	1.1f to 0.927f,
+	1.2f to 0.964f,
+	1.3f to 0.980f,
+	1.4f to 0.990f,
+	1.5f to 0.990f,
+	1.6f to 1.000f,
 )
+
+// Lower leg length (Snyder only: tibiale minus sphyrion height).
+private val LOWER_LEG_LENGTH_BY_STATURE = listOf(
+	0.9f to 0.872f,
+	1.0f to 0.893f,
+	1.1f to 0.922f,
+	1.2f to 0.953f,
+	1.3f to 0.983f,
+	1.4f to 1.000f,
+)
+
+// Upper arm length (Snyder: acromion to radiale; NHANES: upper arm length).
+private val UPPER_ARM_LENGTH_BY_STATURE = listOf(
+	0.8f to 0.917f,
+	0.9f to 0.929f,
+	1.0f to 0.933f,
+	1.1f to 0.938f,
+	1.2f to 0.947f,
+	1.3f to 0.960f,
+	1.4f to 0.979f,
+	1.5f to 1.000f,
+)
+
+// Forearm length (Snyder only: radiale to stylion).
+private val LOWER_ARM_LENGTH_BY_STATURE = listOf(
+	0.9f to 0.950f,
+	1.0f to 0.961f,
+	1.1f to 0.971f,
+	1.2f to 0.970f,
+	1.3f to 0.975f,
+	1.4f to 0.982f,
+	1.5f to 0.986f,
+	1.6f to 1.000f,
+)
+
+// Hand length (Snyder only).
+private val HAND_LENGTH_BY_STATURE = listOf(
+	0.8f to 1.045f,
+	0.9f to 1.046f,
+	1.0f to 1.041f,
+	1.1f to 1.031f,
+	1.2f to 1.019f,
+	1.3f to 1.011f,
+	1.4f to 1.012f,
+	1.5f to 1.010f,
+	1.6f to 1.000f,
+)
+
+// Foot length (Snyder only). Children under 1.5 m sit a flat 4 to 5% above adults, then it comes down.
+private val FOOT_LENGTH_BY_STATURE = listOf(
+	0.8f to 1.039f,
+	0.9f to 1.049f,
+	1.0f to 1.048f,
+	1.1f to 1.041f,
+	1.2f to 1.039f,
+	1.3f to 1.040f,
+	1.4f to 1.039f,
+	1.5f to 1.026f,
+	1.6f to 1.000f,
+)
+
+// Shoulder width (Snyder only: biacromial breadth).
+private val SHOULDERS_WIDTH_BY_STATURE = listOf(
+	0.9f to 1.053f,
+	1.0f to 1.043f,
+	1.1f to 1.031f,
+	1.2f to 1.019f,
+	1.3f to 1.000f,
+)
+
+// TODO : Placeholder, move the defaults to config defaults somehow
+val BONE_SPECS: Map<SkeletonBone, BoneSpec> = mapOf(
+	SkeletonBone.NECK to BoneSpec(default = 0.1f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.UPPER_CHEST to BoneSpec(default = 0.16f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.LOWER_CHEST to BoneSpec(default = 0.16f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.UPPER_WAIST to BoneSpec(default = 0.1f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.LOWER_WAIST to BoneSpec(default = 0.1f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.HIP to BoneSpec(default = 0.04f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.HIPS_WIDTH to BoneSpec(default = 0.26f, min = 0.01f, max = 0.6f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.UPPER_LEG to BoneSpec(default = 0.42f, min = 0.01f, max = 0.8f, curve = UPPER_LEG_LENGTH_BY_STATURE),
+	SkeletonBone.LOWER_LEG to BoneSpec(default = 0.5f, min = 0.01f, max = 0.8f, curve = LOWER_LEG_LENGTH_BY_STATURE),
+	SkeletonBone.FOOT_LENGTH to BoneSpec(default = 0.13f, min = 0.01f, max = 0.4f, curve = FOOT_LENGTH_BY_STATURE),
+	SkeletonBone.FOOT_SHIFT to BoneSpec(default = -0.05f, min = -0.5f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.SHOULDERS_DISTANCE to BoneSpec(default = 0.06f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.SHOULDERS_WIDTH to BoneSpec(default = 0.35f, min = 0.01f, max = 0.8f, curve = SHOULDERS_WIDTH_BY_STATURE),
+	SkeletonBone.UPPER_ARM to BoneSpec(default = 0.26f, min = 0.01f, max = 0.6f, curve = UPPER_ARM_LENGTH_BY_STATURE),
+	SkeletonBone.LOWER_ARM to BoneSpec(default = 0.26f, min = 0.01f, max = 0.6f, curve = LOWER_ARM_LENGTH_BY_STATURE),
+	SkeletonBone.HAND to BoneSpec(default = 0.08f, min = 0.01f, max = 0.3f, curve = HAND_LENGTH_BY_STATURE),
+)
+
+val DEFAULT_PROPORTIONS: Map<SkeletonBone, Float> = BONE_SPECS.mapValues { (_, spec) -> spec.default }
 
 // Set of SkeletonBones whose lengths sum to standing height (spine + legs).
 // Arms are excluded: they scale with height but are not part of the height measurement.
@@ -80,11 +180,20 @@ private val BONE_HEAD_OFFSET_TO_VALUES: BodyPartMap<Map<SkeletonBone, Vector3>> 
 // Used to normalize HEIGHT_SCALED_BONE_RATIOS.
 val DEFAULT_HEIGHT = DEFAULT_PROPORTIONS.height()
 
-// Per-bone fraction of total standing height, includes spine, legs, and arms, all bones
-// whose length scales with user height.
-// Non-height bones (HEAD, HIPS_WIDTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
+// Per-bone fraction of total standing height: the spine, legs and arms, the hand and foot, and the
+// widths and offsets between them (hips, shoulders, foot shift), so a short user is narrow as well as short.
 private val HEIGHT_SCALED_BONE_RATIOS: Map<SkeletonBone, Float> = (
-	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM, SkeletonBone.HAND, SkeletonBone.FOOT_LENGTH)
+	HEIGHT_CONTRIBUTING_BONES +
+		setOf(
+			SkeletonBone.UPPER_ARM,
+			SkeletonBone.LOWER_ARM,
+			SkeletonBone.HAND,
+			SkeletonBone.FOOT_LENGTH,
+			SkeletonBone.FOOT_SHIFT,
+			SkeletonBone.HIPS_WIDTH,
+			SkeletonBone.SHOULDERS_DISTANCE,
+			SkeletonBone.SHOULDERS_WIDTH,
+		)
 	).associateWith { (DEFAULT_PROPORTIONS[it] ?: 0f) / DEFAULT_HEIGHT }
 
 // Sums the HEIGHT_CONTRIBUTING_BONES lengths to derive standing height.
@@ -92,11 +201,27 @@ fun Map<SkeletonBone, Float>.height(): Float = HEIGHT_CONTRIBUTING_BONES.sumOf {
 	this[bone]?.toDouble() ?: 0.0
 }.toFloat()
 
+private fun interpolate(points: List<Pair<Float, Float>>, x: Float): Float {
+	val (firstX, firstY) = points.first()
+	if (x <= firstX) return firstY
+	val (lastX, lastY) = points.last()
+	if (x >= lastX) return lastY
+	val (x0, y0) = points.last { it.first <= x }
+	val (x1, y1) = points.first { it.first > x }
+	return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+}
+
 // Returns proportions keyed by SkeletonBone.name for config storage.
 // Only height-scaled bones are included.
-fun computeDefaultProportionsByBone(height: Float): Map<String, Float> = HEIGHT_SCALED_BONE_RATIOS
-	.mapKeys { (bone, _) -> bone.name }
-	.mapValues { (_, ratio) -> height * ratio }
+fun computeDefaultProportionsByBone(height: Float): Map<String, Float> {
+	val stature = height / EYE_HEIGHT_TO_HEIGHT_RATIO
+	val weights = HEIGHT_SCALED_BONE_RATIOS.mapValues { (bone, ratio) -> ratio * interpolate(BONE_SPECS.getValue(bone).curve, stature) }
+	// The height bones still sum to the height, so those without a curve take the length the others give up.
+	val heightBonesWeight = HEIGHT_CONTRIBUTING_BONES.sumOf { weights.getValue(it).toDouble() }.toFloat()
+	return weights.map { (bone, weight) ->
+		bone.name to height * if (bone in HEIGHT_CONTRIBUTING_BONES) weight / heightBonesWeight else weight
+	}.toMap()
+}
 
 // Returns proportions for all tracked bones: height-scaled + default lengths for the rest.
 fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
@@ -143,9 +268,14 @@ fun toBoneValues(tailOffsets: BodyPartMap<Vector3>, headOffsets: BodyPartMap<Vec
 		.mapValues { it.value.first() }
 }
 
-fun configToBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions.mapKeys {
-	SkeletonBone.entries.firstOrNull { cfg -> cfg.name == it.key } ?: SkeletonBone.NONE
-}
+fun clampBoneValue(bone: SkeletonBone, value: Float): Float = BONE_SPECS.getValue(bone).let { value.coerceIn(it.min, it.max) }
+
+fun configToBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions
+	.mapNotNull { (name, value) ->
+		val bone = BONE_SPECS.keys.firstOrNull { it.name == name } ?: return@mapNotNull null
+		bone to clampBoneValue(bone, value)
+	}
+	.toMap()
 
 // Fraction of a finger's length taken by each phalanx, hand-ward to tip-ward. Sums to 1.
 private val PHALANX_RATIOS = floatArrayOf(0.5f, 0.283f, 0.217f)

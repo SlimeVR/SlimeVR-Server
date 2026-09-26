@@ -64,6 +64,10 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
     SkeletonProportionsResponseT,
     'pack'
   > | null>(null);
+  const clampBone = (bone: SkeletonBone, value: number) => {
+    const part = skeleton?.skeletonParts.find((p) => p.bone === bone);
+    return part ? Math.min(Math.max(value, part.minValue), part.maxValue) : value;
+  };
   const bodyPartsGrouped: Label[] = useMemo(() => {
     if (!skeleton) return [];
     if (type === 'linear') {
@@ -153,7 +157,10 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
           const currentRatio = currentValue.value / oldGroupTotal;
           sendRPCPacket(
             RpcMessage.ChangeSkeletonProportionsRequest,
-            new ChangeSkeletonProportionsRequestT(part, params.newValue * currentRatio)
+            new ChangeSkeletonProportionsRequestT(
+              part,
+              clampBone(part, params.newValue * currentRatio)
+            )
           );
         }
       }
@@ -166,7 +173,10 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         const oldGroupTotal = skeleton.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
-        const newValue = Math.max(part.value + oldGroupTotal * params.newValue, 0); // the new ratio is computed from the group size and not the bone
+        const newValue = clampBone(
+          params.bone,
+          part.value + oldGroupTotal * params.newValue
+        );
 
         sendRPCPacket(
           RpcMessage.ChangeSkeletonProportionsRequest,
@@ -185,7 +195,10 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
             RpcMessage.ChangeSkeletonProportionsRequest,
             new ChangeSkeletonProportionsRequestT(
               part,
-              currentValue.value - (diffValue / (group.length - 1)) * signDiff
+              clampBone(
+                part,
+                currentValue.value - (diffValue / (group.length - 1)) * signDiff
+              )
             )
           );
         }
@@ -194,7 +207,10 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
       if (params.type === 'bone') {
         sendRPCPacket(
           RpcMessage.ChangeSkeletonProportionsRequest,
-          new ChangeSkeletonProportionsRequestT(params.bone, params.newValue)
+          new ChangeSkeletonProportionsRequestT(
+            params.bone,
+            clampBone(params.bone, params.newValue)
+          )
         );
       }
       sendRPCPacket(

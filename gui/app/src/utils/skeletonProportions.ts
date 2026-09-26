@@ -29,6 +29,9 @@ export interface SkeletonProportions {
   bodyScale: number;
   shoulderWidth: number;
   hipWidth: number;
+  /** The hand and foot bones' lengths, which the fingers and toes are sized from. */
+  handLength: number;
+  footLength: number;
 }
 
 function sumBoneLengths(bones: Map<BodyPart, BoneT>, parts: BodyPart[]) {
@@ -87,5 +90,7 @@ export function deriveSkeletonProportions(
     bodyScale,
     shoulderWidth,
     hipWidth,
+    handLength: bones.get(BodyPart.LEFT_HAND)?.boneLength ?? 0,
+    footLength: bones.get(BodyPart.LEFT_FOOT)?.boneLength ?? 0,
   };
 }

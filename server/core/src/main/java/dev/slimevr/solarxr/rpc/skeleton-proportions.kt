@@ -3,9 +3,11 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.skeleton.ALL_BODY_PARTS
+import dev.slimevr.skeleton.BONE_SPECS
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.clampBoneValue
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.skeleton.height
@@ -27,9 +29,6 @@ import solarxr_protocol.rpc.SkeletonProportionsResponse
 
 private const val MIN_HEIGHT = 0.9f
 
-// Bones whose value is a signed offset rather than a length, so negatives are valid.
-private val SIGNED_BONES = setOf(SkeletonBone.FOOT_SHIFT)
-
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
@@ -38,7 +37,10 @@ class SkeletonProportionsBehaviour(
 		val tailOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
 		val headOffsets = BodyPartMap(boneInputs.mapValues { it.value.headOffset })
 		val boneValues = toBoneValues(tailOffsets, headOffsets)
-		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
+		val skeletonParts = boneValues.map { (bone, value) ->
+			val spec = BONE_SPECS.getValue(bone)
+			SkeletonPart(bone = bone, value = value, minValue = spec.min, maxValue = spec.max)
+		}
 		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
 	}
 
@@ -85,7 +87,7 @@ class SkeletonProportionsBehaviour(
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone
 			if (bone == SkeletonBone.NONE) return@on
-			val value = if (bone in SIGNED_BONES) req.value else req.value.coerceAtLeast(0f)
+			val value = clampBoneValue(bone, req.value)
 
 			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
 		}.launchIn(receiver.context.scope)
