@@ -38,29 +38,15 @@ unit-cm = Zentimeter
 
 ## Dropdown
 
-dropdown_select-all = Alles auswählen
-dropdown_unselect-all = Alles abwählen
 
 ## Text input
 
-# Accessible name for the eye button that reveals/hides a typed password
-input-password-show = Passwort anzeigen
-input-password-hide = Passwort verstecken
 
 ## File input
 
-# Accessible name and tooltip for the icon-only button that clears a picked path
-file_input-clear = Datei leeren
-file_input-clear_folder = Ordner leeren
 
 ## Window controls
 
-# Accessible names for the icon-only buttons in the title bar
-titlebar-docs = Dokumentation öffnen
-titlebar-settings = Einstellungen öffnen
-titlebar-update = Update herunterladen
-titlebar-minimize = Minimieren
-titlebar-maximize = Maximieren
 titlebar-close = Schließen
 
 ## Body parts
@@ -76,9 +62,6 @@ body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
 body_part-RIGHT_LOWER_LEG = Rechter Knöchel
 body_part-RIGHT_FOOT = Rechter Fuß
 body_part-UPPER_CHEST = Obere Brust
-body_part-LOWER_CHEST = Untere Brust
-body_part-UPPER_WAIST = Obere Taille
-body_part-LOWER_WAIST = Untere Taille
 body_part-HIP = Hüfte
 body_part-LEFT_SHOULDER = Linke Schulter
 body_part-LEFT_UPPER_ARM = Linker Oberarm
@@ -117,17 +100,7 @@ body_part-RIGHT_RING_DISTAL = Rechtes Ringfinger-Endglied
 body_part-RIGHT_LITTLE_PROXIMAL = Rechtes Kleinfinger-Grundglied
 body_part-RIGHT_LITTLE_INTERMEDIATE = Rechtes Kleinfinger-Mittelglied
 body_part-RIGHT_LITTLE_DISTAL = Rechtes Kleinfinger-Endglied
-body_part-LEFT_BIG_TOE = Linker großer Zeh
-body_part-LEFT_INDEX_TOE = Linker zweiter Zeh
-body_part-LEFT_MIDDLE_TOE = Linker dritter Zeh
-body_part-LEFT_RING_TOE = Linker vierter Zeh
-body_part-LEFT_LITTLE_TOE = Linker kleiner Zeh
 body_part-RIGHT_TOES = Rechte Zehen
-body_part-RIGHT_BIG_TOE = Rechter großer Zeh
-body_part-RIGHT_INDEX_TOE = Rechter zweiter Zeh
-body_part-RIGHT_MIDDLE_TOE = Rechter dritter Zeh
-body_part-RIGHT_RING_TOE = Rechter vierter Zeh
-body_part-RIGHT_LITTLE_TOE = Rechter kleiner Zeh
 
 ## BoardType
 
@@ -161,10 +134,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 ## Proportions
 
 skeleton_bone-NONE = Keine
-skeleton_bone-HEAD = Kopfverschiebung
-skeleton_bone-HEAD-desc =
-    Dies ist der Abstand von Ihrem Headset zur Mitte Ihres Kopfes.
-    Um ihn anzupassen, bewegen Sie den Kopf von links nach rechts, als würden Sie „nein“ sagen. Ändern Sie den Wert so lange, bis sich die anderen Tracker nicht mehr mitbewegen.
 skeleton_bone-NECK = Halslänge
 skeleton_bone-NECK-desc =
     Dies ist der Abstand von der Mitte Ihres Kopfes bis zum Ansatz Ihres Nackens.
@@ -177,7 +146,6 @@ skeleton_bone-UPPER_CHEST = Obere Brustlänge
 skeleton_bone-UPPER_CHEST-desc =
     Dies ist der Abstand vom Ansatz Ihres Nackens bis zur Mitte Ihrer Brust.
     Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z. B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
-skeleton_bone-LOWER_CHEST = Untere Brustlänge
 skeleton_bone-LOWER_CHEST-desc =
     Dies ist der Abstand vom Ansatz der Brust bis zur Mitte Ihrer Wirbelsäule.
     Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z.B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
@@ -380,13 +348,10 @@ mounting_selection_menu-close = Schließen
 settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
 settings-sidebar-driver = SteamVR / Monado
-settings-sidebar-resets = Zurücksetzen
 settings-sidebar-stay_aligned = Bleibe Ausgerichtet
-settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Tracker
 settings-sidebar-interface = Bedienoberfläche
 settings-sidebar-vrchat_osc = VRChat-OSC-Trackers
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
@@ -400,69 +365,36 @@ settings-sidebar-advanced = Erweitert
 
 ## Bone routing settings
 
-settings-routing = Knochenrouting
 settings-routing-description =
     Wählen Sie aus, was jede Ausgabe sendet.
     SteamVR/Monado, VRChat OSC und VMC können jeweils ein anderes Set von Körperteilen erhalten.
-settings-routing-mode = Routing Modus
-settings-routing-automatic-label = Automatisches Routing
 settings-routing-mode-description = Während automatisches Routing eingeschaltet ist, wählt SlimeVR den besten Output für jeden Knochen damit nichts zweimal gesendet wird: SteamVR/Monado ist bevorzugt, VRChat OSC deckt die Knochen ab, die es nicht aufnehmen kann und VMC bekommt immer das gesamte Skelett. Schalte es aus um selbst zu entscheiden wohin welcher Knochen gehen soll, einschließlich einen Knochen zu mehreren Outputs gleichzeitig senden.
-settings-routing-bone = Knochen
-settings-routing-cell-required = Pflicht für diesen Output
-settings-routing-cell-unavailable = Output ist auf dieser Plattform nicht verfügbar
-settings-routing-cell-duplicate = Knochen wird zu mehreren Outputs geleitet, die doppelte Tracker in Anwendungen anzeigen könnten
 settings-routing-duplicate-warning =
     { $bones } { $boneCount ->
         [one] ist
        *[many] sind
     } zu mehreren Ausgängen geleitet ({ $outputs }), die doppelte Tracker in Anwendungen anzeigen können.
-settings-routing-outputs = Outputs
-settings-routing-bones = Knochen
 settings-routing-bones-description = Ein Haken bedeutet, dass der Knochen zu diesem Output gesendet wird. Ein Bindestrich bedeutet, dass der Output diesen Knochen nicht unterstützt. Deaktiviere Automatisch um selbst zu wählen.
 settings-routing-output-driver = SteamVR / Monado
 settings-routing-output-vrc_osc = VRChat-OSC-Trackers
-settings-routing-output-vmc = VMC
-settings-routing-output-bone-count = { $routed } von { $accepts } Knochen geroutet
-settings-routing-output-badge-sending = Sende
-settings-routing-output-sending-description = Verbunden und empfange Knochen.
-settings-routing-output-badge-stopped = Nicht aktiv
 settings-routing-output-stopped-description = SteamVR oder Monado Treiber nicht verbunden.
-settings-routing-output-badge-idle = Leerlauf
-settings-routing-output-idle-description = Aktiv, aber ein entfernter Endpunkt wurde nicht gefunden.
 settings-routing-output-badge-off = Aus
-settings-routing-output-off-description = In seinen Einstellungen deaktiviert.
-settings-routing-output-badge-empty = Nichts weitergeleitet
-settings-routing-output-empty-description = Aktiv, aber keine Knochen wurden geroutet.
-settings-routing-output-badge-unavailable = Nicht verfügbar
-settings-routing-output-unavailable-description = Output ist auf dieser Plattform nicht verfügbar.
-settings-routing-group-spine = Wirbelsäule & Torso
-settings-routing-group-legs = Beine
-settings-routing-group-arms = Arme
 settings-routing-group-fingers = Finger
-settings-routing-row-left_fingers = Linke Finger
-settings-routing-row-right_fingers = Rechte Finger
 settings-routing-hands-warning =
     <b>Warnung:</b> Die Hände zu SteamVR/Monado zu leiten ersetzt den Input deiner echten Controller.
     Tue dies nur, wenn du willst, dass SlimeVR Tracker deine Hände tracken.
     
     Trotzdem die Hände dorthin leiten?
 settings-routing-hands-warning-cancel = Abbruch
-settings-routing-hands-warning-done = Hände leiten
 
 ## SteamVR / Monado output settings
 
 settings-driver = SteamVR / Monado
 settings-driver-description = Einstellungen für den SlimeVR-Treiber, verwendet von SteamVR und Monado gleichermaßen.
 settings-driver-enable = Aktivieren
-settings-driver-enable-description = Sende deine Tracker über den SlimeVR-Treiber zu SteamVR oder Monado. Solange dies ausgeschaltet ist, kannst du dich nicht mit SlimeVR verbinden.
 settings-driver-enable-label = Aktiviere SteamVR / Monado
-settings-driver-status-title = Status
 settings-driver-status-connection = Treiberverbindung
-settings-driver-status-badge-connected = Verbunden
-settings-driver-status-badge-waiting = Warte
 settings-driver-status-badge-disabled = Aus
-settings-driver-status-badge-unavailable = Nicht verfügbar
-settings-driver-status-connection-connected = Ein Treiber ist verbunden und empfängt deine Tracker.
 settings-driver-status-connection-waiting = Warte auf die Verbindung von SteamVR oder Monado über den SlimeVR Treiber.
 
 ## Tracker mechanics
@@ -585,7 +517,6 @@ settings-general-gesture_control-fullResetTaps = Antipp-Anzahl für einen vollst
 settings-general-gesture_control-mountingResetEnabled = Aktivieren von Antippen für Reset der Tracker-Ausrichtung
 settings-general-gesture_control-mountingResetDelay = Verzögerung von Reset der Tracker-Ausrichtung
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
-settings-general-gesture_control-mountingResetTracker = Reset-Tracker einbinden
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
 settings-general-gesture_control-numberTrackersOverThreshold-description = Erhöhen Sie diesen Wert wenn Tipp-Erkennung nicht funktioniert. Setzen Sie den Wert nicht höher als benötigt, da dies Fehlauslöser verursachen kann.
@@ -624,7 +555,6 @@ settings-general-interface-connected_trackers_warning-label = Warnung vor verbun
 
 settings-interface-behavior = Verhalten
 settings-general-interface-dev_mode = Entwicklermodus
-settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
 settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-use_tray = In den Infobereich minimieren
 settings-general-interface-use_tray-description = Erlaubt Ihnen, das Fenster zu schließen, ohne den SlimeVR-Server zu beenden. Dies erlaubt Ihnen diesen weiterzuverwenden, ohne dass das Fenster stört.
@@ -651,10 +581,7 @@ settings-interface-behavior-bvh_directory-description = Wähle ein Verzeichnis, 
 settings-interface-behavior-bvh_directory-label = Verzeichnis für BVH-Aufnahmen
 settings-interface-behavior-skeleton_mesh = Skelettvorschau Stil
 settings-interface-behavior-skeleton_mesh-description = Zeichne die Körpervorschau mit festen 3D-Formen anstatt simplen Linien. Deaktiviere dies auf Low-End-Maschinen.
-settings-interface-behavior-skeleton_mesh-label = 3D Formen verwenden
-settings-interface-behavior-controller_nav = Game Controller Navigation
 settings-interface-behavior-controller_nav-description = Bewege den Fokus über das Interface mit einem Spiele-Controller: Das D-Pad oder der linke Stick bewegt sich zwischen den Steuerelementen, A aktiviert, B geht zurück, nur wenn ein Controller angeschlossen ist. Strg oder Alt mit den Pfeiltasten gedrückt zu halten fokussiert immer gleich.
-settings-interface-behavior-controller_nav-label = Mit einem Controller navigieren
 
 ## Serial settings
 
@@ -674,14 +601,7 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Ich weiß, was ich tue
 settings-serial-factory_reset-warning-cancel = Abbruch
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
-settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = WLAN-Scan
-settings-serial-enter_pairing = Pairing starten
-settings-serial-exit_pairing = Pairing beenden
-settings-serial-calibrate = Kalibrieren
-settings-serial-six_side_calibrate = 6-seitige Kalibrierung
-settings-serial-dfu = DFU eingeben
-settings-serial-meow = Miau!
 settings-serial-save_logs = In Datei speichern
 settings-serial-send_command = Senden
 settings-serial-send_command-placeholder = Befehl...
@@ -714,22 +634,12 @@ settings-osc-vrchat-network-address-placeholder = VRChat-IP-Adresse
 
 ## VRChat OSC status
 
-settings-osc-vrchat-status-title = Status
-settings-osc-vrchat-status-input = Input
 settings-osc-vrchat-status-tracking = Drehung
-settings-osc-vrchat-status-output = Output
 settings-osc-vrchat-status-oscquery = OSCQuery
-settings-osc-vrchat-status-input-idle = Nicht empfangend
-settings-osc-vrchat-status-input-listening = Empfangend auf Port { $port }
 settings-osc-vrchat-status-input-last-data = Letzte Daten von VRChat: { $elapsed}.
 settings-osc-vrchat-status-input-no-data = Noch keine Daten von VRChat empfangen.
-settings-osc-vrchat-status-tracking-received = Letzte Pose erhalten: { $elapsed }.
 settings-osc-vrchat-status-tracking-disabled = VRChat ist verbunden, sendet aber keine Kopf-/Handgeld-Tracking-Daten. Aktiviere die OSC-Tracking-Daten in den VRChat-Einstellungen. <OscTrackingLink>Wie aktivieren?</OscTrackingLink>
 settings-osc-vrchat-status-tracking-unknown = Warten auf Verbindung zu VRChat.
-settings-osc-vrchat-status-output-idle = Kein Ziel
-settings-osc-vrchat-status-output-waiting = Ziel { $address }:{ $port } ({ $source }), noch kein Rahmen gesendet
-settings-osc-vrchat-status-output-sending = Senden an { $address }:{ $port } ({ $source})
-settings-osc-vrchat-status-output-target = Target { $address }:{ $port } ({ $source })
 settings-osc-vrchat-status-badge-error = Fehler
 settings-osc-vrchat-status-badge-unknown = Unbekannt
 
@@ -1350,8 +1260,6 @@ tracking_checklist-TRACKER_ERROR-desc = Einige deiner Tracker haben einen Fehler
 tracking_checklist-VRCHAT_SETTINGS = VRChat-Einstellungen konfigurieren
 tracking_checklist-VRCHAT_SETTINGS-desc = Du hast die VRChat-Einstellungen falsch konfiguriert! Das kann sich negativ auf dein Tracking auswirken.
 tracking_checklist-VRCHAT_SETTINGS-open = Gehen sie zu den VRChat-Warnungen
-tracking_checklist-UNASSIGNED_HMD = VR-Headset nicht dem Kopf zugewiesen
-tracking_checklist-UNASSIGNED_HMD-desc = Das VR-Headset sollte als Kopf-Tracker zugewiesen sein.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Ändere dein Netzwerkprofil
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->

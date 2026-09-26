@@ -109,11 +109,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
 ## Proportions
 
 skeleton_bone-NONE = Ninguno
-skeleton_bone-HEAD = Desplazamiento de la cabeza
-skeleton_bone-HEAD-desc =
-    Esta es la distancia desde el visor hasta la mitad de la cabeza.
-    Para ajustarlo, mueve la cabeza de izquierda a derecha como si no estuvieras de acuerdo y modifícalo
-    hasta que el movimiento en otros trackers sea insignificante.
 skeleton_bone-NECK = Longitud del cuello
 skeleton_bone-NECK-desc =
     Esta es la distancia desde el medio de tu cabeza hasta la base de tu cuello.
@@ -580,7 +575,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Sé lo que estoy haciendo
 settings-serial-factory_reset-warning-cancel = Cancelar
 settings-serial-serial_select = Selecciona un puerto serial
-settings-serial-auto_dropdown_item = Automático
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
 settings-serial-save_logs = Guardar en archivo
 settings-serial-send_command = Enviar
@@ -1157,6 +1151,5 @@ error_collection_modal-cancel = No quiero
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Cierra
-tracking_checklist-UNASSIGNED_HMD-desc = El casco de RV debe asignarse como tracker de cabeza.
 toolbar-mounting_calibration = Verifique su montaje
 toolbar-mounting_calibration-feet = Pies

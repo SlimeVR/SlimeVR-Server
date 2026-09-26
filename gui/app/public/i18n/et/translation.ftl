@@ -68,7 +68,6 @@ board_type-UNKNOWN = Tundmatu
 ## Proportions
 
 skeleton_bone-NONE = Mitte midagi
-skeleton_bone-HEAD = Pea Nihe
 skeleton_bone-NECK = Kaela Pikkus
 skeleton_bone-torso_group = Torso pikkus
 skeleton_bone-UPPER_CHEST = Rinna ülaosa pikkus

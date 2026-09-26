@@ -85,7 +85,6 @@ board_type-CUSTOM = Egendefinert brett
 ## Proportions
 
 skeleton_bone-NONE = Ingen
-skeleton_bone-HEAD = Hode bytte
 skeleton_bone-NECK = Halslengde
 skeleton_bone-torso_group = Torsolengde
 skeleton_bone-HIP = Hofte-lengde

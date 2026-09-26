@@ -73,7 +73,6 @@ board_type-UNKNOWN = Không rõ
 ## Proportions
 
 skeleton_bone-NONE = Chưa được gán
-skeleton_bone-HEAD = Sai số đầu
 skeleton_bone-NECK = Chiều dài cổ
 skeleton_bone-torso_group = Độ dài thân
 skeleton_bone-UPPER_CHEST = Độ dài ngực trên
@@ -412,7 +411,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Tôi biết mình đang làm gì
 settings-serial-factory_reset-warning-cancel = Hủy
 settings-serial-serial_select = Chọn cổng Serial
-settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
 settings-serial-save_logs = Lưu vào tệp
 settings-serial-send_command-warning-ok = Tôi biết mình đang làm gì
@@ -811,6 +809,5 @@ vrc_config-avatar_measurement_type-UNKNOWN = Không rõ
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Đóng
-tracking_checklist-UNASSIGNED_HMD-desc = Kính thực tế ảo VR này nên được giao là bộ theo dõi đầu.
 toolbar-mounting_calibration = Đặt lại hướng gắn
 toolbar-mounting_calibration-feet = Bàn chân
