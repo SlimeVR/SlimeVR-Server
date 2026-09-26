@@ -391,7 +391,7 @@ tracker-settings-use_mag-label = 允許使用這個追蹤器的磁力計
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追蹤器名稱
-tracker-settings-name_section-description = 給它起一個可愛的名字吧 ^^
+tracker-settings-name_section-description = 給它起一個可愛的名字吧 owo
 tracker-settings-name_section-placeholder = ↖★煞氣a黑貓☆↘的美味右腿
 tracker-settings-name_section-label = 追蹤器名稱
 tracker-settings-forget = 忘記追蹤器
