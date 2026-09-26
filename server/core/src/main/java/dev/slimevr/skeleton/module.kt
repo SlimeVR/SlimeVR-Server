@@ -178,12 +178,19 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 }
 
 sealed interface SkeletonActions {
-	data class SetBonePose(val bodyPart: BodyPart, val trackerOffset: Vector3, val expectedTps: UShort, val rotation: Quaternion, val acceleration: Vector3?, val position: Vector3?) : SkeletonActions
+	data class SetBonePose(
+		val bodyPart: BodyPart,
+		val trackerOffset: Vector3?,
+		val expectedTps: UShort?,
+		val rotation: Quaternion?,
+		val acceleration: Vector3?,
+		val position: Vector3?,
+		val switchActive: Boolean = true,
+	) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
-	data class SetHeadPosition(val position: Vector3?) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
 	data object ResetFloorLevel : SkeletonActions
 	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions

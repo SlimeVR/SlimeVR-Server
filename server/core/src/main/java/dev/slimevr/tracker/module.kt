@@ -70,7 +70,7 @@ data class TrackerState(
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
 	val restOrientation: RestOrientation,
-	val lastReference: Quaternion,
+	val lastReference: Quaternion?,
 	val sessionCalibration: SessionCalibration,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,

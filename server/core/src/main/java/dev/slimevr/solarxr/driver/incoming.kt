@@ -22,6 +22,7 @@ import solarxr_protocol.driver_protocol.UpdateTrackerStatus
 import kotlin.to
 
 // TODO add more devices and retest Knuckles
+//  HMDs might all have the same offset
 private val DISPLAY_NAME_TO_INTENDED_OFFSET = mapOf(
 	"Beyond" to Vector3(0f, 0f, 0.1f),
 	"Knuckles Left" to Vector3(0f, 0.11f, 0.08f),

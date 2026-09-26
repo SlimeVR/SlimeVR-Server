@@ -28,7 +28,7 @@ fun reduce(
 		} else {
 			rawRotation
 		}
-		val polarityAlign = if (state.rotationDirty) {
+		val polarityAlign = if (state.rotationDirty && state.lastReference != null) {
 			// Reset polarity according to last reference rotation.
 			state.lastReference
 		} else {
@@ -67,6 +67,7 @@ fun reduce(
 			position = position,
 			accumulatedTicks = accumulatedTicks,
 			rotationDirty = false,
+			lastReference = null,
 		)
 	}
 

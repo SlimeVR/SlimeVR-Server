@@ -7,20 +7,17 @@ import solarxr_protocol.datatypes.BodyPart
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBonePose -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		// Rotation always non-null and active
-		// Accel always non-null but not always active
-		// Position not always non-null and not always active
 		state.copy(
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
-					trackerOffset = action.trackerOffset,
-					expectedTps = bone.expectedTps,
-					rotation = action.rotation,
-					isRotationActive = true,
-					acceleration = action.acceleration ?: Vector3.ZERO,
-					isAccelerationActive = action.acceleration != null,
-					position = action.position,
-					isPositionActive = action.position != null,
+					trackerOffset = action.trackerOffset ?: bone.trackerOffset,
+					expectedTps = action.expectedTps ?: bone.expectedTps,
+					rotation = action.rotation ?: bone.rotation,
+					acceleration = action.acceleration ?: bone.acceleration,
+					position = action.position ?: bone.position,
+					isRotationActive = if (action.switchActive) action.rotation != null else bone.isRotationActive,
+					isAccelerationActive = if (action.switchActive) action.acceleration != null else bone.isAccelerationActive,
+					isPositionActive = if (action.switchActive) action.position != null else bone.isPositionActive,
 				)
 			},
 		)
@@ -58,11 +55,6 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 	is SkeletonActions.PauseTracking -> state.copy(paused = action.pause, pausedProcessedBoneInputs = null)
 
 	is SkeletonActions.SetPausedBoneInputs -> state.copy(pausedProcessedBoneInputs = action.pausedBoneInputs)
-
-	is SkeletonActions.SetHeadPosition -> {
-		val headBone = state.boneInputs[BodyPart.HEAD] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = action.position) })
-	}
 
 	is SkeletonActions.ResetHeadPosition -> {
 		val headBone = state.boneInputs[BodyPart.HEAD] ?: return state
