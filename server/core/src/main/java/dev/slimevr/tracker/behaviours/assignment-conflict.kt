@@ -13,15 +13,15 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 class TrackerAssignmentConflictBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
+		val server = receiver.appContext.server
+
 		receiver.context.state
-			.map { it.status.isActive() }
+			.filter { it.status.isActive() }
 			.distinctUntilChanged()
-			.filter { active -> active }
-			.onEach {
-				val state = receiver.context.state.value
+			.onEach { state ->
 				val bodyPart = state.bodyPart ?: return@onEach
 
-				val bodyPartTaken = receiver.appContext.server.context.state.value.trackers.values.any { other ->
+				val bodyPartTaken = server.context.state.value.trackers.values.any { other ->
 					val otherState = other.context.state.value
 					otherState.id != state.id && otherState.bodyPart == bodyPart && otherState.status.isActive()
 				}
