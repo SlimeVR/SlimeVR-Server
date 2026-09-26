@@ -1,0 +1,706 @@
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Clickable } from '@/components/commons/Clickable';
+
+import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
+import {
+  BasedSkeletonHelper,
+  TrackerPreviewData,
+} from '@/utils/skeletonHelper';
+import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
+import { getTrackerBoneOffset } from '@/utils/skeletonParts';
+import {
+  computeHeadYOffset,
+  deriveSkeletonProportions,
+} from '@/utils/skeletonProportions';
+import {
+  Color,
+  DirectionalLight,
+  Group,
+  HemisphereLight,
+  Mesh,
+  PerspectiveCamera,
+  PlaneGeometry,
+  Quaternion,
+  Scene,
+  ShaderMaterial,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
+} from 'three';
+import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
+import { QuaternionFromQuatT } from '@/maths/quaternion';
+import { Vector3FromVec3fT } from '@/maths/vector3';
+import classNames from 'classnames';
+import { useLocalization } from '@fluent/react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Typography } from '@/components/commons/Typography';
+import { useAtomValue } from 'jotai';
+import { assignedTrackersAtom, bonesAtom } from '@/store/app-store';
+import { Config, useConfig } from '@/hooks/config';
+import { Tween } from '@tweenjs/tween.js';
+import { EyeIcon } from '@/components/commons/icon/EyeIcon';
+
+type SkeletonHelper = BasedSkeletonHelper | BasedSkeletonMeshHelper;
+
+export type SkeletonPreviewView = {
+  left: number;
+  bottom: number;
+  width: number;
+  height: number;
+  camera: PerspectiveCamera;
+  controls: OrbitControls;
+  hidden: boolean;
+  tween: Tween<Vector3>;
+  initialPosition: Vector3;
+  onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
+};
+
+function createRadialFloorMesh(size = 8.0): Mesh {
+  const geometry = new PlaneGeometry(size, size, 1, 1);
+  const material = new ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: {
+      uColorGround: { value: new Color('#14283d') },
+      uColorGridMinor: { value: new Color('#6fa3cc') },
+      uColorGridMajor: { value: new Color('#d6ecff') },
+      uColorGlow: { value: new Color('#722c2c') },
+      uRadius: { value: size / 2 },
+      uGlowRadius: { value: 1 },
+    },
+    vertexShader: `
+      varying vec3 vWorldPosition;
+      varying vec2 vLocalPosition;
+      void main() {
+        vLocalPosition = position.xy;
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPosition = worldPos.xyz;
+        gl_Position = projectionMatrix * viewMatrix * worldPos;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vWorldPosition;
+      varying vec2 vLocalPosition;
+      uniform vec3 uColorGround;
+      uniform vec3 uColorGridMinor;
+      uniform vec3 uColorGridMajor;
+      uniform vec3 uColorGlow;
+      uniform float uRadius;
+      uniform float uGlowRadius;
+
+      // Screen-space anti-aliased Cartesian grid
+      float getGrid(vec2 pos, float spacing, float pixelWidth) {
+        vec2 coord = pos / spacing;
+        vec2 grid = abs(fract(coord - 0.5) - 0.5) / fwidth(coord);
+        float line = min(grid.x, grid.y);
+        return 1.0 - min(line / pixelWidth, 1.0);
+      }
+
+      // Screen-space anti-aliased radial ring
+      float getRing(float dist, float radius, float pixelWidth) {
+        float d = abs(dist - radius) / fwidth(dist);
+        return 1.0 - min(d / pixelWidth, 1.0);
+      }
+
+      void main() {
+        vec2 worldPos = vWorldPosition.xz;
+
+        vec2 localPos = vLocalPosition;
+        float localDist = length(localPos);
+        if (localDist > uRadius) discard;
+
+        // Smooth radial horizon falloff with gentle ambient glow, centered on the player
+        float normDist = localDist / uRadius;
+        float horizonFade = pow(clamp(1.0 - normDist, 0.0, 1.0), 1.2);
+        float groundGlow = pow(clamp(1.0 - normDist, 0.0, 1.0), 1.8) * 0.15;
+
+        float minorGrid = getGrid(worldPos, 0.5, 1.45) * 0.82;
+        float majorGrid = getGrid(worldPos, 1.0, 2.2) * 1.00;
+
+        // Bright light-up directly under the player
+        float glow = pow(clamp(1.0 - localDist / uGlowRadius, 0.0, 1.0), 2.4) * 0.8;
+
+        vec3 col = uColorGround;
+        col = mix(col, uColorGridMajor, majorGrid);
+        col += (minorGrid + majorGrid) * 0.6;
+
+        float linesAlpha = max(minorGrid * 0.28, majorGrid * 0.58);
+        float alpha = (groundGlow * 0.8 + linesAlpha) * horizonFade;
+        alpha = max(alpha, (glow * 0.25) * horizonFade);
+        alpha = clamp(alpha, 0.0, 0.98);
+
+        gl_FragColor = vec4(col, alpha);
+      }
+    `,
+  });
+
+  const mesh = new Mesh(geometry, material);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.y = 0;
+  return mesh;
+}
+
+function initializePreview(
+  canvas: HTMLCanvasElement,
+  bones: Map<BodyPart, BoneT>,
+  initialStyle: Config['skeletonPreviewStyle'],
+  onFollowLockChange?: (locked: boolean) => void
+) {
+  let style = initialStyle;
+  let lastRenderTimeRef = 0;
+  let frameInterval = 0;
+
+  const views: SkeletonPreviewView[] = [];
+  const abortController = new AbortController();
+
+  let followLocked = true;
+  const setFollowLocked = (locked: boolean) => {
+    if (followLocked === locked) return;
+    followLocked = locked;
+    onFollowLockChange?.(followLocked);
+  };
+
+  const resolution = new Vector2(canvas.clientWidth, canvas.clientHeight);
+  const scene = new Scene();
+  let renderer: WebGLRenderer | null = new WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+  });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+  const hemiLight = new HemisphereLight(0xdfe6ff, 0x20233a, 2.2);
+  scene.add(hemiLight);
+  const dirLight = new DirectionalLight(0xffffff, 1.6);
+  dirLight.position.set(2, 4, 3);
+  scene.add(dirLight);
+  const fillLight = new DirectionalLight(0x65459a, 0.5);
+  fillLight.position.set(-3, 1, -2);
+  scene.add(fillLight);
+
+  const floor = createRadialFloorMesh(6.0);
+  scene.add(floor);
+
+  const makeHelper = (bones: Map<BodyPart, BoneT>): SkeletonHelper => {
+    if (style === 'lines') {
+      const helper = new BasedSkeletonHelper(bones);
+      helper.resolution.copy(resolution);
+      return helper;
+    }
+    return new BasedSkeletonMeshHelper(bones);
+  };
+
+  const skeletonGroup = new Group();
+  let skeletonHelper = makeHelper(bones);
+  skeletonGroup.add(skeletonHelper);
+
+  scene.add(skeletonGroup);
+
+  let heightOffset = 0;
+
+  const followOffset = new Vector3();
+  const desiredFollow = new Vector3();
+  const followDelta = new Vector3();
+
+  const computeFollow = (out: Vector3) => {
+    const root =
+      bones.get(BodyPart.HEAD) ??
+      bones.get(BodyPart.HIP) ??
+      bones.get(BodyPart.UPPER_CHEST);
+    if (!root) return out.copy(followOffset);
+    out.copy(Vector3FromVec3fT(root.headPosition));
+    skeletonGroup.updateWorldMatrix(true, false);
+    skeletonGroup.localToWorld(out);
+    out.y = 0;
+    return out;
+  };
+
+  const rebuildSkeleton = (newBones: Map<BodyPart, BoneT>) => {
+    skeletonGroup.remove(skeletonHelper);
+    skeletonHelper.dispose();
+    bones = newBones;
+
+    skeletonHelper = makeHelper(bones);
+    if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
+      skeletonHelper.setProportions(deriveSkeletonProportions(bones));
+    }
+    skeletonGroup.add(skeletonHelper);
+
+    const head = bones.get(BodyPart.HEAD);
+    const quat = QuaternionFromQuatT(head?.orientation).normalize().invert();
+
+    // Project quat to (0x, 1y, 0z)
+    const VEC_Y = new Vector3(0, 1, 0);
+    const vec = VEC_Y.multiplyScalar(
+      new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
+    );
+    const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
+
+    skeletonGroup.rotation.setFromQuaternion(yawReset);
+  };
+
+  const updateTrackers = (trackers: Map<BodyPart, TrackerPreviewData>) => {
+    skeletonHelper.setTrackers(trackers);
+  };
+
+  const setStyle = (newStyle: Config['skeletonPreviewStyle']) => {
+    if (newStyle === style) return;
+    style = newStyle;
+    rebuildSkeleton(bones);
+  };
+
+  const render = (delta: number) => {
+    computeFollow(desiredFollow);
+
+    if (followLocked) {
+      followDelta.subVectors(desiredFollow, followOffset);
+      if (followDelta.lengthSq() > 0) {
+        views.forEach((v) => {
+          v.camera.position.add(followDelta);
+          v.controls.target.add(followDelta);
+        });
+        // Move the floor by the same delta as the camera so the grid
+        // (and its glow) stays under the player while following, but
+        // freezes in place along with the camera when the user unlocks
+        // it to orbit freely - otherwise the grid would keep sliding
+        // underneath a camera that's supposed to be locked in place.
+        floor.position.add(followDelta);
+        followOffset.copy(desiredFollow);
+      }
+    }
+
+    views.forEach((v) => {
+      if (v.hidden || !renderer) return;
+      v.controls.update(delta);
+
+      const left = Math.floor(resolution.x * v.left);
+      const bottom = Math.floor(resolution.y * v.bottom);
+      const width = Math.floor(resolution.x * v.width);
+      const height = Math.floor(resolution.y * v.height);
+
+      renderer.setViewport(left, bottom, width, height);
+      renderer.setScissor(left, bottom, width, height);
+      renderer.setScissorTest(true);
+
+      v.tween.update();
+
+      v.camera.aspect = width / height;
+      v.camera.updateProjectionMatrix();
+
+      renderer.render(scene, v.camera);
+    });
+  };
+
+  let animationFrameId: number;
+  const animate = (currentTime: number) => {
+    animationFrameId = requestAnimationFrame(animate);
+
+    const now = performance.now();
+    const elapsed = now - lastRenderTimeRef;
+    if (elapsed < frameInterval) return;
+    render(currentTime);
+    lastRenderTimeRef = now - (elapsed % frameInterval);
+  };
+
+  animationFrameId = requestAnimationFrame(animate);
+
+  // Make sure orbit controls works only on the current view
+  canvas.addEventListener(
+    'pointermove',
+    (event) => {
+      const x = event.offsetX / resolution.x;
+      const y = 1 - event.offsetY / resolution.y;
+      views.forEach((v) => {
+        if (
+          x >= v.left &&
+          x <= v.left + v.width &&
+          y >= v.bottom &&
+          y <= v.bottom + v.height
+        ) {
+          v.controls.enabled = true;
+        } else {
+          v.controls.enabled = false;
+        }
+      });
+    },
+    { signal: abortController.signal }
+  );
+
+  const RIGHT_DRAG_THRESHOLD = 4;
+  let rightDragArmed = false;
+  const rightDragStart = new Vector2();
+
+  canvas.addEventListener(
+    'pointerdown',
+    (event) => {
+      if (event.button !== 2) return;
+      if (!views.some((v) => v.controls.enabled && !v.hidden)) return;
+      rightDragArmed = true;
+      rightDragStart.set(event.clientX, event.clientY);
+    },
+    { signal: abortController.signal }
+  );
+
+  canvas.addEventListener(
+    'pointermove',
+    (event) => {
+      if (!rightDragArmed) return;
+      const dx = event.clientX - rightDragStart.x;
+      const dy = event.clientY - rightDragStart.y;
+      if (dx * dx + dy * dy < RIGHT_DRAG_THRESHOLD * RIGHT_DRAG_THRESHOLD) {
+        return;
+      }
+      rightDragArmed = false;
+      setFollowLocked(false);
+    },
+    { signal: abortController.signal }
+  );
+
+  const disarmRightDrag = () => {
+    rightDragArmed = false;
+  };
+  canvas.addEventListener('pointerup', disarmRightDrag, {
+    signal: abortController.signal,
+  });
+  canvas.addEventListener('pointercancel', disarmRightDrag, {
+    signal: abortController.signal,
+  });
+
+  return {
+    resize: (width: number, height: number) => {
+      resolution.set(width, height);
+      if (skeletonHelper instanceof BasedSkeletonHelper) {
+        skeletonHelper.resolution.copy(resolution);
+      }
+      if (!renderer) return;
+      renderer.setSize(width, height);
+    },
+    setFrameInterval: (interval: number) => {
+      frameInterval = interval;
+    },
+    rebuildSkeleton,
+    setStyle,
+    updatesBones: (newBones: Map<BodyPart, BoneT>) => {
+      bones = newBones;
+      skeletonHelper.setBones(bones);
+      if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
+        skeletonHelper.setProportions(deriveSkeletonProportions(bones));
+      }
+      const newHeight = computeHeadYOffset(bones);
+      if (newHeight !== heightOffset) {
+        heightOffset = newHeight;
+        // Only reframe while following; otherwise this fights the user's
+        // manual drag/zoom on every bone update (height jitters constantly).
+        if (followLocked) {
+          views.forEach((v) => {
+            v.onHeightChange(v, heightOffset);
+            v.controls.target.add(followOffset);
+          });
+        }
+      }
+    },
+    updateTrackers,
+    resetCamera: () => {
+      computeFollow(followOffset);
+      floor.position.set(followOffset.x, 0, followOffset.z);
+      views.forEach((v) => {
+        v.tween.stop();
+        const direction = v.camera.position
+          .clone()
+          .sub(v.controls.target)
+          .normalize();
+        const homeDistance = v.initialPosition.length();
+        v.onHeightChange(v, heightOffset);
+        v.controls.target.add(followOffset);
+        v.camera.position
+          .copy(v.controls.target)
+          .addScaledVector(direction, homeDistance);
+      });
+      setFollowLocked(true);
+    },
+    destroy: () => {
+      abortController.abort();
+      cancelAnimationFrame(animationFrameId);
+      skeletonHelper.dispose();
+      floor.geometry.dispose();
+      (floor.material as ShaderMaterial).dispose();
+      if (!renderer) return;
+      renderer.dispose();
+      renderer = null; // Very important for js to free the WebGL context. dispose does not to it alone
+    },
+    addView: ({
+      left,
+      bottom,
+      width,
+      height,
+      position,
+      hidden = false,
+      onHeightChange,
+    }: {
+      left: number;
+      bottom: number;
+      width: number;
+      height: number;
+      position: Vector3;
+      hidden?: boolean;
+      onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
+    }) => {
+      if (!renderer) return;
+
+      const camera = new PerspectiveCamera(
+        20,
+        resolution.width / resolution.height,
+        0.1,
+        1000
+      );
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.maxDistance = 20;
+      controls.dampingFactor = 0.2;
+      controls.enableDamping = true;
+
+      const tween = new Tween(position)
+        .onUpdate(() => {
+          camera.position.copy(position).add(followOffset);
+        })
+        .onStart(() => (frameInterval = 0))
+        .onComplete(() => (frameInterval = 1000 / LOW_FRAMERATE));
+
+      camera.position.copy(position).add(followOffset);
+
+      const view: SkeletonPreviewView = {
+        camera,
+        left,
+        bottom,
+        width,
+        height,
+        controls,
+        tween,
+        hidden,
+        initialPosition: position.clone(),
+        onHeightChange,
+      };
+
+      views.push(view);
+
+      return view;
+    },
+  };
+}
+
+const BASE_FRAMERATE = 60;
+const LOW_FRAMERATE = 30;
+
+export type PreviewContext = ReturnType<typeof initializePreview>;
+
+function SkeletonVisualizer({
+  onInit,
+  disabled = false,
+  onFollowLockChange,
+}: {
+  onInit: (context: PreviewContext) => void;
+  disabled?: boolean;
+  onFollowLockChange?: (locked: boolean) => void;
+}) {
+  const { config } = useConfig();
+  const style = config?.skeletonPreviewStyle ?? 'mesh';
+
+  const previewContext = useRef<PreviewContext | null>(null);
+  const onFollowLockChangeRef = useRef(onFollowLockChange);
+  onFollowLockChangeRef.current = onFollowLockChange;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
+  const bonesList = useAtomValue(bonesAtom);
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+
+  const bones = useMemo(() => {
+    return new Map(bonesList.map((b) => [b.bodyPart, b]));
+  }, [bonesList]);
+  const trackersByPart = useMemo(() => {
+    const trackers = new Map<BodyPart, TrackerPreviewData>();
+    for (const { tracker } of assignedTrackers) {
+      const bodyPart = tracker.info?.bodyPart;
+      if (bodyPart == null || bodyPart === BodyPart.NONE) continue;
+      trackers.set(bodyPart, {
+        trackerId: tracker.trackerId,
+        mountingOrientation: QuaternionFromQuatT(
+          tracker.info?.lastMountingMethod == MountingMethod.MANUAL
+            ? tracker.info?.mountingOrientation
+            : tracker.info?.mountingResetOrientation
+        ).normalize(),
+        boneOffset: getTrackerBoneOffset(bodyPart),
+      });
+    }
+    return trackers;
+  }, [assignedTrackers]);
+
+  useEffect(() => {
+    if (bones.size === 0) return;
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.rebuildSkeleton(bones);
+  }, [bones.size, disabled]);
+
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.updatesBones(bones);
+    context.updateTrackers(trackersByPart);
+  }, [bones, disabled]);
+
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.updateTrackers(trackersByPart);
+  }, [trackersByPart, disabled]);
+
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.setStyle(style);
+    context.updatesBones(bones);
+    context.updateTrackers(trackersByPart);
+  }, [style, disabled]);
+
+  const onResize = (e: ResizeObserverEntry) => {
+    const context = previewContext.current;
+    if (!context || !containerRef.current || !canvasRef.current) return;
+    context.resize(e.contentRect.width, e.contentRect.height);
+  };
+
+  const onEnter = () => {
+    if (config?.devSettings.fastDataFeed) return;
+    const context = previewContext.current;
+    if (!context) return;
+    context.setFrameInterval(1000 / BASE_FRAMERATE);
+  };
+
+  const onLeave = () => {
+    if (config?.devSettings.fastDataFeed) return;
+    const context = previewContext.current;
+    if (!context) return;
+    context.setFrameInterval(1000 / LOW_FRAMERATE);
+  };
+
+  useLayoutEffect(() => {
+    if (disabled) return;
+    if (!canvasRef.current || !containerRef.current)
+      throw 'invalid state - no canvas or container';
+    resizeObserver.current.observe(containerRef.current);
+
+    previewContext.current = initializePreview(
+      canvasRef.current,
+      bones,
+      style,
+      (locked) => onFollowLockChangeRef.current?.(locked)
+    );
+    onFollowLockChangeRef.current?.(true);
+    if (!config?.devSettings.fastDataFeed)
+      previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
+
+    const rect = containerRef.current.getBoundingClientRect();
+    previewContext.current.resize(rect.width, rect.height);
+
+    containerRef.current.addEventListener('mouseenter', onEnter);
+    containerRef.current.addEventListener('mouseleave', onLeave);
+
+    onInit(previewContext.current);
+
+    return () => {
+      if (!previewContext.current || !containerRef.current) return;
+      resizeObserver.current.unobserve(containerRef.current);
+      previewContext.current.destroy();
+      previewContext.current = null;
+
+      containerRef.current.removeEventListener('mouseenter', onEnter);
+      containerRef.current.removeEventListener('mouseleave', onLeave);
+    };
+  }, [disabled]);
+
+  return (
+    <div ref={containerRef} className={classNames('w-full h-full')}>
+      <canvas ref={canvasRef} className="w-full h-full" />
+    </div>
+  );
+}
+
+export function SkeletonVisualizerWidget({
+  onInit = (context) => {
+    context.addView({
+      left: 0,
+      bottom: 0,
+      width: 1,
+      height: 1,
+      position: new Vector3(3, 2.5, -3),
+      onHeightChange(v, newHeight) {
+        v.controls.target.set(0, newHeight / 2, 0);
+        const scale = Math.max(1, newHeight) / 1.5;
+        v.camera.zoom = 1 / scale;
+      },
+    });
+  },
+  disabled = false,
+  toggleDisabled,
+  onFollowLockChange,
+}: {
+  onInit?: (context: PreviewContext) => void;
+  disabled?: boolean;
+  toggleDisabled?: () => void;
+  onFollowLockChange?: (locked: boolean) => void;
+}) {
+  const { l10n } = useLocalization();
+  const [error, setError] = useState(false);
+
+  return (
+    <div className={classNames('w-full h-full relative')}>
+      <div
+        className={classNames('w-full h-full transition-all', {
+          blur: disabled,
+        })}
+      >
+        <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
+          <SkeletonVisualizer
+            onInit={onInit}
+            disabled={disabled}
+            onFollowLockChange={onFollowLockChange}
+          />
+        </ErrorBoundary>
+      </div>
+      <div
+        className={classNames(
+          'absolute h-full w-full top-0 flex items-center justify-center transition-opacity duration-300',
+          { 'opacity-0 pointer-events-none': !disabled || error }
+        )}
+      >
+        <Clickable
+          aria-hidden={disabled}
+          disabled={!toggleDisabled}
+          className={classNames(
+            'bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center',
+            {
+              'hover:bg-background-60 cursor-pointer': !!toggleDisabled,
+              'cursor-not-allowed': !toggleDisabled,
+            }
+          )}
+          onClick={() => toggleDisabled?.()}
+        >
+          <EyeIcon closed width={20} />
+          <Typography id="preview-disabled_render" />
+        </Clickable>
+      </div>
+      <div
+        className={classNames(
+          'absolute h-full w-full top-0 flex items-center justify-center transition-opacity duration-300',
+          { 'opacity-0 pointer-events-none': !error }
+        )}
+      >
+        <div className="bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center">
+          <Typography color="primary" textAlign="text-center">
+            {l10n.getString('tips-failed_webgl')}
+          </Typography>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,128 @@
+package dev.slimevr.tracker
+
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
+import kotlin.math.atan2
+
+typealias RawRotation = Quaternion
+typealias RawAcceleration = Vector3
+
+typealias HeadingCorrection = Quaternion
+typealias AttitudeAlignment = Quaternion
+typealias HeadingAlignment = Quaternion
+typealias RestOrientation = Quaternion // TODO temporary workaround; need to figure out something else eventually.
+
+typealias AccelerationRotation = Quaternion
+
+typealias CalibratedRotation = Quaternion
+typealias CalibratedAcceleration = Vector3
+
+data class SessionCalibration(
+	val headingCorrection: HeadingCorrection = Quaternion.IDENTITY,
+	val attitudeAlignment: AttitudeAlignment = Quaternion.IDENTITY,
+	val headingAlignment: HeadingAlignment = Quaternion.IDENTITY,
+)
+
+fun applyCalibration(
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+	restOrientation: RestOrientation = Quaternion.IDENTITY,
+): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign * restOrientation
+
+fun applyFullCalibration(
+	rawRotation: CalibratedRotation,
+	trackerState: TrackerState,
+): CalibratedRotation {
+	// Never use heading correction/alignment for an assigned reliable reference
+	val headingCorrection = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingCorrection
+	val headingAlignment = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
+	return applyCalibration(
+		rawRotation,
+		headingCorrection,
+		trackerState.sessionCalibration.attitudeAlignment,
+		headingAlignment,
+		trackerState.restOrientation,
+	)
+}
+
+// We reverse the order of headingAlign and attitudeAlign here since our
+//  attitude alignment is within the raw heading frame of reference, so we must
+//  bring the orientation back into that frame of reference first. Whatever is
+//  applied last must be taken off first.
+fun undoCalibration(
+	calibratedRotation: CalibratedRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): RawRotation = headingCorrect.inv() * headingAlign * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
+
+// Acceleration needs to be rotated by raw rotation with heading corrected
+private fun accelerationRotation(
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): AccelerationRotation = headingAlign.inv() * headingCorrect * rawRotation
+
+fun applyCalibration(
+	rawAcceleration: RawAcceleration,
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): CalibratedAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
+	rawAcceleration,
+)
+
+fun applyFullCalibration(
+	rawAcceleration: RawAcceleration,
+	rawRotation: RawRotation,
+	trackerState: TrackerState,
+): CalibratedAcceleration {
+	// Never use heading correction/alignment for an assigned reliable reference
+	val headingCorrection = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingCorrection
+	val headingAlignment = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
+	return applyCalibration(
+		rawAcceleration,
+		rawRotation,
+		headingCorrection,
+		headingAlignment,
+	)
+}
+
+fun undoCalibration(
+	calibratedAcceleration: CalibratedAcceleration,
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): RawAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
+	.sandwich(calibratedAcceleration)
+
+// Used for referenceRotation since it works better on an HMD.
+private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
+
+fun estimateHeadingCorrect(
+	rotation: Quaternion,
+	referenceRotation: Quaternion,
+): HeadingCorrection = (inverseYProjection(referenceRotation) * rotation).eulerHeading().inv()
+	.twinNearest(referenceRotation)
+
+fun estimateAttitudeAlign(
+	rotation: Quaternion,
+	headingCorrect: HeadingCorrection,
+	referenceRotation: Quaternion,
+): AttitudeAlignment = (headingCorrect * (inverseYProjection(referenceRotation) * rotation)).inv()
+
+fun estimateHeadingAlign(
+	rotation: Quaternion,
+	referenceRotation: Quaternion,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
+	yawOffset: Float = 0.0f,
+): HeadingAlignment {
+	val rotation = applyCalibration(rotation, headingCorrect, attitudeAlign)
+	val pitchRoll = (inverseYProjection(referenceRotation) * rotation).sandwichUnitY()
+	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
+	return Quaternion.rotationAroundYAxis(yawAngle)
+}

@@ -4,8 +4,12 @@
 # Syncthing ignore file
 .stignore
 
-# Ignore .idea
-.idea
+# Ignore .idea, except shared project inspection profiles and run configurations
+.idea/*
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/*.xml
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml
 
 # Ignore .fleet
 .fleet
@@ -25,9 +29,7 @@
 .settings
 
 # Node Stuff
-node_modules/
-dist/
-stats.html
+/node_modules
 .husky
 
 # kotlin stuff
@@ -35,7 +37,6 @@ stats.html
 
 # ignore gradle build folder
 build/
-server/desktop/config/
 
 # created by clangd for index cache
 .cache/
@@ -43,6 +44,9 @@ server/desktop/config/
 # direnv has been claimed for Nix usage
 .direnv/
 .devenv
+
+# Git worktrees
+.worktree/
 
 # Ignore Android local properties
 local.properties

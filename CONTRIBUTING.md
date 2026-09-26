@@ -24,21 +24,25 @@ Now you can open the codebase in [IDEA](https://www.jetbrains.com/idea/download/
 
 ### Java (server)
 
+Before contributing to the server, read [server/README.md](server/README.md) for an overview of its architecture and design guidelines.
+
 The Java code is built with `gradle`, a CLI tool that manages java projects and their
 dependencies.
-- You can run the server by running `./gradlew run` in your IDE's terminal.
+- You can run the server by running `./gradlew :server:desktop:run` in your IDE's terminal.
 - To compile the code, run `./gradlew shadowJar`. The result will
-be at `server/build/libs/slimevr.jar` (you can ignore `server.jar`).
+be at `server/desktop/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
 (Note: Your IDE may be able to do all of the above for you.)
 
 ### Electron (gui)
 
-- Activate corepack (included with Node.JS) via `corepack enable` (might require administrator permissions)
+- Activate corepack (included with Node.js) via `corepack enable` 
+(might require launching Git Bash as administrator on Windows)
+- Make sure you're at the root of the repository.
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
-- Finally, to compile for production, run `pnpm package:build`. The result
-will be at `dist/artifacts/` content will change depending of the platform.
+- Finally, to compile for production, run `pnpm package:build` under `gui/electron`. 
+The result will be in `gui/dist/artifacts/`. Content will change depending on the platform.
 
 ## Code style
 
@@ -87,7 +91,7 @@ Eclipse will only do a subset of the checks in `spotless`, so you may still want
 ### Electron (gui)
 
 We use ESLint and Prettier to format GUI code.
-- First, go into the GUI's directory with your terminal by running `cd gui`.
+- Make sure you're at the root of the repository.
 - To check code formatting, run `pnpm run lint`.
 - To fix code formatting, run `pnpm run lint:fix` and `pnpm run format`
 

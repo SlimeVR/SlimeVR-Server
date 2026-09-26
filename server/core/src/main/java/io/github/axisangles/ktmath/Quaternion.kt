@@ -5,11 +5,9 @@ package io.github.axisangles.ktmath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-@JvmInline
 @Serializable
-value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
+class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
-		val NULL = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)
@@ -19,11 +17,6 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * SlimeVR-specific constants and utils
 		 */
 		val SLIMEVR: SlimeVR = SlimeVR
-
-		/**
-		 * Used to rotate an identity quaternion to face upwards for [twinExtendedBack].
-		 */
-		private val UP_ADJ = Quaternion(0.707f, -0.707f, 0f, 0f)
 
 		/**
 		 * creates a new quaternion representing the rotation about v's axis
@@ -161,7 +154,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun unit(): Quaternion {
 		val m = len()
-		return if (m == 0f) NULL else (this / m)
+		return if (m == 0f) this else (this / m)
 	}
 
 	operator fun times(that: Float): Quaternion = Quaternion(
@@ -263,24 +256,6 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @return furthest quaternion
 	 **/
 	fun twinFurthest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) this else -this
-
-	/**
-	 * Similar to [twinNearest], but offset so the lower back quadrant is the furthest
-	 * rotation relative to [that]. This is useful for joints that have limited forward
-	 * rotation, but extensive backward rotation.
-	 * @param that The reference quaternion to be nearest to or furthest from.
-	 * @return The furthest quaternion if in the lower back quadrant, otherwise the
-	 * nearest quaternion.
-	 **/
-	fun twinExtendedBack(that: Quaternion): Quaternion {
-		/*
-		 * This handles the thigh extending behind the torso to face downwards, and the
-		 * hip extending behind the chest. The thigh cannot bend to the back away from
-		 * the torso and the spine hopefully can't bend back that far, so we can fairly
-		 * safely assume the rotation is towards the torso.
-		 */
-		return this.twinNearest(that * UP_ADJ)
-	}
 
 	/**
 	 * interpolates from this quaternion to that quaternion by t in quaternion space
@@ -418,6 +393,11 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	}
 
 	/**
+	 * Returns a Quaternion representing the heading of this Quaternion using Euler angles and preserving polarity.
+	 */
+	fun eulerHeading() = rotationAroundYAxis(this.toEulerAngles(EulerOrder.YZX).y).twinNearest(this)
+
+	/**
 	 * applies this quaternion's rotation to that vector
 	 * @param that the vector to be transformed
 	 * @return that vector transformed by this quaternion
@@ -470,7 +450,13 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes the rotation vector representing this quaternion's rotation
 	 * @return rotation vector
 	 **/
-	fun toRotationVector(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
+	fun toRotationVectorQ(): Vector3 = 2f * log().xyz
+
+	/**
+	 * computes the shortest rotation vector representing this quaternion's rotation
+	 * @return rotation vector
+	 **/
+	fun toRotationVectorR(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
 
 	@Suppress("ktlint")
 	/**
@@ -493,6 +479,22 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun toEulerAngles(order: EulerOrder): EulerAngles = this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
 
 	fun toObject() = ObjectQuaternion(w, x, y, z)
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Quaternion) return false
+		return w == other.w && x == other.x && y == other.y && z == other.z
+	}
+
+	override fun hashCode(): Int {
+		var result = w.hashCode()
+		result = 31 * result + x.hashCode()
+		result = 31 * result + y.hashCode()
+		result = 31 * result + z.hashCode()
+		return result
+	}
+
+	override fun toString(): String = "Quaternion(w=$w, x=$x, y=$y, z=$z)"
 }
 
 data class ObjectQuaternion(val w: Float, val x: Float, val y: Float, val z: Float) {

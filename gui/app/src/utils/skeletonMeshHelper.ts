@@ -1,0 +1,340 @@
+import {
+  Box3,
+  BoxGeometry,
+  Matrix4,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Quaternion,
+  Raycaster,
+  Vector3,
+} from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import {
+  getTrackerMarkerScale,
+  SkeletonRenderPart,
+  TrackerPreviewData,
+} from './skeletonHelper';
+import { BodyPart, BoneT } from 'solarxr-protocol';
+import { QuaternionFromQuatT } from '@/maths/quaternion';
+import { Vector3FromVec3fT } from '@/maths/vector3';
+import {
+  BoneShapeConfig,
+  DefaultBoneModelUrl,
+  ModelDimensions,
+  SKELETON_PART_PRESETS,
+  computeShapeScale,
+} from './skeletonParts';
+import { SkeletonProportions, deriveSkeletonProportions } from './skeletonProportions';
+
+const position = new Vector3();
+const quat = new Quaternion();
+const localOffset = new Vector3();
+
+const modelBox = new Box3();
+const shapeBounds = new Box3();
+const shapeToBone = new Matrix4();
+const corner = new Vector3();
+const mountingNormal = new Vector3();
+const rayOrigin = new Vector3();
+const rayDirection = new Vector3();
+const surfaceRaycaster = new Raycaster();
+
+// Shared loader + cache: each model URL is fetched and parsed once, then cloned
+// per instance. Same pattern as the tracker preview (IMUVisualizerWidget).
+const gltfLoader = new GLTFLoader();
+const modelCache = new Map<string, Promise<Object3D | null>>();
+function loadModel(url: string): Promise<Object3D | null> {
+  let p = modelCache.get(url);
+  if (!p) {
+    p = gltfLoader
+      .loadAsync(url)
+      .then((gltf) => gltf.scene)
+      .catch((err) => {
+        console.error('MODEL LOAD FAIL', url, err);
+        return null;
+      }); // nothing to draw for this bone yet
+    modelCache.set(url, p);
+  }
+  return p;
+}
+
+interface AttachedShape {
+  config: BoneShapeConfig;
+  /** On the bone: its orientation, and the shape's offset and size along its axes. */
+  node: Object3D;
+  /** Under the node: the turn that puts the model onto the bone's axes. */
+  tilt: Object3D;
+  /** From the bone's head to the node, in the bone's axes. */
+  offset: Vector3;
+  model: ModelDimensions | null;
+  /** The model's box in its own axes. */
+  bounds: Box3 | null;
+}
+
+/**
+ * A point inside the shape, in the bone's axes and from its head, out of a
+ * position in the shape's bounds (-1 to 1 per axis from its centre). False until
+ * the model has loaded.
+ */
+function shapeAnchor(
+  { node, tilt, offset, bounds }: AttachedShape,
+  anchor: Vector3,
+  out: Vector3
+) {
+  if (!bounds) return false;
+
+  tilt.updateMatrix();
+  shapeToBone.makeScale(node.scale.x, node.scale.y, node.scale.z).multiply(tilt.matrix);
+  shapeBounds.makeEmpty();
+  for (const x of [bounds.min.x, bounds.max.x]) {
+    for (const y of [bounds.min.y, bounds.max.y]) {
+      for (const z of [bounds.min.z, bounds.max.z]) {
+        shapeBounds.expandByPoint(corner.set(x, y, z).applyMatrix4(shapeToBone));
+      }
+    }
+  }
+  shapeBounds.getCenter(out);
+  shapeBounds.getSize(corner).multiplyScalar(0.5);
+  out.add(corner.multiply(anchor)).add(offset);
+  return true;
+}
+
+interface BonePart extends SkeletonRenderPart {
+  shapes: AttachedShape[];
+  marker?: Mesh;
+  surfaceDistance: number;
+  surfaceDirty: boolean;
+}
+
+/**
+ * Renders a skeleton with modular 3D models or primitives attached to each bone.
+ * Every bone holds a list of rigid shapes (e.g. spine column, chestplate armor, etc.)
+ * that transform and scale dynamically with bone kinematics and user proportions.
+ */
+export class BasedSkeletonMeshHelper extends Object3D {
+  readonly type = 'SkeletonMeshHelper';
+  private parts: BonePart[] = [];
+  private proportions: SkeletonProportions = deriveSkeletonProportions(new Map());
+  private disposed = false;
+  private trackerMarkerGeometry = new BoxGeometry(0.03, 0.03, 0.02);
+  private trackerMarkerMaterial = new MeshStandardMaterial({
+    color: 0x49e5ff,
+    emissive: 0x0c5966,
+    emissiveIntensity: 0.8,
+    roughness: 0.45,
+  });
+
+  constructor(bones: Map<BodyPart, BoneT>) {
+    super();
+
+    const addrObject = (modelUrl: string, partName: string) =>
+      modelUrl + ':' + partName;
+    const modelUrlsToFetch = new Set<string>();
+    const partsByAddr: Record<string, Array<[BonePart, AttachedShape]>> = {};
+
+    for (const bone of bones.values()) {
+      if (bone.bodyPart === BodyPart.NONE) continue;
+      const config = SKELETON_PART_PRESETS[bone.bodyPart];
+      if (config === undefined || !config.visible) continue;
+
+      const part: BonePart = {
+        bone,
+        shapes: [],
+        surfaceDistance: 0,
+        surfaceDirty: true,
+      };
+      for (const shapeConfig of config.shapes) {
+        const node = new Object3D();
+        node.matrixAutoUpdate = false;
+        this.add(node);
+
+        const tilt = new Object3D();
+        node.add(tilt);
+
+        const attached: AttachedShape = {
+          config: shapeConfig,
+          node,
+          tilt,
+          offset: new Vector3(),
+          model: null,
+          bounds: null,
+        };
+
+        const modelUrl = shapeConfig.modelUrl ?? DefaultBoneModelUrl;
+        const partName = shapeConfig.objectName;
+        if (partName && modelUrl) {
+          modelUrlsToFetch.add(modelUrl);
+          const addr = addrObject(modelUrl, partName);
+          (partsByAddr[addr] ??= []).push([part, attached]);
+        }
+
+        part.shapes.push(attached);
+      }
+
+      this.parts.push(part);
+    }
+
+    modelUrlsToFetch.forEach((url) =>
+      loadModel(url).then((scene) => {
+        if (!scene || this.disposed) return;
+
+        scene.traverse((og) => {
+          if (og === scene) return;
+
+          const addr = addrObject(url, og.name);
+          for (const [part, attached] of partsByAddr[addr] ?? []) {
+            const o = og.clone(true);
+
+            o.position.set(0, 0, 0);
+            o.quaternion.identity();
+            o.scale.set(1, 1, 1);
+
+            modelBox.setFromObject(o);
+
+            attached.model = {
+              width: modelBox.max.x - modelBox.min.x,
+              depth: modelBox.max.z - modelBox.min.z,
+              length: Math.abs(modelBox.min.y),
+            };
+
+            attached.bounds = modelBox.clone();
+            attached.tilt.clear();
+            attached.tilt.add(o);
+            part.surfaceDirty = true;
+          }
+        });
+      })
+    );
+  }
+
+  setProportions(proportions: SkeletonProportions) {
+    if (
+      proportions.bodyScale !== this.proportions.bodyScale ||
+      proportions.shoulderWidth !== this.proportions.shoulderWidth ||
+      proportions.hipWidth !== this.proportions.hipWidth ||
+      proportions.handLength !== this.proportions.handLength ||
+      proportions.footLength !== this.proportions.footLength
+    ) {
+      for (const part of this.parts) part.surfaceDirty = true;
+    }
+    this.proportions = proportions;
+  }
+
+  setBones(bones: Map<BodyPart, BoneT>) {
+    for (const part of this.parts) {
+      const bone = bones.get(part.bone.bodyPart);
+      if (!bone) continue;
+      if (bone.boneLength !== part.bone.boneLength) part.surfaceDirty = true;
+      part.bone = bone;
+    }
+  }
+
+  setTrackers(trackers: Map<BodyPart, TrackerPreviewData>) {
+    for (const part of this.parts) {
+      const tracker = trackers.get(part.bone.bodyPart);
+      if (
+        tracker?.trackerId !== part.tracker?.trackerId ||
+        tracker?.boneOffset !== part.tracker?.boneOffset ||
+        (tracker &&
+          part.tracker &&
+          tracker.mountingOrientation.angleTo(part.tracker.mountingOrientation) > 1e-6)
+      ) {
+        part.surfaceDirty = true;
+      }
+      part.tracker = tracker;
+      if (!part.tracker && part.marker) part.marker.visible = false;
+    }
+  }
+
+  updateMatrixWorld(force: boolean) {
+    for (const part of this.parts) {
+      const { bone, shapes } = part;
+
+      position.copy(Vector3FromVec3fT(bone.headPosition));
+      quat.copy(QuaternionFromQuatT(bone.orientation)).normalize();
+      const boneLength = Math.max(bone.boneLength, 1e-4);
+
+      for (const attached of shapes) {
+        const { config, node, tilt, model } = attached;
+        const size = computeShapeScale(
+          config,
+          this.proportions,
+          boneLength,
+          model ?? undefined
+        );
+
+        attached.offset.set(0, 0, 0);
+        if (config.offset && model) {
+          attached.offset.copy(
+            config.offset({ model, proportions: this.proportions, boneLength })
+          );
+        }
+
+        node.position.copy(attached.offset).applyQuaternion(quat).add(position);
+        node.quaternion.copy(quat);
+        node.scale.set(size.width, size.length, size.depth);
+        node.updateMatrix();
+
+        if (config.rotation) tilt.quaternion.copy(config.rotation);
+      }
+
+      if (part.tracker) {
+        if (!part.marker) {
+          part.marker = new Mesh(
+            this.trackerMarkerGeometry,
+            this.trackerMarkerMaterial
+          );
+          this.add(part.marker);
+        }
+
+        part.marker.visible = true;
+        part.marker.scale.setScalar(getTrackerMarkerScale(bone.bodyPart));
+        part.marker.quaternion.copy(quat).multiply(part.tracker.mountingOrientation);
+        part.marker.position.copy(position);
+        const anchor = SKELETON_PART_PRESETS[bone.bodyPart]?.trackerAnchor;
+        const anchored =
+          anchor && shapes[0] && shapeAnchor(shapes[0], anchor, localOffset);
+        if (!anchored) {
+          localOffset.set(0, -boneLength * part.tracker.boneOffset, 0);
+        }
+        localOffset.applyQuaternion(quat);
+        part.marker.position.add(localOffset);
+        mountingNormal.set(0, 0, 1).applyQuaternion(part.marker.quaternion);
+        if (part.surfaceDirty) {
+          // The mesh and marker move rigidly with the bone, so the surface
+          // distance only changes when mounting or mesh-shape inputs change.
+          for (const { node } of shapes) node.updateMatrixWorld(true);
+          rayOrigin.copy(part.marker.position).applyMatrix4(this.matrixWorld);
+          rayDirection.copy(mountingNormal).transformDirection(this.matrixWorld);
+          surfaceRaycaster.set(rayOrigin, rayDirection);
+          // The last hit is the outermost surface: the marker starts inside the
+          // shape, and a plate's inner face comes before its outer one.
+          part.surfaceDistance =
+            surfaceRaycaster
+              .intersectObjects(
+                shapes.map(({ node }) => node),
+                true
+              )
+              .at(-1)?.distance ?? 0;
+          part.surfaceDirty = false;
+        }
+        part.marker.position.addScaledVector(mountingNormal, part.surfaceDistance);
+      }
+    }
+
+    super.updateMatrixWorld(force);
+  }
+
+  dispose() {
+    this.disposed = true;
+    this.trackerMarkerGeometry.dispose();
+    this.trackerMarkerMaterial.dispose();
+    for (const part of this.parts) {
+      for (const attached of part.shapes) {
+        this.remove(attached.node);
+      }
+    }
+    this.parts = [];
+  }
+}

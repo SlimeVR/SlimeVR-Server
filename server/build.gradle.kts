@@ -1,5 +1,12 @@
 plugins {
 	id("com.diffplug.spotless")
+	id("io.gitlab.arturbosch.detekt") version "1.23.6"
+}
+
+detekt {
+	buildUponDefaultConfig = false
+	config.setFrom(files("${rootProject.projectDir}/server/detekt.yml"))
+	source.setFrom(files("core/src", "desktop/src"))
 }
 
 allprojects {
@@ -42,6 +49,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 				",dev.slimevr.tracking.trackers.*,dev.slimevr.desktop.platform.ProtobufMessages.*" +
 				",solarxr_protocol.rpc.*,kotlinx.coroutines.*,com.illposed.osc.*,android.app.*",
 			"ij_kotlin_allow_trailing_comma" to true,
+			"ktlint_standard_filename" to "disabled",
 		)
 	val ktlintVersion = "1.8.0"
 	kotlinGradle {

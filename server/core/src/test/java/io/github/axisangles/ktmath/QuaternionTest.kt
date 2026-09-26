@@ -206,8 +206,8 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun toRotationVector() {
-		val v1 = Quaternion(1f, 2f, 3f, 4f).toRotationVector()
+	fun toRotationVectorR() {
+		val v1 = Quaternion(1f, 2f, 3f, 4f).toRotationVectorR()
 		val v2 = Vector3(1.0303806f, 1.5455709f, 2.0607612f)
 		assertEquals(v2, v1)
 	}
