@@ -257,6 +257,22 @@ const FOOT_MARKER: Partial<BonePartConfig> = {
   trackerAnchor: new Vector3(0, -0.3, 0),
 };
 
+const bustScale: ShapeScale = {
+  compute: ({ proportions }) => {
+    const girth = girthScale(proportions, 'shoulders');
+    const size = 0.08 * girth;
+    return { width: size, depth: size, length: size };
+  },
+};
+
+const posteriorScale: ShapeScale = {
+  compute: ({ proportions }) => {
+    const girth = girthScale(proportions, 'hips');
+    const size = 0.08 * girth;
+    return { width: size, depth: size, length: size };
+  },
+};
+
 export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.NONE]: part(shape(), { visible: false }),
   [BodyPart.HEAD]: part(
@@ -438,22 +454,22 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
 
   [BodyPart.LEFT_BUST]: part(
     model('bust', {
-      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      scale: bustScale,
     })
   ),
   [BodyPart.RIGHT_BUST]: part(
     model('bust', {
-      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      scale: bustScale,
     })
   ),
   [BodyPart.LEFT_POSTERIOR]: part(
     model('posterior', {
-      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      scale: posteriorScale,
     })
   ),
   [BodyPart.RIGHT_POSTERIOR]: part(
     model('posterior', {
-      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      scale: posteriorScale,
     })
   ),
   [BodyPart.TAIL]: part(
