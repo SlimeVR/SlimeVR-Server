@@ -122,7 +122,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
 ## Proportions
 
 skeleton_bone-NONE = none
-skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
 skeleton_bone-torso_group = towso wength
 skeleton_bone-UPPER_CHEST = uppew chest wength
@@ -486,7 +485,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = i know what I'm doing :3
 settings-serial-factory_reset-warning-cancel = cancew
 settings-serial-serial_select = sewect a shewyaw pawt
-settings-serial-auto_dropdown_item = awto
 settings-serial-get_wifi_scan = get wifi scan uwu
 settings-serial-save_logs = saeve to file
 settings-serial-send_command-warning-ok = i know what I'm doing :3

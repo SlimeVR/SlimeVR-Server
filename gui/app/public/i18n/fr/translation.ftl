@@ -38,29 +38,15 @@ unit-cm = cm
 
 ## Dropdown
 
-dropdown_select-all = Tout sélectionner
-dropdown_unselect-all = Tout désélectionner
 
 ## Text input
 
-# Accessible name for the eye button that reveals/hides a typed password
-input-password-show = Voir le mot de passe
-input-password-hide = Cacher le mot de passe
 
 ## File input
 
-# Accessible name and tooltip for the icon-only button that clears a picked path
-file_input-clear = Désélectionner le fichier
-file_input-clear_folder = Désélectionner le dossier
 
 ## Window controls
 
-# Accessible names for the icon-only buttons in the title bar
-titlebar-docs = Ouvrir la documentation
-titlebar-settings = Ouvrir les paramètres
-titlebar-update = Télécharger la mise à jour
-titlebar-minimize = Réduire
-titlebar-maximize = Agrandir
 titlebar-close = Fermer
 
 ## Body parts
@@ -76,9 +62,6 @@ body_part-RIGHT_UPPER_LEG = Cuisse droite
 body_part-RIGHT_LOWER_LEG = Cheville droite
 body_part-RIGHT_FOOT = Pied droit
 body_part-UPPER_CHEST = Poitrine supérieure
-body_part-LOWER_CHEST = Poitrine inférieure
-body_part-UPPER_WAIST = Taille supérieure
-body_part-LOWER_WAIST = Taille inférieure
 body_part-HIP = Hanche
 body_part-LEFT_SHOULDER = Épaule gauche
 body_part-LEFT_UPPER_ARM = Bras gauche
@@ -117,17 +100,7 @@ body_part-RIGHT_RING_DISTAL = Annulaire droit distal
 body_part-RIGHT_LITTLE_PROXIMAL = Auriculaire droit proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Auriculaire droit intermédiaire
 body_part-RIGHT_LITTLE_DISTAL = Auriculaire droit distal
-body_part-LEFT_BIG_TOE = Gros orteil gauche
-body_part-LEFT_INDEX_TOE = Orteil de l'index gauche
-body_part-LEFT_MIDDLE_TOE = Orteil central gauche
-body_part-LEFT_RING_TOE = Orteil annulaire gauche
-body_part-LEFT_LITTLE_TOE = Petit orteil gauche
 body_part-RIGHT_TOES = Orteils droit
-body_part-RIGHT_BIG_TOE = Grand orteil droit
-body_part-RIGHT_INDEX_TOE = Orteil de l'index droit
-body_part-RIGHT_MIDDLE_TOE = Orteil central droit
-body_part-RIGHT_RING_TOE = Orteil annulaire droit
-body_part-RIGHT_LITTLE_TOE = Petit orteil droit
 
 ## BoardType
 
@@ -161,11 +134,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 ## Proportions
 
 skeleton_bone-NONE = Aucun
-skeleton_bone-HEAD = Décalage de la tête
-skeleton_bone-HEAD-desc =
-    Ceci est la distance entre votre casque et le milieu de votre tête.
-    Pour l’ajuster, secouez votre tête de gauche à droite comme si vous disiez non et modifiez-la
-    jusqu’à ce que vos capteurs bougent le moins possible.
 skeleton_bone-NECK = Longueur du cou
 skeleton_bone-NECK-desc =
     Ceci est la distance entre le milieu de votre tête et la base de votre cou.
@@ -181,7 +149,6 @@ skeleton_bone-UPPER_CHEST-desc =
     Ceci la distance entre la base de votre cou et le milieu de votre poitrine.
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
-skeleton_bone-LOWER_CHEST = Longueur de la poitrine supérieure
 skeleton_bone-LOWER_CHEST-desc =
     Ceci est la distance entre le milieu de votre poitrine et le milieu de votre colonne vertébrale.
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
@@ -192,10 +159,6 @@ skeleton_bone-UPPER_WAIST-desc =
     Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
     (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-LOWER_WAIST = Longueur de la taille inférieure
-skeleton_bone-LOWER_WAIST-desc =
-    Ceci est la distance entre votre nombril et vos hanches
-    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
-    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-HIP = Longueur des hanches
 skeleton_bone-HIP-desc =
     Ceci est la distance entre votre nombril et vos hanches
@@ -237,10 +200,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
     soient alignés verticalement avec vos vraies épaules.
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Ceci est la distance horizontale entre la base de votre cou et vos épaules.
-    Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
-    soient alignés horizontalement avec vos vraies épaules.
 skeleton_bone-arm_group = Longueur des bras
 skeleton_bone-arm_group-desc =
     Ceci est la distance entre vos épaules et vos poignets.
@@ -269,7 +228,6 @@ reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
 reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
 reset-error-yaw-need_full_reset = Nécessite une réinitialisation complète avant une réinitialisation horizontale
-reset-error-no_feet_tracker = Aucun traqueur de pieds assigné / disponible
 
 ## Navigation bar
 
@@ -405,10 +363,6 @@ dongle-settings-back = Retour à la liste des capteurs
 dongle-settings-name_section-description = Donnez-lui un joli surnom :3
 dongle-settings-update = Mettre à jour maintenant
 dongle-settings-update-title = Version du micrologiciel
-dongle-settings-pair = Appairer un capteur
-dongle-settings-forget_tracker = Oublier
-dongle-settings-telemetry-title = Télémétrie en direct
-dongle-settings-telemetry-select_trackers = Sélectionner les capteurs
 
 ## Tracker part card info
 
@@ -667,7 +621,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Je sais ce que je fais
 settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-serial_select = Sélectionnez un port série
-settings-serial-auto_dropdown_item = Automatique
 settings-serial-get_wifi_scan = Obtenir scan WiFi
 settings-serial-save_logs = Enregistrer dans un fichier
 settings-serial-send_command = Envoyer
@@ -1351,8 +1304,6 @@ tracking_checklist-TRACKER_ERROR-desc = Certains de vos capteurs ont une erreur.
 tracking_checklist-VRCHAT_SETTINGS = Configurez les paramètres de VRChat
 tracking_checklist-VRCHAT_SETTINGS-desc = Vous avez mal configuré les paramètres de VRChat ! Cela peut dégrader votre suivi.
 tracking_checklist-VRCHAT_SETTINGS-open = Aller sur les avertissements de VRChat
-tracking_checklist-UNASSIGNED_HMD = Casque VR non attribué à la tête
-tracking_checklist-UNASSIGNED_HMD-desc = Le casque VR devrait être attribué en tant que capteur de la tête.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Modifier votre profil de réseau
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->

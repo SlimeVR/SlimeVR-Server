@@ -113,11 +113,6 @@ board_type-GENERIC_NRF = บอร์ด NRF ทั่วไป
 ## Proportions
 
 skeleton_bone-NONE = ไม่มี
-skeleton_bone-HEAD = การเลื่อนศีรษะ
-skeleton_bone-HEAD-desc =
-    นี่เป็นระยะห่างจากแว่น VR ของคุณถึงบริเวณกลางศีรษะ
-    ปรับด้วยการส่ายหัวจากซ้ายไปขวาเหมือนคุณกำลังส่ายหน้าปฏิเสธ
-    และปรับค่าจนกว่าการเคลื่อนไหวในแทร็กเกอร์อื่นๆ จะน้อยจนไม่สังเกตเห็น
 skeleton_bone-NECK = ความยาวคอ
 skeleton_bone-NECK-desc =
     นี่เป็นระยะห่างจากบริเวณกลางศีรษะไปยังโคนคอ
@@ -177,10 +172,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     ปรับโดยเริ่มจากการตั้งความยาวแขนส่วนบนเป็น 0, แล้วปรับค่านี้จนกว่า
     แทร็กเกอร์ข้อศอกเสมือนจะอยู่ในแนวตั้งตรงกับไหล่จริง
 skeleton_bone-SHOULDERS_WIDTH = ความกว้างไหล่
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    ระยะทางแนวนอนจากฐานคอถึงหัวไหล่ของคุณ
-    ปรับโดยเริ่มจากการตั้งความยาวแขนส่วนบนเป็น 0, แล้วปรับค่านี้จนกว่า
-    แทร็กเกอร์ข้อศอกเสมือนจะอยู่ในแนวตั้งตรงกับไหล่จริง
 skeleton_bone-arm_group = ความยาวแขน
 skeleton_bone-arm_group-desc =
     นี่เป็นระยะห่างจากหัวไหล่ถึงข้อมือของคุณ
@@ -601,7 +592,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = ฉันรู้ว่าฉันทำอะไรอยู่
 settings-serial-factory_reset-warning-cancel = ยกเลิก
 settings-serial-serial_select = เลือกพอร์ต Serial
-settings-serial-auto_dropdown_item = อัตโนมัติ
 settings-serial-get_wifi_scan = สแกนเครือข่าย WiFi
 settings-serial-save_logs = บันทึกลงไฟล์
 settings-serial-send_command = ส่ง
@@ -1263,8 +1253,6 @@ tracking_checklist-TRACKER_ERROR-desc = แทร็กเกอร์บาง�
 tracking_checklist-VRCHAT_SETTINGS = การตั้งค่าใน VRChat
 tracking_checklist-VRCHAT_SETTINGS-desc = คุณมีการตั้งค่าใน VRChat ที่ไม่ถูกต้อง! ซึ่งอาจส่งผลเสียต่อการจับตำแหน่งของแทร็กเกอร์คุณ
 tracking_checklist-VRCHAT_SETTINGS-open = ไปยังคำเตือนการตั้งค่า VRChat
-tracking_checklist-UNASSIGNED_HMD = เฮดเซ็ท VR ไม่ได้ถูกกำหนดที่ส่วนหัว
-tracking_checklist-UNASSIGNED_HMD-desc = ควรระบุเฮตเซ็ท VR ให้เป็นแทร็กเกอร์ส่วนหัว
 tracking_checklist-NETWORK_PROFILE_PUBLIC = แก้ไขโปรไฟล์เครือข่าย
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = เปิด Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = ตั้งค่า Stay Aligned

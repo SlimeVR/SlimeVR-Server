@@ -62,7 +62,6 @@ body_part-LEFT_FOOT = Αριστερό πόδι
 ## Proportions
 
 skeleton_bone-NONE = Τίποτα
-skeleton_bone-HEAD = Μετατόπιση κεφαλής
 skeleton_bone-NECK = Μήκος λαιμού
 skeleton_bone-HIP = Μήκος γοφών
 skeleton_bone-HIPS_WIDTH = Πλάτος γοφών

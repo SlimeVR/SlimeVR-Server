@@ -65,7 +65,6 @@ body_part-LEFT_FOOT = Venstre fod
 ## Proportions
 
 skeleton_bone-NONE = Ingen
-skeleton_bone-HEAD = Hoved skift
 skeleton_bone-NECK = Hals længde
 skeleton_bone-torso_group = Torso Længde
 skeleton_bone-HIP = Hoftelængde
