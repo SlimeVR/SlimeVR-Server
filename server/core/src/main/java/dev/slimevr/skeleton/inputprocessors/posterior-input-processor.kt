@@ -11,13 +11,12 @@ import kotlin.math.abs
 import kotlin.math.exp
 
 private const val ACCELERATION_SENSITIVITY = 0.6f
-private const val SPRING_STRENGTH = 20.0f
+private const val SPRING_STRENGTH = 10.0f
 private const val DAMPING = 6.0f
 private const val ACCELERATION_DEADZONE = 0.10f
 private const val MAX_PITCH_OFFSET = 0.2617994f
 private const val MAX_DELTA_TIME = 0.05f
-private const val VERTICAL_ACCEL_DEADZONE = 0.025f
-private const val VERTICAL_ACCEL_GAIN = 18f
+private const val VERTICAL_ACCEL_DEADZONE = 0.10f
 private const val VERTICAL_SPRING = 34f
 private const val VERTICAL_DAMPING = 9f
 private const val VERTICAL_BASELINE_TIME_CONSTANT = 2.5f
@@ -69,7 +68,7 @@ class PosteriorInputProcessor : SkeletonInputProcessor {
 			}
 			val state = states.getValue(bodyPart)
 
-			updateRotationMotion(state, deltaTime)
+			updateRotationMotion(state, 0f, deltaTime)
 			val verticalOffset = updateVerticalMotion(state, bone.acceleration.y, deltaTime)
 
 			val localRotation =
@@ -96,11 +95,12 @@ class PosteriorInputProcessor : SkeletonInputProcessor {
 
 	private fun updateRotationMotion(
 		state: PosteriorMotionState,
+		rawAccelY: Float,
 		deltaTime: Float,
 	) {
 		if (deltaTime <= 0f) return
 
-		var acceleration = state.pitchOffset
+		var acceleration = rawAccelY
 
 		if (abs(acceleration) < ACCELERATION_DEADZONE) {
 			acceleration = 0f
@@ -149,13 +149,19 @@ class PosteriorInputProcessor : SkeletonInputProcessor {
 		var dynamicAccel = rawAccelY - state.verticalBaselineY
 		if (abs(dynamicAccel) < VERTICAL_ACCEL_DEADZONE) dynamicAccel = 0f
 
-		val inertialInput = -dynamicAccel * VERTICAL_ACCEL_GAIN
+		val inertialInput = -dynamicAccel
 
 		val restoring = -VERTICAL_SPRING * state.verticalPosition
 		val damping = -VERTICAL_DAMPING * state.verticalVelocity
 		state.verticalVelocity += (inertialInput + restoring + damping) * dt
 		state.verticalPosition += state.verticalVelocity * dt
-		state.verticalPosition = state.verticalPosition.coerceIn(-MAX_VERTICAL_OFFSET, MAX_VERTICAL_OFFSET)
+		if (state.verticalPosition > MAX_VERTICAL_OFFSET) {
+			state.verticalPosition = MAX_VERTICAL_OFFSET
+			if (state.verticalVelocity > 0f) state.verticalVelocity = 0f
+		} else if (state.verticalPosition < -MAX_VERTICAL_OFFSET) {
+			state.verticalPosition = -MAX_VERTICAL_OFFSET
+			if (state.verticalVelocity < 0f) state.verticalVelocity = 0f
+		}
 
 		if (
 			abs(state.verticalPosition) < SNAP_POSITION_EPSILON &&
