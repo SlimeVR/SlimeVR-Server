@@ -108,6 +108,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 						.map { it.rawAcceleration to it.motion }
 						.distinctUntilChanged()
 						.onEach { (rawAcceleration, motionState) ->
+							if (rawAcceleration == null) return@onEach
+
 							// Is this tracker over threshold for false positive prevention?
 							val isOverThreshold = if (rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED) {
 								trackersOverThreshold.add(trackerTapDetectionState.trackerId)

@@ -156,11 +156,6 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
 	}
 
-	private fun getReliableReferenceTracker(allTrackers: Collection<Tracker>) = allTrackers.firstOrNull {
-		val state = it.context.state.value
-		state.isAssignedReliableReference && state.status.isActive()
-	}
-
 	// By priority, higher value = higher priority. 0 for others.
 	private val referenceBodyParts = mapOf(
 		BodyPart.HEAD to 7,
@@ -173,9 +168,10 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		BodyPart.LEFT_HAND to -1,
 		BodyPart.RIGHT_HAND to -1,
 	)
-	private fun getUnreliableReferenceTracker(allTrackers: Collection<Tracker>) = allTrackers.sortedBy {
+
+	private fun getSortedReferenceTrackers(allTrackers: Collection<Tracker>) = allTrackers.sortedBy {
 		referenceBodyParts[it.context.state.value.bodyPart]
-	}.lastOrNull {
+	}.filter {
 		val state = it.context.state.value
 		state.position != null && state.bodyPart != null && state.status.isActive()
 	}
@@ -225,8 +221,9 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		val allTrackers = server.context.state.value.trackers.values
 
 		// Get the reference. The reference is used to align rotation/spaces.
-		val reliableReferenceTracker = getReliableReferenceTracker(allTrackers)
-		val referenceTracker = reliableReferenceTracker ?: getUnreliableReferenceTracker(allTrackers)
+		val sortedReferenceTrackers = getSortedReferenceTrackers(allTrackers)
+		val reliableReferenceTracker = sortedReferenceTrackers.lastOrNull { it.context.state.value.isAssignedReliableReference }
+		val referenceTracker = reliableReferenceTracker ?: sortedReferenceTrackers.lastOrNull()
 
 		// Reset the reference before the other trackers
 		if (referenceTracker != null) {

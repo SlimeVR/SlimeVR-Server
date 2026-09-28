@@ -52,7 +52,7 @@ export interface ShapeScale {
  * What a part's girth follows. Height suits a limb, but the torso should widen
  * with the body it sits in rather than with how tall it is.
  */
-type GirthBasis = 'height' | 'shoulders' | 'hips';
+type GirthBasis = 'height' | 'shoulders' | 'hips' | 'hand' | 'foot';
 
 /**
  * Ratios against the model as authored, so 1 is its own size at the body's
@@ -67,6 +67,8 @@ type ModelRatios = {
 
 const RIG_SHOULDER_WIDTH = 0.338;
 const RIG_HIP_WIDTH = 0.26;
+const RIG_HAND_LENGTH = 0.08;
+const RIG_FOOT_LENGTH = 0.13;
 
 const girthScale = (proportions: SkeletonProportions, basis: GirthBasis) => {
   if (basis === 'shoulders' && proportions.shoulderWidth > 0) {
@@ -74,6 +76,12 @@ const girthScale = (proportions: SkeletonProportions, basis: GirthBasis) => {
   }
   if (basis === 'hips' && proportions.hipWidth > 0) {
     return proportions.hipWidth / RIG_HIP_WIDTH;
+  }
+  if (basis === 'hand' && proportions.handLength > 0) {
+    return proportions.handLength / RIG_HAND_LENGTH;
+  }
+  if (basis === 'foot' && proportions.footLength > 0) {
+    return proportions.footLength / RIG_FOOT_LENGTH;
   }
   return proportions.bodyScale;
 };
@@ -91,48 +99,6 @@ export const spanBone = ({
       depth: depth * girth,
       length: (boneLength / model.length) * length,
     };
-  },
-});
-
-/**
- * Keeps the model's authored length, for bones whose length isn't the span the
- * model was drawn to: the hip is a structural connector, and the head bone is
- * an offset out to the HMD rather than the skull.
- */
-export const authoredSize = ({
-  width = 1,
-  depth = 1,
-  length = 1,
-  girthFrom = 'height',
-}: ModelRatios = {}): ShapeScale => ({
-  compute: ({ proportions }) => {
-    const girth = girthScale(proportions, girthFrom);
-    return {
-      width: width * girth,
-      depth: depth * girth,
-      length: length * proportions.bodyScale,
-    };
-  },
-});
-
-/**
- * How far around a limb measures, as a fraction of its own length. Limbs are
- * measured this way, and a bone gives its length directly, so this needs no
- * body height: a short arm is thin and a long one thick, whatever the body's
- * size.
- *
- * From ANSUR II (2012 US Army survey, 4082 men and 1986 women), taking each
- * limb's circumference over the length between the joints that bound it. The
- * two sexes agree to within about 0.1, so one number per limb serves.
- */
-export const byCircumference = (
-  circumference: number,
-  { length = 1 }: { length?: number } = {}
-): ShapeScale => ({
-  compute: ({ model, boneLength }) => {
-    const modelCircumference = (Math.PI * (model.width + model.depth)) / 2;
-    const girth = (circumference * boneLength) / modelCircumference;
-    return { width: girth, depth: girth, length: (boneLength / model.length) * length };
   },
 });
 
@@ -187,6 +153,12 @@ export interface BonePartConfig {
   shapes: BoneShapeConfig[];
   /** Where an assigned tracker sits from this bone's head (0) to tail (1). */
   trackerOffset?: number;
+  /**
+   * Where the marker starts inside the part's first shape, in the bone's own
+   * axes: -1 to 1 on each, 0 at the shape's centre. Used instead of
+   * `trackerOffset` for bones whose length doesn't span their shape.
+   */
+  trackerAnchor?: Vector3;
 }
 
 export const shape = (overrides: Partial<BoneShapeConfig> = {}): BoneShapeConfig => ({
@@ -210,27 +182,69 @@ const model = (
   ...overrides,
 });
 
+const fingerScale = spanBone({ girthFrom: 'hand' });
 const finger = (file: string) =>
-  part(model(file, { offset: inMetres({ width: -0.003 }) }));
+  part(model(file, { scale: fingerScale, offset: inMetres({ width: -0.003 }) }));
 const fingerRight = (file: string) =>
   part(
-    model(file, { scale: otherSide(spanBone()), offset: inMetres({ width: 0.003 }) })
+    model(file, {
+      scale: otherSide(fingerScale),
+      offset: inMetres({ width: 0.003 }),
+    })
   );
 
-const toe = (file: string) => part(model(file));
-const toeRight = (file: string) => part(model(file, { scale: otherSide(spanBone()) }));
+// Toe bones are drawn along their local y like the foot, so +y is back toward the ankle.
+// The base of each toe mesh is a painted cap, tucked into the foot so it never
+// shows. The length ratio keeps the tip on the bone's tail despite the tuck.
+const TOE_TUCK = 0.5;
+const toeScale = (width: number, depth: number) =>
+  spanBone({ width, depth, length: 1 + TOE_TUCK, girthFrom: 'foot' });
+const toeOffset = inBoneLengths({ length: TOE_TUCK, depth: 0.11 });
+const toe = (file: string, scale = toeScale(1.3, 1.0)) =>
+  part(model(file, { scale, offset: toeOffset }));
+const toeRight = (file: string, scale = toeScale(1.3, 1.0)) =>
+  part(model(file, { scale: otherSide(scale), offset: toeOffset }));
+const bigToeScale = toeScale(1.3, 1.15);
+
+const HEAD_SIZE_EXPONENT = 0.25;
+const headSize = ({ bodyScale }: SkeletonProportions) =>
+  bodyScale ** HEAD_SIZE_EXPONENT;
+// The head bone has no length, so the skull keeps the size it had at the old 0.1 m bone.
+const headScale: ShapeScale = {
+  compute: ({ proportions }) => {
+    const size = headSize(proportions);
+    return { width: size, depth: size, length: 1.04 * size };
+  },
+};
+const headOffset: ShapeOffset = ({ proportions }) =>
+  new Vector3(0, 0.005 * headSize(proportions), 0);
+
+// Neck circumference goes as stature^0.59 (Snyder et al. 1977), so the neck is thicker
+// than linear scaling gives on a short body and thinner on a tall one.
+const NECK_GIRTH_EXPONENT = 0.6;
+const neckScale: ShapeScale = {
+  compute: ({ model, proportions, boneLength }) => {
+    const girth = proportions.bodyScale ** NECK_GIRTH_EXPONENT;
+    return { width: girth, depth: girth, length: boneLength / model.length };
+  },
+};
 
 const shoulderScale = spanBone({ width: 0.8, depth: 0.8, length: 1.3 });
-const handScale = spanBone({ width: 1.0, depth: 1.0, length: 1.0 });
-const upperArmScale = byCircumference(1.2, { length: 1.0 });
-const lowerArmScale = byCircumference(1.0, { length: 1.0 });
+const handScale = spanBone({ width: 1.0, depth: 1.0, length: 1.0, girthFrom: 'hand' });
+const upperArmScale = spanBone({ girthFrom: 'shoulders', width: 0.87, depth: 0.87 });
+const lowerArmScale = spanBone({ girthFrom: 'shoulders', width: 0.89, depth: 0.89 });
 const upperLegScale = spanBone({ girthFrom: 'hips', length: 1.0 });
 const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.9 });
-const footScale = authoredSize({ width: 0.99, depth: 1.26 });
+const footScale: ShapeScale = {
+  compute: ({ boneLength }) => {
+    const ratio = boneLength / RIG_FOOT_LENGTH;
+    return { width: 0.9 * ratio, length: 1.12 * ratio, depth: 1.14 * ratio };
+  },
+};
+// Forward follows foot length; the drop from the ankle to the sole doesn't.
+const footOffset: ShapeOffset = ({ boneLength, proportions }) =>
+  new Vector3(0, -0.1 * boneLength, -0.1 * proportions.bodyScale);
 
-// Recommended tracker mounting positions, measured from a bone's head (0)
-// towards its tail (1). Mounting orientation still decides the front/back
-// surface; these values only choose the position along the bone.
 const CHEST_TRACKER_OFFSET = 0.2;
 const WAIST_TRACKER_OFFSET = 0.8;
 const HIP_TRACKER_OFFSET = 0.75;
@@ -238,19 +252,23 @@ const UPPER_ARM_TRACKER_OFFSET = 0.75;
 const LOWER_ARM_TRACKER_OFFSET = 0.15;
 const UPPER_LEG_TRACKER_OFFSET = 0.7;
 const LOWER_LEG_TRACKER_OFFSET = 0.75;
-const FOOT_TRACKER_OFFSET = 0.15;
+
+const FOOT_MARKER: Partial<BonePartConfig> = {
+  trackerAnchor: new Vector3(0, -0.3, 0),
+};
 
 export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.NONE]: part(shape(), { visible: false }),
   [BodyPart.HEAD]: part(
     model('head', {
-      rotation: turn({ width: 90 }),
-      offset: inBoneLengths({ length: -1, depth: 0.5 }),
-    })
+      scale: headScale,
+      offset: headOffset,
+    }),
+    { trackerAnchor: new Vector3(0, 0.2, 0) }
   ),
   [BodyPart.NECK]: part(
     model('neck', {
-      scale: spanBone({ width: 1, depth: 1, length: 1 }),
+      scale: neckScale,
       offset: inBoneLengths({ length: -0.0 }),
     })
   ),
@@ -360,19 +378,19 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   ),
   [BodyPart.LEFT_FOOT]: part(
     model('foot', {
-      offset: inBoneLengths({ depth: -0.7, length: -0.2 }),
+      offset: footOffset,
       scale: footScale,
       rotation: turn({ width: -42 }),
     }),
-    { trackerOffset: FOOT_TRACKER_OFFSET }
+    FOOT_MARKER
   ),
   [BodyPart.RIGHT_FOOT]: part(
     model('foot', {
-      offset: inBoneLengths({ depth: -0.7, length: -0.2 }),
+      offset: footOffset,
       scale: otherSide(footScale),
       rotation: turn({ width: -42 }),
     }),
-    { trackerOffset: FOOT_TRACKER_OFFSET }
+    FOOT_MARKER
   ),
 
   [BodyPart.LEFT_THUMB_METACARPAL]: finger('thumb_metacarpal'),
@@ -407,12 +425,12 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: fingerRight('little_intermediate'),
   [BodyPart.RIGHT_LITTLE_DISTAL]: fingerRight('little_distal'),
 
-  [BodyPart.LEFT_BIG_TOE]: toe('big_toe'),
+  [BodyPart.LEFT_BIG_TOE]: toe('big_toe', bigToeScale),
   [BodyPart.LEFT_INDEX_TOE]: toe('index_toe'),
   [BodyPart.LEFT_MIDDLE_TOE]: toe('middle_toe'),
   [BodyPart.LEFT_RING_TOE]: toe('ring_toe'),
   [BodyPart.LEFT_LITTLE_TOE]: toe('little_toe'),
-  [BodyPart.RIGHT_BIG_TOE]: toeRight('big_toe'),
+  [BodyPart.RIGHT_BIG_TOE]: toeRight('big_toe', bigToeScale),
   [BodyPart.RIGHT_INDEX_TOE]: toeRight('index_toe'),
   [BodyPart.RIGHT_MIDDLE_TOE]: toeRight('middle_toe'),
   [BodyPart.RIGHT_RING_TOE]: toeRight('ring_toe'),

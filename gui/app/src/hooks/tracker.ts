@@ -18,7 +18,7 @@ export const getLocalizedTrackerName = (
 };
 
 export function getTrackerName(info: TrackerInfoT | null): string {
-  return (info?.customName ?? info?.displayName)?.toString() ?? '';
+  return (info?.customName || info?.displayName)?.toString() ?? '';
 }
 
 export const velocityGlowStyle = (velocity: number): CSSProperties => {

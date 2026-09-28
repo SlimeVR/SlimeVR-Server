@@ -15,9 +15,8 @@ export function useSerialDevices() {
     sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
   }, []);
 
-  useRPCPacket(
-    RpcMessage.SerialDevicesResponse,
-    (res: SerialDevicesResponseT) => setDevices(res.devices)
+  useRPCPacket(RpcMessage.SerialDevicesResponse, (res: SerialDevicesResponseT) =>
+    setDevices(res.devices)
   );
 
   return devices;

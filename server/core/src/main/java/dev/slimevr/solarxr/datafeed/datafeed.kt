@@ -81,8 +81,8 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	},
 	tps = if (trackerMask.tps) tracker.tps else null,
 	temp = if (trackerMask.temp && tracker.imuTemp != null) tracker.imuTemp else null,
-	rawAcceleration = if (trackerMask.rawAcceleration) tracker.rawAcceleration.toVec3f() else null,
-	linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration.toVec3f() else null,
+	rawAcceleration = if (trackerMask.rawAcceleration) tracker.rawAcceleration?.toVec3f() else null,
+	linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration?.toVec3f() else null,
 	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted) tracker.rotation.toQuat() else null,
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted) tracker.rotation.toQuat() else null, // FIXME: uses reference adjusted
 	rawMagneticVector = if (trackerMask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.toVec3f() else null,

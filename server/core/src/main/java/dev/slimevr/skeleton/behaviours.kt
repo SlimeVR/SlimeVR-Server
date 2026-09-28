@@ -290,7 +290,7 @@ class ComputedSkeletonBehaviour(
 
 								// For head changed position, set the new position in state (for Localizer).
 								if (bodyPart == BodyPart.HEAD && !boneInput.isPositionActive && boneInput.position != previous?.position) {
-									receiver.context.dispatch(SkeletonActions.SetHeadPosition(boneInput.position))
+									receiver.context.dispatch(SkeletonActions.SetBonePose(BodyPart.HEAD, Vector3.ZERO, null, null, null, boneInput.position, false))
 								}
 							}
 							// Inputs changed; re-run FK

@@ -53,6 +53,7 @@ class ManagedContext<S, A>(
 
 class Context<S, A>(
 	private val mutableStateFlow: MutableStateFlow<S>,
+	val name: String,
 	val scope: CoroutineScope,
 	val reducer: (S, A) -> S = { state, _ -> state },
 	val behaviours: BehaviourList,
@@ -116,6 +117,7 @@ class Context<S, A>(
 			val effectiveDebugMiddleware = if (contextDebugEnabled) debugMiddleware else null
 			val context = Context(
 				mutableStateFlow,
+				name,
 				scopeWithName,
 				reducer,
 				BehaviourList(behaviours),

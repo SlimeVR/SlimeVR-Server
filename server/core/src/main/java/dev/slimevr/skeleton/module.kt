@@ -8,6 +8,7 @@ import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.inputprocessors.AccelerationFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
@@ -182,12 +183,19 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 }
 
 sealed interface SkeletonActions {
-	data class SetBonePose(val bodyPart: BodyPart, val trackerOffset: Vector3, val expectedTps: UShort, val rotation: Quaternion, val acceleration: Vector3, val position: Vector3?) : SkeletonActions
+	data class SetBonePose(
+		val bodyPart: BodyPart,
+		val trackerOffset: Vector3?,
+		val expectedTps: UShort?,
+		val rotation: Quaternion?,
+		val acceleration: Vector3?,
+		val position: Vector3?,
+		val switchActive: Boolean = true,
+	) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
-	data class SetHeadPosition(val position: Vector3?) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
 	data object ResetFloorLevel : SkeletonActions
 	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
@@ -283,6 +291,7 @@ class Skeleton(
 						PosteriorDirectLinkInputProcessor(),
 						TailChainInputProcessor(),
 						ConstraintInputProcessor(settings),
+						AccelerationFallbackInputProcessor(),
 					),
 					fkComputedProcessors = listOf(
 						VelocityComputedProcessor(),

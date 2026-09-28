@@ -5,6 +5,7 @@ import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BoardType,
   DeviceDataT,
+  DeviceOrigin,
   FirmwareDeviceIdTableT,
   FirmwareUpdateMethod,
   FirmwareUpdateStatus,
@@ -115,6 +116,7 @@ export function FirmwareUpdate() {
   const devices =
     allDevices.filter(
       (device) =>
+        device.origin === DeviceOrigin.UDP &&
         device.trackers.length > 0 &&
         currentFirmwareRelease &&
         device.hardwareInfo &&
