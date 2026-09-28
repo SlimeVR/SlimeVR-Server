@@ -244,4 +244,14 @@ fun reduce(
 			)
 		}
 	}
+
+	is TrackerActions.SetStepMounting -> {
+		val newHeadingAlignment = state.sessionCalibration.headingAlignment * action.headingAlignment
+		state.copy(
+			sessionCalibration = state.sessionCalibration.copy(headingAlignment = newHeadingAlignment),
+			lastMountingMethod = MountingMethod.POSE, // TODO More methods?
+			rotationDirty = true,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.POSE_MOUNTING,
+		)
+	}
 }

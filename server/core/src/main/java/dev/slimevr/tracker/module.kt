@@ -120,6 +120,7 @@ sealed interface TrackerActions {
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
 	data class SetStayAlignedEnabled(val enabled: Boolean) : TrackerActions
+	data class SetStepMounting(val headingAlignment: HeadingAlignment) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>

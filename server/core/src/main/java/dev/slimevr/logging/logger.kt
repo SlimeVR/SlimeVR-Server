@@ -32,6 +32,7 @@ object AppLogger {
 	val logging = logger("Logging")
 	val events = logger("Events")
 	val stayAligned = logger("Stay Aligned")
+	val stepMounting = logger("Step Mounting")
 
 	val coroutines = noCoLogger("Coroutines")
 	val console = noCoLogger("Console")

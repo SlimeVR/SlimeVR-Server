@@ -30,6 +30,7 @@ import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
+import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -256,6 +257,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
+	override val stepMountingManager: StepMountingManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }
