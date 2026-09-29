@@ -665,6 +665,9 @@ unknown_device-modal-forget = Ігнорувати
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Закрити
