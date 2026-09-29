@@ -537,12 +537,6 @@ settings-general-interface-discord_presence-message =
        *[other] Usando { $amount } trackers
     }
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>¿Da su consentimiento para la recopilación de datos de error anónimos?</h1>
-    
-    <b>No recopilamos información personal</b> , como su dirección IP o credenciales inalámbricas. ¡SlimeVR valora tu privacidad!
-    
-    Para proporcionar la mejor experiencia de usuario, recopilamos informes de errores anónimos, métricas de rendimiento e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas se recopilan a través de Sentry.io.
 settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 settings-interface-behavior-bvh_directory = Directorio para guardar grabaciones BVH
 settings-interface-behavior-bvh_directory-description = Elija un directorio para guardar sus grabaciones BVH en lugar de tener que elegir dónde guardarlas cada vez.
@@ -1136,6 +1130,9 @@ error_collection_modal-description_v2 =
     Puede cambiar esta configuración más adelante en la sección Comportamiento de la página de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
+
+## Crash screen
+
 
 ## Tracking checklist section
 
