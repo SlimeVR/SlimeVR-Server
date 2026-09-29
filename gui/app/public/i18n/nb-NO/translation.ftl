@@ -304,12 +304,6 @@ settings-general-interface-lang-placeholder = Velg språket du vil bruke
 
 settings-general-interface-dev_mode = Utvikler modus
 settings-general-interface-dev_mode-label = Utvikler modus
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
-    
-    <b>Vi samler ikke inn personlig informasjon</b> slik som din IP-adresse eller trådløs-legitimasjon. SlimeVR verdsetter ditt personvern!
-    
-    For å gi deg den beste brukeropplevelsen, samler vi inn anonymiserte feilrapporter, ytelsesmålinger og informasjon om operativsystemet. Dette hjelper oss med å oppdage feil og problemer med SlimeVR. Disse beregningene samles inn via Sentry.io.
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
 ## Serial settings
@@ -564,6 +558,9 @@ vrc_config-tracker_model-UNKNOWN = Ukjent
 vrc_config-avatar_measurement_type-UNKNOWN = Ukjent
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section
