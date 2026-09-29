@@ -152,8 +152,6 @@ tracker-settings-assignment_section-edit = Επεξεργασία ανάθεση
 tracker-settings-mounting_section = Θέση τοποθέτησης
 tracker-settings-mounting_section-description = Πού είναι τοποθετημένος ο ανιχνευτής;
 tracker-settings-mounting_section-edit = Επεξεργασία τοποθέτησης
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Όνομα ανιχνευτή
 tracker-settings-name_section-description = Δώστε του ένα χαριτωμένο ψευδώνυμο :)
 tracker-settings-name_section-placeholder = Το αριστερό πόδι του NightyBeast
