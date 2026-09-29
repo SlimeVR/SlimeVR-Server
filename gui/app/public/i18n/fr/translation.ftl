@@ -102,35 +102,6 @@ body_part-RIGHT_LITTLE_INTERMEDIATE = Auriculaire droit intermédiaire
 body_part-RIGHT_LITTLE_DISTAL = Auriculaire droit distal
 body_part-RIGHT_TOES = Orteils droit
 
-## BoardType
-
-board_type-UNKNOWN = Inconnu
-board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = Carte personnalisée
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = Carte de développement SlimeVR
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
-board_type-GESTURES = Gestes
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = nRF Générique
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
-
 ## Proportions
 
 skeleton_bone-NONE = Aucun
@@ -401,7 +372,6 @@ settings-sidebar-title = Réglages
 settings-sidebar-general = Général
 settings-sidebar-stay_aligned = Garder Aligné
 settings-sidebar-trackers = Capteurs
-settings-sidebar-vrchat_osc = Capteurs OSC VRChat
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
@@ -414,7 +384,6 @@ settings-sidebar-advanced = Avancé
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = Capteurs OSC VRChat
 settings-routing-output-badge-off = Désactivé
 settings-routing-group-fingers = Doigts
 settings-routing-hands-warning-cancel = Annuler
@@ -519,7 +488,6 @@ settings-general-fk_settings-arm_fk-forward-description = S'attend à ce que vos
 settings-general-fk_settings-skeleton_settings-ratios = Ratios du squelette
 settings-general-fk_settings-skeleton_settings-ratios-description = Modifiez les valeurs des paramètres du squelette. Vous devrez peut-être ajuster vos proportions après les avoir modifiées.
 settings-general-fk_settings-self_localization-title = Mode Mocap
-settings-general-fk_settings-self_localization-description = Le mode Mocap permet au squelette de suivre grossièrement sa propre position sans casque ou autres capteurs. Ce mode nécessite des capteurs de pieds et de tête afin de fonctionner et est encore expérimental.
 
 ## Gesture control settings (tracker tapping)
 
@@ -631,7 +599,6 @@ settings-serial-send_command-warning-cancel = Annuler
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = Capteurs OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l'envoi
@@ -950,7 +917,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alig
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 onboarding-automatic_mounting-return-home = Terminé
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Retour aux proportions mises à l'échelle
 onboarding-manual_proportions-fine_tuning_button = Automatiquement ajuster les proportions
