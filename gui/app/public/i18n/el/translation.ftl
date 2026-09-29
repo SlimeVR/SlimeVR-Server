@@ -337,6 +337,9 @@ firmware_tool-loading = Σύνδεση με τον διακομιστή
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Κλείσιμο
