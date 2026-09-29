@@ -97,15 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = الجزء القريب الأيمن الصغ�
 body_part-RIGHT_LITTLE_INTERMEDIATE = المتوسط ​​الصغير الأيمن
 body_part-RIGHT_LITTLE_DISTAL = الجزء البعيد الصغير الأيمن
 
-## BoardType
-
-board_type-UNKNOWN = مجهول
-board_type-CUSTOM = لوحة مخصصة
-board_type-SLIMEVR = سلايم في آر
-board_type-WRANGLER = رانجلر جويكونز
-board_type-MOCOPI = سوني موكوبي (Mocopi)
-board_type-GLOVE_IMU_SLIMEVR_DEV = قفاز SlimeVR تطوير IMU
-
 ## Proportions
 
 skeleton_bone-NONE = غير محدد
@@ -304,7 +295,6 @@ settings-sidebar-title = الإعدادات
 settings-sidebar-general = الاعدادات العامة
 settings-sidebar-trackers = أجهزة التعقب
 settings-sidebar-interface = واجهة المستخدم
-settings-sidebar-vrchat_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 settings-sidebar-appearance = مظهر
@@ -315,7 +305,6 @@ settings-sidebar-advanced = متقدم
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-routing-hands-warning-cancel = إلغاء
 
 ## SteamVR / Monado output settings
@@ -393,7 +382,6 @@ settings-general-fk_settings-arm_fk-forward-description = يتوقع أن تكو
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
 settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
 settings-general-fk_settings-self_localization-title = وضع Mocap
-settings-general-fk_settings-self_localization-description = يسمح وضع Mocap للهيكل العظمي بتعقب موضعه تقريبا بدون سماعة رأس أو أجهزة تعقب أخرى. لاحظ أن هذا يتطلب أجهزة تعقب القدمين والرأس للعمل ولا تزال تجريبية.
 
 ## Gesture control settings (tracker tapping)
 
@@ -519,7 +507,6 @@ settings-serial-send_command-warning-cancel = إلغاء
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     تغيير الإعدادات الخاصة بمعيار أجهزة تعقب OSC  المستخدم لإرسال
@@ -547,7 +534,6 @@ settings-osc-vrchat-status-badge-unknown = مجهول
 
 ## VMC OSC settings
 
-settings-osc-vmc = التقاط الحركة الافتراضية
 # This cares about multilines
 settings-osc-vmc-description =
     قم بتغيير الإعدادات الخاصة ببروتوكول التقاط الحركة الافتراضية
@@ -816,7 +802,7 @@ onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة ال
 onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
 onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
