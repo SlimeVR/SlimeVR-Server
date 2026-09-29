@@ -1416,6 +1416,14 @@ error_collection_modal-description_v2 = crwdns9362:0{ settings-interface-behavio
 error_collection_modal-confirm = crwdns9364:0crwdne9364:0
 error_collection_modal-cancel = crwdns9366:0crwdne9366:0
 
+## Crash screen
+
+crash_screen-title = crwdns9530:0crwdne9530:0
+crash_screen-description = crwdns9532:0crwdne9532:0
+crash_screen-event_id = crwdns9534:0$idcrwdne9534:0
+crash_screen-copy = crwdns9536:0crwdne9536:0
+crash_screen-reload = crwdns9538:0crwdne9538:0
+
 ## Tracking checklist section
 
 tracking_checklist = crwdns9368:0crwdne9368:0
