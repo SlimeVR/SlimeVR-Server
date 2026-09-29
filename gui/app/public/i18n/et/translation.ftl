@@ -168,8 +168,6 @@ tracker-settings-assignment_section-edit = Muuda jälgija asukohta
 tracker-settings-mounting_section = Paigaldusasend
 tracker-settings-mounting_section-description = Kuhu on jälgija paigaldatud.
 tracker-settings-mounting_section-edit = Muuda paigaldusasendit
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
 tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
