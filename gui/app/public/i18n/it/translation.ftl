@@ -97,12 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Falange prossimale del mignolo destro
 body_part-RIGHT_LITTLE_INTERMEDIATE = Falange intermedia del mignolo destro
 body_part-RIGHT_LITTLE_DISTAL = Falange distale del mignolo destro
 
-## BoardType
-
-board_type-UNKNOWN = Sconosciuto
-board_type-CUSTOM = Scheda Personalizzata
-board_type-GLOVE_IMU_SLIMEVR_DEV = Guanto SlimeVR Dev IMU
-
 ## Proportions
 
 skeleton_bone-NONE = Nessuna selezione
@@ -458,7 +452,6 @@ settings-general-fk_settings-arm_fk-forward-description = Si aspetta che le tue 
 settings-general-fk_settings-skeleton_settings-ratios = Proporzioni dello scheletro
 settings-general-fk_settings-skeleton_settings-ratios-description = Modifica i valori delle impostazioni dello scheletro. Potrebbe essere necessario regolare le proporzioni dopo aver modificato queste impostazioni.
 settings-general-fk_settings-self_localization-title = Modalità Mocap
-settings-general-fk_settings-self_localization-description = La modalità Mocap consente allo scheletro di tracciare approssimativamente la propria posizione senza visore o altri tracker. Si noti che questo richiede trakers per piedi e la testa per funzionare ed è ancora in fase sperimentale.
 
 ## Gesture control settings (tracker tapping)
 
@@ -573,7 +566,6 @@ settings-serial-send_command-warning-cancel = Annulla
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = Tracker OSC per VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Modifica impostazioni specifiche dello standard dei Tracker OSC utilizzato per l'invio
@@ -872,7 +864,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rot
 onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei tracker
 onboarding-automatic_mounting-return-home = Fatto
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Regola automaticamente le proporzioni
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Per piacer collega un visore VR per utilizzare la regolazione automatica
