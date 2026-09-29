@@ -306,8 +306,6 @@ tracker-settings-use_mag-description =
     
     请先启用「在追踪器上启用磁力计」功能，<magSetting>点选此处以移动至该设定</magSetting>。
 tracker-settings-use_mag-label = 允许使用这个追踪器的磁力计
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追踪器名称
 tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=~
 tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
