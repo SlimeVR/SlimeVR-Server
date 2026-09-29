@@ -35,10 +35,11 @@ import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
-import { useSetAtom } from 'jotai';
-import { ignoredTrackersAtom } from '@/store/app-store';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { bonesAtom, ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { Tooltip } from '@/components/commons/Tooltip';
+import { Vector3ToVec3fT } from '@/maths/vector3';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -61,18 +62,31 @@ export function TrackerSettingsPage() {
     trackernum: string;
     deviceid: string;
   }>();
-  const { control, watch, reset, handleSubmit } = useForm<{
+  const { control, watch, reset, setValue, handleSubmit } = useForm<{
     trackerName: string | null;
+    boneOffset: { x: number | null; y: number | null; z: number | null };
   }>({
     defaultValues: {
       trackerName: null,
+      boneOffset: { x: 0, y: 0, z: 0 },
     },
     reValidateMode: 'onSubmit',
   });
   const setIgnoredTracker = useSetAtom(ignoredTrackersAtom);
-  const { trackerName } = watch();
+  const { trackerName, boneOffset } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
+  const bones = useAtomValue(bonesAtom);
+
+  const boneTrackerOffset = () => {
+    const offset = bones.find(
+      (b) => b.bodyPart === tracker?.tracker.info?.bodyPart
+    )?.trackerOffset;
+    return { x: offset?.x ?? 0, y: offset?.y ?? 0, z: offset?.z ?? 0 };
+  };
+  const hasBoneOffset = bones.some(
+    (b) => b.bodyPart === tracker?.tracker.info?.bodyPart && !!b.trackerOffset
+  );
   const assignTracker = useAssignTracker();
 
   const { currRotation, setDirection } = useMountingOrientation(tracker);
@@ -104,13 +118,43 @@ export function TrackerSettingsPage() {
     updateTrackerSettings();
   };
 
+  const updateBoneOffset = () => {
+    if (!tracker) return;
+    const bodyPart = tracker.tracker.info?.bodyPart ?? BodyPart.NONE;
+    if (bodyPart === BodyPart.NONE) return;
+
+    const { x, y, z } = boneOffset;
+    if (x == null || y == null || z == null) return;
+
+    const current = boneTrackerOffset();
+    if (current.x === x && current.y === y && current.z === z) return;
+
+    const req = new UpdateTrackerRequestT();
+    req.trackerId = tracker.tracker.trackerId;
+    req.bodyPosition = bodyPart;
+    req.boneOffset = Vector3ToVec3fT({ x, y, z });
+    sendRPCPacket(RpcMessage.UpdateTrackerRequest, req);
+  };
+
   useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 1000);
+  useDebouncedEffect(
+    () => updateBoneOffset(),
+    [boneOffset.x, boneOffset.y, boneOffset.z],
+    1000
+  );
 
   useEffect(() => {
     reset({
       trackerName: tracker?.tracker.info?.customName as string | null,
+      boneOffset: boneTrackerOffset(),
     });
   }, []);
+
+  // The offset is stored per body part, reload it when the assignment changes
+  // or once the bone first shows up in the feed
+  useEffect(() => {
+    setValue('boneOffset', boneTrackerOffset());
+  }, [tracker?.tracker.info?.bodyPart, hasBoneOffset]);
 
   const boardType = useMemo(() => {
     if (tracker?.device?.hardwareInfo?.officialBoardType) {
@@ -481,6 +525,34 @@ export function TrackerSettingsPage() {
                 trackerId={tracker.tracker.trackerId}
               />
             )}
+          {!!tracker?.tracker.position && (
+            <div className="flex flex-col gap-2 w-full mt-3">
+              <Typography
+                variant="section-title"
+                id="tracker-settings-bone_offset_section"
+              />
+              <Typography id="tracker-settings-bone_offset_section-description" />
+              <div className="grid grid-cols-3 gap-2">
+                {(['x', 'y', 'z'] as const).map((axis) => (
+                  <Input
+                    key={axis}
+                    type="number"
+                    step="any"
+                    name={`boneOffset.${axis}`}
+                    control={control}
+                    autocomplete="off"
+                    disabled={
+                      (tracker.tracker.info?.bodyPart ?? BodyPart.NONE) ===
+                      BodyPart.NONE
+                    }
+                    placeholder={l10n.getString(
+                      `tracker-settings-bone_offset_section-${axis}`
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
