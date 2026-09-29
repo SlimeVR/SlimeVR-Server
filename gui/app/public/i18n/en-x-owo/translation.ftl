@@ -97,28 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = wight widdle pwoximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = wight widdle imternediate
 body_part-RIGHT_LITTLE_DISTAL = wight widdle distol
 
-## BoardType
-
-board_type-UNKNOWN = unnown
-board_type-NODEMCU = nowdemcu
-board_type-CUSTOM = cusom boawd
-board_type-WROOM32 = wroom32
-board_type-WEMOSD1MINI = wemo d1 meenee
-board_type-TTGO_TBASE = ttgo tbase
-board_type-ESP01 = esp01
-board_type-SLIMEVR = swimevr
-board_type-LOLIN_C3_MINI = lol c3 meenee
-board_type-BEETLE32C3 = 🪲 (beetle) esp32-c3
-board_type-ESP32C3DEVKITM1 = expressive esp32-c3 devkitm1
-board_type-OWOTRACK = owo!!Track
-board_type-WRANGLER = wrangle joycons (yeehaw)
-board_type-MOCOPI = soni mocopi
-board_type-WEMOSWROOM02 = memos vroom-02 d1 meenee
-board_type-XIAO_ESP32C3 = seeeed studio xiao esp32c3
-board_type-HARITORA = hawitowa
-board_type-ESP32C6DEVKITC1 = espresso esp32-c6 devkitc1
-board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
-
 ## Proportions
 
 skeleton_bone-NONE = none
@@ -386,7 +364,6 @@ settings-general-fk_settings-arm_fk-forward-description = Expects youw awms to b
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
 settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
 settings-general-fk_settings-self_localization-title = mocap mowd
-settings-general-fk_settings-self_localization-description = mocap mowd awwows da skeweton to wuffly twack is own posishun without a hedset or other twackews. note dat dis wequiwes feet and hed twackews to wowk and is stiwll expewimentaw.
 
 ## Gesture control settings (tracker tapping)
 
@@ -492,7 +469,6 @@ settings-serial-send_command-warning-cancel = cancew
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChawt OSC Twayckaws
 settings-osc-vrchat-enable = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
 settings-osc-vrchat-enable-label = enaybwe
@@ -514,7 +490,6 @@ settings-osc-vrchat-status-badge-unknown = unnown
 
 ## VMC OSC settings
 
-settings-osc-vmc = viwtuaw motion captuwe
 # This cares about multilines
 settings-osc-vmc-description =
     change settings specific to the vmc (viwtuaw motion captuwe) pwotocow
@@ -766,7 +741,7 @@ onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
 onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
 onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
