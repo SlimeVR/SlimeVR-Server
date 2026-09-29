@@ -264,8 +264,6 @@ tracker-settings-use_mag-description =
     
     Pirmiausia reikia įjungti magnetometro naudojimą, <magSetting>spustelėkite čia, kad pereiti prie nustatymo.</magSetting>
 tracker-settings-use_mag-label = Leisti magnetometro naudojimą
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Sekiklio pavadinimas
 tracker-settings-name_section-description = Sugalvokite jam mielą vardą :)
 tracker-settings-name_section-placeholder = NightyBeast kairė koja
