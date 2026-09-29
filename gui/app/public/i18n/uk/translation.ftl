@@ -62,9 +62,6 @@ body_part-LEFT_UPPER_LEG = Ліве стегно
 body_part-LEFT_LOWER_LEG = Ліва щиколотка
 body_part-LEFT_FOOT = Ліва нога
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Нічого
@@ -307,7 +304,6 @@ settings-general-fk_settings-arm_fk-forward-description = Очікується, 
 settings-general-fk_settings-skeleton_settings-ratios = Співвідношення скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Змініть параметри скелета. Можливо, вам доведеться скоригувати пропорції після їхньої зміни.
 settings-general-fk_settings-self_localization-title = Режим Мокап
-settings-general-fk_settings-self_localization-description = Режим Мокап дозволяє скелету приблизно відстежувати власне положення без використання шолому або інших трекерів. Зверніть увагу, що для цього потрібні трекери ніг і голови, і це все ще експериментальний метод.
 
 ## Gesture control settings (tracker tapping)
 
@@ -401,7 +397,6 @@ settings-serial-send_command-warning-cancel = Скасувати
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC трекери
 settings-osc-vrchat-enable = Увімкнути
 settings-osc-vrchat-enable-description = Перемикайте відправку та отримання даних.
 settings-osc-vrchat-enable-label = Увімкнути
@@ -423,7 +418,6 @@ settings-osc-vrchat-status-badge-error = Помилка
 
 ## VMC OSC settings
 
-settings-osc-vmc = Віртуальне захоплення руху
 # This cares about multilines
 settings-osc-vmc-description =
     Змінення настройок протоколу VMC (Virtual Motion Capture)
@@ -593,7 +587,7 @@ onboarding-automatic_mounting-prev_step = Попередній крок
 onboarding-automatic_mounting-done-restart = Спробуйте знову
 onboarding-automatic_mounting-mounting_reset-title = Калібрування положення
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
