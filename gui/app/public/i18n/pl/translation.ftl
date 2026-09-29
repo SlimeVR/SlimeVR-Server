@@ -297,8 +297,6 @@ tracker-settings-use_mag-description =
     ¶
     Najpierw musisz zezwolić na użycie magnetometru, <magSetting>kliknij tutaj, aby przejść do ustawienia</magSetting> .
 tracker-settings-use_mag-label = Pozwól na magnetometr
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nazwa Trackera
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
 tracker-settings-name_section-placeholder = Lewa noga Yexo
