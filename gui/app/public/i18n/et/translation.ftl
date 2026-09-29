@@ -61,10 +61,6 @@ body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
 
-## BoardType
-
-board_type-UNKNOWN = Tundmatu
-
 ## Proportions
 
 skeleton_bone-NONE = Mitte midagi
@@ -283,7 +279,6 @@ settings-general-fk_settings-arm_fk-back = Taga
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
 settings-general-fk_settings-skeleton_settings-ratios-description = Muutke skeleti seadete väärtusi. Võimalik, et peate pärast nende muutmist oma proportsioone kohandama.
 settings-general-fk_settings-self_localization-title = Mocapi režiim
-settings-general-fk_settings-self_localization-description = Mocap-režiim võimaldab skeletil ligikaudselt jälgida oma asukohta ilma peakomplekti või muude jälgijateta. Pange tähele, et see nõuab jalgade ja peajälgijate olemasolu ning on endiselt eksperimentaalne.
 
 ## Gesture control settings (tracker tapping)
 
@@ -369,7 +364,6 @@ settings-serial-send_command-warning-cancel = Tühista
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Jälgija
 settings-osc-vrchat-enable = Luba
 settings-osc-vrchat-enable-description = Lülitage andmete sisestamine sisse/välja.
 settings-osc-vrchat-enable-label = Luba
@@ -542,7 +536,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peal
 onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
 onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
