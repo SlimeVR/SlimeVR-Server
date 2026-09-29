@@ -100,13 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Sağ küçük parmağın proksimal falanks kem
 body_part-RIGHT_LITTLE_INTERMEDIATE = Sağ küçük parmağın orta falanks kemiği
 body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
-## BoardType
-
-board_type-UNKNOWN = Bilinmeyen
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
-board_type-GESTURES = Hareketler
-board_type-GENERIC_NRF = Jenerik nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Yok
@@ -405,7 +398,7 @@ onboarding-assign_trackers-side-left = Sol
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
