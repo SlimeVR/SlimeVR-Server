@@ -12,12 +12,12 @@ import {
 } from 'electron';
 import { GHGet, GHReturn, IPC_CHANNELS } from '@slimevr/gui-shared';
 import path, { dirname, join } from 'path';
-import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
 import appleTrayIcon from '../resources/icons/Square30x30Logo.png?asset';
 import { readFile, stat } from 'fs/promises';
 import { pathToFileURL } from 'node:url';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
+import { CROWDIN_URL, getAppUrl, isAppUrl, openExternalUrl } from './urls';
 import {
   findServerJar,
   findSystemJRE,
@@ -36,6 +36,7 @@ import { options } from './cli';
 import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
+import { openCrowdinPopup } from './crowdin';
 
 type Stores = Awaited<ReturnType<typeof initStores>>;
 let stores: Stores;
@@ -142,19 +143,6 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
       logger.info(payload, msg);
   }
 });
-
-const EXTERNAL_URL_ALLOWLIST = [
-  /^steam:\/\//,
-  /^ms-settings:network$/,
-  /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
-  /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
-  /^https:\/\/discord\.gg\/slimevr$/,
-];
-
-const openExternalUrl = (url: string) => {
-  if (EXTERNAL_URL_ALLOWLIST.some((a) => url.match(a))) open(url);
-  else logger.error({ url }, 'attempted to open non-whitelisted URL');
-};
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => openExternalUrl(url));
 
@@ -284,6 +272,14 @@ function hardenWindow(win: BrowserWindow) {
     return { action: 'deny' };
   });
 
+  win.webContents.on('will-navigate', (event, url) => {
+    if (isAppUrl(url)) return;
+
+    event.preventDefault();
+    if (CROWDIN_URL.test(url)) openCrowdinPopup(win, url);
+    else openExternalUrl(url);
+  });
+
   const devMode = !!process.env.ELECTRON_RENDERER_URL;
   win.webContents.on('before-input-event', (event, input) => {
     if (input.type !== 'keyDown') return;
@@ -331,11 +327,9 @@ function createWindow() {
 
   hardenWindow(mainWindow);
 
+  mainWindow.loadURL(getAppUrl());
   if (process.env.ELECTRON_RENDERER_URL) {
-    mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
     mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadURL('app://./index.html');
   }
 
   mainWindow.on('closed', () => {

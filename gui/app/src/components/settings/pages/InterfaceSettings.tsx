@@ -13,6 +13,7 @@ import { SquaresIcon } from '@/components/commons/icon/SquaresIcon';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
 import { LangSelector } from '@/components/commons/LangSelector';
+import { Button } from '@/components/commons/Button';
 import { BellIcon } from '@/components/commons/icon/BellIcon';
 import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
@@ -48,7 +49,8 @@ interface InterfaceSettingsForm {
 
 export function InterfaceSettings() {
   const electron = useElectron();
-  const { currentLocales } = useLocaleConfig();
+  const { currentLocales, inContext, inContextFailed, setInContext } =
+    useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
@@ -590,6 +592,41 @@ export function InterfaceSettings() {
             <div className="grid sm:grid-cols-2 pb-4">
               <LangSelector alignment="left" />
             </div>
+
+            {electron.isElectron && (
+              <>
+                <Typography
+                  variant="section-title"
+                  id="settings-general-interface-crowdin_in_context"
+                />
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography
+                    id={
+                      inContext
+                        ? 'settings-general-interface-crowdin_in_context-description-active'
+                        : 'settings-general-interface-crowdin_in_context-description'
+                    }
+                  />
+                  {inContextFailed && (
+                    <Typography
+                      color="text-status-critical"
+                      id="settings-general-interface-crowdin_in_context-failed"
+                    />
+                  )}
+                </div>
+                <div className="grid sm:grid-cols-2 pb-4">
+                  <Button
+                    variant={inContext ? 'tertiary' : 'secondary'}
+                    id={
+                      inContext
+                        ? 'settings-general-interface-crowdin_in_context-close'
+                        : 'settings-general-interface-crowdin_in_context-enable'
+                    }
+                    onClick={() => setInContext(!inContext)}
+                  />
+                </div>
+              </>
+            )}
           </>
         </SettingsPagePaneLayout>
       </form>

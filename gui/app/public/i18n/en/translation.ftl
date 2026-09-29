@@ -725,6 +725,12 @@ settings-general-interface-theme = Colour theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language.
 settings-general-interface-lang-placeholder = Select the language to use
+settings-general-interface-crowdin_in_context = Help translate
+settings-general-interface-crowdin_in_context-description = Switches the app to an editable view where every piece of text is a link to Crowdin's in-context editor. Requires a Crowdin account.
+settings-general-interface-crowdin_in_context-description-active = In-context translation is on. Use the button below to leave it.
+settings-general-interface-crowdin_in_context-failed = Couldn't reach Crowdin. Check your connection and try again.
+settings-general-interface-crowdin_in_context-enable = Open in-context translation
+settings-general-interface-crowdin_in_context-close = Close in-context translation
 # Keep the font name untranslated
 settings-interface-appearance-font = GUI font
 settings-interface-appearance-font-description = This changes the font used by the interface.

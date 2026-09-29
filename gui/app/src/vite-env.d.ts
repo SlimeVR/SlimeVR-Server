@@ -12,6 +12,10 @@ interface Window {
         updateInsetBackground: (c: string) => void;
       }
     | undefined;
+  _jipt?: [string, unknown][];
+  jipt?: {
+    start: () => void;
+  };
 }
 
 declare module 'tailwind-gradient-mask-image';

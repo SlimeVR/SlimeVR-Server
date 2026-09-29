@@ -8,6 +8,7 @@ import { DiscordPresence, GHGet, GHReturn, OSStats } from './interface';
 
 export const IPC_CHANNELS = {
   SERVER_STATUS: 'server-status',
+  CROWDIN_POPUP_CLOSED: 'crowdin-popup-closed',
   OPEN_URL: 'open-url',
   OS_STATS: 'os-stats',
   WINDOW_ACTIONS: 'window-actions',
