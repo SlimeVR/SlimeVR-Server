@@ -176,8 +176,6 @@ tracker-settings-assignment_section-edit = Редагування признач
 tracker-settings-mounting_section = Позиція трекера
 tracker-settings-mounting_section-description = Де закріплено трекер?
 tracker-settings-mounting_section-edit = Змінити місце розташування
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Ім'я трекера
 tracker-settings-name_section-description = Дайте йому миле прізвисько °^°
 tracker-settings-name_section-placeholder = Ліва нога NightyBeast
