@@ -175,8 +175,6 @@ tracker-settings-assignment_section-edit = Muokkaa määritystä
 tracker-settings-mounting_section = Asennusasento
 tracker-settings-mounting_section-description = Mihin jäljitin on asennettu?
 tracker-settings-mounting_section-edit = Muokkaa asennusta
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jäljittimen nimi
 tracker-settings-name_section-description = Anna sille söpö lempinimi :)
 tracker-settings-name_section-placeholder = NightyBeast vasen jalka
