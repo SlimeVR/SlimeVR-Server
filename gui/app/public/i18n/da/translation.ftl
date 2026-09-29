@@ -154,8 +154,6 @@ tracker-settings-assignment_section-edit = Rediger opgave
 tracker-settings-mounting_section = Monteringsposition
 tracker-settings-mounting_section-description = Hvor er trackeren monteret?
 tracker-settings-mounting_section-edit = Rediger montering
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Giv den et sødt kælenavn :)
 tracker-settings-name_section-placeholder = NightyBeast's venstre ben
