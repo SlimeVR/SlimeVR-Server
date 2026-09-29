@@ -100,12 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Proximal del meñique derecho
 body_part-RIGHT_LITTLE_INTERMEDIATE = Intermedio del meñique derecho
 body_part-RIGHT_LITTLE_DISTAL = Distal del meñique derecho
 
-## BoardType
-
-board_type-UNKNOWN = Desconocido
-board_type-CUSTOM = Placa Desconocida
-board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
-
 ## Proportions
 
 skeleton_bone-NONE = Ninguno
@@ -354,7 +348,6 @@ mounting_selection_menu-close = Cerrar
 settings-sidebar-title = Configuración
 settings-sidebar-stay_aligned = Mantener Alineado
 settings-sidebar-interface = Interfaz
-settings-sidebar-vrchat_osc = VRChat OSC Trackers
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
@@ -366,7 +359,6 @@ settings-sidebar-advanced = Avanzado
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = VRChat OSC Trackers
 settings-routing-output-badge-off = Apagado
 settings-routing-hands-warning-cancel = Cancelar
 
@@ -463,7 +455,6 @@ settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos 
 settings-general-fk_settings-skeleton_settings-ratios = Proporciones del esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de la configuración del esqueleto. Es posible que debas ajustar tus proporciones de nuevo.
 settings-general-fk_settings-self_localization-title = Modo Captura de movimiento
-settings-general-fk_settings-self_localization-description = El modo captura de movimiento permite al esqueleto seguir aproximadamente tu posición sin auriculares ni otros trackers. Ten en cuenta que esto requiere trrackers de pies y cabeza para funcionar y que aún está en fase experimental.
 
 ## Gesture control settings (tracker tapping)
 
@@ -583,7 +574,6 @@ settings-serial-send_command-warning-cancel = Cancelar
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Change settings specific to the OSC Trackers standard used for sending
@@ -612,7 +602,6 @@ settings-osc-vrchat-status-badge-unknown = Desconocido
 
 ## VMC OSC settings
 
-settings-osc-vmc = Captura de movimiento virtual
 # This cares about multilines
 settings-osc-vmc-description = Cambiar la configuración al protocolo VMC (Virtual Motion Capture) para enviar datos de SlimeVR y recibir información de otras apps.
 settings-osc-vmc-enable = Habilitar
@@ -879,7 +868,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la pos
 onboarding-automatic_mounting-put_trackers_on-next = Tengo todos mis trackers en posicion
 onboarding-automatic_mounting-return-home = Hecho
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Ajuste automático de las proporciones
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Conecte el visor RV para usar el ajuste automatico
