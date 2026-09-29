@@ -101,18 +101,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = 右小指近端
 body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中端
 body_part-RIGHT_LITTLE_DISTAL = 右小指远端
 
-## BoardType
-
-board_type-UNKNOWN = 未知
-board_type-CUSTOM = 自定义开发板
-board_type-SLIMEVR_DEV = SlimeVR 开发板
-board_type-MOCOPI = 索尼 Mocopi
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR开发版IMU手套
-board_type-GESTURES = 手势
-board_type-GENERIC_NRF = nRF系列
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR蝴蝶 开发版
-board_type-SLIMEVR_BUTTERFLY = SlimeVR蝴蝶
-
 ## Proportions
 
 skeleton_bone-NONE = 无
@@ -501,7 +489,6 @@ settings-general-fk_settings-arm_fk-forward-description = 重置时手臂向前�
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-skeleton_settings-ratios-description = 更改骨架设置的参数。您可能需要在更改后调整身体比例。
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
-settings-general-fk_settings-self_localization-description = 动作捕捉模式允许在没有头戴设备或其他追踪器的情况下粗略地跟踪骨架姿态。请注意，本功能需要脚部和头部追踪器，且现阶段依然是实验性的。
 
 ## Gesture control settings (tracker tapping)
 
@@ -615,7 +602,6 @@ settings-serial-send_command-warning-cancel = 取消
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     修改与OSC追踪器相关的设置，可用于在不使用SteamVR时传输追踪数据（如一体机模式）。
@@ -952,7 +938,7 @@ onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴�
 onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
 onboarding-automatic_mounting-return-home = 完成
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = 返回使用缩放比例
 onboarding-manual_proportions-fine_tuning_button = 自动微调身体比例
