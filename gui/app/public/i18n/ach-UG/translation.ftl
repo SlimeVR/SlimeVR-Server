@@ -298,6 +298,11 @@ tracker-settings-use_mag-description = crwdns7542:0crwdne7542:0
 tracker-settings-use_mag-label = crwdns7544:0crwdne7544:0
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
+tracker-settings-bone_offset_section = crwdns9540:0crwdne9540:0
+tracker-settings-bone_offset_section-description = crwdns9542:0crwdne9542:0
+tracker-settings-bone_offset_section-x = crwdns9544:0crwdne9544:0
+tracker-settings-bone_offset_section-y = crwdns9546:0crwdne9546:0
+tracker-settings-bone_offset_section-z = crwdns9548:0crwdne9548:0
 tracker-settings-name_section = crwdns7546:0crwdne7546:0
 tracker-settings-name_section-description = crwdns7548:0crwdne7548:0
 tracker-settings-name_section-placeholder = crwdns7550:0crwdne7550:0
