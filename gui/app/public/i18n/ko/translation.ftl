@@ -908,6 +908,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = 알 수 없음
 error_collection_modal-title = 오류를 수집해도 될까요?
 error_collection_modal-confirm = 동의해요
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = 닫기
