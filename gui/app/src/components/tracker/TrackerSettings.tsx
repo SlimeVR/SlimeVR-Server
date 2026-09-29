@@ -291,7 +291,7 @@ export function TrackerSettingsPage() {
               <Typography>
                 {l10n.getString('tracker-infos-custom_name')}
               </Typography>
-              <Typography sentry-mask>
+              <Typography sentryMask>
                 {tracker?.tracker.info?.customName || '--'}
               </Typography>
             </div>

@@ -2,6 +2,7 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
@@ -39,6 +40,7 @@ private fun stepOrder(id: TrackingChecklistStepId): Int {
 class TrackingChecklistBehaviour(
 	private val checklist: TrackingChecklist,
 	private val settings: Settings,
+	private val errorReporting: ErrorReportingManager,
 ) : SolarXRBridgeBehaviour {
 
 	private fun parseMutedSteps(): Set<TrackingChecklistStepId> = settings.context.state.value.data.mutedChecklistSteps
@@ -71,6 +73,10 @@ class TrackingChecklistBehaviour(
 			val stepId = req.stepId
 			if (stepId == TrackingChecklistStepId.UNKNOWN) return@on
 			val name = stepId.name
+			errorReporting.reportUsage(
+				if (req.ignore) "mute_checklist_step" else "unmute_checklist_step",
+				mapOf("step" to name, "session" to false),
+			)
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(mutedChecklistSteps = if (req.ignore) mutedChecklistSteps + name else mutedChecklistSteps - name)

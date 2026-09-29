@@ -1,7 +1,7 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
-import { CheckBox } from '@/components/commons/Checkbox';
+import { CheckBox, CheckboxInternal } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
@@ -21,7 +21,12 @@ import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 import { SystemFileInput } from '@/components/commons/SystemFileInput';
 import { useElectron } from '@/hooks/electron';
 import { handleResetSounds } from '@/sounds/sounds';
-import { ResetStatus, ResetType } from 'solarxr-protocol';
+import {
+  ErrorReportingConsent,
+  ResetStatus,
+  ResetType,
+} from 'solarxr-protocol';
+import { useErrorReporting } from '@/hooks/error-reporting';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -32,7 +37,6 @@ interface InterfaceSettingsForm {
   behavior: {
     useTray: boolean;
     discordPresence: boolean;
-    errorTracking: boolean;
     bvhDirectory: string | null;
     skeletonMesh: boolean;
     controllerNav: boolean;
@@ -53,6 +57,7 @@ export function InterfaceSettings() {
     useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
+  const errorReporting = useErrorReporting();
   const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
     defaultValues: {
       appearance: {
@@ -72,7 +77,6 @@ export function InterfaceSettings() {
         useTray: config?.useTray ?? defaultConfig.useTray ?? false,
         discordPresence:
           config?.discordPresence ?? defaultConfig.discordPresence,
-        errorTracking: config?.errorTracking ?? false,
         bvhDirectory: config?.bvhDirectory ?? defaultConfig.bvhDirectory,
         skeletonMesh:
           (config?.skeletonPreviewStyle ??
@@ -145,7 +149,6 @@ export function InterfaceSettings() {
 
       useTray: values.behavior.useTray,
       discordPresence: values.behavior.discordPresence,
-      errorTracking: values.behavior.errorTracking,
       bvhDirectory: values.behavior.bvhDirectory,
       skeletonPreviewStyle: values.behavior.skeletonMesh ? 'mesh' : 'lines',
       controllerNav: values.behavior.controllerNav,
@@ -405,14 +408,24 @@ export function InterfaceSettings() {
                 </Localized>
               </div>
               <div className="grid sm:grid-cols-2 pb-4">
-                <CheckBox
+                <CheckboxInternal
                   variant="toggle"
-                  control={control}
                   outlined
-                  name="behavior.errorTracking"
+                  name="errorReporting"
                   label={l10n.getString(
                     'settings-interface-behavior-error_tracking-label'
                   )}
+                  disabled={errorReporting.consent === null}
+                  checked={
+                    errorReporting.consent === ErrorReportingConsent.ALLOWED
+                  }
+                  onChange={(event) =>
+                    errorReporting.answer(
+                      event.currentTarget.checked
+                        ? ErrorReportingConsent.ALLOWED
+                        : ErrorReportingConsent.DENIED
+                    )
+                  }
                 />
               </div>
 

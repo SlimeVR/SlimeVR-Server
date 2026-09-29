@@ -18,7 +18,6 @@ import { ManualProportionsPage } from './components/onboarding/pages/body-propor
 import { ConnectTrackersPage } from './components/onboarding/pages/connect-trackers/ConnectTrackers';
 import { AddTrackersPage } from './components/onboarding/pages/AddTrackers';
 import { HomePage } from './components/onboarding/pages/Home';
-import { ErrorCollectingConsentPage } from './components/onboarding/pages/ErrorCollectingConsent';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
@@ -45,7 +44,8 @@ import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { useControllerNav } from './hooks/controller-nav';
 import { useInternalLinkGuard } from './hooks/internal-links';
-import { withSentryReactRouterV6Routing } from '@sentry/react';
+import * as Sentry from '@sentry/react';
+import { CrashScreen } from './components/CrashScreen';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { KeybindSettings } from './components/settings/pages/KeybindSettings';
@@ -64,27 +64,52 @@ import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
 import { UdevRulesModal } from './components/onboarding/UdevRulesModal';
+import { ErrorReportingConsentPage } from './components/ErrorReportingConsent';
+import {
+  AppStatusGate,
+  CONNECTING_PATH,
+  ERROR_REPORTING_CONSENT_PATH,
+} from './components/AppStatusGate';
+import { useProvideErrorReporting } from './hooks/error-reporting';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
 export const DOCS_SITE = 'https://docs.slimevr.dev';
 export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
-const SentryRoutes = withSentryReactRouterV6Routing(Routes);
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
-function Layout() {
+function ConnectedApp() {
+  return (
+    <AppContextProvider>
+      <OnboardingContextProvider>
+        <TrackingChecklistProvider>
+          <VersionUpdateModal />
+          <UnknownDeviceModal />
+          <UdevRulesModal />
+          <AppLayout />
+        </TrackingChecklistProvider>
+      </OnboardingContextProvider>
+    </AppContextProvider>
+  );
+}
+
+function AppRoutes() {
   const { isMobile } = useBreakpoint('mobile');
+  useProvideErrorReporting();
   useDiscordPresence();
   useControllerNav();
   useInternalLinkGuard();
 
   return (
-    <>
-      <VersionUpdateModal />
-      <UnknownDeviceModal />
-      <UdevRulesModal />
-      <SentryRoutes>
-        <Route element={<AppLayout />}>
+    <SentryRoutes>
+      <Route element={<AppStatusGate />}>
+        <Route path={CONNECTING_PATH} element={<ConnectionLost />} />
+        <Route
+          path={ERROR_REPORTING_CONSENT_PATH}
+          element={<ErrorReportingConsentPage />}
+        />
+        <Route element={<ConnectedApp />}>
           <Route
             path="/"
             element={
@@ -163,10 +188,6 @@ function Layout() {
             }
           >
             <Route path="home" element={<HomePage />} />
-            <Route
-              path="error-collecting-consent"
-              element={<ErrorCollectingConsentPage />}
-            />
             <Route path="quiz/slime-set" element={<QuizSlimeSetQuestion />} />
             <Route path="quiz/usage" element={<QuizUsageQuestion />} />
             <Route path="quiz/runtime" element={<QuizRuntimeQuestion />} />
@@ -195,8 +216,8 @@ function Layout() {
           </Route>
           <Route path="*" element={<TopBar />} />
         </Route>
-      </SentryRoutes>
-    </>
+      </Route>
+    </SentryRoutes>
   );
 }
 
@@ -294,25 +315,22 @@ export default function App() {
   return (
     <ElectronContextC.Provider value={electron}>
       <AppLocalizationProvider>
-        <Router>
-          <ConfigContextProvider>
-            <WebSocketApiContext.Provider value={websocketAPI}>
-              <AppContextProvider>
-                <OnboardingContextProvider>
-                  <TrackingChecklistProvider>
-                    <VersionContext.Provider value={updateFound}>
-                      <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                        <Preload />
-                        {!websocketAPI.isConnected && <ConnectionLost />}
-                        {websocketAPI.isConnected && <Layout />}
-                      </div>
-                    </VersionContext.Provider>
-                  </TrackingChecklistProvider>
-                </OnboardingContextProvider>
-              </AppContextProvider>
-            </WebSocketApiContext.Provider>
-          </ConfigContextProvider>
-        </Router>
+        <Sentry.ErrorBoundary
+          fallback={({ eventId }) => <CrashScreen eventId={eventId} />}
+        >
+          <Router>
+            <ConfigContextProvider>
+              <WebSocketApiContext.Provider value={websocketAPI}>
+                <VersionContext.Provider value={updateFound}>
+                  <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                    <Preload />
+                    <AppRoutes />
+                  </div>
+                </VersionContext.Provider>
+              </WebSocketApiContext.Provider>
+            </ConfigContextProvider>
+          </Router>
+        </Sentry.ErrorBoundary>
       </AppLocalizationProvider>
     </ElectronContextC.Provider>
   );

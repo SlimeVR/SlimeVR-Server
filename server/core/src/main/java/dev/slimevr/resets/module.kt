@@ -9,6 +9,7 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.tracker.Tracker
@@ -52,7 +53,13 @@ sealed interface ResetsActions {
 typealias ResetsContext = Context<ResetsState, ResetsActions>
 typealias ResetsBehaviour = Behaviour<ResetsManager>
 
-class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings, val skeleton: Skeleton) {
+class ResetsManager(
+	val context: ResetsContext,
+	val server: VRServer,
+	val settings: Settings,
+	val skeleton: Skeleton,
+	private val errorReporting: ErrorReportingManager,
+) {
 	fun startObserving() = context.observeAll(this)
 
 	private var resetJob: Job = Job()
@@ -64,6 +71,18 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	 * If bodyParts is null, resets all trackers.
 	 */
 	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
+		errorReporting.reportUsage(
+			"reset",
+			mapOf(
+				"resetType" to resetType.name,
+				// SolarXR sources are named per connection "SolarXR[3]"
+				"source" to resetSourceName.substringBefore('['),
+				"bodyParts" to (bodyParts?.map { it.name }?.sorted()?.joinToString(",") ?: "all"),
+			),
+		)
+		if (resetType == ResetType.POSE_MOUNTING) {
+			errorReporting.reportUsageOncePerSession("mounting_method_used", mapOf("method" to "auto"))
+		}
 		resetJob.cancelAndJoin()
 		resetJob = context.scope.launch {
 			val delayMs = (delay * 1000).toInt()
@@ -276,7 +295,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton)
+			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton, ctx.errorReporting)
 		}
 	}
 }

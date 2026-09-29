@@ -733,11 +733,18 @@ settings-general-interface-discord_presence-message = { $amount ->
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Do you consent to the collection of anonymized error data?</h1>
+    <h1>Do you consent to the collection of error and diagnostic data?</h1>
 
     <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
 
-    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+    To provide the best user experience, we collect:
+    - Error reports and performance metrics
+    - Operating system and tracker hardware information
+    - Recordings of the SlimeVR interface (text fields are hidden)
+    - Which features you use
+    - Your body proportions, to help us improve automatic proportions
+
+    This data is linked to a random ID, not to your identity, and helps us detect bugs and issues with SlimeVR. It is collected via Sentry.io.
 
 settings-interface-behavior-error_tracking-label = Send errors to developers
 settings-interface-behavior-bvh_directory = Directory to save BVH recordings
@@ -1602,6 +1609,13 @@ error_collection_modal-description_v2 = { settings-interface-behavior-error_trac
     You can change this setting later in the Behaviour section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
+
+## Crash screen
+crash_screen-title = Something went wrong
+crash_screen-description = The interface crashed. Reloading usually fixes it. If you report this issue, include the error id below.
+crash_screen-event_id = Error id: { $id }
+crash_screen-copy = Copy error id
+crash_screen-reload = Reload
 
 ## Tracking checklist section
 tracking_checklist = Tracking Checklist

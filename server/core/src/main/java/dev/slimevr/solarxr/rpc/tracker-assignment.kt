@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
@@ -15,6 +16,7 @@ import solarxr_protocol.rpc.UpdateTrackerRequest
 
 class AssignTrackerBehaviour(
 	private val server: VRServer,
+	private val errorReporting: ErrorReportingManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<UpdateTrackerRequest> { req ->
@@ -53,9 +55,14 @@ class AssignTrackerBehaviour(
 			// Override default mounting orientation set from changing the bodyPart
 			val mountingOrientation = req.mountingOrientation?.let { Quaternion(it.w, it.x, it.y, it.z) }
 			if (mountingOrientation != null) {
+				val current = tracker.context.state.value.mountingOrientation
 				tracker.context.dispatch(
 					TrackerActions.SetMountingOrientation(mountingOrientation),
 				)
+				// Assignment re-sends the current orientation. So we make sure it didnt change
+				if (current.angleToR(mountingOrientation) > 0.1f) {
+					errorReporting.reportUsageOncePerSession("mounting_method_used", mapOf("method" to "manual"))
+				}
 			}
 		}.launchIn(receiver.context.scope)
 

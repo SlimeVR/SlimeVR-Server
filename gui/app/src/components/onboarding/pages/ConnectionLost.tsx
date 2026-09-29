@@ -58,6 +58,7 @@ export function ConnectionLost() {
   const isLoading = isFirstConnection && !timedOut;
   const isCrashed = !isFirstConnection && !timedOut;
   const isTimedOut = isFirstConnection && timedOut;
+
   return (
     <EmptyLayout>
       <div className="flex w-full h-full justify-center items-center p-4">

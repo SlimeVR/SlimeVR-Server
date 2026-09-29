@@ -10,13 +10,10 @@ import { handleResetSounds } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
-import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
+import { useSetAtom } from 'jotai';
+import { bonesAtom, datafeedAtom } from '@/store/app-store';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
-
-const isSteam = window.electronAPI ? await window.electronAPI.isSteam() : false;
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
@@ -31,7 +28,6 @@ export function useProvideAppContext(): AppContext {
   const bonesDataFeedConfig = useBonesDataFeedConfig();
   const setDatafeed = useSetAtom(datafeedAtom);
   const setBones = useSetAtom(bonesAtom);
-  const devices = useAtomValue(devicesAtom);
 
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
@@ -52,10 +48,6 @@ export function useProvideAppContext(): AppContext {
     }
   });
 
-  useEffect(() => {
-    updateSentryContext(devices);
-  }, [devices]);
-
   useRPCPacket(RpcMessage.ResetResponse, (resetResponse: ResetResponseT) => {
     if (!config?.feedbackSound) return;
     handleResetSounds(config?.feedbackSoundVolume ?? 1, resetResponse);
@@ -75,15 +67,6 @@ export function useProvideAppContext(): AppContext {
   useLayoutEffect(() => {
     changeLocales([config?.lang || DEFAULT_LOCALE]);
   }, []);
-
-  useLayoutEffect(() => {
-    if (!config) return;
-    if (config.errorTracking !== undefined) {
-      // Alows for sentry to refresh if user change the setting once the gui
-      // is initialized
-      getSentryOrCompute(config.errorTracking ?? false, config.uuid, isSteam);
-    }
-  }, [config]);
 
   useEffect(() => {
     const handleBlur = () => {

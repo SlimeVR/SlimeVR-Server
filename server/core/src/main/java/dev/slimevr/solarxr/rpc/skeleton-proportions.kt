@@ -2,6 +2,7 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.skeleton.ALL_BODY_PARTS
 import dev.slimevr.skeleton.BONE_SPECS
 import dev.slimevr.skeleton.BodyPartMap
@@ -11,6 +12,7 @@ import dev.slimevr.skeleton.clampBoneValue
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.skeleton.height
+import dev.slimevr.skeleton.reportProportionsMethodUsage
 import dev.slimevr.skeleton.toBoneValues
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
@@ -32,6 +34,7 @@ private const val MIN_HEIGHT = 0.9f
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
+	private val errorReporting: ErrorReportingManager,
 ) : SolarXRBridgeBehaviour {
 	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
 		val tailOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
@@ -73,6 +76,7 @@ class SkeletonProportionsBehaviour(
 						copy(userHeight = height, proportions = computeDefaultProportionsByBone(height))
 					},
 				)
+				reportProportionsMethodUsage(errorReporting, "scaled", calibration = "manual")
 			}
 		}.launchIn(receiver.context.scope)
 
@@ -90,6 +94,7 @@ class SkeletonProportionsBehaviour(
 			val value = clampBoneValue(bone, req.value)
 
 			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
+			reportProportionsMethodUsage(errorReporting, "manual")
 		}.launchIn(receiver.context.scope)
 	}
 }

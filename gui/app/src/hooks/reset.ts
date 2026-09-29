@@ -12,7 +12,6 @@ import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS, TOE_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
-import * as Sentry from '@sentry/react';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
@@ -63,13 +62,6 @@ export function useReset(
         break;
     }
     sendRPCPacket(RpcMessage.ResetRequest, req);
-
-    Sentry.metrics.count('reset_click', 1, {
-      attributes: {
-        resetType: ResetType[options.type],
-        group: options.type === ResetType.POSE_MOUNTING ? options.group : undefined,
-      },
-    });
   };
 
   const onResetFinished = () => {

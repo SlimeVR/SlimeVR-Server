@@ -56,4 +56,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   isSteam: () => ipcRenderer.invoke(IPC_CHANNELS.IS_STEAM),
   setKeybindRecording: (recording) =>
     ipcRenderer.invoke(IPC_CHANNELS.SET_KEYBIND_RECORDING, recording),
+  setErrorReporting: (state) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SET_ERROR_REPORTING, state),
 } satisfies IElectronAPI);

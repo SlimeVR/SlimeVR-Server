@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.vrchat.EYE_HEIGHT_TO_HEIGHT_RATIO
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.times
@@ -432,4 +433,8 @@ private fun getToeHeadOffsets(footLength: Float): Map<BodyPart, Vector3> = build
 		put(toe.segments.first, Vector3(k.x * footLength, k.y * footLength, k.z * footLength))
 		put(toe.segments.second, Vector3(-k.x * footLength, k.y * footLength, k.z * footLength))
 	}
+}
+
+fun reportProportionsMethodUsage(errorReporting: ErrorReportingManager, method: String, calibration: String? = null) {
+	errorReporting.reportUsageOncePerSession("proportions_method_used", mapOf("method" to method, "calibration" to calibration))
 }

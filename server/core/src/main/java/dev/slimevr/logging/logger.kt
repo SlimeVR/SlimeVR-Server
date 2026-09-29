@@ -1,11 +1,13 @@
 package dev.slimevr.logging
 
+import dev.slimevr.sentry.reportLog
 import io.klogging.Level
 import io.klogging.config.SinkConfiguration
 import io.klogging.config.loggingConfiguration
 import io.klogging.logger
 import io.klogging.noCoLogger
 import io.klogging.rendering.RENDER_SIMPLE
+import io.klogging.sending.EventSender
 import java.nio.file.Path
 
 object AppLogger {
@@ -45,6 +47,11 @@ object AppLogger {
 
 private const val CONSOLE_SINK = "console"
 private const val FILE_SINK = "file"
+private const val ERROR_REPORTS_SINK = "error-reports"
+
+private val errorReportsSender = EventSender { batch ->
+	batch.forEach { reportLog(it.logger, it.level, it.message, it.stackTrace) }
+}
 
 suspend fun configureLogging(consoleSink: SinkConfiguration, logDirectory: Path?, minLevel: Level = Level.INFO) {
 	val fileSender = logDirectory?.let { runCatching { LogFileSender(it) } }
@@ -52,11 +59,13 @@ suspend fun configureLogging(consoleSink: SinkConfiguration, logDirectory: Path?
 	loggingConfiguration {
 		sink(CONSOLE_SINK, consoleSink)
 		fileSender?.getOrNull()?.let { sink(FILE_SINK, RENDER_SIMPLE, it) }
+		sink(ERROR_REPORTS_SINK, SinkConfiguration(eventSender = errorReportsSender))
 		logging {
 			fromMinLevel(minLevel) {
 				toSink(CONSOLE_SINK)
 				if (fileSender?.isSuccess == true) toSink(FILE_SINK)
 			}
+			fromMinLevel(Level.WARN) { toSink(ERROR_REPORTS_SINK) }
 		}
 	}
 

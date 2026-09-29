@@ -37,6 +37,7 @@ kotlin {
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 				implementation("com.mayakapps.kache:kache:2.1.1")
 				implementation("io.klogging:klogging:0.11.7")
+				implementation("io.sentry:sentry:${providers.gradleProperty("sentryVersion").get()}")
 				api("com.appstractive:dns-sd-kt:1.1.0")
 
 				val ktorVersion = "3.4.1"

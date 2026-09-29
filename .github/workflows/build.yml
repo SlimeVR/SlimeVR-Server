@@ -121,6 +121,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Build ShadowJar
         run: ./gradlew :server:desktop:shadowJar --build-cache
+        env:
+          SENTRY_SERVER_DSN: ${{ vars.SENTRY_SERVER_DSN }}
       - name: Test with Gradle
         run: ./gradlew :server:core:jvmTest
       - name: Upload Server Jar
@@ -151,6 +153,9 @@ jobs:
       - name: Build JS
         env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_GUI_DSN: ${{ vars.SENTRY_GUI_DSN }}
+            SENTRY_ELECTRON_DSN: ${{ vars.SENTRY_ELECTRON_DSN }}
+            SENTRY_SERVER_DSN: ${{ vars.SENTRY_SERVER_DSN }}
         run: pnpm i && pnpm run build
       - name: Tar GUI Dist
         run: tar -czf slimevr-gui-dist.tar.gz -C gui/electron/out .
@@ -201,8 +206,6 @@ jobs:
         run: mkdir -p gui/electron/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/electron/out
       - name: Run Electron Builder
         shell: bash
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           mkdir -p gui/electron/dist/artifacts/linux/ \
                    gui/electron/dist/artifacts/win \
@@ -275,6 +278,8 @@ jobs:
       - name: Build APK
         run: ./gradlew :server:android:build --build-cache
         env:
+          SENTRY_SERVER_DSN: ${{ vars.SENTRY_SERVER_DSN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -291,6 +296,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: ./gradlew :server:android:bundleRelease
         env:
+          SENTRY_SERVER_DSN: ${{ vars.SENTRY_SERVER_DSN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           ANDROID_STORE_FILE: ${{ secrets.ANDROID_GPLAY_STORE_FILE }}
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_GPLAY_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_GPLAY_KEY_ALIAS }}

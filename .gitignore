@@ -57,3 +57,5 @@ vrconfig.yml.tmp
 
 # Nixos
 .bin/
+
+.env.local

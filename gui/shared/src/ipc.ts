@@ -4,7 +4,13 @@ import {
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
-import { DiscordPresence, GHGet, GHReturn, OSStats } from './interface';
+import {
+  DiscordPresence,
+  ErrorReportingState,
+  GHGet,
+  GHReturn,
+  OSStats,
+} from './interface';
 
 export const IPC_CHANNELS = {
   SERVER_STATUS: 'server-status',
@@ -23,6 +29,7 @@ export const IPC_CHANNELS = {
   DISCORD_PRESENCE: 'discord-presence',
   IS_STEAM: 'is-steam',
   SET_KEYBIND_RECORDING: 'set-keybind-recording',
+  SET_ERROR_REPORTING: 'set-error-reporting',
 } as const;
 
 export interface IpcInvokeMap {
@@ -53,4 +60,5 @@ export interface IpcInvokeMap {
   [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
   [IPC_CHANNELS.IS_STEAM]: () => boolean;
   [IPC_CHANNELS.SET_KEYBIND_RECORDING]: (recording: boolean) => void;
+  [IPC_CHANNELS.SET_ERROR_REPORTING]: (state: ErrorReportingState) => void;
 }

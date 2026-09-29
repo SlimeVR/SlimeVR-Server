@@ -25,6 +25,7 @@ import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { Vector3Object, Vector3FromVec3fT } from '@/maths/vector3';
 import { ErrorBoundary } from 'react-error-boundary';
+import * as Sentry from '@sentry/react';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { BUTTERFLY_BOARDS } from '@/components/commons/BodyPartIcon';
@@ -363,6 +364,11 @@ export function IMUVisualizerWidget({ td }: { td: FlatDeviceTracker }) {
             {l10n.getString('widget-imu_visualizer-hide')}
           </Button>
           <ErrorBoundary
+            onError={(err) =>
+              Sentry.captureException(err, {
+                tags: { widget: 'imu-visualizer' },
+              })
+            }
             fallback={
               <Typography color="primary" textAlign="text-center">
                 {l10n.getString('tips-failed_webgl')}

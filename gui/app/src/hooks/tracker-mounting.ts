@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { Quaternion } from 'three';
-import * as Sentry from '@sentry/react';
 import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
@@ -25,12 +24,6 @@ export function useMountingOrientation(td: FlatDeviceTracker | undefined) {
     const orientation = MountingOrientationDegreesToQuatT(mountingOrientationDegrees);
 
     assignTracker(td.tracker.trackerId, bodyPart, orientation);
-    Sentry.metrics.count('manual_mounting_set', 1, {
-      attributes: {
-        part: BodyPart[bodyPart],
-        direction: orientation,
-      },
-    });
   };
 
   return { currRotation, setDirection };

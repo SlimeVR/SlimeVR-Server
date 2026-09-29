@@ -23,6 +23,7 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
@@ -98,6 +99,11 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	return skeleton
 }
 
+fun buildTestErrorReporting(
+	scope: CoroutineScope,
+	globalConfig: GlobalConfig = buildTestAppConfig(scope).globalConfig,
+): ErrorReportingManager = ErrorReportingManager.create(scope, globalConfig).also { it.startObserving() }
+
 fun buildTestResetsManager(server: VRServer, settings: Settings, scope: CoroutineScope): ResetsManager {
 	val context = Context.create(
 		initialState = ResetsState(
@@ -110,7 +116,7 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
-	val resetsManager = ResetsManager(context, server, settings, buildTestSkeleton(scope))
+	val resetsManager = ResetsManager(context, server, settings, buildTestSkeleton(scope), buildTestErrorReporting(scope))
 	resetsManager.startObserving()
 	return resetsManager
 }
@@ -181,7 +187,7 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 		behaviours = emptyList(),
 		name = "HeightCalibration[test]",
 	)
-	return HeightCalibrationManager(context, server, userConfig)
+	return HeightCalibrationManager(context, server, userConfig, buildTestErrorReporting(scope))
 }
 
 private object NoopConfigStorage : ConfigStorage {
@@ -243,6 +249,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val skeleton: Skeleton get() = error("not used in test")
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
+	override val errorReporting: ErrorReportingManager get() = error("not used in test")
 	override val serverInfos: ServerInfos get() = error("not used in test")
 	override val firmwareManager: FirmwareManager get() = error("not used in test")
 	override val vrcConfigManager: VRCConfigManager? = null

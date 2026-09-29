@@ -9,6 +9,7 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
@@ -24,12 +25,14 @@ interface Phase1ContextProvider {
 	val server: VRServer
 	val config: AppConfig
 	val serialServer: SerialServer
+	val errorReporting: ErrorReportingManager
 }
 
 data class Phase1Context(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
+	override val errorReporting: ErrorReportingManager,
 ) : Phase1ContextProvider
 
 interface AppContextProvider : Phase1ContextProvider {
@@ -59,6 +62,7 @@ class AppContext(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
+	override val errorReporting: ErrorReportingManager,
 	override val serverInfos: ServerInfos,
 	override val featureFlags: FeatureFlags,
 	override val keybindManager: KeybindManager,

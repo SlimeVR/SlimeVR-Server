@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { error, log } from './logging';
+import { log } from './logging';
 import { useEffect } from 'react';
 import {
   createRoutesFromChildren,
@@ -7,34 +7,32 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom';
-import { DeviceDataT } from 'solarxr-protocol';
+import { ErrorReportingConsent } from 'solarxr-protocol';
+import { ErrorReportingState } from '@slimevr/gui-shared';
 
-export function getSentryOrCompute(enabled = false, uuid: string, isSteam: boolean) {
-  // to be considered prod it needs to be a proper version tag, non-dirty
-  const isProd = import.meta.env.PROD && __GIT_CLEAN__ && __VERSION_TAG__;
+const OFFLINE_DB_NAME = 'sentry-offline';
+const OFFLINE_STORE_NAME = 'queue';
+const HELD_LIMIT = 500;
 
-  // We disable sentry for non prod environments
-  if (!isProd) enabled = false;
+const release = __SENTRY_RELEASE__;
+const isEnabled =
+  (import.meta.env.PROD || __SENTRY_RELEASE_FORCED__) && !!release && !!__SENTRY_DSN__;
 
-  Sentry.setUser({ id: uuid });
+function platformName() {
+  if (window.electronAPI) return 'electron';
+  if (window.__ANDROID__?.isThere()) return 'android';
+  return 'web';
+}
 
-  // if sentry is already initialized - SKIP
-  if (enabled && Sentry.isInitialized()) {
-    log('Sentry already enabled, skipping initialization');
-    return;
-  }
+export function initSentry(isSteam: boolean, getConsent: () => ErrorReportingConsent) {
+  if (!isEnabled || Sentry.isInitialized()) return;
 
-  const client = Sentry.getClient();
-  if (client) {
-    log(`${enabled ? 'Enabled' : 'Disabled'} error logging with Sentry.`);
-    client.getOptions().enabled = enabled;
-    return client;
-  }
-  if (!enabled) return;
-
-  const newClient = Sentry.init({
-    dsn: 'https://e9ef9f8541352c50cff8600ba520d348@o4507810483535872.ingest.de.sentry.io/4507810579284048',
-    integrations: [
+  Sentry.init({
+    dsn: __SENTRY_DSN__,
+    release,
+    environment: __SENTRY_ENVIRONMENT__,
+    integrations: (defaults) => [
+      ...defaults.filter((integration) => integration.name !== 'BrowserSession'),
       Sentry.reactRouterV6BrowserTracingIntegration({
         useEffect,
         useLocation,
@@ -43,55 +41,107 @@ export function getSentryOrCompute(enabled = false, uuid: string, isSteam: boole
         matchRoutes,
       }),
       Sentry.browserProfilingIntegration(),
-      Sentry.replayIntegration({
-        maskAllText: false,
-        maskAllInputs: true,
-        blockAllMedia: false,
-      }),
+      Sentry.consoleLoggingIntegration({ levels: ['warn', 'error'] }),
     ],
-    beforeSend: (ev) => (newClient?.getOptions().enabled ? ev : null),
-    environment: isSteam ? 'steam' : 'production',
-    release: (__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty'),
-    // Tracing
-    tracesSampleRate: 0.5, // Capture 50% of the transactions
-    // Set profilesSampleRate to 1.0 to profile every transaction.
-    // Since profilesSampleRate is relative to tracesSampleRate,
-    // the final profiling rate can be computed as tracesSampleRate * profilesSampleRate
-    // For example, a tracesSampleRate of 0.5 and profilesSampleRate of 0.5 would
-    // results in 25% of transactions being profiled (0.5*0.5=0.25)
+    enableLogs: true,
+    beforeSendLog: (log) => {
+      const sessionId = Sentry.getIsolationScope().getScopeData().tags.session_id;
+      if (sessionId) log.attributes = { ...log.attributes, ['session_id']: sessionId };
+      return log;
+    },
+    // The offline queue caches everything until the user answered
+    transport: (options) =>
+      Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport)({
+        ...options,
+        dbName: OFFLINE_DB_NAME,
+        storeName: OFFLINE_STORE_NAME,
+        maxQueueSize: HELD_LIMIT,
+        flushAtStartup: true,
+        shouldSend: () => getConsent() === ErrorReportingConsent.ALLOWED,
+        shouldStore: () => getConsent() !== ErrorReportingConsent.DENIED,
+      }),
+    tracesSampleRate: 0.05,
+    // Relative to tracesSampleRate
     profilesSampleRate: 0.2,
-    // Session Replay
-    replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+    replaysSessionSampleRate: 0.02,
+    replaysOnErrorSampleRate: 1.0,
     normalizeDepth: 8,
-    enabled,
   });
+  Sentry.setTag('platform', platformName());
+  Sentry.setTag('distribution', isSteam ? 'steam' : 'standalone');
 
-  if (!newClient) {
-    error("Couldn't initialize Sentry for error logging");
-  } else {
-    log('Initialized the Sentry client');
-  }
-
-  return newClient;
+  log('Initialized the Sentry client, reports are held until consent');
 }
 
-export function updateSentryContext(devices: DeviceDataT[]) {
-  // We filter out what we don't want (rotations and ip addresses).
-  const trackers = (devices || []).map(({ hardwareInfo, trackers, id }) => ({
-    id: id,
-    hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
-    trackers: trackers.map(({ info, trackerId, deviceId }) => ({
-      info,
-      trackerId: {
-        trackerNum: trackerId,
-        deviceId: deviceId,
-      },
-    })),
-  }));
+function clearOfflineQueue() {
+  const request = indexedDB.open(OFFLINE_DB_NAME);
+  request.onupgradeneeded = () => request.transaction?.abort();
+  request.onsuccess = () => {
+    const db = request.result;
+    if (!db.objectStoreNames.contains(OFFLINE_STORE_NAME)) {
+      db.close();
+      return;
+    }
+    const tx = db.transaction(OFFLINE_STORE_NAME, 'readwrite');
+    tx.objectStore(OFFLINE_STORE_NAME).clear();
+    tx.oncomplete = () => db.close();
+  };
+}
 
-  // Will send the latest context to sentry when an error happens
-  Sentry.setContext('trackers', {
-    trackers,
-  });
+function startReplay() {
+  const replay = Sentry.getReplay();
+  if (replay) {
+    replay.startBuffering();
+    return;
+  }
+  Sentry.addIntegration(
+    Sentry.replayIntegration({
+      maskAllText: false,
+      maskAllInputs: true,
+      blockAllMedia: false,
+    })
+  );
+}
+
+export function applyErrorReporting(server: ErrorReportingState) {
+  window.electronAPI?.setErrorReporting(server);
+
+  if (!isEnabled) return;
+  Sentry.setUser({ id: server.userId });
+  Sentry.setTag('session_id', server.sessionId);
+  if (!Sentry.getIsolationScope().getSession()) {
+    Sentry.startSession({ ignoreDuration: true, user: { id: server.userId } });
+    Sentry.captureSession();
+  }
+}
+
+/** Call when the consent changes */
+export function applyErrorReportingConsent(consent: ErrorReportingConsent) {
+  if (!isEnabled) return;
+  log(`Error reporting consent: ${ErrorReportingConsent[consent]}`);
+
+  if (consent === ErrorReportingConsent.ALLOWED) {
+    startReplay();
+    // No timeout: sends what the offline queue held
+    Sentry.getClient()?.getTransport()?.flush();
+  } else {
+    Sentry.getReplay()?.stop();
+    if (consent === ErrorReportingConsent.DENIED) clearOfflineQueue();
+  }
+}
+
+export function track(name: string, attributes?: Record<string, unknown>) {
+  Sentry.metrics.count(name, 1, attributes ? { attributes } : undefined);
+}
+
+const trackedThisSession = new Set<string>();
+
+export function trackOncePerSession(
+  name: string,
+  attributes?: Record<string, unknown>
+) {
+  const key = `${name}:${JSON.stringify(attributes ?? {})}`;
+  if (trackedThisSession.has(key)) return;
+  trackedThisSession.add(key);
+  track(name, attributes);
 }

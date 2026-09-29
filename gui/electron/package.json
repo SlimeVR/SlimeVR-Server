@@ -18,6 +18,8 @@
     "gen:javaversion": "cd resources/java-version/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class"
   },
   "dependencies": {
+    "@sentry/core": "10.75.0",
+    "@sentry/electron": "^7.20.0",
     "@slimevr/gui-app": "workspace:*",
     "@slimevr/gui-shared": "workspace:*",
     "@xhayper/discord-rpc": "^1.3.0",
@@ -37,6 +39,7 @@
     "electron-builder": "^26.15.0",
     "electron-vite": "^5.0.0",
     "prettier": "^3.3.3",
+    "solarxr-protocol": "workspace:*",
     "typescript": "^5.6.3"
   }
 }

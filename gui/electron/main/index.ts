@@ -28,7 +28,7 @@ import {
   getWindowStateFile,
 } from './paths';
 import { initStores } from './store';
-import { closeLogger, logger } from './logger';
+import { closeLogger, logger, rendererLogger } from './logger';
 
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
@@ -37,6 +37,13 @@ import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 import { openCrowdinPopup } from './crowdin';
+import {
+  applyErrorReporting,
+  captureJavaNotFound,
+  captureServerExit,
+  captureServerLaunchError,
+  initSentry,
+} from './sentry';
 
 type Stores = Awaited<ReturnType<typeof initStores>>;
 let stores: Stores;
@@ -50,6 +57,8 @@ if (process.platform === 'linux') {
 
 app.setPath('userData', getGuiDataFolder());
 app.setPath('sessionData', join(getGuiDataFolder(), 'electron'));
+
+initSentry(options.steam);
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -134,13 +143,13 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 
   switch (type) {
     case 'error':
-      logger.error(payload, msg);
+      rendererLogger.error(payload, msg);
       break;
     case 'warn':
-      logger.warn(payload, msg);
+      rendererLogger.warn(payload, msg);
       break;
     default:
-      logger.info(payload, msg);
+      rendererLogger.info(payload, msg);
   }
 });
 
@@ -202,6 +211,10 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
 
 handleIpc(IPC_CHANNELS.IS_STEAM, () => {
   return options.steam;
+});
+
+handleIpc(IPC_CHANNELS.SET_ERROR_REPORTING, (e, state) => {
+  applyErrorReporting(state);
 });
 
 const defaultWindowState: {
@@ -436,6 +449,8 @@ const checkEnvironmentVariables = () => {
 
 const isServerRunning = async () => !(await isPortAvailable(21110));
 
+const SERVER_OUTPUT_TAIL_LINES = 200;
+
 const spawnServer = async () => {
   if (options.skipServerIfRunning && (await isServerRunning())) {
     logger.info(
@@ -453,6 +468,7 @@ const spawnServer = async () => {
   const sharedDir = dirname(serverJar);
   const javaBin = await findSystemJRE(sharedDir);
   if (!javaBin) {
+    captureJavaNotFound();
     dialog.showErrorBox(
       'SlimeVR',
       'Unable to find a compatible Java version, Make sure to use the latest SlimeVR installer. Or install java 25 or higher'
@@ -492,21 +508,33 @@ const spawnServer = async () => {
     }
   };
 
+  const outputTail: string[] = [];
+  const keepOutput = (message: string) => {
+    outputTail.push(...message.split('\n').filter((line) => line.length > 0));
+    outputTail.splice(0, Math.max(0, outputTail.length - SERVER_OUTPUT_TAIL_LINES));
+  };
+
   serverProcess.stdout?.on('data', (message) => {
+    keepOutput(message.toString());
     sendToWindow({ message: message.toString(), type: 'stdout' });
   });
 
   serverProcess.stderr?.on('data', (message) => {
+    keepOutput(message.toString());
     sendToWindow({ message: message.toString(), type: 'stderr' });
   });
 
   serverProcess.on('error', (err) => {
     logger.info({ err }, 'Error launching the java server');
+    captureServerLaunchError(err);
     if (!isQuitting) app.quit();
   });
 
-  serverProcess.on('exit', () => {
-    logger.info('Server process exiting');
+  serverProcess.on('exit', (code, signal) => {
+    logger.info({ code, signal }, 'Server process exiting');
+    if (!isQuitting && (code !== 0 || signal !== null)) {
+      captureServerExit(code, signal, outputTail.join('\n'));
+    }
   });
 
   const exited = new Promise<void>((resolve) => serverProcess.once('exit', resolve));
@@ -526,10 +554,18 @@ const createFolders = async () => {
 let isQuitting = false;
 
 app.whenReady().then(async () => {
-  protocol.handle('app', (request) => {
+  protocol.handle('app', async (request) => {
     const { pathname } = new URL(request.url);
     const filePath = path.normalize(join(__dirname, '../renderer', pathname));
-    return net.fetch(pathToFileURL(filePath).toString(), { headers: request.headers });
+    const response = await net.fetch(pathToFileURL(filePath).toString(), {
+      headers: request.headers,
+    });
+    if (!filePath.endsWith('.html')) return response;
+
+    // Needed by Sentry browser profiling
+    const headers = new Headers(response.headers);
+    headers.set('Document-Policy', 'js-profiling');
+    return new Response(response.body, { status: response.status, headers });
   });
 
   try {

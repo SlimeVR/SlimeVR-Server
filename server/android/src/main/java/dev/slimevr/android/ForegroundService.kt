@@ -19,6 +19,9 @@ import dev.slimevr.AppContext
 import dev.slimevr.FeatureFlags
 import dev.slimevr.Phase1Context
 import dev.slimevr.VRServer
+import dev.slimevr.android.buildinfo.SENTRY_DSN
+import dev.slimevr.android.buildinfo.SENTRY_ENVIRONMENT
+import dev.slimevr.android.buildinfo.SENTRY_RELEASE
 import dev.slimevr.android.config.AndroidConfigStorage
 import dev.slimevr.android.hid.createAndroidHIDManager
 import dev.slimevr.android.ipc.createAndroidSolarXRWebsocketServer
@@ -36,16 +39,20 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.sentry.ErrorReportingManager
+import dev.slimevr.sentry.flushErrorReports
+import dev.slimevr.sentry.registerErrorReportSnapshots
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
+import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.appCoroutineExceptionHandler
-import dev.slimevr.util.installUncaughtExceptionReporting
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import io.klogging.noCoLogger
+import io.sentry.android.core.SentryAndroid
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -120,7 +127,6 @@ class ForegroundService : Service() {
 		}
 
 		if (serviceScope == null) {
-			installUncaughtExceptionReporting()
 			val scope = CoroutineScope(
 				SupervisorJob() + Dispatchers.Default + appCoroutineExceptionHandler + CoroutineName("ForegroundService"),
 			)
@@ -148,10 +154,19 @@ class ForegroundService : Service() {
 	private suspend fun startServer(scope: CoroutineScope) {
 		val storage = AndroidConfigStorage(filesDir)
 		val config = AppConfig.create(scope = scope, storage = storage)
+		val errorReporting = ErrorReportingManager.create(scope = scope, globalConfig = config.globalConfig)
+		errorReporting.init(
+			dsn = SENTRY_DSN,
+			release = SENTRY_RELEASE,
+			environment = SENTRY_ENVIRONMENT,
+			tags = mapOf("platform" to "android", "os" to "android"),
+			initSentry = { configure -> SentryAndroid.init(this) { options -> configure(options) } },
+		)
+		errorReporting.startObserving()
 		val server = VRServer.create(scope = scope)
 		val serialServer = createAndroidSerialServer(context = this, scope = scope)
 
-		val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer)
+		val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer, errorReporting = errorReporting)
 
 		val firmwareManager = FirmwareManager.create(ctx = phase1, scope = scope, flasher = AndroidFirmwareFlasher)
 		val networkProfileManager = NetworkProfileManager.create(scope = scope, isSupported = false)
@@ -171,6 +186,7 @@ class ForegroundService : Service() {
 		)
 		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
+		val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
 		val serverInfos = ServerInfos(::resolveAndroidLocalIpAddress)
 
@@ -178,6 +194,7 @@ class ForegroundService : Service() {
 			server = server,
 			config = config,
 			serialServer = serialServer,
+			errorReporting = errorReporting,
 			serverInfos = serverInfos,
 			featureFlags = FeatureFlags(
 				skipCheckUdev = true,
@@ -200,12 +217,14 @@ class ForegroundService : Service() {
 			vrcOscManager = vrcOscManager,
 			resetsManager = resetsManager,
 			tapDetectionManager = tapDetectionManager,
+			stepMountingManager = stepMountingManager,
 		)
 
 		acquireLocks()
 
 		try {
 			appContext.startObserving()
+			registerErrorReportSnapshots(appContext)
 
 			scope.launch { createAndroidHIDManager(context = this@ForegroundService, appContext = appContext, scope = this) }
 			scope.launch { createAndroidSolarXRWebsocketServer(appContext) }
@@ -213,6 +232,7 @@ class ForegroundService : Service() {
 			awaitCancellation()
 		} finally {
 			appContext.dispose()
+			flushErrorReports(2000)
 		}
 	}
 

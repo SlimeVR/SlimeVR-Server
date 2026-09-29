@@ -7,7 +7,6 @@
  */
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.net.URI
 
 plugins {
 	kotlin("jvm")
@@ -16,6 +15,15 @@ plugins {
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
 }
+
+// SENTRY_* from the repo root .env.local, see .env.example. Real environment variables win.
+val localSentryEnv: Map<String, String> = rootProject.file(".env.local")
+	.takeIf { it.isFile }?.readLines().orEmpty()
+	.map { it.trim() }
+	.filter { it.startsWith("SENTRY_") && '=' in it }
+	.associate { it.substringBefore('=').trim() to it.substringAfter('=').trim().removeSurrounding("\"") }
+
+fun sentryEnv(name: String): Provider<String> = providers.environmentVariable(name).orElse(localSentryEnv[name] ?: "")
 
 kotlin {
 	jvmToolchain {
@@ -128,6 +136,12 @@ buildConfig {
 	buildConfigField("String", "GIT_COMMIT_HASH", gitCommitHash.map { "\"$it\"" })
 	buildConfigField("String", "GIT_VERSION_TAG", gitVersionTag.map { "\"$it\"" })
 	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.map { it.toString() })
+	buildConfigField("String", "SENTRY_DSN", sentryEnv("SENTRY_SERVER_DSN").map { "\"$it\"" })
+	val sentryRelease = sentryEnv("SENTRY_RELEASE")
+		.zip(gitVersionTag.zip(gitIsClean) { tag, clean -> if (clean) tag else "" }) { forced, tagged -> forced.ifEmpty { tagged } }
+	buildConfigField("String", "SENTRY_RELEASE", sentryRelease.map { "\"$it\"" })
+	val sentryEnvironment = sentryEnv("SENTRY_ENVIRONMENT").map { it.ifEmpty { "production" } }
+	buildConfigField("String", "SENTRY_ENVIRONMENT", sentryEnvironment.map { "\"$it\"" })
 }
 
 tasks.run<JavaExec> {

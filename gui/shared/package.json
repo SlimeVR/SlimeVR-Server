@@ -11,6 +11,9 @@
   "scripts": {
     "lint": "tsc --noEmit"
   },
+  "dependencies": {
+    "solarxr-protocol": "workspace:*"
+  },
   "devDependencies": {
     "electron": "^44.0.0",
     "typescript": "^5.6.3"
