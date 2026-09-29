@@ -184,8 +184,6 @@ tracker-settings-assignment_section-edit = Thay đổi vị trí
 tracker-settings-mounting_section = Vị trí đặt
 tracker-settings-mounting_section-description = Tracker được đặt ở đâu?
 tracker-settings-mounting_section-edit = Thay đổi chỗ đặt
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
 tracker-settings-name_section-description = Đặt cho nó một cái tên đẹp :3
 tracker-settings-name_section-placeholder = Chân trái của JINODK
