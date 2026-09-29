@@ -937,6 +937,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = unnown
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = cwose
