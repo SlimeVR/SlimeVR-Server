@@ -100,15 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Porção proximal do dedo mínimo direito
 body_part-RIGHT_LITTLE_INTERMEDIATE = Porção intermediária do dedo mínimo direito
 body_part-RIGHT_LITTLE_DISTAL = Porção distal do dedo mínimo direito
 
-## BoardType
-
-board_type-UNKNOWN = Desconhecido
-board_type-CUSTOM = Placa Customizada
-board_type-SLIMEVR_DEV = Placa do SlimeVR Dev
-board_type-WRANGLER = Joycons
-board_type-GESTURES = Gestos
-board_type-GENERIC_NRF = nRF genérico
-
 ## Proportions
 
 skeleton_bone-NONE = Nada
@@ -488,7 +479,6 @@ settings-general-fk_settings-arm_fk-forward-description = Espera que seus braço
 settings-general-fk_settings-skeleton_settings-ratios = Proporções do esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Mude os valores das configurações do esqueleto. Pode ser necessário ajustar suas proporções depois de alterá-las.
 settings-general-fk_settings-self_localization-title = Modo mocap
-settings-general-fk_settings-self_localization-description = O modo mocap permite que o esqueleto rastreie aproximadamente sua própria posição sem um headset ou outros trackers. Observe que isso requer trackers de pés e cabeça para funcionar e ainda é experimental.
 
 ## Gesture control settings (tracker tapping)
 
@@ -609,7 +599,6 @@ settings-serial-send_command-warning-cancel = Cancelar
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Altere as configurações específicas do padrão de trackers OSC usado para enviar
@@ -639,7 +628,6 @@ settings-osc-vrchat-status-badge-unknown = Desconhecido
 
 ## VMC OSC settings
 
-settings-osc-vmc = Captura virtual de movimentos
 # This cares about multilines
 settings-osc-vmc-description =
     Altere as configurações específicas do protocolo VMC (Virtual Motion Capture)
@@ -952,7 +940,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as ori
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
 onboarding-automatic_mounting-return-home = Feito
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Voltar para Proporções Escalonadas
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
