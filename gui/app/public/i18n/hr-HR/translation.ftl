@@ -32,9 +32,6 @@
 ## Body parts
 
 
-## BoardType
-
-
 ## Proportions
 
 
@@ -174,7 +171,7 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
