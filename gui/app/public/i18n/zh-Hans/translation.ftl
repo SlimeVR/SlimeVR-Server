@@ -563,12 +563,6 @@ settings-general-interface-discord_presence-message =
        *[other] 正在使用 { $amount } 个追踪器
     }
 settings-interface-behavior-error_tracking = 通过 Sentry.io 收集错误信息
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>您是否同意收集匿名的错误信息？</h1>
-    
-    <b>我们不会收集您的个人信息</b> ，例如您的 IP 地址或 WiFi 信息。SlimeVR 重视您的隐私！
-    
-    为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
 settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
 settings-interface-behavior-bvh_directory = BVH 记录保存目录
 settings-interface-behavior-bvh_directory-description = 选择保存 BVH 记录文件的目录
@@ -1259,6 +1253,9 @@ error_collection_modal-description_v2 =
     您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了
+
+## Crash screen
+
 
 ## Tracking checklist section
 
