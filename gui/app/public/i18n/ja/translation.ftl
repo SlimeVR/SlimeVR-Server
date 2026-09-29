@@ -91,10 +91,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = 右小指近位部
 body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中間部
 body_part-RIGHT_LITTLE_DISTAL = 右小指遠位部
 
-## BoardType
-
-board_type-UNKNOWN = 不明
-
 ## Proportions
 
 skeleton_bone-NONE = 無し
@@ -404,7 +400,6 @@ settings-serial-send_command-warning-cancel = キャンセル
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSCトラッカー
 settings-osc-vrchat-enable = 有効
 settings-osc-vrchat-enable-description = データの送受信を切り替える。
 settings-osc-vrchat-enable-label = 有効
@@ -426,7 +421,6 @@ settings-osc-vrchat-status-badge-unknown = 不明
 
 ## VMC OSC settings
 
-settings-osc-vmc = バーチャルモーションキャプチャ
 settings-osc-vmc-enable = 有効
 settings-osc-vmc-enable-description = データの送受信を切り替える。
 settings-osc-vmc-enable-label = 有効
@@ -561,7 +555,7 @@ onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着�
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
