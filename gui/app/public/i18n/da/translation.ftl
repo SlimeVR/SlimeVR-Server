@@ -59,9 +59,6 @@ body_part-LEFT_UPPER_LEG = Venstre lår
 body_part-LEFT_LOWER_LEG = Venstre ankel
 body_part-LEFT_FOOT = Venstre fod
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -207,13 +204,11 @@ settings-sidebar-title = Indstillinger
 settings-sidebar-general = Generel
 settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Brugergrænseflade
-settings-sidebar-vrchat_osc = VRChat OSC trackere
 settings-sidebar-utils = Hjælpeprogrammer
 settings-sidebar-serial = Seriel konsol
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = VRChat OSC trackere
 settings-routing-hands-warning-cancel = Annuller
 
 ## SteamVR / Monado output settings
@@ -314,7 +309,6 @@ settings-serial-send_command-warning-cancel = Annuller
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC trackere
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skift afsendelse og modtagelse af data.
 settings-osc-vrchat-enable-label = Aktiver
@@ -480,7 +474,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Tag dine trackere på
 onboarding-automatic_mounting-put_trackers_on-description = For at kalibrere rotationer bruger vi de trackere, du lige har tildelt. Tag alle dine trackere på du kan se hvilke der er hvilke i figuren til højre.
 onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
