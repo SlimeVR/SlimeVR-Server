@@ -568,6 +568,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
 error_collection_modal-confirm = Sutinku
 error_collection_modal-cancel = Nesutinku
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Uždaryti
