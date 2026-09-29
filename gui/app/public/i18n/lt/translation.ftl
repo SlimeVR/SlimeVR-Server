@@ -97,12 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Dešiniojo mažylio artimoji dalis
 body_part-RIGHT_LITTLE_INTERMEDIATE = Dešiniojo mažylio vidurinė dalis
 body_part-RIGHT_LITTLE_DISTAL = Dešiniojo mažylio tolimiausioji dalis
 
-## BoardType
-
-board_type-UNKNOWN = Nežinoma
-board_type-CUSTOM = Nestandartinė plokštė
-board_type-WRANGLER = „Wrangler“ Joycon'ai
-
 ## Proportions
 
 skeleton_bone-NONE = Nenurodyta
@@ -517,7 +511,7 @@ onboarding-assign_trackers-side-left = Kairėje
 onboarding-automatic_mounting-title = Tvirtinimo kalibravimas
 onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
