@@ -659,6 +659,12 @@ settings-general-interface-theme = crwdns8076:0crwdne8076:0
 settings-general-interface-lang = crwdns8078:0crwdne8078:0
 settings-general-interface-lang-description = crwdns8080:0crwdne8080:0
 settings-general-interface-lang-placeholder = crwdns8082:0crwdne8082:0
+settings-general-interface-crowdin_in_context = crwdns9518:0crwdne9518:0
+settings-general-interface-crowdin_in_context-description = crwdns9520:0crwdne9520:0
+settings-general-interface-crowdin_in_context-description-active = crwdns9522:0crwdne9522:0
+settings-general-interface-crowdin_in_context-failed = crwdns9524:0crwdne9524:0
+settings-general-interface-crowdin_in_context-enable = crwdns9526:0crwdne9526:0
+settings-general-interface-crowdin_in_context-close = crwdns9528:0crwdne9528:0
 # Keep the font name untranslated
 settings-interface-appearance-font = crwdns8084:0crwdne8084:0
 settings-interface-appearance-font-description = crwdns8086:0crwdne8086:0
