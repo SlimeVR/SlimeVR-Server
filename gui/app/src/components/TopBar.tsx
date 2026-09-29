@@ -183,6 +183,11 @@ export function TopBar({
                 <NavLink
                   to="/"
                   className="flex justify-around flex-col select-all"
+                  // Leaving the setup from here skips it
+                  onClick={() => {
+                    if (config && !config.doneOnboarding)
+                      setConfig({ doneOnboarding: true });
+                  }}
                 >
                   <SlimeVRIcon />
                 </NavLink>
