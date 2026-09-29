@@ -144,7 +144,7 @@ export function DriverSettings() {
     <SettingsPageLayout>
       <SettingsPagePaneLayout icon={<SteamIcon size={24} />} id="driver">
         <>
-          <Typography variant="main-title" id="settings-driver" />
+          <Typography variant="main-title">SteamVR / Monado</Typography>
           <div className="flex flex-col pt-1 pb-4">
             <Typography id="settings-driver-description" />
           </div>

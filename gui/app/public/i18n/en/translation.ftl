@@ -124,34 +124,6 @@ body_part-RIGHT_MIDDLE_TOE = Right Middle Toe
 body_part-RIGHT_RING_TOE = Right Ring Toe
 body_part-RIGHT_LITTLE_TOE = Right Little Toe
 
-## BoardType
-board_type-UNKNOWN = Unknown
-board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = Custom Board
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR Dev Board
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
-board_type-GESTURES = Gestures
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = Generic nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
-
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-NECK = Neck Length
@@ -454,14 +426,11 @@ settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-outputs = Outputs
 settings-sidebar-routing = Bone Routing
-settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
-settings-sidebar-vrchat_osc = VRChat OSC
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
 settings-sidebar-appearance = Appearance
@@ -495,9 +464,6 @@ settings-routing-duplicate-warning =
 settings-routing-outputs = Outputs
 settings-routing-bones = Bones
 settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
-settings-routing-output-driver = SteamVR / Monado
-settings-routing-output-vrc_osc = VRChat OSC
-settings-routing-output-vmc = VMC
 settings-routing-output-bone-count = { $routed } of { $accepts } bones routed
 settings-routing-output-badge-sending = Sending
 settings-routing-output-sending-description = Connected and receiving bones.
@@ -529,11 +495,10 @@ settings-routing-hands-warning-done = Route hands
 
 ## SteamVR / Monado output settings
 
-settings-driver = SteamVR / Monado
 settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
 settings-driver-enable = Enable
-settings-driver-enable-description = Send your trackers to SteamVR or Monado through the SlimeVR driver. While this is off, they cannot connect to SlimeVR at all.
-settings-driver-enable-label = Enable SteamVR / Monado
+settings-driver-enable-description = Send your trackers to and receive trackers from SteamVR or Monado through the SlimeVR driver. If this is off, they won't be able to connect to SlimeVR at all.
+settings-driver-enable-label = Enable
 settings-driver-status-title = Status
 settings-driver-status-connection = Driver connection
 settings-driver-status-badge-connected = Connected
@@ -683,7 +648,7 @@ settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine cu
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode
-settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a positional head tracker.
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its position in space without any positional tracker.
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control-subtitle = Tap based resets
@@ -822,7 +787,6 @@ settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC VRChat settings
-settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Change settings specific to VRChat OSC and the OSC Trackers standard used to send
@@ -847,7 +811,6 @@ settings-osc-vrchat-status-title = Status
 settings-osc-vrchat-status-input = Input
 settings-osc-vrchat-status-tracking = Tracking data
 settings-osc-vrchat-status-output = Output
-settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = Not listening
 settings-osc-vrchat-status-input-listening = Listening on port {$port}
 settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}.
@@ -885,7 +848,6 @@ settings-osc-vrchat-status-badge-not-sent = Not sent
 settings-osc-vrchat-status-badge-unknown = Unknown
 
 ## VMC OSC settings
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
@@ -1281,13 +1243,13 @@ onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
-onboarding-automatic_mounting-preparation-v2-done = Looks like youve already performed a full reset recently!
+onboarding-automatic_mounting-preparation-v2-done = Looks like you've already performed a full reset recently!
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 onboarding-automatic_mounting-return-home = Done
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
@@ -1721,4 +1683,3 @@ toolbar-unassigned_trackers = { $count ->
     [one] { $count } tracker unassigned
     *[other] { $count } trackers unassigned
 }
-

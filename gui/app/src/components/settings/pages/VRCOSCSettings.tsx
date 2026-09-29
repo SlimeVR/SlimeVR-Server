@@ -288,12 +288,7 @@ function StatusCard({
       </StatusRow>
 
       <StatusRow
-        label={
-          <Typography
-            variant="section-title"
-            id="settings-osc-vrchat-status-oscquery"
-          />
-        }
+        label={<Typography variant="section-title">OSCQuery</Typography>}
         badge={<VrcBadge badge={OSCQUERY_BADGES[oscQueryState]} />}
       >
         {oscQueryState === VRCOSCOscQueryState.DISABLED ? (
@@ -442,9 +437,7 @@ export function VRCOSCSettings() {
       <form className="flex flex-col gap-2 w-full">
         <SettingsPagePaneLayout icon={<VRCIcon />} id="vrchat">
           <>
-            <Typography variant="main-title">
-              {l10n.getString('settings-osc-vrchat')}
-            </Typography>
+            <Typography variant="main-title">VRChat OSC</Typography>
             <div className="flex flex-col pt-2 pb-4">
               <>
                 {l10n

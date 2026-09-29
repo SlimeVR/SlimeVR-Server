@@ -114,13 +114,9 @@ export function TrackerSettingsPage() {
 
   const boardType = useMemo(() => {
     if (tracker?.device?.hardwareInfo?.officialBoardType) {
-      return l10n.getString(
-        'board_type-' +
-          BoardType[
-            tracker?.device?.hardwareInfo?.officialBoardType ??
-              BoardType.UNKNOWN
-          ]
-      );
+      return BoardType[
+        tracker?.device?.hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN
+      ];
     } else if (tracker?.device?.hardwareInfo?.boardType) {
       return tracker?.device?.hardwareInfo?.boardType;
     } else {
