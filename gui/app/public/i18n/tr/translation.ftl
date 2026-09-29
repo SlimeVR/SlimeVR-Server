@@ -239,8 +239,6 @@ tracker-infos-board_type = Ana kart
 tracker-settings-back = Takipçi listesine geri dön
 tracker-settings-title = Takipçi ayarları
 tracker-settings-assignment_section-description = Tracker'in vücudun hangi kısmına atandığı.
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Takipçi adı
 tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
 tracker-settings-name_section-label = Takipçi adı
