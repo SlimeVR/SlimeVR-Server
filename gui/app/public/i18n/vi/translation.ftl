@@ -800,6 +800,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = Không rõ
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Đóng
