@@ -300,8 +300,6 @@ tracker-settings-use_mag-description =
     ให้แทร็กเกอร์ตัวนี้เปิดใช้งานเซ็นเซอร์สนามแม่เหล็กเพื่อลดการดริฟท์หรือไม่? <b>โปรดอย่าปิดแทร็กเกอร์ของคุณในขณะที่กำลังสลับการตั้งค่านี้!</b>
     คุณต้องอนุญาตการใช้เซ็นเซอร์สนามแม่เหล็กก่อน <magSetting>คลิกที่นี่เพื่อไปที่การตั้งค่า</magSetting>
 tracker-settings-use_mag-label = เปิดใช้เซ็นเซอร์สนามแม่เหล็ก
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = ชื่อแทร็กเกอร์
 tracker-settings-name_section-description = ตั้งชื่อน่ารักๆ ให้มันสิ :)
 tracker-settings-name_section-placeholder = แข้งซ้ายของ NightyBeast!
