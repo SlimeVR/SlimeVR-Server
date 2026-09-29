@@ -474,12 +474,6 @@ settings-general-interface-discord_presence-message =
        *[other] أخرى
     }
 settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>هل توافق على جمع بيانات الخطأ مجهولة المصدر؟</h1>
-    
-    <b>نحن لا نجمع معلومات شخصية</b> مثل عنوان IP الخاص بك أو بيانات الاعتماد اللاسلكية. يقدر SlimeVR خصوصيتك!
-    
-    لتوفير أفضل تجربة للمستخدم، نقوم بجمع تقارير الأخطاء ومقاييس الأداء ومعلومات نظام التشغيل مجهولة المصدر. يساعدنا هذا في اكتشاف الأخطاء والمشكلات المتعلقة ب SlimeVR. يتم جمع هذه المقاييس عبر Sentry.io.
 settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
 
 ## Serial settings
@@ -957,6 +951,9 @@ vrc_config-tracker_model-UNKNOWN = مجهول
 vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section
