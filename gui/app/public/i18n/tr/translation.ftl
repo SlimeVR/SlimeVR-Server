@@ -452,6 +452,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = Bilinmeyen
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Kapat
