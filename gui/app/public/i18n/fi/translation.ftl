@@ -62,10 +62,6 @@ body_part-LEFT_UPPER_LEG = Vasen reisi
 body_part-LEFT_LOWER_LEG = Vasen nilkka
 body_part-LEFT_FOOT = Vasen jalkaterä
 
-## BoardType
-
-board_type-UNKNOWN = Tuntematon
-
 ## Proportions
 
 skeleton_bone-NONE = Ei mikään
@@ -283,7 +279,6 @@ settings-general-fk_settings-arm_fk-forward = Eteenpäin
 settings-general-fk_settings-skeleton_settings-ratios = Luurankosuhteet
 settings-general-fk_settings-skeleton_settings-ratios-description = Muuta luurankoasetusten arvoja. Saatat joutua säätämään mittasuhteitasi muutosten jälkeen.
 settings-general-fk_settings-self_localization-title = Mocap-tila
-settings-general-fk_settings-self_localization-description = Mocap-tila sallii luurangon karkeasti seurata omaa sijaintiaan ilman laseja tai muita jäljittimiä. Huomioi, että tämä vaatii jalka- ja pääjäljittimien toimimista ja on vielä kokeellinen.
 
 ## Gesture control settings (tracker tapping)
 
@@ -380,7 +375,6 @@ settings-serial-send_command-warning-cancel = Peruuta
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC -jäljittimet
 settings-osc-vrchat-enable = Käytä
 settings-osc-vrchat-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
 settings-osc-vrchat-enable-label = Käytä
@@ -624,7 +618,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Laita jäljittimet pääll
 onboarding-automatic_mounting-put_trackers_on-description = Kalibroidaksemme asennuskierrokset käytämme juuri määrittämiäsi jäljittimiä. Laita kaikki jäljittimet päällesi, näet mitkä ovat mitäkin oikealla olevassa kuvassa.
 onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
