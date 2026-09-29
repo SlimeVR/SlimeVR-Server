@@ -216,5 +216,8 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
