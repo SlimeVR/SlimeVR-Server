@@ -355,6 +355,9 @@ tray_or_exit_modal-cancel = ביטול
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = סגור
