@@ -218,8 +218,6 @@ tracker-settings-use_mag-description =
     
     Nejprve musíte povolit používání magnetometru, <magSetting>Kliknutím zde přejdete k nastavená magnetometru</magSetting>.
 tracker-settings-use_mag-label = Povolit magnetometr
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Název trackeru
 tracker-settings-name_section-description = Třeba nějakou roztomilou přezdívku :)
 tracker-settings-name_section-placeholder = Erimelova levá tlapka
