@@ -547,6 +547,9 @@ tray_or_exit_modal-cancel = Annuller
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Tæt
