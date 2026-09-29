@@ -74,15 +74,6 @@ body_part-LEFT_MIDDLE_DISTAL = Vzálená kůstka levého prostředníku
 body_part-LEFT_RING_DISTAL = Vzálená kůstka levého prsteníku
 body_part-RIGHT_THUMB_DISTAL = Vzálená falanga pravého pacle
 
-## BoardType
-
-board_type-UNKNOWN = Neznámý
-board_type-CUSTOM = Vlastní deska
-board_type-WRANGLER = Wrangler Joycony
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR vývojářská IMU rukavice
-board_type-GESTURES = Gesta
-board_type-GENERIC_NRF = Obecné nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Žádný
@@ -294,7 +285,6 @@ settings-sidebar-general = Obecné
 settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-sidebar-trackers = Trackery
 settings-sidebar-interface = Rozhraní
-settings-sidebar-vrchat_osc = Trackery VRChat OSC
 settings-sidebar-utils = Nástroje
 settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
@@ -308,7 +298,6 @@ settings-sidebar-advanced = Pokročilé
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = Trackery VRChat OSC
 settings-routing-output-badge-off = Vypnuto
 settings-routing-group-fingers = Prsty
 settings-routing-hands-warning-cancel = Zrušit
@@ -409,7 +398,6 @@ settings-general-fk_settings-arm_fk-forward-description = Ideální pozice pro V
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
 settings-general-fk_settings-skeleton_settings-ratios-description = Změňte hodnoty nastavení kostry, Po změně budete možná muset poupravit vaše proporce.
 settings-general-fk_settings-self_localization-title = Režim Mocap
-settings-general-fk_settings-self_localization-description = Režim Mocap je experimentální funkce, která dokáže přibližně určit polohu vašeho těla bez VR Headsetu a dalších trackerů. Pro správnou funkci je však nutné mít trackery pro nohy a hlavu.
 
 ## Gesture control settings (tracker tapping)
 
@@ -533,7 +521,6 @@ settings-serial-send_command-warning-cancel = Zrušit
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = Trackery VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Pro změnu nastavení specifických pro standart OSC pro odesílání
@@ -561,7 +548,6 @@ settings-osc-vrchat-status-badge-unknown = Neznýmý
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtuální snímání pohybu (Také známo jako Virtual Motion Capture)
 # This cares about multilines
 settings-osc-vmc-description =
     Změna nastavení specificky pro VCM (Virtual Motion Capture) protokol
@@ -789,7 +775,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci směru
 onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-automatic_mounting-return-home = Hotovo
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Jít zpět na Škálování Proporcí
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
