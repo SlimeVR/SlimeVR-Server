@@ -483,12 +483,6 @@ settings-general-interface-discord_presence-message =
        *[other] Používá { $amount } trackerů
     }
 settings-interface-behavior-error_tracking = Sběr chyb prostřednictvím Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Souhlasíte se shromažďováním anonymizovaých údajů o chybých?</h1>
-    
-    <b>Neschrožďujeme osobní udaje!</b> pro příklad IP adresy nebo přihlašovací údaje k sítím Wi-Fi. SlimeVR respektuje vaše soukromí!
-    
-    Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
 settings-interface-behavior-bvh_directory = Cesta pro uložení BVH záznamů
 settings-interface-behavior-bvh_directory-description = Vyberte cestu k uložení záznamů BHV. namísto toho, abyste pokaždé vybírali, kam je uložit.
@@ -1081,6 +1075,9 @@ error_collection_modal-description_v2 =
     Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím
+
+## Crash screen
+
 
 ## Tracking checklist section
 
