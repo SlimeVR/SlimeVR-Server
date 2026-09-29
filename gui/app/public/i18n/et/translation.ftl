@@ -631,6 +631,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
 ## Error collection consent modal
 
 
+## Crash screen
+
+
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Sulge
