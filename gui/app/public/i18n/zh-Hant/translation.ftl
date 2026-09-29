@@ -129,35 +129,6 @@ body_part-RIGHT_MIDDLE_TOE = 右腳第三腳趾
 body_part-RIGHT_RING_TOE = 右腳第四腳趾
 body_part-RIGHT_LITTLE_TOE = 右腳小腳趾
 
-## BoardType
-
-board_type-UNKNOWN = 不明
-board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = 自訂主板
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR 開發板
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joy-Con
-board_type-MOCOPI = Sony mocopi
-board_type-WEMOSWROOM02 = WeMos WROOM-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
-board_type-GESTURES = litten Yº by Gestures
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = 通用 nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
-
 ## Proportions
 
 skeleton_bone-NONE = 無
@@ -474,14 +445,11 @@ settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-outputs = 輸出
 settings-sidebar-routing = 骨骼路由
-settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = 重置
 settings-sidebar-stay_aligned = 持續校正
 settings-sidebar-tracking = 追蹤
 settings-sidebar-trackers = 追蹤器
 settings-sidebar-interface = 使用者介面
-settings-sidebar-vrchat_osc = VRChat OSC
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
@@ -515,9 +483,6 @@ settings-routing-duplicate-warning =
 settings-routing-outputs = 輸出方法
 settings-routing-bones = 骨骼
 settings-routing-bones-description = 勾選表示骨骼會以此方法輸出。橫線表示此輸出不支援這個骨骼。關閉自動調整路由以手動選擇。
-settings-routing-output-driver = SteamVR / Monado
-settings-routing-output-vrc_osc = VRChat OSC
-settings-routing-output-vmc = VMC
 settings-routing-output-bone-count = { $routed } / { $accepts } 骨骼已路由
 settings-routing-output-badge-sending = 發送中
 settings-routing-output-sending-description = 已連接，正在透過此輸出方法傳送骨骼資料。
@@ -550,11 +515,8 @@ settings-routing-hands-warning-done = 路由手部追蹤器
 
 ## SteamVR / Monado output settings
 
-settings-driver = SteamVR / Monado
 settings-driver-description = SlimeVR 驅動程式的設定，用於 SteamVR 與 Monado 等。
 settings-driver-enable = 啟用
-settings-driver-enable-description = 透過 SlimeVR 驅動程式傳送追蹤器資訊到 SteamVR 或 Monado。關閉時上述環境無法接收 SlimeVR 的追蹤資訊。
-settings-driver-enable-label = 啟用 SteamVR / Monado
 settings-driver-status-title = 狀態
 settings-driver-status-connection = 驅動程式連接狀態
 settings-driver-status-badge-connected = 已連接
@@ -703,7 +665,6 @@ settings-general-fk_settings-skeleton_settings-impute_spine_curvature = 脊椎�
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = 從上腿部推測臀部追蹤器的位置
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = 從上腿部的旋轉推測下腿部的旋轉
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
-settings-general-fk_settings-self_localization-description = 動作捕捉模式允許在沒有頭戴顯示器或其他追蹤器時，粗略的追蹤身體骨架的定位。請注意，本功能需要腳部與頭部的追蹤器，並且本功能仍在實驗階段。
 
 ## Gesture control settings (tracker tapping)
 
@@ -835,7 +796,6 @@ settings-serial-send_command-warning-cancel = 取消
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC 追蹤器
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     變更 OSC 追蹤器標準的設定，該標準可用於傳送追蹤器資料到不使用 SteamVR 的應用程式（例如 Quest 單機版）。
@@ -860,7 +820,6 @@ settings-osc-vrchat-status-title = 狀態
 settings-osc-vrchat-status-input = 輸入
 settings-osc-vrchat-status-tracking = 旋轉
 settings-osc-vrchat-status-output = 輸出
-settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = 尚未監聽
 settings-osc-vrchat-status-input-listening = 在 { $port } 埠上監聽
 settings-osc-vrchat-status-input-last-data = 最後從 VRChat 接收資料：{ $elapsed }。
@@ -900,7 +859,6 @@ settings-osc-vrchat-status-badge-unknown = 不明
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     修改 VMC (Virtual Motion Capture) 協定的相關設定，
@@ -1307,13 +1265,12 @@ onboarding-automatic_mounting-preparation-title = 準備
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 請按下「完整重置」按鈕。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直，雙臂放在身體兩側，確保向前直視。
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿勢直到 3 秒倒數結束。
-onboarding-automatic_mounting-preparation-v2-done = 你似乎最近進行過一次完整重置了！
 onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
 onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
 onboarding-automatic_mounting-return-home = 完成
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = 返回使用縮放比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
