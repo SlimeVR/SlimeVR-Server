@@ -97,11 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Höger ringfinger proximal falang
 body_part-RIGHT_LITTLE_INTERMEDIATE = Höger lillfinger mellanfalang
 body_part-RIGHT_LITTLE_DISTAL = Höger lillfinger distal falang
 
-## BoardType
-
-board_type-UNKNOWN = Okänd
-board_type-CUSTOM = Anpassat kretskort
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -454,7 +449,6 @@ settings-general-fk_settings-arm_fk-forward-description = Förväntar sig att di
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
 settings-general-fk_settings-self_localization-title = Mocap-läge
-settings-general-fk_settings-self_localization-description = Mocap Mode gör att skelettet i stort sett kan följa sin egen position utan headset eller andra spårare. Observera att detta kräver fot- och huvudspårare för att fungera och att det fortfarande är experimentellt.
 
 ## Gesture control settings (tracker tapping)
 
@@ -546,7 +540,6 @@ settings-serial-send_command-warning-cancel = Avbryt
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC spårare
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vrchat-enable-label = Aktivera
@@ -569,7 +562,6 @@ settings-osc-vrchat-status-badge-unknown = Okänd
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtuell rörelseinspelning
 settings-osc-vmc-enable = Aktivera
 settings-osc-vmc-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vmc-enable-label = Aktivera
@@ -824,7 +816,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Sätt på dig dina tracker
 onboarding-automatic_mounting-put_trackers_on-description = För att kalibrera monterings-riktningen, så kommer i att använda trackersen du precis tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i figuren till höger.
 onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla trackers
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
