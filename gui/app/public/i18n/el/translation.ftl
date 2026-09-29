@@ -56,9 +56,6 @@ body_part-LEFT_UPPER_LEG = Αριστερός μηρός
 body_part-LEFT_LOWER_LEG = Αριστερός αστράγαλος
 body_part-LEFT_FOOT = Αριστερό πόδι
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Τίποτα
@@ -292,7 +289,7 @@ onboarding-assign_trackers-side-left = Αριστερά
 onboarding-automatic_mounting-title = Βαθμονόμηση τοποθέτησης
 onboarding-automatic_mounting-mounting_reset-title = Βαθμονόμηση τοποθέτησης
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
