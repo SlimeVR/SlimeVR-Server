@@ -67,11 +67,6 @@ body_part-LEFT_UPPER_LEG = 왼쪽 다리 위
 body_part-LEFT_LOWER_LEG = 왼쪽 다리 아래
 body_part-LEFT_FOOT = 왼발
 
-## BoardType
-
-board_type-UNKNOWN = 알 수 없음
-board_type-CUSTOM = 커스텀 보드
-
 ## Proportions
 
 skeleton_bone-NONE = 없음
@@ -345,7 +340,6 @@ settings-general-fk_settings-arm_fk-forward-description = 앞으로 나란히 �
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
 settings-general-fk_settings-skeleton_settings-ratios-description = 골격 비율을 변경하면 신체 비율 설정을 다시 조절해야 할 수 있어요.
 settings-general-fk_settings-self_localization-title = Mocap 모드
-settings-general-fk_settings-self_localization-description = Mocap 모드에서는 헤드셋이나 다른 트래커 없이 골격이 자신의 위치를 대략적으로 추적할 수 있어요. 발과 머리 트래커가 필요하고 아직 실험적이에요.
 
 ## Gesture control settings (tracker tapping)
 
@@ -446,7 +440,6 @@ settings-serial-send_command-warning-cancel = 취소
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     SteamVR이 없는 애플리케이션(예: Quest 단독 실행)에 추적 데이터를 전송하는 데 사용되는 OSC 트래커 표준에 관한 설정.
@@ -722,7 +715,7 @@ onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주�
 onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향을 보정하기 위해 방금 할당한 트래커들을 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 각각의 트래커가 어떤 위치에 있는지 확인할 수 있어요.
 onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = 신체 비율을 자동으로 조정
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 신체 비율 자동 조정 기능을 이용하려면 VR 헤드셋을 연결해 주세요
