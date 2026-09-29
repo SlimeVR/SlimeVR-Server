@@ -227,8 +227,6 @@ tracker-settings-mounting_section-description = whewe is the twackaw mownted?
 tracker-settings-mounting_section-edit = edit meownting
 tracker-settings-use_mag = awwow magentometer on dis twackew
 tracker-settings-use_mag-label = awwow magnetomemer
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
 tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
