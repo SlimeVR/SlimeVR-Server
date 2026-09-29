@@ -541,10 +541,6 @@ settings-general-interface-discord_presence-message =
        *[many] Используется { $amount } трекеров
     }
 settings-interface-behavior-error_tracking = Сбор ошибок через Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Даете ли вы согласие на сбор анонимных данных об ошибках?</h1>
-    <b>Мы не собираем личную информацию</b>, такую как ваш IP адрес или учётные данные беспроводной сети. SlimeVR ценит вашу конфиденциальность!
-    Чтобы обеспечить наилучший опыт для пользователей, мы собираем анонимные отчёты об ошибках, показатели производительности и информацию об операционной системе. Это помогает нам обнаруживать ошибки и проблемы со SlimeVR. Эти данные собираются с помощью Sentry.io.
 settings-interface-behavior-error_tracking-label = Отправлять ошибки разработчикам
 
 ## Serial settings
@@ -1142,6 +1138,9 @@ error_collection_modal-description_v2 =
     Вы можете изменить эту настройку позже на странице настроек в разделе Поведение.
 error_collection_modal-confirm = Я согласен
 error_collection_modal-cancel = Я не согласен
+
+## Crash screen
+
 
 ## Tracking checklist section
 
