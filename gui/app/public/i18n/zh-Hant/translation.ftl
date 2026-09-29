@@ -662,7 +662,6 @@ settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-skeleton_settings-ratios-description = 修改骨架設定的參數，你可能需要在修改後調整軀幹比例。
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = 下脊椎無追蹤器時，從上脊椎推測其餘的脊椎追蹤器位置
 settings-general-fk_settings-skeleton_settings-impute_spine_curvature = 脊椎曲度
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = 從上腿部推測臀部追蹤器的位置
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = 從上腿部的旋轉推測下腿部的旋轉
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
 
