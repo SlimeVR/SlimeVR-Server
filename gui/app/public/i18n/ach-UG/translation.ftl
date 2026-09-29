@@ -129,35 +129,6 @@ body_part-RIGHT_MIDDLE_TOE = crwdns7220:0crwdne7220:0
 body_part-RIGHT_RING_TOE = crwdns7222:0crwdne7222:0
 body_part-RIGHT_LITTLE_TOE = crwdns7224:0crwdne7224:0
 
-## BoardType
-
-board_type-UNKNOWN = crwdns7226:0crwdne7226:0
-board_type-NODEMCU = crwdns7228:0crwdne7228:0
-board_type-CUSTOM = crwdns7230:0crwdne7230:0
-board_type-WROOM32 = crwdns7232:0crwdne7232:0
-board_type-WEMOSD1MINI = crwdns7234:0crwdne7234:0
-board_type-TTGO_TBASE = crwdns7236:0crwdne7236:0
-board_type-ESP01 = crwdns7238:0crwdne7238:0
-board_type-SLIMEVR = crwdns7240:0crwdne7240:0
-board_type-SLIMEVR_DEV = crwdns7242:0crwdne7242:0
-board_type-SLIMEVR_V1_2 = crwdns7244:0crwdne7244:0
-board_type-LOLIN_C3_MINI = crwdns7246:0crwdne7246:0
-board_type-BEETLE32C3 = crwdns7248:0crwdne7248:0
-board_type-ESP32C3DEVKITM1 = crwdns7250:0crwdne7250:0
-board_type-OWOTRACK = crwdns7252:0crwdne7252:0
-board_type-WRANGLER = crwdns7254:0crwdne7254:0
-board_type-MOCOPI = crwdns7256:0crwdne7256:0
-board_type-WEMOSWROOM02 = crwdns7258:0crwdne7258:0
-board_type-XIAO_ESP32C3 = crwdns7260:0crwdne7260:0
-board_type-HARITORA = crwdns7262:0crwdne7262:0
-board_type-ESP32C6DEVKITC1 = crwdns7264:0crwdne7264:0
-board_type-GLOVE_IMU_SLIMEVR_DEV = crwdns7266:0crwdne7266:0
-board_type-GESTURES = crwdns7268:0crwdne7268:0
-board_type-ESP32S3_SUPERMINI = crwdns7270:0crwdne7270:0
-board_type-GENERIC_NRF = crwdns7272:0crwdne7272:0
-board_type-SLIMEVR_BUTTERFLY_DEV = crwdns7274:0crwdne7274:0
-board_type-SLIMEVR_BUTTERFLY = crwdns7276:0crwdne7276:0
-
 ## Proportions
 
 skeleton_bone-NONE = crwdns7278:0crwdne7278:0
@@ -409,14 +380,11 @@ settings-sidebar-title = crwdns7650:0crwdne7650:0
 settings-sidebar-general = crwdns7652:0crwdne7652:0
 settings-sidebar-outputs = crwdns7654:0crwdne7654:0
 settings-sidebar-routing = crwdns7656:0crwdne7656:0
-settings-sidebar-driver = crwdns7658:0crwdne7658:0
 settings-sidebar-resets = crwdns7660:0crwdne7660:0
 settings-sidebar-stay_aligned = crwdns7662:0crwdne7662:0
 settings-sidebar-tracking = crwdns7664:0crwdne7664:0
 settings-sidebar-trackers = crwdns7666:0crwdne7666:0
 settings-sidebar-interface = crwdns7668:0crwdne7668:0
-settings-sidebar-vrchat_osc = crwdns7670:0crwdne7670:0
-settings-sidebar-osc_vmc = crwdns7672:0crwdne7672:0
 settings-sidebar-utils = crwdns7674:0crwdne7674:0
 settings-sidebar-serial = crwdns7676:0crwdne7676:0
 settings-sidebar-appearance = crwdns7678:0crwdne7678:0
@@ -443,9 +411,6 @@ settings-routing-duplicate-warning = crwdns7712:0$bonescrwdnd7712:0$boneCountcrw
 settings-routing-outputs = crwdns7714:0crwdne7714:0
 settings-routing-bones = crwdns7716:0crwdne7716:0
 settings-routing-bones-description = crwdns7718:0crwdne7718:0
-settings-routing-output-driver = crwdns7720:0crwdne7720:0
-settings-routing-output-vrc_osc = crwdns7722:0crwdne7722:0
-settings-routing-output-vmc = crwdns7724:0crwdne7724:0
 settings-routing-output-bone-count = crwdns7726:0$routedcrwdnd7726:0$acceptscrwdne7726:0
 settings-routing-output-badge-sending = crwdns7728:0crwdne7728:0
 settings-routing-output-sending-description = crwdns7730:0crwdne7730:0
@@ -474,7 +439,6 @@ settings-routing-hands-warning-done = crwdns7768:0crwdne7768:0
 
 ## SteamVR / Monado output settings
 
-settings-driver = crwdns7770:0crwdne7770:0
 settings-driver-description = crwdns7772:0crwdne7772:0
 settings-driver-enable = crwdns7774:0crwdne7774:0
 settings-driver-enable-description = crwdns7776:0crwdne7776:0
@@ -745,7 +709,6 @@ settings-serial-send_command-warning-cancel = crwdns8204:0crwdne8204:0
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = crwdns8206:0crwdne8206:0
 # This cares about multilines
 settings-osc-vrchat-description-v1 = crwdns8208:0crwdne8208:0
 settings-osc-vrchat-enable = crwdns8210:0crwdne8210:0
@@ -768,7 +731,6 @@ settings-osc-vrchat-status-title = crwdns8236:0crwdne8236:0
 settings-osc-vrchat-status-input = crwdns8238:0crwdne8238:0
 settings-osc-vrchat-status-tracking = crwdns8240:0crwdne8240:0
 settings-osc-vrchat-status-output = crwdns8242:0crwdne8242:0
-settings-osc-vrchat-status-oscquery = crwdns8244:0crwdne8244:0
 settings-osc-vrchat-status-input-idle = crwdns8246:0crwdne8246:0
 settings-osc-vrchat-status-input-listening = crwdns8248:0$portcrwdne8248:0
 settings-osc-vrchat-status-input-last-data = crwdns8250:0$elapsedcrwdne8250:0
@@ -806,7 +768,6 @@ settings-osc-vrchat-status-badge-unknown = crwdns8312:0crwdne8312:0
 
 ## VMC OSC settings
 
-settings-osc-vmc = crwdns8314:0crwdne8314:0
 # This cares about multilines
 settings-osc-vmc-description = crwdns8316:0crwdne8316:0
 settings-osc-vmc-enable = crwdns8318:0crwdne8318:0
@@ -1148,7 +1109,7 @@ onboarding-automatic_mounting-put_trackers_on-description = crwdns8854:0crwdne88
 onboarding-automatic_mounting-put_trackers_on-next = crwdns8856:0crwdne8856:0
 onboarding-automatic_mounting-return-home = crwdns8858:0crwdne8858:0
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = crwdns8860:0crwdne8860:0
 onboarding-manual_proportions-fine_tuning_button = crwdns8862:0crwdne8862:0
