@@ -290,8 +290,6 @@ tracker-settings-use_mag = Разрешить использование маг�
 # Multiline!
 tracker-settings-use_mag-description = Должен ли этот трекер использовать магнитометр для компенсации дрифта, когда использование магнитометра разрешено?<b>Пожалуйста, не выключайте трекер во время включения данной функции!</b> Вам сначала нужно разрешить использование магнитометра, <magSetting>нажмите здесь чтобы зайти в настройки</magSetting>.
 tracker-settings-use_mag-label = Разрешить магнитометр
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Имя трекера
 tracker-settings-name_section-description = Дайте ему милое имя :)
 tracker-settings-name_section-placeholder = Левая нога NightyBeast'а
