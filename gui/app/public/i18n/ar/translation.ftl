@@ -236,8 +236,6 @@ tracker-settings-use_mag-description =
     
     تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
 tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = اسم جهاز التعقب
 tracker-settings-name_section-description = أعطها لقب لطيف :)
 tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
