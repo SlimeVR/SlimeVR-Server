@@ -306,8 +306,6 @@ tracker-settings-use_mag-description =
     
     Vous devez d'abord autoriser l'utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
 tracker-settings-use_mag-label = Autoriser le magnétomètre
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 tracker-settings-name_section-placeholder = Patte gauche d'Erimel
