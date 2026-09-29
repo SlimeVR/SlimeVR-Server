@@ -29,6 +29,7 @@ import dev.slimevr.android.udp.resolveAndroidUdpAddress
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
+import dev.slimevr.customosc.CustomOscOutputManager
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
@@ -171,6 +172,7 @@ class ForegroundService : Service() {
 		)
 		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
+		val customOscOutputManager = CustomOscOutputManager.create(skeleton = skeleton, settings = config.settings, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
 		val serverInfos = ServerInfos(::resolveAndroidLocalIpAddress)
 
@@ -198,6 +200,7 @@ class ForegroundService : Service() {
 			bvhManager = bvhManager,
 			vmcManager = vmcManager,
 			vrcOscManager = vrcOscManager,
+			customOscOutputManager = customOscOutputManager,
 			resetsManager = resetsManager,
 			tapDetectionManager = tapDetectionManager,
 		)
