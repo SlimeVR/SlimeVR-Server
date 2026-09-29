@@ -66,10 +66,6 @@ body_part-LEFT_UPPER_LEG = Bắp chân trái
 body_part-LEFT_LOWER_LEG = Cẳng chân trái
 body_part-LEFT_FOOT = Bàn chân trái
 
-## BoardType
-
-board_type-UNKNOWN = Không rõ
-
 ## Proportions
 
 skeleton_bone-NONE = Chưa được gán
@@ -318,7 +314,6 @@ settings-general-fk_settings-arm_fk-forward-description = Hai cánh tay của b�
 settings-general-fk_settings-skeleton_settings-ratios = Tỷ lệ khung xương
 settings-general-fk_settings-skeleton_settings-ratios-description = Thay đổi các giá trị của cài đặt bộ xương. Bạn có thể cần phải điều chỉnh tỷ lệ của bạn sau khi thay đổi những điều này.
 settings-general-fk_settings-self_localization-title = Chế độ Mocap
-settings-general-fk_settings-self_localization-description = Chế độ Mocap cho phép bộ xương theo dõi đại khái vị trí của chính nó mà không cần kính VR hoặc các thiết bị theo dõi khác. Lưu ý rằng điều này yêu cầu bộ theo dõi chân và đầu để hoạt động và chức năng này vẫn đang trong quá trình thử nghiệm.
 
 ## Gesture control settings (tracker tapping)
 
@@ -418,7 +413,6 @@ settings-serial-send_command-warning-cancel = Hủy
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Thay đổi cài đặt cụ thể cho OSC Trackers được sử dụng để gửi
@@ -680,7 +674,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
 onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
 onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
