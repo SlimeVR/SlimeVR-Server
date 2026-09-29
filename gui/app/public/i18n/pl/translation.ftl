@@ -100,16 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Prawy mały proksymalny
 body_part-RIGHT_LITTLE_INTERMEDIATE = Prawy mały pośredni
 body_part-RIGHT_LITTLE_DISTAL = Prawy mały dystalny
 
-## BoardType
-
-board_type-UNKNOWN = Nieznany
-board_type-NODEMCU = Kontroler NodeMCU
-board_type-CUSTOM = Płytka niestandardowa
-board_type-TTGO_TBASE = Podstawa T TTGO
-board_type-ESP01 = Zobacz materiał ESP-01
-board_type-SLIMEVR_DEV = SlimeVR Płytka Deweloperska
-board_type-GLOVE_IMU_SLIMEVR_DEV = Rękawica SlimeVR Dev IMU
-
 ## Proportions
 
 skeleton_bone-NONE = Brak
@@ -485,7 +475,6 @@ settings-general-fk_settings-arm_fk-forward-description = Oczekuje, że Twoje ra
 settings-general-fk_settings-skeleton_settings-ratios = Proporcje szkieletu
 settings-general-fk_settings-skeleton_settings-ratios-description = Zmień wartości ustawień szkieletu. Po zmianie może być konieczne dostosowanie proporcji.
 settings-general-fk_settings-self_localization-title = Tryb Mocap
-settings-general-fk_settings-self_localization-description = Tryb Mocap pozwala szkieletowi z grubsza śledzić własną pozycję bez headsetu lub innych trackerów. Pamiętaj, że wymaga to śledzenia stóp i głowy do działania i nadal jest eksperymentalne.
 
 ## Gesture control settings (tracker tapping)
 
@@ -610,7 +599,6 @@ settings-serial-send_command-warning-cancel = Anuluj
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Zmień ustawienia specyficzne dla standardu OSC Trackers używanego do wysyłania¶
@@ -919,7 +907,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rot
 onboarding-automatic_mounting-put_trackers_on-next = Wszystkie trackery założone
 onboarding-automatic_mounting-return-home = Gotowe
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Wróć do skalowania proporcji
 onboarding-manual_proportions-fine_tuning_button = Automatyczne dostrajanie proporcji
