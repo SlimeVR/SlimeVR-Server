@@ -97,12 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Правый мизинец (проксима�
 body_part-RIGHT_LITTLE_INTERMEDIATE = Правый мизинец (промежуточная фаланга)
 body_part-RIGHT_LITTLE_DISTAL = Правый мизинец (дистальная фаланга)
 
-## BoardType
-
-board_type-UNKNOWN = Неизвестно
-board_type-CUSTOM = Кастомная Плата
-board_type-WRANGLER = Joycon через Wrangler
-
 ## Proportions
 
 skeleton_bone-NONE = Пусто
@@ -462,7 +456,6 @@ settings-general-fk_settings-arm_fk-forward-description = Ожидает, что
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
 settings-general-fk_settings-self_localization-title = Режим Mocap
-settings-general-fk_settings-self_localization-description = Режим Mocap позволяет скелету примерно отслеживать свое собственное положение без использования гарнитуры или других трекеров. Обратите внимание, что для работы этого требуются трекеры ног и головы, и это все еще экспериментальный метод.
 
 ## Gesture control settings (tracker tapping)
 
@@ -579,7 +572,6 @@ settings-serial-send_command-warning-cancel = Отмена
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Трекеры
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Изменение настроек, специфичных для стандарта OSC Трекеров, используемых для отправки
@@ -609,7 +601,6 @@ settings-osc-vrchat-status-badge-unknown = Неизвестно
 
 ## VMC OSC settings
 
-settings-osc-vmc = Виртуальный захват движения
 # This cares about multilines
 settings-osc-vmc-description =
     Измените настройки, специфичные для протокола VMC (Virtual Motion Capture)
@@ -883,7 +874,7 @@ onboarding-automatic_mounting-put_trackers_on-description = Чтобы отка�
 onboarding-automatic_mounting-put_trackers_on-next = Я включил и надел все свои трекеры
 onboarding-automatic_mounting-return-home = Выполнено
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Автоматически точно настроить пропорции
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Пожалуйста, подключите VR-гарнитуру для использования автоматической тонкой настройки
