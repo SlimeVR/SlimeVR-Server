@@ -56,9 +56,6 @@ body_part-LEFT_UPPER_LEG = ירך שמאל
 body_part-LEFT_LOWER_LEG = קרסול שמאל
 body_part-LEFT_FOOT = רגל שמאל
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = לא נבחר
@@ -300,7 +297,7 @@ onboarding-assign_trackers-side-left = שמאל
 onboarding-automatic_mounting-title = כיול ההרכבה
 onboarding-automatic_mounting-mounting_reset-title = כיול ההרכבה
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
