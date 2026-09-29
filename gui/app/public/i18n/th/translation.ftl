@@ -101,15 +101,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = โคนนิ้วก้อยขวา
 body_part-RIGHT_LITTLE_INTERMEDIATE = ข้อนิ้วก้อยกลางขวา
 body_part-RIGHT_LITTLE_DISTAL = ปลายนิ้วก้อยขวา
 
-## BoardType
-
-board_type-UNKNOWN = ไม่ทราบ
-board_type-CUSTOM = บอร์ดปรับแต่ง
-board_type-SLIMEVR_DEV = บอร์ดพัฒนา SlimeVR
-board_type-GLOVE_IMU_SLIMEVR_DEV = บอร์ดพัฒนาถุงมือ IMU SlimeVR
-board_type-GESTURES = ท่าทางสัมผัส
-board_type-GENERIC_NRF = บอร์ด NRF ทั่วไป
-
 ## Proportions
 
 skeleton_bone-NONE = ไม่มี
@@ -491,7 +482,6 @@ settings-general-fk_settings-arm_fk-forward-description = กำหนดให�
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
 settings-general-fk_settings-skeleton_settings-ratios-description = เปลี่ยนค่าการตั้งค่าโครงกระดูก คุณอาจต้องปรับสัดส่วนของคุณใหม่หลังจากเปลี่ยนค่าเหล่านี้
 settings-general-fk_settings-self_localization-title = โหมด Mocap
-settings-general-fk_settings-self_localization-description = โหมด Mocap ช่วยให้โมเดลโครงกระดูกสามารถติดตามตำแหน่งโดยประมาณได้ โดยไม่ต้องใช้อุปกรณ์เฮดเซต (แว่น VR ) หรือแทร็กเกอร์อื่น ๆ โปรดทราบว่าฟังก์ชันนี้ต้องใช้แทร็กเกอร์ที่เท้าและศีรษะจึงจะทำงานได้ และยังอยู่ในช่วงทดลอง
 
 ## Gesture control settings (tracker tapping)
 
@@ -602,7 +592,6 @@ settings-serial-send_command-warning-cancel = ยกเลิก
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = แทร็กเกอร์ OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     เปลี่ยนการตั้งค่าเฉพาะสำหรับมาตรฐานแทร็กเกอร์ OSC ที่ใช้ในการส่งข้อมูลการติดตาม
@@ -910,7 +899,7 @@ onboarding-automatic_mounting-put_trackers_on-description = เพื่อต�
 onboarding-automatic_mounting-put_trackers_on-next = ฉันสวมแทร็กเกอร์ทั้งหมดแล้ว
 onboarding-automatic_mounting-return-home = เสร็จแล้ว
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = กลับไปที่สัดส่วนที่อ้างอิงขนาด
 onboarding-manual_proportions-fine_tuning_button = ปรับสัดส่วนโดยละเอียดอัตโนมัติ
