@@ -208,8 +208,6 @@ tracker-settings-use_mag-description =
     このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
     
     まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-label = トラッカー名称
