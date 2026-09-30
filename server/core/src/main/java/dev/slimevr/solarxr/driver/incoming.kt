@@ -40,6 +40,7 @@ private val DISPLAY_NAME_TO_OFFSET = mapOf(
 	"Knuckles Left" to Offset(indexBoneOffset, indexRotX * indexRotZ),
 	"Knuckles Right" to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
 )
+
 // Used as fallback when map above doesn't contain the entry
 private val BODY_PART_TO_OFFSET = mapOf(
 	BodyPart.HEAD to Offset(Vector3(0f, 0f, 0.1f)),

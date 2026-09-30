@@ -11,7 +11,6 @@ import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
-import dev.slimevr.solarxr.rpc.UpdateTrackerBehaviour
 import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
 import dev.slimevr.solarxr.rpc.BvhBehaviour
 import dev.slimevr.solarxr.rpc.DongleSettingsBehaviour
@@ -37,6 +36,7 @@ import dev.slimevr.solarxr.rpc.TapDetectionBehaviour
 import dev.slimevr.solarxr.rpc.TelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
 import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
+import dev.slimevr.solarxr.rpc.UpdateTrackerBehaviour
 import dev.slimevr.solarxr.rpc.VmcBehaviour
 import dev.slimevr.solarxr.rpc.VrcBehaviour
 import dev.slimevr.solarxr.rpc.VrcOscBehaviour
