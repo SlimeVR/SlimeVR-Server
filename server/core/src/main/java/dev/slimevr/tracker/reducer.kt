@@ -50,10 +50,20 @@ fun reduce(
 			}
 
 		// Accel calibration: going from raw, rotation-aligned, accel to world-aligned accel
-		// TODO: double check calibration; doesn't seem right - Erimel
 		val acceleration: CalibratedAcceleration? =
 			if (action.acceleration != null) {
-				applyFullCalibration(action.acceleration, correctedRawRotation, state)
+				if (state.imuType != null) {
+					// TODO: double check calibration; doesn't seem right - Erimel
+					applyCalibration(
+						action.acceleration,
+						correctedRawRotation,
+						state.sessionCalibration.headingCorrection,
+						state.sessionCalibration.headingAlignment,
+					)
+				} else {
+					// Assume acceleration is already calibrated for non-IMU trackers
+					action.acceleration
+				}
 			} else {
 				state.acceleration
 			}
@@ -90,8 +100,8 @@ fun reduce(
 
 	is TrackerActions.FullReset -> {
 		val alignAttitude = !state.isAssignedReliableReference || (action.resetReliableReferenceAttitude && action.referenceRotation == null)
-		val correctHeading = action.referenceRotation != null
-		val alignHeading = state.position != null && action.referenceRotation != null
+		val correctHeading = action.referenceRotation != null && !state.isAssignedReliableReference
+		val alignHeading = state.position != null && action.referenceRotation != null && !state.isAssignedReliableReference
 
 		val referenceRotation = action.referenceRotation ?: state.rawRotation
 
@@ -171,9 +181,9 @@ fun reduce(
 
 	is TrackerActions.PoseMountingReset -> {
 		// Positional trackers' heading is aligned on full reset, not on mounting reset, except for a reference.
-		val alignHeading = state.position == null || action.referenceRotation == null
+		val alignHeading = (state.position == null || action.referenceRotation == null) && !state.isAssignedReliableReference
 		// A positional reference tracker needs to correct its heading on mounting reset.
-		val correctHeading = state.position != null && action.referenceRotation == null
+		val correctHeading = state.position != null && action.referenceRotation == null && !state.isAssignedReliableReference
 
 		val referenceRotation = action.referenceRotation ?: state.rotation
 

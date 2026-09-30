@@ -24,7 +24,7 @@ class TrackerConfigBehaviour(
 			.distinctUntilChangedBy {
 				val saveMountingReset = receiver.settings.context.state.value.data.resetsConfig.saveMountingReset
 				val headingAlignment = if (saveMountingReset) it.sessionCalibration.headingAlignment else null
-				it.bodyPart to it.customName to it.mountingOrientation to it.magStatus to headingAlignment
+				it.bodyPart to it.customName to it.mountingOrientation to it.magStatus to headingAlignment to it.boneOffsets
 			}
 			.drop(1)
 			.onEach { state ->

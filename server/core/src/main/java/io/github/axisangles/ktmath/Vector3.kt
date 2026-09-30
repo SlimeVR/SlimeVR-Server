@@ -23,6 +23,10 @@ class Vector3(val x: Float, val y: Float, val z: Float) {
 
 	operator fun unaryMinus() = Vector3(-x, -y, -z)
 
+	fun unaryMinusX() = Vector3(-x, y, z)
+	fun unaryMinusY() = Vector3(x, -y, z)
+	fun unaryMinusZ() = Vector3(x, y, -z)
+
 	operator fun plus(that: Vector3) = Vector3(
 		this.x + that.x,
 		this.y + that.y,

@@ -123,7 +123,7 @@ val BONE_SPECS: Map<SkeletonBone, BoneSpec> = mapOf(
 	SkeletonBone.SHOULDERS_WIDTH to BoneSpec(default = 0.35f, min = 0.01f, max = 0.8f, curve = SHOULDERS_WIDTH_BY_STATURE),
 	SkeletonBone.UPPER_ARM to BoneSpec(default = 0.26f, min = 0.01f, max = 0.6f, curve = UPPER_ARM_LENGTH_BY_STATURE),
 	SkeletonBone.LOWER_ARM to BoneSpec(default = 0.26f, min = 0.01f, max = 0.6f, curve = LOWER_ARM_LENGTH_BY_STATURE),
-	SkeletonBone.HAND to BoneSpec(default = 0.08f, min = 0.01f, max = 0.3f, curve = HAND_LENGTH_BY_STATURE),
+	SkeletonBone.HAND to BoneSpec(default = 0.073f, min = 0.01f, max = 0.3f, curve = HAND_LENGTH_BY_STATURE),
 )
 
 val DEFAULT_PROPORTIONS: Map<SkeletonBone, Float> = BONE_SPECS.mapValues { (_, spec) -> spec.default }
@@ -345,7 +345,7 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
 			BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
 		),
-		lengthFraction = 0.69f,
+		lengthFraction = 0.67f,
 		knuckle = Vector3(0f, 0.1f, 0.31f),
 		lean = Vector3.ZERO,
 	),

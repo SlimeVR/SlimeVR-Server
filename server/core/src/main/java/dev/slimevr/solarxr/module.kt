@@ -11,7 +11,7 @@ import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
-import dev.slimevr.solarxr.rpc.AssignTrackerBehaviour
+import dev.slimevr.solarxr.rpc.UpdateTrackerBehaviour
 import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
 import dev.slimevr.solarxr.rpc.BvhBehaviour
 import dev.slimevr.solarxr.rpc.DongleSettingsBehaviour
@@ -198,7 +198,7 @@ class SolarXRBridge(
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton, appContext.errorReporting))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings, appContext.errorReporting))
-			add(AssignTrackerBehaviour(appContext.server, appContext.errorReporting))
+			add(UpdateTrackerBehaviour(appContext.server, appContext.errorReporting))
 			add(DongleSettingsBehaviour(appContext.server))
 			add(TelemetryBehaviour(appContext.server))
 			add(DriverHandshakeBehaviour(appContext))
