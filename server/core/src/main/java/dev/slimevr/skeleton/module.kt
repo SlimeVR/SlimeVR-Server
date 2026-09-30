@@ -269,15 +269,12 @@ class Skeleton(
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
-					// Like inputProcessors but run even when tracking is paused (since head isn't paused)
-					alwaysActiveInputProcessors = listOf(
+					// Run before FK on the inputs
+					inputProcessors = listOf(
 						PredictionInputProcessor(settings),
 						SmoothingInputProcessor(settings),
 						TrackerOffsetInputProcessor(),
 						HeadPositionFallbackProcessor(settings),
-					),
-					// Run before FK on the inputs
-					inputProcessors = listOf(
 						BoneYawFallbackInputProcessor(),
 						SpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),

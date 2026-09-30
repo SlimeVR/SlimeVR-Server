@@ -179,7 +179,6 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 class ComputedSkeletonBehaviour(
 	val hz: Int,
-	val alwaysActiveInputProcessors: List<SkeletonInputProcessor> = emptyList(),
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
 	val fkComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
@@ -187,6 +186,8 @@ class ComputedSkeletonBehaviour(
 	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
+	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
+
 	private val intervalDuration = (1.0 / hz).seconds
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
@@ -252,13 +253,18 @@ class ComputedSkeletonBehaviour(
 							receiver.context.dispatch(SkeletonActions.ProcessorResetsApplied(pendingResets.size))
 						}
 
-						val preProcessedBoneInputs = runInputProcessors(alwaysActiveInputProcessors, targetState.boneInputs, targetState.skeletonHeight)
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
-							// Use already-processed paused tracking data except for the head
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = preProcessedBoneInputs[BodyPart.HEAD] }
+							// Use already-processed paused tracking data except for certain bones (head + neck)
+							val alwaysActiveInputs = BodyPartMap(targetState.boneInputs.filter { it.key in ALWAYS_ACTIVE_PARTS })
+							val processedAlwaysActiveInputs = runInputProcessors(inputProcessors, alwaysActiveInputs, targetState.skeletonHeight)
+							targetState.pausedProcessedBoneInputs.mutateCopy {
+								for (bodyPart in ALWAYS_ACTIVE_PARTS) {
+									it[bodyPart] = processedAlwaysActiveInputs[bodyPart]
+								}
+							}
 						} else {
 							// Run pre-FK processors
-							val processedInputs = runInputProcessors(inputProcessors, preProcessedBoneInputs, targetState.skeletonHeight)
+							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs
 								// The buffer keeps being written after this, so state gets a copy
