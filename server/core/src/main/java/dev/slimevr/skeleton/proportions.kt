@@ -486,39 +486,3 @@ fun reportProportionsMethodUsage(errorReporting: ErrorReportingManager, method: 
 }
 
 
-
-
-/**
- * Returns the offsets for the bust bones scaled from the chest.
- */
-private fun getBustOffsets(upperChestLength: Float) = buildMap {
-	val zOffset = -upperChestLength * 0.6f
-	put(BodyPart.LEFT_BUST, Vector3(0f, 0f, zOffset))
-	put(BodyPart.RIGHT_BUST, Vector3(0f, 0f, zOffset))
-}
-
-private fun getBustHeadOffsets(upperChestLength: Float): Map<BodyPart, Vector3> = buildMap {
-	val xOffset = upperChestLength * 0.45f
-	val yOffset = -upperChestLength * 0.15f
-	val zOffset = -upperChestLength * 0.8f
-	put(BodyPart.LEFT_BUST, Vector3(-xOffset, yOffset, zOffset))
-	put(BodyPart.RIGHT_BUST, Vector3(xOffset, yOffset, zOffset))
-}
-
-private fun getPosteriorOffsets(scale: Float) = buildMap {
-	val zOffset = scale * 0.6f
-	put(BodyPart.LEFT_POSTERIOR, Vector3(0f, 0f, zOffset))
-	put(BodyPart.RIGHT_POSTERIOR, Vector3(0f, 0f, zOffset))
-}
-
-private fun getPosteriorHeadOffsets(scale: Float): Map<BodyPart, Vector3> = buildMap {
-	val xOffset = scale * 0.45f
-	val yOffset = -scale * -0.4f
-	val zOffset = scale * 0.4f
-	put(BodyPart.LEFT_POSTERIOR, Vector3(-xOffset, yOffset, zOffset))
-	put(BodyPart.RIGHT_POSTERIOR, Vector3(xOffset, yOffset, zOffset))
-=======
-fun reportProportionsMethodUsage(errorReporting: ErrorReportingManager, method: String, calibration: String? = null) {
-	errorReporting.reportUsageOncePerSession("proportions_method_used", mapOf("method" to method, "calibration" to calibration))
->>>>>>> upstream/server-rewrite
-}
