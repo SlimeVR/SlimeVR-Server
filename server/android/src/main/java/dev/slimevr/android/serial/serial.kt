@@ -42,7 +42,7 @@ private class AndroidSerialWatcher(
 		context,
 		0,
 		Intent(ACTION_USB_SERIAL_PERMISSION).apply { setPackage(context.packageName) },
-		PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+		PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
 	)
 
 	// Devices without permission are left out. Granting it sends a change and they show up then
