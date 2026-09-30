@@ -16,9 +16,15 @@ import {
 import { error } from '@/utils/logging';
 import { langs } from './names';
 import { useElectron } from '@/hooks/electron';
+import {
+  inContextMode,
+  reloadInContext,
+  startCrowdinInContext,
+} from './crowdin';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
+const IN_CONTEXT_LOCALE = 'ach-UG';
 
 // Fetch translation file
 async function fetchMessages(locale: string): Promise<[string, string]> {
@@ -54,6 +60,9 @@ interface AppLocalizationProviderProps {
 interface i18n {
   currentLocales: string[];
   changeLocales: (userLocales: string[]) => Promise<void>;
+  inContext: boolean;
+  inContextFailed: boolean;
+  setInContext: (enabled: boolean) => void;
 }
 
 const TRAY_MENU_KEYS = ['tray_menu-show', 'tray_menu-hide', 'tray_menu-quit'];
@@ -63,6 +72,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   const electron = useElectron();
   const [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
   const [l10n, setL10n] = useState<ReactLocalization | null>(null);
+  const inContext = inContextMode === 'active';
 
   async function changeLocales(userLocales: string[]) {
     const currentLocale = match(
@@ -73,11 +83,11 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     setCurrentLocales([currentLocale]);
 
     const overrideFile =
-      electron.isElectron && (await electron.api.i18nOverride());
+      !inContext && electron.isElectron && (await electron.api.i18nOverride());
 
     const currentLocaleFile: [string, string] = overrideFile
       ? [currentLocale, overrideFile]
-      : await fetchMessages(currentLocale);
+      : await fetchMessages(inContext ? IN_CONTEXT_LOCALE : currentLocale);
 
     const fetchedMessages = [
       currentLocaleFile,
@@ -85,16 +95,15 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     ];
 
     const bundles = lazilyParsedBundles(fetchedMessages);
-    localStorage.setItem('i18nextLng', currentLocale);
     document.documentElement.lang = currentLocale;
     setL10n(new ReactLocalization(bundles));
   }
 
+  // Children render once this loads, then useProvideAppContext applies config.lang.
   useEffect(() => {
-    const lang = verifyLocale(localStorage.getItem('i18nextLng'));
-    const array = [];
-    if (lang) array.push(lang);
-    changeLocales([...array, ...navigator.languages]);
+    changeLocales([...navigator.languages]).then(() => {
+      if (inContext) startCrowdinInContext();
+    });
     // detect hot reload translation file changes
     if (import.meta.hot) {
       import.meta.hot.on('locales-update', () => changeLocales(currentLocales));
@@ -102,7 +111,12 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   }, []);
 
   useEffect(() => {
-    if (l10n === null || !electron.isElectron) return;
+    if (!electron.isElectron || !inContext) return;
+    return electron.api.onCrowdinPopupClosed(() => reloadInContext('active'));
+  }, []);
+
+  useEffect(() => {
+    if (l10n === null || !electron.isElectron || inContext) return;
 
     const newI18n: Record<string, string> = {};
     TRAY_MENU_KEYS.forEach((key) => {
@@ -118,7 +132,16 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   return (
     <>
       <LocalizationProvider l10n={l10n}>
-        <LangContext.Provider value={{ currentLocales, changeLocales }}>
+        <LangContext.Provider
+          value={{
+            currentLocales,
+            changeLocales,
+            inContext,
+            inContextFailed: inContextMode === 'failed',
+            setInContext: (enabled) =>
+              reloadInContext(enabled ? 'active' : 'off'),
+          }}
+        >
           {Children.only(props.children)}
         </LangContext.Provider>
       </LocalizationProvider>

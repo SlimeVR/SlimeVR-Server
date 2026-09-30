@@ -86,7 +86,6 @@ board_type-GENERIC_NRF = Obecné nRF
 ## Proportions
 
 skeleton_bone-NONE = Žádný
-skeleton_bone-HEAD = Posun hlavy
 skeleton_bone-NECK = Délka krku
 skeleton_bone-torso_group = Délka trupu
 skeleton_bone-UPPER_CHEST = Horní délka hrudníku
@@ -1110,7 +1109,6 @@ tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
 tracking_checklist-TRACKER_ERROR = Trackery s chybami
 tracking_checklist-VRCHAT_SETTINGS = Nakonfigurujte nastavení VRChat
 tracking_checklist-VRCHAT_SETTINGS-open = Přejít k varování ve VRChat
-tracking_checklist-UNASSIGNED_HMD-desc = Váš VR Headset by měl být přiřazen jako tracker hlavy.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný

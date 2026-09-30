@@ -21,6 +21,7 @@ pluginManagement {
 	val shadowJarVersion = providers.gradleProperty("shadowJarVersion").get()
 	val buildconfigVersion = providers.gradleProperty("buildconfigVersion").get()
 	val wireVersion = providers.gradleProperty("wireVersion").get()
+	val sentryAndroidGradleVersion = providers.gradleProperty("sentryAndroidGradleVersion").get()
 	plugins {
 		kotlin("plugin.serialization") version kotlinVersion
 		kotlin("jvm") version kotlinVersion
@@ -30,6 +31,7 @@ pluginManagement {
 		id("com.gradleup.shadow") version shadowJarVersion
 		id("com.github.gmazzo.buildconfig") version buildconfigVersion
 		id("com.squareup.wire") version wireVersion
+		id("io.sentry.android.gradle") version sentryAndroidGradleVersion
 	}
 }
 

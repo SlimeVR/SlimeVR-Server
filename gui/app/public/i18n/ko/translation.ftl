@@ -75,7 +75,6 @@ board_type-CUSTOM = 커스텀 보드
 ## Proportions
 
 skeleton_bone-NONE = 없음
-skeleton_bone-HEAD = 머리 밀림
 skeleton_bone-NECK = 목 길이
 skeleton_bone-torso_group = 몸통 길이
 skeleton_bone-UPPER_CHEST = 가슴 위쪽 길이
@@ -440,7 +439,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = 네! 알고 있어요.
 settings-serial-factory_reset-warning-cancel = 취소
 settings-serial-serial_select = 시리얼 포트 선택
-settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
 settings-serial-save_logs = 파일에 저장
 settings-serial-send_command-warning-ok = 네! 알고 있어요.
@@ -920,5 +918,4 @@ error_collection_modal-confirm = 동의해요
 ## Tracking checklist section
 
 tracking_checklist-settings-close = 닫기
-tracking_checklist-UNASSIGNED_HMD-desc = VR 헤드셋은 머리 트래커로 할당되어야 해요.
 toolbar-mounting_calibration = 착용 방향 정렬

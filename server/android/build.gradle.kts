@@ -16,7 +16,17 @@ plugins {
 	id("com.github.gmazzo.buildconfig")
 
 	id("com.android.application") version "9.2.1"
+	id("io.sentry.android.gradle")
 }
+
+// SENTRY_* from the repo root .env.local, see .env.example. Real environment variables win.
+val localSentryEnv: Map<String, String> = rootProject.file(".env.local")
+	.takeIf { it.isFile }?.readLines().orEmpty()
+	.map { it.trim() }
+	.filter { it.startsWith("SENTRY_") && '=' in it }
+	.associate { it.substringBefore('=').trim() to it.substringAfter('=').trim().removeSurrounding("\"") }
+
+fun sentryEnv(name: String): Provider<String> = providers.environmentVariable(name).orElse(localSentryEnv[name] ?: "")
 
 kotlin {
 	jvmToolchain {
@@ -27,6 +37,44 @@ java {
 	toolchain {
 		languageVersion.set(JavaLanguageVersion.of(25))
 	}
+}
+
+val gitVersionTag = providers.exec {
+	commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD", "-l", "v*")
+}.standardOutput.asText.map { it.trim().lineSequence().firstOrNull() ?: "" }
+val gitIsClean = providers.exec {
+	commandLine("git", "status", "--porcelain")
+}.standardOutput.asText.map { it.trim().isEmpty() }
+
+buildConfig {
+	useKotlinOutput { topLevelConstants = true }
+	packageName("dev.slimevr.android.buildinfo")
+
+	buildConfigField("String", "GIT_VERSION_TAG", gitVersionTag.map { "\"$it\"" })
+	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.map { it.toString() })
+	buildConfigField("String", "SENTRY_DSN", sentryEnv("SENTRY_SERVER_DSN").map { "\"$it\"" })
+	val sentryRelease = sentryEnv("SENTRY_RELEASE")
+		.zip(gitVersionTag.zip(gitIsClean) { tag, clean -> if (clean) tag else "" }) { forced, tagged -> forced.ifEmpty { tagged } }
+	buildConfigField("String", "SENTRY_RELEASE", sentryRelease.map { "\"$it\"" })
+	val sentryEnvironment = sentryEnv("SENTRY_ENVIRONMENT").map { it.ifEmpty { "production" } }
+	buildConfigField("String", "SENTRY_ENVIRONMENT", sentryEnvironment.map { "\"$it\"" })
+}
+
+sentry {
+	org.set("slimevr")
+	projectName.set("slimevr-server")
+	authToken.set(providers.environmentVariable("SENTRY_AUTH_TOKEN"))
+	includeProguardMapping.set(true)
+	autoUploadProguardMapping.set(
+		gitVersionTag.zip(gitIsClean) { tag, clean -> tag.isNotEmpty() && clean }
+			.zip(providers.environmentVariable("SENTRY_AUTH_TOKEN").orElse("")) { tagged, token -> tagged && token.isNotEmpty() },
+	)
+	ignoredBuildTypes.set(setOf("debug"))
+	autoInstallation { enabled.set(false) }
+	tracingInstrumentation { enabled.set(false) }
+	includeSourceContext.set(false)
+	uploadNativeSymbols.set(false)
+	telemetry.set(false)
 }
 
 val copyGuiAssets = tasks.register<Copy>("copyGuiAssets") {
@@ -124,6 +172,8 @@ dependencies {
 
 	// Logging
 	implementation("io.klogging:klogging:0.11.7")
+
+	implementation("io.sentry:sentry-android-core:${providers.gradleProperty("sentryVersion").get()}")
 
 	// WebSocket server + coroutines
 	val ktorVersion = "3.4.1"

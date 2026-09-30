@@ -82,7 +82,7 @@ function Selector({
   );
 }
 
-export function SelectSourceSetep({
+export function SelectSourceStep({
   nextStep,
   goTo,
 }: {
@@ -261,11 +261,7 @@ export function SelectSourceSetep({
                               : 'official'
                             : undefined
                         }
-                        text={
-                          getStringOrNull(
-                            `board_type-${board.replace('BOARD_', '')}`
-                          ) ?? board.replace('BOARD_', '').replaceAll('_', ' ')
-                        }
+                        text={board.replace('BOARD_', '').replaceAll('_', ' ')}
                       />
                     ))}
                     {partialBoard?.source && possibleBoards?.length === 0 && (

@@ -81,18 +81,14 @@ export function SettingsSidebar() {
           <SettingsLink
             to="/settings/driver"
             scrollTo="driver"
-            id="settings-sidebar-driver"
+            id="SteamVR / Monado"
           />
           <SettingsLink
             to="/settings/osc/vrchat"
             scrollTo="vrchat"
-            id="settings-sidebar-vrchat_osc"
+            id="VRChat OSC"
           />
-          <SettingsLink
-            to="/settings/osc/vmc"
-            scrollTo="vmc"
-            id="settings-sidebar-osc_vmc"
-          />
+          <SettingsLink to="/settings/osc/vmc" scrollTo="vmc" id="VMC" />
           <SettingsLink
             to="/settings/osc/custom"
             scrollTo="custom"

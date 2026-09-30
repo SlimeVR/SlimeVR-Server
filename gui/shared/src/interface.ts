@@ -4,6 +4,7 @@ import {
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
+import { ErrorReportingConsent } from 'solarxr-protocol';
 
 export type ServerStatusEvent = {
   type: 'stdout' | 'stderr' | 'error' | 'terminated' | 'other';
@@ -38,8 +39,15 @@ export type DiscordPresence =
   | { enable: false }
   | { enable: true; activity: string; iconText: string | undefined };
 
+export interface ErrorReportingState {
+  consent: ErrorReportingConsent;
+  userId: string;
+  sessionId: string;
+}
+
 export interface IElectronAPI {
   onServerStatus: (cb: (data: ServerStatusEvent) => void) => () => void;
+  onCrowdinPopupClosed: (cb: () => void) => () => void;
   openUrl: (url: string) => Promise<void>;
   osStats: () => Promise<OSStats>;
   openLogsFolder: () => Promise<void>;
@@ -61,6 +69,7 @@ export interface IElectronAPI {
   getInstallDir: () => Promise<string>;
   isSteam: () => Promise<boolean>;
   setKeybindRecording: (recording: boolean) => void;
+  setErrorReporting: (state: ErrorReportingState) => void;
 }
 
 declare global {

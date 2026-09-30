@@ -33,6 +33,7 @@ export const InputInside = forwardRef<
 >(function AppInput(
   {
     type,
+    step,
     placeholder,
     label,
     disabled,
@@ -104,6 +105,7 @@ export const InputInside = forwardRef<
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
+          step={step}
           className={classNames(
             classes,
             {
@@ -163,6 +165,7 @@ export const InputInside = forwardRef<
 
 export const Input = <T extends FieldValues = FieldValues>({
   type = 'text',
+  step,
   control,
   name,
   placeholder,
@@ -195,6 +198,7 @@ export const Input = <T extends FieldValues = FieldValues>({
       }) => (
         <InputInside
           type={type}
+          step={step}
           autocomplete={autocomplete}
           label={label}
           placeholder={placeholder}
@@ -202,7 +206,15 @@ export const Input = <T extends FieldValues = FieldValues>({
           value={value}
           disabled={disabled}
           error={error}
-          onChange={onChange}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChange(
+              type === 'number'
+                ? e.target.value === ''
+                  ? null
+                  : e.target.valueAsNumber
+                : e
+            )
+          }
           ref={ref}
           name={name}
           className={className}

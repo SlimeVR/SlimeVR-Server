@@ -157,12 +157,20 @@
               # is discovered from whatever IntelliJ is already installed
               # locally, never declared as a flake dependency, so none of
               # this can trigger a download of its own.
-              async_jar=$(find /nix/store -maxdepth 6 -path "*/idea/lib/intellij.profiler.asyncOne.jar" 2>/dev/null | head -1)
+              jattach_bin="$PWD/.cache/slimevr-nix/jattach"
+              async_jar_cache="$PWD/.cache/slimevr-nix/async_jar_path"
+              mkdir -p "$(dirname "$jattach_bin")"
+
+              if [ -f "$async_jar_cache" ] && [ -f "$(cat "$async_jar_cache")" ]; then
+                async_jar=$(cat "$async_jar_cache")
+              else
+                async_jar=$(find /nix/store -maxdepth 6 -path "*/idea/lib/intellij.profiler.asyncOne.jar" 2>/dev/null | head -1)
+                [ -n "$async_jar" ] && echo "$async_jar" > "$async_jar_cache"
+              fi
+
               if [ -n "$async_jar" ]; then
                 idea_home="$(dirname "$(dirname "$async_jar")")"
                 default_vmopts="$idea_home/bin/idea64.vmoptions"
-                jattach_bin="$PWD/.cache/slimevr-nix/jattach"
-                mkdir -p "$(dirname "$jattach_bin")"
                 if [ ! -x "$jattach_bin" ]; then
                   ${pkgs.unzip}/bin/unzip -p "$async_jar" binaries/linux/jattach > "$jattach_bin" 2>/dev/null
                   chmod +x "$jattach_bin"

@@ -87,6 +87,7 @@ export const ALL_ASSIGNABLE_PARTS = [
 
 export const TAP_DETECTION_BODY_PARTS = [
   BodyPart.UPPER_CHEST,
+  BodyPart.LOWER_CHEST,
   BodyPart.HIP,
   BodyPart.LEFT_UPPER_ARM,
   BodyPart.RIGHT_UPPER_ARM,

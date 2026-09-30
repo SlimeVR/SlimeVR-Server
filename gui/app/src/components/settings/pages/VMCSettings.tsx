@@ -413,9 +413,7 @@ export function VMCSettings() {
       <form className="flex flex-col gap-2 w-full">
         <SettingsPagePaneLayout icon={<VMCIcon />} id="vmc">
           <>
-            <Typography variant="main-title">
-              {l10n.getString('settings-osc-vmc')}
-            </Typography>
+            <Typography variant="main-title">Virtual Motion Capture</Typography>
             <div className="flex flex-col pt-2 pb-4">
               <>
                 {l10n

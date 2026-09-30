@@ -15,7 +15,7 @@ import {
   useGetHealth,
   useGetIsCompatibleVersion,
 } from '@/firmware-tool-api/firmwareToolComponents';
-import { SelectSourceSetep } from './steps/SelectSourceStep';
+import { SelectSourceStep } from './steps/SelectSourceStep';
 import { BoardDefaultsStep } from './steps/BoardDefaultsStep';
 import { BuildStep } from './steps/BuildStep';
 import { FlashingMethodStep } from './steps/FlashingMethodStep';
@@ -42,7 +42,7 @@ function FirmwareToolContent() {
     const steps: VerticalStep[] = [
       {
         id: 'SelectSource',
-        component: SelectSourceSetep,
+        component: SelectSourceStep,
         title: l10n.getString('firmware_tool-select_source'),
       },
       {

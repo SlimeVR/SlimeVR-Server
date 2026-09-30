@@ -10,9 +10,11 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
+import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -24,12 +26,14 @@ interface Phase1ContextProvider {
 	val server: VRServer
 	val config: AppConfig
 	val serialServer: SerialServer
+	val errorReporting: ErrorReportingManager
 }
 
 data class Phase1Context(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
+	override val errorReporting: ErrorReportingManager,
 ) : Phase1ContextProvider
 
 interface AppContextProvider : Phase1ContextProvider {
@@ -51,6 +55,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val customOscOutputManager: CustomOscOutputManager
 	val resetsManager: ResetsManager
 	val tapDetectionManager: TapDetectionManager
+	val stepMountingManager: StepMountingManager
 	fun startObserving()
 	suspend fun dispose()
 }
@@ -59,6 +64,7 @@ class AppContext(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
+	override val errorReporting: ErrorReportingManager,
 	override val serverInfos: ServerInfos,
 	override val featureFlags: FeatureFlags,
 	override val keybindManager: KeybindManager,
@@ -77,6 +83,7 @@ class AppContext(
 	override val customOscOutputManager: dev.slimevr.customosc.CustomOscOutputManager,
 	override val resetsManager: ResetsManager,
 	override val tapDetectionManager: TapDetectionManager,
+	override val stepMountingManager: StepMountingManager,
 ) : AppContextProvider {
 	override fun startObserving() {
 		keybindManager.startObserving(this)
@@ -94,6 +101,7 @@ class AppContext(
 		customOscOutputManager.startObserving()
 		resetsManager.startObserving()
 		tapDetectionManager.startObserving()
+		stepMountingManager.startObserving()
 	}
 
 	override suspend fun dispose() {

@@ -106,11 +106,6 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = Guanto SlimeVR Dev IMU
 ## Proportions
 
 skeleton_bone-NONE = Nessuna selezione
-skeleton_bone-HEAD = Correzione per la testa
-skeleton_bone-HEAD-desc =
-    La distanza tra il visore e il centro della testa.
-    Scuoti la testa da sinistra a destra come se si fosse in disaccordo
-    e modificala fino a quando il movimento degli altri tracker è trascurabile.
 skeleton_bone-NECK = Lunghezza del collo
 skeleton_bone-NECK-desc =
     La distanza tra il centro della testa e la base del collo.
@@ -169,10 +164,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Imposta Lunghezza braccio superiore su 0 e modificala finché i tracker dei gomiti virtuali
     non si allineano verticalmente con le spalle reali.
 skeleton_bone-SHOULDERS_WIDTH = Larghezza delle spalle
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    La distanza orizzontale dalla base del collo alle spalle.
-    Imposta Lunghezza braccio superiore su 0 e modificala finché i tracker dei gomiti virtuali
-    non si allineano orizzontalmente con le spalle reali.
 skeleton_bone-arm_group = Lunghezza delle braccia
 skeleton_bone-arm_group-desc =
     La distanza tra le spalle e i polsi.
@@ -575,7 +566,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Capisco cosa sto facendo
 settings-serial-factory_reset-warning-cancel = Annulla
 settings-serial-serial_select = Seleziona una porta seriale
-settings-serial-auto_dropdown_item = Automatico
 settings-serial-get_wifi_scan = Elenca WiFi Network
 settings-serial-save_logs = Salva su file
 settings-serial-send_command-warning-ok = Capisco cosa sto facendo
@@ -1154,6 +1144,5 @@ error_collection_modal-cancel = Non acconsento
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Chiudi
-tracking_checklist-UNASSIGNED_HMD-desc = Il visore deve essere assegnato come tracker della testa.
 toolbar-mounting_calibration = Controlla il posizionamento dei tuoi tracker
 toolbar-mounting_calibration-feet = Piedi

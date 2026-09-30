@@ -105,11 +105,6 @@ board_type-CUSTOM = Anpassat kretskort
 ## Proportions
 
 skeleton_bone-NONE = Ingen
-skeleton_bone-HEAD = Huvudskift
-skeleton_bone-HEAD-desc =
-    Detta är distansen från ditt headset till mittpunkten av ditt huvud.
-    För att justera det, skaka ditt huvud höger eller vänster, som om att du säger nej och modifiera
-    det tills någon rörelse i andra rörelsesensorer är obetydlig.
 skeleton_bone-NECK = Halsens längd
 skeleton_bone-NECK-desc =
     Detta är distansen från mittpunkten av ditt huvud till din nackes bas.
@@ -170,10 +165,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     För att justera det, Längd på överarm till 0 och modifiera det tills dina virituella
     axel-sensorer är i linje med dina riktiga axlar.
 skeleton_bone-SHOULDERS_WIDTH = Axlarnas bredd
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Detta är den horisontella distansen från din nackes bas till dina axlar.
-    För att justera det, ändra längd på överarm till 0 och modifiera det tills dina virtuella
-    axel-sensorer är i linje med dina riktiga axlar.
 skeleton_bone-arm_group = Armlängd
 skeleton_bone-arm_group-desc =
     Detta är avståndet från dina axlar till dina handleder.
@@ -548,7 +539,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Jag vet vad jag gör
 settings-serial-factory_reset-warning-cancel = Avbryt
 settings-serial-serial_select = Välj en serieport
-settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
 settings-serial-save_logs = Spara till fil
 settings-serial-send_command-warning-ok = Jag vet vad jag gör

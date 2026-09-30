@@ -98,7 +98,6 @@ board_type-UNKNOWN = 不明
 ## Proportions
 
 skeleton_bone-NONE = 無し
-skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
 skeleton_bone-torso_group = 胴体の長さ
 skeleton_bone-UPPER_CHEST = 上胸の長さ
@@ -400,7 +399,6 @@ settings-serial-factory_reset = ファクトリーリセット
 settings-serial-factory_reset-warning-ok = 自分が何しているかを知っています。
 settings-serial-factory_reset-warning-cancel = キャンセル
 settings-serial-serial_select = シリアルポートを選択
-settings-serial-auto_dropdown_item = 自動
 settings-serial-send_command-warning-ok = 自分が何しているかを知っています。
 settings-serial-send_command-warning-cancel = キャンセル
 

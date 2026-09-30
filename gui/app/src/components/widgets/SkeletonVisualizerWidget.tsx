@@ -33,6 +33,7 @@ import { Vector3FromVec3fT } from '@/maths/vector3';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
+import * as Sentry from '@sentry/react';
 import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, bonesAtom } from '@/store/app-store';
@@ -661,7 +662,15 @@ export function SkeletonVisualizerWidget({
           blur: disabled,
         })}
       >
-        <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
+        <ErrorBoundary
+          onError={(err) => {
+            Sentry.captureException(err, {
+              tags: { widget: 'skeleton-visualizer' },
+            });
+            setError(true);
+          }}
+          fallback={<></>}
+        >
           <SkeletonVisualizer
             onInit={onInit}
             disabled={disabled}

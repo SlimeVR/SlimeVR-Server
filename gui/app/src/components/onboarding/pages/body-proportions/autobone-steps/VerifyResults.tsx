@@ -66,9 +66,7 @@ export function VerifyResultsStep({
               {bodyParts?.map(({ bone, label, value }) => (
                 <div className="flex justify-between" key={bone}>
                   <Typography>{label}</Typography>
-                  <Typography bold sentryMask>
-                    {(value * 100).toFixed(2)} CM
-                  </Typography>
+                  <Typography bold>{(value * 100).toFixed(2)} CM</Typography>
                 </div>
               ))}
               {hasCalibration === ProcessStatus.PENDING &&

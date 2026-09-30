@@ -116,10 +116,6 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR蝴蝶
 ## Proportions
 
 skeleton_bone-NONE = 无
-skeleton_bone-HEAD = 头部偏移
-skeleton_bone-HEAD-desc =
-    从头戴显示器到头部中心的距离。
-    调节时，左右摇头并修改此参数，使头部移动时其他追踪器位置保持不变。
 skeleton_bone-NECK = 颈部长度
 skeleton_bone-NECK-desc =
     从头部中心到脖子根部的距离。
@@ -179,10 +175,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     调节时，先将上臂长度设置为0，再修改此参数，
     使虚拟肘部追踪器与真实的肩膀位置在垂直方向上对齐。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    从脖子中心到肩膀的水平距离。
-    调节时，先将上臂长度设置为0，再修改此参数，
-    使虚拟肘部追踪器与真实的肩膀位置在水平方向上对齐。
 skeleton_bone-arm_group = 手臂长度
 skeleton_bone-arm_group-desc =
     从肩膀到手腕的距离。
@@ -613,7 +605,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = 我已知晓
 settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 选择串行端口
-settings-serial-auto_dropdown_item = 自动
 settings-serial-get_wifi_scan = 扫描可用WiFi
 settings-serial-save_logs = 保存到文件
 settings-serial-send_command = 发送
@@ -752,7 +743,6 @@ onboarding-quiz-more_sets_modal-desc = 如有不同类型的追踪器，现在�
 onboarding-quiz-more_sets_modal-confirm = 所有的追踪器都连接好了
 onboarding-quiz-more_sets_modal-cancel = 还需要连接更多追踪器
 onboarding-quiz-slimeset-title = 将要连接什么类型的追踪器？
-onboarding-quiz-slimeset-description = 如果有多组不同类型的追踪器，稍后将会继续连接其余类型
 onboarding-quiz-slimeset-official-sets = 官方SlimeVR追踪器
 onboarding-quiz-slimeset-thirdparty-sets = 第三方或DIY追踪器
 onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 和 V1.2
@@ -764,21 +754,11 @@ onboarding-quiz-usage-description = 如果打算将SlimeVR用至不同用途，�
 onboarding-quiz-usage-answer-VRC = VR游戏（如VRChat）
 onboarding-quiz-usage-answer-mocap_vtubing = 动作捕捉与虚拟偶像直播
 onboarding-quiz-runtime-title = 将通过SteamVR运行游戏，还是在直接在头显上运行？
-onboarding-quiz-runtime-answer-standalone = 头显独立运行
 onboarding-quiz-mocap_preferences-title = 动作捕捉偏好
 onboarding-quiz-mocap_preferences-desc = 设置使用SlimeVR进行动作捕捉或虚拟偶像直播的方式
-onboarding-quiz-mocap_preferences-playspace-title = 将在怎样的空间内使用？
 onboarding-quiz-mocap_preferences-playspace-desc = 如果选择站立使用，SlimeVR会试图追踪你的行走动作，而不是固定在原地。
-onboarding-quiz-mocap_preferences-playspace-sitting = 坐下
-onboarding-quiz-mocap_preferences-playspace-standing = 站立
-onboarding-quiz-mocap_preferences-vrm_model-title = 你有将要使用的VRM模型吗？（可选）
-onboarding-quiz-mocap_preferences-vrm_model-desc = 加载VRM模型将提升跟踪质量，并与使用VMC的应用程序兼容。
 onboarding-quiz-mocap_preferences-head_tracker-title = 你头上戴着追踪器或VR头显吗？
 onboarding-quiz-mocap_preferences-head_tracker-yes = 是
-onboarding-quiz-mocap_preferences-head_tracker-no = 否
-onboarding-quiz-mocap_preferences-head_tracker_location-title = 你的头部追踪器放在哪里？
-onboarding-quiz-mocap_preferences-head_tracker_location-forehead = 额头
-onboarding-quiz-mocap_preferences-head_tracker_location-face = 脸
 
 ## Wi-Fi setup
 
@@ -809,7 +789,6 @@ onboarding-wifi_creds-dongle-continue = 继续，使用接收器
 install-info_udev-rules_modal_title = 未找到硬件udev访问规则
 install-info_udev-rules_warning = 通过udev设置访问规则是串口控制台访问和USB接收器连接的必需条件。将以下命令粘贴到终端并执行，以添加udev规则。
 install-info_udev-rules_modal_button = 关闭
-install-info_udev-rules_modal-dont-show-again_checkbox = 不再显示
 
 ## Setup start
 
@@ -1310,9 +1289,7 @@ tracking_checklist-FULL_RESET-desc = 有些追踪器需要进行重置
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未在运行
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未在运行。你要将追踪器用于 VR 吗？
 tracking_checklist-STEAMVR_DISCONNECTED-open = 启动 SteamVR
-tracking_checklist-STEAMVR_HANDS_ENABLED = 手部追踪器已开启
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = 你已经启用了SteamVR的虚拟手部追踪器。这会导致SteamVR和游戏中的按键输入无法使用。
-tracking_checklist-STEAMVR_HANDS_ENABLED-go = 关闭它们
 tracking_checklist-TRACKERS_REST_CALIBRATION = 校准追踪器
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 您尚未执行追踪器校准。请将（黄色高亮显示的）追踪器放置在平稳表面上，并静置数秒。
 tracking_checklist-TRACKER_ERROR = 追踪器出现错误
@@ -1320,8 +1297,6 @@ tracking_checklist-TRACKER_ERROR-desc = 有追踪器发生错误，请重启黄�
 tracking_checklist-VRCHAT_SETTINGS = 调整 VRChat 设置
 tracking_checklist-VRCHAT_SETTINGS-desc = VRChat 的设置有问题！这会影响到在 VRChat 中使用 SlimeVR 的体验。
 tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告页面
-tracking_checklist-UNASSIGNED_HMD = VR 头戴显示器未分配给头部
-tracking_checklist-UNASSIGNED_HMD-desc = VR 头戴显示器应该被分配为头部追踪器。
 tracking_checklist-NETWORK_PROFILE_PUBLIC = 更改网络配置文件类型
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置

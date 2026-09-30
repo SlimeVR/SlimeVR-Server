@@ -16,6 +16,7 @@ import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
 import dev.slimevr.solarxr.rpc.BvhBehaviour
 import dev.slimevr.solarxr.rpc.DongleSettingsBehaviour
 import dev.slimevr.solarxr.rpc.DriverSettingsBehaviour
+import dev.slimevr.solarxr.rpc.ErrorReportingSettingsBehaviour
 import dev.slimevr.solarxr.rpc.FirmwareBehaviour
 import dev.slimevr.solarxr.rpc.HIDSettingsBehaviour
 import dev.slimevr.solarxr.rpc.HeightCalibrationBehaviour
@@ -28,6 +29,7 @@ import dev.slimevr.solarxr.rpc.ResetsBehaviour
 import dev.slimevr.solarxr.rpc.SerialBehaviour
 import dev.slimevr.solarxr.rpc.ServerInfosBehaviour
 import dev.slimevr.solarxr.rpc.SessionCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
 import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
@@ -193,10 +195,12 @@ class SolarXRBridge(
 			add(BoneRoutingBehaviour(appContext))
 			add(DriverSettingsBehaviour(appContext))
 			add(HIDSettingsBehaviour(appContext.config.settings))
+			add(ErrorReportingSettingsBehaviour(appContext.config.globalConfig, appContext.errorReporting))
+			add(SettingsResetBehaviour(appContext.config))
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
-			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton))
-			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
-			add(AssignTrackerBehaviour(appContext.server))
+			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton, appContext.errorReporting))
+			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings, appContext.errorReporting))
+			add(AssignTrackerBehaviour(appContext.server, appContext.errorReporting))
 			add(DongleSettingsBehaviour(appContext.server))
 			add(TelemetryBehaviour(appContext.server))
 			add(DriverHandshakeBehaviour(appContext))

@@ -129,34 +129,6 @@ body_part-LEFT_POSTERIOR = Left posterior
 body_part-RIGHT_POSTERIOR = Right posterior
 body_part-TAIL = Tail
 
-## BoardType
-board_type-UNKNOWN = Unknown
-board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = Custom Board
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR Dev Board
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
-board_type-GESTURES = Gestures
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = Generic nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
-
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-NECK = Neck Length
@@ -380,6 +352,11 @@ tracker-settings-use_mag-description =
 tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
+tracker-settings-bone_offset_section = Bone offset
+tracker-settings-bone_offset_section-description = Offset of the tracker from its bone, in meters.
+tracker-settings-bone_offset_section-x = X
+tracker-settings-bone_offset_section-y = Y
+tracker-settings-bone_offset_section-z = Z
 tracker-settings-name_section = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :3
 tracker-settings-name_section-placeholder = NightyBeast's left leg
@@ -459,14 +436,11 @@ settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-outputs = Outputs
 settings-sidebar-routing = Bone Routing
-settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
-settings-sidebar-vrchat_osc = VRChat OSC
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
 settings-sidebar-appearance = Appearance
@@ -500,9 +474,6 @@ settings-routing-duplicate-warning =
 settings-routing-outputs = Outputs
 settings-routing-bones = Bones
 settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
-settings-routing-output-driver = SteamVR / Monado
-settings-routing-output-vrc_osc = VRChat OSC
-settings-routing-output-vmc = VMC
 settings-routing-output-bone-count = { $routed } of { $accepts } bones routed
 settings-routing-output-badge-sending = Sending
 settings-routing-output-sending-description = Connected and receiving bones.
@@ -534,11 +505,10 @@ settings-routing-hands-warning-done = Route hands
 
 ## SteamVR / Monado output settings
 
-settings-driver = SteamVR / Monado
 settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
 settings-driver-enable = Enable
-settings-driver-enable-description = Send your trackers to SteamVR or Monado through the SlimeVR driver. While this is off, they cannot connect to SlimeVR at all.
-settings-driver-enable-label = Enable SteamVR / Monado
+settings-driver-enable-description = Send your trackers to and receive trackers from SteamVR or Monado through the SlimeVR driver. If this is off, they won't be able to connect to SlimeVR at all.
+settings-driver-enable-label = Enable
 settings-driver-status-title = Status
 settings-driver-status-connection = Driver connection
 settings-driver-status-badge-connected = Connected
@@ -685,10 +655,10 @@ settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
 settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
+settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Estimate missing hip tracker from the upper legs
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode
-settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a positional head tracker.
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its position in space without any positional tracker.
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control-subtitle = Tap based resets
@@ -730,6 +700,12 @@ settings-general-interface-theme = Colour theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language.
 settings-general-interface-lang-placeholder = Select the language to use
+settings-general-interface-crowdin_in_context = Help translate
+settings-general-interface-crowdin_in_context-description = Switches the app to an editable view where every piece of text is a link to Crowdin's in-context editor. Requires a Crowdin account.
+settings-general-interface-crowdin_in_context-description-active = In-context translation is on. Use the button below to leave it.
+settings-general-interface-crowdin_in_context-failed = Couldn't reach Crowdin. Check your connection and try again.
+settings-general-interface-crowdin_in_context-enable = Open in-context translation
+settings-general-interface-crowdin_in_context-close = Close in-context translation
 # Keep the font name untranslated
 settings-interface-appearance-font = GUI font
 settings-interface-appearance-font-description = This changes the font used by the interface.
@@ -767,11 +743,18 @@ settings-general-interface-discord_presence-message = { $amount ->
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Do you consent to the collection of anonymized error data?</h1>
+    <h1>Do you consent to the collection of error and diagnostic data?</h1>
 
     <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
 
-    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+    To provide the best user experience, we collect:
+    - Error reports and performance metrics
+    - Operating system and tracker hardware information
+    - Recordings of the SlimeVR interface (text fields are hidden)
+    - Which features you use
+    - Your body proportions, to help us improve automatic proportions
+
+    This data is linked to a random ID, not to your identity, and helps us detect bugs and issues with SlimeVR. It is collected via Sentry.io.
 
 settings-interface-behavior-error_tracking-label = Send errors to developers
 settings-interface-behavior-bvh_directory = Directory to save BVH recordings
@@ -821,7 +804,6 @@ settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC VRChat settings
-settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Change settings specific to VRChat OSC and the OSC Trackers standard used to send
@@ -846,7 +828,6 @@ settings-osc-vrchat-status-title = Status
 settings-osc-vrchat-status-input = Input
 settings-osc-vrchat-status-tracking = Tracking data
 settings-osc-vrchat-status-output = Output
-settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = Not listening
 settings-osc-vrchat-status-input-listening = Listening on port {$port}
 settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}.
@@ -884,7 +865,6 @@ settings-osc-vrchat-status-badge-not-sent = Not sent
 settings-osc-vrchat-status-badge-unknown = Unknown
 
 ## VMC OSC settings
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
@@ -1303,13 +1283,13 @@ onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
-onboarding-automatic_mounting-preparation-v2-done = Looks like youve already performed a full reset recently!
+onboarding-automatic_mounting-preparation-v2-done = Looks like you've already performed a full reset recently!
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 onboarding-automatic_mounting-return-home = Done
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
@@ -1663,6 +1643,13 @@ error_collection_modal-description_v2 = { settings-interface-behavior-error_trac
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 
+## Crash screen
+crash_screen-title = Something went wrong
+crash_screen-description = The interface crashed. Reloading usually fixes it. If you report this issue, include the error id below.
+crash_screen-event_id = Error id: { $id }
+crash_screen-copy = Copy error id
+crash_screen-reload = Reload
+
 ## Tracking checklist section
 tracking_checklist = Tracking Checklist
 tracking_checklist-settings = Tracking Checklist Settings
@@ -1743,4 +1730,3 @@ toolbar-unassigned_trackers = { $count ->
     [one] { $count } tracker unassigned
     *[other] { $count } trackers unassigned
 }
-

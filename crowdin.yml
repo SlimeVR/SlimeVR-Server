@@ -32,3 +32,5 @@ files:
         tr: tr
         uk: uk
         vi: vi
+        # In-context editor pseudo-language
+        ach-UG: ach-UG

@@ -106,11 +106,6 @@ board_type-WRANGLER = Joycon через Wrangler
 ## Proportions
 
 skeleton_bone-NONE = Пусто
-skeleton_bone-HEAD = Смещение Головы
-skeleton_bone-HEAD-desc =
-    Это расстояние от вашего шлема до центра вашей головы.
-    Чтобы откалибровать его, покрутите головой из стороны в сторону, будто несогласны с чем-то, и изменяйте
-    значение, пока движение других трекеров не станет незначительным.
 skeleton_bone-NECK = Длина Шеи
 skeleton_bone-NECK-desc =
     Это расстояние от центра вашей головы до основания вашей шеи.
@@ -172,10 +167,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Чтобы откалибровать его, установите "Длину предплечья" равной 0, и изменяйте значение, пока
     ваши виртуальные трекеры локтей не сравняются вертикально с вашими реальными плечами.
 skeleton_bone-SHOULDERS_WIDTH = Ширина плеч
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Это горизонтальное расстояние от основания вашей шеи до ваших плеч.
-    Чтобы откалибровать его, установите "Длину предплечья" равной 0, и изменяйте значение, пока
-    ваши виртуальные трекеры локтей не сравняются горизонтально с вашими реальными плечами.
 skeleton_bone-arm_group = Длина руки
 skeleton_bone-arm_group-desc =
     Это расстояние от ваших плеч до ваших запястий.
@@ -581,7 +572,6 @@ settings-serial-factory_reset-warning =
 settings-serial-factory_reset-warning-ok = Я знаю, что я делаю
 settings-serial-factory_reset-warning-cancel = Отмена
 settings-serial-serial_select = Выбрать серийный порт
-settings-serial-auto_dropdown_item = Авто
 settings-serial-get_wifi_scan = Получить сканирование Wi-Fi
 settings-serial-save_logs = Сохранить в файл
 settings-serial-send_command-warning-ok = Я знаю, что я делаю
@@ -1165,6 +1155,5 @@ error_collection_modal-cancel = Я не согласен
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Закрыть
-tracking_checklist-UNASSIGNED_HMD-desc = VR гарнитура должна быть назначена как трекер головы.
 toolbar-mounting_calibration = Проверьте ваше крепление
 toolbar-mounting_calibration-feet = Ступни

@@ -12,6 +12,7 @@ import {
 import { Builder, ByteBuffer } from 'flatbuffers';
 import { useInterval, useTimeout } from './timeout';
 import { log } from '@/utils/logging';
+import * as Sentry from '@sentry/react';
 
 export interface WebSocketApi {
   isConnected: boolean;
@@ -51,12 +52,18 @@ export function useProvideWebsocketApi(): WebSocketApi {
 
   const onConnected = () => {
     if (!webSocketRef.current) return;
+    Sentry.addBreadcrumb({ category: 'websocket', message: 'Connected to the server' });
     setFirstConnection(false);
     setTimedOut(false);
     setConnected(true);
   };
 
-  const onConnectionClose = () => {
+  const onConnectionClose = (event: CloseEvent) => {
+    Sentry.addBreadcrumb({
+      category: 'websocket',
+      level: 'warning',
+      message: `Connection to the server closed (code ${event.code})`,
+    });
     setConnected(false);
     rpcPacketCounterRef.current = 0;
   };
@@ -100,6 +107,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     fbb.finish(message.pack(fbb));
 
     webSocketRef.current.send(fbb.asUint8Array());
+    Sentry.addBreadcrumb({ category: 'rpc', message: RpcMessage[type] });
 
     rpcPacketCounterRef.current++;
   };

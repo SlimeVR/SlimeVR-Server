@@ -7,6 +7,8 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.sentry.ErrorReportingManager
+import dev.slimevr.skeleton.reportProportionsMethodUsage
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -47,6 +49,7 @@ class HeightCalibrationManager(
 	val context: HeightCalibrationContext,
 	val serverContext: VRServer,
 	private val userConfig: UserConfig,
+	private val errorReporting: ErrorReportingManager,
 ) {
 	fun startObserving() = context.observeAll(this)
 
@@ -89,7 +92,12 @@ class HeightCalibrationManager(
 
 	fun start() {
 		sessionJob?.cancel()
-		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, headUpdates, controllerUpdates) }
+		sessionJob = context.scope.launch {
+			runCalibrationSession(context, userConfig, headUpdates, controllerUpdates)
+			if (context.state.value.status == UserHeightCalibrationStatus.DONE) {
+				reportProportionsMethodUsage(errorReporting, "scaled", calibration = "auto")
+			}
+		}
 	}
 
 	fun cancel() {
@@ -110,7 +118,12 @@ class HeightCalibrationManager(
 				behaviours = listOf(BaseCalibrationBehaviour()),
 				name = "HeightCalibration",
 			)
-			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig)
+			return HeightCalibrationManager(
+				context = context,
+				serverContext = ctx.server,
+				userConfig = ctx.config.userConfig,
+				errorReporting = ctx.errorReporting,
+			)
 		}
 	}
 }

@@ -109,7 +109,6 @@ export interface Config {
   mirrorView: boolean;
   assignShowAllBodyParts: boolean;
   discordPresence: boolean;
-  errorTracking: boolean | null;
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
   homeLayout: 'default' | 'table';
@@ -142,7 +141,6 @@ export const defaultConfig: Config = {
   mirrorView: true,
   assignShowAllBodyParts: false,
   discordPresence: false,
-  errorTracking: null,
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   dongleTelemetry: defaultDongleTelemetryConfig,

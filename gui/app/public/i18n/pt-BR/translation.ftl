@@ -112,11 +112,6 @@ board_type-GENERIC_NRF = nRF genérico
 ## Proportions
 
 skeleton_bone-NONE = Nada
-skeleton_bone-HEAD = Deslocamento da Cabeça
-skeleton_bone-HEAD-desc =
-    Esta é a distância do seu headset até o centro da sua cabeça.
-    Para ajustá-la, balance a cabeça da esquerda para a direita, como se estivesse discordando, 
-    e modifique o valor até que qualquer movimento nos outros trackers seja insignificante.
 skeleton_bone-NECK = Comprimento do Pescoço
 skeleton_bone-NECK-desc =
     Esta é a distância do centro da sua cabeça até a base do seu pescoço.
@@ -176,10 +171,6 @@ skeleton_bone-SHOULDERS_DISTANCE-desc =
     Para ajustá-la, defina o Comprimento do Braço Superior como 0 e faça ajustes até que
     seus trackers virtuais de cotovelo se alinhem verticalmente com os seus ombros reais.
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Esta é a distância horizontal da base do seu pescoço até os seus ombros.
-    Para ajustá-la, defina o Comprimento do Braço Superior como 0 e faça ajustes até que
-    seus trackers virtuais de cotovelo se alinhem horizontalmente com os seus ombros reais.
 skeleton_bone-arm_group = Comprimento do Braço
 skeleton_bone-arm_group-desc =
     Esta é a distância entre seus ombros e seus pulsos.
@@ -748,7 +739,6 @@ onboarding-quiz-more_sets_modal-desc = Se você tiver conjuntos de modelos difer
 onboarding-quiz-more_sets_modal-confirm = Eu conectei todos os meus trackers
 onboarding-quiz-more_sets_modal-cancel = Quero conectar mais trackers
 onboarding-quiz-slimeset-title = Que tipo de trackers você está conectando?
-onboarding-quiz-slimeset-description = Se você tiver vários conjuntos, você será solicitado novamente mais tarde no processo
 onboarding-quiz-slimeset-official-sets = Trackers Oficiais do SlimeVR
 onboarding-quiz-slimeset-thirdparty-sets = Trackers de Terceiros ou Feitos por Você.
 onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 e V1.2
@@ -761,18 +751,9 @@ onboarding-quiz-usage-answer-mocap_vtubing = Mocap e VTubing
 onboarding-quiz-runtime-title = Você executa jogos via SteamVR ou diretamente no headset (standalone)?
 onboarding-quiz-mocap_preferences-title = Preferências de Mocap
 onboarding-quiz-mocap_preferences-desc = Especifique como você pretende usar o SlimeVR para mocap ou VTubing
-onboarding-quiz-mocap_preferences-playspace-title = Qual é o seu espaço de jogo?
 onboarding-quiz-mocap_preferences-playspace-desc = Se estiver em pé, o SlimeVR tentará rastrear o movimento de caminhada em vez de manter você ancorado em um único lugar.
-onboarding-quiz-mocap_preferences-playspace-sitting = Sentado
-onboarding-quiz-mocap_preferences-playspace-standing = Em Pé
-onboarding-quiz-mocap_preferences-vrm_model-title = Você tem um modelo VRM? (Opcional)
-onboarding-quiz-mocap_preferences-vrm_model-desc = Carregar um modelo VRM melhorará a qualidade do rastreamento e a compatibilidade com aplicativos que usam VMC.
 onboarding-quiz-mocap_preferences-head_tracker-title = Você está usando um tracker ou um headset VR na cabeça?
 onboarding-quiz-mocap_preferences-head_tracker-yes = Sim
-onboarding-quiz-mocap_preferences-head_tracker-no = Não
-onboarding-quiz-mocap_preferences-head_tracker_location-title = Onde está localizado o seu rastreador de cabeça?
-onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Testa
-onboarding-quiz-mocap_preferences-head_tracker_location-face = Rosto
 
 ## Wi-Fi setup
 
@@ -803,7 +784,6 @@ onboarding-wifi_creds-dongle-continue = Continuar com um dongle
 install-info_udev-rules_modal_title = Regras de acesso udev de hardware não encontradas
 install-info_udev-rules_warning = Regras de acesso via udev são necessárias para acesso ao console serial e conexão do dongle. Cole o seguinte comando no seu terminal para adicionar as regras do udev.
 install-info_udev-rules_modal_button = Fechar
-install-info_udev-rules_modal-dont-show-again_checkbox = Não mostrar novamente
 
 ## Setup start
 
@@ -1321,7 +1301,6 @@ tracking_checklist-STEAMVR_DISCONNECTED = O SteamVR não está em execução
 tracking_checklist-STEAMVR_DISCONNECTED-desc = O SteamVR não está em execução. Você está usando ele para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Iniciar o SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Você ativou os Trackers de mãos virtuais do SteamVR. Isso fará com que os comandos feitos por meio de botões não funcionem no SteamVR e nos jogos.
-tracking_checklist-STEAMVR_HANDS_ENABLED-go = Desabilitá-los
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibre seus trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Você não realizou a calibração dos trackers. Por favor, deixe os trackers (destacados em amarelo) repousarem sobre uma superfície estável por alguns segundos.
 tracking_checklist-TRACKER_ERROR = Trackers com Erros
@@ -1329,8 +1308,6 @@ tracking_checklist-TRACKER_ERROR-desc = Alguns trackers estão com erro. Reinici
 tracking_checklist-VRCHAT_SETTINGS = Configurar as configurações do VRChat
 tracking_checklist-VRCHAT_SETTINGS-desc = As configurações do VRChat estão configuradas incorretamente! Isso pode afetar negativamente o rastreamento.
 tracking_checklist-VRCHAT_SETTINGS-open = Ir para os alertas do VRChat
-tracking_checklist-UNASSIGNED_HMD = Headset de VR não atribuído à Cabeça
-tracking_checklist-UNASSIGNED_HMD-desc = O headset de VR deve ser atribuído como tracker de cabeça.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Altere seu perfil de rede
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     { $count ->

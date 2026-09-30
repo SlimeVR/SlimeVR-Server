@@ -25,7 +25,7 @@ import classNames from 'classnames';
 import { ReactNode, useEffect } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
 import { TrackingChecklistStepId } from 'solarxr-protocol';
-import * as Sentry from '@sentry/react';
+import { track } from '@/utils/sentry';
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };
 export function TrackingChecklistSettings({
@@ -254,9 +254,7 @@ export function HomeLayoutSettings({
 
   const setLayout = (layout: Config['homeLayout']) => {
     setConfig({ homeLayout: layout });
-    Sentry.metrics.count('change_layout', 1, {
-      attributes: { layout, from: variant },
-    });
+    track('change_layout', { layout, from: variant });
   };
 
   return (

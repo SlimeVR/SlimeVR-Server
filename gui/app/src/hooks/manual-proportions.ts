@@ -8,7 +8,6 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useMemo, useState } from 'react';
 import { useConfig } from './config';
-import * as Sentry from '@sentry/react';
 
 type LabelBase = {
   value: number;
@@ -218,7 +217,6 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         new SkeletonProportionsRequestT()
       );
       setConfig({ lastUsedProportions: 'manual' });
-      Sentry.metrics.count('manual_proportions_change', 1, { attributes: params });
     },
   };
 }

@@ -106,11 +106,6 @@ board_type-WRANGLER = „Wrangler“ Joycon'ai
 ## Proportions
 
 skeleton_bone-NONE = Nenurodyta
-skeleton_bone-HEAD = Galvos poslinkis
-skeleton_bone-HEAD-desc =
-    Tai atstumas nuo jūsų VR akinių iki galvos centro.
-    Norėdami tinkamai nustatyti, sukite galvą į kairę ir dešinę, tarsi nesutinkate, ir koreguokite,
-    kol judesys kituose sekikliuose taps minimalus.
 skeleton_bone-NECK = Kaklo ilgis
 skeleton_bone-NECK-desc =
     Tai atstumas nuo galvos centro iki kaklo pagrindo.

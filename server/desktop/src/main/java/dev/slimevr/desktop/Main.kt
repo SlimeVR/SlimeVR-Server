@@ -39,8 +39,12 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.sentry.ErrorReportingManager
+import dev.slimevr.sentry.closeErrorReporting
+import dev.slimevr.sentry.registerErrorReportSnapshots
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
+import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -128,10 +132,22 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
 	val storage = DesktopConfigStorage(configFolder.toFile())
 	val config = AppConfig.create(this, storage = storage)
+	val errorReporting = ErrorReportingManager.create(scope = this, globalConfig = config.globalConfig)
+	errorReporting.init(
+		dsn = SENTRY_DSN,
+		release = SENTRY_RELEASE,
+		environment = SENTRY_ENVIRONMENT,
+		tags = mapOf(
+			"platform" to "desktop",
+			"os" to CURRENT_PLATFORM.name.lowercase(),
+			"distribution" to if (featureFlags.steam) "steam" else "standalone",
+		),
+	)
+	errorReporting.startObserving()
 	val server = VRServer.create(this)
 	val serialServer = createDesktopSerialServer(this)
 
-	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer)
+	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer, errorReporting = errorReporting)
 
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
@@ -157,6 +173,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val customOscOutputManager = CustomOscOutputManager.create(skeleton = skeleton, settings = config.settings, scope = this)
+	val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
 	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)
 
@@ -164,6 +181,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		server = server,
 		config = config,
 		serialServer = serialServer,
+		errorReporting = errorReporting,
 		serverInfos = serverInfos,
 		featureFlags = featureFlags,
 		keybindManager = keybindManager,
@@ -182,10 +200,12 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		customOscOutputManager = customOscOutputManager,
 		resetsManager = resetsManager,
 		tapDetectionManager = tapDetectionManager,
+		stepMountingManager = stepMountingManager,
 	)
 
 	try {
 		appContext.startObserving()
+		registerErrorReportSnapshots(appContext)
 
 		createDesktopHIDManager(appContext, this)
 		launch { createDesktopKeybindManager(appContext, this) }
@@ -198,5 +218,6 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		// A suspend call here would throw immediately otherwise: this finally
 		// runs after our own Job is already cancelled.
 		withContext(NonCancellable) { appContext.dispose() }
+		closeErrorReporting()
 	}
 }

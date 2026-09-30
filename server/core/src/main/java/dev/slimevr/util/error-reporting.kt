@@ -1,43 +1,33 @@
 package dev.slimevr.util
 
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.sentry.flushErrorReports
+import dev.slimevr.sentry.reportError
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlin.coroutines.CoroutineContext
 
+private const val UNCAUGHT_FLUSH_TIMEOUT_MS = 2000L
+
 /**
- * Reports every coroutine failure that nothing else handled.
- *
- * Install it in the context of the application's root scope. A [CoroutineExceptionHandler] is
- * looked up in the context of the coroutine that *finishes* the exception, and coroutine context
- * is inherited, so a single handler at the root is found by everything underneath it.
- *
- * It fires for coroutines that finish an exception themselves: a root coroutine, or a direct
- * child of a `SupervisorJob` -- which is what every [dev.slimevr.context.Context] scope is, so
- * every behaviour listener lands here.
- *
- * Cancellation is never reported: coroutines cancelled as a *consequence* of another failure
- * carry a [kotlinx.coroutines.CancellationException] and are not passed to a handler at all.
+ * Reports coroutine failures nothing else handled. Install it in the root scope's context: every
+ * [dev.slimevr.context.Context] scope is a `SupervisorJob` child, so behaviour failures land here.
  */
 val appCoroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
 	AppLogger.coroutines.error(throwable, "Unhandled exception in coroutine (scope: ${context.scopeName})")
+	reportError(throwable, mapOf("scope" to context.scopeName))
 }
 
 private val CoroutineContext.scopeName: String
 	get() = this[CoroutineName]?.name ?: "unnamed"
 
-/**
- * Routes failures on threads that coroutines do not own -- JNA callbacks, JmDNS, serial reader
- * threads -- into the same log, instead of the JVM dumping them on stderr where nothing collects
- * them.
- *
- * Chains to any previously installed handler. The JVM installs none by default, so normally this
- * replaces the stderr dump rather than adding to it.
- */
+/** Reports failures on threads coroutines don't own (JNA callbacks, JmDNS, serial readers) */
 fun installUncaughtExceptionReporting() {
 	val previous = Thread.getDefaultUncaughtExceptionHandler()
 	Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
 		AppLogger.coroutines.error(throwable, "Unhandled exception on thread ${thread.name}")
+		reportError(throwable, mapOf("thread" to thread.name))
+		flushErrorReports(UNCAUGHT_FLUSH_TIMEOUT_MS)
 		previous?.uncaughtException(thread, throwable)
 	}
 }
