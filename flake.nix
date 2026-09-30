@@ -144,52 +144,6 @@
                   pkgs.hidapi
                 ]
               }:$LD_LIBRARY_PATH"
-
-              # IntelliJ's built-in profiler self-extracts its bundled
-              # `jattach` helper (used to stop/attach to the profiled JVM) as
-              # a plain generic-Linux binary, which NixOS's default loader
-              # stub can't run. Point IntelliJ's own process at a re-linked
-              # copy via the documented `idea.async.profiler.jattach.path`
-              # system property, set through a generated custom vmoptions
-              # file (this property must be set on IntelliJ's own JVM, not
-              # the profiled app's. It's IntelliJ that invokes jattach as an
-              # external tool against the profiled process). Everything here
-              # is discovered from whatever IntelliJ is already installed
-              # locally, never declared as a flake dependency, so none of
-              # this can trigger a download of its own.
-              jattach_bin="$PWD/.cache/slimevr-nix/jattach"
-              async_jar_cache="$PWD/.cache/slimevr-nix/async_jar_path"
-              mkdir -p "$(dirname "$jattach_bin")"
-
-              if [ -f "$async_jar_cache" ] && [ -f "$(cat "$async_jar_cache")" ]; then
-                async_jar=$(cat "$async_jar_cache")
-              else
-                async_jar=$(find /nix/store -maxdepth 6 -path "*/idea/lib/intellij.profiler.asyncOne.jar" 2>/dev/null | head -1)
-                [ -n "$async_jar" ] && echo "$async_jar" > "$async_jar_cache"
-              fi
-
-              if [ -n "$async_jar" ]; then
-                idea_home="$(dirname "$(dirname "$async_jar")")"
-                default_vmopts="$idea_home/bin/idea64.vmoptions"
-                if [ ! -x "$jattach_bin" ]; then
-                  ${pkgs.unzip}/bin/unzip -p "$async_jar" binaries/linux/jattach > "$jattach_bin" 2>/dev/null
-                  chmod +x "$jattach_bin"
-                  ${pkgs.patchelf}/bin/patchelf \
-                    --set-interpreter "${pkgs.glibc}/lib/ld-linux-x86-64.so.2" \
-                    --set-rpath "${pkgs.glibc}/lib" \
-                    "$jattach_bin" 2>/dev/null
-                fi
-
-                if [ -x "$jattach_bin" ] && [ -f "$default_vmopts" ]; then
-                  custom_vmopts="$PWD/.cache/slimevr-nix/idea.vmoptions"
-                  if [ ! -f "$custom_vmopts" ] || ! grep -q "idea.async.profiler.jattach.path" "$custom_vmopts" 2>/dev/null; then
-                    cp "$default_vmopts" "$custom_vmopts"
-                    chmod u+w "$custom_vmopts"
-                    echo "-Didea.async.profiler.jattach.path=$jattach_bin" >> "$custom_vmopts"
-                  fi
-                  export IDEA_VM_OPTIONS="$custom_vmopts"
-                fi
-              fi
             '';
 
             JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
