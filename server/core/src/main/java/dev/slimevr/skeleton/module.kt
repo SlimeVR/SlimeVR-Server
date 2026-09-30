@@ -269,11 +269,15 @@ class Skeleton(
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
-					inputProcessors = listOf(
-						TrackerOffsetInputProcessor(),
+					// Like inputProcessors but run even when tracking is paused (since head isn't paused)
+					alwaysActiveInputProcessors = listOf(
 						PredictionInputProcessor(settings),
 						SmoothingInputProcessor(settings),
+						TrackerOffsetInputProcessor(),
 						HeadPositionFallbackProcessor(settings),
+					),
+					// Run before FK on the inputs
+					inputProcessors = listOf(
 						BoneYawFallbackInputProcessor(),
 						SpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),
@@ -284,19 +288,23 @@ class Skeleton(
 						ConstraintInputProcessor(settings),
 						AccelerationFallbackInputProcessor(),
 					),
+					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
 						VelocityComputedProcessor(),
 					),
+					// Run on the inputs with the result of FK and run FK
 					fkProcessors = listOf(
 						LocalizerFkProcessor(settings),
 						FootPlantFkProcessor(skeleton),
 						ToeSnapFkProcessor(skeleton),
 					),
+					// Create targets for IK
 					targetProcessors = listOf(
 						PositionalTargetProcessor(settings),
 						SkatingCorrectionTargetProcessor(settings, skeleton),
 						FloorClipTargetProcessor(skeleton),
 					),
+					// Run on the result of IK and persist.
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor(),
 					),

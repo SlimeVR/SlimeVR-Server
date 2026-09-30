@@ -179,6 +179,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 class ComputedSkeletonBehaviour(
 	val hz: Int,
+	val alwaysActiveInputProcessors: List<SkeletonInputProcessor> = emptyList(),
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
 	val fkComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
@@ -251,14 +252,13 @@ class ComputedSkeletonBehaviour(
 							receiver.context.dispatch(SkeletonActions.ProcessorResetsApplied(pendingResets.size))
 						}
 
+						val preProcessedBoneInputs = runInputProcessors(alwaysActiveInputProcessors, targetState.boneInputs, targetState.skeletonHeight)
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
-							// TODO improve pause tracking code, maybe using a processor
 							// Use already-processed paused tracking data except for the head
-							val headBone = targetState.boneInputs[BodyPart.HEAD]
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
+							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = preProcessedBoneInputs[BodyPart.HEAD] }
 						} else {
 							// Run pre-FK processors
-							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)
+							val processedInputs = runInputProcessors(inputProcessors, preProcessedBoneInputs, targetState.skeletonHeight)
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs
 								// The buffer keeps being written after this, so state gets a copy
