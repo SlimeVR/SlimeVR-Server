@@ -3,6 +3,8 @@ package dev.slimevr.solarxr
 import dev.slimevr.TestAppContext
 import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestSkeleton
+import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
@@ -46,6 +48,20 @@ class SkeletonSettingsTest {
 	@Test
 	fun `LegTweaksTmpChange disables the requested toggles`() = runTest {
 		val (conn, skeleton) = testConn()
+		skeleton.settings.context.dispatch(
+			SettingsActions.Update {
+				copy(
+					skeletonConfig = skeletonConfig.copy(
+						toggles = SkeletonTogglesConfig(
+							floorClip = true,
+							footPlant = true,
+							skatingCorrection = true,
+							toeSnap = true,
+						),
+					),
+				)
+			},
+		)
 
 		conn.rpcDispatcher.emit(LegTweaksTmpChange(floorClip = false, footPlant = false))
 		runCurrent()
@@ -87,6 +103,20 @@ class SkeletonSettingsTest {
 	@Test
 	fun `LegTweaksTmpClear with all fields true resets everything to config`() = runTest {
 		val (conn, skeleton) = testConn()
+		skeleton.settings.context.dispatch(
+			SettingsActions.Update {
+				copy(
+					skeletonConfig = skeletonConfig.copy(
+						toggles = SkeletonTogglesConfig(
+							floorClip = true,
+							footPlant = true,
+							skatingCorrection = true,
+							toeSnap = true,
+						),
+					),
+				)
+			},
+		)
 
 		conn.rpcDispatcher.emit(
 			LegTweaksTmpChange(floorClip = false, skatingCorrection = false, toeSnap = false, footPlant = false),
