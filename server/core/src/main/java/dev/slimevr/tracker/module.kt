@@ -10,6 +10,7 @@ import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
+import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
@@ -90,6 +91,8 @@ data class TrackerState(
 	val yawResetSmoothing: YawResetSmoothing?,
 	val stayAlignedData: StayAlignedData,
 	val pendingSkeletonResets: List<ResetType> = emptyList(),
+	val needsFullReset: Boolean = false,
+	val needsMountingReset: Boolean = false,
 ) {
 	private val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
 	private val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
@@ -116,6 +119,7 @@ sealed interface TrackerActions {
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion?, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
+	data class MarkCalibrationStale(val mounting: Boolean) : TrackerActions
 	data class ClearPendingSkeletonResets(val count: Int) : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
@@ -178,6 +182,7 @@ class Tracker(
 				TrackerAssignmentConflictBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
+				TrackerStaleCalibrationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),

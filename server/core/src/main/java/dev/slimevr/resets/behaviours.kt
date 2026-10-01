@@ -17,7 +17,7 @@ class ResetsMountingTimeoutBehaviour : ResetsBehaviour {
 			.distinctUntilChangedBy { it.lastFullResetTime }
 			.mapLatest {
 				delay(mountingResetTimeout)
-				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.POSE_MOUNTING)))
+				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.MOUNTING)))
 			}
 			.launchIn(receiver.context.scope)
 	}

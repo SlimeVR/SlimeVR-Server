@@ -32,6 +32,8 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
+import dev.slimevr.stepmounting.StepMountingState
+import dev.slimevr.stepmounting.StepMountingStatus
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -39,6 +41,7 @@ import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
+import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.vmc.VMCManager
@@ -58,6 +61,7 @@ import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
 import dev.slimevr.resets.reduce as reduceResets
 import dev.slimevr.skeleton.reduce as reduceSkeleton
+import dev.slimevr.stepmounting.reduce as reduceStepMounting
 import dev.slimevr.tracker.reduce as reduceTracker
 import dev.slimevr.udp.reduce as reduceUdpServer
 
@@ -104,6 +108,19 @@ fun buildTestErrorReporting(
 	globalConfig: GlobalConfig = buildTestAppConfig(scope).globalConfig,
 ): ErrorReportingManager = ErrorReportingManager.create(scope, globalConfig).also { it.startObserving() }
 
+fun buildTestStepMountingManager(server: VRServer, settings: Settings, scope: CoroutineScope): StepMountingManager {
+	val context = Context.create(
+		initialState = StepMountingState(
+			status = StepMountingStatus.NONE,
+			canDoStepMounting = false,
+		),
+		scope = scope,
+		reducer = ::reduceStepMounting,
+		name = "TestStepMountingManager",
+	)
+	return StepMountingManager(context, server, settings)
+}
+
 fun buildTestResetsManager(server: VRServer, settings: Settings, scope: CoroutineScope): ResetsManager {
 	val context = Context.create(
 		initialState = ResetsState(
@@ -116,7 +133,14 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
-	val resetsManager = ResetsManager(context, server, settings, buildTestSkeleton(scope), buildTestErrorReporting(scope))
+	val resetsManager = ResetsManager(
+		context,
+		server,
+		settings,
+		buildTestSkeleton(scope),
+		buildTestStepMountingManager(server, settings, scope),
+		buildTestErrorReporting(scope),
+	)
 	resetsManager.startObserving()
 	return resetsManager
 }
@@ -161,7 +185,7 @@ fun buildTestTracker(
 		initialState = state,
 		scope = scope,
 		reducer = ::reduceTracker,
-		behaviours = listOf(TrackerRotationRefreshBehaviour(), TrackerTpsBehaviour()) + additionalBehaviours,
+		behaviours = listOf(TrackerRotationRefreshBehaviour(), TrackerTpsBehaviour(), TrackerStaleCalibrationBehaviour()) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)

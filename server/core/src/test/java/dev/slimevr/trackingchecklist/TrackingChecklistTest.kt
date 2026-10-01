@@ -8,15 +8,15 @@ import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.resets.ResetBodyParts
-import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,9 +26,9 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
@@ -52,6 +52,7 @@ class TrackingChecklistTest {
 		private val checklist = TrackingChecklist.create(scope.backgroundScope)
 		private val boneRouting: BoneRoutingManager = BoneRoutingManager.create(scope.backgroundScope)
 		private var nextId = 1
+		private val trackers = mutableListOf<Tracker>()
 
 		private val trackerStates = trackerStatesFlow(server)
 			.stateIn(scope.backgroundScope, SharingStarted.Eagerly, initialValue = emptyList())
@@ -62,9 +63,9 @@ class TrackingChecklistTest {
 					ReliableReferenceCheckBehaviour(trackerStates),
 					TrackerRestCheckBehaviour(trackerStates),
 					TrackerErrorCheckBehaviour(trackerStates),
-					FullResetCheckBehaviour(trackerStates, resetsManager),
-					MountingCalibrationCheckBehaviour(trackerStates, resetsManager, settings),
-					FeetMountingCalibrationCheckBehaviour(trackerStates, resetsManager, settings),
+					FullResetCheckBehaviour(trackerStates),
+					MountingCalibrationCheckBehaviour(trackerStates, settings),
+					FeetMountingCalibrationCheckBehaviour(trackerStates, settings),
 					NetworkProfileCheckBehaviour(networkProfileManager),
 					SteamVRHandsCheckBehaviour(trackerStates, server, boneRouting),
 				),
@@ -95,9 +96,17 @@ class TrackingChecklistTest {
 				position = position,
 				completedRestCalibration = completedRestCalibration,
 			)
+			tracker.startObserving()
 			server.context.dispatch(VRServerActions.NewTracker(id, tracker))
+			trackers += tracker
 			return tracker
 		}
+
+		fun fullReset() = trackers.forEach { it.context.dispatch(TrackerActions.FullReset(null)) }
+
+		fun setMountingMethod(method: MountingMethod) = settings.context.dispatch(
+			SettingsActions.Update { copy(resetsConfig = resetsConfig.copy(mountingMethod = method)) },
+		)
 
 		fun step(id: TrackingChecklistStepId): TrackingChecklistStep = checklist.context.state.value.steps[id] ?: error("unknown step $id")
 	}
@@ -120,7 +129,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
+		h.fullReset()
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
@@ -135,7 +144,7 @@ class TrackingChecklistTest {
 		val h = Harness(this)
 		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
+		h.fullReset()
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
@@ -153,7 +162,7 @@ class TrackingChecklistTest {
 		val h = Harness(this)
 		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
+		h.fullReset()
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
@@ -173,13 +182,13 @@ class TrackingChecklistTest {
 	@Test
 	fun `MOUNTING_CALIBRATION is enabled with an IMU tracker and valid after a mounting reset`() = runTest {
 		val h = Harness(this)
-		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
+		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = null))
+		tracker.context.dispatch(TrackerActions.PoseMountingReset(null, 0f))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 	}
@@ -187,15 +196,69 @@ class TrackingChecklistTest {
 	@Test
 	fun `FEET_MOUNTING_CALIBRATION enables with a foot tracker and validates after a feet mounting reset`() = runTest {
 		val h = Harness(this)
-		h.addTracker(bodyPart = BodyPart.LEFT_FOOT)
+		val foot = h.addTracker(bodyPart = BodyPart.LEFT_FOOT)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
+		foot.context.dispatch(TrackerActions.PoseMountingReset(null, 0f))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
+	}
+
+	@Test
+	fun `MOUNTING_CALIBRATION is flagged again when a tracker changes body part but not when it reconnects`() = runTest {
+		val h = Harness(this)
+		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
+		runCurrent()
+		tracker.context.dispatch(TrackerActions.PoseMountingReset(null, 0f))
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+
+		tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
+		runCurrent()
+		tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+
+		tracker.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HIP) })
+		runCurrent()
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+	}
+
+	@Test
+	fun `a step mounting calibrates the feet too`() = runTest {
+		val h = Harness(this)
+		h.setMountingMethod(MountingMethod.STEP)
+		val chest = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
+		val foot = h.addTracker(bodyPart = BodyPart.LEFT_FOOT)
+		runCurrent()
+
+		// The step mounting covers every IMU, so there is no separate feet step
+		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+
+		chest.context.dispatch(TrackerActions.SetStepMounting(Quaternion.IDENTITY))
+		runCurrent()
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+
+		foot.context.dispatch(TrackerActions.SetStepMounting(Quaternion.IDENTITY))
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+	}
+
+	@Test
+	fun `the pose mounting leaves the feet to their own step`() = runTest {
+		val h = Harness(this)
+		val chest = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
+		h.addTracker(bodyPart = BodyPart.LEFT_FOOT)
+		runCurrent()
+
+		chest.context.dispatch(TrackerActions.PoseMountingReset(null, 0f))
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 	}
 
 	@Test

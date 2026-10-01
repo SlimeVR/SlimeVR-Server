@@ -23,6 +23,7 @@ class ResetsBehaviour(
 					yawResetSmoothTime = config.yawResetSmoothTime,
 					saveMountingReset = config.saveMountingReset,
 					resetReliableReferenceAttitude = config.resetReliableReferenceAttitude,
+					mountingMethod = config.mountingMethod,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -38,6 +39,7 @@ class ResetsBehaviour(
 							yawResetSmoothTime = req.yawResetSmoothTime,
 							saveMountingReset = req.saveMountingReset,
 							resetReliableReferenceAttitude = req.resetReliableReferenceAttitude,
+							mountingMethod = req.mountingMethod,
 						),
 					)
 				},

@@ -31,11 +31,11 @@ class TrackingChecklist(
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
 			add(ReliableReferenceCheckBehaviour(trackerStates))
 			add(TrackerRestCheckBehaviour(trackerStates))
-			add(FullResetCheckBehaviour(trackerStates, appContext.resetsManager))
-			add(MountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))
+			add(FullResetCheckBehaviour(trackerStates))
+			add(MountingCalibrationCheckBehaviour(trackerStates, appContext.config.settings))
 			add(TrackerErrorCheckBehaviour(trackerStates))
 			add(SteamVRHandsCheckBehaviour(trackerStates, appContext.server, appContext.boneRouting))
-			add(FeetMountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))
+			add(FeetMountingCalibrationCheckBehaviour(trackerStates, appContext.config.settings))
 			add(StayAlignedCheckBehaviour(appContext.config.settings))
 			add(VRChatOscTrackingDisabledCheckBehaviour(appContext.vrcOscManager, appContext.config.settings))
 

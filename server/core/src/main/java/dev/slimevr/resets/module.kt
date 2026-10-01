@@ -5,29 +5,42 @@ import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
+import dev.slimevr.stepmounting.StepMountingManager
+import dev.slimevr.stepmounting.StepMountingStatus
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.util.isActive
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import solarxr_protocol.data_feed.server.ResetAvailability
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsResetMode
-import solarxr_protocol.rpc.ResetResponse
-import solarxr_protocol.rpc.ResetStatus
+import solarxr_protocol.rpc.CountdownDetail
+import solarxr_protocol.rpc.ResetDetail
+import solarxr_protocol.rpc.ResetLifecycle
+import solarxr_protocol.rpc.ResetStatusResponse
 import solarxr_protocol.rpc.ResetType
+import solarxr_protocol.rpc.StepMountingDetail
+import solarxr_protocol.rpc.StepMountingStatus as RpcStepMountingStatus
 import kotlin.collections.contains
 import kotlin.collections.listOf
 import kotlin.time.Duration.Companion.seconds
@@ -37,17 +50,13 @@ data class ResetsState(
 	val canDoYawReset: Boolean,
 	val canDoMountingReset: Boolean,
 	val lastFullResetTime: TimeMark?,
-
-	// Session-only flags: whether a mounting reset (and a feet mounting reset) has been done at
-	// least once since the last full reset
-	val mountingResetCompleted: Boolean = false,
-	val feetMountingResetCompleted: Boolean = false,
+	val status: ResetStatusResponse? = null,
 )
 
 sealed interface ResetsActions {
 	data class ClearResets(val resetTypes: List<ResetType>) : ResetsActions
-	data class EndReset(val resetType: ResetType, val bodyParts: List<BodyPart>? = null, val resetMountingFeet: Boolean = false) : ResetsActions
-	data object ClearMountingCompleted : ResetsActions
+	data class EndReset(val resetType: ResetType) : ResetsActions
+	data class SetStatus(val status: ResetStatusResponse) : ResetsActions
 }
 
 typealias ResetsContext = Context<ResetsState, ResetsActions>
@@ -58,19 +67,53 @@ class ResetsManager(
 	val server: VRServer,
 	val settings: Settings,
 	val skeleton: Skeleton,
+	private val stepMountingManager: StepMountingManager,
 	private val errorReporting: ErrorReportingManager,
 ) {
 	fun startObserving() = context.observeAll(this)
 
 	private var resetJob: Job = Job()
 
+	fun availability(resetType: ResetType): ResetAvailability = when (resetType) {
+		ResetType.FULL -> ResetAvailability.AVAILABLE
+		ResetType.YAW -> yawAvailability()
+		ResetType.MOUNTING -> mountingAvailability()
+	}
+
+	private fun yawAvailability(): ResetAvailability = when {
+		server.context.state.value.trackers.isEmpty() -> ResetAvailability.NO_TRACKERS
+		!context.state.value.canDoYawReset -> ResetAvailability.NEEDS_FULL_RESET
+		else -> ResetAvailability.AVAILABLE
+	}
+
+	private fun mountingAvailability(): ResetAvailability {
+		val usesStepMounting = settings.context.state.value.data.resetsConfig.mountingMethod == MountingMethod.STEP
+		return when {
+			server.context.state.value.trackers.isEmpty() -> ResetAvailability.NO_TRACKERS
+			!context.state.value.canDoMountingReset -> ResetAvailability.NEEDS_FULL_RESET
+			usesStepMounting && !stepMountingManager.context.state.value.canDoStepMounting -> ResetAvailability.NEEDS_POSITIONAL_HEAD
+			else -> ResetAvailability.AVAILABLE
+		}
+	}
+
 	/**
 	 * Schedules a reset according to the resetType.
+	 * A MOUNTING reset runs the configured mounting method.
 	 * resetSourceName is used for logging
-	 * If delay is null, the default delay from config will be used.
 	 * If bodyParts is null, resets all trackers.
 	 */
 	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
+		val method = settings.context.state.value.data.resetsConfig.mountingMethod.takeIf { resetType == ResetType.MOUNTING }
+		if (method == MountingMethod.MANUAL) {
+			AppLogger.resets.info("Ignoring mounting reset from $resetSourceName: the mounting method is manual")
+			return
+		}
+		val availability = availability(resetType)
+		if (availability != ResetAvailability.AVAILABLE) {
+			AppLogger.resets.info("Ignoring ${resetType.name} reset from $resetSourceName: $availability")
+			return
+		}
+
 		errorReporting.reportUsage(
 			"reset",
 			mapOf(
@@ -80,69 +123,104 @@ class ResetsManager(
 				"bodyParts" to (bodyParts?.map { it.name }?.sorted()?.joinToString(",") ?: "all"),
 			),
 		)
-		if (resetType == ResetType.POSE_MOUNTING) {
-			errorReporting.reportUsageOncePerSession("mounting_method_used", mapOf("method" to "auto"))
+		if (method != null) {
+			errorReporting.reportUsageOncePerSession("mounting_method_used", mapOf("method" to method.name.lowercase()))
 		}
-		resetJob.cancelAndJoin()
-		resetJob = context.scope.launch {
-			val delayMs = (delay * 1000).toInt()
-			val fullSeconds = delayMs / 1000
-			val remainder = delayMs % 1000
 
-			// Tell the GUI we started a reset
-			server.sendSolarxrRpc(
-				ResetResponse(resetType, ResetStatus.STARTED, bodyParts, 0, delayMs),
-			)
+		resetJob.cancelAndJoin()
+		resetJob = context.scope.launch { runReset(resetSourceName, resetType, method, delay, bodyParts) }
+	}
+
+	suspend fun cancel() {
+		if (context.state.value.status?.lifecycle != ResetLifecycle.RUNNING) return
+		resetJob.cancelAndJoin()
+	}
+
+	private suspend fun runReset(resetSourceName: String, resetType: ResetType, method: MountingMethod?, delaySeconds: Float, bodyParts: List<BodyPart>?) {
+		val delayMs = (delaySeconds * 1000).toInt()
+		var lastDetail: ResetDetail = CountdownDetail(0, delayMs)
+
+		suspend fun publish(lifecycle: ResetLifecycle, detail: ResetDetail) {
+			lastDetail = detail
+			val status = ResetStatusResponse(resetType, lifecycle, bodyParts, detail)
+			context.dispatch(ResetsActions.SetStatus(status))
+			server.sendSolarxrRpc(status)
+		}
+
+		try {
+			publish(ResetLifecycle.RUNNING, CountdownDetail(0, delayMs))
 
 			// Wait for the reset delay while updating the GUI every second
+			val fullSeconds = delayMs / 1000
+			val remainder = delayMs % 1000
 			repeat(fullSeconds) { index ->
 				delay(1.seconds)
 				// Skip final tick if at the same time as finish
 				if (index != fullSeconds - 1 || remainder != 0) {
-					server.sendSolarxrRpc(
-						ResetResponse(resetType, ResetStatus.STARTED, bodyParts, (index + 1) * 1000, delayMs),
-					)
+					publish(ResetLifecycle.RUNNING, CountdownDetail((index + 1) * 1000, delayMs))
 				}
 			}
 			delay(remainder.toLong())
 
-			// Reset trackers
-			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
+			val config = settings.context.state.value.data.resetsConfig
+			if (method == MountingMethod.STEP) {
+				val failure = runStepMounting { publish(ResetLifecycle.RUNNING, StepMountingDetail(it)) }
+				if (failure != null) {
+					AppLogger.resets.info("Step mounting from $resetSourceName failed: $failure")
+					publish(ResetLifecycle.FAILED, StepMountingDetail(failure))
+					return
+				}
+			} else {
+				executeTrackerResets(resetType, method, bodyParts, config)
+			}
 
 			if (resetType == ResetType.FULL) {
 				// Tell the skeleton to set the floor level and try resetting the head position (for mocap mode)
 				skeleton.context.dispatchAll(listOf(SkeletonActions.ResetHeadPosition, SkeletonActions.ResetFloorLevel))
 			}
 
-			// Update state and config
-			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
-			settings.context.dispatch(
-				SettingsActions.Update {
-					copy(
-						resetsConfig = resetsConfig.copy(
-							lastMountingMethod = if (resetType == ResetType.POSE_MOUNTING) {
-								MountingMethod.POSE
-							} else {
-								resetsConfig.lastMountingMethod
-							},
-						),
-					)
-				},
-			)
+			context.dispatch(ResetsActions.EndReset(resetType))
 
 			AppLogger.resets.info("${resetType.name} Reset from $resetSourceName")
 
-			// Tell the GUI we finished a reset
-			server.sendSolarxrRpc(
-				ResetResponse(resetType, ResetStatus.FINISHED, bodyParts, delayMs, delayMs),
-			)
+			publish(ResetLifecycle.DONE, if (method == MountingMethod.STEP) lastDetail else CountdownDetail(delayMs, delayMs))
+		} catch (e: CancellationException) {
+			withContext(NonCancellable) { publish(ResetLifecycle.CANCELED, lastDetail) }
+			throw e
 		}
+	}
+
+	private suspend fun runStepMounting(onPhase: suspend (RpcStepMountingStatus) -> Unit): RpcStepMountingStatus? {
+		stepMountingManager.cancel()
+		stepMountingManager.start()
+		try {
+			val lastStatus = stepMountingManager.context.state
+				.map { it.status }
+				.distinctUntilChanged()
+				.onEach { status -> stepMountingPhase(status)?.let { onPhase(it) } }
+				.first { it == StepMountingStatus.DONE || stepMountingFailure(it) != null }
+			return stepMountingFailure(lastStatus)
+		} finally {
+			stepMountingManager.cancel()
+		}
+	}
+
+	private fun stepMountingPhase(status: StepMountingStatus) = when (status) {
+		StepMountingStatus.WAITING_FOR_MOVEMENT -> RpcStepMountingStatus.WAITING_FOR_MOVEMENT
+		StepMountingStatus.RECORDING -> RpcStepMountingStatus.RECORDING
+		StepMountingStatus.PROCESSING -> RpcStepMountingStatus.PROCESSING
+		else -> null
+	}
+
+	private fun stepMountingFailure(status: StepMountingStatus) = when (status) {
+		StepMountingStatus.ERROR_NO_DATA -> RpcStepMountingStatus.ERROR_NO_DATA
+		StepMountingStatus.ERROR_TIMEOUT -> RpcStepMountingStatus.ERROR_TIMEOUT
+		else -> null
 	}
 
 	suspend fun clearTrackersMountingReset(resetSourceName: String) {
 		val trackers = server.context.state.value.trackers.values
 		trackers.forEach { it.context.dispatch(TrackerActions.ClearMountingReset) }
-		context.dispatch(ResetsActions.ClearMountingCompleted)
 
 		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}
@@ -172,7 +250,7 @@ class ResetsManager(
 	private fun getResetAction(referenceRotation: Quaternion?, resetType: ResetType, bodyPart: BodyPart?, resetsConfig: ResetsConfig) = when (resetType) {
 		ResetType.YAW -> TrackerActions.YawReset(referenceRotation, resetsConfig.yawResetSmoothTime.toDouble().seconds)
 		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetReliableReferenceAttitude)
-		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
+		ResetType.MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
 	}
 
 	// By priority, higher value = higher priority. 0 for others.
@@ -236,7 +314,22 @@ class ResetsManager(
 		}
 	}
 
-	private fun executeTrackerResets(resetType: ResetType, bodyParts: List<BodyPart>? = null, config: ResetsConfig) {
+	private fun filterTrackers(allTrackers: Collection<Tracker>, bodyParts: List<BodyPart>?, method: MountingMethod?, config: ResetsConfig): List<Tracker> = if (!bodyParts.isNullOrEmpty()) {
+		allTrackers.filter { bodyParts.contains(it.context.state.value.bodyPart) }
+	} else {
+		// Exclude feet, fingers and toes from the pose mounting except if forced
+		allTrackers.filter {
+			val bodyPart = it.context.state.value.bodyPart
+			method != MountingMethod.POSE ||
+				(
+					(config.resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
+						bodyPart !in ResetBodyParts.FINGERS &&
+						bodyPart !in ResetBodyParts.TOES
+					)
+		}
+	}
+
+	private fun executeTrackerResets(resetType: ResetType, method: MountingMethod?, bodyParts: List<BodyPart>?, config: ResetsConfig) {
 		val allTrackers = server.context.state.value.trackers.values
 
 		// Get the reference. The reference is used to align rotation/spaces.
@@ -258,22 +351,7 @@ class ResetsManager(
 		val referenceRotation = referenceTracker?.context?.state?.value?.rotation ?: Quaternion.IDENTITY
 
 		// Filter out the trackers that we want to reset. Reference has already been reset.
-		val trackersToReset = if (!bodyParts.isNullOrEmpty()) {
-			allTrackers.filter {
-				bodyParts.contains(it.context.state.value.bodyPart)
-			}
-		} else {
-			// Exclude feet, fingers and toes from mounting reset except if forced
-			allTrackers.filter {
-				val bodyPart = it.context.state.value.bodyPart
-				resetType != ResetType.POSE_MOUNTING ||
-					(
-						(config.resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
-							bodyPart !in ResetBodyParts.FINGERS &&
-							bodyPart !in ResetBodyParts.TOES
-						)
-			}
-		}.filter { it != referenceTracker }
+		val trackersToReset = filterTrackers(allTrackers, bodyParts, method, config).filter { it != referenceTracker }
 
 		// Dispatch the reset action to the trackers
 		trackersToReset.forEach {
@@ -283,7 +361,7 @@ class ResetsManager(
 	}
 
 	companion object {
-		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, scope: CoroutineScope): ResetsManager {
+		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, stepMountingManager: StepMountingManager, scope: CoroutineScope): ResetsManager {
 			val context = Context.create(
 				initialState = ResetsState(
 					canDoYawReset = false,
@@ -295,7 +373,7 @@ class ResetsManager(
 				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton, ctx.errorReporting)
+			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton, stepMountingManager, ctx.errorReporting)
 		}
 	}
 }
