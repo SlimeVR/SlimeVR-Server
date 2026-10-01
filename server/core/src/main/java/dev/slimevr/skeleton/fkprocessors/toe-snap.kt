@@ -1,18 +1,24 @@
 package dev.slimevr.skeleton.fkprocessors
 
+import com.jme3.math.FastMath
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.abs
 import kotlin.math.asin
+import kotlin.math.pow
 
 const val TOE_SNAP_RANGE_MULTIPLE = 2f
 const val MAX_TOE_SNAP_ANGLE = -0.8f
+const val ANKLE_DOWN_MIN = 0.65f
+const val ANKLE_DOWN_MAX = 0.85f
 
 fun computeToeSnapRatio(
+	ankleLocalPosition: Vector3,
 	ankleHeight: Float,
 	footLength: Float,
 	floorHeight: Float,
@@ -26,10 +32,16 @@ fun computeToeSnapRatio(
 
 	// Reduce the range back down as we touch the floor
 	val footAngleToFloor = asin(ankleHeightAboveFloor.coerceIn(0f, footLength) / footLength)
-	val ratioOfMaxAngleToFloor = abs(footAngleToFloor / MAX_TOE_SNAP_ANGLE).coerceIn(0f, 1f)
+	val ratioOfMaxAngleToFloor = abs(footAngleToFloor * MAX_TOE_SNAP_ANGLE).coerceIn(0f, 1f)
 
 	// Ratio of range *to* floor
-	return (1f - ratioOfRangeFromFloor) * ratioOfMaxAngleToFloor
+	val rangeToFloorRatio = (1f - ratioOfRangeFromFloor) * ratioOfMaxAngleToFloor
+
+	// Lessen the ratio with the ankle pointing forward.
+	val ankleDownDirection = abs(ankleLocalPosition.unit().y.coerceAtMost(0f))
+	val ankleDownRatio = FastMath.remap(ankleDownDirection, ANKLE_DOWN_MIN, ANKLE_DOWN_MAX, 0f, 1f).coerceIn(0f, 1f)
+
+	return rangeToFloorRatio * ankleDownRatio
 }
 
 fun snapToes(
@@ -44,23 +56,27 @@ fun snapToes(
 }
 
 class ToeSnapFkProcessor(val skeleton: Skeleton) : SkeletonFkProcessor {
-	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
+	val bodyParts = arrayOf(
+		BodyPart.LEFT_LOWER_LEG to BodyPart.LEFT_FOOT,
+		BodyPart.RIGHT_LOWER_LEG to BodyPart.RIGHT_FOOT,
+	)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		if (!skeleton.effectiveToeSnap) return
 
-		// TODO This loop format should be turned into a function
-		for (bodyPart in bodyParts) {
-			val input = mutableInputSkeleton[bodyPart] ?: continue
+		for ((anklePart, footPart) in bodyParts) {
+			val input = mutableInputSkeleton[footPart] ?: continue
 			if (input.isRotationActive) continue
 			val length = input.offset.len()
 			if (length <= 0f) continue
-			val output = fk[bodyPart] ?: continue
-			mutableInputSkeleton[bodyPart] = input.copy(
+			val ankle = fk[anklePart] ?: continue
+			val foot = fk[footPart] ?: continue
+			mutableInputSkeleton[footPart] = input.copy(
 				rotation = snapToes(
 					input.rotation,
 					computeToeSnapRatio(
-						output.headPosition.y,
+						ankle.localTailPosition,
+						foot.headPosition.y,
 						length,
 						floorLevel,
 					),

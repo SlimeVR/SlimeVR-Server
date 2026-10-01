@@ -668,4 +668,9 @@ object FastMath {
 	 * Linearly interpolates between 2 numbers
 	 */
 	fun lerp(from: Float, to: Float, t: Float): Float = from + (to - from) * t
+
+	/**
+	 * Remaps a number from a minimum and maximum to another minimum and maximum.
+	 */
+	fun remap(from: Float, fromMin: Float, fromMax: Float, toMin: Float, toMax: Float) = toMin + ((from - fromMin) / (fromMax - fromMin)) * (toMax - toMin)
 }
