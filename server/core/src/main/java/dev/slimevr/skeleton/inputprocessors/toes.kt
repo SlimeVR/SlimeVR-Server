@@ -8,7 +8,7 @@ import solarxr_protocol.datatypes.BodyPart
  * Handles setting the rotation of an inactive toe bone with the first active toe bone in its sources, or keeps
  * the old rotation if none of them are active.
  */
-class ToeActiveLinkInputProcessor : SkeletonInputProcessor {
+class ToesInputProcessor : SkeletonInputProcessor {
 	/**
 	 * First element is the BodyPart whose BoneInput is not actively receiving data.
 	 *

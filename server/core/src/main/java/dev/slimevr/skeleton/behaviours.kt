@@ -186,6 +186,8 @@ class ComputedSkeletonBehaviour(
 	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
+	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
+
 	private val intervalDuration = (1.0 / hz).seconds
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
@@ -252,10 +254,14 @@ class ComputedSkeletonBehaviour(
 						}
 
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
-							// TODO improve pause tracking code, maybe using a processor
-							// Use already-processed paused tracking data except for the head
-							val headBone = targetState.boneInputs[BodyPart.HEAD]
-							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
+							// Use already-processed paused tracking data except for certain bones (head + neck)
+							val alwaysActiveInputs = BodyPartMap(targetState.boneInputs.filter { it.key in ALWAYS_ACTIVE_PARTS })
+							val processedAlwaysActiveInputs = runInputProcessors(inputProcessors, alwaysActiveInputs, targetState.skeletonHeight)
+							targetState.pausedProcessedBoneInputs.mutateCopy {
+								for (bodyPart in ALWAYS_ACTIVE_PARTS) {
+									it[bodyPart] = processedAlwaysActiveInputs[bodyPart]
+								}
+							}
 						} else {
 							// Run pre-FK processors
 							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)

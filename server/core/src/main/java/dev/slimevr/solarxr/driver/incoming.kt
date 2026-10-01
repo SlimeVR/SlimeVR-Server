@@ -10,6 +10,10 @@ import dev.slimevr.solarxr.toQuaternion
 import dev.slimevr.solarxr.toVector3
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.MonotonicValueTimeMark
+import dev.slimevr.util.inFloatingSeconds
+import dev.slimevr.util.timeSource
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
@@ -21,24 +25,35 @@ import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
 import kotlin.to
 
-// TODO add more devices and retest Knuckles
-//  HMDs might all have the same offset
-private val DISPLAY_NAME_TO_INTENDED_OFFSET = mapOf(
-	"Beyond" to Vector3(0f, 0f, 0.1f),
-	"Knuckles Left" to Vector3(0f, 0.11f, 0.08f),
-	"Knuckles Right" to Vector3(0f, 0.11f, 0.08f),
+data class Offset(
+	/** Default position offset from bone to tracker. Can be changed by the user. */
+	val boneOffset: Vector3,
+	/** Rotation offset applied on the tracker's raw rotation before everything else. */
+	val rotationOffset: Quaternion = Quaternion.IDENTITY,
+)
+private val indexBoneOffset = Vector3(-0.02f, 0.07f, 0.13f)
+private val indexRotX = Quaternion.rotationAroundXAxis(0.4f)
+private val indexRotZ = Quaternion.rotationAroundZAxis(0.35f)
+
+// TODO add more devices
+private val DISPLAY_NAME_TO_OFFSET = mapOf(
+	"Knuckles Left" to Offset(indexBoneOffset, indexRotX * indexRotZ),
+	"Knuckles Right" to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
 )
 
 // Used as fallback when map above doesn't contain the entry
-private val BODY_PART_TO_INTENDED_OFFSET = mapOf(
-	BodyPart.HEAD to Vector3(0f, 0f, 0.1f),
-	BodyPart.LEFT_HAND to Vector3(0f, 0.11f, 0.08f),
-	BodyPart.RIGHT_HAND to Vector3(0f, 0.11f, 0.08f),
+private val BODY_PART_TO_OFFSET = mapOf(
+	BodyPart.HEAD to Offset(Vector3(0f, 0f, 0.1f)),
+	BodyPart.LEFT_HAND to Offset(indexBoneOffset, indexRotX * indexRotZ),
+	BodyPart.RIGHT_HAND to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
 )
 
 class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
+	private val rotationOffsets: MutableMap<Int, Quaternion> = mutableMapOf()
+	private val lastVelocities: MutableMap<Int, Pair<MonotonicValueTimeMark, Vector3>> = mutableMapOf()
+
 	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
 
@@ -86,6 +101,7 @@ class DriverIncomingTrackersBehaviour(
 			)
 			server.context.dispatch(VRServerActions.NewDevice(deviceId, device))
 
+			val offset = DISPLAY_NAME_TO_OFFSET[req.displayName] ?: BODY_PART_TO_OFFSET[req.bodyPart]
 			val trackerId = server.nextHandle()
 			val tracker = Tracker.create(
 				scope = scope,
@@ -93,13 +109,14 @@ class DriverIncomingTrackersBehaviour(
 				name = req.displayName ?: "Tracker #$trackerId",
 				bodyPart = req.bodyPart,
 				intendedBodyPart = req.bodyPart,
-				intendedBoneOffset = DISPLAY_NAME_TO_INTENDED_OFFSET[req.displayName] ?: BODY_PART_TO_INTENDED_OFFSET[req.bodyPart],
+				intendedBoneOffset = offset?.boneOffset,
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,
 				driverName = driverName,
 				appContext = appContext,
 			)
+			rotationOffsets[trackerId] = offset?.rotationOffset ?: Quaternion.IDENTITY
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 
 			receiver.sendDriverMessage(
@@ -135,10 +152,26 @@ class DriverIncomingTrackersBehaviour(
 			val trackerId = event.trackerId.toInt()
 			if (trackerId == 0) return@on
 
-			// TODO: receive velocity, mapping to accel?
+			// Map velocity to accel TODO: driver doesn't send velocity 30/09/2026
+			val acceleration = event.linearVelocity?.let { velocity ->
+				val now = timeSource.markNow()
+				val velocity = velocity.toVector3()
+				val lastVelocity = lastVelocities[trackerId]
+				lastVelocities[trackerId] = now to velocity
+
+				lastVelocity?.let {
+					val deltaVelocity = (velocity - it.second)
+					val deltaTime = (now - it.first).inFloatingSeconds
+					deltaVelocity / deltaTime
+				}
+			}
+			// Rotation offset done here before rotation gets to the tracker
+			val rotationOffset = rotationOffsets[trackerId] ?: Quaternion.IDENTITY
+			// Update tracker with new data
 			server.getTracker(trackerId)?.context?.dispatch(
 				TrackerActions.SetRotation(
-					rotation = event.rotation?.toQuaternion(),
+					rotation = event.rotation?.toQuaternion()?.times(rotationOffset),
+					acceleration = acceleration,
 					position = event.position?.toVector3(),
 				),
 			)

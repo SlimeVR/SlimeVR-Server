@@ -22,9 +22,9 @@ class HIDSettingsBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		settings.context.state
-			.drop(1)
 			.map { HIDSettingsResponse(trackersOverHid = it.data.hidConfig.trackersOverHid) }
 			.distinctUntilChanged()
+			.drop(1)
 			.onEach(receiver::sendRpc)
 			.launchIn(receiver.context.scope)
 

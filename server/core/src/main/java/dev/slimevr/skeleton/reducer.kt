@@ -54,7 +54,14 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.PauseTracking -> state.copy(paused = action.pause, pausedProcessedBoneInputs = null)
 
-	is SkeletonActions.SetPausedBoneInputs -> state.copy(pausedProcessedBoneInputs = action.pausedBoneInputs)
+	is SkeletonActions.SetPausedBoneInputs -> state.copy(
+		pausedProcessedBoneInputs = action.pausedBoneInputs.mutateCopy {
+			action.pausedBoneInputs.forEach { (part, input) ->
+				// Remove acceleration from paused inputs but the active flag as it was.
+				it[part] = input.copy(acceleration = Vector3.ZERO)
+			}
+		},
+	)
 
 	is SkeletonActions.ResetHeadPosition -> {
 		val headBone = state.boneInputs[BodyPart.HEAD] ?: return state

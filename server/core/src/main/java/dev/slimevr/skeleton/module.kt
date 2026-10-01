@@ -12,7 +12,7 @@ import dev.slimevr.skeleton.inputprocessors.AccelerationFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
-import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FingersInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
@@ -22,7 +22,7 @@ import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TailChainInputProcessor
-import dev.slimevr.skeleton.inputprocessors.ToeActiveLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TrackerOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
@@ -274,18 +274,19 @@ class Skeleton(
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
+					// Run before FK on the inputs
 					inputProcessors = listOf(
-						TrackerOffsetInputProcessor(),
 						PredictionInputProcessor(settings),
 						SmoothingInputProcessor(settings),
+						TrackerOffsetInputProcessor(),
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
 						SpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
-						FingerImputeInputProcessor(),
-						ToeActiveLinkInputProcessor(),
+						FingersInputProcessor(),
+						ToesInputProcessor(),
 						BustInputProcessor(),
 						PosteriorInputProcessor(),
 						PosteriorDirectLinkInputProcessor(),
@@ -293,19 +294,23 @@ class Skeleton(
 						ConstraintInputProcessor(settings),
 						AccelerationFallbackInputProcessor(),
 					),
+					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
 						VelocityComputedProcessor(),
 					),
+					// Run on the inputs with the result of FK and run FK
 					fkProcessors = listOf(
 						LocalizerFkProcessor(settings),
 						FootPlantFkProcessor(skeleton),
 						ToeSnapFkProcessor(skeleton),
 					),
+					// Create targets for IK
 					targetProcessors = listOf(
 						PositionalTargetProcessor(settings),
 						SkatingCorrectionTargetProcessor(settings, skeleton),
 						FloorClipTargetProcessor(skeleton),
 					),
+					// Run on the result of IK and persist.
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor(),
 					),

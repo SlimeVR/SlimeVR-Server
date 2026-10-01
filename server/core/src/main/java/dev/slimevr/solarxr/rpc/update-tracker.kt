@@ -14,7 +14,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetTrackerAssignments
 import solarxr_protocol.rpc.UpdateTrackerRequest
 
-class AssignTrackerBehaviour(
+class UpdateTrackerBehaviour(
 	private val server: VRServer,
 	private val errorReporting: ErrorReportingManager,
 ) : SolarXRBridgeBehaviour {
@@ -59,7 +59,7 @@ class AssignTrackerBehaviour(
 				tracker.context.dispatch(
 					TrackerActions.SetMountingOrientation(mountingOrientation),
 				)
-				// Assignment re-sends the current orientation. So we make sure it didnt change
+				// Assignment re-sends the current orientation, so we make sure it didn't change for Sentry
 				if (current.angleToR(mountingOrientation) > 0.1f) {
 					errorReporting.reportUsageOncePerSession("mounting_method_used", mapOf("method" to "manual"))
 				}

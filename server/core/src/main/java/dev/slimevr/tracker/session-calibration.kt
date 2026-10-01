@@ -2,7 +2,6 @@ package dev.slimevr.tracker
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.atan2
 
 typealias RawRotation = Quaternion
@@ -74,22 +73,6 @@ fun applyCalibration(
 ): CalibratedAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
 	rawAcceleration,
 )
-
-fun applyFullCalibration(
-	rawAcceleration: RawAcceleration,
-	rawRotation: RawRotation,
-	trackerState: TrackerState,
-): CalibratedAcceleration {
-	// Never use heading correction/alignment for an assigned reliable reference
-	val headingCorrection = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingCorrection
-	val headingAlignment = if (trackerState.isAssignedReliableReference) Quaternion.IDENTITY else trackerState.sessionCalibration.headingAlignment
-	return applyCalibration(
-		rawAcceleration,
-		rawRotation,
-		headingCorrection,
-		headingAlignment,
-	)
-}
 
 fun undoCalibration(
 	calibratedAcceleration: CalibratedAcceleration,
