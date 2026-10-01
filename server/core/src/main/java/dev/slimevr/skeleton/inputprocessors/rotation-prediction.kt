@@ -16,7 +16,7 @@ import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration.Companion.milliseconds
 
 /** How far ahead the prediction reaches at amount 1, scaled down by the configured amount */
-val PREDICTION_LEAD = 10.milliseconds
+val PREDICTION_LEAD = 12.milliseconds
 
 /**
  * Tries to predict future rotations of bones.
