@@ -17,10 +17,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import java.io.OutputStreamWriter
+import kotlin.time.Duration.Companion.milliseconds
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
 
 private const val BAUD_RATE = 115200
-private const val OPEN_TIMEOUT_MS = 1000
+private val SERIAL_SAFE_TIME = 200.milliseconds
 
 /** jSerialComm reports this for a port with no USB identity, like a built-in UART */
 private const val NO_VENDOR_ID = -1
@@ -40,19 +41,21 @@ private class DesktopSerialWatcher(override val changes: Flow<Unit>) : SerialPor
 			}
 	}
 
-	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openPort(portLocation, onLine, onClosed) }
+	override suspend fun open(portLocation: String, clearResetLines: Boolean, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openPort(portLocation, clearResetLines, onLine, onClosed) }
 
 	override fun openForFlashing(): FlashingHandler = DesktopFlashingHandler()
 }
 
-private suspend fun openPort(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? {
+private suspend fun openPort(portLocation: String, clearResetLines: Boolean, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? {
 	val port = JSerialPort.getCommPorts().find { it.portLocation == portLocation } ?: return null
 
 	try {
 		port.baudRate = BAUD_RATE
-		port.clearRTS()
-		port.clearDTR()
-		if (!port.openPort(OPEN_TIMEOUT_MS)) return null
+		if (clearResetLines) {
+			port.clearRTS()
+			port.clearDTR()
+		}
+		if (!port.openPort(SERIAL_SAFE_TIME.inWholeMilliseconds.toInt())) return null
 	} catch (e: Exception) {
 		AppLogger.serial.error(e, "Failed to open serial port: $portLocation")
 		return null

@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.rpc.SerialDeviceType
 import kotlin.time.Duration
 
 private sealed interface Claim {
@@ -85,7 +86,8 @@ class SerialServer(
 			closeConsole(portLocation)
 		}
 		AppLogger.serial.info("Opening serial console on $portLocation")
-		val console = SerialConsole.open(watcher, portLocation) ?: return Claim.Failed
+		val clearResetLines = context.state.value.ports[portLocation]?.type == SerialDeviceType.ESP_TRACKER
+		val console = SerialConsole.open(watcher, portLocation, clearResetLines) ?: return Claim.Failed
 		consoles[portLocation] = console
 		AppLogger.serial.info("Opened serial console on $portLocation")
 		watchForClose(console)

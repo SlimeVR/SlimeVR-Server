@@ -54,10 +54,12 @@ interface SerialPortWatcher {
 	val changes: Flow<Unit>
 
 	/**
-	 * Opens a console on the port. [onLine] receives each received line without blocking. [onClosed] runs
-	 * when the port goes away or fails, after which the handle is dead
+	 * Opens a console on the port. [clearResetLines] clears RTS/DTR before opening, which ESP UART
+	 * bridges need to avoid auto-resetting into their bootloader; native-USB devices like Butterfly
+	 * are not wired that way and reset if it's cleared on them. [onLine] receives each received line
+	 * without blocking. [onClosed] runs when the port goes away or fails, after which the handle is dead
 	 */
-	suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle?
+	suspend fun open(portLocation: String, clearResetLines: Boolean, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle?
 
 	fun openForFlashing(): FlashingHandler
 }

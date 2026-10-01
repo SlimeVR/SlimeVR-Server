@@ -71,7 +71,7 @@ private class AndroidSerialWatcher(
 			}
 	}
 
-	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, onLine, onClosed) }
+	override suspend fun open(portLocation: String, clearResetLines: Boolean, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, clearResetLines, onLine, onClosed) }
 
 	override fun openForFlashing(): FlashingHandler = AndroidFlashingHandler(context, usbManager)
 }
@@ -79,6 +79,7 @@ private class AndroidSerialWatcher(
 private fun openAndroidPort(
 	portLocation: String,
 	usbManager: UsbManager,
+	clearResetLines: Boolean,
 	onLine: (String) -> Unit,
 	onClosed: () -> Unit,
 ): SerialPortHandle? {
@@ -95,8 +96,10 @@ private fun openAndroidPort(
 	try {
 		port.open(connection)
 		port.setParameters(BAUD_RATE, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-		port.dtr = false
-		port.rts = false
+		if (clearResetLines) {
+			port.dtr = false
+			port.rts = false
+		}
 	} catch (e: Exception) {
 		Log.e(TAG, "Failed to open Android serial port $portLocation", e)
 		try {
