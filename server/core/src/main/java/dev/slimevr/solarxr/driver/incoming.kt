@@ -48,6 +48,9 @@ private val BODY_PART_TO_OFFSET = mapOf(
 	BodyPart.RIGHT_HAND to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
 )
 
+// I don't know why linear velocity seems to be in a different coordinate system. -Erimel
+private fun remapVelocity(velocity: Vector3) = Vector3(velocity.z, -velocity.y, velocity.x)
+
 class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
@@ -162,7 +165,7 @@ class DriverIncomingTrackersBehaviour(
 				lastVelocity?.let {
 					val deltaVelocity = (velocity - it.second)
 					val deltaTime = (now - it.first).inFloatingSeconds
-					deltaVelocity / deltaTime
+					remapVelocity(deltaVelocity / deltaTime)
 				}
 			}
 			// Rotation offset done here before rotation gets to the tracker
