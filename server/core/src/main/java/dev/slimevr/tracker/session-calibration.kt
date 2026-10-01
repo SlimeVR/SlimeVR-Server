@@ -10,7 +10,7 @@ typealias RawAcceleration = Vector3
 typealias HeadingCorrection = Quaternion
 typealias AttitudeAlignment = Quaternion
 typealias HeadingAlignment = Quaternion
-typealias RestOrientation = Quaternion // TODO temporary workaround; need to figure out something else eventually.
+typealias RestOrientation = Quaternion
 
 typealias AccelerationRotation = Quaternion
 
