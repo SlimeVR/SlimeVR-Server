@@ -9,13 +9,14 @@ import dev.slimevr.util.timeSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class TrackerTpsBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		receiver.context.scope.launch {
 			var mark = timeSource.markNow()
 			while (isActive) {
-				delay(1000)
+				delay(1.seconds)
 				val elapsed = mark.elapsedNow()
 				val trackerState = receiver.context.state.value
 				val tps = (trackerState.accumulatedTicks * 1000u).toLong() / elapsed.inWholeMilliseconds

@@ -96,7 +96,7 @@ class ResetsManager(
 
 			// Wait for the reset delay while updating the GUI every second
 			repeat(fullSeconds) { index ->
-				delay(1000)
+				delay(1.seconds)
 				// Skip final tick if at the same time as finish
 				if (index != fullSeconds - 1 || remainder != 0) {
 					server.sendSolarxrRpc(

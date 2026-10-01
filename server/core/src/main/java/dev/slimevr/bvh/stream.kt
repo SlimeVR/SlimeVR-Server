@@ -4,6 +4,7 @@ import com.jme3.math.FastMath
 import dev.slimevr.config.TextFileHandle
 import dev.slimevr.skeleton.BODY_PART_HIERARCHY_MAP
 import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.util.millisecondsInSecond
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -51,7 +52,7 @@ class BvhStream(
 
 			val now = System.currentTimeMillis()
 			if (frameCount > 0) {
-				val interval = (now - lastFrameTime) / 1000f
+				val interval = (now - lastFrameTime) / millisecondsInSecond
 				frameIntervals.add(interval)
 			}
 			lastFrameTime = now

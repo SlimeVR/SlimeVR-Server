@@ -87,7 +87,7 @@ class PingBehaviour : UDPConnectionBehaviour {
 					receiver.context.dispatch(UDPConnectionActions.StartPing(startTime = System.currentTimeMillis(), pingId = pingId))
 					receiver.send(PingPong(pingId))
 				}
-				delay(1000)
+				delay(1.seconds)
 			}
 		}
 
