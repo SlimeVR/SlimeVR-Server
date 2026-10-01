@@ -152,7 +152,7 @@ class DriverIncomingTrackersBehaviour(
 			val trackerId = event.trackerId.toInt()
 			if (trackerId == 0) return@on
 
-			// Map velocity to accel TODO: driver doesn't send velocity 30/09/2026
+			// Map velocity to accel
 			val acceleration = event.linearVelocity?.let { velocity ->
 				val now = timeSource.markNow()
 				val velocity = velocity.toVector3()
