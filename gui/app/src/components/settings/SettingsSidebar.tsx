@@ -89,6 +89,11 @@ export function SettingsSidebar() {
             id="VRChat OSC"
           />
           <SettingsLink to="/settings/osc/vmc" scrollTo="vmc" id="VMC" />
+          <SettingsLink
+            to="/settings/osc/custom"
+            scrollTo="custom"
+            id="settings-sidebar-osc_custom"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3">

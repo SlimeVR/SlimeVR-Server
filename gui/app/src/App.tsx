@@ -30,6 +30,7 @@ import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { DongleSettingsPage } from './components/tracker/DongleSettings';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
+import { CustomOSCSettings } from './components/settings/pages/CustomOSCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import semver from 'semver';
@@ -173,6 +174,7 @@ function AppRoutes() {
             <Route path="driver" element={<DriverSettings />} />
             <Route path="osc/vrchat" element={<VRCOSCSettings />} />
             <Route path="osc/vmc" element={<VMCSettings />} />
+            <Route path="osc/custom" element={<CustomOSCSettings />} />
             <Route path="interface" element={<InterfaceSettings />} />
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />

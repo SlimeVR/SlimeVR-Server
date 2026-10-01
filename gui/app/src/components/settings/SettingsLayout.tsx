@@ -46,6 +46,10 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/osc/vmc', scrollTo: 'vmc' },
       },
       {
+        label: l10n.getString('settings-sidebar-osc_custom'),
+        value: { url: '/settings/osc/custom', scrollTo: 'custom' },
+      },
+      {
         label: l10n.getString('settings-sidebar-serial'),
         value: { url: '/settings/serial' },
       },

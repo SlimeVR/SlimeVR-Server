@@ -15,9 +15,13 @@ import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingersInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
+import dev.slimevr.skeleton.inputprocessors.PosteriorDirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.PosteriorInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
+import dev.slimevr.skeleton.inputprocessors.TailChainInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TrackerOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
@@ -106,8 +110,8 @@ data class SkeletonState(
 	val floorLevel: Float,
 	val paused: Boolean,
 	val pausedProcessedBoneInputs: InputSkeleton?,
-	val processorResets: List<ResetType> = emptyList(),
 	val legTweaksTmpOverride: LegTweaksTmpOverride = LegTweaksTmpOverride(),
+	val processorResets: List<ResetType> = emptyList(),
 )
 
 val DEFAULT_BONE_INPUT = BoneInput(
@@ -138,6 +142,7 @@ val DEFAULT_SKELETON_STATE = run {
 		floorLevel = 0f,
 		paused = false,
 		pausedProcessedBoneInputs = null,
+		processorResets = emptyList(),
 	)
 }
 
@@ -282,6 +287,10 @@ class Skeleton(
 						BoneDirectLinkInputProcessor(),
 						FingersInputProcessor(),
 						ToesInputProcessor(),
+						BustInputProcessor(),
+						PosteriorInputProcessor(),
+						PosteriorDirectLinkInputProcessor(),
+						TailChainInputProcessor(),
 						ConstraintInputProcessor(settings),
 						AccelerationFallbackInputProcessor(),
 					),

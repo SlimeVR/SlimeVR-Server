@@ -41,7 +41,9 @@ private class AndroidSerialWatcher(
 	private val permissionIntent = PendingIntent.getBroadcast(
 		context,
 		0,
-		Intent(ACTION_USB_SERIAL_PERMISSION).apply { setPackage(context.packageName) },
+		Intent(ACTION_USB_SERIAL_PERMISSION).apply {
+			setPackage(context.packageName)
+		},
 		PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
 	)
 
