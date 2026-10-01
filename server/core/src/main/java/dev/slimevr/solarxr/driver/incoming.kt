@@ -43,22 +43,26 @@ private val leftIndexControllerOffset = Offset(
 	Quaternion.rotationAroundXAxis(0.42f),
 	Quaternion.rotationAroundZAxis(0.28f),
 )
-
-// TODO rotation offset needs to be double checked
+private val leftQuest3ControllerOffset = Offset(
+	Vector3(-0.02f, 0.07f, 0.13f),
+	Quaternion.rotationAroundXAxis(0.42f),
+	Quaternion.rotationAroundZAxis(0.28f),
+)
 private val leftPicoControllerOffset = Offset(
 	Vector3(0.01f, 0.11f, 0.11f),
 	Quaternion.rotationAroundXAxis(0.42f),
 	Quaternion.rotationAroundZAxis(0.15f),
 )
-
-// TODO add more devices, at least Quest 2 and 3 controllers
 private val DISPLAY_NAME_TO_OFFSET = mapOf(
 	// Erimel, through SteamVR
 	"Knuckles Left" to leftIndexControllerOffset,
 	"Knuckles Right" to leftIndexControllerOffset.otherSide,
-	// ZRock, through ?
-//	"Meta Quest 3 (Left Controller)" to
-//	"Meta Quest 3 (Right Controller)" to
+	// ZRock, through Virtual Desktop
+	"Meta Quest 3 (Left Controller)" to leftQuest3ControllerOffset,
+	"Meta Quest 3 (Right Controller)" to leftQuest3ControllerOffset.otherSide,
+	// ZRock, through Steam Link
+	"Oculus Quest3 (Left Controller)" to leftQuest3ControllerOffset,
+	"Oculus Quest3 (Right Controller)" to leftQuest3ControllerOffset.otherSide,
 	// Spazzwan, through Steam Link
 	"PICO 4 (Left Controller)" to leftPicoControllerOffset,
 	"PICO 4 (Right Controller)" to leftPicoControllerOffset.otherSide,
@@ -69,17 +73,12 @@ private val DISPLAY_NAME_TO_OFFSET = mapOf(
 
 // Offset from eyes to centre of head (same for all HMDs).
 private val hmdOffset = Offset(Vector3(0f, 0f, 0.1f))
-private val leftGenericControllerOffset = Offset(
-	Vector3(0f, 0.1f, 0.12f),
-	Quaternion.rotationAroundXAxis(0.42f),
-	Quaternion.rotationAroundZAxis(0.25f),
-)
 
 // Used as fallback when map above doesn't contain the entry
 private val BODY_PART_TO_OFFSET = mapOf(
 	BodyPart.HEAD to hmdOffset,
-	BodyPart.LEFT_HAND to leftGenericControllerOffset,
-	BodyPart.RIGHT_HAND to leftGenericControllerOffset.otherSide,
+	BodyPart.LEFT_HAND to leftQuest3ControllerOffset,
+	BodyPart.RIGHT_HAND to leftQuest3ControllerOffset.otherSide,
 )
 
 // I don't know why linear velocity seems to be in a different coordinate system. -Erimel
