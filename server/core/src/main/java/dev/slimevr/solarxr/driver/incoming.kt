@@ -41,14 +41,16 @@ data class Offset(
 private val leftIndexControllerOffset = Offset(
 	Vector3(-0.02f, 0.07f, 0.13f),
 	Quaternion.rotationAroundXAxis(0.4f),
-	Quaternion.rotationAroundZAxis(0.35f)
+	Quaternion.rotationAroundZAxis(0.35f),
 )
+
 // TODO rotation offset needs to be double checked
 private val leftPicoControllerOffset = Offset(
 	Vector3(0.01f, 0.11f, 0.11f),
 	Quaternion.rotationAroundXAxis(0.4f),
 	Quaternion.rotationAroundZAxis(0.1f),
 )
+
 // TODO add more devices, at least Quest controllers
 private val DISPLAY_NAME_TO_OFFSET = mapOf(
 	// Erimel, through SteamVR
@@ -67,8 +69,9 @@ private val hmdOffset = Offset(Vector3(0f, 0f, 0.1f))
 private val leftGenericControllerOffset = Offset(
 	Vector3(0f, 0.11f, 0.11f),
 	Quaternion.rotationAroundXAxis(0.4f),
-	Quaternion.rotationAroundZAxis(0.1f)
+	Quaternion.rotationAroundZAxis(0.1f),
 )
+
 // Used as fallback when map above doesn't contain the entry
 private val BODY_PART_TO_OFFSET = mapOf(
 	BodyPart.HEAD to hmdOffset,

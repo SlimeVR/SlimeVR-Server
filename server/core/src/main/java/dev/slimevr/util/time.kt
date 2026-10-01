@@ -10,12 +10,12 @@ val timeSource = TimeSource.Monotonic
 
 typealias MonotonicValueTimeMark = TimeSource.Monotonic.ValueTimeMark
 
-const val millisecondsInSecond = 1_000L
-const val microsecondsInSecond = 1_000_000L
-const val nanosecondsInSecond = 1_000_000_000L
+const val millisecondsInSecond = 1_000f
+const val microsecondsInSecond = 1_000_000f
+const val nanosecondsInSecond = 1_000_000_000f
 
 /**
  * Returns the duration in un-rounded seconds with Float precision.
  */
 val Duration.inFloatingSeconds: Float
-	get() = this.inWholeNanoseconds / nanosecondsInSecond.toFloat()
+	get() = this.inWholeNanoseconds / nanosecondsInSecond

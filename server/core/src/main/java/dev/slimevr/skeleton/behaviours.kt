@@ -5,6 +5,7 @@ import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.PreciseWaiter
+import dev.slimevr.util.millisecondsInSecond
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -69,11 +70,11 @@ class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 class YouSpinMeRightRoundBehaviour(val inputHz: Int = 1) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
-			val intervalMs = (1000f / inputHz.toFloat()).toLong()
+			val intervalMs = (millisecondsInSecond / inputHz.toFloat()).toLong()
 			val startTime = timeSource.markNow()
 			while (true) {
 				delay(intervalMs)
-				val elapsed = startTime.elapsedNow().inWholeMilliseconds / 1000f
+				val elapsed = startTime.elapsedNow().inWholeMilliseconds / millisecondsInSecond
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
