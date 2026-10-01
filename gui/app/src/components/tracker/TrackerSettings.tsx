@@ -136,11 +136,11 @@ export function TrackerSettingsPage() {
     sendRPCPacket(RpcMessage.UpdateTrackerRequest, req);
   };
 
-  useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 1000);
+  useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 800);
   useDebouncedEffect(
     () => updateBoneOffset(),
     [boneOffset.x, boneOffset.y, boneOffset.z],
-    1000
+    250
   );
 
   useEffect(() => {
