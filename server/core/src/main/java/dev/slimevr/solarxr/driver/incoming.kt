@@ -25,27 +25,55 @@ import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
 import kotlin.to
 
+// These are all only defaults and the user can edit any and they will save.
 data class Offset(
-	/** Default position offset from bone to tracker. Can be changed by the user. */
+	/** Offset from start of palm position to controller position. */
 	val boneOffset: Vector3,
-	/** Rotation offset applied on the tracker's raw rotation before everything else. */
-	val rotationOffset: Quaternion = Quaternion.IDENTITY,
-)
-private val indexBoneOffset = Vector3(-0.02f, 0.07f, 0.13f)
-private val indexRotX = Quaternion.rotationAroundXAxis(0.4f)
-private val indexRotZ = Quaternion.rotationAroundZAxis(0.35f)
+	// Don't use directly; use rotationOffset instead.
+	val rotationOffsetX: Quaternion = Quaternion.IDENTITY,
+	val rotationOffsetYZ: Quaternion = Quaternion.IDENTITY,
+) {
+	/** Offset from controller rotation to palm rotation. */
+	val rotationOffset = rotationOffsetX * rotationOffsetYZ
+	val otherSide get() = Offset(boneOffset.unaryMinusX(), rotationOffsetX, rotationOffsetYZ.inv())
+}
 
-// TODO add more devices
+private val leftIndexControllerOffset = Offset(
+	Vector3(-0.02f, 0.07f, 0.13f),
+	Quaternion.rotationAroundXAxis(0.4f),
+	Quaternion.rotationAroundZAxis(0.35f)
+)
+// TODO rotation offset needs to be double checked
+private val leftPicoControllerOffset = Offset(
+	Vector3(0.01f, 0.11f, 0.11f),
+	Quaternion.rotationAroundXAxis(0.4f),
+	Quaternion.rotationAroundZAxis(0.1f),
+)
+// TODO add more devices, at least Quest controllers
 private val DISPLAY_NAME_TO_OFFSET = mapOf(
-	"Knuckles Left" to Offset(indexBoneOffset, indexRotX * indexRotZ),
-	"Knuckles Right" to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
+	// Erimel, through SteamVR
+	"Knuckles Left" to leftIndexControllerOffset,
+	"Knuckles Right" to leftIndexControllerOffset.otherSide,
+	// Spazzwan, through Steam Link
+	"PICO 4 (Left Controller)" to leftPicoControllerOffset,
+	"PICO 4 (Right Controller)" to leftPicoControllerOffset.otherSide,
+	// Spazzwan, through PICO Connect
+	"Pico Phoenix Controller left" to leftPicoControllerOffset,
+	"Pico Phoenix Controller right" to leftPicoControllerOffset.otherSide,
 )
 
+// Offset from eyes to centre of head (same for all HMDs).
+private val hmdOffset = Offset(Vector3(0f, 0f, 0.1f))
+private val leftGenericControllerOffset = Offset(
+	Vector3(0f, 0.11f, 0.11f),
+	Quaternion.rotationAroundXAxis(0.4f),
+	Quaternion.rotationAroundZAxis(0.1f)
+)
 // Used as fallback when map above doesn't contain the entry
 private val BODY_PART_TO_OFFSET = mapOf(
-	BodyPart.HEAD to Offset(Vector3(0f, 0f, 0.1f)),
-	BodyPart.LEFT_HAND to Offset(indexBoneOffset, indexRotX * indexRotZ),
-	BodyPart.RIGHT_HAND to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
+	BodyPart.HEAD to hmdOffset,
+	BodyPart.LEFT_HAND to leftGenericControllerOffset,
+	BodyPart.RIGHT_HAND to leftGenericControllerOffset.otherSide,
 )
 
 // I don't know why linear velocity seems to be in a different coordinate system. -Erimel
