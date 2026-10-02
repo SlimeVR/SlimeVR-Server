@@ -107,7 +107,6 @@ export function TrackingSettings() {
     toggles.mocapMode = values.toggles.mocapMode;
     toggles.useTrackerPositions = values.toggles.useTrackerPositions;
     toggles.enforceConstraints = values.toggles.enforceConstraints;
-    toggles.correctConstraints = values.toggles.correctConstraints;
     settingsReq.toggles = toggles;
 
     const ratios = new SkeletonRatiosT();

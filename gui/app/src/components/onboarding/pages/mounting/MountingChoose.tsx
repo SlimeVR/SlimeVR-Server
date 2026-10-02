@@ -8,7 +8,10 @@ import { Button } from '@/components/commons/Button';
 import { track } from '@/utils/sentry';
 import { MountingMethod } from 'solarxr-protocol';
 import { useResetsSettings } from '@/hooks/resets-settings';
-import { MANUAL_MOUNTING_PATH, STEP_MOUNTING_PATH } from '@/hooks/mounting-method';
+import {
+  MANUAL_MOUNTING_PATH,
+  STEP_MOUNTING_PATH,
+} from '@/hooks/mounting-method';
 import { SkiIcon } from '@/components/commons/icon/SkiIcon';
 import { StepIcon } from '@/components/commons/icon/StepIcon';
 import { TuneIcon } from '@/components/commons/icon/TuneIcon';

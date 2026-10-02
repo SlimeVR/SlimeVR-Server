@@ -2,9 +2,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Clickable } from '@/components/commons/Clickable';
 
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
-import {
-  BasedSkeletonHelper,
-} from '@/utils/skeletonHelper';
+import { BasedSkeletonHelper } from '@/utils/skeletonHelper';
 import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
 import {
   computeHeadYOffset,
