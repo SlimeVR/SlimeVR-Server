@@ -888,7 +888,6 @@ onboarding-automatic_mounting-done-title = Rotacja trackerów została skalibrow
 onboarding-automatic_mounting-done-description = Kalibracja skończona!
 onboarding-automatic_mounting-done-restart = Cofnij się na początek
 onboarding-automatic_mounting-mounting_reset-title = Kalibracja Pozycji
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Zrób pozycje "na Małysza" z wygiętymi nogami, tułowiem pochylonym do przodu z wygiętymi rękami.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Naciśnij "Zresetuj Położenie" i poczekaj 3 sekundy zanim trackery się zresetują.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stań na palcach z obiema stopami skierowanymi do przodu. Alternatywnie możesz to zrobić siedząc na krześle.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Naciśnij "Kalibracja Stóp" i poczekaj 3 sekundy zanim zresetuje pozycje.
@@ -896,9 +895,6 @@ onboarding-automatic_mounting-preparation-title = Przygotowania
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Naciśnij przycisk "Pełny reset".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stań prosto z rękami po bokach. Upewnij się, że patrzysz przed siebie.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Utrzymaj pozycję, aż skończy się 3-sekundowy timer.
-onboarding-automatic_mounting-put_trackers_on-title = Załóż trackery
-onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rotacje, użyjemy trackerów które przypisano przed chwilą. Załóż wszystkie trackery, możesz je odróznić na postaci po prawej.
-onboarding-automatic_mounting-put_trackers_on-next = Wszystkie trackery założone
 onboarding-automatic_mounting-return-home = Gotowe
 
 ## Tracker manual proportions setup
