@@ -1223,18 +1223,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = 要使用哪一種配戴校正方式？
 # Multiline text
 onboarding-choose_mounting-description = 配戴校正可以校正追蹤器放在身上的位置。
-onboarding-choose_mounting-auto_mounting = 自動配戴校正
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = 推薦使用
-onboarding-choose_mounting-auto_mounting-description = 本選項會透過兩個身體姿勢，判斷所有追蹤器的配戴方位
-onboarding-choose_mounting-manual_mounting = 手動配戴校正
-onboarding-choose_mounting-manual_mounting-description = 本選項可以讓你選擇每個追蹤器的配戴方位
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = 手動配戴
 onboarding-manual_mounting-description = 點選每個追蹤器並選擇它們的配戴方式
-onboarding-manual_mounting-auto_mounting = 進行自動設定
 onboarding-manual_mounting-next = 下一步
 
 ## Tracker automatic mounting setup
