@@ -129,35 +129,6 @@ body_part-RIGHT_MIDDLE_TOE = crwdns7220:0crwdne7220:0
 body_part-RIGHT_RING_TOE = crwdns7222:0crwdne7222:0
 body_part-RIGHT_LITTLE_TOE = crwdns7224:0crwdne7224:0
 
-## BoardType
-
-board_type-UNKNOWN = crwdns7226:0crwdne7226:0
-board_type-NODEMCU = crwdns7228:0crwdne7228:0
-board_type-CUSTOM = crwdns7230:0crwdne7230:0
-board_type-WROOM32 = crwdns7232:0crwdne7232:0
-board_type-WEMOSD1MINI = crwdns7234:0crwdne7234:0
-board_type-TTGO_TBASE = crwdns7236:0crwdne7236:0
-board_type-ESP01 = crwdns7238:0crwdne7238:0
-board_type-SLIMEVR = crwdns7240:0crwdne7240:0
-board_type-SLIMEVR_DEV = crwdns7242:0crwdne7242:0
-board_type-SLIMEVR_V1_2 = crwdns7244:0crwdne7244:0
-board_type-LOLIN_C3_MINI = crwdns7246:0crwdne7246:0
-board_type-BEETLE32C3 = crwdns7248:0crwdne7248:0
-board_type-ESP32C3DEVKITM1 = crwdns7250:0crwdne7250:0
-board_type-OWOTRACK = crwdns7252:0crwdne7252:0
-board_type-WRANGLER = crwdns7254:0crwdne7254:0
-board_type-MOCOPI = crwdns7256:0crwdne7256:0
-board_type-WEMOSWROOM02 = crwdns7258:0crwdne7258:0
-board_type-XIAO_ESP32C3 = crwdns7260:0crwdne7260:0
-board_type-HARITORA = crwdns7262:0crwdne7262:0
-board_type-ESP32C6DEVKITC1 = crwdns7264:0crwdne7264:0
-board_type-GLOVE_IMU_SLIMEVR_DEV = crwdns7266:0crwdne7266:0
-board_type-GESTURES = crwdns7268:0crwdne7268:0
-board_type-ESP32S3_SUPERMINI = crwdns7270:0crwdne7270:0
-board_type-GENERIC_NRF = crwdns7272:0crwdne7272:0
-board_type-SLIMEVR_BUTTERFLY_DEV = crwdns7274:0crwdne7274:0
-board_type-SLIMEVR_BUTTERFLY = crwdns7276:0crwdne7276:0
-
 ## Proportions
 
 skeleton_bone-NONE = crwdns7278:0crwdne7278:0
@@ -213,6 +184,8 @@ reset-mounting-fingers = crwdns7376:0crwdne7376:0
 reset-yaw = crwdns7378:0crwdne7378:0
 reset-error-mounting-need_full_reset = crwdns7380:0crwdne7380:0
 reset-error-yaw-need_full_reset = crwdns7382:0crwdne7382:0
+reset-error-need_positional_head = crwdns9550:0crwdne9550:0
+reset-error-no_trackers = crwdns9552:0crwdne9552:0
 reset-error-no_feet_tracker = crwdns7384:0crwdne7384:0
 
 ## Navigation bar
@@ -327,6 +300,11 @@ tracker-settings-use_mag-description = crwdns7542:0crwdne7542:0
 tracker-settings-use_mag-label = crwdns7544:0crwdne7544:0
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
+tracker-settings-bone_offset_section = crwdns9540:0crwdne9540:0
+tracker-settings-bone_offset_section-description = crwdns9542:0crwdne9542:0
+tracker-settings-bone_offset_section-x = crwdns9544:0crwdne9544:0
+tracker-settings-bone_offset_section-y = crwdns9546:0crwdne9546:0
+tracker-settings-bone_offset_section-z = crwdns9548:0crwdne9548:0
 tracker-settings-name_section = crwdns7546:0crwdne7546:0
 tracker-settings-name_section-description = crwdns7548:0crwdne7548:0
 tracker-settings-name_section-placeholder = crwdns7550:0crwdne7550:0
@@ -409,14 +387,14 @@ settings-sidebar-title = crwdns7650:0crwdne7650:0
 settings-sidebar-general = crwdns7652:0crwdne7652:0
 settings-sidebar-outputs = crwdns7654:0crwdne7654:0
 settings-sidebar-routing = crwdns7656:0crwdne7656:0
-settings-sidebar-driver = crwdns7658:0crwdne7658:0
+settings-sidebar-driver = crwdns9554:0crwdne9554:0
 settings-sidebar-resets = crwdns7660:0crwdne7660:0
 settings-sidebar-stay_aligned = crwdns7662:0crwdne7662:0
 settings-sidebar-tracking = crwdns7664:0crwdne7664:0
 settings-sidebar-trackers = crwdns7666:0crwdne7666:0
 settings-sidebar-interface = crwdns7668:0crwdne7668:0
-settings-sidebar-vrchat_osc = crwdns7670:0crwdne7670:0
-settings-sidebar-osc_vmc = crwdns7672:0crwdne7672:0
+settings-sidebar-vrchat_osc = crwdns9556:0crwdne9556:0
+settings-sidebar-osc_vmc = crwdns9558:0crwdne9558:0
 settings-sidebar-utils = crwdns7674:0crwdne7674:0
 settings-sidebar-serial = crwdns7676:0crwdne7676:0
 settings-sidebar-appearance = crwdns7678:0crwdne7678:0
@@ -443,9 +421,9 @@ settings-routing-duplicate-warning = crwdns7712:0$bonescrwdnd7712:0$boneCountcrw
 settings-routing-outputs = crwdns7714:0crwdne7714:0
 settings-routing-bones = crwdns7716:0crwdne7716:0
 settings-routing-bones-description = crwdns7718:0crwdne7718:0
-settings-routing-output-driver = crwdns7720:0crwdne7720:0
-settings-routing-output-vrc_osc = crwdns7722:0crwdne7722:0
-settings-routing-output-vmc = crwdns7724:0crwdne7724:0
+settings-routing-output-driver = crwdns9560:0crwdne9560:0
+settings-routing-output-vrc_osc = crwdns9562:0crwdne9562:0
+settings-routing-output-vmc = crwdns9564:0crwdne9564:0
 settings-routing-output-bone-count = crwdns7726:0$routedcrwdnd7726:0$acceptscrwdne7726:0
 settings-routing-output-badge-sending = crwdns7728:0crwdne7728:0
 settings-routing-output-sending-description = crwdns7730:0crwdne7730:0
@@ -474,7 +452,7 @@ settings-routing-hands-warning-done = crwdns7768:0crwdne7768:0
 
 ## SteamVR / Monado output settings
 
-settings-driver = crwdns7770:0crwdne7770:0
+settings-driver = crwdns9566:0crwdne9566:0
 settings-driver-description = crwdns7772:0crwdne7772:0
 settings-driver-enable = crwdns7774:0crwdne7774:0
 settings-driver-enable-description = crwdns7776:0crwdne7776:0
@@ -498,6 +476,8 @@ settings-driver-velocity-description = crwdns7808:0crwdne7808:0
 ## Tracker mechanics
 
 settings-general-trackers_settings = crwdns7810:0crwdne7810:0
+settings-general-mounting_method = crwdns9568:0crwdne9568:0
+settings-general-mounting_method-description = crwdns9570:0crwdne9570:0
 settings-general-tracker_mechanics-filtering = crwdns7812:0crwdne7812:0
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description = crwdns7814:0crwdne7814:0
@@ -604,16 +584,14 @@ settings-general-fk_settings-ik-use_position-description = crwdns7988:0crwdne798
 settings-general-fk_settings-resets_settings = crwdns7990:0crwdne7990:0
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = crwdns9496:0crwdne9496:0
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = crwdns9498:0crwdne9498:0
-settings-general-fk_settings-arm_fk-reset_mode = crwdns7996:0crwdne7996:0
-settings-general-fk_settings-arm_fk-reset_mode-description = crwdns7998:0crwdne7998:0
-settings-general-fk_settings-arm_fk-back = crwdns8000:0crwdne8000:0
-settings-general-fk_settings-arm_fk-back-description = crwdns8002:0crwdne8002:0
-settings-general-fk_settings-arm_fk-tpose_up = crwdns8004:0crwdne8004:0
-settings-general-fk_settings-arm_fk-tpose_up-description = crwdns8006:0crwdne8006:0
-settings-general-fk_settings-arm_fk-tpose_down = crwdns8008:0crwdne8008:0
-settings-general-fk_settings-arm_fk-tpose_down-description = crwdns8010:0crwdne8010:0
-settings-general-fk_settings-arm_fk-forward = crwdns8012:0crwdne8012:0
-settings-general-fk_settings-arm_fk-forward-description = crwdns8014:0crwdne8014:0
+settings-general-fk_settings-arms_mounting_reset_mode = crwdns9648:0crwdne9648:0
+settings-general-fk_settings-arms_mounting_reset_mode-description = crwdns9650:0crwdne9650:0
+settings-general-fk_settings-arms_mounting_reset_mode-back = crwdns9652:0crwdne9652:0
+settings-general-fk_settings-arms_mounting_reset_mode-back-description = crwdns9654:0crwdne9654:0
+settings-general-fk_settings-arms_mounting_reset_mode-t_pose = crwdns9656:0crwdne9656:0
+settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description = crwdns9658:0crwdne9658:0
+settings-general-fk_settings-arms_mounting_reset_mode-forward = crwdns9660:0crwdne9660:0
+settings-general-fk_settings-arms_mounting_reset_mode-forward-description = crwdns9662:0crwdne9662:0
 settings-general-fk_settings-skeleton_settings-ratios = crwdns8016:0crwdne8016:0
 settings-general-fk_settings-skeleton_settings-ratios-description = crwdns8018:0crwdne8018:0
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = crwdns8020:0crwdne8020:0
@@ -659,6 +637,12 @@ settings-general-interface-theme = crwdns8076:0crwdne8076:0
 settings-general-interface-lang = crwdns8078:0crwdne8078:0
 settings-general-interface-lang-description = crwdns8080:0crwdne8080:0
 settings-general-interface-lang-placeholder = crwdns8082:0crwdne8082:0
+settings-general-interface-crowdin_in_context = crwdns9518:0crwdne9518:0
+settings-general-interface-crowdin_in_context-description = crwdns9520:0crwdne9520:0
+settings-general-interface-crowdin_in_context-description-active = crwdns9522:0crwdne9522:0
+settings-general-interface-crowdin_in_context-failed = crwdns9524:0crwdne9524:0
+settings-general-interface-crowdin_in_context-enable = crwdns9526:0crwdne9526:0
+settings-general-interface-crowdin_in_context-close = crwdns9528:0crwdne9528:0
 # Keep the font name untranslated
 settings-interface-appearance-font = crwdns8084:0crwdne8084:0
 settings-interface-appearance-font-description = crwdns8086:0crwdne8086:0
@@ -739,7 +723,7 @@ settings-serial-send_command-warning-cancel = crwdns8204:0crwdne8204:0
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = crwdns8206:0crwdne8206:0
+settings-osc-vrchat = crwdns9572:0crwdne9572:0
 # This cares about multilines
 settings-osc-vrchat-description-v1 = crwdns8208:0crwdne8208:0
 settings-osc-vrchat-enable = crwdns8210:0crwdne8210:0
@@ -762,7 +746,7 @@ settings-osc-vrchat-status-title = crwdns8236:0crwdne8236:0
 settings-osc-vrchat-status-input = crwdns8238:0crwdne8238:0
 settings-osc-vrchat-status-tracking = crwdns8240:0crwdne8240:0
 settings-osc-vrchat-status-output = crwdns8242:0crwdne8242:0
-settings-osc-vrchat-status-oscquery = crwdns8244:0crwdne8244:0
+settings-osc-vrchat-status-oscquery = crwdns9574:0crwdne9574:0
 settings-osc-vrchat-status-input-idle = crwdns8246:0crwdne8246:0
 settings-osc-vrchat-status-input-listening = crwdns8248:0$portcrwdne8248:0
 settings-osc-vrchat-status-input-last-data = crwdns8250:0$elapsedcrwdne8250:0
@@ -800,7 +784,7 @@ settings-osc-vrchat-status-badge-unknown = crwdns8312:0crwdne8312:0
 
 ## VMC OSC settings
 
-settings-osc-vmc = crwdns8314:0crwdne8314:0
+settings-osc-vmc = crwdns9576:0crwdne9576:0
 # This cares about multilines
 settings-osc-vmc-description = crwdns8316:0crwdne8316:0
 settings-osc-vmc-enable = crwdns8318:0crwdne8318:0
@@ -1103,18 +1087,52 @@ onboarding-assign_trackers-warning-WAIST = crwdns8792:0$unassignedcrwdne8792:0
 onboarding-choose_mounting = crwdns8794:0crwdne8794:0
 # Multiline text
 onboarding-choose_mounting-description = crwdns8796:0crwdne8796:0
-onboarding-choose_mounting-auto_mounting = crwdns8798:0crwdne8798:0
+
+## Mounting method
+
+mounting_method_modal-title = crwdns9578:0crwdne9578:0
+mounting_method_modal-description = crwdns9580:0crwdne9580:0
 # Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = crwdns8800:0crwdne8800:0
-onboarding-choose_mounting-auto_mounting-description = crwdns8802:0crwdne8802:0
-onboarding-choose_mounting-manual_mounting = crwdns8804:0crwdne8804:0
-onboarding-choose_mounting-manual_mounting-description = crwdns8806:0crwdne8806:0
+mounting_method-recommended = crwdns9582:0crwdne9582:0
+mounting_method-select = crwdns9584:0crwdne9584:0
+mounting_method-step = crwdns9586:0crwdne9586:0
+mounting_method-step-description = crwdns9588:0crwdne9588:0
+mounting_method-step-needs_positional_head = crwdns9590:0crwdne9590:0
+mounting_method-pose = crwdns9592:0crwdne9592:0
+mounting_method-pose-description = crwdns9594:0crwdne9594:0
+mounting_method-manual = crwdns9596:0crwdne9596:0
+mounting_method-manual-description = crwdns9598:0crwdne9598:0
+
+## Tracker step mounting setup
+
+onboarding-step_mounting-title = crwdns9600:0crwdne9600:0
+onboarding-step_mounting-description = crwdns9602:0crwdne9602:0
+onboarding-step_mounting-step-title = crwdns9604:0crwdne9604:0
+onboarding-step_mounting-step-0 = crwdns9606:0crwdne9606:0
+onboarding-step_mounting-step-1 = crwdns9608:0crwdne9608:0
+
+## Step mounting calibration
+
+step_mounting-title = crwdns9610:0crwdne9610:0
+# $status (String) - StepMountingStatus enum member name
+step_mounting-instructions-WAITING_FOR_MOVEMENT = crwdns9612:0crwdne9612:0
+step_mounting-instructions-RECORDING = crwdns9614:0crwdne9614:0
+step_mounting-instructions-PROCESSING = crwdns9616:0crwdne9616:0
+step_mounting-status-WAITING_FOR_MOVEMENT = crwdns9618:0crwdne9618:0
+step_mounting-status-RECORDING = crwdns9620:0crwdne9620:0
+step_mounting-status-PROCESSING = crwdns9622:0crwdne9622:0
+step_mounting-status-DONE = crwdns9624:0crwdne9624:0
+step_mounting-status-ERROR_NO_DATA = crwdns9626:0crwdne9626:0
+step_mounting-status-ERROR_TIMEOUT = crwdns9628:0crwdne9628:0
+step_mounting-cancel = crwdns9630:0crwdne9630:0
+step_mounting-close = crwdns9632:0crwdne9632:0
+step_mounting-next = crwdns9634:0crwdne9634:0
+step_mounting-retry = crwdns9640:0crwdne9640:0
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = crwdns8808:0crwdne8808:0
 onboarding-manual_mounting-description = crwdns8810:0crwdne8810:0
-onboarding-manual_mounting-auto_mounting = crwdns8812:0crwdne8812:0
 onboarding-manual_mounting-next = crwdns8814:0crwdne8814:0
 
 ## Tracker automatic mounting setup
@@ -1128,7 +1146,7 @@ onboarding-automatic_mounting-done-title = crwdns8826:0crwdne8826:0
 onboarding-automatic_mounting-done-description = crwdns8828:0crwdne8828:0
 onboarding-automatic_mounting-done-restart = crwdns8830:0crwdne8830:0
 onboarding-automatic_mounting-mounting_reset-title = crwdns8832:0crwdne8832:0
-onboarding-automatic_mounting-mounting_reset-step-0 = crwdns8834:0crwdne8834:0
+onboarding-automatic_mounting-mounting_reset-step-0 = crwdns8834:0$feetcrwdnd8834:0$armscrwdne8834:0
 onboarding-automatic_mounting-mounting_reset-step-1 = crwdns8836:0crwdne8836:0
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = crwdns8838:0crwdne8838:0
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = crwdns8840:0crwdne8840:0
@@ -1136,13 +1154,12 @@ onboarding-automatic_mounting-preparation-title = crwdns8842:0crwdne8842:0
 onboarding-automatic_mounting-preparation-v2-step-0 = crwdns8844:0crwdne8844:0
 onboarding-automatic_mounting-preparation-v2-step-1 = crwdns8846:0crwdne8846:0
 onboarding-automatic_mounting-preparation-v2-step-2 = crwdns8848:0crwdne8848:0
-onboarding-automatic_mounting-preparation-v2-done = crwdns8850:0crwdne8850:0
-onboarding-automatic_mounting-put_trackers_on-title = crwdns8852:0crwdne8852:0
-onboarding-automatic_mounting-put_trackers_on-description = crwdns8854:0crwdne8854:0
-onboarding-automatic_mounting-put_trackers_on-next = crwdns8856:0crwdne8856:0
+onboarding-automatic_mounting-preparation-example-front = crwdns9642:0crwdne9642:0
+onboarding-automatic_mounting-preparation-example-side = crwdns9644:0crwdne9644:0
+onboarding-automatic_mounting-preparation-example-wrong = crwdns9646:0crwdne9646:0
 onboarding-automatic_mounting-return-home = crwdns8858:0crwdne8858:0
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = crwdns8860:0crwdne8860:0
 onboarding-manual_proportions-fine_tuning_button = crwdns8862:0crwdne8862:0
@@ -1449,6 +1466,14 @@ error_collection_modal-description_v2 = crwdns9362:0{ settings-interface-behavio
 error_collection_modal-confirm = crwdns9364:0crwdne9364:0
 error_collection_modal-cancel = crwdns9366:0crwdne9366:0
 
+## Crash screen
+
+crash_screen-title = crwdns9530:0crwdne9530:0
+crash_screen-description = crwdns9532:0crwdne9532:0
+crash_screen-event_id = crwdns9534:0$idcrwdne9534:0
+crash_screen-copy = crwdns9536:0crwdne9536:0
+crash_screen-reload = crwdns9538:0crwdne9538:0
+
 ## Tracking checklist section
 
 tracking_checklist = crwdns9368:0crwdne9368:0
@@ -1460,6 +1485,8 @@ tracking_checklist-expand = crwdns9376:0crwdne9376:0
 tracking_checklist-status-incomplete = crwdns9378:0crwdne9378:0
 tracking_checklist-status-partial = crwdns9380:0$countcrwdnd9380:0$countcrwdne9380:0
 tracking_checklist-status-complete = crwdns9382:0crwdne9382:0
+tracking_checklist-MOUNTING_METHOD = crwdns9636:0crwdne9636:0
+tracking_checklist-MOUNTING_METHOD-desc = crwdns9638:0crwdne9638:0
 tracking_checklist-MOUNTING_CALIBRATION = crwdns9384:0crwdne9384:0
 tracking_checklist-FEET_MOUNTING_CALIBRATION = crwdns9386:0crwdne9386:0
 tracking_checklist-FULL_RESET = crwdns9388:0crwdne9388:0

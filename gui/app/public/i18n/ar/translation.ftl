@@ -97,15 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = الجزء القريب الأيمن الصغ�
 body_part-RIGHT_LITTLE_INTERMEDIATE = المتوسط ​​الصغير الأيمن
 body_part-RIGHT_LITTLE_DISTAL = الجزء البعيد الصغير الأيمن
 
-## BoardType
-
-board_type-UNKNOWN = مجهول
-board_type-CUSTOM = لوحة مخصصة
-board_type-SLIMEVR = سلايم في آر
-board_type-WRANGLER = رانجلر جويكونز
-board_type-MOCOPI = سوني موكوبي (Mocopi)
-board_type-GLOVE_IMU_SLIMEVR_DEV = قفاز SlimeVR تطوير IMU
-
 ## Proportions
 
 skeleton_bone-NONE = غير محدد
@@ -245,8 +236,6 @@ tracker-settings-use_mag-description =
     
     تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
 tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = اسم جهاز التعقب
 tracker-settings-name_section-description = أعطها لقب لطيف :)
 tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
@@ -304,7 +293,6 @@ settings-sidebar-title = الإعدادات
 settings-sidebar-general = الاعدادات العامة
 settings-sidebar-trackers = أجهزة التعقب
 settings-sidebar-interface = واجهة المستخدم
-settings-sidebar-vrchat_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 settings-sidebar-appearance = مظهر
@@ -315,7 +303,6 @@ settings-sidebar-advanced = متقدم
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-routing-hands-warning-cancel = إلغاء
 
 ## SteamVR / Monado output settings
@@ -381,19 +368,9 @@ settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = فرض القيود
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
-settings-general-fk_settings-arm_fk-reset_mode-description = قم بتغيير وضع الذراع المتوقع لإعادة ضبط المتصاعد.
-settings-general-fk_settings-arm_fk-back = العودة
-settings-general-fk_settings-arm_fk-back-description = الوضع الافتراضي، مع وضع الذراعين العلويين إلى الخلف والساعدين للأمام.
-settings-general-fk_settings-arm_fk-tpose_up = تي بوز (أعلى)
-settings-general-fk_settings-arm_fk-tpose_up-description = يتوقع أن تكون ذراعيك لأسفل على الجانبين أثناء إعادة الضبط الكامل ، و 90 درجة حتى الجانبين أثناء إعادة ضبط التركيب.
-settings-general-fk_settings-arm_fk-tpose_down = تي بوز (لأسفل)
-settings-general-fk_settings-arm_fk-tpose_down-description = يتوقع أن تكون ذراعيك 90 درجة لأعلى على الجانبين أثناء إعادة الضبط الكامل ، ولأسفل على الجانبين أثناء إعادة ضبط التركيب.
-settings-general-fk_settings-arm_fk-forward = أمامي
-settings-general-fk_settings-arm_fk-forward-description = يتوقع أن تكون ذراعيك 90 درجة للأمام. مفيد ل VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
 settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
 settings-general-fk_settings-self_localization-title = وضع Mocap
-settings-general-fk_settings-self_localization-description = يسمح وضع Mocap للهيكل العظمي بتعقب موضعه تقريبا بدون سماعة رأس أو أجهزة تعقب أخرى. لاحظ أن هذا يتطلب أجهزة تعقب القدمين والرأس للعمل ولا تزال تجريبية.
 
 ## Gesture control settings (tracker tapping)
 
@@ -486,12 +463,6 @@ settings-general-interface-discord_presence-message =
        *[other] أخرى
     }
 settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>هل توافق على جمع بيانات الخطأ مجهولة المصدر؟</h1>
-    
-    <b>نحن لا نجمع معلومات شخصية</b> مثل عنوان IP الخاص بك أو بيانات الاعتماد اللاسلكية. يقدر SlimeVR خصوصيتك!
-    
-    لتوفير أفضل تجربة للمستخدم، نقوم بجمع تقارير الأخطاء ومقاييس الأداء ومعلومات نظام التشغيل مجهولة المصدر. يساعدنا هذا في اكتشاف الأخطاء والمشكلات المتعلقة ب SlimeVR. يتم جمع هذه المقاييس عبر Sentry.io.
 settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
 
 ## Serial settings
@@ -519,7 +490,6 @@ settings-serial-send_command-warning-cancel = إلغاء
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     تغيير الإعدادات الخاصة بمعيار أجهزة تعقب OSC  المستخدم لإرسال
@@ -547,7 +517,6 @@ settings-osc-vrchat-status-badge-unknown = مجهول
 
 ## VMC OSC settings
 
-settings-osc-vmc = التقاط الحركة الافتراضية
 # This cares about multilines
 settings-osc-vmc-description =
     قم بتغيير الإعدادات الخاصة ببروتوكول التقاط الحركة الافتراضية
@@ -784,18 +753,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = ما طريقة معايرة التركيب المستخدمة؟
 # Multiline text
 onboarding-choose_mounting-description = اتجاه التركيب يصحح وضع أجهزة التعقب على جسمك.
-onboarding-choose_mounting-auto_mounting = التركيب التلقائي
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = الموصى به
-onboarding-choose_mounting-auto_mounting-description = سيكتشف هذا تلقائيًا اتجاهات التركيب لجميع أجهزة التعقب من وضعين
-onboarding-choose_mounting-manual_mounting = التركيب اليدوي
-onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = التركيب اليدوي
 onboarding-manual_mounting-description = انقر فوق كل جهاز تعقب وحدد طريقة تركيبها
-onboarding-manual_mounting-auto_mounting = التركيب التلقائي
 onboarding-manual_mounting-next = الخطوة التالية
 
 ## Tracker automatic mounting setup
@@ -809,14 +780,10 @@ onboarding-automatic_mounting-done-title = تم معايرة دوران التر
 onboarding-automatic_mounting-done-description = اكتملت معايرة التركيب!
 onboarding-automatic_mounting-done-restart = العودة إلى البداية
 onboarding-automatic_mounting-mounting_reset-title = إعادة تعيين التركيب
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. قرفص في وضع "التزلج" مع ثني ساقيك ، وإمالة الجزء العلوي من جسمك إلى الأمام ، وثني ذراعيك.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. اضغط على زر "إعادة تعيين التركيب" وانتظر لمدة 3 ثوان قبل إعادة تعيين دوران تركيب أجهزة التعقب.
 onboarding-automatic_mounting-preparation-title = التحضير
-onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة التعقب
-onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
-onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
@@ -971,6 +938,9 @@ vrc_config-tracker_model-UNKNOWN = مجهول
 vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

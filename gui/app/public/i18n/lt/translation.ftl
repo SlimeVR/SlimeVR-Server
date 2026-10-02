@@ -97,12 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Dešiniojo mažylio artimoji dalis
 body_part-RIGHT_LITTLE_INTERMEDIATE = Dešiniojo mažylio vidurinė dalis
 body_part-RIGHT_LITTLE_DISTAL = Dešiniojo mažylio tolimiausioji dalis
 
-## BoardType
-
-board_type-UNKNOWN = Nežinoma
-board_type-CUSTOM = Nestandartinė plokštė
-board_type-WRANGLER = „Wrangler“ Joycon'ai
-
 ## Proportions
 
 skeleton_bone-NONE = Nenurodyta
@@ -270,8 +264,6 @@ tracker-settings-use_mag-description =
     
     Pirmiausia reikia įjungti magnetometro naudojimą, <magSetting>spustelėkite čia, kad pereiti prie nustatymo.</magSetting>
 tracker-settings-use_mag-label = Leisti magnetometro naudojimą
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Sekiklio pavadinimas
 tracker-settings-name_section-description = Sugalvokite jam mielą vardą :)
 tracker-settings-name_section-placeholder = NightyBeast kairė koja
@@ -401,7 +393,6 @@ settings-general-fk_settings-leg_fk = Kojų sekimas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
-settings-general-fk_settings-arm_fk-back = Gale
 
 ## Gesture control settings (tracker tapping)
 
@@ -509,6 +500,15 @@ onboarding-assign_trackers-side-left = Kairėje
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
@@ -517,7 +517,7 @@ onboarding-assign_trackers-side-left = Kairėje
 onboarding-automatic_mounting-title = Tvirtinimo kalibravimas
 onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -573,6 +573,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
 
 error_collection_modal-confirm = Sutinku
 error_collection_modal-cancel = Nesutinku
+
+## Crash screen
+
 
 ## Tracking checklist section
 

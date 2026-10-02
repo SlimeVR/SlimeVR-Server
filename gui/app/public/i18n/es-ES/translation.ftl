@@ -100,12 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Proximal del meñique derecho
 body_part-RIGHT_LITTLE_INTERMEDIATE = Intermedio del meñique derecho
 body_part-RIGHT_LITTLE_DISTAL = Distal del meñique derecho
 
-## BoardType
-
-board_type-UNKNOWN = Desconocido
-board_type-CUSTOM = Placa Desconocida
-board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
-
 ## Proportions
 
 skeleton_bone-NONE = Ninguno
@@ -293,8 +287,6 @@ tracker-settings-use_mag-description =
     
     Primero debe permitir el uso del magnetómetro, <magSetting>haga clic aquí para ir a la configuración</magSetting>.
 tracker-settings-use_mag-label = Permitir magnetómetro
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nombre del tracker
 tracker-settings-name_section-description = Dale un sobrenombre lindo :)
 tracker-settings-name_section-placeholder = Pata izquierda del Eevee
@@ -354,7 +346,6 @@ mounting_selection_menu-close = Cerrar
 settings-sidebar-title = Configuración
 settings-sidebar-stay_aligned = Mantener Alineado
 settings-sidebar-interface = Interfaz
-settings-sidebar-vrchat_osc = VRChat OSC Trackers
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
@@ -366,7 +357,6 @@ settings-sidebar-advanced = Avanzado
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = VRChat OSC Trackers
 settings-routing-output-badge-off = Apagado
 settings-routing-hands-warning-cancel = Cancelar
 
@@ -451,19 +441,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar 
 settings-general-fk_settings-enforce_joint_constraints = Límites esqueléticos
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imponer restricciones
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
-settings-general-fk_settings-arm_fk-reset_mode-description = Cambia la posición por defecto para el restablecimiento de montura
-settings-general-fk_settings-arm_fk-back = Parte posterior del brazo
-settings-general-fk_settings-arm_fk-back-description = Modo predeterminado, con los brazos hacia atrás y los antebrazos hacia adelante.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
-settings-general-fk_settings-arm_fk-tpose_up-description = Se espera que tus brazos esten relajados, perpendicular a tu cuerpo durante el reinicio completo y 90 grados respecto a tu cuerpo durante el reinicio de montaje.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
-settings-general-fk_settings-arm_fk-tpose_down-description = Se espera que tus brazos estén a 90 grados respecto a tu cuerpo durante el reinicio completo y relajados, perpendicular a tu cuerpo durante el reinicio del montaje.
-settings-general-fk_settings-arm_fk-forward = Siguiente
-settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados hacia adelante. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Proporciones del esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de la configuración del esqueleto. Es posible que debas ajustar tus proporciones de nuevo.
 settings-general-fk_settings-self_localization-title = Modo Captura de movimiento
-settings-general-fk_settings-self_localization-description = El modo captura de movimiento permite al esqueleto seguir aproximadamente tu posición sin auriculares ni otros trackers. Ten en cuenta que esto requiere trrackers de pies y cabeza para funcionar y que aún está en fase experimental.
 
 ## Gesture control settings (tracker tapping)
 
@@ -546,12 +526,6 @@ settings-general-interface-discord_presence-message =
        *[other] Usando { $amount } trackers
     }
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>¿Da su consentimiento para la recopilación de datos de error anónimos?</h1>
-    
-    <b>No recopilamos información personal</b> , como su dirección IP o credenciales inalámbricas. ¡SlimeVR valora tu privacidad!
-    
-    Para proporcionar la mejor experiencia de usuario, recopilamos informes de errores anónimos, métricas de rendimiento e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas se recopilan a través de Sentry.io.
 settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 settings-interface-behavior-bvh_directory = Directorio para guardar grabaciones BVH
 settings-interface-behavior-bvh_directory-description = Elija un directorio para guardar sus grabaciones BVH en lugar de tener que elegir dónde guardarlas cada vez.
@@ -583,7 +557,6 @@ settings-serial-send_command-warning-cancel = Cancelar
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Change settings specific to the OSC Trackers standard used for sending
@@ -612,7 +585,6 @@ settings-osc-vrchat-status-badge-unknown = Desconocido
 
 ## VMC OSC settings
 
-settings-osc-vmc = Captura de movimiento virtual
 # This cares about multilines
 settings-osc-vmc-description = Cambiar la configuración al protocolo VMC (Virtual Motion Capture) para enviar datos de SlimeVR y recibir información de otras apps.
 settings-osc-vmc-enable = Habilitar
@@ -843,18 +815,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = ¿Qué método de calibración de montura usara?
 # Multiline text
 onboarding-choose_mounting-description = La posición de montura corrige la colocación de los trackers en el cuerpo.
-onboarding-choose_mounting-auto_mounting = Calibración de montura automatica
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Recomendada
-onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente la posición de montura para todos sus trackers a partir de 2 poses
-onboarding-choose_mounting-manual_mounting = Calibración de montura manual
-onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la posición de montura para cada tracker de manera manual
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Calibración de montura manual
 onboarding-manual_mounting-description = Haz clic en cada tracker y selecciona la forma en la que están montados
-onboarding-manual_mounting-auto_mounting = Calibración de montura automatica
 onboarding-manual_mounting-next = Siguiente paso
 
 ## Tracker automatic mounting setup
@@ -868,18 +842,14 @@ onboarding-automatic_mounting-done-title = Posiciones de monturas calibradas.
 onboarding-automatic_mounting-done-description = ¡Su calibración de montura está completa!
 onboarding-automatic_mounting-done-restart = Volver a intentarlo
 onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ponte en cuclillas en postura de "esquí" con las piernas dobladas, la parte superior del cuerpo inclinada hacia adelante y los brazos doblados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón "Restablecer montaje" y espera 3 segundos antes de que se restablezcan las orientaciones de montaje de los trackers.
 onboarding-automatic_mounting-preparation-title = Preparación
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Presione el botón de "Reinicio completo".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Ponte de pie con los brazos a los lados. Asegúrate de mirar hacia adelante.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Mantenga la posición hasta que finalice el temporizador de 3 segundos.
-onboarding-automatic_mounting-put_trackers_on-title = Ponte los trackers
-onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la posiciones de montura, vamos a utilizar los trackers que acabas de asignar. Colocate todos tus trackers, puedes ver cuales son cuales en la figura de la derecha.
-onboarding-automatic_mounting-put_trackers_on-next = Tengo todos mis trackers en posicion
 onboarding-automatic_mounting-return-home = Hecho
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Ajuste automático de las proporciones
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Conecte el visor RV para usar el ajuste automatico
@@ -1147,6 +1117,9 @@ error_collection_modal-description_v2 =
     Puede cambiar esta configuración más adelante en la sección Comportamiento de la página de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
+
+## Crash screen
+
 
 ## Tracking checklist section
 

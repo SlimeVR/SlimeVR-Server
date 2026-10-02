@@ -56,9 +56,6 @@ body_part-LEFT_UPPER_LEG = Αριστερός μηρός
 body_part-LEFT_LOWER_LEG = Αριστερός αστράγαλος
 body_part-LEFT_FOOT = Αριστερό πόδι
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Τίποτα
@@ -155,8 +152,6 @@ tracker-settings-assignment_section-edit = Επεξεργασία ανάθεση
 tracker-settings-mounting_section = Θέση τοποθέτησης
 tracker-settings-mounting_section-description = Πού είναι τοποθετημένος ο ανιχνευτής;
 tracker-settings-mounting_section-edit = Επεξεργασία τοποθέτησης
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Όνομα ανιχνευτή
 tracker-settings-name_section-description = Δώστε του ένα χαριτωμένο ψευδώνυμο :)
 tracker-settings-name_section-placeholder = Το αριστερό πόδι του NightyBeast
@@ -205,7 +200,6 @@ settings-keybinds_full-reset = Επαναφορά
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-arm_fk-back = Πίσω
 
 ## Gesture control settings (tracker tapping)
 
@@ -284,6 +278,15 @@ onboarding-assign_trackers-side-left = Αριστερά
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
@@ -292,7 +295,7 @@ onboarding-assign_trackers-side-left = Αριστερά
 onboarding-automatic_mounting-title = Βαθμονόμηση τοποθέτησης
 onboarding-automatic_mounting-mounting_reset-title = Βαθμονόμηση τοποθέτησης
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -338,6 +341,9 @@ firmware_tool-loading = Σύνδεση με τον διακομιστή
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

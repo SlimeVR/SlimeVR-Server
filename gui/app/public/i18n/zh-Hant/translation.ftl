@@ -129,35 +129,6 @@ body_part-RIGHT_MIDDLE_TOE = 右腳第三腳趾
 body_part-RIGHT_RING_TOE = 右腳第四腳趾
 body_part-RIGHT_LITTLE_TOE = 右腳小腳趾
 
-## BoardType
-
-board_type-UNKNOWN = 不明
-board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = 自訂主板
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR 開發板
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joy-Con
-board_type-MOCOPI = Sony mocopi
-board_type-WEMOSWROOM02 = WeMos WROOM-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
-board_type-GESTURES = litten Yº by Gestures
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = 通用 nRF
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
-
 ## Proportions
 
 skeleton_bone-NONE = 無
@@ -388,8 +359,6 @@ tracker-settings-use_mag-description =
     
     請先開啟「在追蹤器上啟用磁力計」功能，<magSetting>點選此處以移動至該設定</magSetting>。
 tracker-settings-use_mag-label = 允許使用這個追蹤器的磁力計
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追蹤器名稱
 tracker-settings-name_section-description = 給它起一個可愛的名字吧 owo
 tracker-settings-name_section-placeholder = ↖★煞氣a黑貓☆↘的美味右腿
@@ -474,14 +443,11 @@ settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-outputs = 輸出
 settings-sidebar-routing = 骨骼路由
-settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = 重置
 settings-sidebar-stay_aligned = 持續校正
 settings-sidebar-tracking = 追蹤
 settings-sidebar-trackers = 追蹤器
 settings-sidebar-interface = 使用者介面
-settings-sidebar-vrchat_osc = VRChat OSC
-settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
@@ -515,9 +481,6 @@ settings-routing-duplicate-warning =
 settings-routing-outputs = 輸出方法
 settings-routing-bones = 骨骼
 settings-routing-bones-description = 勾選表示骨骼會以此方法輸出。橫線表示此輸出不支援這個骨骼。關閉自動調整路由以手動選擇。
-settings-routing-output-driver = SteamVR / Monado
-settings-routing-output-vrc_osc = VRChat OSC
-settings-routing-output-vmc = VMC
 settings-routing-output-bone-count = { $routed } / { $accepts } 骨骼已路由
 settings-routing-output-badge-sending = 發送中
 settings-routing-output-sending-description = 已連接，正在透過此輸出方法傳送骨骼資料。
@@ -550,11 +513,8 @@ settings-routing-hands-warning-done = 路由手部追蹤器
 
 ## SteamVR / Monado output settings
 
-settings-driver = SteamVR / Monado
 settings-driver-description = SlimeVR 驅動程式的設定，用於 SteamVR 與 Monado 等。
 settings-driver-enable = 啟用
-settings-driver-enable-description = 透過 SlimeVR 驅動程式傳送追蹤器資訊到 SteamVR 或 Monado。關閉時上述環境無法接收 SlimeVR 的追蹤資訊。
-settings-driver-enable-label = 啟用 SteamVR / Monado
 settings-driver-status-title = 狀態
 settings-driver-status-connection = 驅動程式連接狀態
 settings-driver-status-badge-connected = 已連接
@@ -686,24 +646,12 @@ settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定
 settings-general-fk_settings-resets_settings = 重置設定
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = 重置頭戴顯示器上下旋轉
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = 進行重置時將頭戴顯示器的上下旋轉一併重置，若將頭戴顯示器戴在額頭以進行虛擬直播或動作捕捉時可以使用，進行 VR 時請勿使用。
-settings-general-fk_settings-arm_fk-reset_mode = 手臂重置模式
-settings-general-fk_settings-arm_fk-reset_mode-description = 更改配戴重置時，手臂需要做出的姿勢。
-settings-general-fk_settings-arm_fk-back = 向後彎折
-settings-general-fk_settings-arm_fk-back-description = 預設模式，重置時手肘朝後，前臂向前，類似滑雪。
-settings-general-fk_settings-arm_fk-tpose_up = T-pose（抬起）
-settings-general-fk_settings-arm_fk-tpose_up-description = 完整重置時手臂向下，呈立正姿勢；配戴重置時手臂向兩側伸平。
-settings-general-fk_settings-arm_fk-tpose_down = T-pose（放下）
-settings-general-fk_settings-arm_fk-tpose_down-description = 完整重置時手臂向兩側伸平；配戴重置時手臂向下，呈立正姿勢。
-settings-general-fk_settings-arm_fk-forward = 向前伸平
-settings-general-fk_settings-arm_fk-forward-description = 重置時手臂向前伸平，有利於坐姿進行虛擬直播。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-skeleton_settings-ratios-description = 修改骨架設定的參數，你可能需要在修改後調整軀幹比例。
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = 下脊椎無追蹤器時，從上脊椎推測其餘的脊椎追蹤器位置
 settings-general-fk_settings-skeleton_settings-impute_spine_curvature = 脊椎曲度
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = 從上腿部推測臀部追蹤器的位置
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = 從上腿部的旋轉推測下腿部的旋轉
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
-settings-general-fk_settings-self_localization-description = 動作捕捉模式允許在沒有頭戴顯示器或其他追蹤器時，粗略的追蹤身體骨架的定位。請注意，本功能需要腳部與頭部的追蹤器，並且本功能仍在實驗階段。
 
 ## Gesture control settings (tracker tapping)
 
@@ -782,12 +730,6 @@ settings-general-interface-discord_presence-message =
        *[other] 正在使用 { $amount } 個追蹤器
     }
 settings-interface-behavior-error_tracking = 透過 Sentry.io 收集錯誤資訊
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>你是否同意我們蒐集匿名化的錯誤資料？</h1>
-    
-    <b>我們不會收集個人資訊</b> ，例如你的 IP 位址或無線網路認證資訊。SlimeVR 重視你的隱私！
-    
-    為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
 settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
 settings-interface-behavior-bvh_directory = BVH 紀錄儲存目錄
 settings-interface-behavior-bvh_directory-description = 選擇儲存 BVH 紀錄文件的目錄，如此每次錄製 BVH 時不需要選擇儲存位置。
@@ -835,7 +777,6 @@ settings-serial-send_command-warning-cancel = 取消
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC 追蹤器
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     變更 OSC 追蹤器標準的設定，該標準可用於傳送追蹤器資料到不使用 SteamVR 的應用程式（例如 Quest 單機版）。
@@ -860,7 +801,6 @@ settings-osc-vrchat-status-title = 狀態
 settings-osc-vrchat-status-input = 輸入
 settings-osc-vrchat-status-tracking = 旋轉
 settings-osc-vrchat-status-output = 輸出
-settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = 尚未監聽
 settings-osc-vrchat-status-input-listening = 在 { $port } 埠上監聽
 settings-osc-vrchat-status-input-last-data = 最後從 VRChat 接收資料：{ $elapsed }。
@@ -900,7 +840,6 @@ settings-osc-vrchat-status-badge-unknown = 不明
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     修改 VMC (Virtual Motion Capture) 協定的相關設定，
@@ -1274,18 +1213,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = 要使用哪一種配戴校正方式？
 # Multiline text
 onboarding-choose_mounting-description = 配戴校正可以校正追蹤器放在身上的位置。
-onboarding-choose_mounting-auto_mounting = 自動配戴校正
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = 推薦使用
-onboarding-choose_mounting-auto_mounting-description = 本選項會透過兩個身體姿勢，判斷所有追蹤器的配戴方位
-onboarding-choose_mounting-manual_mounting = 手動配戴校正
-onboarding-choose_mounting-manual_mounting-description = 本選項可以讓你選擇每個追蹤器的配戴方位
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = 手動配戴
 onboarding-manual_mounting-description = 點選每個追蹤器並選擇它們的配戴方式
-onboarding-manual_mounting-auto_mounting = 進行自動設定
 onboarding-manual_mounting-next = 下一步
 
 ## Tracker automatic mounting setup
@@ -1299,7 +1240,6 @@ onboarding-automatic_mounting-done-title = 配戴方向已校正。
 onboarding-automatic_mounting-done-description = 你的配戴方向校準完成！
 onboarding-automatic_mounting-done-restart = 再試一次
 onboarding-automatic_mounting-mounting_reset-title = 配戴重置
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. 以腳尖站立，雙腳朝前。你也能坐在椅子上進行。
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. 按下「腳部校正」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
@@ -1307,13 +1247,9 @@ onboarding-automatic_mounting-preparation-title = 準備
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 請按下「完整重置」按鈕。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直，雙臂放在身體兩側，確保向前直視。
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿勢直到 3 秒倒數結束。
-onboarding-automatic_mounting-preparation-v2-done = 你似乎最近進行過一次完整重置了！
-onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
-onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
-onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
 onboarding-automatic_mounting-return-home = 完成
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = 返回使用縮放比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
@@ -1655,6 +1591,9 @@ error_collection_modal-description_v2 =
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 我不想要
+
+## Crash screen
+
 
 ## Tracking checklist section
 

@@ -61,10 +61,6 @@ body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
 
-## BoardType
-
-board_type-UNKNOWN = Tundmatu
-
 ## Proportions
 
 skeleton_bone-NONE = Mitte midagi
@@ -172,8 +168,6 @@ tracker-settings-assignment_section-edit = Muuda jälgija asukohta
 tracker-settings-mounting_section = Paigaldusasend
 tracker-settings-mounting_section-description = Kuhu on jälgija paigaldatud.
 tracker-settings-mounting_section-edit = Muuda paigaldusasendit
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
 tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
@@ -279,11 +273,9 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Põrandaklõpsat
 settings-general-fk_settings-leg_tweak-toe_snap-description = Varvaste klõpsatus maha üritab ära arvata jalgade pöörlemist, kui jalgade jälgijaid ei kasutata.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Jalg-maas pöörab jalad kokkupuutel maapinnaga paralleelseks.
 settings-general-fk_settings-leg_fk = Jalgade jälgimine
-settings-general-fk_settings-arm_fk-back = Taga
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
 settings-general-fk_settings-skeleton_settings-ratios-description = Muutke skeleti seadete väärtusi. Võimalik, et peate pärast nende muutmist oma proportsioone kohandama.
 settings-general-fk_settings-self_localization-title = Mocapi režiim
-settings-general-fk_settings-self_localization-description = Mocap-režiim võimaldab skeletil ligikaudselt jälgida oma asukohta ilma peakomplekti või muude jälgijateta. Pange tähele, et see nõuab jalgade ja peajälgijate olemasolu ning on endiselt eksperimentaalne.
 
 ## Gesture control settings (tracker tapping)
 
@@ -369,7 +361,6 @@ settings-serial-send_command-warning-cancel = Tühista
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Jälgija
 settings-osc-vrchat-enable = Luba
 settings-osc-vrchat-enable-description = Lülitage andmete sisestamine sisse/välja.
 settings-osc-vrchat-enable-label = Luba
@@ -512,16 +503,20 @@ onboarding-assign_trackers-side-left = Vasak
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = Automaatne paigaldamine
-onboarding-choose_mounting-auto_mounting-description = See tuvastab automaatselt kõigi teie jälgijate paigaldussuuna 2 poosist
-onboarding-choose_mounting-manual_mounting = Käsitsi paigaldamine
-onboarding-choose_mounting-manual_mounting-description = See võimaldab teil valida iga jälgija paigaldussuuna käsitsi
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Käsitsi paigaldamine
 onboarding-manual_mounting-description = Vajutage iga jälgija peale ja valige, kuidas see on paigaldatud
-onboarding-manual_mounting-auto_mounting = Automaatne paigaldamine
 onboarding-manual_mounting-next = Järgmine Samm
 
 ## Tracker automatic mounting setup
@@ -535,14 +530,10 @@ onboarding-automatic_mounting-done-title = Paigalduse pööre kalibreeritud.
 onboarding-automatic_mounting-done-description = Teie paigalduse kalibreerimine on valmis!
 onboarding-automatic_mounting-done-restart = Minge algusese
 onboarding-automatic_mounting-mounting_reset-title = Paigalduse lähtestamine
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kükita suusaasendis, jalad kõverad, ülakeha kallutatud ettepoole ja käed kõverad.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Vajutage "Lähtesta Paigaldusasend" nuppu ja oodage 3 sekuntit ja jälgijate paigaldusasend lähtestatakse.
 onboarding-automatic_mounting-preparation-title = Ettevalmistus
-onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peale
-onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
-onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -635,6 +626,9 @@ vrc_config-tracker_model-UNKNOWN = Tundmatu
 vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

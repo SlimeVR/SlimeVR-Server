@@ -100,16 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Prawy mały proksymalny
 body_part-RIGHT_LITTLE_INTERMEDIATE = Prawy mały pośredni
 body_part-RIGHT_LITTLE_DISTAL = Prawy mały dystalny
 
-## BoardType
-
-board_type-UNKNOWN = Nieznany
-board_type-NODEMCU = Kontroler NodeMCU
-board_type-CUSTOM = Płytka niestandardowa
-board_type-TTGO_TBASE = Podstawa T TTGO
-board_type-ESP01 = Zobacz materiał ESP-01
-board_type-SLIMEVR_DEV = SlimeVR Płytka Deweloperska
-board_type-GLOVE_IMU_SLIMEVR_DEV = Rękawica SlimeVR Dev IMU
-
 ## Proportions
 
 skeleton_bone-NONE = Brak
@@ -307,8 +297,6 @@ tracker-settings-use_mag-description =
     ¶
     Najpierw musisz zezwolić na użycie magnetometru, <magSetting>kliknij tutaj, aby przejść do ustawienia</magSetting> .
 tracker-settings-use_mag-label = Pozwól na magnetometr
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nazwa Trackera
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
 tracker-settings-name_section-placeholder = Lewa noga Yexo
@@ -473,19 +461,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Dane pozycji
 settings-general-fk_settings-ik-use_position = Użyj danych o pozycji
 settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
-settings-general-fk_settings-arm_fk-reset_mode-description = Zmień pozycję ramienia oczekiwaną przy resetowaniu montażu.
-settings-general-fk_settings-arm_fk-back = Wstecz
-settings-general-fk_settings-arm_fk-back-description = Tryb domyślny, w którym górne ramiona cofają się, a dolne ramiona przesuwają się do przodu.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (w górę)
-settings-general-fk_settings-arm_fk-tpose_up-description = Oczekuje, że twoje ręcę będą opuszczone podczas pelnego resetu i wystawione pod kątem 90 stopni na boki podczas resetu montażu.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (w dół)
-settings-general-fk_settings-arm_fk-tpose_down-description = Oczekuje, że Twoje ramiona będą ustawione pod kątem w 90 stopni na boki podczas Pełnego Resetu i w dół po bokach podczas Resetu Montażowego.
-settings-general-fk_settings-arm_fk-forward = Do przodu
-settings-general-fk_settings-arm_fk-forward-description = Oczekuje, że Twoje ramiona będą uniesione pod kątem 90 stopni do przodu. Przydatne w VTubingu.
 settings-general-fk_settings-skeleton_settings-ratios = Proporcje szkieletu
 settings-general-fk_settings-skeleton_settings-ratios-description = Zmień wartości ustawień szkieletu. Po zmianie może być konieczne dostosowanie proporcji.
 settings-general-fk_settings-self_localization-title = Tryb Mocap
-settings-general-fk_settings-self_localization-description = Tryb Mocap pozwala szkieletowi z grubsza śledzić własną pozycję bez headsetu lub innych trackerów. Pamiętaj, że wymaga to śledzenia stóp i głowy do działania i nadal jest eksperymentalne.
 
 ## Gesture control settings (tracker tapping)
 
@@ -571,12 +549,6 @@ settings-general-interface-discord_presence-message =
        *[many] Używanie { $amount } trackerów
     }
 settings-interface-behavior-error_tracking = Zbieranie błędów za pomocą Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Czy wyrażasz zgodę na gromadzenie anonimowych danych o błędach?</h1>
-    
-    <b>Nie gromadzimy danych osobowych</b> , takich jak adres IP lub dane uwierzytelniające sieci bezprzewodowej. SlimeVR ceni Twoją prywatność!
-    
-    Aby zapewnić jak najlepsze wrażenia użytkownika, gromadzimy anonimowe raporty o błędach, wskaźniki wydajności i informacje o systemie operacyjnym. Pomaga nam to wykrywać błędy i problemy ze SlimeVR. Dane te są zbierane za pomocą Sentry.io.
 settings-interface-behavior-error_tracking-label = Wysyłanie błędów do deweloperów
 settings-interface-behavior-bvh_directory = Ścieżka do zapisywania nagrań BVH
 settings-interface-behavior-bvh_directory-description = Wybierz ścieżkę domyślną, w której chcesz zapisywać nagrania BVH.
@@ -610,7 +582,6 @@ settings-serial-send_command-warning-cancel = Anuluj
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Zmień ustawienia specyficzne dla standardu OSC Trackers używanego do wysyłania¶
@@ -881,18 +852,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Jakiej metody kalibracji montażu użyć?
 # Multiline text
 onboarding-choose_mounting-description = Orientacja montażu koryguje umieszczenie trackerów na ciele.
-onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Zalecane
-onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
-onboarding-choose_mounting-manual_mounting = Montaż ręczny
-onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Pozycjonowanie Manualne
 onboarding-manual_mounting-description = Kliknij na każdy tracker i wybierz w jaki sposób są zamontowane
-onboarding-manual_mounting-auto_mounting = Automatyczne połączenie
 onboarding-manual_mounting-next = Następny krok
 
 ## Tracker automatic mounting setup
@@ -906,7 +879,6 @@ onboarding-automatic_mounting-done-title = Rotacja trackerów została skalibrow
 onboarding-automatic_mounting-done-description = Kalibracja skończona!
 onboarding-automatic_mounting-done-restart = Cofnij się na początek
 onboarding-automatic_mounting-mounting_reset-title = Kalibracja Pozycji
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Zrób pozycje "na Małysza" z wygiętymi nogami, tułowiem pochylonym do przodu z wygiętymi rękami.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Naciśnij "Zresetuj Położenie" i poczekaj 3 sekundy zanim trackery się zresetują.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stań na palcach z obiema stopami skierowanymi do przodu. Alternatywnie możesz to zrobić siedząc na krześle.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Naciśnij "Kalibracja Stóp" i poczekaj 3 sekundy zanim zresetuje pozycje.
@@ -914,12 +886,9 @@ onboarding-automatic_mounting-preparation-title = Przygotowania
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Naciśnij przycisk "Pełny reset".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stań prosto z rękami po bokach. Upewnij się, że patrzysz przed siebie.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Utrzymaj pozycję, aż skończy się 3-sekundowy timer.
-onboarding-automatic_mounting-put_trackers_on-title = Załóż trackery
-onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rotacje, użyjemy trackerów które przypisano przed chwilą. Załóż wszystkie trackery, możesz je odróznić na postaci po prawej.
-onboarding-automatic_mounting-put_trackers_on-next = Wszystkie trackery założone
 onboarding-automatic_mounting-return-home = Gotowe
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Wróć do skalowania proporcji
 onboarding-manual_proportions-fine_tuning_button = Automatyczne dostrajanie proporcji
@@ -1245,6 +1214,9 @@ error_collection_modal-description_v2 =
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę
+
+## Crash screen
+
 
 ## Tracking checklist section
 

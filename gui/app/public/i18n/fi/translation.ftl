@@ -62,10 +62,6 @@ body_part-LEFT_UPPER_LEG = Vasen reisi
 body_part-LEFT_LOWER_LEG = Vasen nilkka
 body_part-LEFT_FOOT = Vasen jalkaterä
 
-## BoardType
-
-board_type-UNKNOWN = Tuntematon
-
 ## Proportions
 
 skeleton_bone-NONE = Ei mikään
@@ -179,8 +175,6 @@ tracker-settings-assignment_section-edit = Muokkaa määritystä
 tracker-settings-mounting_section = Asennusasento
 tracker-settings-mounting_section-description = Mihin jäljitin on asennettu?
 tracker-settings-mounting_section-edit = Muokkaa asennusta
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jäljittimen nimi
 tracker-settings-name_section-description = Anna sille söpö lempinimi :)
 tracker-settings-name_section-placeholder = NightyBeast vasen jalka
@@ -275,15 +269,9 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi v
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
 settings-general-fk_settings-leg_fk = Jalkojen jäljitys
-settings-general-fk_settings-arm_fk-reset_mode-description = Muuta, mikä käsivarren asentoa odotetaan asennuksen nollaukselle.
-settings-general-fk_settings-arm_fk-back = Takaisin
-settings-general-fk_settings-arm_fk-tpose_up = T-asento (ylös)
-settings-general-fk_settings-arm_fk-tpose_down = T-asento (alas)
-settings-general-fk_settings-arm_fk-forward = Eteenpäin
 settings-general-fk_settings-skeleton_settings-ratios = Luurankosuhteet
 settings-general-fk_settings-skeleton_settings-ratios-description = Muuta luurankoasetusten arvoja. Saatat joutua säätämään mittasuhteitasi muutosten jälkeen.
 settings-general-fk_settings-self_localization-title = Mocap-tila
-settings-general-fk_settings-self_localization-description = Mocap-tila sallii luurangon karkeasti seurata omaa sijaintiaan ilman laseja tai muita jäljittimiä. Huomioi, että tämä vaatii jalka- ja pääjäljittimien toimimista ja on vielä kokeellinen.
 
 ## Gesture control settings (tracker tapping)
 
@@ -380,7 +368,6 @@ settings-serial-send_command-warning-cancel = Peruuta
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC -jäljittimet
 settings-osc-vrchat-enable = Käytä
 settings-osc-vrchat-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
 settings-osc-vrchat-enable-label = Käytä
@@ -594,16 +581,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Mitä asennuskalibrointimenetelmää käytetään?
 # Multiline text
 onboarding-choose_mounting-description = Asennussuuntaus korjaa jäljittimien sijoittelun kehossasi.
-onboarding-choose_mounting-auto_mounting = Automaattinen asennus
-onboarding-choose_mounting-auto_mounting-description = Tämä tunnistaa automaattisesti kaikkien jäljittimiesi asennussuunnat 2 asennosta
-onboarding-choose_mounting-manual_mounting = Manuaalinen asennus
-onboarding-choose_mounting-manual_mounting-description = Näin voit valita asennussuunnan manuaalisesti kullekin jäljittimelle
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuaalinen Asennus
 onboarding-manual_mounting-description = Napsauta jokaista jäljitintä ja valitse, mihin suuntaan ne on asennettu
-onboarding-manual_mounting-auto_mounting = Automaattinen asennus
 onboarding-manual_mounting-next = Seuraava vaihe
 
 ## Tracker automatic mounting setup
@@ -617,14 +608,10 @@ onboarding-automatic_mounting-done-title = Asennuskierrokset kalibroitu.
 onboarding-automatic_mounting-done-description = Asennuskalibrointi on valmis!
 onboarding-automatic_mounting-done-restart = Yritä uudelleen
 onboarding-automatic_mounting-mounting_reset-title = Asennuksen Nollaus
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kyykisty "hiihtoasentoon" siten, että jalat ovat koukussa, ylävartalo kallistettuna eteenpäin ja kädet koukussa.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Paina "Nollaa Asennus" -painiketta ja odota 3 sekuntia, ennen kuin jäljittimien asennuskierrot nollautuvat.
 onboarding-automatic_mounting-preparation-title = Valmistelu
-onboarding-automatic_mounting-put_trackers_on-title = Laita jäljittimet päällesi
-onboarding-automatic_mounting-put_trackers_on-description = Kalibroidaksemme asennuskierrokset käytämme juuri määrittämiäsi jäljittimiä. Laita kaikki jäljittimet päällesi, näet mitkä ovat mitäkin oikealla olevassa kuvassa.
-onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -714,6 +701,9 @@ vrc_config-tracker_model-UNKNOWN = Tuntematon
 vrc_config-avatar_measurement_type-UNKNOWN = Tuntematon
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

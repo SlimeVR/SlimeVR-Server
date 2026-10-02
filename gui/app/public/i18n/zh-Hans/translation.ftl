@@ -101,18 +101,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = 右小指近端
 body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中端
 body_part-RIGHT_LITTLE_DISTAL = 右小指远端
 
-## BoardType
-
-board_type-UNKNOWN = 未知
-board_type-CUSTOM = 自定义开发板
-board_type-SLIMEVR_DEV = SlimeVR 开发板
-board_type-MOCOPI = 索尼 Mocopi
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR开发版IMU手套
-board_type-GESTURES = 手势
-board_type-GENERIC_NRF = nRF系列
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR蝴蝶 开发版
-board_type-SLIMEVR_BUTTERFLY = SlimeVR蝴蝶
-
 ## Proportions
 
 skeleton_bone-NONE = 无
@@ -318,8 +306,6 @@ tracker-settings-use_mag-description =
     
     请先启用「在追踪器上启用磁力计」功能，<magSetting>点选此处以移动至该设定</magSetting>。
 tracker-settings-use_mag-label = 允许使用这个追踪器的磁力计
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追踪器名称
 tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=~
 tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
@@ -489,19 +475,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = 位置数据
 settings-general-fk_settings-ik-use_position = 使用位置数据
 settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
-settings-general-fk_settings-arm_fk-reset_mode-description = 更改佩戴重置时使用的手臂姿势。
-settings-general-fk_settings-arm_fk-back = 向后弯折
-settings-general-fk_settings-arm_fk-back-description = 默认，重置时大臂向后，小臂向前，类似滑雪。
-settings-general-fk_settings-arm_fk-tpose_up = T-pose（抬起）
-settings-general-fk_settings-arm_fk-tpose_up-description = 完整重置时手臂垂下，呈立正姿势；佩戴重置时手臂向两侧伸平。
-settings-general-fk_settings-arm_fk-tpose_down = T-pose（放下）
-settings-general-fk_settings-arm_fk-tpose_down-description = 完整重置时手臂向两侧伸平；佩戴重置时手臂垂下，呈立正姿势。
-settings-general-fk_settings-arm_fk-forward = 向前伸平
-settings-general-fk_settings-arm_fk-forward-description = 重置时手臂向前伸平，有利于坐姿进行虚拟直播。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-skeleton_settings-ratios-description = 更改骨架设置的参数。您可能需要在更改后调整身体比例。
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
-settings-general-fk_settings-self_localization-description = 动作捕捉模式允许在没有头戴设备或其他追踪器的情况下粗略地跟踪骨架姿态。请注意，本功能需要脚部和头部追踪器，且现阶段依然是实验性的。
 
 ## Gesture control settings (tracker tapping)
 
@@ -576,12 +552,6 @@ settings-general-interface-discord_presence-message =
        *[other] 正在使用 { $amount } 个追踪器
     }
 settings-interface-behavior-error_tracking = 通过 Sentry.io 收集错误信息
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>您是否同意收集匿名的错误信息？</h1>
-    
-    <b>我们不会收集您的个人信息</b> ，例如您的 IP 地址或 WiFi 信息。SlimeVR 重视您的隐私！
-    
-    为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
 settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
 settings-interface-behavior-bvh_directory = BVH 记录保存目录
 settings-interface-behavior-bvh_directory-description = 选择保存 BVH 记录文件的目录
@@ -615,7 +585,6 @@ settings-serial-send_command-warning-cancel = 取消
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     修改与OSC追踪器相关的设置，可用于在不使用SteamVR时传输追踪数据（如一体机模式）。
@@ -914,18 +883,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = 使用哪种方法校准佩戴朝向？
 # Multiline text
 onboarding-choose_mounting-description = 佩戴方向校准用于确定您身上的追踪器的朝向。
-onboarding-choose_mounting-auto_mounting = 自动设置佩戴方向
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = 推荐使用
-onboarding-choose_mounting-auto_mounting-description = 这将需要你做2个动作以自动检测所有追踪器的佩戴方向
-onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
-onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = 手动佩戴
 onboarding-manual_mounting-description = 单击每个追踪器并选择它们的佩戴方式
-onboarding-manual_mounting-auto_mounting = 自动设置佩戴方向
 onboarding-manual_mounting-next = 下一步
 
 ## Tracker automatic mounting setup
@@ -939,7 +910,6 @@ onboarding-automatic_mounting-done-title = 佩戴方向已校准。
 onboarding-automatic_mounting-done-description = 你的佩戴方向校准完成！
 onboarding-automatic_mounting-done-restart = 再试一次
 onboarding-automatic_mounting-mounting_reset-title = 佩戴重置
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 双腿弯曲以滑雪的姿势蹲下，上身向前倾斜，手臂弯曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 按下佩戴重置按钮并等待 3 秒钟，然后追踪器的佩戴方向将被重置。
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. 双脚朝前，踮起脚尖站立。或者，您也可以坐在椅子上完成这个动作。
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. 点击“脚部校准”按钮并等待 3 秒，追踪器的佩戴方向将会重置。
@@ -947,12 +917,9 @@ onboarding-automatic_mounting-preparation-title = 准备
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 按下“完全重置”按钮。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直并向前看，双臂放在身体两侧。
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿势，直到 3 秒计时结束。
-onboarding-automatic_mounting-put_trackers_on-title = 穿戴好追踪器
-onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴方向，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
-onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
 onboarding-automatic_mounting-return-home = 完成
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = 返回使用缩放比例
 onboarding-manual_proportions-fine_tuning_button = 自动微调身体比例
@@ -1273,6 +1240,9 @@ error_collection_modal-description_v2 =
     您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了
+
+## Crash screen
+
 
 ## Tracking checklist section
 

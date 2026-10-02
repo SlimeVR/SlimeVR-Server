@@ -97,11 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Höger ringfinger proximal falang
 body_part-RIGHT_LITTLE_INTERMEDIATE = Höger lillfinger mellanfalang
 body_part-RIGHT_LITTLE_DISTAL = Höger lillfinger distal falang
 
-## BoardType
-
-board_type-UNKNOWN = Okänd
-board_type-CUSTOM = Anpassat kretskort
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -291,8 +286,6 @@ tracker-settings-use_mag-description =
     
     Du behöver tillåta magnetometer-användning först <magSetting> klicka här för att gå till inställningen </magSetting>.
 tracker-settings-use_mag-label = Tillåt magnetometer
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Sensorns namn
 tracker-settings-name_section-description = Ge den ett gulligt smeknamn :)
 tracker-settings-name_section-placeholder = Bokstensmannens vänstra ben
@@ -442,19 +435,9 @@ settings-general-fk_settings-leg_fk = Spårning av ben
 settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
-settings-general-fk_settings-arm_fk-reset_mode-description = Ändra vilken armställning som förväntas för återställning av montering.
-settings-general-fk_settings-arm_fk-back = Tillbaka
-settings-general-fk_settings-arm_fk-back-description = Standardläget, där överarmarna går bakåt och underarmarna framåt.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (upp)
-settings-general-fk_settings-arm_fk-tpose_up-description = Förväntar sig att armarna ska vara nere på sidorna under Full Reset och 90 grader upp på sidorna under Mounting Reset.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (nedåt)
-settings-general-fk_settings-arm_fk-tpose_down-description = Förväntar sig att armarna ska vara 90 grader upp åt sidorna under Full Reset och nedåt på sidorna under Mounting Reset.
-settings-general-fk_settings-arm_fk-forward = Framåt
-settings-general-fk_settings-arm_fk-forward-description = Förväntar sig att dina armar är upp 90 grader framåt. Användbart för VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
 settings-general-fk_settings-self_localization-title = Mocap-läge
-settings-general-fk_settings-self_localization-description = Mocap Mode gör att skelettet i stort sett kan följa sin egen position utan headset eller andra spårare. Observera att detta kräver fot- och huvudspårare för att fungera och att det fortfarande är experimentellt.
 
 ## Gesture control settings (tracker tapping)
 
@@ -515,12 +498,6 @@ settings-general-interface-discord_presence = Dela aktivitet på Discord
 settings-general-interface-discord_presence-description = Berättar för din Discord-klient att du använder SlimeVR tillsammans med antalet IMU-trackers du använder.
 settings-general-interface-discord_presence-label = Dela aktivitet på Discord
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Tillåter du samlingen av anonym error-data?</h1>
-    
-    <b>Vi samlar inte personlig information</b> så som din IP adress eller trådlösa referenser. Slimevr värdesätter din integritet!
-    
-    För att tillhandhålla den bästa användarupplevelsen, så samlar vi anonyma error-raporter, prestandamått och operativsystems-info. Detta hjälper oss upptäcka buggar och problem med Slimevr. Dessa rapporterna samlas via Sentry.io.
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
 
 ## Serial settings
@@ -546,7 +523,6 @@ settings-serial-send_command-warning-cancel = Avbryt
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC spårare
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vrchat-enable-label = Aktivera
@@ -569,7 +545,6 @@ settings-osc-vrchat-status-badge-unknown = Okänd
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtuell rörelseinspelning
 settings-osc-vmc-enable = Aktivera
 settings-osc-vmc-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vmc-enable-label = Aktivera
@@ -789,18 +764,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Vilken kalibrerings-metod ska man använda?
 # Multiline text
 onboarding-choose_mounting-description = Monteringsriktningen korrigerar för placeringen av trackers på din kropp.
-onboarding-choose_mounting-auto_mounting = Automatisk montering.
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Rekomenderad
-onboarding-choose_mounting-auto_mounting-description = Detta kommer automatiskt känna av monteringsriktningen av alla dina trackers från 2 positioner
-onboarding-choose_mounting-manual_mounting = Manuell montering
-onboarding-choose_mounting-manual_mounting-description = Detta kommer låta dig välja monteringsriktningen manuellt för varje tracker
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Klicka på varje tracker och välj vilket håll de är monterade på
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Nästa steg
 
 ## Tracker automatic mounting setup
@@ -814,17 +791,13 @@ onboarding-automatic_mounting-done-title = Monterings orientering kalibrerad.
 onboarding-automatic_mounting-done-description = Din monterings kalibrering är klar!
 onboarding-automatic_mounting-done-restart = Försök igen
 onboarding-automatic_mounting-mounting_reset-title = Monterings-återställning
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Huka i en "Skidåknings" position med böjda ben, framåtlutad överkropp, och böjda armar.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Tryck på "Återställ montering" knappen och vänta 3 sekunder innan trackerns montering kommer att återställas.
 onboarding-automatic_mounting-preparation-title = Förberedning
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Tryck på "Full återställning" knappen.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stå rakt upp med dina armar vid sidan av dig. Kom ihåg att kolla framåt.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Håll positioner tills 3s timern går ut.
-onboarding-automatic_mounting-put_trackers_on-title = Sätt på dig dina trackers
-onboarding-automatic_mounting-put_trackers_on-description = För att kalibrera monterings-riktningen, så kommer i att använda trackersen du precis tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i figuren till höger.
-onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla trackers
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
@@ -981,6 +954,9 @@ error_collection_modal-description_v2 =
     Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
 error_collection_modal-cancel = Jag vill inte
+
+## Crash screen
+
 
 ## Tracking checklist section
 

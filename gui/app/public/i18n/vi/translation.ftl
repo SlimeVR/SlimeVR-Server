@@ -66,10 +66,6 @@ body_part-LEFT_UPPER_LEG = Bắp chân trái
 body_part-LEFT_LOWER_LEG = Cẳng chân trái
 body_part-LEFT_FOOT = Bàn chân trái
 
-## BoardType
-
-board_type-UNKNOWN = Không rõ
-
 ## Proportions
 
 skeleton_bone-NONE = Chưa được gán
@@ -188,8 +184,6 @@ tracker-settings-assignment_section-edit = Thay đổi vị trí
 tracker-settings-mounting_section = Vị trí đặt
 tracker-settings-mounting_section-description = Tracker được đặt ở đâu?
 tracker-settings-mounting_section-edit = Thay đổi chỗ đặt
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
 tracker-settings-name_section-description = Đặt cho nó một cái tên đẹp :3
 tracker-settings-name_section-placeholder = Chân trái của JINODK
@@ -306,19 +300,9 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Ngăn xuyên sà
 settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
-settings-general-fk_settings-arm_fk-reset_mode-description = Thay đổi tư thế cánh tay để đặt lại hướng gắn tracker.
-settings-general-fk_settings-arm_fk-back = Khuỷu tay ra sau
-settings-general-fk_settings-arm_fk-back-description = Chế độ mặc định, với cánh tay trên trỏ về phía sau và cánh tay dưới hướng về phía trước.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose
-settings-general-fk_settings-arm_fk-tpose_up-description = Hai tay của bạn sẽ hướng xuống ở hai bên khi đặt lại hoàn toàn, và đưa lên 90 độ sang hai bên khi đặt lại hướng gắn tracker.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (ngược lại)
-settings-general-fk_settings-arm_fk-tpose_down-description = Hai tay của bạn sẽ đưa lên 90 độ sang hai bên khi đặt lại hoàn toàn, và hai tay hướng xuống hai bên khi đặt lại hướng gắn tracker.
-settings-general-fk_settings-arm_fk-forward = Hai tay ra trước
-settings-general-fk_settings-arm_fk-forward-description = Hai cánh tay của bạn nâng lên 90 độ về phía trước. Hữu dụng cho việc VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Tỷ lệ khung xương
 settings-general-fk_settings-skeleton_settings-ratios-description = Thay đổi các giá trị của cài đặt bộ xương. Bạn có thể cần phải điều chỉnh tỷ lệ của bạn sau khi thay đổi những điều này.
 settings-general-fk_settings-self_localization-title = Chế độ Mocap
-settings-general-fk_settings-self_localization-description = Chế độ Mocap cho phép bộ xương theo dõi đại khái vị trí của chính nó mà không cần kính VR hoặc các thiết bị theo dõi khác. Lưu ý rằng điều này yêu cầu bộ theo dõi chân và đầu để hoạt động và chức năng này vẫn đang trong quá trình thử nghiệm.
 
 ## Gesture control settings (tracker tapping)
 
@@ -418,7 +402,6 @@ settings-serial-send_command-warning-cancel = Hủy
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Thay đổi cài đặt cụ thể cho OSC Trackers được sử dụng để gửi
@@ -648,18 +631,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Bạn muốn dùng phương pháp hiểu chuần nào?
 # Multiline text
 onboarding-choose_mounting-description = Hướng lắp đặt chính xác cho vị trí của thiết bị theo dõi trên cơ thể của bạn.
-onboarding-choose_mounting-auto_mounting = Cân chỉnh tự động
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Khuyến khích dùng
-onboarding-choose_mounting-auto_mounting-description = Điều này sẽ tự động phát hiện các hướng lắp đặt cho tất cả các thiết bị của bạn từ 2 tư thế
-onboarding-choose_mounting-manual_mounting = Cân chỉnh thủ công
-onboarding-choose_mounting-manual_mounting-description = Điều này sẽ cho phép bạn chọn hướng lắp theo cách thủ công cho từng thiết bị
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Cân chỉnh thủ công
 onboarding-manual_mounting-description = Chọn từng tracker và chọn hướng nó được gắn
-onboarding-manual_mounting-auto_mounting = Cân chỉnh tự động
 onboarding-manual_mounting-next = Tiếp tục
 
 ## Tracker automatic mounting setup
@@ -673,14 +658,10 @@ onboarding-automatic_mounting-done-title = Đã cân chỉnh hướng gắn
 onboarding-automatic_mounting-done-description = Cài đặt vị trí đã hoàn thành!
 onboarding-automatic_mounting-done-restart = Thử lại
 onboarding-automatic_mounting-mounting_reset-title = Đặt lại hướng gắn
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Đứng khom người như tư thế trượt tuyết với đầu gối khom lại, thân trên hướng tới trước và hai tay co lại để giữ thăng bằng như hình bên
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Nhấn nút đặt lại và chờ 3 giây trước khi hệ thống cân chỉnh hướng gắn tracker
 onboarding-automatic_mounting-preparation-title = Chuẩn bị tư thế
-onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
-onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
-onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -804,6 +785,9 @@ vrc_config-tracker_model-UNKNOWN = Không rõ
 vrc_config-avatar_measurement_type-UNKNOWN = Không rõ
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

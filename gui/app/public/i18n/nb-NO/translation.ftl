@@ -77,11 +77,6 @@ body_part-LEFT_MIDDLE_INTERMEDIATE = Venstre middels langfinger
 body_part-LEFT_MIDDLE_DISTAL = Venstre yterste langfinger
 body_part-LEFT_RING_PROXIMAL = Venstre innerste ring
 
-## BoardType
-
-board_type-UNKNOWN = Ukjent
-board_type-CUSTOM = Egendefinert brett
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -175,8 +170,6 @@ tracker-settings-assignment_section-edit = Endre tildeling
 tracker-settings-mounting_section = Monterings posisjon
 tracker-settings-mounting_section-description = Hvor er trackeren montert?
 tracker-settings-mounting_section-edit = Endre montering
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Gi den et søtt kallenavn :)
 tracker-settings-name_section-placeholder = ~Thͭiͪaͥsͣˢ~ venstre ben
@@ -276,7 +269,6 @@ settings-general-fk_settings-leg_tweak-floor_clip = Gulv-clip
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating korreksjon
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korreksjon styrke
-settings-general-fk_settings-arm_fk-back = Bak
 
 ## Gesture control settings (tracker tapping)
 
@@ -309,12 +301,6 @@ settings-general-interface-lang-placeholder = Velg språket du vil bruke
 
 settings-general-interface-dev_mode = Utvikler modus
 settings-general-interface-dev_mode-label = Utvikler modus
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
-    
-    <b>Vi samler ikke inn personlig informasjon</b> slik som din IP-adresse eller trådløs-legitimasjon. SlimeVR verdsetter ditt personvern!
-    
-    For å gi deg den beste brukeropplevelsen, samler vi inn anonymiserte feilrapporter, ytelsesmålinger og informasjon om operativsystemet. Dette hjelper oss med å oppdage feil og problemer med SlimeVR. Disse beregningene samles inn via Sentry.io.
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
 ## Serial settings
@@ -340,7 +326,6 @@ settings-serial-send_command-warning-cancel = Avslutt
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackere
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skru av/på utsending og mottakelse av data.
 settings-osc-vrchat-enable-label = Aktiver
@@ -460,14 +445,20 @@ onboarding-assign_trackers-side-left = Venstre
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = Automatisk montering
-onboarding-choose_mounting-manual_mounting = Sett opp montering manuelt
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Trykk på en hver tracker og velg hvilken vei de er montert
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Neste steg
 
 ## Tracker automatic mounting setup
@@ -481,14 +472,10 @@ onboarding-automatic_mounting-done-title = Monterings-rotasjoner kalibrert.
 onboarding-automatic_mounting-done-description = Din monterings-kalibrasjon er fullført!
 onboarding-automatic_mounting-done-restart = Tilbake til start
 onboarding-automatic_mounting-mounting_reset-title = Monterings nullstilling
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Gjør knebøy som om du står på ski, bøyde knær, overkroppen rettet forover og armer bøyd.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Trykk på "Nullstill montering" knappen og vent 3 sekunder før trackernes monterings-rotasjon nullstilles.
 onboarding-automatic_mounting-preparation-title = Forberedning
-onboarding-automatic_mounting-put_trackers_on-title = Ta på deg dine trackere
-onboarding-automatic_mounting-put_trackers_on-description = For å kalibrere monterings-rotasjonene, må vi bruke trackerne du akkurat tildelte. Ta på deg alle dine trackere, du kan se hvem som er hvem i figuren til høyre.
-onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -570,6 +557,9 @@ vrc_config-tracker_model-UNKNOWN = Ukjent
 vrc_config-avatar_measurement_type-UNKNOWN = Ukjent
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

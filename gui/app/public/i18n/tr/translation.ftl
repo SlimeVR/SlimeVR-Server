@@ -100,13 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Sağ küçük parmağın proksimal falanks kem
 body_part-RIGHT_LITTLE_INTERMEDIATE = Sağ küçük parmağın orta falanks kemiği
 body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
-## BoardType
-
-board_type-UNKNOWN = Bilinmeyen
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
-board_type-GESTURES = Hareketler
-board_type-GENERIC_NRF = Jenerik nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Yok
@@ -246,8 +239,6 @@ tracker-infos-board_type = Ana kart
 tracker-settings-back = Takipçi listesine geri dön
 tracker-settings-title = Takipçi ayarları
 tracker-settings-assignment_section-description = Tracker'in vücudun hangi kısmına atandığı.
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Takipçi adı
 tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
 tracker-settings-name_section-label = Takipçi adı
@@ -306,7 +297,6 @@ settings-keybinds-recorder-modal-cancel-button = İptal
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_fk = Bacak takibi
-settings-general-fk_settings-arm_fk-back = Arka
 
 ## Gesture control settings (tracker tapping)
 
@@ -399,13 +389,22 @@ onboarding-assign_trackers-side-left = Sol
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -457,6 +456,9 @@ vrc_config-tracker_model-UNKNOWN = Bilinmeyen
 vrc_config-avatar_measurement_type-UNKNOWN = Bilinmeyen
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

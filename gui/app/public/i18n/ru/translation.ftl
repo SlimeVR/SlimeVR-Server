@@ -97,12 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Правый мизинец (проксима�
 body_part-RIGHT_LITTLE_INTERMEDIATE = Правый мизинец (промежуточная фаланга)
 body_part-RIGHT_LITTLE_DISTAL = Правый мизинец (дистальная фаланга)
 
-## BoardType
-
-board_type-UNKNOWN = Неизвестно
-board_type-CUSTOM = Кастомная Плата
-board_type-WRANGLER = Joycon через Wrangler
-
 ## Proportions
 
 skeleton_bone-NONE = Пусто
@@ -296,8 +290,6 @@ tracker-settings-use_mag = Разрешить использование маг�
 # Multiline!
 tracker-settings-use_mag-description = Должен ли этот трекер использовать магнитометр для компенсации дрифта, когда использование магнитометра разрешено?<b>Пожалуйста, не выключайте трекер во время включения данной функции!</b> Вам сначала нужно разрешить использование магнитометра, <magSetting>нажмите здесь чтобы зайти в настройки</magSetting>.
 tracker-settings-use_mag-label = Разрешить магнитометр
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Имя трекера
 tracker-settings-name_section-description = Дайте ему милое имя :)
 tracker-settings-name_section-placeholder = Левая нога NightyBeast'а
@@ -450,19 +442,9 @@ settings-general-fk_settings-leg_fk = Отслеживание ног
 settings-general-fk_settings-enforce_joint_constraints = Ограничения Скелета
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Применять ограничения
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Предотвращает вращение суставов за пределы их возможностей
-settings-general-fk_settings-arm_fk-reset_mode-description = Изменение ожидаемой позы руки для сброса крепления.
-settings-general-fk_settings-arm_fk-back = Назад
-settings-general-fk_settings-arm_fk-back-description = Режим по умолчанию, в котором плечи идут назад, а предплечья — вперед.
-settings-general-fk_settings-arm_fk-tpose_up = Т-поза (вверх)
-settings-general-fk_settings-arm_fk-tpose_up-description = Ожидает, что ваши руки будут опущены во время Полного Сброса, и на 90 градусов вверх в стороны во время сброса крепления.
-settings-general-fk_settings-arm_fk-tpose_down = Т-поза (вниз)
-settings-general-fk_settings-arm_fk-tpose_down-description = Ожидает, что ваши руки будут подняты на 90 градусов вверх во время Полного Сброса, и опущены во время сброса крепления.
-settings-general-fk_settings-arm_fk-forward = Вперёд
-settings-general-fk_settings-arm_fk-forward-description = Ожидает, что ваши руки будут подняты на 90 градусов вперед. Полезно для VTube'инга.
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
 settings-general-fk_settings-self_localization-title = Режим Mocap
-settings-general-fk_settings-self_localization-description = Режим Mocap позволяет скелету примерно отслеживать свое собственное положение без использования гарнитуры или других трекеров. Обратите внимание, что для работы этого требуются трекеры ног и головы, и это все еще экспериментальный метод.
 
 ## Gesture control settings (tracker tapping)
 
@@ -548,10 +530,6 @@ settings-general-interface-discord_presence-message =
        *[many] Используется { $amount } трекеров
     }
 settings-interface-behavior-error_tracking = Сбор ошибок через Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Даете ли вы согласие на сбор анонимных данных об ошибках?</h1>
-    <b>Мы не собираем личную информацию</b>, такую как ваш IP адрес или учётные данные беспроводной сети. SlimeVR ценит вашу конфиденциальность!
-    Чтобы обеспечить наилучший опыт для пользователей, мы собираем анонимные отчёты об ошибках, показатели производительности и информацию об операционной системе. Это помогает нам обнаруживать ошибки и проблемы со SlimeVR. Эти данные собираются с помощью Sentry.io.
 settings-interface-behavior-error_tracking-label = Отправлять ошибки разработчикам
 
 ## Serial settings
@@ -579,7 +557,6 @@ settings-serial-send_command-warning-cancel = Отмена
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Трекеры
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Изменение настроек, специфичных для стандарта OSC Трекеров, используемых для отправки
@@ -609,7 +586,6 @@ settings-osc-vrchat-status-badge-unknown = Неизвестно
 
 ## VMC OSC settings
 
-settings-osc-vmc = Виртуальный захват движения
 # This cares about multilines
 settings-osc-vmc-description =
     Измените настройки, специфичные для протокола VMC (Virtual Motion Capture)
@@ -847,18 +823,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Какой метод калибровки крепления использовать?
 # Multiline text
 onboarding-choose_mounting-description = Ориентация крепления корректирует размещение трекеров на вашем теле.
-onboarding-choose_mounting-auto_mounting = Автоматическая привязка
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Рекомендуется
-onboarding-choose_mounting-auto_mounting-description = Это автоматически определит направления монтажа для всех ваших трекеров из 2 поз
-onboarding-choose_mounting-manual_mounting = Ручная привязка
-onboarding-choose_mounting-manual_mounting-description = Это позволит вам выбрать направление монтажа вручную для каждого трекера
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Ручная привязка
 onboarding-manual_mounting-description = Нажмите на каждый трекер и выберите, каким способом они будут привязаны
-onboarding-manual_mounting-auto_mounting = Автоматическая привязка
 onboarding-manual_mounting-next = Следующий шаг
 
 ## Tracker automatic mounting setup
@@ -872,18 +850,14 @@ onboarding-automatic_mounting-done-title = Привязка поворотов �
 onboarding-automatic_mounting-done-description = Калибровка вашей привязки завершена!
 onboarding-automatic_mounting-done-restart = Вернуться к началу
 onboarding-automatic_mounting-mounting_reset-title = Сброс крепления
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Присядьте в позу "лыжника", согнув ноги, наклонив верхнюю часть тела вперед и согнув руки.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Нажмите кнопку "Сброс крепления" и подождите 3 секунды, прежде чем установочные повороты трекеров будут сброшены.
 onboarding-automatic_mounting-preparation-title = Подготовка
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Нажмите кнопку "Полный сброс"
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Встаньте прямо, вытянув руки по бокам. Убедитесь, что смотрите прямо перед собой.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Удерживайте положение в течение 3 секунд, пока не истечет таймер.
-onboarding-automatic_mounting-put_trackers_on-title = Наденьте ваши трекеры
-onboarding-automatic_mounting-put_trackers_on-description = Чтобы откалибровать повороты крепления, мы будем использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
-onboarding-automatic_mounting-put_trackers_on-next = Я включил и надел все свои трекеры
 onboarding-automatic_mounting-return-home = Выполнено
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Автоматически точно настроить пропорции
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Пожалуйста, подключите VR-гарнитуру для использования автоматической тонкой настройки
@@ -1151,6 +1125,9 @@ error_collection_modal-description_v2 =
     Вы можете изменить эту настройку позже на странице настроек в разделе Поведение.
 error_collection_modal-confirm = Я согласен
 error_collection_modal-cancel = Я не согласен
+
+## Crash screen
+
 
 ## Tracking checklist section
 

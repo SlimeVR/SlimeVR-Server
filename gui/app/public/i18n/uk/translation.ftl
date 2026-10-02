@@ -62,9 +62,6 @@ body_part-LEFT_UPPER_LEG = Ліве стегно
 body_part-LEFT_LOWER_LEG = Ліва щиколотка
 body_part-LEFT_FOOT = Ліва нога
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Нічого
@@ -179,8 +176,6 @@ tracker-settings-assignment_section-edit = Редагування признач
 tracker-settings-mounting_section = Позиція трекера
 tracker-settings-mounting_section-description = Де закріплено трекер?
 tracker-settings-mounting_section-edit = Змінити місце розташування
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Ім'я трекера
 tracker-settings-name_section-description = Дайте йому миле прізвисько °^°
 tracker-settings-name_section-placeholder = Ліва нога NightyBeast
@@ -295,19 +290,9 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Прив'язк�
 settings-general-fk_settings-leg_tweak-toe_snap-description = Корекція пальців ноги намагається вгадати обертання ваших ступень, якщо трекери для них не використовуються
 settings-general-fk_settings-leg_tweak-foot_plant-description = Корекція ступні повертає ваші ступні так, щоб вони були паралельні землі при контакті
 settings-general-fk_settings-leg_fk = Трекінг ноги
-settings-general-fk_settings-arm_fk-reset_mode-description = Змініть позу руки, яка очікується для скидання налаштувань положення.
-settings-general-fk_settings-arm_fk-back = Назад
-settings-general-fk_settings-arm_fk-back-description = Стандартний режим: плечі ззаду, а передпліччя спереду.
-settings-general-fk_settings-arm_fk-tpose_up = Т-поза (вгору)
-settings-general-fk_settings-arm_fk-tpose_up-description = Очікується, що ваші руки будуть опущені з боків під час повного скидання, та на 90 градусів у сторони під час скидання положення.
-settings-general-fk_settings-arm_fk-tpose_down = Т-поза (вниз)
-settings-general-fk_settings-arm_fk-tpose_down-description = Очікується, що ваші руки будуть піднятими в сторони на 90 градусів під час повного скидання, та опущені з боків під час скидання положення.
-settings-general-fk_settings-arm_fk-forward = Вперед
-settings-general-fk_settings-arm_fk-forward-description = Очікується, що ваші руки будуть підняті вперед на 90 градусів. Корисно для вітюбінга.
 settings-general-fk_settings-skeleton_settings-ratios = Співвідношення скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Змініть параметри скелета. Можливо, вам доведеться скоригувати пропорції після їхньої зміни.
 settings-general-fk_settings-self_localization-title = Режим Мокап
-settings-general-fk_settings-self_localization-description = Режим Мокап дозволяє скелету приблизно відстежувати власне положення без використання шолому або інших трекерів. Зверніть увагу, що для цього потрібні трекери ніг і голови, і це все ще експериментальний метод.
 
 ## Gesture control settings (tracker tapping)
 
@@ -401,7 +386,6 @@ settings-serial-send_command-warning-cancel = Скасувати
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC трекери
 settings-osc-vrchat-enable = Увімкнути
 settings-osc-vrchat-enable-description = Перемикайте відправку та отримання даних.
 settings-osc-vrchat-enable-label = Увімкнути
@@ -423,7 +407,6 @@ settings-osc-vrchat-status-badge-error = Помилка
 
 ## VMC OSC settings
 
-settings-osc-vmc = Віртуальне захоплення руху
 # This cares about multilines
 settings-osc-vmc-description =
     Змінення настройок протоколу VMC (Virtual Motion Capture)
@@ -572,16 +555,20 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
 onboarding-choose_mounting = Який спосіб калібрування положення використовувати?
 # Multiline text
 onboarding-choose_mounting-description = Орієнтація кріплення коригується для розміщення трекерів на вашому тілі.
-onboarding-choose_mounting-auto_mounting = Автоматична прив'язка положення
-onboarding-choose_mounting-auto_mounting-description = Це автоматично визначить орієнтацію всіх ваших трекерів з 2 поз
-onboarding-choose_mounting-manual_mounting = Самостійна прив'язка
-onboarding-choose_mounting-manual_mounting-description = Це дозволить обрати орієнтацію кожного трекера самостійно
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Самостійна прив'язка
 onboarding-manual_mounting-description = Натисніть на кожен трекер і виберіть, як вони розташовані
-onboarding-manual_mounting-auto_mounting = Автоматична прив'язка
 onboarding-manual_mounting-next = Наступний крок
 
 ## Tracker automatic mounting setup
@@ -593,7 +580,7 @@ onboarding-automatic_mounting-prev_step = Попередній крок
 onboarding-automatic_mounting-done-restart = Спробуйте знову
 onboarding-automatic_mounting-mounting_reset-title = Калібрування положення
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -669,6 +656,9 @@ unknown_device-modal-confirm = Звісно!
 unknown_device-modal-forget = Ігнорувати
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section
