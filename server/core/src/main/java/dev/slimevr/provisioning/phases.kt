@@ -7,6 +7,7 @@ import dev.slimevr.firmware.waitForConnected
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConsole
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.serial.buildSetWifiCommand
 import dev.slimevr.serial.sortPorts
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -276,7 +277,7 @@ internal suspend fun sendCredentials(
 
 	serialConn.clearLog()
 	context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.PROVISIONING))
-	serialConn.write("SET WIFI \"$ssid\" \"${password ?: ""}\"\n")
+	serialConn.write(buildSetWifiCommand(ssid, password))
 
 	val acked = withTimeoutOrNull(5_000) {
 		serialConn.lines.first { "new wifi credentials set" in it.lowercase() }
