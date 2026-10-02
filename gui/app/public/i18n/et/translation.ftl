@@ -531,12 +531,8 @@ onboarding-automatic_mounting-done-title = Paigalduse pööre kalibreeritud.
 onboarding-automatic_mounting-done-description = Teie paigalduse kalibreerimine on valmis!
 onboarding-automatic_mounting-done-restart = Minge algusese
 onboarding-automatic_mounting-mounting_reset-title = Paigalduse lähtestamine
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kükita suusaasendis, jalad kõverad, ülakeha kallutatud ettepoole ja käed kõverad.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Vajutage "Lähtesta Paigaldusasend" nuppu ja oodage 3 sekuntit ja jälgijate paigaldusasend lähtestatakse.
 onboarding-automatic_mounting-preparation-title = Ettevalmistus
-onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peale
-onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
-onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
 ## Tracker manual proportions setup
 
