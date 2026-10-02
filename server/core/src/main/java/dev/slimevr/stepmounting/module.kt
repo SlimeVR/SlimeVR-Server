@@ -8,6 +8,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.applyCalibration
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -112,9 +113,18 @@ class StepMountingManager(
 		if (activeTrackers.isEmpty()) return emptyList()
 		return activeTrackers.map { controller ->
 			controller to controller.context.state.map { s ->
+				val accel = s.rawAcceleration ?: error("Trackers will always have acceleration in this case")
 				TrackerSnapshot(
 					rotation = s.rotation,
-					acceleration = s.acceleration ?: error("Trackers will always have acceleration in this case"),
+					acceleration = applyCalibration(
+						accel,
+						s.rawRotation,
+						// TODO Stay Aligned does add to the headingCorrection not
+						//  included here, so eventually this should just use
+						//  s.acceleration.
+						s.sessionCalibration.headingCorrection,
+						// Leave headingALignment out of the equation
+					),
 				)
 			}
 		}

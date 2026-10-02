@@ -264,9 +264,8 @@ fun reduce(
 	}
 
 	is TrackerActions.SetStepMounting -> {
-		val newHeadingAlignment = state.sessionCalibration.headingAlignment * action.headingAlignment
 		state.copy(
-			sessionCalibration = state.sessionCalibration.copy(headingAlignment = newHeadingAlignment),
+			sessionCalibration = state.sessionCalibration.copy(headingAlignment = action.headingAlignment),
 			lastMountingMethod = MountingMethod.STEP,
 			needsMountingReset = false,
 			rotationDirty = true,
