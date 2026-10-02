@@ -200,7 +200,6 @@ settings-keybinds_full-reset = Επαναφορά
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-arm_fk-back = Πίσω
 
 ## Gesture control settings (tracker tapping)
 
