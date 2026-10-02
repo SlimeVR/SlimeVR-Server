@@ -667,12 +667,8 @@ onboarding-automatic_mounting-done-title = Đã cân chỉnh hướng gắn
 onboarding-automatic_mounting-done-description = Cài đặt vị trí đã hoàn thành!
 onboarding-automatic_mounting-done-restart = Thử lại
 onboarding-automatic_mounting-mounting_reset-title = Đặt lại hướng gắn
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Đứng khom người như tư thế trượt tuyết với đầu gối khom lại, thân trên hướng tới trước và hai tay co lại để giữ thăng bằng như hình bên
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Nhấn nút đặt lại và chờ 3 giây trước khi hệ thống cân chỉnh hướng gắn tracker
 onboarding-automatic_mounting-preparation-title = Chuẩn bị tư thế
-onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
-onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
-onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker manual proportions setup
 
