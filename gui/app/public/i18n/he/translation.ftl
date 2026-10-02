@@ -205,7 +205,6 @@ settings-keybinds-recorder-modal-cancel-button = ביטול
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-arm_fk-back = אחורה
 
 ## Gesture control settings (tracker tapping)
 
