@@ -732,18 +732,20 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
 onboarding-choose_mounting = Jakou metodu nasazení trackerů chcete použít?
 # Multiline text
 onboarding-choose_mounting-description = Správná orientace nasazení zajistí přesné sledování trackerů na těle.
-onboarding-choose_mounting-auto_mounting = Automatická detekce nasazení
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Doporučeno
-onboarding-choose_mounting-auto_mounting-description = Orientace nasazení všech trackerů bude automaticky rozpoznána ze 2 pozic.
-onboarding-choose_mounting-manual_mounting = Manuální nastavení
-onboarding-choose_mounting-manual_mounting-description = Ručně zadejte orientaci nasazení každého trackeru.
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuální nasazení trackerů
 onboarding-manual_mounting-description = Klikněte na každý tracker a vyberte, jakým směrem jsou nasazeny
-onboarding-manual_mounting-auto_mounting = Automatická detekce nasazení
 onboarding-manual_mounting-next = Další krok
 
 ## Tracker automatic mounting setup
