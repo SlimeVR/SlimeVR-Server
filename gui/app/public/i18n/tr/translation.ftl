@@ -297,7 +297,6 @@ settings-keybinds-recorder-modal-cancel-button = İptal
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_fk = Bacak takibi
-settings-general-fk_settings-arm_fk-back = Arka
 
 ## Gesture control settings (tracker tapping)
 
