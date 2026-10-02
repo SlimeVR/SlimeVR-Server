@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { IElectronAPI, ServerStatusEvent } from './interface';
-import { IPC_CHANNELS } from '../shared';
+import { IElectronAPI, ServerStatusEvent } from '@slimevr/gui-shared';
+import { IPC_CHANNELS } from '@slimevr/gui-shared';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   onServerStatus: (callback) => {
@@ -8,6 +8,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
       callback(value);
     ipcRenderer.on(IPC_CHANNELS.SERVER_STATUS, subscription);
     return () => ipcRenderer.removeListener(IPC_CHANNELS.SERVER_STATUS, subscription);
+  },
+  onCrowdinPopupClosed: (callback) => {
+    const subscription = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.CROWDIN_POPUP_CLOSED, subscription);
+    return () =>
+      ipcRenderer.removeListener(IPC_CHANNELS.CROWDIN_POPUP_CLOSED, subscription);
   },
   openUrl: (url) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_URL, url),
   osStats: () => ipcRenderer.invoke(IPC_CHANNELS.OS_STATS),
@@ -48,4 +54,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setPresence: (options) => ipcRenderer.invoke(IPC_CHANNELS.DISCORD_PRESENCE, options),
   getInstallDir: () => ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'exe'),
   isSteam: () => ipcRenderer.invoke(IPC_CHANNELS.IS_STEAM),
+  setKeybindRecording: (recording) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SET_KEYBIND_RECORDING, recording),
+  setErrorReporting: (state) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SET_ERROR_REPORTING, state),
 } satisfies IElectronAPI);

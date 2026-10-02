@@ -1,0 +1,81 @@
+import { useState } from 'react';
+import { Button } from '@/components/commons/Button';
+import {
+  PoseMountingInstructions,
+  PoseMountingVideo,
+} from '@/components/mounting/PoseMountingVideo';
+import { ResetType } from 'solarxr-protocol';
+import { ResetButton } from '@/components/home/ResetButton';
+import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
+import { BaseModal } from '@/components/commons/BaseModal';
+import { ManualMounting } from '@/components/onboarding/pages/mounting/ManualMounting';
+export function VerifyMountingStep({
+  nextStep,
+  prevStep,
+  isActive,
+}: VerticalStepComponentProps) {
+  const [isOpen, setOpen] = useState(false);
+  const [disableMounting, setDisableMounting] = useState(false);
+
+  const goNextStep = () => {
+    setDisableMounting(false);
+    setOpen(false);
+    nextStep();
+  };
+
+  return (
+    <div className="flex flex-col flex-grow justify-between py-2 gap-2">
+      <div className="flex flex-col flex-grow gap-4">
+        <div className="flex mobile:flex-col gap-6">
+          <div className="flex flex-col gap-4 xs:w-72 shrink-0">
+            <PoseMountingInstructions />
+          </div>
+          <div className="flex flex-1 items-center justify-center fill-background-50">
+            <PoseMountingVideo className="h-72 xs:h-96" />
+          </div>
+        </div>
+        <div className="flex gap-3 justify-between">
+          <Button
+            variant={'secondary'}
+            onClick={prevStep}
+            id="onboarding-automatic_mounting-prev_step"
+          />
+          <Button
+            disabled={disableMounting}
+            variant={'secondary'}
+            className="self-start mt-auto"
+            onClick={() => setOpen(true)}
+            id="onboarding-automatic_mounting-manual_mounting"
+          />
+          <BaseModal isOpen={isOpen} onRequestClose={() => setOpen(false)}>
+            <div className="w-[min(90vw,1000px)] h-[min(80vh,700px)]">
+              <ManualMounting
+                footer={
+                  <div className="flex flex-row gap-3 mt-auto">
+                    <Button
+                      variant="primary"
+                      onClick={goNextStep}
+                      id="onboarding-stay_aligned-manual_mounting-done"
+                    />
+                  </div>
+                }
+              />
+            </div>
+          </BaseModal>
+
+          <ResetButton
+            onClick={() => setDisableMounting(true)}
+            type={ResetType.MOUNTING}
+            group="default"
+            onReseted={() => {
+              if (isActive) {
+                nextStep();
+              }
+            }}
+            onFailed={() => setDisableMounting(false)}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

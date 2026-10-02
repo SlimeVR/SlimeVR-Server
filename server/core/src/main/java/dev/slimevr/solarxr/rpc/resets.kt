@@ -1,0 +1,49 @@
+package dev.slimevr.solarxr.rpc
+
+import dev.slimevr.config.ResetsConfig
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import solarxr_protocol.rpc.ChangeResetsSettingsRequest
+import solarxr_protocol.rpc.ResetsSettingsRequest
+import solarxr_protocol.rpc.ResetsSettingsResponse
+
+class ResetsBehaviour(
+	private val settings: Settings,
+) : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
+		// Send config
+		receiver.rpcDispatcher.on<ResetsSettingsRequest> {
+			val config = settings.context.state.value.data.resetsConfig
+			receiver.sendRpc(
+				ResetsSettingsResponse(
+					resetMountingFeet = config.resetMountingFeet,
+					armsMountingResetMode = config.armsMountingResetMode,
+					yawResetSmoothTime = config.yawResetSmoothTime,
+					saveMountingReset = config.saveMountingReset,
+					resetReliableReferenceAttitude = config.resetReliableReferenceAttitude,
+					mountingMethod = config.mountingMethod,
+				),
+			)
+		}.launchIn(receiver.context.scope)
+
+		// Receive config
+		receiver.rpcDispatcher.on<ChangeResetsSettingsRequest> { req ->
+			settings.context.dispatch(
+				SettingsActions.Update {
+					copy(
+						resetsConfig = ResetsConfig(
+							resetMountingFeet = req.resetMountingFeet,
+							armsMountingResetMode = req.armsMountingResetMode,
+							yawResetSmoothTime = req.yawResetSmoothTime,
+							saveMountingReset = req.saveMountingReset,
+							resetReliableReferenceAttitude = req.resetReliableReferenceAttitude,
+							mountingMethod = req.mountingMethod,
+						),
+					)
+				},
+			)
+		}.launchIn(receiver.context.scope)
+	}
+}
