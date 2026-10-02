@@ -102,8 +102,8 @@ data class ResetsConfig(
 	val saveMountingReset: Boolean = false,
 	/** Reset a reliable reference's (HMD) attitude on full reset */
 	val resetReliableReferenceAttitude: Boolean = false,
-	/** How a mounting reset calibrates the trackers */
-	val mountingMethod: MountingMethod = MountingMethod.POSE,
+	/** How a mounting reset calibrates the trackers, UNKNOWN until the user has picked one */
+	val mountingMethod: MountingMethod = MountingMethod.UNKNOWN,
 )
 
 @Serializable

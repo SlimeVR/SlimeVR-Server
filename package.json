@@ -2,7 +2,7 @@
   "name": "slimevr",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@12.3.4",
   "workspaces": [
     "solarxr-protocol",
     "gui/app",

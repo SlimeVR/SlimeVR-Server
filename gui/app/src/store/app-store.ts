@@ -7,6 +7,8 @@ import {
   DeviceOrigin,
   DongleDataT,
   DongleStatus,
+  ResetStatusResponseT,
+  ResetsSettingsResponseT,
   TrackerDataT,
   TrackerStatus,
 } from 'solarxr-protocol';
@@ -23,6 +25,11 @@ export const ignoredTrackersAtom = atom(new Set<string>());
 export const datafeedAtom = atom(new DataFeedUpdateT());
 
 export const bonesAtom = atom<BoneT[]>([]);
+
+// Latest reset status pushed by the server, null until a reset has run
+export const resetStatusAtom = atom<ResetStatusResponseT | null>(null);
+
+export const resetsSettingsAtom = atom<ResetsSettingsResponseT | null>(null);
 
 export const devicesAtom = selectAtom(
   datafeedAtom,

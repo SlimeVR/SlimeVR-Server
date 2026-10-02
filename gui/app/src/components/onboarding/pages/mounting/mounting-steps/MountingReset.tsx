@@ -1,3 +1,4 @@
+import { PoseMountingVideo } from '@/components/mounting/PoseMountingVideo';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
@@ -42,11 +43,7 @@ export function MountingResetStep({
 
         {isMobile && (
           <div className="flex flex-col items-center fill-background-50 justify-center">
-            <img
-              src="/images/mounting-reset-pose.webp"
-              width={450}
-              alt="mounting reset ski pose"
-            />
+            <PoseMountingVideo className="w-[450px]" />
           </div>
         )}
 
@@ -58,7 +55,7 @@ export function MountingResetStep({
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
-            type={ResetType.POSE_MOUNTING}
+            type={ResetType.MOUNTING}
             group="default"
             onReseted={nextStep}
           />
@@ -66,11 +63,7 @@ export function MountingResetStep({
       </div>
       {!isMobile && (
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
-          <img
-            src="/images/mounting-reset-pose.webp"
-            width={600}
-            alt="mounting reset ski pose"
-          />
+          <PoseMountingVideo className="w-[600px]" />
         </div>
       )}
     </>

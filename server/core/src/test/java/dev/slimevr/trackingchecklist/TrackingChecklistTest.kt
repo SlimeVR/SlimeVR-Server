@@ -58,8 +58,10 @@ class TrackingChecklistTest {
 			.stateIn(scope.backgroundScope, SharingStarted.Eagerly, initialValue = emptyList())
 
 		init {
+			setMountingMethod(MountingMethod.POSE)
 			checklist.context.behaviours.addAll(
 				listOf(
+					MountingMethodCheckBehaviour(settings),
 					ReliableReferenceCheckBehaviour(trackerStates),
 					TrackerRestCheckBehaviour(trackerStates),
 					TrackerErrorCheckBehaviour(trackerStates),
@@ -225,6 +227,25 @@ class TrackingChecklistTest {
 		tracker.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HIP) })
 		runCurrent()
 		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+	}
+
+	@Test
+	fun `a mounting method is asked for until one is picked`() = runTest {
+		val h = Harness(this)
+		h.settings.context.dispatch(SettingsActions.Update { copy(resetsConfig = resetsConfig.copy(mountingMethod = MountingMethod.UNKNOWN)) })
+		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
+		h.addTracker(bodyPart = BodyPart.LEFT_FOOT)
+		runCurrent()
+
+		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_METHOD).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_METHOD).valid)
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
+
+		h.setMountingMethod(MountingMethod.POSE)
+		runCurrent()
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_METHOD).enabled)
+		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
 	}
 
 	@Test

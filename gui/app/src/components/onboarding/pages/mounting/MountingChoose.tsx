@@ -6,6 +6,80 @@ import classNames from 'classnames';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
 import { track } from '@/utils/sentry';
+import { MountingMethod } from 'solarxr-protocol';
+import { useResetsSettings } from '@/hooks/resets-settings';
+import { MANUAL_MOUNTING_PATH, STEP_MOUNTING_PATH } from '@/hooks/mounting-method';
+import { SkiIcon } from '@/components/commons/icon/SkiIcon';
+import { StepIcon } from '@/components/commons/icon/StepIcon';
+import { TuneIcon } from '@/components/commons/icon/TuneIcon';
+
+function MethodCard({
+  method,
+  name,
+  to,
+  icon,
+  recommended = false,
+  alonePage,
+  variant = alonePage ? 'tertiary' : 'secondary',
+  decoration,
+}: {
+  alonePage: boolean;
+  method: MountingMethod;
+  name: string;
+  to: string;
+  icon: React.ReactNode;
+  recommended?: boolean;
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  decoration?: React.ReactNode;
+}) {
+  const { setResetsSettings } = useResetsSettings();
+
+  return (
+    <div
+      className={classNames(
+        'rounded-lg p-4 flex relative',
+        !alonePage && 'bg-background-70',
+        alonePage && 'bg-background-60'
+      )}
+    >
+      {recommended && (
+        <div className="bg-accent-background-30 absolute -left-4 -top-5 p-1.5 rounded-lg">
+          <Typography
+            variant="vr-accessible"
+            italic
+            id="mounting_method-recommended"
+          />
+        </div>
+      )}
+      {decoration}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-grow flex-col gap-3 max-w-sm">
+          <div className="fill-background-10">{icon}</div>
+          <Typography
+            variant="main-title"
+            bold
+            id={`mounting_method-${name}`}
+          />
+          <Typography
+            whitespace="whitespace-pre-line"
+            id={`mounting_method-${name}-description`}
+          />
+        </div>
+        <Button
+          variant={variant}
+          to={to}
+          className="self-start mt-auto"
+          state={{ alonePage: alonePage }}
+          onClick={() => {
+            setResetsSettings({ mountingMethod: method });
+            track('mounting_choose', { choose: name });
+          }}
+          id="mounting_method-select"
+        />
+      </div>
+    </div>
+  );
+}
 
 export function MountingChoose() {
   const { l10n } = useLocalization();
@@ -27,104 +101,41 @@ export function MountingChoose() {
               {l10n.getString('onboarding-choose_mounting-description')}
             </Typography>
           </div>
-          <div
-            className={classNames(
-              'grid xs:grid-cols-2 w-full xs:flex-row mobile:flex-col gap-4 [&>div]:grow'
-            )}
-          >
-            <div
-              className={classNames(
-                'rounded-lg p-4 flex relative',
-                !state.alonePage && 'bg-background-70',
-                state.alonePage && 'bg-background-60'
-              )}
-            >
-              <div className="bg-accent-background-30 absolute -left-4 -top-5 p-1.5 rounded-lg">
-                <Typography variant="vr-accessible" italic>
-                  {l10n.getString(
-                    'onboarding-choose_mounting-auto_mounting-label-v2'
+          <div className="grid xs:grid-cols-3 w-full xs:flex-row mobile:flex-col gap-4 [&>div]:grow">
+            <MethodCard
+              alonePage={state.alonePage}
+              method={MountingMethod.STEP}
+              name="step"
+              to={STEP_MOUNTING_PATH}
+              icon={<StepIcon size={32} />}
+              recommended
+              variant="primary"
+            />
+            <MethodCard
+              alonePage={state.alonePage}
+              method={MountingMethod.POSE}
+              name="pose"
+              to="/onboarding/mounting/auto"
+              icon={<SkiIcon size={32} />}
+            />
+            <MethodCard
+              alonePage={state.alonePage}
+              method={MountingMethod.MANUAL}
+              name="manual"
+              to={MANUAL_MOUNTING_PATH}
+              icon={<TuneIcon size={32} />}
+              decoration={
+                <img
+                  onMouseEnter={() => setAnimated(() => true)}
+                  onAnimationEnd={() => setAnimated(() => false)}
+                  src="/images/boxslime.webp"
+                  className={classNames(
+                    'absolute w-[100px] -right-2 -top-10',
+                    animated && 'animate-[bounce_1s_1]'
                   )}
-                </Typography>
-              </div>
-              <div className="flex flex-col gap-4 ">
-                <div className="flex flex-grow flex-col gap-4 max-w-sm">
-                  <div>
-                    <Typography variant="main-title" bold>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting'
-                      )}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-description'
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-                <Button
-                  variant="primary"
-                  to={'/onboarding/mounting/auto'}
-                  className="self-start mt-auto"
-                  onClick={() => {
-                    track('mounting_choose', { choose: 'auto' });
-                  }}
-                  state={{ alonePage: state.alonePage }}
-                >
-                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
-                </Button>
-              </div>
-            </div>
-            <div
-              className={classNames(
-                'rounded-lg p-4 flex flex-row relative',
-                !state.alonePage && 'bg-background-70',
-                state.alonePage && 'bg-background-60'
-              )}
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-grow flex-col gap-4 max-w-sm">
-                  <div>
-                    <img
-                      onMouseEnter={() => setAnimated(() => true)}
-                      onAnimationEnd={() => setAnimated(() => false)}
-                      src="/images/boxslime.webp"
-                      className={classNames(
-                        'absolute w-[100px] -right-2 -top-10',
-                        animated && 'animate-[bounce_1s_1]'
-                      )}
-                    />
-                    <Typography variant="main-title" bold>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting'
-                      )}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-description'
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-
-                <Button
-                  variant={!state.alonePage ? 'secondary' : 'tertiary'}
-                  to="/onboarding/mounting/manual"
-                  className="self-start mt-auto"
-                  state={{ alonePage: state.alonePage }}
-                  onClick={() => {
-                    track('mounting_choose', { choose: 'manual' });
-                  }}
-                >
-                  {l10n.getString(
-                    'onboarding-automatic_mounting-manual_mounting'
-                  )}
-                </Button>
-              </div>
-            </div>
+                />
+              }
+            />
           </div>
           {!state.alonePage && (
             <Button

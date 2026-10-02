@@ -1,6 +1,6 @@
 import { Typography } from './commons/Typography';
 import classNames from 'classnames';
-import { ResetType } from 'solarxr-protocol';
+import { MountingMethod, ResetType } from 'solarxr-protocol';
 import {
   BODY_PARTS_GROUPS,
   MountingResetGroup,
@@ -14,6 +14,9 @@ import { assignedTrackersAtom } from '@/store/app-store';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useMemo } from 'react';
 import { ResetButtonIcon } from './home/ResetButton';
+import { MountingMethodModal } from './mounting/MountingMethodModal';
+import { useMountingMethod } from '@/hooks/mounting-method';
+import { useResetsSettings } from '@/hooks/resets-settings';
 
 const MAINBUTTON_CLASSES = ({ disabled }: { disabled: boolean }) =>
   classNames(
@@ -63,90 +66,103 @@ function BasicResetButton({
     duration,
     error,
   } = useReset(options);
+  const { onClick, ...picker } = useMountingMethod(options, triggerReset);
+  const { resetsSettings } = useResetsSettings();
 
   const progress = status === 'counting' ? resetProress / duration : 0;
 
   const name = customName || resetName;
 
   const skiReset =
-    options.type === ResetType.POSE_MOUNTING && options.group === 'default';
+    options.type === ResetType.MOUNTING &&
+    options.group === 'default' &&
+    resetsSettings?.mountingMethod === MountingMethod.POSE;
 
   return (
-    <Tooltip
-      disabled={!error && isMd}
-      content={
-        error ? (
-          <Typography
-            id={error}
-            textAlign="text-center"
-            color="text-status-critical"
-          />
-        ) : (
-          <Typography textAlign="text-center" id={name} />
-        )
-      }
-      spacing={5}
-      preferedDirection={error ? 'bottom' : 'top'}
-    >
-      <button
-        type="button"
-        disabled={disabled}
-        className={classNames(
-          MAINBUTTON_CLASSES({ disabled }),
-          'rounded-lg',
-          'absolute'
-        )}
-        style={{
-          animationIterationCount: 1,
-        }}
-        onClick={() => !disabled && triggerReset()}
+    <>
+      <Tooltip
+        disabled={!error && isMd}
+        content={
+          error ? (
+            <Typography
+              id={error}
+              textAlign="text-center"
+              color="text-status-critical"
+            />
+          ) : (
+            <Typography textAlign="text-center" id={name} />
+          )
+        }
+        spacing={5}
+        preferedDirection={error ? 'bottom' : 'top'}
       >
-        <div
-          className={classNames({
-            'animate-spin-ccw': !skiReset && status === 'finished',
-            'animate-skiing': skiReset && status === 'finished',
-            'opacity-0': status === 'counting',
-          })}
+        <button
+          type="button"
+          disabled={disabled}
+          className={classNames(
+            MAINBUTTON_CLASSES({ disabled }),
+            'rounded-lg',
+            'absolute'
+          )}
           style={{
             animationIterationCount: 1,
           }}
+          onClick={() => !disabled && onClick()}
         >
-          <ResetButtonIcon {...options} />
-        </div>
+          <div
+            className={classNames({
+              'animate-spin-ccw': !skiReset && status === 'finished',
+              'animate-skiing': skiReset && status === 'finished',
+              'opacity-0': status === 'counting',
+            })}
+            style={{
+              animationIterationCount: 1,
+            }}
+          >
+            <ResetButtonIcon {...options} />
+          </div>
 
-        <div
-          className={classNames('hidden md:block relative', {
-            'opacity-0': status === 'counting',
-          })}
-        >
-          <Typography
-            variant="section-title"
-            textAlign="text-center"
-            id={name}
-          />
-        </div>
+          <div
+            className={classNames('hidden md:block relative', {
+              'opacity-0': status === 'counting',
+            })}
+          >
+            <Typography
+              variant="section-title"
+              textAlign="text-center"
+              id={name}
+            />
+          </div>
 
-        <ButtonProgress progress={progress} status={status} />
-        <div
-          className={classNames(
-            {
-              'opacity-0': status !== 'counting',
-              'animate-timer-tick': status === 'counting',
-            },
-            'absolute top-0 h-full flex items-center justify-center'
-          )}
-        >
-          <Typography variant="main-title" textAlign="text-center">
-            {timer}
-          </Typography>
-        </div>
-      </button>
-    </Tooltip>
+          <ButtonProgress progress={progress} status={status} />
+          <div
+            className={classNames(
+              {
+                'opacity-0': status !== 'counting',
+                'animate-timer-tick': status === 'counting',
+              },
+              'absolute top-0 h-full flex items-center justify-center'
+            )}
+          >
+            <Typography variant="main-title" textAlign="text-center">
+              {timer}
+            </Typography>
+          </div>
+        </button>
+      </Tooltip>
+      <MountingMethodModal
+        isOpen={picker.pickerOpen}
+        onClose={picker.closePicker}
+        onSelect={picker.onPick}
+      />
+    </>
   );
 }
 
 export function Toolbar() {
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const { resetsSettings } = useResetsSettings();
+  const splitMounting = resetsSettings?.mountingMethod === MountingMethod.POSE;
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
     const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
@@ -190,32 +206,36 @@ export function Toolbar() {
             <div
               className="gap-2 md:h-[72px] h-[62px] w-full md:grid flex"
               style={{
-                gridTemplateColumns: `repeat(calc(2 + ${visibleGroups}), 1fr)`,
+                gridTemplateColumns: `repeat(${splitMounting ? 2 + visibleGroups : 1}, 1fr)`,
               }}
             >
               <BasicResetButton
-                type={ResetType.POSE_MOUNTING}
+                type={ResetType.MOUNTING}
                 group={'default'}
                 customName="toolbar-mounting_calibration-default"
               />
-              <BasicResetButton
-                type={ResetType.POSE_MOUNTING}
-                group={'feet'}
-                customName="toolbar-mounting_calibration-feet"
-              />
-              {groupVisibility['toes'] && (
-                <BasicResetButton
-                  type={ResetType.POSE_MOUNTING}
-                  group={'toes'}
-                  customName="toolbar-mounting_calibration-toes"
-                />
-              )}
-              {groupVisibility['fingers'] && (
-                <BasicResetButton
-                  type={ResetType.POSE_MOUNTING}
-                  group={'fingers'}
-                  customName="toolbar-mounting_calibration-fingers"
-                />
+              {splitMounting && (
+                <>
+                  <BasicResetButton
+                    type={ResetType.MOUNTING}
+                    group={'feet'}
+                    customName="toolbar-mounting_calibration-feet"
+                  />
+                  {groupVisibility['toes'] && (
+                    <BasicResetButton
+                      type={ResetType.MOUNTING}
+                      group={'toes'}
+                      customName="toolbar-mounting_calibration-toes"
+                    />
+                  )}
+                  {groupVisibility['fingers'] && (
+                    <BasicResetButton
+                      type={ResetType.MOUNTING}
+                      group={'fingers'}
+                      customName="toolbar-mounting_calibration-fingers"
+                    />
+                  )}
+                </>
               )}
             </div>
           </div>

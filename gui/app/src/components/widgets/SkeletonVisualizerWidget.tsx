@@ -4,10 +4,8 @@ import { Clickable } from '@/components/commons/Clickable';
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
 import {
   BasedSkeletonHelper,
-  TrackerPreviewData,
 } from '@/utils/skeletonHelper';
 import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
-import { getTrackerBoneOffset } from '@/utils/skeletonParts';
 import {
   computeHeadYOffset,
   deriveSkeletonProportions,
@@ -27,7 +25,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
-import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
+import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import classNames from 'classnames';
@@ -36,7 +34,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import * as Sentry from '@sentry/react';
 import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom, bonesAtom } from '@/store/app-store';
+import { bonesAtom } from '@/store/app-store';
 import { Config, useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
 import { EyeIcon } from '@/components/commons/icon/EyeIcon';
@@ -240,10 +238,6 @@ function initializePreview(
     skeletonGroup.rotation.setFromQuaternion(yawReset);
   };
 
-  const updateTrackers = (trackers: Map<BodyPart, TrackerPreviewData>) => {
-    skeletonHelper.setTrackers(trackers);
-  };
-
   const setStyle = (newStyle: Config['skeletonPreviewStyle']) => {
     if (newStyle === style) return;
     style = newStyle;
@@ -400,7 +394,6 @@ function initializePreview(
         }
       }
     },
-    updateTrackers,
     resetCamera: () => {
       computeFollow(followOffset);
       floor.position.set(followOffset.x, 0, followOffset.z);
@@ -513,29 +506,10 @@ function SkeletonVisualizer({
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
   const bonesList = useAtomValue(bonesAtom);
-  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const bones = useMemo(() => {
     return new Map(bonesList.map((b) => [b.bodyPart, b]));
   }, [bonesList]);
-  const trackersByPart = useMemo(() => {
-    const trackers = new Map<BodyPart, TrackerPreviewData>();
-    for (const { tracker } of assignedTrackers) {
-      const bodyPart = tracker.info?.bodyPart;
-      if (bodyPart == null || bodyPart === BodyPart.NONE) continue;
-      trackers.set(bodyPart, {
-        trackerId: tracker.trackerId,
-        mountingOrientation: QuaternionFromQuatT(
-          tracker.info?.lastMountingMethod == MountingMethod.MANUAL
-            ? tracker.info?.mountingOrientation
-            : tracker.info?.mountingResetOrientation
-        ).normalize(),
-        boneOffset: getTrackerBoneOffset(bodyPart),
-      });
-    }
-    return trackers;
-  }, [assignedTrackers]);
-
   useEffect(() => {
     if (bones.size === 0) return;
     const context = previewContext.current;
@@ -547,21 +521,13 @@ function SkeletonVisualizer({
     const context = previewContext.current;
     if (!context || disabled) return;
     context.updatesBones(bones);
-    context.updateTrackers(trackersByPart);
   }, [bones, disabled]);
-
-  useEffect(() => {
-    const context = previewContext.current;
-    if (!context || disabled) return;
-    context.updateTrackers(trackersByPart);
-  }, [trackersByPart, disabled]);
 
   useEffect(() => {
     const context = previewContext.current;
     if (!context || disabled) return;
     context.setStyle(style);
     context.updatesBones(bones);
-    context.updateTrackers(trackersByPart);
   }, [style, disabled]);
 
   const onResize = (e: ResizeObserverEntry) => {

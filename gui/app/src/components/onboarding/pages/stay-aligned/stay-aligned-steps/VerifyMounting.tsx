@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
+import { PoseMountingVideo } from '@/components/mounting/PoseMountingVideo';
 import { ResetType } from 'solarxr-protocol';
 import { ResetButton } from '@/components/home/ResetButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -34,21 +35,13 @@ export function VerifyMountingStep({
 
         {isMobile && (
           <div className="flex flex-col items-center fill-background-50 justify-center">
-            <img
-              src="/images/mounting-reset-pose.webp"
-              width={450}
-              alt="mounting reset ski pose"
-            />
+            <PoseMountingVideo className="w-[450px]" />
           </div>
         )}
 
         {!isMobile && (
           <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
-            <img
-              src="/images/mounting-reset-pose.webp"
-              width={600}
-              alt="mounting reset ski pose"
-            />
+            <PoseMountingVideo className="w-[600px]" />
           </div>
         )}
         <div className="flex gap-3 justify-between">
@@ -82,7 +75,7 @@ export function VerifyMountingStep({
 
           <ResetButton
             onClick={() => setDisableMounting(true)}
-            type={ResetType.POSE_MOUNTING}
+            type={ResetType.MOUNTING}
             group="default"
             onReseted={() => {
               if (isActive) {

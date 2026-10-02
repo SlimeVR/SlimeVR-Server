@@ -2,7 +2,9 @@ import { createContext, useContext, useEffect, useLayoutEffect, useState } from 
 import {
   DataFeedMessage,
   DataFeedUpdateT,
-  ResetResponseT,
+  ResetsSettingsRequestT,
+  ResetsSettingsResponseT,
+  ResetStatusResponseT,
   RpcMessage,
   StartDataFeedT,
 } from 'solarxr-protocol';
@@ -11,7 +13,12 @@ import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { useSetAtom } from 'jotai';
-import { bonesAtom, datafeedAtom } from '@/store/app-store';
+import {
+  bonesAtom,
+  datafeedAtom,
+  resetsSettingsAtom,
+  resetStatusAtom,
+} from '@/store/app-store';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
@@ -20,14 +27,21 @@ export interface AppContext {
 }
 
 export function useProvideAppContext(): AppContext {
-  const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
-    useWebsocketAPI();
+  const {
+    useRPCPacket,
+    sendRPCPacket,
+    sendDataFeedPacket,
+    useDataFeedPacket,
+    isConnected,
+  } = useWebsocketAPI();
   const { changeLocales } = useContext(LangContext);
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
   const bonesDataFeedConfig = useBonesDataFeedConfig();
   const setDatafeed = useSetAtom(datafeedAtom);
   const setBones = useSetAtom(bonesAtom);
+  const setResetStatus = useSetAtom(resetStatusAtom);
+  const setResetsSettings = useSetAtom(resetsSettingsAtom);
 
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
@@ -48,10 +62,23 @@ export function useProvideAppContext(): AppContext {
     }
   });
 
-  useRPCPacket(RpcMessage.ResetResponse, (resetResponse: ResetResponseT) => {
+  useRPCPacket(RpcMessage.ResetStatusResponse, (resetStatus: ResetStatusResponseT) => {
+    setResetStatus(resetStatus);
     if (!config?.feedbackSound) return;
-    handleResetSounds(config?.feedbackSoundVolume ?? 1, resetResponse);
+    handleResetSounds(config?.feedbackSoundVolume ?? 1, resetStatus);
   });
+
+  useRPCPacket(
+    RpcMessage.ResetsSettingsResponse,
+    (settings: ResetsSettingsResponseT) => {
+      setResetsSettings(settings);
+    }
+  );
+
+  useEffect(() => {
+    if (!isConnected) return;
+    sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
+  }, [isConnected]);
 
   useEffect(() => {
     if (!config) return;

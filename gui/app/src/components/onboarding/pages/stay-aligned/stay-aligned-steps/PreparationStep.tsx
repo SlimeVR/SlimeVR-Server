@@ -6,7 +6,7 @@ import { Typography } from '@/components/commons/Typography';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 import { ResetButton } from '@/components/home/ResetButton';
 import { Localized } from '@fluent/react';
-import { ResetType } from 'solarxr-protocol';
+import { ResetAvailability, ResetType } from 'solarxr-protocol';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 
@@ -18,7 +18,7 @@ export function PreparationStep({
   const serverGuards = useAtomValue(serverGuardsAtom);
   return (
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
-      {serverGuards?.canDoMountingReset === false && (
+      {serverGuards?.mountingReset === ResetAvailability.NEEDS_FULL_RESET && (
         <>
           <div className="flex flex-col gap-1">
             <Typography id="onboarding-automatic_mounting-preparation-v2-step-0" />
@@ -68,23 +68,24 @@ export function PreparationStep({
           </div>
         </>
       )}
-      {serverGuards?.canDoMountingReset === true && (
-        <div className="flex flex-col gap-4">
-          <Typography id="onboarding-automatic_mounting-preparation-v2-done" />
-          <div className="flex gap-3 justify-between">
-            <Button
-              variant={'secondary'}
-              onClick={prevStep}
-              id="onboarding-stay_aligned-previous_step"
-            />
-            <Button
-              variant={'primary'}
-              onClick={nextStep}
-              id="onboarding-stay_aligned-next_step"
-            />
+      {serverGuards &&
+        serverGuards.mountingReset !== ResetAvailability.NEEDS_FULL_RESET && (
+          <div className="flex flex-col gap-4">
+            <Typography id="onboarding-automatic_mounting-preparation-v2-done" />
+            <div className="flex gap-3 justify-between">
+              <Button
+                variant={'secondary'}
+                onClick={prevStep}
+                id="onboarding-stay_aligned-previous_step"
+              />
+              <Button
+                variant={'primary'}
+                onClick={nextStep}
+                id="onboarding-stay_aligned-next_step"
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 }

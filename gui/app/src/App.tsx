@@ -64,6 +64,8 @@ import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
 import { UdevRulesModal } from './components/onboarding/UdevRulesModal';
+import { StepMountingStatusModal } from './components/mounting/StepMountingStatusModal';
+import { StepMountingPage } from './components/onboarding/pages/mounting/StepMounting';
 import { ErrorReportingConsentPage } from './components/ErrorReportingConsent';
 import {
   AppStatusGate,
@@ -87,6 +89,7 @@ function ConnectedApp() {
           <VersionUpdateModal />
           <UnknownDeviceModal />
           <UdevRulesModal />
+          <StepMountingStatusModal />
           <AppLayout />
         </TrackingChecklistProvider>
       </OnboardingContextProvider>
@@ -199,6 +202,7 @@ function AppRoutes() {
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
+            <Route path="mounting/step" element={<StepMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route
               path="body-proportions/auto"

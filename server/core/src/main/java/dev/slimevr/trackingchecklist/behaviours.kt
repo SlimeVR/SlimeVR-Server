@@ -356,7 +356,7 @@ class MountingCalibrationCheckBehaviour(
 			bodyPart !in ResetBodyParts.FINGERS &&
 			bodyPart !in ResetBodyParts.TOES
 
-		MountingMethod.MANUAL -> false
+		MountingMethod.MANUAL, MountingMethod.UNKNOWN -> false
 	}
 
 	override fun observe(receiver: TrackingChecklist) {
@@ -374,6 +374,29 @@ class MountingCalibrationCheckBehaviour(
 		}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.MOUNTING_CALIBRATION, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class MountingMethodCheckBehaviour(
+	private val settings: Settings,
+) : TrackingChecklistBehaviourType {
+	override fun observe(receiver: TrackingChecklist) {
+		settings.context.state.map { it.data.resetsConfig.mountingMethod != MountingMethod.UNKNOWN }
+			.distinctUntilChanged()
+			.onEach { picked ->
+				receiver.context.dispatch(
+					TrackingChecklistActions.UpdateStep(
+						TrackingChecklistStepId.MOUNTING_METHOD,
+						TrackingChecklistStep(
+							valid = picked,
+							enabled = !picked,
+							ignorable = false,
+							visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+						),
+					),
+				)
+			}
 			.launchIn(receiver.context.scope)
 	}
 }

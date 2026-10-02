@@ -1,4 +1,4 @@
-import { ResetType } from 'solarxr-protocol';
+import { ResetAvailability, ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { ResetButton } from '@/components/home/ResetButton';
@@ -23,7 +23,7 @@ export function PreparationStep({
   return (
     <div className="flex mobile:flex-col items-center w-full">
       <div className="flex flex-col flex-grow justify-between">
-        {serverGuards?.canDoMountingReset === false && (
+        {serverGuards?.mountingReset === ResetAvailability.NEEDS_FULL_RESET && (
           <>
             <div className="flex flex-col gap-4 max-w-sm">
               <Typography
@@ -74,30 +74,31 @@ export function PreparationStep({
             </div>
           </>
         )}
-        {serverGuards?.canDoMountingReset === true && (
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-10 max-w-sm">
-              <Typography
-                variant="main-title"
-                bold
-                id="onboarding-automatic_mounting-preparation-title"
-              />
-              <Typography id="onboarding-automatic_mounting-preparation-v2-done" />
+        {serverGuards &&
+          serverGuards.mountingReset !== ResetAvailability.NEEDS_FULL_RESET && (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-10 max-w-sm">
+                <Typography
+                  variant="main-title"
+                  bold
+                  id="onboarding-automatic_mounting-preparation-title"
+                />
+                <Typography id="onboarding-automatic_mounting-preparation-v2-done" />
+              </div>
+              <div className="flex gap-3 mobile:justify-between">
+                <Button
+                  variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+                  onClick={prevStep}
+                  id="onboarding-automatic_mounting-prev_step"
+                />
+                <Button
+                  variant={'primary'}
+                  onClick={nextStep}
+                  id="onboarding-automatic_mounting-next"
+                />
+              </div>
             </div>
-            <div className="flex gap-3 mobile:justify-between">
-              <Button
-                variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-                onClick={prevStep}
-                id="onboarding-automatic_mounting-prev_step"
-              />
-              <Button
-                variant={'primary'}
-                onClick={nextStep}
-                id="onboarding-automatic_mounting-next"
-              />
-            </div>
-          </div>
-        )}
+          )}
       </div>
     </div>
   );

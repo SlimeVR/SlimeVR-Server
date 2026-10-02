@@ -83,4 +83,18 @@ class ResetsTest {
 		assertEquals(ResetAvailability.NO_TRACKERS, resets.availability(ResetType.YAW))
 		assertEquals(ResetAvailability.NO_TRACKERS, resets.availability(ResetType.MOUNTING))
 	}
+
+	@Test
+	fun `a mounting reset is ignored until a mounting method is picked`() = runTest {
+		val server = buildTestVrServer(backgroundScope)
+		val settings = buildTestSettings(backgroundScope)
+		val resets = buildTestResetsManager(server, settings, backgroundScope)
+		val tracker = buildTestTracker(server.context.scope, buildTestAppContext(server), settings, id = 1, bodyPart = BodyPart.HIP, status = TrackerStatus.OK)
+		server.context.dispatch(VRServerActions.NewTracker(1, tracker))
+		resets.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
+
+		resets.scheduleReset("test", ResetType.MOUNTING)
+		runCurrent()
+		assertEquals(null, resets.context.state.value.status)
+	}
 }

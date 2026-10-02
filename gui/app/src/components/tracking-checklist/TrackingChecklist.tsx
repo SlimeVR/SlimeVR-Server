@@ -19,7 +19,11 @@ import {
   BoneRoutingSettingsResponseT,
   BoneRouteT,
   ChangeBoneRoutingSettingsRequestT,
+  MountingMethod,
 } from 'solarxr-protocol';
+import { PoseMountingVideo } from '@/components/mounting/PoseMountingVideo';
+import { MountingMethodRadio } from '@/components/mounting/MountingMethodRadio';
+import { useResetsSettings } from '@/hooks/resets-settings';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { Typography } from '@/components/commons/Typography';
@@ -247,6 +251,56 @@ function StandableInstalled() {
   );
 }
 
+function MountingCalibrationStep({
+  step,
+  toggleSession,
+}: {
+  step: TrackingChecklistStep;
+  toggleSession: TrackingChecklistContext['toggleSession'];
+}) {
+  const { resetsSettings } = useResetsSettings();
+  const isStep = resetsSettings?.mountingMethod === MountingMethod.STEP;
+
+  return (
+    <div className="space-y-2.5">
+      {isStep ? (
+        <>
+          <Typography id="onboarding-step_mounting-step-0" />
+          <Typography id="onboarding-step_mounting-step-1" />
+          <div className="flex w-full justify-center">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="h-44"
+              src="/videos/step-mounting.webm"
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
+          <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
+          <div className="flex w-full justify-center">
+            <PoseMountingVideo className="h-44" />
+          </div>
+        </>
+      )}
+      <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+        <ResetButton type={ResetType.MOUNTING} group="default" />
+        {step.ignorable && (
+          <Button
+            id="tracking_checklist-ignore"
+            variant="secondary"
+            onClick={() => toggleSession(step.id)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
 const stepContentLookup: Record<
   number,
   (
@@ -388,29 +442,17 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggleSession }) => {
+  [TrackingChecklistStepId.MOUNTING_METHOD]: () => {
     return (
       <div className="space-y-2.5">
-        <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
-        <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
-        <div className="flex w-full justify-center">
-          <img
-            src="/images/mounting-reset-pose.webp"
-            className="h-44"
-            alt="mounting reset ski pose"
-          />
-        </div>
-        <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.POSE_MOUNTING} group="default" />
-          {step.ignorable && (
-            <Button
-              id="tracking_checklist-ignore"
-              variant="secondary"
-              onClick={() => toggleSession(step.id)}
-            />
-          )}
-        </div>
+        <Typography id="tracking_checklist-MOUNTING_METHOD-desc" />
+        <MountingMethodRadio />
       </div>
+    );
+  },
+  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggleSession }) => {
+    return (
+      <MountingCalibrationStep step={step} toggleSession={toggleSession} />
     );
   },
   [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (
@@ -438,7 +480,7 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.POSE_MOUNTING} group="feet" />
+          <ResetButton type={ResetType.MOUNTING} group="feet" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"

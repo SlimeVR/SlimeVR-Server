@@ -235,6 +235,8 @@ reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
+reset-error-need_positional_head = Step mounting needs a headset or a tracker= with position tracking
+reset-error-no_trackers = No tracker available
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
 ## Navigation bar
@@ -431,11 +433,14 @@ settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-outputs = Outputs
 settings-sidebar-routing = Bone Routing
+settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
+settings-sidebar-vrchat_osc = VRChat OSC
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
 settings-sidebar-appearance = Appearance
@@ -469,6 +474,9 @@ settings-routing-duplicate-warning =
 settings-routing-outputs = Outputs
 settings-routing-bones = Bones
 settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
+settings-routing-output-driver = SteamVR / Monado
+settings-routing-output-vrc_osc = VRChat OSC
+settings-routing-output-vmc = VMC
 settings-routing-output-bone-count = { $routed } of { $accepts } bones routed
 settings-routing-output-badge-sending = Sending
 settings-routing-output-sending-description = Connected and receiving bones.
@@ -500,6 +508,7 @@ settings-routing-hands-warning-done = Route hands
 
 ## SteamVR / Monado output settings
 
+settings-driver = SteamVR / Monado
 settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
 settings-driver-enable = Enable
 settings-driver-enable-description = Send your trackers to and receive trackers from SteamVR or Monado through the SlimeVR driver. If this is off, they won't be able to connect to SlimeVR at all.
@@ -522,6 +531,8 @@ settings-driver-velocity-description = Send linear and angular velocity data to 
 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings
+settings-general-mounting_method = Mounting calibration method
+settings-general-mounting_method-description = How the mounting calibration finds the way your trackers are mounted.
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -799,6 +810,7 @@ settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC VRChat settings
+settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Change settings specific to VRChat OSC and the OSC Trackers standard used to send
@@ -823,6 +835,7 @@ settings-osc-vrchat-status-title = Status
 settings-osc-vrchat-status-input = Input
 settings-osc-vrchat-status-tracking = Tracking data
 settings-osc-vrchat-status-output = Output
+settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = Not listening
 settings-osc-vrchat-status-input-listening = Listening on port {$port}
 settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}.
@@ -860,6 +873,7 @@ settings-osc-vrchat-status-badge-not-sent = Not sent
 settings-osc-vrchat-status-badge-unknown = Unknown
 
 ## VMC OSC settings
+settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
@@ -1222,17 +1236,47 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
-onboarding-choose_mounting-auto_mounting = Automatic mounting
+
+## Mounting method
+mounting_method_modal-title = How do you want to calibrate your trackers?
+mounting_method_modal-description = Mounting orientation corrects for the placement of trackers on your body. You can change this later in the settings.
 # Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
-onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
-onboarding-choose_mounting-manual_mounting = Manual mounting
-onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
+mounting_method-recommended = Recommended
+mounting_method-select = Select
+mounting_method-step = Step mounting
+mounting_method-step-description = Take a step forward and the trackers are calibrated from the way they move.
+mounting_method-step-needs_positional_head = Needs a headset or a tracker with position tracking.
+mounting_method-pose = Pose mounting
+mounting_method-pose-description = Hold a few poses to calibrate the trackers.
+mounting_method-manual = Manual mounting
+mounting_method-manual-description = Choose the mounting orientation manually for each tracker.
+
+## Tracker step mounting setup
+onboarding-step_mounting-title = Step Mounting Calibration
+onboarding-step_mounting-description = For SlimeVR trackers to work, we need to assign a mounting orientation to your trackers to align them with your physical tracker mounting.
+onboarding-step_mounting-step-title = Step Mounting Calibration
+onboarding-step_mounting-step-0 = 1. Press the "Mounting Calibration" button.
+onboarding-step_mounting-step-1 = 2. Take one step forward, then stop and hold still until the calibration finishes.
+
+## Step mounting calibration
+step_mounting-title = Step Mounting Calibration
+# $status (String) - StepMountingStatus enum member name
+step_mounting-instructions-WAITING_FOR_MOVEMENT = Take a step forward, then stand still.
+step_mounting-instructions-RECORDING = Keep still once you've stopped, we're still recording.
+step_mounting-instructions-PROCESSING = Hold on, calculating your mounting offset...
+step_mounting-status-WAITING_FOR_MOVEMENT = Waiting for movement...
+step_mounting-status-RECORDING = Recording your step...
+step_mounting-status-PROCESSING = Processing...
+step_mounting-status-DONE = Done!
+step_mounting-status-ERROR_NO_DATA = Couldn't detect any movement. Try again.
+step_mounting-status-ERROR_TIMEOUT = Timed out waiting for movement. Try again.
+step_mounting-cancel = Cancel
+step_mounting-close = Close
+step_mounting-next = Next step
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting = Manual Mounting
 onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
-onboarding-manual_mounting-auto_mounting = Automatic mounting
 onboarding-manual_mounting-next = Next step
 
 ## Tracker automatic mounting setup
@@ -1635,6 +1679,8 @@ tracking_checklist-status-partial = {$count ->
     *[many] You have {$count} warnings!
 }
 tracking_checklist-status-complete = You are prepared to use SlimeVR!
+tracking_checklist-MOUNTING_METHOD = Pick a mounting calibration method
+tracking_checklist-MOUNTING_METHOD-desc = Choose how your trackers are calibrated to the way they are mounted on your body.
 tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
 tracking_checklist-FULL_RESET = Perform a full reset

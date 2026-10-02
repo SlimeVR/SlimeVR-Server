@@ -32,6 +32,7 @@ class TrackingChecklist(
 			add(ReliableReferenceCheckBehaviour(trackerStates))
 			add(TrackerRestCheckBehaviour(trackerStates))
 			add(FullResetCheckBehaviour(trackerStates))
+			add(MountingMethodCheckBehaviour(appContext.config.settings))
 			add(MountingCalibrationCheckBehaviour(trackerStates, appContext.config.settings))
 			add(TrackerErrorCheckBehaviour(trackerStates))
 			add(SteamVRHandsCheckBehaviour(trackerStates, appContext.server, appContext.boneRouting))

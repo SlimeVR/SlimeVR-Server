@@ -104,8 +104,8 @@ class ResetsManager(
 	 */
 	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
 		val method = settings.context.state.value.data.resetsConfig.mountingMethod.takeIf { resetType == ResetType.MOUNTING }
-		if (method == MountingMethod.MANUAL) {
-			AppLogger.resets.info("Ignoring mounting reset from $resetSourceName: the mounting method is manual")
+		if (method == MountingMethod.UNKNOWN || method == MountingMethod.MANUAL) {
+			AppLogger.resets.info("Ignoring mounting reset from $resetSourceName: the mounting method is $method")
 			return
 		}
 		val availability = availability(resetType)

@@ -1,4 +1,10 @@
-import { ResetResponseT, ResetStatus, ResetType } from 'solarxr-protocol';
+import {
+  CountdownDetailT,
+  ResetDetail,
+  ResetLifecycle,
+  ResetStatusResponseT,
+  ResetType,
+} from 'solarxr-protocol';
 import Xylophone, { ValidNote } from './xylophone';
 
 const tones: ValidNote[][] = [
@@ -39,7 +45,7 @@ const resetSounds: Record<
     end: createAudio('/sounds/yaw-reset/yaw-reset.ogg'),
     mew: null,
   },
-  [ResetType.POSE_MOUNTING]: {
+  [ResetType.MOUNTING]: {
     initial: createAudio('/sounds/mounting-reset/init-mounting-reset-with-tail.ogg'),
     tick: [
       createAudio('/sounds/mounting-reset/mount-click-1.ogg'),
@@ -112,13 +118,17 @@ export function restartAndPlay(audio: HTMLAudioElement | null, volume: number) {
 
 export function handleResetSounds(
   volume: number,
-  { progress, status, resetType }: Omit<ResetResponseT, 'pack'>
+  { lifecycle, resetType, detailType, detail }: Omit<ResetStatusResponseT, 'pack'>
 ) {
   if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];
   if (!sounds) throw 'reset type does not have a reset sound: ' + resetType;
 
-  if (status === ResetStatus.STARTED) {
+  if (
+    lifecycle === ResetLifecycle.RUNNING &&
+    detailType === ResetDetail.CountdownDetail
+  ) {
+    const { progress } = detail as CountdownDetailT;
     if (progress === 0) {
       restartAndPlay(sounds.initial, volume);
     }
@@ -143,7 +153,7 @@ export function handleResetSounds(
     }
   }
 
-  if (status === ResetStatus.FINISHED) {
+  if (lifecycle === ResetLifecycle.DONE) {
     restartAndPlay(sounds.end, volume);
     restartAndPlay(sounds.mew, volume);
   }

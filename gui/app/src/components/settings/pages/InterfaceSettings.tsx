@@ -23,7 +23,8 @@ import { useElectron } from '@/hooks/electron';
 import { handleResetSounds } from '@/sounds/sounds';
 import {
   ErrorReportingConsent,
-  ResetStatus,
+  ResetDetail,
+  ResetLifecycle,
   ResetType,
 } from 'solarxr-protocol';
 import { useErrorReporting } from '@/hooks/error-reporting';
@@ -131,10 +132,10 @@ export function InterfaceSettings() {
     ) {
       handleResetSounds(values.notifications.feedbackSoundVolume, {
         resetType: ResetType.FULL,
-        status: ResetStatus.FINISHED,
+        lifecycle: ResetLifecycle.DONE,
         bodyParts: [],
-        progress: 0,
-        duration: 0,
+        detailType: ResetDetail.NONE,
+        detail: null,
       });
     }
 
