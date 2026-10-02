@@ -898,7 +898,6 @@ onboarding-automatic_mounting-done-title = Alignements calibrés.
 onboarding-automatic_mounting-done-description = La calibration de l'alignement de vos capteurs est terminée !
 onboarding-automatic_mounting-done-restart = Retourner au début
 onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alignement
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Mettez-vous sur la pointe des pieds, les deux pieds pointés vers l’avant. Vous pouvez aussi le faire assis sur une chaise.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Appuyez sur le bouton « Calibration des pieds » et attendez 3 secondes avant que l’orientation de l'alignement des capteurs ne se réinitialise.
@@ -906,9 +905,6 @@ onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Appuyez sur le bouton « Réinitialisation complète ».
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Tenez-vous droit debout, les bras le long du corps. Assurez-vous de regarder vers l’avant.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position jusqu'à la fin du chronomètre de 3 secondes.
-onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
-onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
-onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 onboarding-automatic_mounting-return-home = Terminé
 
 ## Tracker manual proportions setup
