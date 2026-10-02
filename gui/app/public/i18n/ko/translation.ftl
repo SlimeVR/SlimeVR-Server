@@ -681,18 +681,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = 착용 방향 보정을 위해 어떤 방법을 사용할까요?
 # Multiline text
 onboarding-choose_mounting-description = 착용 방향 정렬은 트래커가 몸에 착용된 방향을 찾아 수정하도록 도와줘요.
-onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = 권장됨
-onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 2가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
-onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
-onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = 수동으로 착용 방향 설정
 onboarding-manual_mounting-description = 트래커를 클릭한 다음, 트래커가 바라보는 방향을 선택해주세요
-onboarding-manual_mounting-auto_mounting = 자동으로 착용 방향 설정
 onboarding-manual_mounting-next = 다음 단계
 
 ## Tracker automatic mounting setup
