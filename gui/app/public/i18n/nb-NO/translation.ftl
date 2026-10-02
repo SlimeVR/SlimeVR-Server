@@ -269,7 +269,6 @@ settings-general-fk_settings-leg_tweak-floor_clip = Gulv-clip
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating korreksjon
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korreksjon styrke
-settings-general-fk_settings-arm_fk-back = Bak
 
 ## Gesture control settings (tracker tapping)
 
