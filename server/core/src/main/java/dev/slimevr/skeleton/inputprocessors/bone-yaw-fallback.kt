@@ -13,7 +13,7 @@ import kotlin.collections.set
  */
 class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		val processedParts: MutableList<BodyPart> = mutableListOf()
+		val processedParts: MutableSet<BodyPart> = mutableSetOf()
 		mutableInputSkeleton.forEachBone { parentPart, parentBone ->
 			if (!parentBone.isRotationActive) {
 				if (parentPart in processedParts) return@forEachBone
