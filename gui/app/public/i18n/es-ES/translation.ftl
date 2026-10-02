@@ -824,18 +824,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = ¿Qué método de calibración de montura usara?
 # Multiline text
 onboarding-choose_mounting-description = La posición de montura corrige la colocación de los trackers en el cuerpo.
-onboarding-choose_mounting-auto_mounting = Calibración de montura automatica
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Recomendada
-onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente la posición de montura para todos sus trackers a partir de 2 poses
-onboarding-choose_mounting-manual_mounting = Calibración de montura manual
-onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la posición de montura para cada tracker de manera manual
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Calibración de montura manual
 onboarding-manual_mounting-description = Haz clic en cada tracker y selecciona la forma en la que están montados
-onboarding-manual_mounting-auto_mounting = Calibración de montura automatica
 onboarding-manual_mounting-next = Siguiente paso
 
 ## Tracker automatic mounting setup
