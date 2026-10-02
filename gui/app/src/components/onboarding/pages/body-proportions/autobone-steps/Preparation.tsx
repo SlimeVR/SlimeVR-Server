@@ -1,10 +1,9 @@
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
+import { FullResetExamples } from '@/components/commons/FullResetExamples';
 import { ResetButton } from '@/components/home/ResetButton';
 import { Localized, useLocalization } from '@fluent/react';
-import { CrossIcon } from '@/components/commons/icon/CrossIcon';
-import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 
 export function PreparationStep({
   nextStep,
@@ -36,32 +35,10 @@ export function PreparationStep({
             </Localized>
           </div>
         </div>
-        <div className="grid grid-cols-3 py-4 gap-2">
-          <div className="flex flex-col bg-background-70 rounded-md relative max-h-72">
-            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
-            <img
-              src="/images/reset/FullResetPose.webp"
-              className="h-full object-contain p-2"
-              alt="Reset position"
-            />
-          </div>
-          <div className="flex flex-col bg-background-70 rounded-md relative max-h-72">
-            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
-            <img
-              src="/images/reset/FullResetPoseSide.webp"
-              className="h-full object-contain p-2"
-              alt="Reset position side"
-            />
-          </div>
-          <div className="flex flex-col bg-background-70 rounded-md relative max-h-72">
-            <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
-            <img
-              src="/images/reset/FullResetPoseWrong.webp"
-              className="h-full object-contain p-2"
-              alt="Reset position wrong"
-            />
-          </div>
-        </div>
+        <FullResetExamples
+          className="py-4"
+          tileClassName="bg-background-70 max-h-72"
+        />
         <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}

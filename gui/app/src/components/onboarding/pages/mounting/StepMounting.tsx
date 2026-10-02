@@ -1,40 +1,26 @@
 import { useOnboarding } from '@/hooks/onboarding';
-import { Typography } from '@/components/commons/Typography';
-import { Step, StepperSlider } from '@/components/onboarding/StepperSlider';
-import { DoneStep } from './mounting-steps/Done';
-import { PreparationStep } from './mounting-steps/Preparation';
-import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
-import { StepMountingStep } from './mounting-steps/StepMountingStep';
-
-const steps: Step[] = [
-  { type: 'numbered', component: PutTrackersOnStep },
-  { type: 'numbered', component: PreparationStep },
-  { type: 'numbered', component: StepMountingStep },
-  { type: 'fullsize', component: DoneStep },
-];
+import { MountingPhaseProps, useMountingPhases } from './MountingFlow';
+import { DonePhase } from './mounting-steps/Done';
+import { PreparationPhase } from './mounting-steps/Preparation';
+import { StepMountingPhase } from './mounting-steps/StepMountingStep';
 
 export function StepMountingPage() {
-  const { applyProgress, state } = useOnboarding();
+  const { applyProgress } = useOnboarding();
+  const { alonePage, ...props } = useMountingPhases({
+    titleId: 'onboarding-step_mounting-title',
+    descriptionId: 'onboarding-step_mounting-description',
+    mountLabelId: 'onboarding-step_mounting-step-title',
+  });
 
   applyProgress(0.6);
 
-  return (
-    <div className="flex flex-col gap-2 h-full items-center w-full xs:justify-center relative overflow-y-auto overflow-x-hidden px-4 pb-4">
-      <div className="flex flex-col w-full h-full xs:justify-center xs:max-w-3xl gap-5">
-        <div className="flex flex-col xs:max-w-lg gap-3">
-          <Typography
-            variant="main-title"
-            id="onboarding-step_mounting-title"
-          />
-          <Typography id="onboarding-step_mounting-description" />
-        </div>
-        <div className="flex pb-4">
-          <StepperSlider
-            variant={state.alonePage ? 'alone' : 'onboarding'}
-            steps={steps}
-          />
-        </div>
-      </div>
-    </div>
-  );
+  const phaseProps: MountingPhaseProps = props;
+  switch (props.flow.current) {
+    case 'prepare':
+      return <PreparationPhase {...phaseProps} />;
+    case 'mount':
+      return <StepMountingPhase {...phaseProps} />;
+    case 'done':
+      return <DonePhase {...phaseProps} alonePage={alonePage} />;
+  }
 }

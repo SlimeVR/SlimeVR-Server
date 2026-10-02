@@ -1,11 +1,7 @@
 import classNames from 'classnames';
 import { ResetLifecycle, StepMountingStatus } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
-import { ProgressBar } from '@/components/commons/ProgressBar';
-import { CheckIcon } from '@/components/commons/icon/CheckIcon';
-import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { StepMountingProgress } from '@/hooks/step-mounting';
 
 // Order matters, be careful
@@ -21,13 +17,29 @@ const videoSteps = [
   StepMountingStatus.RECORDING,
 ];
 
+const errorSteps = [
+  StepMountingStatus.ERROR_NO_DATA,
+  StepMountingStatus.ERROR_TIMEOUT,
+];
+
 export function StepMedia({
   status,
+  done = false,
   className,
 }: {
   status: StepMountingStatus | null;
+  done?: boolean;
   className?: string;
 }) {
+  if (done) {
+    return (
+      <img
+        className="max-h-full max-w-full object-contain"
+        src="/images/user-height/done.webp"
+      />
+    );
+  }
+
   if (status === null || videoSteps.includes(status)) {
     return (
       <video
@@ -40,6 +52,14 @@ export function StepMedia({
       />
     );
   }
+  if (errorSteps.includes(status)) {
+    return (
+      <img
+        className="max-h-full max-w-full object-contain"
+        src="/images/user-height/timeout.webp"
+      />
+    );
+  }
   return (
     <div className="flex items-center justify-center w-full h-full min-h-48">
       <LoaderIcon slimeState={SlimeState.JUMPY} />
@@ -47,79 +67,76 @@ export function StepMedia({
   );
 }
 
-function Stepper({ status, lifecycle }: StepMountingProgress) {
-  const isDone = lifecycle === ResetLifecycle.DONE;
-  const isError = lifecycle === ResetLifecycle.FAILED;
+type SegmentState = 'done' | 'current' | 'todo';
+
+function segmentState(
+  index: number,
+  progress: StepMountingProgress | null
+): SegmentState {
+  if (!progress) return 'todo';
+  const { status, lifecycle } = progress;
+  if (lifecycle === ResetLifecycle.DONE) return 'done';
   const stepIndex = progressSteps.indexOf(status);
-  const progress =
-    isDone || isError ? 1 : (stepIndex + 1) / progressSteps.length;
-  const label = isDone ? 'DONE' : StepMountingStatus[status];
+  if (index < stepIndex) return 'done';
+  return index === stepIndex ? 'current' : 'todo';
+}
 
-  const { isXs } = useBreakpoint('xs');
+export function StepMountingSegments({
+  progress,
+}: {
+  progress: StepMountingProgress | null;
+}) {
+  const allDone = progress?.lifecycle === ResetLifecycle.DONE;
 
-  return (
-    <div className="flex flex-col gap-2 px-2">
-      <div className="flex gap-2 items-center">
-        <div
-          className={classNames(
-            'w-8 aspect-square rounded-full fill-background-10 flex items-center justify-center shrink-0',
-            {
-              'bg-background-70': !isDone && !isError,
-              'bg-accent-background-10': isDone,
-              'bg-status-critical': isError,
-            }
-          )}
-        >
-          {!isDone && !isError && (
-            <Typography variant={isXs ? 'section-title' : 'standard'}>
-              {stepIndex + 1}
-            </Typography>
-          )}
-          {isDone && <CheckIcon size={12} />}
-          {isError && <CrossIcon />}
-        </div>
+  if (progress?.lifecycle === ResetLifecycle.FAILED) {
+    return (
+      <div className="flex w-full max-w-2xl flex-col gap-2">
+        <div className="h-2 rounded-full bg-status-critical" />
         <Typography
-          id={`step_mounting-status-${label}`}
-          variant={isXs ? 'section-title' : 'standard'}
+          color="text-status-critical"
+          id={`step_mounting-status-${StepMountingStatus[progress.status]}`}
         />
       </div>
-      <ProgressBar
-        progress={progress}
-        animated
-        colorClass={
-          isDone
-            ? 'bg-status-success'
-            : isError
-              ? 'bg-status-critical'
-              : undefined
-        }
-      />
+    );
+  }
+
+  return (
+    <div className="grid w-full max-w-2xl grid-cols-3 gap-4">
+      {progressSteps.map((step, index) => {
+        const state = segmentState(index, progress);
+        return (
+          <div key={step} className="flex flex-col gap-2">
+            <div
+              className={classNames('h-2 rounded-full transition-colors', {
+                'bg-accent-background-20': state === 'done' && !allDone,
+                'bg-status-success': state === 'done' && allDone,
+                'bg-accent-background-30 animate-pulse': state === 'current',
+                'bg-background-50': state === 'todo',
+              })}
+            />
+            <Typography
+              id={`step_mounting-status-${StepMountingStatus[step]}`}
+              bold={state === 'current'}
+              color={state === 'todo' ? 'secondary' : 'primary'}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-export function StepMountingStatusContent({
+export function StepMountingMessage({
   status,
   lifecycle,
-  showMedia = true,
-}: StepMountingProgress & { showMedia?: boolean }) {
-  const isRunning = lifecycle === ResetLifecycle.RUNNING;
-
-  return (
-    <div className="flex flex-col gap-4">
-      <Stepper status={status} lifecycle={lifecycle} />
-      {isRunning && (
-        <>
-          {showMedia && (
-            <div className="h-48">
-              <StepMedia status={status} />
-            </div>
-          )}
-          <Typography
-            id={`step_mounting-instructions-${StepMountingStatus[status]}`}
-          />
-        </>
-      )}
-    </div>
-  );
+}: StepMountingProgress) {
+  if (lifecycle === ResetLifecycle.RUNNING) {
+    return (
+      <Typography
+        variant="section-title"
+        id={`step_mounting-instructions-${StepMountingStatus[status]}`}
+      />
+    );
+  }
+  return <Typography variant="section-title" id="step_mounting-status-DONE" />;
 }

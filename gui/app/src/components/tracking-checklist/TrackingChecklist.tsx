@@ -28,7 +28,8 @@ import {
 import { MountingMethodRadio } from '@/components/mounting/MountingMethodRadio';
 import { useResetsSettings } from '@/hooks/resets-settings';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { CheckIcon } from '@/components/commons/icon/CheckIcon';
+import { Timeline, TimelineItem } from '@/components/commons/Timeline';
+import { FullResetExamples } from '@/components/commons/FullResetExamples';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
 import { ResetButton } from '@/components/home/ResetButton';
@@ -66,58 +67,28 @@ function Step({
     if (!canBeOpened) setOpen(false);
   }, [open]);
 
+  const state =
+    status === 'complete'
+      ? 'done'
+      : status === 'skipped'
+        ? 'skipped'
+        : !optional
+          ? 'current'
+          : 'todo';
+
   return (
-    <div
-      className={classNames(
-        'flex flex-col pr-2 ml-6 last:pb-0 pb-3 border-l-[2px] border-background-50',
-        status !== 'complete' || (firstRequired && 'border-dashed')
-      )}
+    <TimelineItem
+      size="sm"
+      state={state}
+      title={<Localized id={trackingchecklistIdtoLabel[id]} />}
+      disabled={!canBeOpened}
+      expanded={open}
+      onToggle={() => setOpen((open) => !open)}
     >
-      <Clickable
-        disabled={!canBeOpened}
-        expanded={canBeOpened ? open : undefined}
-        className={classNames(
-          'flex w-full gap-2 text-left',
-          canBeOpened && 'group cursor-pointer'
-        )}
-        onClick={() => setOpen((open) => !open)}
-      >
-        <div
-          className={classNames(
-            'p-1 rounded-full fill-background-10 flex items-center justify-center z-10 h-[25px] w-[25px] -ml-[13px]',
-            status === 'complete' && 'bg-accent-background-20',
-            status === 'blocked' && 'bg-background-50',
-            status === 'skipped' && 'bg-background-50 fill-background-30',
-            status === 'invalid' && !optional && 'bg-background-50',
-            status === 'invalid' && optional && 'bg-background-50'
-          )}
-        >
-          {status === 'skipped' && <CheckIcon size={10} />}
-          {status === 'complete' && <CheckIcon size={10} />}
-          {(status === 'invalid' || status === 'blocked') && (
-            <div
-              className={classNames(
-                'h-[12px] w-[12px] rounded-full',
-                optional && 'bg-background-40',
-                !optional &&
-                  'bg-accent-background-10 animate-pulse animate-low-priority brightness-75'
-              )}
-            />
-          )}
-        </div>
-        <div className="flex items-center justify-between w-full group-hover:text-background-20 text-section-title">
-          <Localized id={trackingchecklistIdtoLabel[id]} />
-          {canBeOpened && (
-            <div className="fill-background-30 group-hover:scale-125 group-hover:fill-background-20 transition-transform">
-              <ArrowDownIcon size={20} />
-            </div>
-          )}
-        </div>
-      </Clickable>
       {(firstRequired || open) && children && (
-        <div className="pt-2 pl-5">{children}</div>
+        <div className="pt-2">{children}</div>
       )}
-    </div>
+    </TimelineItem>
   );
 }
 
@@ -338,32 +309,10 @@ const stepContentLookup: Record<
           <Typography id="onboarding-automatic_mounting-preparation-v2-step-1" />
           <Typography id="onboarding-automatic_mounting-preparation-v2-step-2" />
         </div>
-        <div className="grid grid-cols-3 py-1.5 gap-2">
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
-            <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
-            <img
-              src="/images/reset/FullResetPose.webp"
-              className="h-full object-contain p-2"
-              alt="Reset position"
-            />
-          </div>
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
-            <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
-            <img
-              src="/images/reset/FullResetPoseSide.webp"
-              className="h-full object-contain p-2"
-              alt="Reset position side"
-            />
-          </div>
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
-            <CrossIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
-            <img
-              src="/images/reset/FullResetPoseWrong.webp"
-              className="h-full object-contain p-2"
-              alt="Reset position wrong"
-            />
-          </div>
-        </div>
+        <FullResetExamples
+          className="py-1.5"
+          tileClassName="bg-background-80 max-h-64"
+        />
         <div className="flex">
           <ResetButton type={ResetType.FULL} />
         </div>
@@ -668,64 +617,66 @@ export function TrackingChecklist({
             'opacity-0 h-0': closed,
           })}
         >
-          {visibleSteps.map((step, index) => (
-            <Step step={step} index={index + 1} key={step.id}>
-              {stepContentLookup[step.id]?.(step, context) || undefined}
-            </Step>
-          ))}
+          <div className="pl-[11px] pr-2">
+            <Timeline>
+              {visibleSteps.map((step, index) => (
+                <Step step={step} index={index + 1} key={step.id}>
+                  {stepContentLookup[step.id]?.(step, context) || undefined}
+                </Step>
+              ))}
+            </Timeline>
+          </div>
         </div>
-        <div
-          className={classNames(
-            'flex flex-col flex-grow  border-l-[2px] justify-end ml-6 transition-all duration-500 delay-100',
-            {
-              'pt-3 border-background-50': !closed,
-              'border-transparent': closed,
-              'border-dashed': completion === 'incomplete',
-            }
-          )}
-        >
-          <Clickable
-            disabled={!closed}
-            expanded={closed ? false : undefined}
-            className={classNames('flex w-full gap-2 z-10 text-left', {
-              'cursor-pointer': closed,
-              'pointer-events-none': !closed,
-            })}
-            onClick={() => toggleClosed()}
-          >
-            <div className="rounded-full bg-background-50 flex items-center justify-center h-[25px] w-[25px] -ml-[13px] relative">
-              <div
-                className={classNames('h-[12px] w-[12px] rounded-full', {
-                  'bg-status-success': completion === 'complete',
-                  'bg-status-critical animate-pulse animate-low-priority':
-                    completion === 'incomplete',
-                  'bg-status-warning animate-pulse animate-low-priority':
-                    completion === 'partial',
-                })}
-              />
-            </div>
-            <div className={'flex flex-col justify-center'}>
-              {completion === 'incomplete' && (
-                <Typography
-                  variant="section-title"
-                  id="tracking_checklist-status-incomplete"
-                />
-              )}
-              {completion === 'partial' && (
-                <Typography
-                  variant="section-title"
-                  id="tracking_checklist-status-partial"
-                  vars={{ count: warnings.length }}
-                />
-              )}
-              {completion == 'complete' && (
-                <Typography
-                  variant="section-title"
-                  id="tracking_checklist-status-complete"
-                />
-              )}
-            </div>
-          </Clickable>
+        <div className="flex flex-col flex-grow justify-end pl-[11px] pr-2 transition-all duration-500 delay-100">
+          <div className="min-h-3 flex-1 pl-[11.5px]">
+            <div
+              className={classNames('h-full w-0 border-l-2', {
+                'border-background-50': !closed,
+                'border-transparent': closed,
+                'border-dashed': completion === 'incomplete',
+              })}
+            />
+          </div>
+          <Timeline>
+            <TimelineItem
+              size="sm"
+              last
+              state="todo"
+              dotClassName={classNames({
+                'bg-status-success': completion === 'complete',
+                'bg-status-critical animate-pulse animate-low-priority':
+                  completion === 'incomplete',
+                'bg-status-warning animate-pulse animate-low-priority':
+                  completion === 'partial',
+              })}
+              disabled={!closed}
+              expanded={false}
+              onToggle={() => toggleClosed()}
+              title={
+                <>
+                  {completion === 'incomplete' && (
+                    <Typography
+                      variant="section-title"
+                      id="tracking_checklist-status-incomplete"
+                    />
+                  )}
+                  {completion === 'partial' && (
+                    <Typography
+                      variant="section-title"
+                      id="tracking_checklist-status-partial"
+                      vars={{ count: warnings.length }}
+                    />
+                  )}
+                  {completion == 'complete' && (
+                    <Typography
+                      variant="section-title"
+                      id="tracking_checklist-status-complete"
+                    />
+                  )}
+                </>
+              }
+            />
+          </Timeline>
         </div>
         <div
           className={classNames('w-full flex relative p-3 pr-12', {

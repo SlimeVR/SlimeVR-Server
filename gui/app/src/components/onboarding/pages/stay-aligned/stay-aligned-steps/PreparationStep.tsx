@@ -1,6 +1,5 @@
 import { Button } from '@/components/commons/Button';
-import { CheckIcon } from '@/components/commons/icon/CheckIcon';
-import { CrossIcon } from '@/components/commons/icon/CrossIcon';
+import { FullResetExamples } from '@/components/commons/FullResetExamples';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
@@ -28,32 +27,10 @@ export function PreparationStep({
           <Localized id="onboarding-stay_aligned-preparation-tip">
             <TipBox>TIP</TipBox>
           </Localized>
-          <div className="grid grid-cols-3 py-4 gap-2">
-            <div className="flex flex-col bg-background-60 rounded-md relative max-h-72">
-              <CheckIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-success" />
-              <img
-                src="/images/reset/FullResetPose.webp"
-                className="h-full object-contain p-2"
-                alt="Reset position"
-              />
-            </div>
-            <div className="flex flex-col bg-background-60 rounded-md relative max-h-72">
-              <CheckIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-success" />
-              <img
-                src="/images/reset/FullResetPoseSide.webp"
-                className="h-full object-contain p-2"
-                alt="Reset position side"
-              />
-            </div>
-            <div className="flex flex-col bg-background-60 rounded-md relative max-h-72">
-              <CrossIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
-              <img
-                src="/images/reset/FullResetPoseWrong.webp"
-                className="h-full object-contain p-2"
-                alt="Reset position wrong"
-              />
-            </div>
-          </div>
+          <FullResetExamples
+            className="py-4"
+            tileClassName="bg-background-60 max-h-72"
+          />
           <div className="flex gap-3 justify-between">
             <Button
               variant={'secondary'}

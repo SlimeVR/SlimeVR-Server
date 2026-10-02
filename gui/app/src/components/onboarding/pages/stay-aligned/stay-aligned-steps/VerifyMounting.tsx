@@ -7,7 +7,6 @@ import {
 } from '@/components/mounting/PoseMountingVideo';
 import { ResetType } from 'solarxr-protocol';
 import { ResetButton } from '@/components/home/ResetButton';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { ManualMounting } from '@/components/onboarding/pages/mounting/ManualMounting';
@@ -16,7 +15,6 @@ export function VerifyMountingStep({
   prevStep,
   isActive,
 }: VerticalStepComponentProps) {
-  const { isMobile } = useBreakpoint('mobile');
   const [isOpen, setOpen] = useState(false);
   const [disableMounting, setDisableMounting] = useState(false);
 
@@ -28,22 +26,15 @@ export function VerifyMountingStep({
 
   return (
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
-      <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4 max-w-sm">
-          <PoseMountingInstructions />
+      <div className="flex flex-col flex-grow gap-4">
+        <div className="flex mobile:flex-col gap-6">
+          <div className="flex flex-col gap-4 xs:w-72 shrink-0">
+            <PoseMountingInstructions />
+          </div>
+          <div className="flex flex-1 items-center justify-center fill-background-50">
+            <PoseMountingVideo className="h-72 xs:h-96" />
+          </div>
         </div>
-
-        {isMobile && (
-          <div className="flex flex-col items-center fill-background-50 justify-center">
-            <PoseMountingVideo className="h-72" />
-          </div>
-        )}
-
-        {!isMobile && (
-          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
-            <PoseMountingVideo className="h-full max-h-96" />
-          </div>
-        )}
         <div className="flex gap-3 justify-between">
           <Button
             variant={'secondary'}

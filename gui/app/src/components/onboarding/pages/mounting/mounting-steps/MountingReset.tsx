@@ -1,63 +1,33 @@
+import { ResetType } from 'solarxr-protocol';
 import {
   PoseMountingInstructions,
   PoseMountingVideo,
 } from '@/components/mounting/PoseMountingVideo';
-import { ResetType } from 'solarxr-protocol';
-import { Button } from '@/components/commons/Button';
-import { Typography } from '@/components/commons/Typography';
 import { ResetButton } from '@/components/home/ResetButton';
-import { useLocalization } from '@fluent/react';
-import { useBreakpoint } from '@/hooks/breakpoint';
+import {
+  MountingFlowLayout,
+  MountingPhaseProps,
+  useCancelMountingOnLeave,
+} from '@/components/onboarding/pages/mounting/MountingFlow';
 
-export function MountingResetStep({
-  nextStep,
-  prevStep,
-  variant,
-}: {
-  nextStep: () => void;
-  prevStep: () => void;
-  variant: 'onboarding' | 'alone';
-}) {
-  const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
+export function PoseMountingPhase({ flow, back, next }: MountingPhaseProps) {
+  useCancelMountingOnLeave();
 
   return (
-    <>
-      <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4 max-w-sm">
-          <Typography variant="main-title" bold>
-            {l10n.getString(
-              'onboarding-automatic_mounting-mounting_reset-title'
-            )}
-          </Typography>
-          <PoseMountingInstructions />
-        </div>
-
-        {isMobile && (
-          <div className="flex flex-col items-center fill-background-50 justify-center">
-            <PoseMountingVideo className="h-72" />
-          </div>
-        )}
-
-        <div className="flex gap-3 mobile:justify-between">
-          <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            onClick={prevStep}
-          >
-            {l10n.getString('onboarding-automatic_mounting-prev_step')}
-          </Button>
+    <MountingFlowLayout
+      flow={flow}
+      body={<PoseMountingInstructions />}
+      media={<PoseMountingVideo className="h-full" />}
+      actions={
+        <>
+          {back}
           <ResetButton
             type={ResetType.MOUNTING}
             group="default"
-            onReseted={nextStep}
+            onReseted={next}
           />
-        </div>
-      </div>
-      {!isMobile && (
-        <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
-          <PoseMountingVideo className="h-full max-h-96" />
-        </div>
-      )}
-    </>
+        </>
+      }
+    />
   );
 }
