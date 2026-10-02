@@ -613,12 +613,8 @@ onboarding-automatic_mounting-done-title = Asennuskierrokset kalibroitu.
 onboarding-automatic_mounting-done-description = Asennuskalibrointi on valmis!
 onboarding-automatic_mounting-done-restart = Yritä uudelleen
 onboarding-automatic_mounting-mounting_reset-title = Asennuksen Nollaus
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kyykisty "hiihtoasentoon" siten, että jalat ovat koukussa, ylävartalo kallistettuna eteenpäin ja kädet koukussa.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Paina "Nollaa Asennus" -painiketta ja odota 3 sekuntia, ennen kuin jäljittimien asennuskierrot nollautuvat.
 onboarding-automatic_mounting-preparation-title = Valmistelu
-onboarding-automatic_mounting-put_trackers_on-title = Laita jäljittimet päällesi
-onboarding-automatic_mounting-put_trackers_on-description = Kalibroidaksemme asennuskierrokset käytämme juuri määrittämiäsi jäljittimiä. Laita kaikki jäljittimet päällesi, näet mitkä ovat mitäkin oikealla olevassa kuvassa.
-onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
 
 ## Tracker manual proportions setup
 
