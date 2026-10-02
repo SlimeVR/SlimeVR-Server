@@ -832,18 +832,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Какой метод калибровки крепления использовать?
 # Multiline text
 onboarding-choose_mounting-description = Ориентация крепления корректирует размещение трекеров на вашем теле.
-onboarding-choose_mounting-auto_mounting = Автоматическая привязка
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Рекомендуется
-onboarding-choose_mounting-auto_mounting-description = Это автоматически определит направления монтажа для всех ваших трекеров из 2 поз
-onboarding-choose_mounting-manual_mounting = Ручная привязка
-onboarding-choose_mounting-manual_mounting-description = Это позволит вам выбрать направление монтажа вручную для каждого трекера
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Ручная привязка
 onboarding-manual_mounting-description = Нажмите на каждый трекер и выберите, каким способом они будут привязаны
-onboarding-manual_mounting-auto_mounting = Автоматическая привязка
 onboarding-manual_mounting-next = Следующий шаг
 
 ## Tracker automatic mounting setup
