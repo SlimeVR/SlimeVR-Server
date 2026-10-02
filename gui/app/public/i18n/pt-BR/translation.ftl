@@ -921,7 +921,6 @@ onboarding-automatic_mounting-done-title = Orientações de montagem calibradas.
 onboarding-automatic_mounting-done-description = Sua calibração de montagem está concluída!
 onboarding-automatic_mounting-done-restart = Tentar Novamente
 onboarding-automatic_mounting-mounting_reset-title = Calibração de Montagem
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de “esqui”, com as pernas dobradas, o tronco inclinado para frente e os braços flexionados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Calibração de Montagem" e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Fique na ponta dos pés, com ambos os pés apontados para a frente. Alternativamente, você pode fazer isso sentado em uma cadeira.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Pressione o botão “Calibração dos pés” e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
@@ -929,9 +928,6 @@ onboarding-automatic_mounting-preparation-title = Preparação
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Pressione o botão “Redefinir Tudo"
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Fique em pé, com os braços ao lado do corpo. Certifique-se de olhar para a frente.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Mantenha a posição até que o temporizador de 3 segundos termine.
-onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
-onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as orientações de montagem, vamos usar os trackers que você acabou de atribuir. Coloque todos os seus trackers; você pode ver qual é qual na figura à direita.
-onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
 onboarding-automatic_mounting-return-home = Feito
 
 ## Tracker manual proportions setup
