@@ -871,18 +871,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Quelle méthode de calibration de l'alignement utiliser ?
 # Multiline text
 onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
-onboarding-choose_mounting-auto_mounting = Alignement automatique
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Recommendée
-onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
-onboarding-choose_mounting-manual_mounting = Alignement manuel
-onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Alignement manuel
 onboarding-manual_mounting-description = Cliquez sur chaque capteur et sélectionnez la manière dont ils sont orientés
-onboarding-manual_mounting-auto_mounting = Détection automatique
 onboarding-manual_mounting-next = Prochaine étape
 
 ## Tracker automatic mounting setup
