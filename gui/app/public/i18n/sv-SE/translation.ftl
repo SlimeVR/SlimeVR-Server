@@ -773,18 +773,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Vilken kalibrerings-metod ska man använda?
 # Multiline text
 onboarding-choose_mounting-description = Monteringsriktningen korrigerar för placeringen av trackers på din kropp.
-onboarding-choose_mounting-auto_mounting = Automatisk montering.
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Rekomenderad
-onboarding-choose_mounting-auto_mounting-description = Detta kommer automatiskt känna av monteringsriktningen av alla dina trackers från 2 positioner
-onboarding-choose_mounting-manual_mounting = Manuell montering
-onboarding-choose_mounting-manual_mounting-description = Detta kommer låta dig välja monteringsriktningen manuellt för varje tracker
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Klicka på varje tracker och välj vilket håll de är monterade på
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Nästa steg
 
 ## Tracker automatic mounting setup
