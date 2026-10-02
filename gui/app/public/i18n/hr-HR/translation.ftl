@@ -165,6 +165,15 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
