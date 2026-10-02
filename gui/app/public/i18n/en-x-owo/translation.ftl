@@ -707,18 +707,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = wut meownting cawibwation mefod to use?
 # Multiline text
 onboarding-choose_mounting-description = meownting owientation correct fow da pwacement of twackews on u body.
-onboarding-choose_mounting-auto_mounting = awtomawic meownting
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = wecommended
-onboarding-choose_mounting-auto_mounting-description = dis will automaticawwy detec da meownting diwecshuns fow aww of ya twackews fwom 2 poses
-onboarding-choose_mounting-manual_mounting = manyul meownting
-onboarding-choose_mounting-manual_mounting-description = dis will let u chose da meownting diwecshun manuwawwy fow eech twackew
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = manual meownting
 onboarding-manual_mounting-description = cwick on evewy twackaw and sewect which way they awe mownted
-onboarding-manual_mounting-auto_mounting = awtomawic meownting
 onboarding-manual_mounting-next = newt stewp
 
 ## Tracker automatic mounting setup
