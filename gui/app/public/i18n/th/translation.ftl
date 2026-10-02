@@ -468,15 +468,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position = ใช้ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
-settings-general-fk_settings-arm_fk-reset_mode-description = เปลี่ยนท่าทางแขนที่ใช้สำหรับการรีเซ็ตตั้งศูนย์การติดตั้ง
-settings-general-fk_settings-arm_fk-back = ยื่นไปด้านหลัง
-settings-general-fk_settings-arm_fk-back-description = โหมดค่าเริ่มต้น โดยแขนท่อนบนจะเอียงไปด้านหลัง และแขนท่อนล่างจะชี้ไปด้านหน้า
-settings-general-fk_settings-arm_fk-tpose_up = ที-โพส (แขนขึ้น)
-settings-general-fk_settings-arm_fk-tpose_up-description = กำหนดให้แขนแนบลำตัวระหว่างการรีเซ็ตทั้งหมด และเหยียดออกด้านข้าง 90 องศา ระหว่างการรีเซ็ตตั้งศูนย์การติดตั้ง
-settings-general-fk_settings-arm_fk-tpose_down = ที-โพส (แขนลง)
-settings-general-fk_settings-arm_fk-tpose_down-description = กำหนดให้แขนเหยียดออกด้านข้าง 90 องศา ระหว่างการรีเซ็ตทั้งหมดและแนบลำตัว ระหว่างการรีเซ็ตตั้งศูนย์การติดตั้ง
-settings-general-fk_settings-arm_fk-forward = ไปข้างหน้า
-settings-general-fk_settings-arm_fk-forward-description = กำหนดให้แขนยกไปด้านหน้าทำมุม 90 องศา มีประโยชน์สำหรับงาน VTubing
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
 settings-general-fk_settings-skeleton_settings-ratios-description = เปลี่ยนค่าการตั้งค่าโครงกระดูก คุณอาจต้องปรับสัดส่วนของคุณใหม่หลังจากเปลี่ยนค่าเหล่านี้
 settings-general-fk_settings-self_localization-title = โหมด Mocap
