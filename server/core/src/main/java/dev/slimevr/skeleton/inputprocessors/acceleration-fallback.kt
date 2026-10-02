@@ -11,6 +11,7 @@ import kotlin.collections.set
  * Handles replacing accelerations of boneInputs that are not actively receiving any by
  * falling back to their parent's, or child's, acceleration.
  */
+// TODO merge this with BoneYawFallbackInputProcessor
 class AccelerationFallbackInputProcessor : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val processedParts: MutableSet<BodyPart> = mutableSetOf()
