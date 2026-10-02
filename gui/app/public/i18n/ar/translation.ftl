@@ -762,18 +762,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = ما طريقة معايرة التركيب المستخدمة؟
 # Multiline text
 onboarding-choose_mounting-description = اتجاه التركيب يصحح وضع أجهزة التعقب على جسمك.
-onboarding-choose_mounting-auto_mounting = التركيب التلقائي
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = الموصى به
-onboarding-choose_mounting-auto_mounting-description = سيكتشف هذا تلقائيًا اتجاهات التركيب لجميع أجهزة التعقب من وضعين
-onboarding-choose_mounting-manual_mounting = التركيب اليدوي
-onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = التركيب اليدوي
 onboarding-manual_mounting-description = انقر فوق كل جهاز تعقب وحدد طريقة تركيبها
-onboarding-manual_mounting-auto_mounting = التركيب التلقائي
 onboarding-manual_mounting-next = الخطوة التالية
 
 ## Tracker automatic mounting setup
