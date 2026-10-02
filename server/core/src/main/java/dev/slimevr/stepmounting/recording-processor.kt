@@ -74,7 +74,7 @@ fun estimateHeadingAlign(
 	// Compute mounting to fix the yaw offset from tracker to HMD
 	// OLD: angle(trackerXZ.unit()) * angle(hmdXZ.unit()).inv()
 	return StepMountingResult(
-		Quaternion.fromTo(trackerXZ.unit(), hmdXZ.unit()).unit(),
+		Quaternion.fromTo(hmdXZ.unit(), trackerXZ.unit()).unit(),
 		abs(trackerXZ.len() - hmdXZ.len()),
 		trackerOffset,
 		bias,

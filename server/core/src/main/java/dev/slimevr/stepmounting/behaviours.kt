@@ -59,7 +59,7 @@ val coefficients = ButterworthCoefficients(
 	0.02f,
 )
 const val startThreshold = 0.4f // in m/s^2
-const val endThreshold = 0.3f // in m/s^2
+const val endThreshold = 0.5f // in m/s^2
 const val minMovementDurationMs = 3000L
 
 fun movementDetector(updates: Flow<TrackerSnapshot>) = flow {
