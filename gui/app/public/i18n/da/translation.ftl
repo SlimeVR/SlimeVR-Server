@@ -470,11 +470,7 @@ onboarding-automatic_mounting-next = Næste trin
 onboarding-automatic_mounting-prev_step = Forrige trin
 onboarding-automatic_mounting-done-restart = Prøv igen
 onboarding-automatic_mounting-mounting_reset-title = Montage Kalibrering
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Sæt dig på hug i en "skiløb" -stilling med bøjede ben, din overkrop vippet fremad og dine arme bøjet.
 onboarding-automatic_mounting-preparation-title = Forberedelse
-onboarding-automatic_mounting-put_trackers_on-title = Tag dine trackere på
-onboarding-automatic_mounting-put_trackers_on-description = For at kalibrere rotationer bruger vi de trackere, du lige har tildelt. Tag alle dine trackere på du kan se hvilke der er hvilke i figuren til højre.
-onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
 ## Tracker manual proportions setup
 
