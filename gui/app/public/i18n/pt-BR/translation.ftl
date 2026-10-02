@@ -465,15 +465,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Dados de posição
 settings-general-fk_settings-ik-use_position = Usar dados de posição
 settings-general-fk_settings-ik-use_position-description = Ativa o uso de dados de posição dos trackers que os fornecem. Ao ativar isso, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
-settings-general-fk_settings-arm_fk-reset_mode-description = Altera qual pose de braço é esperada para a calibração de montagem.
-settings-general-fk_settings-arm_fk-back = Atrás
-settings-general-fk_settings-arm_fk-back-description = O modo padrão, com os braços voltados para trás e os antebraços para frente.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (cima)
-settings-general-fk_settings-arm_fk-tpose_up-description = Espera que seus braços estejam abaixados ao lado do corpo durante "Redefinir Tudo" e levantados a 90 graus para os lados durante a "Calibração de Montagem".
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (baixo)
-settings-general-fk_settings-arm_fk-tpose_down-description = Mantenha os braços levantados a 90 graus para os lados durante "Redefinir Tudo" e abaixados ao lado do corpo durante a "Calibração de Montagem".
-settings-general-fk_settings-arm_fk-forward = Para frente
-settings-general-fk_settings-arm_fk-forward-description = Espera que seus braços estejam levantados para frente a 90 graus. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Proporções do esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Mude os valores das configurações do esqueleto. Pode ser necessário ajustar suas proporções depois de alterá-las.
 settings-general-fk_settings-self_localization-title = Modo mocap
