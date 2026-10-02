@@ -134,7 +134,6 @@ data class SkeletonTogglesConfig(
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,
 	val enforceConstraints: Boolean = true,
-	val correctConstraints: Boolean = true,
 )
 
 // Used in SkeletonConfig

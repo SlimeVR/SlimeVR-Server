@@ -90,7 +90,7 @@ export function SelectSourceStep({
   prevStep: () => void;
   goTo: (id: string) => void;
 }) {
-  const { l10n, getStringOrNull } = useSafeLocalization();
+  const { l10n } = useSafeLocalization();
   const { setSelectedSource, selectedSource, selectedDefault } =
     useFirmwareTool();
   const [partialBoard, setPartialBoard] = useState<{

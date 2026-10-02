@@ -38,7 +38,6 @@ class SkeletonSettingsBehaviour(
 						mocapMode = config.toggles.mocapMode,
 						useTrackerPositions = config.toggles.useTrackerPositions,
 						enforceConstraints = config.toggles.enforceConstraints,
-						correctConstraints = config.toggles.correctConstraints,
 					),
 					ratios = SkeletonRatios(
 						imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
@@ -70,7 +69,6 @@ class SkeletonSettingsBehaviour(
 									mocapMode = it.mocapMode == true,
 									useTrackerPositions = it.useTrackerPositions == true,
 									enforceConstraints = it.enforceConstraints == true,
-									correctConstraints = it.correctConstraints == true,
 								)
 							} ?: skeletonConfig.toggles,
 							ratios = req.ratios?.let {
