@@ -865,15 +865,11 @@ onboarding-automatic_mounting-done-title = Tracker Rotation kalibriert.
 onboarding-automatic_mounting-done-description = Ihre Rotations-Kalibrierung ist abgeschlossen!
 onboarding-automatic_mounting-done-restart = Zurück zum Start
 onboarding-automatic_mounting-mounting_reset-title = Befestigungs-Reset
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Beugen Sie sich in die "Skifahren"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Drücken Sie die Schaltfläche "Befestigungs-Reset" und warten Sie 3 Sekunden, bevor die Drehungen der Tracker gesetzt werden.
 onboarding-automatic_mounting-preparation-title = Vorbereitung
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Drücke den Knopf "Kompletter Reset".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stehe aufrecht mit den Armen an den Seiten. Schaue unbedingt nach vorne.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Halte die Position, bis 3 Sekunden abgelaufen sind.
-onboarding-automatic_mounting-put_trackers_on-title = Legen Sie Ihre Tracker an
-onboarding-automatic_mounting-put_trackers_on-description = Um die Drehung der Tracker zu kalibrieren, werden die Tracker verwendet, welche Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, in der Abbildung rechts können sie sehen um welchen Tracker es sich handelt.
-onboarding-automatic_mounting-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-automatic_mounting-return-home = Fertig
 
 ## Tracker manual proportions setup
