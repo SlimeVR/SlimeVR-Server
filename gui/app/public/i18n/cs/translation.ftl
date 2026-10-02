@@ -759,14 +759,10 @@ onboarding-automatic_mounting-done-title = Směr nasazení trackerů zkalibrová
 onboarding-automatic_mounting-done-description = Kalibrace nasazení trackerů je dokončena!
 onboarding-automatic_mounting-done-restart = Začít znovu
 onboarding-automatic_mounting-mounting_reset-title = Reset nasazení trackerů
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Dřepněte si, jako při lyžování: nohy pokrčte v kolenou, trup nakloňte mírně dopředu a paže pokrčte.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Stiskněte tlačítko "Resetovat nasazení trackerů" a  vyčkejte 3 sekundy. Orientace nasazení trackerů se nastaví na základní hodnoty.
 onboarding-automatic_mounting-preparation-title = Příprava
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Stiskněte tlačítko pro "Plný Reset"
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Zůstaňte v pozici, dokud 3s časovač neskončí.
-onboarding-automatic_mounting-put_trackers_on-title = Nasaďte si trackery
-onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci směru nasazení použijeme právě přiřazené trackery. Nasaďte si prosím všechny trackery. Můžete zkontrolovat jejich umístění na obrázku vpravo.
-onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-automatic_mounting-return-home = Hotovo
 
 ## Tracker manual proportions setup
