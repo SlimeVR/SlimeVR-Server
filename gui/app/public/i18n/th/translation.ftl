@@ -853,18 +853,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = ต้องการใช้วิธีการตั้งศูนย์การติดตั้งแบบใด?
 # Multiline text
 onboarding-choose_mounting-description = การตั้งศูนย์การติดตั้งจะแก้ไขทิศทางการติดตั้งของแทร็กเกอร์บนร่างกายของคุณ
-onboarding-choose_mounting-auto_mounting = ตั้งศูนย์การติดตั้งอัตโนมัติ
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = แนะนำ
-onboarding-choose_mounting-auto_mounting-description = ระบบจะตรวจจับทิศทางการติดตั้งของแทร็กเกอร์ทั้งหมดของคุณโดยอัตโนมัติ จากท่าทาง 2 ท่า
-onboarding-choose_mounting-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตัวเอง
-onboarding-choose_mounting-manual_mounting-description = คุณสามารถเลือกทิศทางการติดตั้งด้วยตนเองสำหรับแทร็กเกอร์แต่ละตัว
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตนเอง
 onboarding-manual_mounting-description = ให้คลิกที่แทร็กเกอร์แต่ละตัว และเลือกทิศทางการติดตั้งที่ถูกต้อง
-onboarding-manual_mounting-auto_mounting = ตั้งศูนย์การติดตั้งแบบอัตโนมัติ
 onboarding-manual_mounting-next = ขั้นตอนถัดไป
 
 ## Tracker automatic mounting setup
