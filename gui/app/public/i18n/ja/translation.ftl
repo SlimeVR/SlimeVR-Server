@@ -525,14 +525,20 @@ onboarding-assign_trackers-side-left = 左
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = 自動マウント
-onboarding-choose_mounting-manual_mounting = マニュアルマウント
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = マニュアルマウント
 onboarding-manual_mounting-description = すべてのトラッカーをクリックし、どの方向にマウントするかを選択
-onboarding-manual_mounting-auto_mounting = 自動マウント
 onboarding-manual_mounting-next = 次のステップ
 
 ## Tracker automatic mounting setup
