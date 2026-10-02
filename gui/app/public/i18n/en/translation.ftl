@@ -235,7 +235,7 @@ reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
-reset-error-need_positional_head = Step mounting needs a headset or a tracker= with position tracking
+reset-error-need_positional_head = Step mounting needs a VR headset or a positional tracker
 reset-error-no_trackers = No tracker available
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
@@ -532,7 +532,7 @@ settings-driver-velocity-description = Send linear and angular velocity data to 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings
 settings-general-mounting_method = Mounting calibration method
-settings-general-mounting_method-description = How the mounting calibration finds the way your trackers are mounted.
+settings-general-mounting_method-description = What mounting calibration method to use to calibrate your trackers' mounting orientations.
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -1244,10 +1244,10 @@ mounting_method_modal-description = Mounting orientation corrects for the placem
 mounting_method-recommended = Recommended
 mounting_method-select = Select
 mounting_method-step = Step mounting
-mounting_method-step-description = Take a step forward and the trackers are calibrated from the way they move.
+mounting_method-step-description = Take a step forward to calibrate your trackers.
 mounting_method-step-needs_positional_head = Needs a headset or a tracker with position tracking.
 mounting_method-pose = Pose mounting
-mounting_method-pose-description = Hold a few poses to calibrate the trackers.
+mounting_method-pose-description = Hold a ski pose to calibrate your trackers.
 mounting_method-manual = Manual mounting
 mounting_method-manual-description = Choose the mounting orientation manually for each tracker.
 
