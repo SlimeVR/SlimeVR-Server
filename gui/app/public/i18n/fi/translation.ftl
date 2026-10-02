@@ -586,16 +586,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Mitä asennuskalibrointimenetelmää käytetään?
 # Multiline text
 onboarding-choose_mounting-description = Asennussuuntaus korjaa jäljittimien sijoittelun kehossasi.
-onboarding-choose_mounting-auto_mounting = Automaattinen asennus
-onboarding-choose_mounting-auto_mounting-description = Tämä tunnistaa automaattisesti kaikkien jäljittimiesi asennussuunnat 2 asennosta
-onboarding-choose_mounting-manual_mounting = Manuaalinen asennus
-onboarding-choose_mounting-manual_mounting-description = Näin voit valita asennussuunnan manuaalisesti kullekin jäljittimelle
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuaalinen Asennus
 onboarding-manual_mounting-description = Napsauta jokaista jäljitintä ja valitse, mihin suuntaan ne on asennettu
-onboarding-manual_mounting-auto_mounting = Automaattinen asennus
 onboarding-manual_mounting-next = Seuraava vaihe
 
 ## Tracker automatic mounting setup
