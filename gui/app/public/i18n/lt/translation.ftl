@@ -393,7 +393,6 @@ settings-general-fk_settings-leg_fk = Kojų sekimas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
-settings-general-fk_settings-arm_fk-back = Gale
 
 ## Gesture control settings (tracker tapping)
 
