@@ -10,10 +10,10 @@ import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
-import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
+import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
 import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour

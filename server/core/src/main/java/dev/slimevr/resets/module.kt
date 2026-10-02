@@ -40,11 +40,11 @@ import solarxr_protocol.rpc.ResetLifecycle
 import solarxr_protocol.rpc.ResetStatusResponse
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.StepMountingDetail
-import solarxr_protocol.rpc.StepMountingStatus as RpcStepMountingStatus
 import kotlin.collections.contains
 import kotlin.collections.listOf
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
+import solarxr_protocol.rpc.StepMountingStatus as RpcStepMountingStatus
 
 data class ResetsState(
 	val canDoYawReset: Boolean,

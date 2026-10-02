@@ -28,7 +28,8 @@ class TrackerStaleCalibrationBehaviour : TrackerBehaviour {
 			.onEach { placement ->
 				val last = previous
 				previous = placement
-				val startedUsingBodyPart = placement.connected && placement.bodyPart != null &&
+				val startedUsingBodyPart = placement.connected &&
+					placement.bodyPart != null &&
 					(last == null || !last.connected || last.bodyPart != placement.bodyPart)
 				if (startedUsingBodyPart) {
 					val movedBodyPart = last != null && last.bodyPart != placement.bodyPart
