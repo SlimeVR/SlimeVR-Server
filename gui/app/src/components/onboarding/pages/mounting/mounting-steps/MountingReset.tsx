@@ -1,4 +1,7 @@
-import { PoseMountingVideo } from '@/components/mounting/PoseMountingVideo';
+import {
+  PoseMountingInstructions,
+  PoseMountingVideo,
+} from '@/components/mounting/PoseMountingVideo';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
@@ -27,23 +30,12 @@ export function MountingResetStep({
               'onboarding-automatic_mounting-mounting_reset-title'
             )}
           </Typography>
-          <div className="flex flex-col gap-2">
-            <Typography>
-              {l10n.getString(
-                'onboarding-automatic_mounting-mounting_reset-step-0'
-              )}
-            </Typography>
-            <Typography>
-              {l10n.getString(
-                'onboarding-automatic_mounting-mounting_reset-step-1'
-              )}
-            </Typography>
-          </div>
+          <PoseMountingInstructions />
         </div>
 
         {isMobile && (
           <div className="flex flex-col items-center fill-background-50 justify-center">
-            <PoseMountingVideo className="w-[450px]" />
+            <PoseMountingVideo className="h-72" />
           </div>
         )}
 
@@ -63,7 +55,7 @@ export function MountingResetStep({
       </div>
       {!isMobile && (
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
-          <PoseMountingVideo className="w-[600px]" />
+          <PoseMountingVideo className="h-full max-h-96" />
         </div>
       )}
     </>

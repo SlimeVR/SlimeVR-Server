@@ -1289,7 +1289,16 @@ onboarding-automatic_mounting-done-title = Mounting orientations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
 onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Calibration
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
+onboarding-automatic_mounting-mounting_reset-step-0 =
+    1. Squat in a "skiing" pose with your legs bent and your upper body tilted forwards{ $feet ->
+        [tiptoe] , staying up on your toes
+       *[flat] { "" }
+    }. { $arms ->
+        [forward] Stretch your arms straight out in front of you.
+        [tpose_up] Stretch your arms out to your sides at 90 degrees.
+        [tpose_down] Let your arms hang down at your sides.
+       *[back] Keep your arms bent.
+    }
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.

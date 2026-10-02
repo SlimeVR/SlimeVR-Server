@@ -38,27 +38,27 @@ export function PreparationStep({
               </div>
             </div>
             <div className="grid grid-cols-3 py-4 gap-2">
-              <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
+              <div className="flex flex-col bg-background-70 rounded-md relative max-h-72">
                 <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
                 <img
                   src="/images/reset/FullResetPose.webp"
-                  className="h-full object-contain"
+                  className="h-full object-contain p-2"
                   alt="Reset position"
                 />
               </div>
-              <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
+              <div className="flex flex-col bg-background-70 rounded-md relative max-h-72">
                 <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
                 <img
                   src="/images/reset/FullResetPoseSide.webp"
-                  className="h-full object-contain"
+                  className="h-full object-contain p-2"
                   alt="Reset position side"
                 />
               </div>
-              <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
+              <div className="flex flex-col bg-background-70 rounded-md relative max-h-72">
                 <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
                 <img
                   src="/images/reset/FullResetPoseWrong.webp"
-                  className="h-full object-contain"
+                  className="h-full object-contain p-2"
                   alt="Reset position wrong"
                 />
               </div>

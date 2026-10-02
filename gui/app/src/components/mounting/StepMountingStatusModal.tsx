@@ -24,6 +24,11 @@ export function StepMountingStatusModal() {
     if (onStepPage) setDismissed(resetStatus);
   }, [onStepPage, resetStatus]);
 
+  const isDone = progress?.lifecycle === ResetLifecycle.DONE;
+  useEffect(() => {
+    if (isDone) setDismissed(resetStatus);
+  }, [isDone, resetStatus]);
+
   const isOpen =
     progress !== null &&
     !onStepPage &&

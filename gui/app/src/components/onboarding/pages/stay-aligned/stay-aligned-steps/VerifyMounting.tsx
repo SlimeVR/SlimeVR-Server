@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { PoseMountingVideo } from '@/components/mounting/PoseMountingVideo';
+import {
+  PoseMountingInstructions,
+  PoseMountingVideo,
+} from '@/components/mounting/PoseMountingVideo';
 import { ResetType } from 'solarxr-protocol';
 import { ResetButton } from '@/components/home/ResetButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -27,21 +30,18 @@ export function VerifyMountingStep({
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
-          <div className="flex flex-col gap-2">
-            <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
-            <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
-          </div>
+          <PoseMountingInstructions />
         </div>
 
         {isMobile && (
           <div className="flex flex-col items-center fill-background-50 justify-center">
-            <PoseMountingVideo className="w-[450px]" />
+            <PoseMountingVideo className="h-72" />
           </div>
         )}
 
         {!isMobile && (
           <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
-            <PoseMountingVideo className="w-[600px]" />
+            <PoseMountingVideo className="h-full max-h-96" />
           </div>
         )}
         <div className="flex gap-3 justify-between">

@@ -21,21 +21,27 @@ const videoSteps = [
   StepMountingStatus.RECORDING,
 ];
 
-function StepMedia({ status }: { status: StepMountingStatus }) {
-  if (videoSteps.includes(status)) {
+export function StepMedia({
+  status,
+  className,
+}: {
+  status: StepMountingStatus | null;
+  className?: string;
+}) {
+  if (status === null || videoSteps.includes(status)) {
     return (
       <video
         autoPlay
         muted
         loop
         playsInline
-        className="object-contain h-full w-full"
+        className={className ?? 'object-contain h-full w-full'}
         src="/videos/step-mounting.webm"
       />
     );
   }
   return (
-    <div className="flex items-center justify-center w-full h-full">
+    <div className="flex items-center justify-center w-full h-full min-h-48">
       <LoaderIcon slimeState={SlimeState.JUMPY} />
     </div>
   );
@@ -95,7 +101,8 @@ function Stepper({ status, lifecycle }: StepMountingProgress) {
 export function StepMountingStatusContent({
   status,
   lifecycle,
-}: StepMountingProgress) {
+  showMedia = true,
+}: StepMountingProgress & { showMedia?: boolean }) {
   const isRunning = lifecycle === ResetLifecycle.RUNNING;
 
   return (
@@ -103,9 +110,11 @@ export function StepMountingStatusContent({
       <Stepper status={status} lifecycle={lifecycle} />
       {isRunning && (
         <>
-          <div className="h-48">
-            <StepMedia status={status} />
-          </div>
+          {showMedia && (
+            <div className="h-48">
+              <StepMedia status={status} />
+            </div>
+          )}
           <Typography
             id={`step_mounting-instructions-${StepMountingStatus[status]}`}
           />

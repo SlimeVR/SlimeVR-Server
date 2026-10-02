@@ -21,7 +21,10 @@ import {
   ChangeBoneRoutingSettingsRequestT,
   MountingMethod,
 } from 'solarxr-protocol';
-import { PoseMountingVideo } from '@/components/mounting/PoseMountingVideo';
+import {
+  PoseMountingInstructions,
+  PoseMountingVideo,
+} from '@/components/mounting/PoseMountingVideo';
 import { MountingMethodRadio } from '@/components/mounting/MountingMethodRadio';
 import { useResetsSettings } from '@/hooks/resets-settings';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
@@ -280,10 +283,9 @@ function MountingCalibrationStep({
         </>
       ) : (
         <>
-          <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
-          <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
+          <PoseMountingInstructions />
           <div className="flex w-full justify-center">
-            <PoseMountingVideo className="h-44" />
+            <PoseMountingVideo className="h-56" />
           </div>
         </>
       )}
@@ -337,27 +339,27 @@ const stepContentLookup: Record<
           <Typography id="onboarding-automatic_mounting-preparation-v2-step-2" />
         </div>
         <div className="grid grid-cols-3 py-1.5 gap-2">
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
+          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
             <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
             <img
               src="/images/reset/FullResetPose.webp"
-              className="h-full object-contain scale-110"
+              className="h-full object-contain p-2"
               alt="Reset position"
             />
           </div>
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
+          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
             <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
             <img
               src="/images/reset/FullResetPoseSide.webp"
-              className="h-full object-contain scale-110"
+              className="h-full object-contain p-2"
               alt="Reset position side"
             />
           </div>
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
+          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
             <CrossIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
             <img
               src="/images/reset/FullResetPoseWrong.webp"
-              className="h-full object-contain scale-110"
+              className="h-full object-contain p-2"
               alt="Reset position wrong"
             />
           </div>
