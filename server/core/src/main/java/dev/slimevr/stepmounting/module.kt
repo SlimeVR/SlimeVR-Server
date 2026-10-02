@@ -104,7 +104,10 @@ class StepMountingManager(
 	fun getTrackers(): List<Pair<Tracker, Flow<TrackerSnapshot>>> {
 		val activeTrackers = server.context.state.value.trackers.values.filter {
 			val state = it.context.state.value
-			state.status == TrackerStatus.OK && state.acceleration != null
+			state.status == TrackerStatus.OK &&
+				state.bodyPart != null &&
+				state.acceleration != null &&
+				state.position == null
 		}
 		if (activeTrackers.isEmpty()) return emptyList()
 		return activeTrackers.map { controller ->

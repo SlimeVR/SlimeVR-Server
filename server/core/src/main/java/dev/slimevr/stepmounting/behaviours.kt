@@ -23,7 +23,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.time.TimeSource
 
-internal const val TIMEOUT_MS = 30_000L
+internal const val TIMEOUT_MS = 10_000L
 
 class StepMountingBasicBehaviour : StepMountingBehaviour {
 	fun canCalibrate(trackers: List<TrackerState>): Boolean {
@@ -59,7 +59,7 @@ val coefficients = ButterworthCoefficients(
 	0.02f,
 )
 const val startThreshold = 0.4f // in m/s^2
-const val endThreshold = 0.2f // in m/s^2
+const val endThreshold = 0.3f // in m/s^2
 const val minMovementDurationMs = 3000L
 
 fun movementDetector(updates: Flow<TrackerSnapshot>) = flow {
@@ -143,13 +143,14 @@ internal suspend fun runCalibrationSession(
 		}
 
 		val headOffset = headRecording.last().position - headRecording.first().position
+		AppLogger.stepMounting.info("${BodyPart.HEAD}: $headOffset")
 		trackerRecordings.filter {
 			it.second.isNotEmpty()
 		}.map { (tracker, recording) ->
 			tracker to estimateHeadingAlign(recording, headOffset)
 		}.forEach { (tracker, result) ->
 			// TODO: Fail on high error
-			AppLogger.stepMounting.info(result)
+			AppLogger.stepMounting.info("${tracker.context.state.value.bodyPart}: $result")
 
 			tracker.context.dispatch(
 				TrackerActions.SetStepMounting(
