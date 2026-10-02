@@ -734,12 +734,8 @@ onboarding-automatic_mounting-done-title = mounting wowations cawibwated.
 onboarding-automatic_mounting-done-description = yowo meownting cawibwation is compwete!
 onboarding-automatic_mounting-done-restart = wetuwn to stawt
 onboarding-automatic_mounting-mounting_reset-title = meownting weset
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. squawt in a "skiing" pose with yowo wegs bent, yowo upper body tilted fowwawds, and yowo awems bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. pwess the "weset meownting" button and wait fow 3 seconds befowe the twackaws' meownting wowations will weset.
 onboarding-automatic_mounting-preparation-title = pwepaiwation
-onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
-onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
-onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
 ## Tracker manual proportions setup
 
