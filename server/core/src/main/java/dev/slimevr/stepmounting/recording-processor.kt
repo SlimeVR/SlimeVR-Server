@@ -4,6 +4,7 @@ import dev.slimevr.tracker.HeadingAlignment
 import dev.slimevr.util.inFloatingSeconds
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration
@@ -73,8 +74,8 @@ fun estimateHeadingAlign(
 	// Compute mounting to fix the yaw offset from tracker to HMD
 	// OLD: angle(trackerXZ.unit()) * angle(hmdXZ.unit()).inv()
 	return StepMountingResult(
-		Quaternion.fromTo(trackerXZ.unit(), hmdXZ.unit()),
-		trackerXZ.len() - hmdXZ.len(),
+		Quaternion.fromTo(trackerXZ.unit(), hmdXZ.unit()).unit(),
+		abs(trackerXZ.len() - hmdXZ.len()),
 		trackerOffset,
 		bias,
 	)
