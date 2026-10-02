@@ -789,12 +789,8 @@ onboarding-automatic_mounting-done-title = تم معايرة دوران التر
 onboarding-automatic_mounting-done-description = اكتملت معايرة التركيب!
 onboarding-automatic_mounting-done-restart = العودة إلى البداية
 onboarding-automatic_mounting-mounting_reset-title = إعادة تعيين التركيب
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. قرفص في وضع "التزلج" مع ثني ساقيك ، وإمالة الجزء العلوي من جسمك إلى الأمام ، وثني ذراعيك.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. اضغط على زر "إعادة تعيين التركيب" وانتظر لمدة 3 ثوان قبل إعادة تعيين دوران تركيب أجهزة التعقب.
 onboarding-automatic_mounting-preparation-title = التحضير
-onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة التعقب
-onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
-onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 
 ## Tracker manual proportions setup
 
