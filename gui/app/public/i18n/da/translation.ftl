@@ -252,7 +252,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan r
 settings-general-fk_settings-leg_tweak-toe_snap-description = Tå-snap forsøger at gætte rotationen af dine fødder, hvis fodtrackere ikke er i brug.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roterer dine fødder så de er parallelle med jorden, når de er i kontakt med jorden.
 settings-general-fk_settings-leg_fk = Bensporing
-settings-general-fk_settings-arm_fk-back = Tilbage
 
 ## Gesture control settings (tracker tapping)
 
