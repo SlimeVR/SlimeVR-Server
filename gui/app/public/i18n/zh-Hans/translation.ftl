@@ -919,7 +919,6 @@ onboarding-automatic_mounting-done-title = 佩戴方向已校准。
 onboarding-automatic_mounting-done-description = 你的佩戴方向校准完成！
 onboarding-automatic_mounting-done-restart = 再试一次
 onboarding-automatic_mounting-mounting_reset-title = 佩戴重置
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 双腿弯曲以滑雪的姿势蹲下，上身向前倾斜，手臂弯曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 按下佩戴重置按钮并等待 3 秒钟，然后追踪器的佩戴方向将被重置。
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. 双脚朝前，踮起脚尖站立。或者，您也可以坐在椅子上完成这个动作。
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. 点击“脚部校准”按钮并等待 3 秒，追踪器的佩戴方向将会重置。
@@ -927,9 +926,6 @@ onboarding-automatic_mounting-preparation-title = 准备
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 按下“完全重置”按钮。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直并向前看，双臂放在身体两侧。
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿势，直到 3 秒计时结束。
-onboarding-automatic_mounting-put_trackers_on-title = 穿戴好追踪器
-onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴方向，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
-onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
 onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setup
