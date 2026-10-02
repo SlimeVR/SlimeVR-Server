@@ -892,18 +892,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = 使用哪种方法校准佩戴朝向？
 # Multiline text
 onboarding-choose_mounting-description = 佩戴方向校准用于确定您身上的追踪器的朝向。
-onboarding-choose_mounting-auto_mounting = 自动设置佩戴方向
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = 推荐使用
-onboarding-choose_mounting-auto_mounting-description = 这将需要你做2个动作以自动检测所有追踪器的佩戴方向
-onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
-onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = 手动佩戴
 onboarding-manual_mounting-description = 单击每个追踪器并选择它们的佩戴方式
-onboarding-manual_mounting-auto_mounting = 自动设置佩戴方向
 onboarding-manual_mounting-next = 下一步
 
 ## Tracker automatic mounting setup
