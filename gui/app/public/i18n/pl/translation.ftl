@@ -861,18 +861,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Jakiej metody kalibracji montażu użyć?
 # Multiline text
 onboarding-choose_mounting-description = Orientacja montażu koryguje umieszczenie trackerów na ciele.
-onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Zalecane
-onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
-onboarding-choose_mounting-manual_mounting = Montaż ręczny
-onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Pozycjonowanie Manualne
 onboarding-manual_mounting-description = Kliknij na każdy tracker i wybierz w jaki sposób są zamontowane
-onboarding-manual_mounting-auto_mounting = Automatyczne połączenie
 onboarding-manual_mounting-next = Następny krok
 
 ## Tracker automatic mounting setup
