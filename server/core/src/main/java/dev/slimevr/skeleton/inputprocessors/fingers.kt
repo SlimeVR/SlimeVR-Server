@@ -11,7 +11,7 @@ import solarxr_protocol.datatypes.BodyPart
 private const val INTERMEDIATE_FROM_PROXIMAL = 2.12f
 private const val DISTAL_FROM_PROXIMAL = 3.03f
 
-private val PROXIMAL_REST_ROTATION = Quaternion.rotationAroundZAxis(0.2f)
+private val PROXIMAL_REST_ROTATION = Quaternion.rotationAroundZAxis(0.15f)
 private val PROXIMAL_THUMB_REST_ROTATION = Quaternion.rotationAroundXAxis(-0.15f)
 private val THUMB_PARTS = arrayOf(
 	BodyPart.LEFT_THUMB_METACARPAL,
