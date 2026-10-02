@@ -847,15 +847,11 @@ onboarding-automatic_mounting-done-title = Rotazione delle posizioni di montaggi
 onboarding-automatic_mounting-done-description = La calibrazione della posizione é completa!
 onboarding-automatic_mounting-done-restart = Torna all'inizio
 onboarding-automatic_mounting-mounting_reset-title = Ripristino del posizionamento
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Piegati come per sciare: con le gambe leggermente piegate e unite, la parte superiore del corpo inclinata in avanti e le braccia piegate.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Premere il pulsante "Ripristino del posizionamento" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate.
 onboarding-automatic_mounting-preparation-title = Preparazione
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Premi il pulsante "Ripristino completo".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stai in piedi con le braccia lungo i fianchi. Assicurati di guardare in avanti.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Mantieni la posizione fino allo scadere dei 3 secondi.
-onboarding-automatic_mounting-put_trackers_on-title = Indossa i tuoi tracker
-onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rotazioni delle posizioni di montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
-onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei tracker
 onboarding-automatic_mounting-return-home = Fatto
 
 ## Tracker manual proportions setup
