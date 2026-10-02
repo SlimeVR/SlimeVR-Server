@@ -1129,6 +1129,7 @@ step_mounting-status-ERROR_TIMEOUT = crwdns9628:0crwdne9628:0
 step_mounting-cancel = crwdns9630:0crwdne9630:0
 step_mounting-close = crwdns9632:0crwdne9632:0
 step_mounting-next = crwdns9634:0crwdne9634:0
+step_mounting-retry = crwdns9640:0crwdne9640:0
 
 ## Tracker manual mounting setup
 
@@ -1147,7 +1148,7 @@ onboarding-automatic_mounting-done-title = crwdns8826:0crwdne8826:0
 onboarding-automatic_mounting-done-description = crwdns8828:0crwdne8828:0
 onboarding-automatic_mounting-done-restart = crwdns8830:0crwdne8830:0
 onboarding-automatic_mounting-mounting_reset-title = crwdns8832:0crwdne8832:0
-onboarding-automatic_mounting-mounting_reset-step-0 = crwdns8834:0crwdne8834:0
+onboarding-automatic_mounting-mounting_reset-step-0 = crwdns8834:0$feetcrwdnd8834:0$armscrwdne8834:0
 onboarding-automatic_mounting-mounting_reset-step-1 = crwdns8836:0crwdne8836:0
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = crwdns8838:0crwdne8838:0
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = crwdns8840:0crwdne8840:0
@@ -1155,10 +1156,9 @@ onboarding-automatic_mounting-preparation-title = crwdns8842:0crwdne8842:0
 onboarding-automatic_mounting-preparation-v2-step-0 = crwdns8844:0crwdne8844:0
 onboarding-automatic_mounting-preparation-v2-step-1 = crwdns8846:0crwdne8846:0
 onboarding-automatic_mounting-preparation-v2-step-2 = crwdns8848:0crwdne8848:0
-onboarding-automatic_mounting-preparation-v2-done = crwdns8850:0crwdne8850:0
-onboarding-automatic_mounting-put_trackers_on-title = crwdns8852:0crwdne8852:0
-onboarding-automatic_mounting-put_trackers_on-description = crwdns8854:0crwdne8854:0
-onboarding-automatic_mounting-put_trackers_on-next = crwdns8856:0crwdne8856:0
+onboarding-automatic_mounting-preparation-example-front = crwdns9642:0crwdne9642:0
+onboarding-automatic_mounting-preparation-example-side = crwdns9644:0crwdne9644:0
+onboarding-automatic_mounting-preparation-example-wrong = crwdns9646:0crwdne9646:0
 onboarding-automatic_mounting-return-home = crwdns8858:0crwdne8858:0
 
 ## Tracker manual proportions setup
