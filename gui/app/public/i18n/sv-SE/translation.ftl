@@ -800,15 +800,11 @@ onboarding-automatic_mounting-done-title = Monterings orientering kalibrerad.
 onboarding-automatic_mounting-done-description = Din monterings kalibrering är klar!
 onboarding-automatic_mounting-done-restart = Försök igen
 onboarding-automatic_mounting-mounting_reset-title = Monterings-återställning
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Huka i en "Skidåknings" position med böjda ben, framåtlutad överkropp, och böjda armar.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Tryck på "Återställ montering" knappen och vänta 3 sekunder innan trackerns montering kommer att återställas.
 onboarding-automatic_mounting-preparation-title = Förberedning
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Tryck på "Full återställning" knappen.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stå rakt upp med dina armar vid sidan av dig. Kom ihåg att kolla framåt.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Håll positioner tills 3s timern går ut.
-onboarding-automatic_mounting-put_trackers_on-title = Sätt på dig dina trackers
-onboarding-automatic_mounting-put_trackers_on-description = För att kalibrera monterings-riktningen, så kommer i att använda trackersen du precis tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i figuren till höger.
-onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla trackers
 
 ## Tracker manual proportions setup
 
