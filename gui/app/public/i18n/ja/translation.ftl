@@ -552,12 +552,8 @@ onboarding-automatic_mounting-done-title = 取り付け方向の較正を行い�
 onboarding-automatic_mounting-done-description = マウントのキャリブレーションが完了しました！
 onboarding-automatic_mounting-done-restart = 最初に戻る
 onboarding-automatic_mounting-mounting_reset-title = マウントリセット
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着する
-onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
-onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
 ## Tracker manual proportions setup
 
