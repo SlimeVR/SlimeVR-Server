@@ -708,12 +708,8 @@ onboarding-automatic_mounting-done-title = 착용 방향이 정렬되었어요
 onboarding-automatic_mounting-done-description = 트래커의 착용 방향이 잘 설정되었어요!
 onboarding-automatic_mounting-done-restart = 다시 처음으로 돌아가기
 onboarding-automatic_mounting-mounting_reset-title = 착용 방향 정렬
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 몸을 굽혀 낮추세요.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. "착용 방향 재설정" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요.
 onboarding-automatic_mounting-preparation-title = 준비
-onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주세요
-onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향을 보정하기 위해 방금 할당한 트래커들을 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 각각의 트래커가 어떤 위치에 있는지 확인할 수 있어요.
-onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
 
 ## Tracker manual proportions setup
 
