@@ -880,7 +880,6 @@ onboarding-automatic_mounting-done-title = ทิศทางแทร็กเ�
 onboarding-automatic_mounting-done-description = ตั้งศูนย์การติดตั้งแทร็กเกอร์ของคุณสำเร็จแล้ว!
 onboarding-automatic_mounting-done-restart = ลองอีกครั้ง
 onboarding-automatic_mounting-mounting_reset-title = ตั้งศูนย์การติดตั้ง
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. ย่อตัวในท่า "เล่นสกี" โดยการงอขา ลำตัวส่วนบนเอียงไปด้านหน้า และงอแขน
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. กดปุ่ม "ตั้งศูนย์การติดตั้ง" และรอ 3 วินาที ก่อนที่ทิศทางการติดตั้งของแทร็กเกอร์จะถูกรีเซ็ต
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. ยืนเขย่งปลายเท้าทั้งสองข้างโดยให้เท้าชี้ไปด้านหน้า หรืออีกทางเลือกหนึ่งคือคุณสามารถทำได้ขณะนั่งอยู่บนเก้าอี้
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. กดปุ่ม "ตั้งศูนย์เท้า" และรอ 3 วินาที ก่อนที่ทิศทางการติดตั้งของแทร็กเกอร์จะถูกรีเซ็ต
@@ -888,9 +887,6 @@ onboarding-automatic_mounting-preparation-title = การเตรียมต
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. กดที่ปุ่ม "รีเซ็ตทั้งหมด"
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. ยืนตัวตรง แขนแนบลำตัว ตรวจสอบให้แน่ใจว่ากำลังมองตรงไปข้างหน้า
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. ค้างท่าทางไว้จนกว่าตัวจับเวลา 3 วินาทีจะสิ้นสุดลง
-onboarding-automatic_mounting-put_trackers_on-title = ใส่แทร็กเกอร์ของคุณ
-onboarding-automatic_mounting-put_trackers_on-description = เพื่อตั้งศูนย์ทิศทางการติดตั้ง เราจะใช้แทร็กเกอร์ที่คุณกำหนดตำแหน่งไปเมื่อสักครู่ โปรดสวมใส่แทร็กเกอร์ของคุณ โดยคุณสามารถดูว่าแทร็กเกอร์ใดคือส่วนใดได้จากภาพด้านขวา
-onboarding-automatic_mounting-put_trackers_on-next = ฉันสวมแทร็กเกอร์ทั้งหมดแล้ว
 onboarding-automatic_mounting-return-home = เสร็จแล้ว
 
 ## Tracker manual proportions setup
