@@ -859,15 +859,11 @@ onboarding-automatic_mounting-done-title = Привязка поворотов �
 onboarding-automatic_mounting-done-description = Калибровка вашей привязки завершена!
 onboarding-automatic_mounting-done-restart = Вернуться к началу
 onboarding-automatic_mounting-mounting_reset-title = Сброс крепления
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Присядьте в позу "лыжника", согнув ноги, наклонив верхнюю часть тела вперед и согнув руки.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Нажмите кнопку "Сброс крепления" и подождите 3 секунды, прежде чем установочные повороты трекеров будут сброшены.
 onboarding-automatic_mounting-preparation-title = Подготовка
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Нажмите кнопку "Полный сброс"
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Встаньте прямо, вытянув руки по бокам. Убедитесь, что смотрите прямо перед собой.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Удерживайте положение в течение 3 секунд, пока не истечет таймер.
-onboarding-automatic_mounting-put_trackers_on-title = Наденьте ваши трекеры
-onboarding-automatic_mounting-put_trackers_on-description = Чтобы откалибровать повороты крепления, мы будем использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
-onboarding-automatic_mounting-put_trackers_on-next = Я включил и надел все свои трекеры
 onboarding-automatic_mounting-return-home = Выполнено
 
 ## Tracker manual proportions setup
