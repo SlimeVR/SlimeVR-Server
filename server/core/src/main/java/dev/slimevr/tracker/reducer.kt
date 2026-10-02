@@ -93,11 +93,6 @@ fun reduce(
 		)
 	}
 
-	is TrackerActions.SetRestOrientation -> state.copy(
-		restOrientation = action.restOrientation,
-		rotationDirty = true,
-	)
-
 	is TrackerActions.FullReset -> {
 		val alignAttitude = !state.isAssignedReliableReference || (action.resetReliableReferenceAttitude && action.referenceRotation == null)
 		val correctHeading = action.referenceRotation != null && !state.isAssignedReliableReference

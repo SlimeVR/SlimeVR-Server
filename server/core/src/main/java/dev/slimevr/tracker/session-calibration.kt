@@ -10,7 +10,6 @@ typealias RawAcceleration = Vector3
 typealias HeadingCorrection = Quaternion
 typealias AttitudeAlignment = Quaternion
 typealias HeadingAlignment = Quaternion
-typealias RestOrientation = Quaternion
 
 typealias AccelerationRotation = Quaternion
 
@@ -28,8 +27,7 @@ fun applyCalibration(
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-	restOrientation: RestOrientation = Quaternion.IDENTITY,
-): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign * restOrientation
+): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign
 
 fun applyFullCalibration(
 	rawRotation: CalibratedRotation,
@@ -43,7 +41,6 @@ fun applyFullCalibration(
 		headingCorrection,
 		trackerState.sessionCalibration.attitudeAlignment,
 		headingAlignment,
-		trackerState.restOrientation,
 	)
 }
 

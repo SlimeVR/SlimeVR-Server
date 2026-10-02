@@ -16,7 +16,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
-import solarxr_protocol.rpc.ArmsResetMode
+import solarxr_protocol.rpc.ArmsMountingResetMode
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
@@ -95,7 +95,7 @@ data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
 	/** Reset mode used for the arms */
-	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
+	val armsMountingResetMode: ArmsMountingResetMode = ArmsMountingResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */

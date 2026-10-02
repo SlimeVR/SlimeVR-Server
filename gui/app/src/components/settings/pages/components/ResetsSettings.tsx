@@ -12,7 +12,7 @@ import { MountingMethod } from 'solarxr-protocol';
 
 type ResetsSettingsForm = {
   resetMountingFeet: boolean;
-  armsResetMode: number;
+  armsMountingResetMode: number;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
   resetReliableReferenceAttitude: boolean;
@@ -20,7 +20,7 @@ type ResetsSettingsForm = {
 
 const defaultValues: ResetsSettingsForm = {
   resetMountingFeet: false,
-  armsResetMode: 0,
+  armsMountingResetMode: 0,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
   resetReliableReferenceAttitude: false,
@@ -49,7 +49,7 @@ export function ResetsSettings() {
   const onSubmit = (values: ResetsSettingsForm) => {
     setResetsSettings({
       resetMountingFeet: values.resetMountingFeet,
-      armsResetMode: values.armsResetMode,
+      armsMountingResetMode: values.armsMountingResetMode,
       yawResetSmoothTime: values.yawResetSmoothTime,
       saveMountingReset: values.saveMountingReset,
       resetReliableReferenceAttitude: values.resetReliableReferenceAttitude,
@@ -83,59 +83,50 @@ export function ResetsSettings() {
         <>
           <div className="flex flex-col pt-5 pb-2 gap-1">
             <Typography variant="section-title">
-              {l10n.getString('settings-general-fk_settings-arm_fk-reset_mode')}
+              {l10n.getString(
+                'settings-general-fk_settings-arms_mounting_reset_mode'
+              )}
             </Typography>
 
             <Typography>
               {l10n.getString(
-                'settings-general-fk_settings-arm_fk-reset_mode-description'
+                'settings-general-fk_settings-arms_mounting_reset_mode-description'
               )}
             </Typography>
 
-            <div className="grid md:grid-cols-2 flex-col gap-3">
+            <div className="grid flex-col gap-2">
               <Radio
                 control={control}
-                name="armsResetMode"
+                name="armsMountingResetMode"
                 label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-back'
+                  'settings-general-fk_settings-arms_mounting_reset_mode-back'
                 )}
                 description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-back-description'
+                  'settings-general-fk_settings-arms_mounting_reset_mode-back-description'
                 )}
                 value={'0'}
               />
               <Radio
                 control={control}
-                name="armsResetMode"
+                name="armsMountingResetMode"
                 label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-forward'
+                  'settings-general-fk_settings-arms_mounting_reset_mode-forward'
                 )}
                 description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-forward-description'
+                  'settings-general-fk_settings-arms_mounting_reset_mode-forward-description'
                 )}
                 value={'1'}
               />
               <Radio
                 control={control}
-                name="armsResetMode"
+                name="armsMountingResetMode"
                 label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_up'
+                  'settings-general-fk_settings-arms_mounting_reset_mode-t_pose'
                 )}
                 description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_up-description'
+                  'settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description'
                 )}
                 value={'2'}
-              />
-              <Radio
-                control={control}
-                name="armsResetMode"
-                label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_down'
-                )}
-                description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_down-description'
-                )}
-                value={'3'}
               />
             </div>
           </div>

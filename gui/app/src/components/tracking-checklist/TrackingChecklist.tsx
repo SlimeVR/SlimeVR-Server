@@ -5,7 +5,6 @@ import {
   trackingchecklistIdtoLabel,
 } from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
-import { Clickable } from '@/components/commons/Clickable';
 import {
   EnableSteamVRDriverRequestT,
   ResetType,

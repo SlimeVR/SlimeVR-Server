@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
 import solarxr_protocol.data_feed.server.ResetAvailability
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
-import solarxr_protocol.rpc.ArmsResetMode
+import solarxr_protocol.rpc.ArmsMountingResetMode
 import solarxr_protocol.rpc.CountdownDetail
 import solarxr_protocol.rpc.ResetDetail
 import solarxr_protocol.rpc.ResetLifecycle
@@ -225,23 +225,19 @@ class ResetsManager(
 		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}
 
-	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = when (bodyPart) {
+	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsMountingResetMode) = when (bodyPart) {
 		// Going forward
 		in ResetBodyParts.UPPER_LEGS -> 0f
 
-		in ResetBodyParts.LOWER_ARMS if armsResetMode == ArmsResetMode.BACK -> 0f
+		in ResetBodyParts.LOWER_ARMS if armsResetMode == ArmsMountingResetMode.BACK -> 0f
 
-		in ResetBodyParts.ARMS if armsResetMode == ArmsResetMode.FORWARD -> 0f
+		in ResetBodyParts.ARMS if armsResetMode == ArmsMountingResetMode.FORWARD -> 0f
 
 		// Going left/
-		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
-
-		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
+		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsMountingResetMode.SIDE -> -FastMath.HALF_PI
 
 		// Going right
-		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
-
-		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsMountingResetMode.SIDE -> FastMath.HALF_PI
 
 		// Going back
 		else -> FastMath.PI
@@ -250,7 +246,7 @@ class ResetsManager(
 	private fun getResetAction(referenceRotation: Quaternion?, resetType: ResetType, bodyPart: BodyPart?, resetsConfig: ResetsConfig) = when (resetType) {
 		ResetType.YAW -> TrackerActions.YawReset(referenceRotation, resetsConfig.yawResetSmoothTime.toDouble().seconds)
 		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetReliableReferenceAttitude)
-		ResetType.MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsResetMode))
+		ResetType.MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsMountingResetMode))
 	}
 
 	// By priority, higher value = higher priority. 0 for others.

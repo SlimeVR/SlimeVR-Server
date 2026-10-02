@@ -1,19 +1,20 @@
 import classNames from 'classnames';
-import { ArmsResetMode } from 'solarxr-protocol';
+import { ArmsMountingResetMode } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
 import { useResetsSettings } from '@/hooks/resets-settings';
 
-const ARMS_MODE_NAMES: Record<ArmsResetMode, string> = {
-  [ArmsResetMode.BACK]: 'back',
-  [ArmsResetMode.FORWARD]: 'forward',
-  [ArmsResetMode.T_POSE_UP]: 'tpose-up',
-  [ArmsResetMode.T_POSE_DOWN]: 'tpose-down',
+const ARMS_MODE_NAMES: Record<ArmsMountingResetMode, string> = {
+  [ArmsMountingResetMode.BACK]: 'back',
+  [ArmsMountingResetMode.FORWARD]: 'forward',
+  [ArmsMountingResetMode.SIDE]: 'tpose-up',
 };
 
 function usePoseMounting() {
   const { resetsSettings } = useResetsSettings();
   const arms =
-    ARMS_MODE_NAMES[resetsSettings?.armsResetMode ?? ArmsResetMode.BACK];
+    ARMS_MODE_NAMES[
+      resetsSettings?.armsMountingResetMode ?? ArmsMountingResetMode.BACK
+    ];
   const tiptoe = !!resetsSettings?.resetMountingFeet;
   return { arms, tiptoe };
 }

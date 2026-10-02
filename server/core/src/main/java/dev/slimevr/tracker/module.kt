@@ -11,7 +11,6 @@ import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
-import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
@@ -70,7 +69,6 @@ data class TrackerState(
 	val trackerDataType: TrackerDataType, // TODO
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
-	val restOrientation: RestOrientation,
 	val lastReference: Quaternion?,
 	val sessionCalibration: SessionCalibration,
 	val rawRotation: RawRotation,
@@ -113,7 +111,6 @@ sealed interface TrackerActions {
 	data class SetDriverName(val driverName: String?) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
-	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion?, val resetReliableReferenceAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
@@ -186,7 +183,6 @@ class Tracker(
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
-				TrackerRestOrientationBehaviour(settings),
 				TrackerStayAlignedBehaviour(settings),
 			)
 			val context = Context.create(
@@ -217,7 +213,6 @@ class Tracker(
 			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,
 			mountingOrientation = Quaternion.IDENTITY,
-			restOrientation = Quaternion.IDENTITY,
 			lastReference = Quaternion.IDENTITY,
 			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,

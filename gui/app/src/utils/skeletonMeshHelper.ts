@@ -121,7 +121,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
           if (og === scene) return;
 
           const addr = addrObject(url, og.name);
-          for (const [part, attached] of partsByAddr[addr] ?? []) {
+          for (const [_, attached] of partsByAddr[addr] ?? []) {
             const o = og.clone(true);
 
             o.position.set(0, 0, 0);
