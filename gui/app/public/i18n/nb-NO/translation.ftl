@@ -473,12 +473,8 @@ onboarding-automatic_mounting-done-title = Monterings-rotasjoner kalibrert.
 onboarding-automatic_mounting-done-description = Din monterings-kalibrasjon er fullført!
 onboarding-automatic_mounting-done-restart = Tilbake til start
 onboarding-automatic_mounting-mounting_reset-title = Monterings nullstilling
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Gjør knebøy som om du står på ski, bøyde knær, overkroppen rettet forover og armer bøyd.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Trykk på "Nullstill montering" knappen og vent 3 sekunder før trackernes monterings-rotasjon nullstilles.
 onboarding-automatic_mounting-preparation-title = Forberedning
-onboarding-automatic_mounting-put_trackers_on-title = Ta på deg dine trackere
-onboarding-automatic_mounting-put_trackers_on-description = For å kalibrere monterings-rotasjonene, må vi bruke trackerne du akkurat tildelte. Ta på deg alle dine trackere, du kan se hvem som er hvem i figuren til høyre.
-onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
 ## Tracker manual proportions setup
 
