@@ -564,16 +564,20 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
 onboarding-choose_mounting = Який спосіб калібрування положення використовувати?
 # Multiline text
 onboarding-choose_mounting-description = Орієнтація кріплення коригується для розміщення трекерів на вашому тілі.
-onboarding-choose_mounting-auto_mounting = Автоматична прив'язка положення
-onboarding-choose_mounting-auto_mounting-description = Це автоматично визначить орієнтацію всіх ваших трекерів з 2 поз
-onboarding-choose_mounting-manual_mounting = Самостійна прив'язка
-onboarding-choose_mounting-manual_mounting-description = Це дозволить обрати орієнтацію кожного трекера самостійно
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Самостійна прив'язка
 onboarding-manual_mounting-description = Натисніть на кожен трекер і виберіть, як вони розташовані
-onboarding-manual_mounting-auto_mounting = Автоматична прив'язка
 onboarding-manual_mounting-next = Наступний крок
 
 ## Tracker automatic mounting setup
