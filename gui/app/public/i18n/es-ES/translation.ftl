@@ -851,15 +851,11 @@ onboarding-automatic_mounting-done-title = Posiciones de monturas calibradas.
 onboarding-automatic_mounting-done-description = ¡Su calibración de montura está completa!
 onboarding-automatic_mounting-done-restart = Volver a intentarlo
 onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ponte en cuclillas en postura de "esquí" con las piernas dobladas, la parte superior del cuerpo inclinada hacia adelante y los brazos doblados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón "Restablecer montaje" y espera 3 segundos antes de que se restablezcan las orientaciones de montaje de los trackers.
 onboarding-automatic_mounting-preparation-title = Preparación
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Presione el botón de "Reinicio completo".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Ponte de pie con los brazos a los lados. Asegúrate de mirar hacia adelante.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Mantenga la posición hasta que finalice el temporizador de 3 segundos.
-onboarding-automatic_mounting-put_trackers_on-title = Ponte los trackers
-onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la posiciones de montura, vamos a utilizar los trackers que acabas de asignar. Colocate todos tus trackers, puedes ver cuales son cuales en la figura de la derecha.
-onboarding-automatic_mounting-put_trackers_on-next = Tengo todos mis trackers en posicion
 onboarding-automatic_mounting-return-home = Hecho
 
 ## Tracker manual proportions setup
