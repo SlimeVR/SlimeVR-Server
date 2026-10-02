@@ -446,14 +446,20 @@ onboarding-assign_trackers-side-left = Venstre
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = Automatisk montering
-onboarding-choose_mounting-manual_mounting = Sett opp montering manuelt
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Trykk på en hver tracker og velg hvilken vei de er montert
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Neste steg
 
 ## Tracker automatic mounting setup
