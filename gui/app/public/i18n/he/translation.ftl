@@ -289,6 +289,15 @@ onboarding-assign_trackers-side-left = שמאל
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
