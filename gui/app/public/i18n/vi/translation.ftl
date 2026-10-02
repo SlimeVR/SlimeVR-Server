@@ -640,18 +640,20 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Bạn muốn dùng phương pháp hiểu chuần nào?
 # Multiline text
 onboarding-choose_mounting-description = Hướng lắp đặt chính xác cho vị trí của thiết bị theo dõi trên cơ thể của bạn.
-onboarding-choose_mounting-auto_mounting = Cân chỉnh tự động
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Khuyến khích dùng
-onboarding-choose_mounting-auto_mounting-description = Điều này sẽ tự động phát hiện các hướng lắp đặt cho tất cả các thiết bị của bạn từ 2 tư thế
-onboarding-choose_mounting-manual_mounting = Cân chỉnh thủ công
-onboarding-choose_mounting-manual_mounting-description = Điều này sẽ cho phép bạn chọn hướng lắp theo cách thủ công cho từng thiết bị
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Cân chỉnh thủ công
 onboarding-manual_mounting-description = Chọn từng tracker và chọn hướng nó được gắn
-onboarding-manual_mounting-auto_mounting = Cân chỉnh tự động
 onboarding-manual_mounting-next = Tiếp tục
 
 ## Tracker automatic mounting setup
