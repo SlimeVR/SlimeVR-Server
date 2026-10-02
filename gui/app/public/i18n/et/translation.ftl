@@ -504,16 +504,20 @@ onboarding-assign_trackers-side-left = Vasak
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = Automaatne paigaldamine
-onboarding-choose_mounting-auto_mounting-description = See tuvastab automaatselt kõigi teie jälgijate paigaldussuuna 2 poosist
-onboarding-choose_mounting-manual_mounting = Käsitsi paigaldamine
-onboarding-choose_mounting-manual_mounting-description = See võimaldab teil valida iga jälgija paigaldussuuna käsitsi
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Käsitsi paigaldamine
 onboarding-manual_mounting-description = Vajutage iga jälgija peale ja valige, kuidas see on paigaldatud
-onboarding-manual_mounting-auto_mounting = Automaatne paigaldamine
 onboarding-manual_mounting-next = Järgmine Samm
 
 ## Tracker automatic mounting setup
