@@ -8,11 +8,11 @@ import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
 import { MountingMethodRadio } from '@/components/mounting/MountingMethodRadio';
-import { MountingMethod } from 'solarxr-protocol';
+import { ArmsMountingResetMode, MountingMethod } from 'solarxr-protocol';
 
 type ResetsSettingsForm = {
   resetMountingFeet: boolean;
-  armsMountingResetMode: number;
+  armsMountingResetMode: ArmsMountingResetMode;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
   resetReliableReferenceAttitude: boolean;
@@ -20,7 +20,7 @@ type ResetsSettingsForm = {
 
 const defaultValues: ResetsSettingsForm = {
   resetMountingFeet: false,
-  armsMountingResetMode: 0,
+  armsMountingResetMode: ArmsMountingResetMode.BACK,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
   resetReliableReferenceAttitude: false,
@@ -104,7 +104,7 @@ export function ResetsSettings() {
                 description={l10n.getString(
                   'settings-general-fk_settings-arms_mounting_reset_mode-back-description'
                 )}
-                value={'0'}
+                value={ArmsMountingResetMode.BACK}
               />
               <Radio
                 control={control}
@@ -115,7 +115,7 @@ export function ResetsSettings() {
                 description={l10n.getString(
                   'settings-general-fk_settings-arms_mounting_reset_mode-forward-description'
                 )}
-                value={'1'}
+                value={ArmsMountingResetMode.FORWARD}
               />
               <Radio
                 control={control}
@@ -126,7 +126,7 @@ export function ResetsSettings() {
                 description={l10n.getString(
                   'settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description'
                 )}
-                value={'2'}
+                value={ArmsMountingResetMode.SIDE}
               />
             </div>
           </div>

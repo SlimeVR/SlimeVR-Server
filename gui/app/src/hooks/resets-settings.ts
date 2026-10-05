@@ -1,27 +1,27 @@
-import { useRef } from 'react';
 import { useAtomValue } from 'jotai';
-import {
-  ChangeResetsSettingsRequestT,
-  ResetsSettingsRequestT,
-  RpcMessage,
-} from 'solarxr-protocol';
+import { selectAtom } from 'jotai/utils';
+import { isEqual } from '@react-hookz/deep-equal';
+import { ChangeResetsSettingsRequestT, RpcMessage } from 'solarxr-protocol';
 import { resetsSettingsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from './websocket-api';
 
+const resetsSettingsValueAtom = selectAtom(
+  resetsSettingsAtom,
+  (settings) => settings,
+  isEqual
+);
+
 export function useResetsSettings() {
-  const resetsSettings = useAtomValue(resetsSettingsAtom);
+  const resetsSettings = useAtomValue(resetsSettingsValueAtom);
   const { sendRPCPacket } = useWebsocketAPI();
-  const latestSettings = useRef(resetsSettings);
-  latestSettings.current = resetsSettings;
 
   const setResetsSettings = (partial: Partial<ChangeResetsSettingsRequestT>) => {
     const request = Object.assign(
       new ChangeResetsSettingsRequestT(),
-      latestSettings.current,
+      resetsSettings,
       partial
     );
     sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, request);
-    sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
   };
 
   return { resetsSettings, setResetsSettings };

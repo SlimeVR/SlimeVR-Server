@@ -218,7 +218,7 @@ export function TrackingSettings() {
             description={l10n.getString(
               'settings-general-tracker_mechanics-filtering-type-none-description'
             )}
-            value={FilteringType.NONE.toString()}
+            value={FilteringType.NONE}
           />
           <Radio
             control={control}
@@ -229,7 +229,7 @@ export function TrackingSettings() {
             description={l10n.getString(
               'settings-general-tracker_mechanics-filtering-type-smoothing-description'
             )}
-            value={FilteringType.SMOOTHING.toString()}
+            value={FilteringType.SMOOTHING}
           />
           <Radio
             control={control}
@@ -240,7 +240,7 @@ export function TrackingSettings() {
             description={l10n.getString(
               'settings-general-tracker_mechanics-filtering-type-prediction-description'
             )}
-            value={FilteringType.PREDICTION.toString()}
+            value={FilteringType.PREDICTION}
           />
         </div>
         <div className="flex pt-3 md:flex-row flex-col">

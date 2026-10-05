@@ -64,7 +64,7 @@ function Step({
 
   useEffect(() => {
     if (!canBeOpened) setOpen(false);
-  }, [open]);
+  }, [canBeOpened]);
 
   const state =
     status === 'complete'
