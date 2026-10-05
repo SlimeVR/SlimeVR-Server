@@ -39,7 +39,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { bonesAtom, ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { Tooltip } from '@/components/commons/Tooltip';
-import { Vector3ToVec3fT } from '@/maths/vector3';
+import { roundVector3, Vector3ToVec3fT } from '@/maths/vector3';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -82,7 +82,11 @@ export function TrackerSettingsPage() {
     const offset = bones.find(
       (b) => b.bodyPart === tracker?.tracker.info?.bodyPart
     )?.trackerOffset;
-    return { x: offset?.x ?? 0, y: offset?.y ?? 0, z: offset?.z ?? 0 };
+    return roundVector3({
+      x: offset?.x ?? 0,
+      y: offset?.y ?? 0,
+      z: offset?.z ?? 0,
+    });
   };
   const hasBoneOffset = bones.some(
     (b) => b.bodyPart === tracker?.tracker.info?.bodyPart && !!b.trackerOffset
@@ -125,14 +129,22 @@ export function TrackerSettingsPage() {
 
     const { x, y, z } = boneOffset;
     if (x == null || y == null || z == null) return;
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z))
+      return;
 
+    const offset = roundVector3({ x, y, z });
     const current = boneTrackerOffset();
-    if (current.x === x && current.y === y && current.z === z) return;
+    if (
+      current.x === offset.x &&
+      current.y === offset.y &&
+      current.z === offset.z
+    )
+      return;
 
     const req = new UpdateTrackerRequestT();
     req.trackerId = tracker.tracker.trackerId;
     req.bodyPosition = bodyPart;
-    req.boneOffset = Vector3ToVec3fT({ x, y, z });
+    req.boneOffset = Vector3ToVec3fT(offset);
     sendRPCPacket(RpcMessage.UpdateTrackerRequest, req);
   };
 

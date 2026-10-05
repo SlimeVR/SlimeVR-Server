@@ -13,6 +13,14 @@ export function Vector3FromVec3fT(vec?: Vector3Object | null) {
   return vec ? new Vector3(vec.x, vec.y, vec.z) : new Vector3();
 }
 
+export function roundVector3(vec: Vector3Object, decimals = 4): Vector3Object {
+  return {
+    x: +vec.x.toFixed(decimals),
+    y: +vec.y.toFixed(decimals),
+    z: +vec.z.toFixed(decimals),
+  };
+}
+
 export function Vector3ToVec3fT(q: Vector3Object) {
   const vec = new Vec3fT();
   vec.x = q.x;
