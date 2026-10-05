@@ -244,11 +244,8 @@ export function getPickerSelection(bodyPart?: BodyPart): {
     if (view.kind !== 'extremity') continue;
 
     for (const side of ['left', 'right'] as ExtremitySide[]) {
-      const extremity = view.descriptor.sides[side];
-      if (
-        extremity.root === bodyPart ||
-        Object.values(extremity.digits).some((parts) => parts.includes(bodyPart))
-      ) {
+      const { digits } = view.descriptor.sides[side];
+      if (Object.values(digits).some((parts) => parts.includes(bodyPart))) {
         return { tab, side };
       }
     }
