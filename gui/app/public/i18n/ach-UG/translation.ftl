@@ -1067,21 +1067,12 @@ onboarding-assign_trackers-joint-metacarpal = crwdns8776:0crwdne8776:0
 
 # Note for devs, number is used for representing boolean states per bit.
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT = crwdns8778:0$unassignedcrwdne8778:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT = crwdns8780:0$unassignedcrwdne8780:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG = crwdns8782:0$unassignedcrwdne8782:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG = crwdns8784:0$unassignedcrwdne8784:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG = crwdns8786:0$unassignedcrwdne8786:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG = crwdns8788:0$unassignedcrwdne8788:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP = crwdns8790:0$unassignedcrwdne8790:0
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST = crwdns8792:0$unassignedcrwdne8792:0
+# $part (String) - the body part a tracker is assigned to
+# $missing (String) - the body parts it still needs, already formatted as a list
+onboarding-assign_trackers-warning = crwdns9674:0$partcrwdnd9674:0$missingcrwdne9674:0
+# $parts (String) - the body parts still missing a tracker, formatted as a list
+# $count (Number) - how many of them there are
+onboarding-assign_trackers-warning-required = crwdns9676:0$countcrwdnd9676:0$partscrwdnd9676:0$partscrwdne9676:0
 
 ## Tracker mounting method choose
 
