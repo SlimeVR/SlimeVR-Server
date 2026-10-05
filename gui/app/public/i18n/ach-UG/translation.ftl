@@ -1023,6 +1023,7 @@ onboarding-assign_trackers-all_assigned-title = crwdns8698:0crwdne8698:0
 onboarding-assign_trackers-all_assigned-description = crwdns8700:0crwdne8700:0
 onboarding-assign_trackers-no_trackers-title = crwdns8702:0crwdne8702:0
 onboarding-assign_trackers-no_trackers-description = crwdns8704:0crwdne8704:0
+onboarding-assign_trackers-no_trackers-connect = crwdns9664:0crwdne9664:0
 onboarding-assign_trackers-show_all = crwdns8706:0crwdne8706:0
 onboarding-assign_trackers-show_all-short = crwdns8708:0crwdne8708:0
 onboarding-assign_trackers-tap_modal-title = crwdns8710:0crwdne8710:0
@@ -1134,6 +1135,10 @@ step_mounting-retry = crwdns9640:0crwdne9640:0
 onboarding-manual_mounting = crwdns8808:0crwdne8808:0
 onboarding-manual_mounting-description = crwdns8810:0crwdne8810:0
 onboarding-manual_mounting-next = crwdns8814:0crwdne8814:0
+onboarding-manual_mounting-automatic-title = crwdns9666:0crwdne9666:0
+onboarding-manual_mounting-automatic-description = crwdns9668:0crwdne9668:0
+onboarding-manual_mounting-assign_link-title = crwdns9670:0crwdne9670:0
+onboarding-manual_mounting-assign_link-description = crwdns9672:0crwdne9672:0
 
 ## Tracker automatic mounting setup
 
