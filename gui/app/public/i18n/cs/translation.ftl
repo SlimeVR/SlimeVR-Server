@@ -704,19 +704,6 @@ onboarding-assign_trackers-mirror = Zrcadlit náhled
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník, levé stehno a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [1] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazeno levé stehno a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [2] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [3] Levá noha je přiřazena, ale pro správné fungování musí být přiřazena jedna z těchto oblastí: hrudník, bok nebo pas.
-        [4] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník a levé stehno.
-        [5] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazeno levé stehno.
-        [6] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník.
-       *[unknown] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen Neznámá Nepřiřazena část těla.
-    }
 
 ## Tracker mounting method choose
 
