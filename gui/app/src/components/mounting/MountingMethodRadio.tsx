@@ -4,10 +4,11 @@ import { useLocalization } from '@fluent/react';
 import { MountingMethod } from 'solarxr-protocol';
 import { Radio } from '@/components/commons/Radio';
 import { useResetsSettings } from '@/hooks/resets-settings';
+import classNames from 'classnames';
 
 type MountingMethodForm = { mountingMethod: string };
 
-export function MountingMethodRadio() {
+export function MountingMethodRadio({ col = false }: { col?: boolean }) {
   const { l10n } = useLocalization();
   const { resetsSettings, setResetsSettings } = useResetsSettings();
   const { control, watch, reset } = useForm<MountingMethodForm>({
@@ -30,7 +31,12 @@ export function MountingMethodRadio() {
   }, [resetsSettings]);
 
   return (
-    <div className="grid md:grid-cols-3 flex-col gap-3">
+    <div
+      className={classNames({
+        'grid md:grid-cols-3 gap-3': !col,
+        'flex flex-col gap-2': col,
+      })}
+    >
       <Radio
         control={control}
         name="mountingMethod"

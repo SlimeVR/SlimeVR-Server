@@ -396,7 +396,7 @@ const stepContentLookup: Record<
     return (
       <div className="space-y-2.5">
         <Typography id="tracking_checklist-MOUNTING_METHOD-desc" />
-        <MountingMethodRadio />
+        <MountingMethodRadio col />
       </div>
     );
   },
