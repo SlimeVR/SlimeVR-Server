@@ -137,8 +137,9 @@ class DriverIncomingTrackersBehaviour(
 			)
 			server.context.dispatch(VRServerActions.NewDevice(deviceId, device))
 
-			val offset = DISPLAY_NAME_TO_OFFSET[req.displayName] ?: BODY_PART_TO_OFFSET[req.bodyPart]
 			val trackerId = server.nextHandle()
+			val offset = DISPLAY_NAME_TO_OFFSET[req.displayName] ?: BODY_PART_TO_OFFSET[req.bodyPart]
+			rotationOffsets[trackerId] = offset?.rotationOffset ?: Quaternion.IDENTITY
 			val tracker = Tracker.create(
 				scope = scope,
 				id = trackerId,
@@ -152,7 +153,8 @@ class DriverIncomingTrackersBehaviour(
 				driverName = driverName,
 				appContext = appContext,
 			)
-			rotationOffsets[trackerId] = offset?.rotationOffset ?: Quaternion.IDENTITY
+			// Start with non-null position
+			tracker.context.dispatch(TrackerActions.SetRotation(null, null, null, Vector3.ZERO, false))
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 
 			receiver.sendDriverMessage(
