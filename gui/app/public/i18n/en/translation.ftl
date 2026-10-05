@@ -235,7 +235,7 @@ reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
-reset-error-need_positional_head = Step mounting needs a headset or a tracker with position tracking
+reset-error-need_positional_head = Step mounting needs a VR headset or a positional tracker
 reset-error-no_trackers = No tracker available
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
