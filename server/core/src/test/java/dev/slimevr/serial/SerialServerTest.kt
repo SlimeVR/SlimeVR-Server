@@ -72,22 +72,99 @@ class SerialServerTest {
 		val second = serial.server.awaitConsole("COM1", 5.seconds)
 
 		assertNotNull(first)
-		assertSame(first, second)
+		assertNotNull(second)
+		assertSame(first.console, second.console)
 		assertEquals(1, serial.watcher.openCount["COM1"])
+	}
+
+	@Test
+	fun `releasing the last lease closes the port`() = runTest {
+		val serial = buildTestSerial(backgroundScope)
+		serial.plug(fakePort())
+		val lease = serial.server.awaitConsole("COM1", 5.seconds)!!
+
+		lease.release()
+		advanceTimeBy(1)
+
+		assertEquals(true, lease.console.closed.isCompleted)
+		assertEquals(1, serial.watcher.closeCount["COM1"])
+	}
+
+	@Test
+	fun `the port stays open while another lease holds it`() = runTest {
+		val serial = buildTestSerial(backgroundScope)
+		serial.plug(fakePort())
+		val first = serial.server.awaitConsole("COM1", 5.seconds)!!
+		val second = serial.server.awaitConsole("COM1", 5.seconds)!!
+
+		first.release()
+		advanceTimeBy(1)
+		assertEquals(true, first.console.closed.isActive)
+
+		second.release()
+		advanceTimeBy(1)
+		assertEquals(true, first.console.closed.isCompleted)
+		assertEquals(1, serial.watcher.closeCount["COM1"])
+	}
+
+	@Test
+	fun `releasing the same lease twice leaves a later claim open`() = runTest {
+		val serial = buildTestSerial(backgroundScope)
+		serial.plug(fakePort())
+		val first = serial.server.awaitConsole("COM1", 5.seconds)!!
+		first.release()
+		first.release()
+		advanceTimeBy(1)
+
+		val second = serial.server.awaitConsole("COM1", 5.seconds)!!
+		advanceTimeBy(1)
+
+		assertEquals(true, second.console.closed.isActive)
+		assertEquals(1, serial.watcher.closeCount["COM1"])
+	}
+
+	@Test
+	fun `a released port opens again on the next claim`() = runTest {
+		val serial = buildTestSerial(backgroundScope)
+		serial.plug(fakePort())
+		val first = serial.server.awaitConsole("COM1", 5.seconds)!!
+		first.release()
+		advanceTimeBy(1)
+
+		val second = serial.server.awaitConsole("COM1", 5.seconds)
+
+		assertNotNull(second)
+		assertNotSame(first.console, second.console)
+		assertEquals(2, serial.watcher.openCount["COM1"])
+	}
+
+	@Test
+	fun `releasing a lease on an unplugged port does not close a replugged console`() = runTest {
+		val serial = buildTestSerial(backgroundScope)
+		serial.plug(fakePort())
+		val first = serial.server.awaitConsole("COM1", 5.seconds)!!
+
+		serial.unplug("COM1")
+		serial.plug(fakePort())
+		val second = serial.server.awaitConsole("COM1", 5.seconds)!!
+		first.release()
+		advanceTimeBy(1)
+
+		assertEquals(true, second.console.closed.isActive)
 	}
 
 	@Test
 	fun `awaitConsole waits for the port to appear`() = runTest {
 		val serial = buildTestSerial(backgroundScope)
-		var console: SerialConsole? = null
-		val job = launch { console = serial.server.awaitConsole("COM1", 30.seconds) }
+		var lease: SerialLease? = null
+		val job = launch { lease = serial.server.awaitConsole("COM1", 30.seconds) }
 
 		advanceTimeBy(1_000)
-		assertNull(console)
+		assertNull(lease)
 		serial.plug(fakePort())
 		job.join()
 
-		assertNotNull(console)
+		assertNotNull(lease)
 	}
 
 	@Test
@@ -110,7 +187,7 @@ class SerialServerTest {
 	fun `console keeps receiving after more lines than the log holds`() = runTest {
 		val serial = buildTestSerial(backgroundScope)
 		serial.plug(fakePort())
-		val console = serial.server.awaitConsole("COM1", 5.seconds)!!
+		val console = serial.server.awaitConsole("COM1", 5.seconds)!!.console
 		val last = backgroundScope.launch { console.lines.first { it == "line 1200" } }
 		advanceTimeBy(1)
 
@@ -126,7 +203,7 @@ class SerialServerTest {
 	fun `clearLog drops the replayed lines`() = runTest {
 		val serial = buildTestSerial(backgroundScope)
 		serial.plug(fakePort())
-		val console = serial.server.awaitConsole("COM1", 5.seconds)!!
+		val console = serial.server.awaitConsole("COM1", 5.seconds)!!.console
 		serial.emitLine("COM1", "a")
 
 		console.clearLog()
@@ -141,12 +218,12 @@ class SerialServerTest {
 		val first = serial.server.awaitConsole("COM1", 5.seconds)!!
 
 		serial.unplug("COM1")
-		assertEquals(true, first.closed.isCompleted)
+		assertEquals(true, first.console.closed.isCompleted)
 
 		serial.plug(fakePort())
 		val second = serial.server.awaitConsole("COM1", 5.seconds)
 		assertNotNull(second)
-		assertNotSame(first, second)
+		assertNotSame(first.console, second.console)
 	}
 
 	@Test
@@ -157,11 +234,11 @@ class SerialServerTest {
 
 		serial.watcher.failPort("COM1")
 		advanceTimeBy(1)
-		assertEquals(true, first.closed.isCompleted)
+		assertEquals(true, first.console.closed.isCompleted)
 
 		val second = serial.server.awaitConsole("COM1", 5.seconds)
 		assertNotNull(second)
-		assertNotSame(first, second)
+		assertNotSame(first.console, second.console)
 	}
 
 	@Test
@@ -174,19 +251,19 @@ class SerialServerTest {
 		val second = serial.server.awaitConsole("COM1", 5.seconds)
 
 		assertNotNull(second)
-		assertNotSame(first, second)
+		assertNotSame(first.console, second.console)
 	}
 
 	@Test
 	fun `openForFlashing takes the port from its console`() = runTest {
 		val serial = buildTestSerial(backgroundScope)
 		serial.plug(fakePort())
-		val console = serial.server.awaitConsole("COM1", 5.seconds)!!
+		val lease = serial.server.awaitConsole("COM1", 5.seconds)!!
 
 		val handler = serial.server.openForFlashing("COM1")
 
 		assertNotNull(handler)
-		assertEquals(true, console.closed.isCompleted)
+		assertEquals(true, lease.console.closed.isCompleted)
 		assertEquals(setOf("COM1"), serial.server.context.state.value.flashing)
 	}
 
@@ -241,15 +318,15 @@ class SerialServerTest {
 		val serial = buildTestSerial(backgroundScope)
 		serial.plug(fakePort())
 		val handler = serial.server.openForFlashing("COM1")!!
-		var console: SerialConsole? = null
-		val job = launch { console = serial.server.awaitConsole("COM1", 30.seconds) }
+		var lease: SerialLease? = null
+		val job = launch { lease = serial.server.awaitConsole("COM1", 30.seconds) }
 
 		advanceTimeBy(1_000)
-		assertNull(console)
+		assertNull(lease)
 		handler.closeSerial()
 		job.join()
 
-		assertNotNull(console)
+		assertNotNull(lease)
 	}
 
 	@Test

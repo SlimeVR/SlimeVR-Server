@@ -5,6 +5,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.MAC_REGEX
+import dev.slimevr.serial.SerialConsole
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -124,12 +125,29 @@ internal suspend fun doSerialFlashPostFlash(
 	)
 
 	// The port re-enumerates after the flash, so it may take a moment to come back
-	val serialConn = serialServer.awaitConsole(portLocation, POST_FLASH_PORT_TIMEOUT)
-	if (serialConn == null) {
+	val lease = serialServer.awaitConsole(portLocation, POST_FLASH_PORT_TIMEOUT)
+	if (lease == null) {
 		onStatus(FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND, 0)
 		return
 	}
 
+	try {
+		provisionFlashedPort(lease.console, needManualReboot, ssid, password, settings, server, onStatus)
+	} finally {
+		lease.release()
+	}
+}
+
+/** Reads the MAC off the freshly flashed tracker, hands it Wi-Fi credentials and waits for it to connect */
+private suspend fun provisionFlashedPort(
+	serialConn: SerialConsole,
+	needManualReboot: Boolean,
+	ssid: String?,
+	password: String?,
+	settings: Settings,
+	server: VRServer,
+	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
+) {
 	if (needManualReboot) {
 		// wait for the device to reboot
 		val rebooted = withTimeoutOrNull(60_000) {

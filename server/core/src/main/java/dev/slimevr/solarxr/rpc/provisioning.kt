@@ -3,6 +3,7 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.VRServer
 import dev.slimevr.device.Device
 import dev.slimevr.firmware.isOnlineStatus
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
@@ -12,6 +13,8 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.rpc.StartWifiProvisioningRequest
 import solarxr_protocol.rpc.StartWifiScanRequest
@@ -27,9 +30,25 @@ class ProvisioningBehaviour(
 	private val provisioningManager: ProvisioningManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
+		// The manager is shared by every client, so only the one that started a session stops it on
+		// its way out. A client that crashes or reloads never sends the stop itself, and provisioning
+		// holds serial ports
+		var startedProvisioning = false
+		var startedScan = false
+
+		receiver.context.scope.coroutineContext.job.invokeOnCompletion {
+			if (!startedProvisioning && !startedScan) return@invokeOnCompletion
+			provisioningManager.context.scope.launch {
+				AppLogger.solarxr.info("Client left while provisioning, stopping it")
+				if (startedProvisioning) provisioningManager.stopProvisioning()
+				if (startedScan) provisioningManager.stopWifiScan()
+			}
+		}
+
 		receiver.rpcDispatcher.on<StartWifiProvisioningRequest> { event ->
 			val ssid = event.ssid ?: return@on
 
+			startedProvisioning = true
 			provisioningManager.startProvisioning(
 				server,
 				ssid,
@@ -38,14 +57,17 @@ class ProvisioningBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<StopWifiProvisioningRequest> {
+			startedProvisioning = false
 			provisioningManager.stopProvisioning()
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<StartWifiScanRequest> {
+			startedScan = true
 			provisioningManager.startWifiScan()
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<StopWifiScanRequest> {
+			startedScan = false
 			provisioningManager.stopWifiScan()
 		}.launchIn(receiver.context.scope)
 

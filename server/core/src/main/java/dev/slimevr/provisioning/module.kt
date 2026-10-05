@@ -132,29 +132,33 @@ data class ProvisioningManager(
 				if (!selectScanPort(context, serialServer)) continue
 				val portLocation = context.state.value.scan.portLocation ?: return@launch
 
-				val serialConn = serialServer.awaitConsole(portLocation, 3.seconds)
+				val lease = serialServer.awaitConsole(portLocation, 3.seconds)
 
-				if (serialConn == null) {
+				if (lease == null) {
 					context.dispatch(ProvisioningActions.ScanStatusChanged(WifiScanStatus.NO_SERIAL_DEVICE_FOUND))
 					return@launch
 				}
 
-				coroutineScope {
-					val work = async {
-						if (context.state.value.scan.networks.isEmpty()) {
-							scanWifiNetworks(context, serialConn)
+				try {
+					coroutineScope {
+						val work = async {
+							if (context.state.value.scan.networks.isEmpty()) {
+								scanWifiNetworks(context, lease.console)
+							}
+							awaitCancellation()
 						}
-						awaitCancellation()
+						val disconnect = async {
+							serialServer.context.state.map { it.ports }.first { portLocation !in it }
+						}
+						select {
+							work.onAwait {}
+							disconnect.onAwait {}
+						}
+						work.cancel()
+						disconnect.cancel()
 					}
-					val disconnect = async {
-						serialServer.context.state.map { it.ports }.first { portLocation !in it }
-					}
-					select {
-						work.onAwait {}
-						disconnect.onAwait {}
-					}
-					work.cancel()
-					disconnect.cancel()
+				} finally {
+					lease.release()
 				}
 
 				if (context.state.value.scan.networks.isEmpty()) {
