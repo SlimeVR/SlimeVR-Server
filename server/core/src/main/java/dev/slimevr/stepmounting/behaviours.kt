@@ -6,16 +6,15 @@ import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.ButterworthCoefficients
 import dev.slimevr.util.Vector3Butterworth
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dev.slimevr.util.allContextStates
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.takeWhile
@@ -31,23 +30,16 @@ class StepMountingBasicBehaviour : StepMountingBehaviour {
 		return hasPositionalHead
 	}
 
-	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: StepMountingManager) {
-		receiver.server.context.state
-			.flatMapLatest { state ->
-				val trackers = state.trackers.values.toList()
-				if (trackers.isEmpty()) return@flatMapLatest flowOf(false)
-				// React to per-tracker position/bodyPart changes, not just tracker add/remove. canCalibrate
-				// only looks at bodyPart and whether position is set, so dedup on that per tracker rather
-				// than letting every rotation packet resume the combine.
-				combine(
-					trackers.map { tracker ->
-						tracker.context.state.distinctUntilChanged { a, b ->
-							a.bodyPart == b.bodyPart && (a.position == null) == (b.position == null)
-						}
-					},
-				) { states -> canCalibrate(states.toList()) }
+		// React to per-tracker position/bodyPart changes, not just tracker add/remove. canCalibrate
+		// only looks at bodyPart and whether position is set, so dedup on that per tracker rather
+		// than letting every rotation packet resume the combine.
+		allContextStates(receiver.server.context.state, { it.trackers.values }) { tracker ->
+			tracker.context.state.distinctUntilChanged { a, b ->
+				a.bodyPart == b.bodyPart && (a.position == null) == (b.position == null)
 			}
+		}
+			.map(::canCalibrate)
 			.distinctUntilChanged()
 			.onEach { receiver.context.dispatch(StepMountingActions.SetCanCalibrate(it)) }
 			.launchIn(receiver.context.scope)

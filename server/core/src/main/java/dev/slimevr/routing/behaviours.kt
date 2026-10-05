@@ -1,12 +1,12 @@
 package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.util.allContextStates
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -34,20 +34,13 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 			.flatMapLatest { (config, outputStates) ->
 				if (!config.automatic) return@flatMapLatest emptyFlow()
 
-				server.context.state
-					.map { it.trackers.values }
-					.flatMapLatest { trackers ->
-						if (trackers.isEmpty()) return@flatMapLatest flowOf(emptySet())
-
-						// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
-						// Dedup per tracker first, or combine gets resumed once per packet per tracker.
-						combine(
-							trackers.map { tracker ->
-								tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
-							},
-						) { states -> trackedBodyParts(states.asList()) }
-							.distinctUntilChanged()
-					}
+				// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
+				// Dedup per tracker first, or combine gets resumed once per packet per tracker.
+				allContextStates(server.context.state, { it.trackers.values }) { tracker ->
+					tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
+				}
+					.map(::trackedBodyParts)
+					.distinctUntilChanged()
 					.map { fineBodyParts -> Triple(config, outputStates, fineBodyParts) }
 			}
 			.onEach { (config, outputStates, fineBodyParts) ->

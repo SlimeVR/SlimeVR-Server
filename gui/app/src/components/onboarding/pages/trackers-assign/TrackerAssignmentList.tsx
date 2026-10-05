@@ -14,6 +14,7 @@ import {
   TrackerConnectionGroupCollapseToolbox,
   TrackerConnectionGroupSection,
 } from '@/components/tracker/TrackerConnectionGroup';
+import { useLocaleConfig } from '@/i18n/config';
 import { useOnboarding } from '@/hooks/onboarding';
 import { getTrackerName, useTracker, velocityGlowStyle } from '@/hooks/tracker';
 import {
@@ -27,6 +28,7 @@ import {
   groupTrackersByDevice,
   TrackerConnectionGroup,
 } from '@/store/app-store';
+import { WarningBox } from '@/components/commons/TipBox';
 import { ShowAllPartsToggle } from '@/components/onboarding/BodyAssignment';
 import { useAssignment } from '@/hooks/tracker-assignment';
 
@@ -41,7 +43,20 @@ export function TrackerAssignmentList() {
     handleDropTracker,
     selectTracker,
     pendingTrackerId,
+    requiredRoles,
   } = useAssignment();
+  const { l10n } = useLocalization();
+  const { currentLocales } = useLocaleConfig();
+
+  const missingParts = useMemo(
+    () =>
+      new Intl.ListFormat(currentLocales, { type: 'conjunction' }).format(
+        requiredRoles.map((part) =>
+          l10n.getString(`body_part-${BodyPart[part]}`)
+        )
+      ),
+    [requiredRoles, l10n, currentLocales]
+  );
   const assignedCount = assignedTrackers.length;
   const groups = useMemo(
     () => groupTrackersByConnection(trackers, dongles),
@@ -121,6 +136,17 @@ export function TrackerAssignmentList() {
           />
         )}
       </div>
+
+      {requiredRoles.length > 0 && (
+        <div className="shrink-0">
+          <WarningBox>
+            {l10n.getString('onboarding-assign_trackers-warning-required', {
+              parts: missingParts,
+              count: requiredRoles.length,
+            })}
+          </WarningBox>
+        </div>
+      )}
 
       {!state.alonePage && (
         <div className="shrink-0 pt-4 border-t border-background-60">

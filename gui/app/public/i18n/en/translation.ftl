@@ -1175,61 +1175,15 @@ onboarding-assign_trackers-joint-metacarpal = Metacarpal
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT = Left foot is assigned but you need { $unassigned ->
-    [0] the left ankle, left thigh and either the chest, hip or waist
-    [1] the left thigh and either the chest, hip or waist
-    [2] the left ankle and either the chest, hip or waist
-    [3] either the chest, hip or waist
-    [4] the left ankle and left thigh
-    [5] the left thigh
-    [6] the left ankle
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT = Right foot is assigned but you need { $unassigned ->
-    [0] the right ankle, right thigh and either the chest, hip or waist
-    [1] the right thigh and either the chest, hip or waist
-    [2] the right ankle and either the chest, hip or waist
-    [3] either the chest, hip or waist
-    [4] the right ankle and right thigh
-    [5] the right thigh
-    [6] the right ankle
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG = Left ankle is assigned but you need { $unassigned ->
-    [0] the left thigh and either the chest, hip or waist
-    [1] either the chest, hip or waist
-    [2] the left thigh
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG = Right ankle is assigned but you need { $unassigned ->
-    [0] the right thigh and either the chest, hip or waist
-    [1] either the chest, hip or waist
-    [2] the right thigh
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG = Left thigh is assigned but you need { $unassigned ->
-    [0] either the chest, hip or waist
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG = Right thigh is assigned but you need { $unassigned ->
-    [0] either the chest, hip or waist
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP = Hip is assigned but you need { $unassigned ->
-    [0] the chest
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $unassigned ->
-    [0] the chest
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
+# $part (String) - the body part a tracker is assigned to
+# $missing (String) - the body parts it still needs, already formatted as a list
+onboarding-assign_trackers-warning = { $part } is assigned but you also need { $missing } to be assigned!
+# $parts (String) - the body parts still missing a tracker, formatted as a list
+# $count (Number) - how many of them there are
+onboarding-assign_trackers-warning-required = { $count ->
+    [one] { $parts } still needs a tracker
+   *[other] { $parts } still need trackers
+}
 
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?

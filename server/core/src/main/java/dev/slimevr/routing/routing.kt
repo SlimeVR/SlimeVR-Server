@@ -1,17 +1,17 @@
 package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.VRServer
 import dev.slimevr.config.BoneRoutingConfig
 import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.util.allContextStates
 import dev.slimevr.util.isActive
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
@@ -57,14 +57,17 @@ fun overrideRoutes(config: BoneRoutingConfig): Routes = config.manualRoutes.orEm
 
 fun isActive(states: OutputStates, output: RoutingOutput): Boolean = states[output] == RoutingOutputState.ACTIVE
 
-@OptIn(ExperimentalCoroutinesApi::class)
+/** Whether any SolarXR bridge currently has a driver on the other end */
+fun solarXRDriverConnectedFlow(server: VRServer): Flow<Boolean> =
+	allContextStates(server.context.state.map { it.solarxr }.distinctUntilChanged(), { it.values }) { bridge ->
+		bridge.context.state.map { it.driverName != null }.distinctUntilChanged()
+	}
+		.map { connected -> connected.any { it } }
+		.distinctUntilChanged()
+
 fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = combine(
 	appContext.config.settings.context.state.map { it.data.driverConfig.enabled },
-	appContext.server.context.state.map { it.solarxr }.distinctUntilChanged().flatMapLatest { solarXRBridges ->
-		combine(solarXRBridges.values.map { it.context.state }) { states ->
-			states.any { it.driverName != null }
-		}
-	},
+	solarXRDriverConnectedFlow(appContext.server),
 ) { enabled, solarXRDriverConnected ->
 	when {
 		!appContext.featureFlags.supportsDriver -> RoutingOutputState.UNSUPPORTED

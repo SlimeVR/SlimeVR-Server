@@ -393,6 +393,8 @@ export function BodyInteractions({
                 buttonOffset,
               }) => {
                 const hitSize = dotsSize + DOT_HIT_PADDING * 2;
+                const required =
+                  part != null && highlightedRoles.includes(part);
 
                 return (
                   <div
@@ -417,21 +419,19 @@ export function BodyInteractions({
                       className="absolute"
                       style={{ top: DOT_HIT_PADDING, left: DOT_HIT_PADDING }}
                     >
-                      {!hidden &&
-                        part != null &&
-                        highlightedRoles.includes(part) && (
-                          <div
-                            className={classNames(
-                              'absolute rounded-full bg-status-warning',
-                              'transition-opacity opacity-100 animate-ping'
-                            )}
-                            style={{
-                              width: dotsSize,
-                              height: dotsSize,
-                              animationDuration: '1.5s',
-                            }}
-                          />
-                        )}
+                      {!hidden && required && (
+                        <div
+                          className={classNames(
+                            'absolute rounded-full bg-status-warning',
+                            'transition-opacity opacity-100 animate-ping'
+                          )}
+                          style={{
+                            width: dotsSize,
+                            height: dotsSize,
+                            animationDuration: '1.5s',
+                          }}
+                        />
+                      )}
                       <div
                         className={classNames(
                           'absolute rounded-full outline-background-90 transition duration-150 ease-linear box-border',
@@ -439,7 +439,9 @@ export function BodyInteractions({
                           'flex items-center justify-center',
                           part != null && assignedRoles.includes(part)
                             ? 'bg-status-success'
-                            : 'bg-background-10',
+                            : required
+                              ? 'bg-status-warning'
+                              : 'bg-background-10',
                           leftPartNames.has(id) &&
                             'border-4 border-assign-left',
                           rightPartNames.has(id) &&

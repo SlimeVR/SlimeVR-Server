@@ -1,16 +1,15 @@
-@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-
 package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
-import dev.slimevr.VRServerState
 import dev.slimevr.config.Settings
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.routing.Routes
+import dev.slimevr.routing.solarXRDriverConnectedFlow
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.util.allContextStates
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.VRCConfigState
 import dev.slimevr.vrchat.computeRecommendedValues
@@ -21,8 +20,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -41,18 +38,6 @@ import solarxr_protocol.rpc.TrackingChecklistTrackerError
 import solarxr_protocol.rpc.TrackingChecklistTrackerReset
 import solarxr_protocol.rpc.TrackingChecklistUnassignedReliableReference
 import solarxr_protocol.rpc.VRCOSCTrackingDataState
-
-// Flat-maps a server state flow into a combined flow of all context states for a given collection.
-// Re-emits whenever any item's state changes or the collection itself changes.
-private inline fun <C, reified S> allContextStates(
-	server: VRServer,
-	crossinline select: (VRServerState) -> Collection<C>,
-	crossinline stateOf: (C) -> Flow<S>,
-): Flow<List<S>> = server.context.state.flatMapLatest { serverState ->
-	val items = select(serverState)
-	if (items.isEmpty()) return@flatMapLatest flowOf(emptyList())
-	combine(items.map { item -> stateOf(item) }) { states -> states.toList() }
-}
 
 /**
  * Everything about a tracker the checklist reasons about, and nothing else.
@@ -96,7 +81,7 @@ fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	needsMountingReset = tracker.needsMountingReset,
 )
 
-internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> = allContextStates(server, { state -> state.trackers.values }) { tracker ->
+internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> = allContextStates(server.context.state, { state -> state.trackers.values }) { tracker ->
 	tracker.context.state.map { state -> checklistTracker(state) }.distinctUntilChanged()
 }
 
@@ -223,11 +208,7 @@ class SteamVRHandsCheckBehaviour(
 		combine(
 			trackerStates,
 			boneRouting.context.state.map { state -> state.routes },
-			server.context.state.map { it.solarxr }.distinctUntilChanged().flatMapLatest { solarXRBridges ->
-				combine(solarXRBridges.values.map { it.context.state }) { states ->
-					states.any { it.driverName != null }
-				}
-			},
+			solarXRDriverConnectedFlow(server),
 			::computeStep,
 		)
 			.distinctUntilChanged()

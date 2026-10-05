@@ -87,6 +87,9 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	),
 )
 
+/** The spine bones this processor imputes, top down. Other sources are only read as references. */
+val SPINE_IMPUTED_PARTS: List<BodyPart> = SPINE_SOURCE_RELIABILITY.flatMap { (source, _) -> source.parts.toList() }
+
 private fun nearestActive(startIndex: Int, step: Int, sourceActive: Map<SpineSource, Boolean>): Int? {
 	var i = startIndex
 	while (i in SPINE_SOURCES.indices) {

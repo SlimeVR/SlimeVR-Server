@@ -61,7 +61,7 @@ export function PickerPanel({
     tab,
     side,
     setSide,
-    firstError,
+    requiredRoles,
     rolesWithErrors,
     activePart,
     selectPart,
@@ -130,7 +130,7 @@ export function PickerPanel({
               dotSize={dotSize[dots]}
               compact={isTight}
               fillHeight
-              highlightedRoles={firstError?.affectedRoles || []}
+              highlightedRoles={requiredRoles}
               rolesWithErrors={rolesWithErrors}
               onRoleSelected={selectPart}
               renderGroup={renderGroup}
@@ -143,7 +143,7 @@ export function PickerPanel({
               view={{ kind: 'body' }}
               dotSize={dotSize[dots]}
               fillHeight
-              highlightedRoles={firstError?.affectedRoles || []}
+              highlightedRoles={requiredRoles}
               rolesWithErrors={rolesWithErrors}
               mirror={config?.mirrorView ?? false}
               onRoleSelected={selectPart}
