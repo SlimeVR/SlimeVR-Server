@@ -78,11 +78,10 @@ fun bodyPartPrerequisites(bodyPart: BodyPart, ikSolved: Set<BodyPart> = emptySet
 	requirementGroups(bodyPart).filterNot { group -> group.all { it in ikSolved } }
 
 private fun requirementGroups(bodyPart: BodyPart): List<List<BodyPart>> {
-	val spineIndex = SPINE_IMPUTED_PARTS.indexOf(bodyPart)
-	if (spineIndex >= 0) return listOfNotNull(SPINE_IMPUTED_PARTS.take(spineIndex).ifEmpty { null })
-
-	// The head roots the skeleton and the neck hangs off it, so neither waits on anything.
-	if (bodyPart == BodyPart.HEAD || bodyPart == BodyPart.NECK) return emptyList()
+	val standsAlone = bodyPart in SPINE_IMPUTED_PARTS ||
+		bodyPart == BodyPart.HEAD ||
+		bodyPart == BodyPart.NECK
+	if (standsAlone) return emptyList()
 
 	return limbPrerequisites(bodyPart) + listOf(SPINE_IMPUTED_PARTS)
 }

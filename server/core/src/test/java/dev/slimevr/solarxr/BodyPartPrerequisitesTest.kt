@@ -74,13 +74,10 @@ class BodyPartPrerequisitesTest {
 	}
 
 	@Test
-	fun `the top of the spine stands on its own and the rest of it looks upwards`() {
-		assertEquals(emptyList(), bodyPartPrerequisites(BodyPart.UPPER_CHEST))
-		assertEquals(listOf(listOf(BodyPart.UPPER_CHEST)), bodyPartPrerequisites(BodyPart.LOWER_CHEST))
-		assertEquals(
-			listOf(listOf(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST)),
-			bodyPartPrerequisites(BodyPart.HIP),
-		)
+	fun `a spine bone stands on its own`() {
+		for (bodyPart in spineParts) {
+			assertEquals(emptyList(), bodyPartPrerequisites(bodyPart), "$bodyPart should stand alone")
+		}
 	}
 
 	@Test
