@@ -58,12 +58,11 @@ fun overrideRoutes(config: BoneRoutingConfig): Routes = config.manualRoutes.orEm
 fun isActive(states: OutputStates, output: RoutingOutput): Boolean = states[output] == RoutingOutputState.ACTIVE
 
 /** Whether any SolarXR bridge currently has a driver on the other end */
-fun solarXRDriverConnectedFlow(server: VRServer): Flow<Boolean> =
-	allContextStates(server.context.state.map { it.solarxr }.distinctUntilChanged(), { it.values }) { bridge ->
-		bridge.context.state.map { it.driverName != null }.distinctUntilChanged()
-	}
-		.map { connected -> connected.any { it } }
-		.distinctUntilChanged()
+fun solarXRDriverConnectedFlow(server: VRServer): Flow<Boolean> = allContextStates(server.context.state.map { it.solarxr }.distinctUntilChanged(), { it.values }) { bridge ->
+	bridge.context.state.map { it.driverName != null }.distinctUntilChanged()
+}
+	.map { connected -> connected.any { it } }
+	.distinctUntilChanged()
 
 fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = combine(
 	appContext.config.settings.context.state.map { it.data.driverConfig.enabled },

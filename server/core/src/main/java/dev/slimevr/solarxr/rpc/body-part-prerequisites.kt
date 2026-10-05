@@ -45,10 +45,9 @@ internal val PREREQUISITE_BODY_PARTS: List<BodyPart> =
  */
 internal data class TrackingPoint(val bodyPart: BodyPart?, val hasPosition: Boolean)
 
-private fun trackingPointsFlow(server: VRServer): Flow<List<TrackingPoint>> =
-	allContextStates(server.context.state, { it.trackers.values }) { tracker ->
-		tracker.context.state.map { TrackingPoint(it.bodyPart, it.position != null) }.distinctUntilChanged()
-	}
+private fun trackingPointsFlow(server: VRServer): Flow<List<TrackingPoint>> = allContextStates(server.context.state, { it.trackers.values }) { tracker ->
+	tracker.context.state.map { TrackingPoint(it.bodyPart, it.position != null) }.distinctUntilChanged()
+}
 
 /**
  * List the bones that are solved by IK
@@ -74,8 +73,7 @@ internal fun ikSolvedParts(trackers: List<TrackingPoint>, useTrackerPositions: B
  *
  * Read off the hierarchy and the processors that fill in missing bones, so it follows them.
  */
-fun bodyPartPrerequisites(bodyPart: BodyPart, ikSolved: Set<BodyPart> = emptySet()): List<List<BodyPart>> =
-	requirementGroups(bodyPart).filterNot { group -> group.all { it in ikSolved } }
+fun bodyPartPrerequisites(bodyPart: BodyPart, ikSolved: Set<BodyPart> = emptySet()): List<List<BodyPart>> = requirementGroups(bodyPart).filterNot { group -> group.all { it in ikSolved } }
 
 private fun requirementGroups(bodyPart: BodyPart): List<List<BodyPart>> {
 	val standsAlone = bodyPart in SPINE_IMPUTED_PARTS ||

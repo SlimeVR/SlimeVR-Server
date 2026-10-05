@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.solarxr.rpc.TrackingPoint
 import dev.slimevr.solarxr.rpc.PREREQUISITE_BODY_PARTS
+import dev.slimevr.solarxr.rpc.TrackingPoint
 import dev.slimevr.solarxr.rpc.bodyPartPrerequisites
 import dev.slimevr.solarxr.rpc.ikSolvedParts
 import solarxr_protocol.datatypes.BodyPart

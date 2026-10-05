@@ -1,16 +1,15 @@
 package dev.slimevr.vrcosc
 
+import com.jme3.math.FastMath
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.math.PI
 
 private val trackerIdsByBodyPart = mapOf(
 	BodyPart.HIP to 1,
@@ -67,7 +66,7 @@ internal fun buildYawAlignMessage(headRotation: Quaternion): OscMessage {
 		"/tracking/trackers/head/rotation",
 		listOf(
 			OscArg.Float(0f),
-			OscArg.Float(-yaw * 180f / PI.toFloat()),
+			OscArg.Float(-yaw * FastMath.RAD_TO_DEG),
 			OscArg.Float(0f),
 		),
 	)
@@ -88,9 +87,9 @@ private fun rotationMessage(address: String, rotation: Quaternion): OscMessage {
 	return OscMessage(
 		address,
 		listOf(
-			OscArg.Float(x * 180f / PI.toFloat()),
-			OscArg.Float(y * 180f / PI.toFloat()),
-			OscArg.Float(z * 180f / PI.toFloat()),
+			OscArg.Float(x * FastMath.RAD_TO_DEG),
+			OscArg.Float(y * FastMath.RAD_TO_DEG),
+			OscArg.Float(z * FastMath.RAD_TO_DEG),
 		),
 	)
 }

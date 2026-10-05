@@ -1,5 +1,6 @@
 package dev.slimevr.hid
 
+import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.PI
@@ -24,7 +25,7 @@ const val HID_REPORT_SIZE = 64
 const val HID_PROTOCOL_LEGACY = 2
 const val HID_PROTOCOL_V3 = 3
 
-val AXES_OFFSET: Quaternion = Quaternion.fromRotationVector(-PI.toFloat() / 2f, 0f, 0f)
+val AXES_OFFSET: Quaternion = Quaternion.fromRotationVector(-FastMath.PI / 2f, 0f, 0f)
 
 fun readU8(data: ByteArray, offset: Int): Int = data[offset].toUByte().toInt()
 
