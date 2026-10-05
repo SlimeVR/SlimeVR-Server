@@ -236,7 +236,8 @@ function BodyAssignmentView({
   const column = (groups: BodyPart[][], direction: 'left' | 'right') => (
     <div
       className={classNames(
-        'flex flex-col justify-between h-full',
+        // capped so long tracker names cannot starve the figure of width
+        'flex flex-col justify-between h-full max-w-[10rem]',
         direction === 'right' && 'text-right'
       )}
     >

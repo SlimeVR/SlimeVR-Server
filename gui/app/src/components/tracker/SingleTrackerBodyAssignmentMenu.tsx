@@ -242,7 +242,7 @@ export function SingleTrackerBodyAssignmentMenu({
               <div className="pointer-events-auto w-fit">{sideControl}</div>
               <PickerTabs
                 compact
-                className="pointer-events-auto w-full shadow-lg ring-1 ring-background-50 [&>div]:flex [&>div]:min-h-11 [&>div]:min-w-0 [&>div]:flex-1 [&>div]:items-center [&>div]:justify-center [&>div]:text-center"
+                className="pointer-events-auto shadow-lg ring-1 ring-background-50 [&>button]:min-h-11 [&>button]:px-4"
               />
             </PickerContext.Provider>
           </div>
