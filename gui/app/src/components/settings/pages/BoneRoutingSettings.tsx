@@ -55,9 +55,9 @@ import { WarningBox } from '@/components/commons/TipBox';
 import { HandsWarningModal } from './components/HandsWarningModal';
 
 const OUTPUT_LABEL_ID: Record<number, string> = {
-  [RoutingOutput.DRIVER]: 'SteamVR / Monado',
-  [RoutingOutput.VRC_OSC]: 'VRChat OSC',
-  [RoutingOutput.VMC]: 'VMC',
+  [RoutingOutput.DRIVER]: 'settings-routing-output-driver',
+  [RoutingOutput.VRC_OSC]: 'settings-routing-output-vrc_osc',
+  [RoutingOutput.VMC]: 'settings-routing-output-vmc',
 };
 
 type BoneRow = { id: string; labelId: string; bones: BodyPart[] };

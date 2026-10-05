@@ -34,15 +34,15 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/routing', scrollTo: 'routing' },
       },
       {
-        label: 'SteamVR / Monado',
+        label: l10n.getString('settings-sidebar-driver'),
         value: { url: '/settings/driver', scrollTo: 'driver' },
       },
       {
-        label: 'VRChat OSC',
+        label: l10n.getString('settings-sidebar-vrchat_osc'),
         value: { url: '/settings/osc/vrchat', scrollTo: 'vrchat' },
       },
       {
-        label: 'VMC',
+        label: l10n.getString('settings-sidebar-osc_vmc'),
         value: { url: '/settings/osc/vmc', scrollTo: 'vmc' },
       },
       {

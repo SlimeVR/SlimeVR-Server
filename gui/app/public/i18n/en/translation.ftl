@@ -235,7 +235,7 @@ reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
-reset-error-need_positional_head = Step mounting needs a VR headset or a positional tracker
+reset-error-need_positional_head = Step mounting needs a headset or a tracker with position tracking
 reset-error-no_trackers = No tracker available
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
@@ -1129,6 +1129,7 @@ onboarding-assign_trackers-all_assigned-title = All trackers assigned!
 onboarding-assign_trackers-all_assigned-description = You're ready to move on to the next step
 onboarding-assign_trackers-no_trackers-title = No trackers connected
 onboarding-assign_trackers-no_trackers-description = Connect a tracker to start assigning it to a body part
+onboarding-assign_trackers-no_trackers-connect = Connect trackers
 onboarding-assign_trackers-show_all = Show all body parts
 onboarding-assign_trackers-show_all-short = Show all parts
 onboarding-assign_trackers-tap_modal-title = Tap to assign
@@ -1277,6 +1278,10 @@ step_mounting-retry = Try again
 onboarding-manual_mounting = Manual Mounting
 onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
 onboarding-manual_mounting-next = Next step
+onboarding-manual_mounting-automatic-title = Automatically mounted
+onboarding-manual_mounting-automatic-description = A mounting calibration set these. Pick one to set its direction by hand.
+onboarding-manual_mounting-assign_link-title = Tracker missing?
+onboarding-manual_mounting-assign_link-description = Only trackers assigned to a body part show up here
 
 ## Tracker automatic mounting setup
 onboarding-automatic_mounting-title = Mounting Calibration

@@ -5,7 +5,8 @@ import { CSSProperties, ReactNode, useMemo } from 'react';
 import { BodyPart, DeviceDataT, TrackerDataT } from 'solarxr-protocol';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
-import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { EmptyState } from '@/components/commons/EmptyState';
+import { SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerStatus } from '@/components/tracker/TrackerStatus';
@@ -167,43 +168,44 @@ export function AssignmentNavFooter({
 
 export function AssignmentEmptyState({
   kind,
+  iconSize,
   className,
 }: {
   kind: 'no-trackers' | 'all-assigned';
   iconSize?: number;
   className?: string;
 }) {
-  const slimeState =
-    kind === 'no-trackers' ? SlimeState.JUMPY : SlimeState.HAPPY;
-  const titleColor =
-    kind === 'all-assigned' ? 'text-status-success' : undefined;
-  const titleId =
-    kind === 'no-trackers'
-      ? 'onboarding-assign_trackers-no_trackers-title'
-      : 'onboarding-assign_trackers-all_assigned-title';
-  const descId =
-    kind === 'no-trackers'
-      ? 'onboarding-assign_trackers-no_trackers-description'
-      : 'onboarding-assign_trackers-all_assigned-description';
+  const { state } = useOnboarding();
+  const noTrackers = kind === 'no-trackers';
 
   return (
-    <div
-      className={classNames(
-        'flex flex-col items-center justify-center gap-4 text-center p-6',
-        className
-      )}
-    >
-      <LoaderIcon slimeState={slimeState} />
-      <div className="flex flex-col gap-1 max-w-xs">
-        <Typography
-          bold
-          variant="section-title"
-          color={titleColor}
-          id={titleId}
-        />
-        <Typography variant="standard" id={descId} />
-      </div>
-    </div>
+    <EmptyState
+      className={className}
+      iconSize={iconSize}
+      slimeState={noTrackers ? SlimeState.JUMPY : SlimeState.HAPPY}
+      titleColor={noTrackers ? undefined : 'text-status-success'}
+      titleId={
+        noTrackers
+          ? 'onboarding-assign_trackers-no_trackers-title'
+          : 'onboarding-assign_trackers-all_assigned-title'
+      }
+      descriptionId={
+        noTrackers
+          ? 'onboarding-assign_trackers-no_trackers-description'
+          : 'onboarding-assign_trackers-all_assigned-description'
+      }
+      action={
+        noTrackers &&
+        state.alonePage && (
+          <Button
+            variant="primary"
+            to="/onboarding/connect-trackers"
+            state={{ alonePage: true }}
+            id="onboarding-assign_trackers-no_trackers-connect"
+          />
+        )
+      }
+    />
   );
 }
 
