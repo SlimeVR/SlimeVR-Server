@@ -202,7 +202,7 @@ private fun decodeExpMapQuat(data: ByteArray, offset: Int): Quaternion {
 	val vz = ((buf shr 21 and 2047u).toFloat() / 2048f) * 2f - 1f
 	val d = vx * vx + vy * vy + vz * vz
 	val invSqrtD = 1f / sqrt(d + 1e-6f)
-	val a = (FastMath.PI / 2f) * d * invSqrtD
+	val a = FastMath.HALF_PI * d * invSqrtD
 	val s = sin(a)
 	val k = s * invSqrtD
 	return AXES_OFFSET * Quaternion(cos(a), k * vx, k * vy, k * vz)

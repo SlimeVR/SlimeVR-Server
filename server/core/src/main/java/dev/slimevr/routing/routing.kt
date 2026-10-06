@@ -3,6 +3,7 @@ package dev.slimevr.routing
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.BoneRoutingConfig
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.allContextStates
@@ -41,7 +42,11 @@ fun conflictingOutputs(output: RoutingOutput): Set<RoutingOutput> = when (output
 
 /** Bones an output needs to work at all, so the user cannot turn them off. */
 fun requiredBones(output: RoutingOutput): Set<BodyPart> = when (output) {
-	RoutingOutput.DRIVER, RoutingOutput.VRC_OSC -> emptySet()
+	RoutingOutput.DRIVER -> emptySet()
+
+	// TODO make VRC_OSC toes toggleable?
+	RoutingOutput.VRC_OSC -> ResetBodyParts.TOES
+
 	RoutingOutput.VMC -> VMC_SUPPORTED_BONES
 }
 

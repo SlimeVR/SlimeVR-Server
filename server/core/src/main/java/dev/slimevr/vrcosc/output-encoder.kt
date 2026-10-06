@@ -5,6 +5,7 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -23,7 +24,7 @@ private val trackerIdsByBodyPart = mapOf(
 )
 
 /** Bones VRChat OSC can accept. Used by the routing module. */
-val VRC_OSC_SUPPORTED_BONES: Set<BodyPart> = trackerIdsByBodyPart.keys
+val VRC_OSC_SUPPORTED_BONES: Set<BodyPart> = trackerIdsByBodyPart.keys + ResetBodyParts.TOES
 
 internal fun buildOutgoingBundle(
 	bones: ComputedSkeleton,
