@@ -3,6 +3,7 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { BodyPart, BoneT } from 'solarxr-protocol';
+import { FlatDeviceTracker } from '@/store/app-store';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { FINGER_BODY_PARTS, TOE_BODY_PARTS } from '@/hooks/body-parts';
@@ -61,6 +62,7 @@ export function getBoneTail(bone: BoneT, target = new Vector3()) {
 
 export interface SkeletonRenderPart {
   bone: BoneT;
+  tracker?: FlatDeviceTracker;
 }
 
 export class BasedSkeletonHelper extends LineSegments2 {
@@ -97,6 +99,12 @@ export class BasedSkeletonHelper extends LineSegments2 {
 
     super(geometry, material);
     this.parts = parts;
+  }
+
+  setTrackers(trackers: Partial<Record<BodyPart, FlatDeviceTracker>>) {
+    for (const part of this.parts) {
+      part.tracker = trackers[part.bone.bodyPart];
+    }
   }
 
   setBones(bones: Map<BodyPart, BoneT>) {
@@ -156,7 +164,6 @@ export class BasedSkeletonHelper extends LineSegments2 {
         (isPosteriorPart && !hasPosteriorTracker);
 
       if (hidden) {
-        if (part.marker) part.marker.visible = false;
         continue;
       }
 

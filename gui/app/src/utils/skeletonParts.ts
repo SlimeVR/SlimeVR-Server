@@ -245,9 +245,7 @@ const LOWER_ARM_TRACKER_OFFSET = 0.15;
 const UPPER_LEG_TRACKER_OFFSET = 0.7;
 const LOWER_LEG_TRACKER_OFFSET = 0.75;
 
-const FOOT_MARKER: Partial<BonePartConfig> = {
-  trackerAnchor: new Vector3(0, -0.3, 0),
-};
+
 
 const bustScale: ShapeScale = {
   compute: ({ proportions }) => {
@@ -449,8 +447,7 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.TAIL]: part(
     model('lower_leg', {
       scale: spanBone({ girthFrom: 'hips', width: 0.7, depth: 0.7, length: 1 }),
-    }),
-    { trackerOffset: HIP_TRACKER_OFFSET }
+    })
   ),
   [BodyPart.TAIL_1]: part(
     model('lower_leg', { scale: spanBone({ width: 0.6, depth: 0.6, length: 1 }) })

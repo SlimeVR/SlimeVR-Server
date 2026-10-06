@@ -2,6 +2,7 @@ import { Box3, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { SkeletonRenderPart } from './skeletonHelper';
 import { BodyPart, BoneT } from 'solarxr-protocol';
+import { FlatDeviceTracker } from '@/store/app-store';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import {
@@ -149,6 +150,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
     this.proportions = proportions;
   }
 
+  setTrackers(trackers: Partial<Record<BodyPart, FlatDeviceTracker>>) {
+    for (const part of this.parts) {
+      part.tracker = trackers[part.bone.bodyPart];
+    }
+  }
+
   setBones(bones: Map<BodyPart, BoneT>) {
     for (const part of this.parts) {
       const bone = bones.get(part.bone.bodyPart);
@@ -207,7 +214,6 @@ export class BasedSkeletonMeshHelper extends Object3D {
         attached.node.visible = !hidden;
       }
       if (hidden) {
-        if (part.marker) part.marker.visible = false;
         continue;
       }
 

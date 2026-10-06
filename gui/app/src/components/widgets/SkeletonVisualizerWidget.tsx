@@ -32,7 +32,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import * as Sentry from '@sentry/react';
 import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
-import { bonesAtom } from '@/store/app-store';
+import { bonesAtom, trackerByBodyPartAtom, FlatDeviceTracker } from '@/store/app-store';
 import { Config, useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
 import { EyeIcon } from '@/components/commons/icon/EyeIcon';
@@ -373,6 +373,9 @@ function initializePreview(
     },
     rebuildSkeleton,
     setStyle,
+    updateTrackers: (trackers: Partial<Record<BodyPart, FlatDeviceTracker>>) => {
+      skeletonHelper.setTrackers(trackers);
+    },
     updatesBones: (newBones: Map<BodyPart, BoneT>) => {
       bones = newBones;
       skeletonHelper.setBones(bones);
@@ -504,6 +507,7 @@ function SkeletonVisualizer({
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
   const bonesList = useAtomValue(bonesAtom);
+  const trackersByPart = useAtomValue(trackerByBodyPartAtom);
 
   const bones = useMemo(() => {
     return new Map(bonesList.map((b) => [b.bodyPart, b]));
