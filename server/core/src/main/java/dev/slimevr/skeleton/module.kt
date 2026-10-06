@@ -8,10 +8,9 @@ import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
-import dev.slimevr.skeleton.inputprocessors.AccelerationFallbackInputProcessor
-import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
-import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
+import dev.slimevr.skeleton.inputprocessors.DirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingersInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
@@ -277,15 +276,14 @@ class Skeleton(
 						RotationSmoothingInputProcessor(settings),
 						TrackerOffsetInputProcessor(),
 						HeadPositionFallbackProcessor(settings),
-						BoneYawFallbackInputProcessor(),
+						FallbackInputProcessor(),
 						SpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),
 						UpperLegsRollAlignInputProcessor(settings),
-						BoneDirectLinkInputProcessor(),
+						DirectLinkInputProcessor(),
 						FingersInputProcessor(),
 						ToesInputProcessor(),
 						ConstraintInputProcessor(settings),
-						AccelerationFallbackInputProcessor(),
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
