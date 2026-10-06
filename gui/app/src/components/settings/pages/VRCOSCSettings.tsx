@@ -172,7 +172,10 @@ function StatusCard({
             <Typography
               color="secondary"
               id="settings-osc-vrchat-status-input-listening"
-              vars={{ port: status.inputPort?.toString() ?? 'null' }}
+              vars={{
+                port: status.inputPort?.toString() ?? 'null',
+                source: sourceLabel,
+              }}
             />
             {inputState === VRCOSCInputState.ERROR && status.inputError ? (
               <Typography color="secondary">
@@ -239,19 +242,25 @@ function StatusCard({
         badge={<VrcBadge badge={OUTPUT_BADGES[outputState]} />}
       >
         {outputState === VRCOSCOutputState.IDLE ? (
-          <Typography
-            color="secondary"
-            id={
-              status.targetAddress
-                ? 'settings-osc-vrchat-status-output-waiting'
-                : 'settings-osc-vrchat-status-output-idle'
-            }
-            vars={{
-              address: status.targetAddress?.toString() ?? '',
-              port: status.targetPort?.toString() ?? 'null',
-              source: sourceLabel,
-            }}
-          />
+          <>
+            <Typography
+              color="secondary"
+              id={
+                status.targetAddress
+                  ? 'settings-osc-vrchat-status-output-waiting'
+                  : 'settings-osc-vrchat-status-output-idle'
+              }
+              vars={{
+                address: status.targetAddress?.toString() ?? '',
+                port: status.targetPort?.toString() ?? 'null',
+                source: sourceLabel,
+              }}
+            />
+            <Typography
+              color="secondary"
+              id="settings-osc-vrchat-status-output-no-frame"
+            />
+          </>
         ) : (
           <>
             <Typography
