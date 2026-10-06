@@ -77,7 +77,7 @@ class ProvisioningBehaviourTest {
 		val serial = buildTestSerial(backgroundScope)
 		val manager = buildManager(serial, backgroundScope)
 		val server = buildTestVrServerStub(backgroundScope)
-		val (scanner, _) = buildBridge(1, server, manager, backgroundScope)
+		val (scanner, scannerScope) = buildBridge(1, server, manager, backgroundScope)
 		val (_, idleScope) = buildBridge(2, server, manager, backgroundScope)
 		serial.plug(fakePort())
 
@@ -88,5 +88,6 @@ class ProvisioningBehaviourTest {
 		advanceTimeBy(1_000)
 
 		assertEquals(null, serial.watcher.closeCount["COM1"])
+		scannerScope.cancel()
 	}
 }
