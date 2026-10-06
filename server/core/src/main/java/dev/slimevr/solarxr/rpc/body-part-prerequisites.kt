@@ -86,7 +86,7 @@ private fun requirementGroups(bodyPart: BodyPart): List<List<BodyPart>> {
 
 /**
  * Limb segments between this part and the spine, each on its own. One left untracked is guessed
- * from its neighbors, so everything past it hangs off a bone that does not follow the body.
+ * from its neighbours, so everything past it hangs off a bone that does not follow the body.
  *
  * Excludes segments that follow something else without a tracker of their own: a shoulder taking
  * the upper chest, and digit bones taking their siblings.

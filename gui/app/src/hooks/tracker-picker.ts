@@ -97,7 +97,7 @@ const SETUP_REGIONS: {
 }[] = [
   { id: 'legs', parts: [...LEGS_PARTS], needs: [] },
   { id: 'chest', parts: [BodyPart.UPPER_CHEST], needs: [] },
-  { id: 'hip', parts: [BodyPart.HIP], needs: [] },
+  { id: 'hip', parts: [BodyPart.HIP], needs: ['chest'] },
   // one spine point at a time, each halving the largest remaining gap
   { id: 'lowerWaist', parts: [BodyPart.LOWER_WAIST], needs: ['hip'] },
   { id: 'lowerChest', parts: [BodyPart.LOWER_CHEST], needs: ['lowerWaist'] },
