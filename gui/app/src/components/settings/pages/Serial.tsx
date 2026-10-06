@@ -14,6 +14,7 @@ import {
   SerialTrackerGetWifiScanRequestT,
   SerialTrackerCustomCommandRequestT,
   SerialDeviceType,
+  SerialKeepaliveRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useSerialDevices } from '@/hooks/serial';
@@ -42,6 +43,9 @@ const consoleStatusMessage: Partial<Record<SerialConsoleStatus, string>> = {
 };
 
 const MAX_CONSOLE_CHARS = 200_000;
+
+// Several of these fit in the server's grace window, so one dropped message costs nothing
+const SERIAL_KEEPALIVE_MS = 4_000;
 
 function appendLog(content: string, log: string) {
   const next = content + log;
@@ -82,8 +86,17 @@ export function Serial() {
 
   const [isPaused, setPaused] = useState(false);
 
+  // The server holds every port this page opened and takes them back if the keepalive stops, so a
+  // tab that dies without unmounting doesn't leave them locked
   useEffect(() => {
+    const keepalive = setInterval(() => {
+      sendRPCPacket(
+        RpcMessage.SerialKeepaliveRequest,
+        new SerialKeepaliveRequestT()
+      );
+    }, SERIAL_KEEPALIVE_MS);
     return () => {
+      clearInterval(keepalive);
       sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
     };
   }, []);

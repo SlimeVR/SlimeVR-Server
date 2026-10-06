@@ -23,6 +23,7 @@ private val CHECKLIST_STEP_ORDER: List<TrackingChecklistStepId> = listOf(
 	TrackingChecklistStepId.TRACKER_ERROR,
 	TrackingChecklistStepId.TRACKERS_REST_CALIBRATION,
 	TrackingChecklistStepId.FULL_RESET,
+	TrackingChecklistStepId.MOUNTING_METHOD,
 	TrackingChecklistStepId.MOUNTING_CALIBRATION,
 	TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION,
 	TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE,

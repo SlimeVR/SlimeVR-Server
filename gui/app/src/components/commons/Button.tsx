@@ -68,33 +68,30 @@ export function Button({
   const classes = useMemo(() => {
     const variantsMap = {
       primary: classNames({
-        'bg-accent-background-30 hover:bg-accent-background-20 text-standard text-background-10':
+        'bg-accent-background-30 hover:bg-accent-background-20 text-background-10':
           !disabled,
         'bg-accent-background-40 hover:bg-accent-background-40 cursor-not-allowed text-accent-background-10':
           disabled,
       }),
       secondary: classNames({
-        'bg-background-60 hover:bg-background-50 text-standard text-background-10':
-          !disabled,
+        'bg-background-60 hover:bg-background-50 text-background-10': !disabled,
         'bg-background-60 hover:bg-background-60 cursor-not-allowed text-background-40':
           disabled,
       }),
       tertiary: classNames({
-        'bg-background-50 hover:bg-background-40 text-standard text-background-10':
-          !disabled,
+        'bg-background-50 hover:bg-background-40 text-background-10': !disabled,
         'bg-background-50 hover:bg-background-50 cursor-not-allowed text-background-40':
           disabled,
       }),
       quaternary: classNames({
-        'bg-background-70 hover:bg-background-60 text-standard text-background-10':
-          !disabled,
+        'bg-background-70 hover:bg-background-60 text-background-10': !disabled,
         'bg-background-70 hover:bg-background-70 cursor-not-allowed text-background-40':
           disabled,
       }),
     };
     return classNames(
       variantsMap[variant],
-      'text-center relative flex items-center justify-center',
+      'text-standard text-center relative flex items-center justify-center',
       {
         'rounded-full p-2 text-center min-h-[35px] min-w-[35px]': rounded,
         'rounded-md px-5 py-3 min-h-[48px]': !rounded,

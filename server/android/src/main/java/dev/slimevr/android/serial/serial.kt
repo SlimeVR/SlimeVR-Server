@@ -44,7 +44,7 @@ private class AndroidSerialWatcher(
 		Intent(ACTION_USB_SERIAL_PERMISSION).apply {
 			setPackage(context.packageName)
 		},
-		PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+		PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT, // TODO should this be PendingIntent.FLAG_MUTABLE? CI doesn't like it.
 	)
 
 	// Devices without permission are left out. Granting it sends a change and they show up then
@@ -73,7 +73,7 @@ private class AndroidSerialWatcher(
 			}
 	}
 
-	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, onLine, onClosed) }
+	override suspend fun open(portLocation: String, clearResetLines: Boolean, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? = withContext(Dispatchers.IO) { openAndroidPort(portLocation, usbManager, clearResetLines, onLine, onClosed) }
 
 	override fun openForFlashing(): FlashingHandler = AndroidFlashingHandler(context, usbManager)
 }
@@ -81,6 +81,7 @@ private class AndroidSerialWatcher(
 private fun openAndroidPort(
 	portLocation: String,
 	usbManager: UsbManager,
+	clearResetLines: Boolean,
 	onLine: (String) -> Unit,
 	onClosed: () -> Unit,
 ): SerialPortHandle? {
@@ -97,8 +98,10 @@ private fun openAndroidPort(
 	try {
 		port.open(connection)
 		port.setParameters(BAUD_RATE, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-		port.dtr = false
-		port.rts = false
+		if (clearResetLines) {
+			port.dtr = false
+			port.rts = false
+		}
 	} catch (e: Exception) {
 		Log.e(TAG, "Failed to open Android serial port $portLocation", e)
 		try {

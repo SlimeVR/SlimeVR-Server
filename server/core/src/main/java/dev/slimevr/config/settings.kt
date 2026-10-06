@@ -16,7 +16,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
-import solarxr_protocol.rpc.ArmsResetMode
+import solarxr_protocol.rpc.ArmsMountingResetMode
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
@@ -95,15 +95,15 @@ data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
 	/** Reset mode used for the arms */
-	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
+	val armsMountingResetMode: ArmsMountingResetMode = ArmsMountingResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
 	/** Reset a reliable reference's (HMD) attitude on full reset */
 	val resetReliableReferenceAttitude: Boolean = false,
-	/** Used as preferred mounting method and tracking checklist */
-	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
+	/** How a mounting reset calibrates the trackers, UNKNOWN until the user has picked one */
+	val mountingMethod: MountingMethod = MountingMethod.UNKNOWN,
 )
 
 @Serializable
@@ -129,12 +129,11 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 data class SkeletonTogglesConfig(
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
-	val toeSnap: Boolean = false,
+	val toeSnap: Boolean = true,
 	val footPlant: Boolean = true,
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,
 	val enforceConstraints: Boolean = true,
-	val correctConstraints: Boolean = true,
 )
 
 // Used in SkeletonConfig
@@ -150,8 +149,8 @@ data class SkeletonRatiosConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonFilteringConfig(
-	val type: FilteringType = FilteringType.SMOOTHING,
-	val amount: Float = 0.1f,
+	val type: FilteringType = FilteringType.NONE,
+	val amount: Float = 0.25f,
 )
 
 @Serializable

@@ -8,10 +8,7 @@ import dev.slimevr.skeleton.BoneState
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
 import io.github.axisangles.ktmath.EulerOrder
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.math.*
 
 private const val ABSOLUTE_SPLAY_THRESHOLD_ANGLE = 7
 private const val MINIMUM_TIP_TOE_PITCH = -14
@@ -21,7 +18,7 @@ private const val MAXIMUM_ABSOLUTE_TOE_RANGE = 90
 internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
 
-	// LEFT FOOT + TOES
+	// Left foot and toes
 	val leftFoot = bones[BodyPart.LEFT_FOOT]
 	if (leftFoot != null) {
 		val leftToes = listOf(
@@ -34,7 +31,7 @@ internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent>
 		processToesForFoot(leftFoot, leftToes, Side.LEFT, messages)
 	}
 
-	// RIGHT FOOT + TOES
+	// Right foot and toes
 	val rightFoot = bones[BodyPart.RIGHT_FOOT]
 	if (rightFoot != null) {
 		val rightToes = listOf(

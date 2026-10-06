@@ -7,6 +7,7 @@ import kotlin.time.ComparableTimeMark
 
 // Source: Plagenhoef et al., 1983 (Table 4)
 // Modified for more segmentation
+// Should add up to 1
 val BODY_PART_MASSES = mapOf(
 	BodyPart.HEAD to 0.0827f,
 	BodyPart.LEFT_UPPER_ARM to 0.0263f,
@@ -17,7 +18,7 @@ val BODY_PART_MASSES = mapOf(
 	BodyPart.LOWER_CHEST to 0.0935f,
 	BodyPart.UPPER_WAIST to 0.0660f,
 	BodyPart.LOWER_WAIST to 0.0660f,
-	BodyPart.HIP to 0.1530f,
+	BodyPart.HIP to 0.1525f,
 	BodyPart.LEFT_UPPER_LEG to 0.1122f,
 	BodyPart.RIGHT_UPPER_LEG to 0.1122f,
 	BodyPart.LEFT_LOWER_LEG to 0.0620f,

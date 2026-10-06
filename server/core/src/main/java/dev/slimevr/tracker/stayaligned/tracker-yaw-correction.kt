@@ -148,10 +148,8 @@ object TrackerYawCorrection {
 	private fun getNeighbourError(yawCorrectedRotation: Quaternion, trackerState: TrackerState, relaxedPose: RelaxedPose, trackerStates: List<TrackerState>): Angle {
 		fun neighbourError(rotation: Quaternion) = trackerYaw(rotation) - trackerYaw(yawCorrectedRotation)
 		val upperBodyTrackers = trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup).sortedBy { StayAlignedBodyParts.upperBodyOrder[it.bodyPart] }
-		val bodyPart = trackerState.bodyPart
-		val side = bodyPart?.side ?: Side.LEFT
 
-		return when (bodyPart) {
+		return when (trackerState.bodyPart) {
 			StayAlignedBodyParts.head if (upperBodyTrackers.isNotEmpty()) -> neighbourError(upperBodyTrackers.first().rotation)
 
 			in StayAlignedBodyParts.upperBodyGroup -> {
@@ -189,57 +187,63 @@ object TrackerYawCorrection {
 			StayAlignedBodyParts.leftUpperLeg,
 			StayAlignedBodyParts.rightUpperLeg,
 			-> {
-				val lastUpperBodyTracker = upperBodyTrackers.lastOrNull()
-				val upperBodyError = if (lastUpperBodyTracker != null) {
-					neighbourError(lastUpperBodyTracker.rotation) + sideYaw(Side.LEFT, relaxedPose.upperLeg)
-				} else {
-					Angle.ZERO
-				}
+				trackerState.bodyPart.side?.let { side ->
+					val lastUpperBodyTracker = upperBodyTrackers.lastOrNull()
+					val upperBodyError = if (lastUpperBodyTracker != null) {
+						neighbourError(lastUpperBodyTracker.rotation) + sideYaw(Side.LEFT, relaxedPose.upperLeg)
+					} else {
+						Angle.ZERO
+					}
 
-				val lowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.lowerLeg(side))
-				val lowerLegError = if (lowerLeg != null) {
-					neighbourError(lowerLeg.rotation) - sideYaw(side, relaxedPose.lowerLeg) + sideYaw(side, relaxedPose.upperLeg)
-				} else {
-					Angle.ZERO
-				}
+					val lowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.lowerLeg(side))
+					val lowerLegError = if (lowerLeg != null) {
+						neighbourError(lowerLeg.rotation) - sideYaw(side, relaxedPose.lowerLeg) + sideYaw(side, relaxedPose.upperLeg)
+					} else {
+						Angle.ZERO
+					}
 
-				upperBodyError + lowerLegError
+					upperBodyError + lowerLegError
+				}
 			}
 
 			StayAlignedBodyParts.leftLowerLeg,
 			StayAlignedBodyParts.rightLowerLeg,
 			-> {
-				val upperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.upperLeg(side))
-				val upperLegError = if (upperLeg != null) {
-					neighbourError(upperLeg.rotation) - sideYaw(side, relaxedPose.upperLeg) + sideYaw(side, relaxedPose.lowerLeg)
-				} else {
-					Angle.ZERO
-				}
+				trackerState.bodyPart.side?.let { side ->
+					val upperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.upperLeg(side))
+					val upperLegError = if (upperLeg != null) {
+						neighbourError(upperLeg.rotation) - sideYaw(side, relaxedPose.upperLeg) + sideYaw(side, relaxedPose.lowerLeg)
+					} else {
+						Angle.ZERO
+					}
 
-				val foot = trackerStates.getFirstActiveFor(StayAlignedBodyParts.foot(side))
-				val footError = if (foot != null) {
-					neighbourError(foot.rotation) - sideYaw(side, relaxedPose.foot) + sideYaw(side, relaxedPose.lowerLeg)
-				} else {
-					Angle.ZERO
-				}
+					val foot = trackerStates.getFirstActiveFor(StayAlignedBodyParts.foot(side))
+					val footError = if (foot != null) {
+						neighbourError(foot.rotation) - sideYaw(side, relaxedPose.foot) + sideYaw(side, relaxedPose.lowerLeg)
+					} else {
+						Angle.ZERO
+					}
 
-				upperLegError + footError
+					upperLegError + footError
+				}
 			}
 
 			StayAlignedBodyParts.leftFoot,
 			StayAlignedBodyParts.rightFoot,
 			-> {
-				val lowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.lowerLeg(side))
-				if (lowerLeg != null) {
-					neighbourError(lowerLeg.rotation) - sideYaw(side, relaxedPose.lowerLeg) + sideYaw(side, relaxedPose.foot)
-				} else {
-					Angle.ZERO
+				trackerState.bodyPart.side?.let { side ->
+					val lowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.lowerLeg(side))
+					if (lowerLeg != null) {
+						neighbourError(lowerLeg.rotation) - sideYaw(side, relaxedPose.lowerLeg) + sideYaw(side, relaxedPose.foot)
+					} else {
+						Angle.ZERO
+					}
 				}
 			}
 
 			// No error for others
-			else -> Angle.ZERO
-		}
+			else -> null
+		} ?: Angle.ZERO
 	}
 
 	/**

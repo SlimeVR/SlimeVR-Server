@@ -11,12 +11,37 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.rpc.SerialDeviceType
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Duration
 
 private sealed interface Claim {
-	class Got(val console: SerialConsole) : Claim
+	class Got(val lease: SerialLease) : Claim
 	data object Retry : Claim
 	data object Failed : Claim
+}
+
+/** An open port and how many leases are keeping it open */
+private class ConsoleHolder(val console: SerialConsole) {
+	var leases = 0
+}
+
+/**
+ * One holder's claim on a port. The port stays open while any lease on it is alive and closes once
+ * the last one is released, so every holder must [release] what it took. Releasing never suspends
+ * and repeats harmlessly
+ */
+@OptIn(ExperimentalAtomicApi::class)
+class SerialLease internal constructor(
+	val console: SerialConsole,
+	private val onRelease: () -> Unit,
+) {
+	private val released = AtomicBoolean(false)
+
+	fun release() {
+		if (released.compareAndSet(false, true)) onRelease()
+	}
 }
 
 data class SerialServerState(
@@ -39,7 +64,7 @@ class SerialServer(
 	private val watcher: SerialPortWatcher,
 ) {
 	private val ownership = Mutex()
-	private val consoles = mutableMapOf<String, SerialConsole>()
+	private val consoles = mutableMapOf<String, ConsoleHolder>()
 
 	fun startObserving() = context.observeAll(this)
 
@@ -62,15 +87,16 @@ class SerialServer(
 		}
 	}
 
-	suspend fun awaitConsole(portLocation: String, timeout: Duration): SerialConsole? = withTimeoutOrNull(timeout) {
+	/** The caller owns the returned lease and must release it, or the port never closes */
+	suspend fun awaitConsole(portLocation: String, timeout: Duration): SerialLease? = withTimeoutOrNull(timeout) {
 		claimConsole(portLocation)
 	}
 
-	private suspend fun claimConsole(portLocation: String): SerialConsole? {
+	private suspend fun claimConsole(portLocation: String): SerialLease? {
 		while (true) {
 			context.state.map { isFree(it, portLocation) }.first { it }
 			when (val claim = ownership.withLock { claimOnce(portLocation) }) {
-				is Claim.Got -> return claim.console
+				is Claim.Got -> return claim.lease
 				is Claim.Failed -> return null
 				is Claim.Retry -> {}
 			}
@@ -80,16 +106,38 @@ class SerialServer(
 	private suspend fun claimOnce(portLocation: String): Claim {
 		if (!isFree(context.state.value, portLocation)) return Claim.Retry
 		consoles[portLocation]?.let { existing ->
-			if (existing.closed.isActive) return Claim.Got(existing)
+			if (existing.console.closed.isActive) return Claim.Got(lease(portLocation, existing))
 			// this port failed and the cleanup in [watchForClose] hasn't run yet
 			closeConsole(portLocation)
 		}
 		AppLogger.serial.info("Opening serial console on $portLocation")
-		val console = SerialConsole.open(watcher, portLocation) ?: return Claim.Failed
-		consoles[portLocation] = console
+		val clearResetLines = context.state.value.ports[portLocation]?.type == SerialDeviceType.ESP_TRACKER
+		val console = SerialConsole.open(watcher, portLocation, clearResetLines) ?: return Claim.Failed
+		val holder = ConsoleHolder(console)
+		consoles[portLocation] = holder
 		AppLogger.serial.info("Opened serial console on $portLocation")
 		watchForClose(console)
-		return Claim.Got(console)
+		return Claim.Got(lease(portLocation, holder))
+	}
+
+	/**
+	 * Hands out a lease on [holder]. Call under [ownership] and with no suspension before the lease
+	 * reaches its holder, so a cancelled claim can't leave the count raised
+	 */
+	private fun lease(portLocation: String, holder: ConsoleHolder): SerialLease {
+		holder.leases++
+		return SerialLease(holder.console) {
+			context.scope.launch {
+				ownership.withLock {
+					holder.leases--
+					// A claim that landed while this release was queued keeps the port open
+					if (holder.leases == 0 && consoles[portLocation] === holder) {
+						AppLogger.serial.info("Last holder of $portLocation released it")
+						closeConsole(portLocation)
+					}
+				}
+			}
+		}
 	}
 
 	suspend fun openForFlashing(portLocation: String): FlashingHandler? = ownership.withLock {
@@ -110,17 +158,17 @@ class SerialServer(
 	}
 
 	private suspend fun closeConsole(portLocation: String) {
-		val console = consoles.remove(portLocation) ?: return
+		val holder = consoles.remove(portLocation) ?: return
 		AppLogger.serial.info("Closing serial console on $portLocation")
-		console.close()
+		holder.console.close()
 	}
 
 	private fun watchForClose(console: SerialConsole) {
 		context.scope.launch {
 			console.closed.join()
-			if (consoles[console.portLocation] === console) AppLogger.serial.warn("Serial port ${console.portLocation} reported itself closed")
+			if (consoles[console.portLocation]?.console === console) AppLogger.serial.warn("Serial port ${console.portLocation} reported itself closed")
 			ownership.withLock {
-				if (consoles[console.portLocation] === console) closeConsole(console.portLocation)
+				if (consoles[console.portLocation]?.console === console) closeConsole(console.portLocation)
 			}
 		}
 	}

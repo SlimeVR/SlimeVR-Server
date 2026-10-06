@@ -11,8 +11,8 @@ import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
-import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
+import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
 import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
@@ -69,7 +69,6 @@ data class TrackerState(
 	val trackerDataType: TrackerDataType, // TODO
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
-	val restOrientation: RestOrientation,
 	val lastReference: Quaternion?,
 	val sessionCalibration: SessionCalibration,
 	val rawRotation: RawRotation,
@@ -90,6 +89,8 @@ data class TrackerState(
 	val yawResetSmoothing: YawResetSmoothing?,
 	val stayAlignedData: StayAlignedData,
 	val pendingSkeletonResets: List<ResetType> = emptyList(),
+	val needsFullReset: Boolean = false,
+	val needsMountingReset: Boolean = false,
 ) {
 	private val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
 	private val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
@@ -110,12 +111,12 @@ sealed interface TrackerActions {
 	data class SetDriverName(val driverName: String?) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
-	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion?, val resetReliableReferenceAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion?, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
+	data class MarkCalibrationStale(val mounting: Boolean) : TrackerActions
 	data class ClearPendingSkeletonResets(val count: Int) : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
@@ -178,10 +179,10 @@ class Tracker(
 				TrackerAssignmentConflictBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
+				TrackerStaleCalibrationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
-				TrackerRestOrientationBehaviour(settings),
 				TrackerStayAlignedBehaviour(settings),
 			)
 			val context = Context.create(
@@ -212,7 +213,6 @@ class Tracker(
 			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,
 			mountingOrientation = Quaternion.IDENTITY,
-			restOrientation = Quaternion.IDENTITY,
 			lastReference = Quaternion.IDENTITY,
 			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,

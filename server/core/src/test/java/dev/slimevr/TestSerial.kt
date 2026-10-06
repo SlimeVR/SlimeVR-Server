@@ -32,16 +32,24 @@ class FakeSerialPortWatcher(
 	private val lineSinks = mutableMapOf<String, (String) -> Unit>()
 	private val closeSinks = mutableMapOf<String, () -> Unit>()
 	val openCount = mutableMapOf<String, Int>()
+	val closeCount = mutableMapOf<String, Int>()
+	val clearResetLinesCalls = mutableMapOf<String, Boolean>()
 	var failOpen = false
 
 	override suspend fun enumerate(): Map<String, SerialPortInfo> = ports.toMap()
 
-	override suspend fun open(portLocation: String, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? {
+	override suspend fun open(portLocation: String, clearResetLines: Boolean, onLine: (String) -> Unit, onClosed: () -> Unit): SerialPortHandle? {
 		if (failOpen) return null
 		openCount[portLocation] = (openCount[portLocation] ?: 0) + 1
+		clearResetLinesCalls[portLocation] = clearResetLines
 		lineSinks[portLocation] = onLine
 		closeSinks[portLocation] = onClosed
-		return SerialPortHandle(portLocation, "Fake $portLocation", { written += it }, {})
+		return SerialPortHandle(
+			portLocation,
+			"Fake $portLocation",
+			{ written += it },
+			{ closeCount[portLocation] = (closeCount[portLocation] ?: 0) + 1 },
+		)
 	}
 
 	override fun openForFlashing() = flashingHandler()

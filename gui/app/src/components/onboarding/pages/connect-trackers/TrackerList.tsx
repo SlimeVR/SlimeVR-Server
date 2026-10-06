@@ -17,6 +17,7 @@ import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { TipBox } from '@/components/commons/TipBox';
+import { EmptyState } from '@/components/commons/EmptyState';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { TrackerBattery } from '@/components/tracker/TrackerBattery';
 import { TrackerWifi } from '@/components/tracker/TrackerWifi';
@@ -482,22 +483,17 @@ function EmptyTrackerListIllustration({
               : 'onboarding-connect_tracker-waiting_first_desc';
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 h-full min-h-[220px] gap-3 text-center p-6 my-auto">
-      <LoaderIcon slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY} />
-      <div className="flex flex-col gap-1 max-w-xs">
-        <Typography
-          bold
-          variant="section-title"
-          color={isError ? 'text-status-critical' : 'primary'}
-          id={titleId}
-        />
-        <Typography variant="standard" id={descId} />
-      </div>
-      {isError && (
-        <div className="pt-1">
+    <EmptyState
+      className="flex-1 h-full min-h-[220px] !gap-3 my-auto"
+      slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY}
+      titleColor={isError ? 'text-status-critical' : undefined}
+      titleId={titleId}
+      descriptionId={descId}
+      action={
+        isError && (
           <button
             type="button"
-            className="text-xs underline font-medium text-background-20 hover:text-background-10"
+            className="pt-1 text-xs underline font-medium text-background-20 hover:text-background-10"
             onClick={() => {
               if (
                 scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR &&
@@ -511,9 +507,9 @@ function EmptyTrackerListIllustration({
           >
             <Typography id="onboarding-connect_tracker-learn_more" />
           </button>
-        </div>
-      )}
-    </div>
+        )
+      }
+    />
   );
 }
 

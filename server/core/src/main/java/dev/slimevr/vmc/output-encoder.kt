@@ -7,6 +7,8 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.util.inFloatingSeconds
+import dev.slimevr.util.millisecondsInSecond
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -22,7 +24,7 @@ internal fun buildOutgoingBundle(
 	elapsed: Duration,
 ): OscBundle {
 	val contents = buildList {
-		add(OscContent.Message(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(elapsed.inWholeMilliseconds / 1000f)))))
+		add(OscContent.Message(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(elapsed.inFloatingSeconds)))))
 		add(OscContent.Message(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1)))))
 
 		// Send the origin (0, 0, 0) as root

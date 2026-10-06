@@ -11,6 +11,7 @@ import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.findFirstParent
 import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
+import dev.slimevr.util.millisecondsInSecond
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -30,13 +31,10 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	)
 }
 
-// At least 1. >1 will make it smoother but less reactive.
-private const val SMOOTHING_MULTIPLIER = 3f
-
-// We smooth out the velocity since if a tracker is sending at 100tps and skeleton is at 500hz,
-//  4 frames out of 5 will have little to no velocity, so we need to smooth at least across those frames.
-private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float, expectedTps: UShort): Velocity {
-	val t = (deltaTime / (SMOOTHING_MULTIPLIER / expectedTps.toFloat())).coerceAtMost(1f)
+// Optional smoothing of velocity, to make it smoother for the output (SteamVR/Monado prediction).
+private const val SMOOTHING_MS = 25f
+private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
+	val t = (deltaTime * (millisecondsInSecond / SMOOTHING_MS)).coerceAtMost(1f)
 	return Velocity(
 		linear = lastVelocity.linear.lerp(currentVelocity.linear, t),
 		angular = lastVelocity.angular.lerp(currentVelocity.angular, t),
@@ -46,8 +44,9 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 /**
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
-class VelocityComputedProcessor :
-	SkeletonComputedProcessor,
+class VelocityComputedProcessor(
+	private val smooth: Boolean = false,
+) : SkeletonComputedProcessor,
 	ResettableSkeletonProcessor {
 	private val lastVelocities: BodyPartMap<Velocity> = bodyPartMap()
 	private val lastVelocityData: BodyPartMap<VelocityData> = bodyPartMap()
@@ -70,8 +69,11 @@ class VelocityComputedProcessor :
 			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
 			val currentVelocity = lastVelocityData[part]?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
 
-			// Smooth velocity before setting it
-			val newVelocity = smoothVelocity(currentVelocity, lastVelocities[part] ?: ZERO_VELOCITY, deltaTime, expectedTps)
+			val newVelocity = if (smooth) {
+				smoothVelocity(currentVelocity, lastVelocities[part] ?: ZERO_VELOCITY, deltaTime)
+			} else {
+				currentVelocity
+			}
 			mutableComputedSkeleton[part] = bone.copy(velocity = newVelocity)
 
 			lastVelocityData[part] = currentVelocityData

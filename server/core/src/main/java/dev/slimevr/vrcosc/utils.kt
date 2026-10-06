@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import com.jme3.math.FastMath
 import dev.slimevr.osc.OscArg
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -22,9 +23,9 @@ internal fun parseVrcEulerRotation(args: List<OscArg>, startIndex: Int = 0): Qua
 	val z = args.getOrNull(startIndex + 2)?.asFloatOrNull() ?: return null
 	val (w, rx, ry, rz) = EulerAngles(
 		EulerOrder.YXZ,
-		x * PI.toFloat() / 180f,
-		y * PI.toFloat() / 180f,
-		z * PI.toFloat() / 180f,
+		x * FastMath.DEG_TO_RAD,
+		y * FastMath.DEG_TO_RAD,
+		z * FastMath.DEG_TO_RAD,
 	).toQuaternion()
 	return Quaternion(w, -rx, -ry, rz)
 }

@@ -42,6 +42,7 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
@@ -140,11 +141,10 @@ private fun createDevice(
 }
 
 private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationManager: HeightCalibrationManager): ServerGuards {
-	val resetsState = resetsManager.context.state.value
 	val heightCalibrationState = heightCalibrationManager.context.state.value
 	return ServerGuards(
-		canDoMountingReset = resetsState.canDoMountingReset,
-		canDoYawReset = resetsState.canDoYawReset,
+		yawReset = resetsManager.availability(ResetType.YAW),
+		mountingReset = resetsManager.availability(ResetType.MOUNTING),
 		canDoUserHeightCalibration = heightCalibrationState.canDoUserHeightCalibration,
 	)
 }

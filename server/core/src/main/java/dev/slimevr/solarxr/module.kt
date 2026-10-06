@@ -11,6 +11,7 @@ import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
+import dev.slimevr.solarxr.rpc.BodyPartPrerequisitesBehaviour
 import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
 import dev.slimevr.solarxr.rpc.BvhBehaviour
 import dev.slimevr.solarxr.rpc.DongleSettingsBehaviour
@@ -192,6 +193,7 @@ class SolarXRBridge(
 			add(CustomOscBehaviour(appContext.config.settings))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
+			add(BodyPartPrerequisitesBehaviour(appContext))
 			add(BoneRoutingBehaviour(appContext))
 			add(DriverSettingsBehaviour(appContext))
 			add(HIDSettingsBehaviour(appContext.config.settings))

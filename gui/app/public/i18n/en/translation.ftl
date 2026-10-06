@@ -240,6 +240,8 @@ reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
+reset-error-need_positional_head = Step mounting needs a VR headset or a positional tracker
+reset-error-no_trackers = No tracker available
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
 ## Navigation bar
@@ -436,11 +438,14 @@ settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-outputs = Outputs
 settings-sidebar-routing = Bone Routing
+settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
 settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
+settings-sidebar-vrchat_osc = VRChat OSC
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
 settings-sidebar-appearance = Appearance
@@ -474,6 +479,9 @@ settings-routing-duplicate-warning =
 settings-routing-outputs = Outputs
 settings-routing-bones = Bones
 settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
+settings-routing-output-driver = SteamVR / Monado
+settings-routing-output-vrc_osc = VRChat OSC
+settings-routing-output-vmc = VMC
 settings-routing-output-bone-count = { $routed } of { $accepts } bones routed
 settings-routing-output-badge-sending = Sending
 settings-routing-output-sending-description = Connected and receiving bones.
@@ -505,6 +513,7 @@ settings-routing-hands-warning-done = Route hands
 
 ## SteamVR / Monado output settings
 
+settings-driver = SteamVR / Monado
 settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
 settings-driver-enable = Enable
 settings-driver-enable-description = Send your trackers to and receive trackers from SteamVR or Monado through the SlimeVR driver. If this is off, they won't be able to connect to SlimeVR at all.
@@ -527,6 +536,8 @@ settings-driver-velocity-description = Send linear and angular velocity data to 
 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings
+settings-general-mounting_method = Mounting calibration method
+settings-general-mounting_method-description = What mounting calibration method to use to calibrate your trackers' mounting orientations.
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -641,16 +652,14 @@ settings-general-fk_settings-ik-use_position-description = Enables the use of po
 settings-general-fk_settings-resets_settings = Resets Settings
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = Reset HMD attitude
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
-settings-general-fk_settings-arm_fk-reset_mode = Arms reset mode
-settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for resets.
-settings-general-fk_settings-arm_fk-back = Back
-settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
-settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down at your sides during Full Reset, and 90 degrees up to the sides during Mounting Calibration.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
-settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Calibration.
-settings-general-fk_settings-arm_fk-forward = Forward
-settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
+settings-general-fk_settings-arms_mounting_reset_mode = Arms mounting reset mode
+settings-general-fk_settings-arms_mounting_reset_mode-description = Change which arm pose is expected for mounting reset.
+settings-general-fk_settings-arms_mounting_reset_mode-back = Back
+settings-general-fk_settings-arms_mounting_reset_mode-back-description = Expects your upper arms going back and your lower arms going forward. Recommended for VR.
+settings-general-fk_settings-arms_mounting_reset_mode-t_pose = T-pose
+settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description = Expects your arms to be raised to the sides.
+settings-general-fk_settings-arms_mounting_reset_mode-forward = Forward
+settings-general-fk_settings-arms_mounting_reset_mode-forward-description = Expects your arms to be raised forward. Recommended for VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
@@ -804,6 +813,7 @@ settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
 
 ## OSC VRChat settings
+settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Change settings specific to VRChat OSC and the OSC Trackers standard used to send
@@ -828,6 +838,7 @@ settings-osc-vrchat-status-title = Status
 settings-osc-vrchat-status-input = Input
 settings-osc-vrchat-status-tracking = Tracking data
 settings-osc-vrchat-status-output = Output
+settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = Not listening
 settings-osc-vrchat-status-input-listening = Listening on port {$port}
 settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}.
@@ -865,6 +876,7 @@ settings-osc-vrchat-status-badge-not-sent = Not sent
 settings-osc-vrchat-status-badge-unknown = Unknown
 
 ## VMC OSC settings
+settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
@@ -1145,6 +1157,7 @@ onboarding-assign_trackers-all_assigned-title = All trackers assigned!
 onboarding-assign_trackers-all_assigned-description = You're ready to move on to the next step
 onboarding-assign_trackers-no_trackers-title = No trackers connected
 onboarding-assign_trackers-no_trackers-description = Connect a tracker to start assigning it to a body part
+onboarding-assign_trackers-no_trackers-connect = Connect trackers
 onboarding-assign_trackers-show_all = Show all body parts
 onboarding-assign_trackers-show_all-short = Show all parts
 onboarding-assign_trackers-tap_modal-title = Tap to assign
@@ -1190,78 +1203,67 @@ onboarding-assign_trackers-joint-metacarpal = Metacarpal
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT = Left foot is assigned but you need { $unassigned ->
-    [0] the left ankle, left thigh and either the chest, hip or waist
-    [1] the left thigh and either the chest, hip or waist
-    [2] the left ankle and either the chest, hip or waist
-    [3] either the chest, hip or waist
-    [4] the left ankle and left thigh
-    [5] the left thigh
-    [6] the left ankle
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT = Right foot is assigned but you need { $unassigned ->
-    [0] the right ankle, right thigh and either the chest, hip or waist
-    [1] the right thigh and either the chest, hip or waist
-    [2] the right ankle and either the chest, hip or waist
-    [3] either the chest, hip or waist
-    [4] the right ankle and right thigh
-    [5] the right thigh
-    [6] the right ankle
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG = Left ankle is assigned but you need { $unassigned ->
-    [0] the left thigh and either the chest, hip or waist
-    [1] either the chest, hip or waist
-    [2] the left thigh
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG = Right ankle is assigned but you need { $unassigned ->
-    [0] the right thigh and either the chest, hip or waist
-    [1] either the chest, hip or waist
-    [2] the right thigh
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG = Left thigh is assigned but you need { $unassigned ->
-    [0] either the chest, hip or waist
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG = Right thigh is assigned but you need { $unassigned ->
-    [0] either the chest, hip or waist
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP = Hip is assigned but you need { $unassigned ->
-    [0] the chest
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $unassigned ->
-    [0] the chest
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
+# $part (String) - the body part a tracker is assigned to
+# $missing (String) - the body parts it still needs, already formatted as a list
+onboarding-assign_trackers-warning = { $part } is assigned but you also need { $missing } to be assigned!
+# $parts (String) - the body parts still missing a tracker, formatted as a list
+# $count (Number) - how many of them there are
+onboarding-assign_trackers-warning-required = { $count ->
+    [one] { $parts } still needs a tracker
+   *[other] { $parts } still need trackers
+}
 
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
-onboarding-choose_mounting-auto_mounting = Automatic mounting
+
+## Mounting method
+mounting_method_modal-title = How do you want to calibrate your trackers?
+mounting_method_modal-description = Mounting orientation corrects for the placement of trackers on your body. You can change this later in the settings.
 # Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
-onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
-onboarding-choose_mounting-manual_mounting = Manual mounting
-onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
+mounting_method-recommended = Recommended
+mounting_method-select = Select
+mounting_method-step = Step mounting
+mounting_method-step-description = Take a step forward to calibrate your trackers.
+mounting_method-step-needs_positional_head = Needs a headset or a tracker with position tracking.
+mounting_method-pose = Pose mounting
+mounting_method-pose-description = Hold a ski pose to calibrate your trackers.
+mounting_method-manual = Manual mounting
+mounting_method-manual-description = Choose the mounting orientation manually for each tracker.
+
+## Tracker step mounting setup
+onboarding-step_mounting-title = Step Mounting Calibration
+onboarding-step_mounting-description = For SlimeVR trackers to work, we need to assign a mounting orientation to your trackers to align them with your physical tracker mounting.
+onboarding-step_mounting-step-title = Step Mounting Calibration
+onboarding-step_mounting-step-0 = 1. Press the "Mounting Calibration" button.
+onboarding-step_mounting-step-1 = 2. Take one step forward, then stop and hold still until the calibration finishes.
+
+## Step mounting calibration
+step_mounting-title = Step Mounting Calibration
+# $status (String) - StepMountingStatus enum member name
+step_mounting-instructions-WAITING_FOR_MOVEMENT = Take a step forward, then stand still.
+step_mounting-instructions-RECORDING = Keep still once you've stopped, we're still recording.
+step_mounting-instructions-PROCESSING = Hold on, calculating your mounting offset...
+step_mounting-status-WAITING_FOR_MOVEMENT = Waiting for movement...
+step_mounting-status-RECORDING = Recording your step...
+step_mounting-status-PROCESSING = Processing...
+step_mounting-status-DONE = Done!
+step_mounting-status-ERROR_NO_DATA = Couldn't detect any movement. Try again.
+step_mounting-status-ERROR_TIMEOUT = Timed out waiting for movement. Try again.
+step_mounting-cancel = Cancel
+step_mounting-close = Close
+step_mounting-next = Next step
+step_mounting-retry = Try again
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting = Manual Mounting
 onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
-onboarding-manual_mounting-auto_mounting = Automatic mounting
 onboarding-manual_mounting-next = Next step
+onboarding-manual_mounting-automatic-title = Automatically mounted
+onboarding-manual_mounting-automatic-description = A mounting calibration set these. Pick one to set its direction by hand.
+onboarding-manual_mounting-assign_link-title = Tracker missing?
+onboarding-manual_mounting-assign_link-description = Only trackers assigned to a body part show up here
 
 ## Tracker automatic mounting setup
 onboarding-automatic_mounting-title = Mounting Calibration
@@ -1273,7 +1275,16 @@ onboarding-automatic_mounting-done-title = Mounting orientations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
 onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Calibration
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
+onboarding-automatic_mounting-mounting_reset-step-0 =
+    1. Squat in a "skiing" pose with your legs bent and your upper body tilted forwards{ $feet ->
+        [tiptoe] , staying up on your toes
+       *[flat] { "" }
+    }. { $arms ->
+        [forward] Stretch your arms straight out in front of you.
+        [tpose_up] Stretch your arms out to your sides at 90 degrees.
+        [tpose_down] Let your arms hang down at your sides.
+       *[back] Keep your arms bent.
+    }
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.
@@ -1283,10 +1294,9 @@ onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
-onboarding-automatic_mounting-preparation-v2-done = Looks like you've already performed a full reset recently!
-onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
-onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
-onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
+onboarding-automatic_mounting-preparation-example-front = Stand upright, legs parallel, arms at your sides, looking forward.
+onboarding-automatic_mounting-preparation-example-side = From the side, stay straight and don't lean.
+onboarding-automatic_mounting-preparation-example-wrong = Don't spread your legs or arms.
 onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setup
@@ -1663,6 +1673,8 @@ tracking_checklist-status-partial = {$count ->
     *[many] You have {$count} warnings!
 }
 tracking_checklist-status-complete = You are prepared to use SlimeVR!
+tracking_checklist-MOUNTING_METHOD = Pick a mounting calibration method
+tracking_checklist-MOUNTING_METHOD-desc = Choose how your trackers are calibrated to the way they are mounted on your body.
 tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
 tracking_checklist-FULL_RESET = Perform a full reset

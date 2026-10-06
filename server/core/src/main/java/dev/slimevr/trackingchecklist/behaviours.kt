@@ -1,17 +1,15 @@
-@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-
 package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
-import dev.slimevr.VRServerState
 import dev.slimevr.config.Settings
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
-import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.routing.Routes
+import dev.slimevr.routing.solarXRDriverConnectedFlow
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.util.allContextStates
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.VRCConfigState
 import dev.slimevr.vrchat.computeRecommendedValues
@@ -19,18 +17,12 @@ import dev.slimevr.vrchat.computeValidity
 import dev.slimevr.vrchat.isVRCConfigValid
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MountingMethod
@@ -46,18 +38,6 @@ import solarxr_protocol.rpc.TrackingChecklistTrackerError
 import solarxr_protocol.rpc.TrackingChecklistTrackerReset
 import solarxr_protocol.rpc.TrackingChecklistUnassignedReliableReference
 import solarxr_protocol.rpc.VRCOSCTrackingDataState
-
-// Flat-maps a server state flow into a combined flow of all context states for a given collection.
-// Re-emits whenever any item's state changes or the collection itself changes.
-private inline fun <C, reified S> allContextStates(
-	server: VRServer,
-	crossinline select: (VRServerState) -> Collection<C>,
-	crossinline stateOf: (C) -> Flow<S>,
-): Flow<List<S>> = server.context.state.flatMapLatest { serverState ->
-	val items = select(serverState)
-	if (items.isEmpty()) return@flatMapLatest flowOf(emptyList())
-	combine(items.map { item -> stateOf(item) }) { states -> states.toList() }
-}
 
 /**
  * Everything about a tracker the checklist reasons about, and nothing else.
@@ -83,6 +63,8 @@ data class ChecklistTracker(
 	// Deliberately not the position itself: the checks only ask whether there is one, and carrying the
 	// value would put this back on the rotation update rate.
 	val hasPosition: Boolean,
+	val needsFullReset: Boolean,
+	val needsMountingReset: Boolean,
 )
 
 fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
@@ -95,9 +77,11 @@ fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	imuType = tracker.imuType,
 	completedRestCalibration = tracker.completedRestCalibration,
 	hasPosition = tracker.position != null,
+	needsFullReset = tracker.needsFullReset,
+	needsMountingReset = tracker.needsMountingReset,
 )
 
-internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> = allContextStates(server, { state -> state.trackers.values }) { tracker ->
+internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> = allContextStates(server.context.state, { state -> state.trackers.values }) { tracker ->
 	tracker.context.state.map { state -> checklistTracker(state) }.distinctUntilChanged()
 }
 
@@ -224,11 +208,7 @@ class SteamVRHandsCheckBehaviour(
 		combine(
 			trackerStates,
 			boneRouting.context.state.map { state -> state.routes },
-			server.context.state.map { it.solarxr }.distinctUntilChanged().flatMapLatest { solarXRBridges ->
-				combine(solarXRBridges.values.map { it.context.state }) { states ->
-					states.any { it.driverName != null }
-				}
-			},
+			solarXRDriverConnectedFlow(server),
 			::computeStep,
 		)
 			.distinctUntilChanged()
@@ -319,91 +299,56 @@ private fun isImuAssigned(tracker: ChecklistTracker): Boolean = (tracker.origin 
 	tracker.status != TrackerStatus.ERROR &&
 	tracker.bodyPart != null
 
-private fun isConnectedAssignedImu(tracker: ChecklistTracker): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
-	!tracker.hasPosition &&
-	tracker.imuType !== null &&
-	(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
-	tracker.bodyPart != null
-
 class FullResetCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
-	private val resetsManager: ResetsManager,
 ) : TrackingChecklistBehaviourType {
-	private val needsReset = MutableStateFlow<Set<Int>>(emptySet())
-
 	override fun observe(receiver: TrackingChecklist) {
-		val scope = receiver.context.scope
-
-		val connected = mutableSetOf<Int>()
 		trackerStates
-			.map { trackers -> trackers.filter { isConnectedAssignedImu(it) }.map { it.id }.toSet() }
-			.distinctUntilChanged()
-			.onEach { current ->
-				needsReset.update { ids -> ids + (current - connected) }
-				connected.clear()
-				connected.addAll(current)
+			.map { trackers ->
+				val assigned = trackers.filter { isImuAssigned(it) }
+				val pending = assigned.filter { it.needsFullReset }
+				TrackingChecklistStep(
+					valid = pending.isEmpty(),
+					enabled = assigned.isNotEmpty(),
+					ignorable = false,
+					visibility = TrackingChecklistStepVisibility.ALWAYS,
+					extraData = if (pending.isNotEmpty()) {
+						TrackingChecklistTrackerReset(trackersId = pending.map { it.id.toUShort() })
+					} else {
+						null
+					},
+				)
 			}
-			.launchIn(scope)
-
-		val bodyParts = mutableMapOf<Int, BodyPart>()
-		trackerStates
-			.map { trackers -> trackers.mapNotNull { tracker -> tracker.bodyPart?.let { tracker.id to it } }.toMap() }
-			.distinctUntilChanged()
-			.onEach { current ->
-				for ((id, bodyPart) in current) {
-					val previous = bodyParts[id]
-					if (previous != null && previous != bodyPart) {
-						needsReset.update { ids -> ids + id }
-					}
-				}
-				bodyParts.clear()
-				bodyParts.putAll(current)
-			}
-			.launchIn(scope)
-
-		// Clear everything on a full reset.
-		resetsManager.context.state
-			.distinctUntilChangedBy { it.lastFullResetTime }
-			.drop(1)
-			.onEach { needsReset.value = emptySet() }
-			.launchIn(scope)
-
-		combine(needsReset, trackerStates) { ids, trackers ->
-			val assignedIds = trackers.filter { isImuAssigned(it) }.map { it.id }.toSet()
-			val pending = ids intersect assignedIds
-			TrackingChecklistStep(
-				valid = pending.isEmpty(),
-				enabled = assignedIds.isNotEmpty(),
-				ignorable = false,
-				visibility = TrackingChecklistStepVisibility.ALWAYS,
-				extraData = if (pending.isNotEmpty()) {
-					TrackingChecklistTrackerReset(trackersId = pending.map { it.toUShort() })
-				} else {
-					null
-				},
-			)
-		}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.FULL_RESET, step)) }
-			.launchIn(scope)
+			.launchIn(receiver.context.scope)
 	}
 }
 
 class MountingCalibrationCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
-	private val resetsManager: ResetsManager,
 	private val settings: Settings,
 ) : TrackingChecklistBehaviourType {
+
+	private fun isMountedByReset(bodyPart: BodyPart?, method: MountingMethod, resetMountingFeet: Boolean) = when (method) {
+		MountingMethod.STEP -> true
+
+		MountingMethod.POSE -> (resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
+			bodyPart !in ResetBodyParts.FINGERS &&
+			bodyPart !in ResetBodyParts.TOES
+
+		MountingMethod.MANUAL, MountingMethod.UNKNOWN -> false
+	}
+
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
 			trackerStates,
-			resetsManager.context.state,
-			settings.context.state,
-		) { trackers, resetsState, settingsState ->
-			val imuTrackers = trackers.filter { isImuAssigned(it) }
+			settings.context.state.map { it.data.resetsConfig }.distinctUntilChanged(),
+		) { trackers, config ->
+			val mounted = trackers.filter { isImuAssigned(it) && isMountedByReset(it.bodyPart, config.mountingMethod, config.resetMountingFeet) }
 			TrackingChecklistStep(
-				valid = resetsState.mountingResetCompleted,
-				enabled = settingsState.data.resetsConfig.lastMountingMethod == MountingMethod.POSE && imuTrackers.isNotEmpty(),
+				valid = mounted.none { it.needsMountingReset },
+				enabled = mounted.isNotEmpty(),
 				ignorable = true,
 				visibility = TrackingChecklistStepVisibility.ALWAYS,
 			)
@@ -414,24 +359,44 @@ class MountingCalibrationCheckBehaviour(
 	}
 }
 
+class MountingMethodCheckBehaviour(
+	private val settings: Settings,
+) : TrackingChecklistBehaviourType {
+	override fun observe(receiver: TrackingChecklist) {
+		settings.context.state.map { it.data.resetsConfig.mountingMethod != MountingMethod.UNKNOWN }
+			.distinctUntilChanged()
+			.onEach { picked ->
+				receiver.context.dispatch(
+					TrackingChecklistActions.UpdateStep(
+						TrackingChecklistStepId.MOUNTING_METHOD,
+						TrackingChecklistStep(
+							valid = picked,
+							enabled = !picked,
+							ignorable = false,
+							visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+						),
+					),
+				)
+			}
+			.launchIn(receiver.context.scope)
+	}
+}
+
+// The feet need their own pose mounting reset, unless the step mounting calibrates them or the
+// pose mounting reset is forced to include them
 class FeetMountingCalibrationCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
-	private val resetsManager: ResetsManager,
 	private val settings: Settings,
 ) : TrackingChecklistBehaviourType {
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
 			trackerStates,
-			resetsManager.context.state,
-			settings.context.state,
-		) { trackers, resetsState, settingsState ->
-			val resetsConfig = settingsState.data.resetsConfig
-			val imuTrackers = trackers.filter { isImuAssigned(it) }
+			settings.context.state.map { it.data.resetsConfig }.distinctUntilChanged(),
+		) { trackers, config ->
+			val feet = trackers.filter { isImuAssigned(it) && it.bodyPart in ResetBodyParts.FEET }
 			TrackingChecklistStep(
-				valid = resetsState.feetMountingResetCompleted,
-				enabled = resetsConfig.lastMountingMethod == MountingMethod.POSE &&
-					!resetsConfig.resetMountingFeet &&
-					imuTrackers.any { it.bodyPart in ResetBodyParts.FEET },
+				valid = feet.none { it.needsMountingReset },
+				enabled = config.mountingMethod == MountingMethod.POSE && !config.resetMountingFeet && feet.isNotEmpty(),
 				ignorable = true,
 				visibility = TrackingChecklistStepVisibility.ALWAYS,
 			)

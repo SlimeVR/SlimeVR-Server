@@ -186,7 +186,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 				}
 
 				mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
-					trackerTapDetectionState.resetType = ResetType.POSE_MOUNTING
+					trackerTapDetectionState.resetType = ResetType.MOUNTING
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetTaps
 					trackerTapDetectionState.actionDelay = tapDetectionConfig.mountingResetDelay
 				}

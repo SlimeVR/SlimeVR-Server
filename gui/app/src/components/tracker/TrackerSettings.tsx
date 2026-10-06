@@ -35,11 +35,22 @@ import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { bonesAtom, ignoredTrackersAtom } from '@/store/app-store';
+import { useSetAtom } from 'jotai';
+import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { Tooltip } from '@/components/commons/Tooltip';
-import { Vector3ToVec3fT } from '@/maths/vector3';
+import { roundVector3, Vector3Object, Vector3ToVec3fT } from '@/maths/vector3';
+
+type FormOffset = { x: number | null; y: number | null; z: number | null };
+
+const ZERO_OFFSET: Vector3Object = { x: 0, y: 0, z: 0 };
+
+const readFormOffset = ({ x, y, z }: FormOffset): Vector3Object | null => {
+  if (x == null || y == null || z == null) return null;
+  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z))
+    return null;
+  return roundVector3({ x, y, z });
+};
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -76,17 +87,12 @@ export function TrackerSettingsPage() {
   const { trackerName, boneOffset } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
-  const bones = useAtomValue(bonesAtom);
+  const bodyPart = tracker?.tracker.info?.bodyPart ?? BodyPart.NONE;
+  const trackerOffsetVec = tracker?.tracker.info?.boneOffset;
+  const trackerOffset = trackerOffsetVec
+    ? roundVector3(trackerOffsetVec)
+    : null;
 
-  const boneTrackerOffset = () => {
-    const offset = bones.find(
-      (b) => b.bodyPart === tracker?.tracker.info?.bodyPart
-    )?.trackerOffset;
-    return { x: offset?.x ?? 0, y: offset?.y ?? 0, z: offset?.z ?? 0 };
-  };
-  const hasBoneOffset = bones.some(
-    (b) => b.bodyPart === tracker?.tracker.info?.bodyPart && !!b.trackerOffset
-  );
   const assignTracker = useAssignTracker();
 
   const { currRotation, setDirection } = useMountingOrientation(tracker);
@@ -119,42 +125,42 @@ export function TrackerSettingsPage() {
   };
 
   const updateBoneOffset = () => {
-    if (!tracker) return;
-    const bodyPart = tracker.tracker.info?.bodyPart ?? BodyPart.NONE;
-    if (bodyPart === BodyPart.NONE) return;
+    if (!tracker || bodyPart === BodyPart.NONE || !trackerOffset) return;
 
-    const { x, y, z } = boneOffset;
-    if (x == null || y == null || z == null) return;
-
-    const current = boneTrackerOffset();
-    if (current.x === x && current.y === y && current.z === z) return;
+    const offset = readFormOffset(boneOffset);
+    if (!offset) return;
+    if (
+      offset.x === trackerOffset.x &&
+      offset.y === trackerOffset.y &&
+      offset.z === trackerOffset.z
+    )
+      return;
 
     const req = new UpdateTrackerRequestT();
     req.trackerId = tracker.tracker.trackerId;
     req.bodyPosition = bodyPart;
-    req.boneOffset = Vector3ToVec3fT({ x, y, z });
+    req.boneOffset = Vector3ToVec3fT(offset);
     sendRPCPacket(RpcMessage.UpdateTrackerRequest, req);
   };
 
-  useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 1000);
+  useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 800);
   useDebouncedEffect(
     () => updateBoneOffset(),
     [boneOffset.x, boneOffset.y, boneOffset.z],
-    1000
+    250
   );
 
   useEffect(() => {
     reset({
       trackerName: tracker?.tracker.info?.customName as string | null,
-      boneOffset: boneTrackerOffset(),
+      boneOffset: trackerOffset ?? ZERO_OFFSET,
     });
   }, []);
 
-  // The offset is stored per body part, reload it when the assignment changes
-  // or once the bone first shows up in the feed
   useEffect(() => {
-    setValue('boneOffset', boneTrackerOffset());
-  }, [tracker?.tracker.info?.bodyPart, hasBoneOffset]);
+    if (!trackerOffset) return;
+    setValue('boneOffset', trackerOffset);
+  }, [trackerOffset?.x, trackerOffset?.y, trackerOffset?.z, bodyPart]);
 
   const boardType = useMemo(() => {
     if (tracker?.device?.hardwareInfo?.officialBoardType) {

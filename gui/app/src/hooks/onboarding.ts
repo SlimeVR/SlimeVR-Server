@@ -9,12 +9,10 @@ import {
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
+import { useResetsSettings } from './resets-settings';
 import { useWebsocketAPI } from './websocket-api';
 import {
-  ChangeResetsSettingsRequestT,
   ChangeSkeletonSettingsRequestT,
-  ResetsSettingsRequestT,
-  ResetsSettingsResponseT,
   RpcMessage,
   SkeletonSettingsRequestT,
   SkeletonSettingsResponseT,
@@ -76,10 +74,10 @@ export function useProvideOnboarding() {
   );
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { setResetsSettings } = useResetsSettings();
 
   const { state: locatioState } = useLocation();
   const [skeletonSettings, setSkeletonSettings] = useState<SkeletonSettingsResponseT>();
-  const [resetsSettings, setResetsSettings] = useState<ResetsSettingsResponseT>();
   const [vrcOscSettings, setVrcOscSettings] = useState<VRCOSCSettingsResponseT>();
 
   useLayoutEffect(() => {
@@ -91,7 +89,6 @@ export function useProvideOnboarding() {
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT());
-    sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
     sendRPCPacket(RpcMessage.VRCOSCSettingsRequest, new VRCOSCSettingsRequestT());
   }, []);
 
@@ -99,12 +96,6 @@ export function useProvideOnboarding() {
     RpcMessage.SkeletonSettingsResponse,
     (settings: SkeletonSettingsResponseT) => {
       setSkeletonSettings(settings);
-    }
-  );
-  useRPCPacket(
-    RpcMessage.ResetsSettingsResponse,
-    (settings: ResetsSettingsResponseT) => {
-      setResetsSettings(settings);
     }
   );
   useRPCPacket(
@@ -116,7 +107,7 @@ export function useProvideOnboarding() {
 
   const onboardingEnded = () => {
     setConfig({ doneOnboarding: true });
-    if (!skeletonSettings || !resetsSettings || !vrcOscSettings) return;
+    if (!skeletonSettings || !vrcOscSettings) return;
 
     const mocap = usage === 'mocap' || usage === 'vtubing';
 
@@ -129,9 +120,7 @@ export function useProvideOnboarding() {
     skeletonReq.filtering = skeletonSettings.filtering;
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
-    const resetsReq = Object.assign(new ChangeResetsSettingsRequestT(), resetsSettings);
-    resetsReq.resetReliableReferenceAttitude = mocapPos === 'forehead';
-    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsReq);
+    setResetsSettings({ resetReliableReferenceAttitude: mocapPos === 'forehead' });
 
     const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;

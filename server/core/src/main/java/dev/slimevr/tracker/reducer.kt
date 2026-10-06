@@ -93,11 +93,6 @@ fun reduce(
 		)
 	}
 
-	is TrackerActions.SetRestOrientation -> state.copy(
-		restOrientation = action.restOrientation,
-		rotationDirty = true,
-	)
-
 	is TrackerActions.FullReset -> {
 		val alignAttitude = !state.isAssignedReliableReference || (action.resetReliableReferenceAttitude && action.referenceRotation == null)
 		val correctHeading = action.referenceRotation != null && !state.isAssignedReliableReference
@@ -137,6 +132,7 @@ fun reduce(
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
 			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.FULL,
+			needsFullReset = false,
 			rotationDirty = true,
 		)
 	}
@@ -209,9 +205,10 @@ fun reduce(
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingCorrection = headingCorrection, headingAlignment = headingAlignment),
 			lastMountingMethod = if (alignHeading) MountingMethod.POSE else state.lastMountingMethod,
+			needsMountingReset = state.needsMountingReset && !alignHeading,
 			lastReference = referenceRotation,
 			rotationDirty = true,
-			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.POSE_MOUNTING,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.MOUNTING,
 		)
 	}
 
@@ -219,9 +216,15 @@ fun reduce(
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = state.mountingOrientation),
 			lastMountingMethod = MountingMethod.MANUAL,
+			needsMountingReset = true,
 			rotationDirty = true,
 		)
 	}
+
+	is TrackerActions.MarkCalibrationStale -> state.copy(
+		needsFullReset = true,
+		needsMountingReset = state.needsMountingReset || action.mounting,
+	)
 
 	is TrackerActions.ClearPendingSkeletonResets -> {
 		state.copy(pendingSkeletonResets = state.pendingSkeletonResets.drop(action.count))
@@ -259,9 +262,10 @@ fun reduce(
 		val newHeadingAlignment = state.sessionCalibration.headingAlignment * action.headingAlignment
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = newHeadingAlignment),
-			lastMountingMethod = MountingMethod.POSE, // TODO More methods?
+			lastMountingMethod = MountingMethod.STEP,
+			needsMountingReset = false,
 			rotationDirty = true,
-			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.POSE_MOUNTING,
+			pendingSkeletonResets = state.pendingSkeletonResets + ResetType.MOUNTING,
 		)
 	}
 }

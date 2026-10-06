@@ -5,12 +5,10 @@ packages:
   - "gui/shared"
   - "!solarxr-protocol/lib/flatbuffers/**"
 
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@sentry/cli'
-  - '@swc/core'
-  - 'electron'
-  - 'electron-winstaller'
-  - 'esbuild'
-  - 'register-scheme'
-  - 'unrs-resolver'
+allowBuilds:
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  '@swc/core': true
+  electron-winstaller: true
+  esbuild: true
+  unrs-resolver: true

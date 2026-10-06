@@ -25,28 +25,64 @@ import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
 import kotlin.to
 
+// These are all only defaults and the user can edit any and they will save.
 data class Offset(
-	/** Default position offset from bone to tracker. Can be changed by the user. */
+	/** Offset from start of palm position to controller position. */
 	val boneOffset: Vector3,
-	/** Rotation offset applied on the tracker's raw rotation before everything else. */
-	val rotationOffset: Quaternion = Quaternion.IDENTITY,
-)
-private val indexBoneOffset = Vector3(-0.02f, 0.07f, 0.13f)
-private val indexRotX = Quaternion.rotationAroundXAxis(0.4f)
-private val indexRotZ = Quaternion.rotationAroundZAxis(0.35f)
+	// Don't use directly; use rotationOffset instead.
+	val rotationOffsetX: Quaternion = Quaternion.IDENTITY,
+	val rotationOffsetYZ: Quaternion = Quaternion.IDENTITY,
+) {
+	/** Offset from controller rotation to palm rotation. */
+	val rotationOffset = rotationOffsetX * rotationOffsetYZ
+	val otherSide get() = Offset(boneOffset.unaryMinusX(), rotationOffsetX, rotationOffsetYZ.inv())
+}
 
-// TODO add more devices
-private val DISPLAY_NAME_TO_OFFSET = mapOf(
-	"Knuckles Left" to Offset(indexBoneOffset, indexRotX * indexRotZ),
-	"Knuckles Right" to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
+private val leftIndexControllerOffset = Offset(
+	Vector3(-0.02f, 0.07f, 0.13f),
+	Quaternion.rotationAroundXAxis(0.42f),
+	Quaternion.rotationAroundZAxis(0.28f),
 )
+private val leftQuest3ControllerOffset = Offset(
+	Vector3(-0.02f, 0.07f, 0.13f),
+	Quaternion.rotationAroundXAxis(0.42f),
+	Quaternion.rotationAroundZAxis(0.28f),
+)
+private val leftPicoControllerOffset = Offset(
+	Vector3(0.01f, 0.11f, 0.11f),
+	Quaternion.rotationAroundXAxis(0.42f),
+	Quaternion.rotationAroundZAxis(0.15f),
+)
+private val DISPLAY_NAME_TO_OFFSET = mapOf(
+	// Erimel, through SteamVR
+	"Knuckles Left" to leftIndexControllerOffset,
+	"Knuckles Right" to leftIndexControllerOffset.otherSide,
+	// ZRock, through Virtual Desktop
+	"Meta Quest 3 (Left Controller)" to leftQuest3ControllerOffset,
+	"Meta Quest 3 (Right Controller)" to leftQuest3ControllerOffset.otherSide,
+	// ZRock, through Steam Link
+	"Oculus Quest3 (Left Controller)" to leftQuest3ControllerOffset,
+	"Oculus Quest3 (Right Controller)" to leftQuest3ControllerOffset.otherSide,
+	// Spazzwan, through Steam Link
+	"PICO 4 (Left Controller)" to leftPicoControllerOffset,
+	"PICO 4 (Right Controller)" to leftPicoControllerOffset.otherSide,
+	// Spazzwan, through PICO Connect
+	"Pico Phoenix Controller left" to leftPicoControllerOffset,
+	"Pico Phoenix Controller right" to leftPicoControllerOffset.otherSide,
+)
+
+// Offset from eyes to centre of head (same for all HMDs).
+private val hmdOffset = Offset(Vector3(0f, 0f, 0.1f))
 
 // Used as fallback when map above doesn't contain the entry
 private val BODY_PART_TO_OFFSET = mapOf(
-	BodyPart.HEAD to Offset(Vector3(0f, 0f, 0.1f)),
-	BodyPart.LEFT_HAND to Offset(indexBoneOffset, indexRotX * indexRotZ),
-	BodyPart.RIGHT_HAND to Offset(indexBoneOffset.unaryMinusX(), indexRotX * indexRotZ.inv()),
+	BodyPart.HEAD to hmdOffset,
+	BodyPart.LEFT_HAND to leftQuest3ControllerOffset,
+	BodyPart.RIGHT_HAND to leftQuest3ControllerOffset.otherSide,
 )
+
+// I don't know why linear velocity seems to be in a different coordinate system. -Erimel
+private fun remapVelocity(velocity: Vector3) = Vector3(velocity.z, -velocity.y, velocity.x)
 
 class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,
@@ -101,8 +137,9 @@ class DriverIncomingTrackersBehaviour(
 			)
 			server.context.dispatch(VRServerActions.NewDevice(deviceId, device))
 
-			val offset = DISPLAY_NAME_TO_OFFSET[req.displayName] ?: BODY_PART_TO_OFFSET[req.bodyPart]
 			val trackerId = server.nextHandle()
+			val offset = DISPLAY_NAME_TO_OFFSET[req.displayName] ?: BODY_PART_TO_OFFSET[req.bodyPart]
+			rotationOffsets[trackerId] = offset?.rotationOffset ?: Quaternion.IDENTITY
 			val tracker = Tracker.create(
 				scope = scope,
 				id = trackerId,
@@ -116,7 +153,8 @@ class DriverIncomingTrackersBehaviour(
 				driverName = driverName,
 				appContext = appContext,
 			)
-			rotationOffsets[trackerId] = offset?.rotationOffset ?: Quaternion.IDENTITY
+			// Start with non-null position
+			tracker.context.dispatch(TrackerActions.SetRotation(null, null, null, Vector3.ZERO, false))
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 
 			receiver.sendDriverMessage(
@@ -152,7 +190,7 @@ class DriverIncomingTrackersBehaviour(
 			val trackerId = event.trackerId.toInt()
 			if (trackerId == 0) return@on
 
-			// Map velocity to accel TODO: driver doesn't send velocity 30/09/2026
+			// Map velocity to accel
 			val acceleration = event.linearVelocity?.let { velocity ->
 				val now = timeSource.markNow()
 				val velocity = velocity.toVector3()
@@ -162,7 +200,7 @@ class DriverIncomingTrackersBehaviour(
 				lastVelocity?.let {
 					val deltaVelocity = (velocity - it.second)
 					val deltaTime = (now - it.first).inFloatingSeconds
-					deltaVelocity / deltaTime
+					remapVelocity(deltaVelocity / deltaTime)
 				}
 			}
 			// Rotation offset done here before rotation gets to the tracker

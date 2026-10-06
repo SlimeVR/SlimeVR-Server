@@ -17,7 +17,7 @@ export function Radio<T extends FieldValues = FieldValues>({
   control: Control<T>;
   name: FieldPath<T>;
   label?: string;
-  value: string;
+  value: string | number;
   description?: string | null;
   children?: ReactNode;
 } & React.HTMLProps<HTMLInputElement>) {
@@ -28,8 +28,8 @@ export function Radio<T extends FieldValues = FieldValues>({
       render={({ field: { onChange, ref, name, value: checked } }) => (
         <label
           className={classNames('w-full p-3 rounded-md flex gap-3 border-2', {
-            'border-accent-background-30': value == checked,
-            'border-transparent': value != checked,
+            'border-accent-background-30': value === checked,
+            'border-transparent': value !== checked,
             'bg-background-60 cursor-pointer hover:bg-background-50': !disabled,
             'bg-background-80 cursor-not-allowed': disabled,
           })}
@@ -42,10 +42,10 @@ export function Radio<T extends FieldValues = FieldValues>({
             )}
             name={name}
             ref={ref}
-            onChange={onChange}
+            onChange={() => onChange(value)}
             value={value}
             disabled={disabled}
-            checked={value == checked}
+            checked={value === checked}
             {...props}
           />
           <div className="flex flex-col gap-2 pointer-events-none">

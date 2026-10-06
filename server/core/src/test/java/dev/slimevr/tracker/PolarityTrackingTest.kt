@@ -13,7 +13,7 @@ class PolarityTrackingTest {
 	private fun getResetAction(resetType: ResetType, referenceRot: Quaternion?) = when (resetType) {
 		ResetType.FULL -> TrackerActions.FullReset(referenceRot)
 		ResetType.YAW -> TrackerActions.YawReset(referenceRot)
-		ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRot, 0f)
+		ResetType.MOUNTING -> TrackerActions.PoseMountingReset(referenceRot, 0f)
 	}
 
 	private fun assertPolarityAlignedAfterResets(

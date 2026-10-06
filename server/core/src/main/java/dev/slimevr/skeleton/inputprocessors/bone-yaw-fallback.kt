@@ -12,8 +12,10 @@ import kotlin.collections.set
  * falling back to their parent's, then children's, yaw.
  */
 class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
+	// TODO add logic to prevent the head from taking the fingers' yaw. Same with acceleration fallback processor.
+	//  (Head taking spine yaw is fine. No taking arm yaw, and probably no legs. Maybe other cases)
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		val processedParts: MutableList<BodyPart> = mutableListOf()
+		val processedParts: MutableSet<BodyPart> = mutableSetOf()
 		mutableInputSkeleton.forEachBone { parentPart, parentBone ->
 			if (!parentBone.isRotationActive) {
 				if (parentPart in processedParts) return@forEachBone

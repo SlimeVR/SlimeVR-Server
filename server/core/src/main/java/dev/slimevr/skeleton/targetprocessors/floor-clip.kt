@@ -5,22 +5,37 @@ import dev.slimevr.skeleton.IKTargets
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonTargetProcessor
+import dev.slimevr.skeleton.iterateBodyPartHierarchy
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.collections.set
 
 class FloorClipTargetProcessor(
 	val skeleton: Skeleton,
-	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG),
+	val targetParts: Array<BodyPart> = arrayOf(
+		BodyPart.LEFT_LOWER_LEG,
+		BodyPart.RIGHT_LOWER_LEG,
+	),
 ) : SkeletonTargetProcessor {
+	// TODO don't just correct ankles, also correct some of the hip (20% in old code). Probably to be done on IK directly.
 	override fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		if (!skeleton.effectiveFloorClip) return
 
-		for (bodyPart in bodyParts) {
-			// Get existing target or make a new one at the current bone position
-			val target = mutableIkTargets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
-			// Snap the target up to the floor if it's under
-			mutableIkTargets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(floorLevel), target.z)
+		for (parentPart in targetParts) {
+			// Get existing target or make a new one at the current bone position.
+			val parentTargetY = mutableIkTargets[parentPart] ?: fk[parentPart]?.tailPosition ?: continue
+
+			// Offset the parent target by the lowest child as well so that none of its active children are under the floor either.
+			var lowestChildTargetY = parentTargetY.y
+			for ((_, childPart) in iterateBodyPartHierarchy(parentPart, true)) {
+				if (inputSkeleton[childPart]?.isRotationActive == false) continue
+				val target = mutableIkTargets[childPart] ?: fk[childPart]?.tailPosition ?: continue
+				if (target.y < lowestChildTargetY) lowestChildTargetY = target.y
+			}
+			val childOffset = (parentTargetY.y - lowestChildTargetY).coerceAtLeast(0f)
+
+			// Snap the parent up.
+			val targetY = parentTargetY.y.coerceAtLeast(floorLevel) + childOffset
+			mutableIkTargets[parentPart] = Vector3(parentTargetY.x, targetY, parentTargetY.z)
 		}
 	}
 }

@@ -8,13 +8,16 @@ import dev.slimevr.skeleton.SkeletonTargetProcessor
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.collections.set
 
+/** Bone carrying the position to aim at, to the bone whose IK chain gets solved. */
+val POSITIONAL_IK_TARGETS = arrayOf(
+	BodyPart.LEFT_HAND to BodyPart.LEFT_LOWER_ARM,
+	BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
+)
+
 // Target IK to positional trackers
 class PositionalTargetProcessor(
 	val settings: Settings,
-	val bodyParts: Array<Pair<BodyPart, BodyPart>> = arrayOf(
-		BodyPart.LEFT_HAND to BodyPart.LEFT_LOWER_ARM,
-		BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
-	),
+	val bodyParts: Array<Pair<BodyPart, BodyPart>> = POSITIONAL_IK_TARGETS,
 ) : SkeletonTargetProcessor {
 	val requiredInactive = arrayOf(
 		BodyPart.LEFT_LOWER_ARM,

@@ -1,24 +1,18 @@
 import { useLocalization, Localized } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  ResetsSettingsRequestT,
-  ResetsSettingsResponseT,
-  RpcMessage,
-} from 'solarxr-protocol';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useResetsSettings } from '@/hooks/resets-settings';
 import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { isEqual } from '@react-hookz/deep-equal';
-import { selectAtom } from 'jotai/utils';
+import { MountingMethodRadio } from '@/components/mounting/MountingMethodRadio';
+import { ArmsMountingResetMode, MountingMethod } from 'solarxr-protocol';
 
 type ResetsSettingsForm = {
   resetMountingFeet: boolean;
-  armsResetMode: number;
+  armsMountingResetMode: ArmsMountingResetMode;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
   resetReliableReferenceAttitude: boolean;
@@ -26,25 +20,17 @@ type ResetsSettingsForm = {
 
 const defaultValues: ResetsSettingsForm = {
   resetMountingFeet: false,
-  armsResetMode: 0,
+  armsMountingResetMode: ArmsMountingResetMode.BACK,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
   resetReliableReferenceAttitude: false,
 };
 
-const resetsSettingsAtom = atom(new ResetsSettingsResponseT());
-const resetsSettingsValueAtom = selectAtom(
-  resetsSettingsAtom,
-  (settings) => settings,
-  isEqual
-);
-
 export function ResetsSettings() {
-  const setSettings = useSetAtom(resetsSettingsAtom);
-  const settings = useAtomValue(resetsSettingsValueAtom);
+  const { resetsSettings: settings, setResetsSettings } = useResetsSettings();
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const isPoseMounting = settings?.mountingMethod === MountingMethod.POSE;
 
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -61,15 +47,13 @@ export function ResetsSettings() {
     });
 
   const onSubmit = (values: ResetsSettingsForm) => {
-    const resetsSettings = new ResetsSettingsResponseT();
-    resetsSettings.resetMountingFeet = values.resetMountingFeet;
-    resetsSettings.armsResetMode = values.armsResetMode;
-    resetsSettings.yawResetSmoothTime = values.yawResetSmoothTime;
-    resetsSettings.saveMountingReset = values.saveMountingReset;
-    resetsSettings.resetReliableReferenceAttitude =
-      values.resetReliableReferenceAttitude;
-
-    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsSettings);
+    setResetsSettings({
+      resetMountingFeet: values.resetMountingFeet,
+      armsMountingResetMode: values.armsMountingResetMode,
+      yawResetSmoothTime: values.yawResetSmoothTime,
+      saveMountingReset: values.saveMountingReset,
+      resetReliableReferenceAttitude: values.resetReliableReferenceAttitude,
+    });
   };
 
   useEffect(() => {
@@ -80,25 +64,99 @@ export function ResetsSettings() {
   }, []);
 
   useEffect(() => {
-    sendRPCPacket(
-      RpcMessage.ResetsSettingsRequest,
-      new ResetsSettingsRequestT()
-    );
-  }, []);
-
-  useEffect(() => {
+    if (!settings) return;
     reset({ ...getValues(), ...settings });
   }, [settings]);
 
-  useRPCPacket(
-    RpcMessage.ResetsSettingsResponse,
-    (settings: ResetsSettingsResponseT) => {
-      setSettings(settings);
-    }
-  );
-
   return (
     <>
+      <div className="flex flex-col pt-5 gap-1">
+        <Typography
+          variant="section-title"
+          id="settings-general-mounting_method"
+        />
+        <Typography id="settings-general-mounting_method-description" />
+        <MountingMethodRadio />
+      </div>
+
+      {isPoseMounting && (
+        <>
+          <div className="flex flex-col pt-5 pb-2 gap-1">
+            <Typography variant="section-title">
+              {l10n.getString(
+                'settings-general-fk_settings-arms_mounting_reset_mode'
+              )}
+            </Typography>
+
+            <Typography>
+              {l10n.getString(
+                'settings-general-fk_settings-arms_mounting_reset_mode-description'
+              )}
+            </Typography>
+
+            <div className="grid flex-col gap-2">
+              <Radio
+                control={control}
+                name="armsMountingResetMode"
+                label={l10n.getString(
+                  'settings-general-fk_settings-arms_mounting_reset_mode-back'
+                )}
+                description={l10n.getString(
+                  'settings-general-fk_settings-arms_mounting_reset_mode-back-description'
+                )}
+                value={ArmsMountingResetMode.BACK}
+              />
+              <Radio
+                control={control}
+                name="armsMountingResetMode"
+                label={l10n.getString(
+                  'settings-general-fk_settings-arms_mounting_reset_mode-forward'
+                )}
+                description={l10n.getString(
+                  'settings-general-fk_settings-arms_mounting_reset_mode-forward-description'
+                )}
+                value={ArmsMountingResetMode.FORWARD}
+              />
+              <Radio
+                control={control}
+                name="armsMountingResetMode"
+                label={l10n.getString(
+                  'settings-general-fk_settings-arms_mounting_reset_mode-t_pose'
+                )}
+                description={l10n.getString(
+                  'settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description'
+                )}
+                value={ArmsMountingResetMode.SIDE}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1 pt-5">
+            <Typography variant="section-title">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+              )}
+            </Typography>
+
+            <Typography>
+              {l10n.getString(
+                'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
+              )}
+            </Typography>
+
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="resetMountingFeet"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+              )}
+            />
+          </div>
+        </>
+      )}
+
       <div className="flex flex-col pt-5 gap-1">
         <Typography variant="section-title">
           {l10n.getString(
@@ -119,87 +177,6 @@ export function ResetsSettings() {
           min={0.0}
           max={0.5}
           step={0.05}
-        />
-      </div>
-
-      <div className="flex flex-col pt-5 pb-2 gap-1">
-        <Typography variant="section-title">
-          {l10n.getString('settings-general-fk_settings-arm_fk-reset_mode')}
-        </Typography>
-
-        <Typography>
-          {l10n.getString(
-            'settings-general-fk_settings-arm_fk-reset_mode-description'
-          )}
-        </Typography>
-
-        <div className="grid md:grid-cols-2 flex-col gap-3">
-          <Radio
-            control={control}
-            name="armsResetMode"
-            label={l10n.getString('settings-general-fk_settings-arm_fk-back')}
-            description={l10n.getString(
-              'settings-general-fk_settings-arm_fk-back-description'
-            )}
-            value={'0'}
-          />
-          <Radio
-            control={control}
-            name="armsResetMode"
-            label={l10n.getString(
-              'settings-general-fk_settings-arm_fk-forward'
-            )}
-            description={l10n.getString(
-              'settings-general-fk_settings-arm_fk-forward-description'
-            )}
-            value={'1'}
-          />
-          <Radio
-            control={control}
-            name="armsResetMode"
-            label={l10n.getString(
-              'settings-general-fk_settings-arm_fk-tpose_up'
-            )}
-            description={l10n.getString(
-              'settings-general-fk_settings-arm_fk-tpose_up-description'
-            )}
-            value={'2'}
-          />
-          <Radio
-            control={control}
-            name="armsResetMode"
-            label={l10n.getString(
-              'settings-general-fk_settings-arm_fk-tpose_down'
-            )}
-            description={l10n.getString(
-              'settings-general-fk_settings-arm_fk-tpose_down-description'
-            )}
-            value={'3'}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1 pt-5">
-        <Typography variant="section-title">
-          {l10n.getString(
-            'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
-          )}
-        </Typography>
-
-        <Typography>
-          {l10n.getString(
-            'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
-          )}
-        </Typography>
-
-        <CheckBox
-          variant="toggle"
-          outlined
-          control={control}
-          name="resetMountingFeet"
-          label={l10n.getString(
-            'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
-          )}
         />
       </div>
 

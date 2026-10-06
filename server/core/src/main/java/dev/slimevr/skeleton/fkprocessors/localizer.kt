@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton.fkprocessors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BODY_PART_MASSES
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
@@ -14,17 +15,23 @@ import solarxr_protocol.rpc.ResetType
 import kotlin.math.abs
 import kotlin.math.exp
 
-const val DOWNWARDS_GROUNDING = -1f
-const val UPWARDS_GROUNDING = 2.5f
+// Constant translations
+const val FLOOR_DOWNWARDS_GROUNDING = -1.5f
+const val FLOOR_UPWARDS_GROUNDING = 2.75f
+const val DEAD_RECKONING_DOWNWARDS_GROUNDING = -1.95f
 
-const val MAX_PLANTED_VERTICAL_ACCEL = 10f
-const val MAX_PLANTED_HORIZONTAL_ACCEL = 25f
-const val FLOOR_TOUCH_THRESHOLD = 0.03f // 3cm
+const val MAX_PLANTED_ACCEL = 9f
+const val MAX_PLANTED_VERTICAL_ACCEL = 7.8f
+const val MAX_TORSO_VERTICAL_ACCEL = 8f
 
-const val SITTING_KNEE_THRESHOLD = -0.2f
-const val SITTING_THRESHOLD_TIME = 1f // 1 second
+// In meters
+const val FLOOR_TOUCH_DISTANCE = 0.03f
 
-// TODO add thickness for all bones
+// 1 = up, -1 = down
+const val SITTING_KNEE_MIN = -0.4f
+
+const val SITTING_THRESHOLD_SECONDS = 0.8f
+
 // Legs, spine and head are always used even if inactive
 val alwaysActiveBodyParts = arrayOf(
 	BodyPart.LEFT_LOWER_LEG,
@@ -43,14 +50,11 @@ fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotat
 
 // Follows a bone touching that floor that is considered planted
 object FloorLocalizer {
-	fun horizontalLength(vec: Vector3) = Vector3(vec.x, 0f, vec.z).len()
-	fun verticalLength(vec: Vector3) = Vector3(0f, vec.y, 0f).len()
-
 	// Returns true if a bone is considered as touching the floor
 	fun isBoneOnFloor(lowestBone: BoneState?) = lowestBone?.let {
-		it.tailPosition.y <= FLOOR_TOUCH_THRESHOLD &&
-			horizontalLength(it.acceleration) < MAX_PLANTED_HORIZONTAL_ACCEL &&
-			verticalLength(it.acceleration) < MAX_PLANTED_VERTICAL_ACCEL
+		it.tailPosition.y <= FLOOR_TOUCH_DISTANCE &&
+			it.acceleration.y < MAX_PLANTED_VERTICAL_ACCEL &&
+			it.acceleration.len() < MAX_PLANTED_ACCEL
 	} ?: false
 
 	// Not necessarily the lowest bone, but always a bone touching the floor
@@ -58,12 +62,22 @@ object FloorLocalizer {
 		val bonesTouchingFloor = fk.filter { it.key in getActiveBodyParts(inputs) }.filter { isBoneOnFloor(it.value) }.values
 		return bonesTouchingFloor.minByOrNull { it.acceleration.lenSq() }?.bodyPart
 	}
+
+	const val GROUNDING_DAMPENING_MULTIPLIER = 15f
+	const val GROUNDING_DAMPENING_MIN = 0.6f
+	fun getGroundingForce(lowestBone: BoneState?, deltaTime: Float): Vector3 = lowestBone?.let {
+		val forceDampening = abs(it.tailPosition.y * GROUNDING_DAMPENING_MULTIPLIER).coerceAtLeast(GROUNDING_DAMPENING_MIN)
+		if (it.tailPosition.y > 0f) {
+			Vector3(0f, (FLOOR_DOWNWARDS_GROUNDING * deltaTime).coerceAtLeast(-it.tailPosition.y) * forceDampening, 0f)
+		} else {
+			Vector3(0f, (FLOOR_UPWARDS_GROUNDING * deltaTime).coerceAtMost(-it.tailPosition.y) * forceDampening, 0f)
+		}
+	} ?: Vector3.ZERO
 }
 
 // Locks the hip in place
 object SittingLocalizer {
 	// Returns true if the user is likely sitting
-	// TODO this could be improved
 	fun isUserSitting(fk: ComputedSkeleton): Boolean {
 		// Using the local knee positions, decide if the user is sitting or
 		// standing (if the user is sitting the vector will be pointing off
@@ -72,8 +86,10 @@ object SittingLocalizer {
 		val rightKnee = fk[BodyPart.RIGHT_UPPER_LEG] ?: return false
 
 		// if the y component of the vectors is small then the user is probably sitting
-		val sittingLeft = leftKnee.localTailPosition.unit().y > SITTING_KNEE_THRESHOLD
-		val sittingRight = rightKnee.localTailPosition.unit().y > SITTING_KNEE_THRESHOLD
+		val leftKneeVertical = leftKnee.localTailPosition.unit().y
+		val rightKneeVertical = rightKnee.localTailPosition.unit().y
+		val sittingLeft = leftKneeVertical > SITTING_KNEE_MIN
+		val sittingRight = rightKneeVertical > SITTING_KNEE_MIN
 
 		return sittingLeft && sittingRight
 	}
@@ -90,9 +106,8 @@ object SittingLocalizer {
 
 // Uses acceleration to guess localization
 object DeadReckoningLocalizer {
-	// TODO: Maybe only take feet or only torso
-	//  Also maybe have different parts for linear velocity and accel
-	val DEAD_RECKONING_BODY_PARTS = setOf(
+	// Only use these body parts for getting vertical velocity and acceleration.
+	val VERTICAL_BODY_PARTS = setOf(
 		BodyPart.HEAD,
 		BodyPart.NECK,
 		BodyPart.UPPER_CHEST,
@@ -100,24 +115,28 @@ object DeadReckoningLocalizer {
 		BodyPart.UPPER_WAIST,
 		BodyPart.LOWER_WAIST,
 		BodyPart.HIP,
-		BodyPart.LEFT_UPPER_LEG,
-		BodyPart.RIGHT_UPPER_LEG,
-		BodyPart.LEFT_LOWER_LEG,
-		BodyPart.RIGHT_LOWER_LEG,
-		BodyPart.LEFT_FOOT,
-		BodyPart.RIGHT_FOOT,
 	)
 
-	fun getAverageLinearVelocity(fk: ComputedSkeleton): Vector3 = DEAD_RECKONING_BODY_PARTS.fold(Vector3.ZERO) { acc, part ->
-		fk[part]?.let {
-			acc + it.velocity.linear
-		} ?: acc
-	} /
-		DEAD_RECKONING_BODY_PARTS.count().toFloat()
+	fun getVerticalVelocity(fk: ComputedSkeleton): Vector3 {
+		val velocitySum = VERTICAL_BODY_PARTS.fold(Vector3.ZERO) { acc, part ->
+			fk[part]?.let {
+				acc + it.velocity.linear
+			} ?: acc
+		}
+		return Vector3(0f, (velocitySum / VERTICAL_BODY_PARTS.count().toFloat()).y, 0f)
+	}
 
-	fun getAverageAcceleration(inputSkeleton: InputSkeleton): Vector3 {
+	fun getHorizontalVelocity(fk: ComputedSkeleton) = BODY_PART_MASSES.keys.fold(Vector3.ZERO) { acc, part ->
+		fk[part]?.let { bone ->
+			BODY_PART_MASSES[part]?.let { mass ->
+				acc + (bone.velocity.linear * mass)
+			}
+		} ?: acc
+	}.let { Vector3(it.x, 0f, it.z) }
+
+	fun getVerticalAcceleration(inputSkeleton: InputSkeleton): Vector3 {
 		var count = 0f
-		val accelSum = DEAD_RECKONING_BODY_PARTS.fold(Vector3.ZERO) { acc, part ->
+		val accelSum = VERTICAL_BODY_PARTS.fold(Vector3.ZERO) { acc, part ->
 			inputSkeleton[part]?.let {
 				if (it.isAccelerationActive) {
 					count++
@@ -127,25 +146,34 @@ object DeadReckoningLocalizer {
 				}
 			} ?: acc
 		}
-		return accelSum / count.coerceAtLeast(1f)
+		return Vector3(0f, (accelSum / count.coerceAtLeast(1f)).y, 0f)
 	}
 
-	const val VELOCITY_DAMPING = 3f
-	fun computeNewVelocity(velocity: Vector3, acceleration: Vector3, deltaTime: Float) = (velocity * exp(-VELOCITY_DAMPING * deltaTime)) + (acceleration * deltaTime)
+	fun getHorizontalAcceleration(inputSkeleton: InputSkeleton) = BODY_PART_MASSES.keys.fold(Vector3.ZERO) { acc, part ->
+		inputSkeleton[part]?.let { bone ->
+			BODY_PART_MASSES[part]?.let { mass ->
+				acc + (bone.acceleration * mass)
+			}
+		} ?: acc
+	}.let { Vector3(it.x, 0f, it.z) }
 
-	fun computeDisplacement(velocity: Vector3, acceleration: Vector3, deltaTime: Float) = -((velocity * deltaTime) + (acceleration * 0.5f * deltaTime * deltaTime))
+	const val VELOCITY_DAMPING = 3.8f
+	fun computeNewVelocity(velocity: Vector3, acceleration: Vector3, deltaTime: Float): Vector3 {
+		val dampenedVelocity = velocity * exp(-VELOCITY_DAMPING * deltaTime)
+		return dampenedVelocity + (acceleration * deltaTime)
+	}
+
+	fun computeDisplacement(velocity: Vector3, acceleration: Vector3, deltaTime: Float): Vector3 = (velocity * deltaTime) + (acceleration * 0.5f * deltaTime * deltaTime)
+
+	fun getGroundingForce(lowestBone: BoneState?, deltaTime: Float): Vector3 = lowestBone?.let {
+		if (it.tailPosition.y > 0f) {
+			Vector3(0f, (DEAD_RECKONING_DOWNWARDS_GROUNDING * deltaTime).coerceAtLeast(-it.tailPosition.y), 0f)
+		} else {
+			// Snap to floor if below it
+			Vector3(0f, -it.tailPosition.y, 0f)
+		}
+	} ?: Vector3.ZERO
 }
-
-const val GROUNDING_DAMPENING_MULTIPLIER = 15f
-const val GROUNDING_DAMPENING_MIN = 0.7f
-fun getGroundingForce(lowestBone: BoneState?, deltaTime: Float): Vector3 = lowestBone?.let {
-	val forceDampening = abs(it.tailPosition.y * GROUNDING_DAMPENING_MULTIPLIER).coerceAtLeast(GROUNDING_DAMPENING_MIN)
-	if (it.tailPosition.y > 0f) {
-		Vector3(0f, (DOWNWARDS_GROUNDING * deltaTime).coerceAtLeast(-it.tailPosition.y) * forceDampening, 0f)
-	} else {
-		Vector3(0f, (UPWARDS_GROUNDING * deltaTime).coerceAtMost(-it.tailPosition.y) * forceDampening, 0f)
-	}
-} ?: Vector3.ZERO
 
 fun computeTravel(current: Vector3, target: Vector3) = target - current
 
@@ -156,10 +184,10 @@ enum class FollowSource {
 	DEAD_RECKONING,
 	SITTING,
 }
-fun getSourceToFollow(fk: ComputedSkeleton, lowestBone: BoneState?): FollowSource = if (SittingLocalizer.isUserSitting(fk)) {
+fun getSourceToFollow(fk: ComputedSkeleton, lowestBone: BoneState?, bodyAcceleration: Vector3): FollowSource = if (SittingLocalizer.isUserSitting(fk)) {
 	// The user is sitting down
 	FollowSource.SITTING
-} else if (FloorLocalizer.isBoneOnFloor(lowestBone)) {
+} else if (bodyAcceleration.y < MAX_TORSO_VERTICAL_ACCEL && FloorLocalizer.isBoneOnFloor(lowestBone)) {
 	// One of the user's bone is on the ground
 	FollowSource.FLOOR
 } else {
@@ -173,7 +201,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 	private var floorTarget: Vector3? = null
 	private var lastPlantedBone: BodyPart? = null
 
-	private var accelVelocity = Vector3.ZERO
+	private var velocity = Vector3.ZERO
 
 	private var hipTarget = Vector3.ZERO
 	private var sittingTime: Float = 0f
@@ -192,11 +220,14 @@ class LocalizerFkProcessor(val settings: Settings) :
 		// The absolute lowest bone
 		val lowestBone = getLowestBone(mutableInputSkeleton, fk)
 
+		// Average body acceleration
+		val bodyAcceleration = DeadReckoningLocalizer.getVerticalAcceleration(mutableInputSkeleton) + DeadReckoningLocalizer.getHorizontalAcceleration(mutableInputSkeleton)
+
 		// Only follow the hip if the user's been sitting for enough time, else follow the bone on the floor
-		val followSource = getSourceToFollow(fk, lowestBone).let {
+		val followSource = getSourceToFollow(fk, lowestBone, bodyAcceleration).let {
 			if (it == FollowSource.SITTING) {
 				sittingTime += deltaTime
-				if (sittingTime < SITTING_THRESHOLD_TIME) {
+				if (sittingTime < SITTING_THRESHOLD_SECONDS) {
 					FollowSource.FLOOR
 				} else {
 					FollowSource.SITTING
@@ -216,9 +247,6 @@ class LocalizerFkProcessor(val settings: Settings) :
 			floorTarget = currentFloor
 		}
 
-		// Dead reckoning
-		val currentAcceleration = DeadReckoningLocalizer.getAverageAcceleration(mutableInputSkeleton)
-
 		// Sitting
 		val currentHip = fk[BodyPart.HIP]?.tailPosition ?: Vector3.ZERO
 		hipTarget = if (followSource == FollowSource.SITTING) {
@@ -235,23 +263,23 @@ class LocalizerFkProcessor(val settings: Settings) :
 						computeTravel(current, target)
 					}
 				} ?: Vector3.ZERO
-				Vector3(floorTravel.x, 0f, floorTravel.z) + getGroundingForce(lowestBone, deltaTime)
+				Vector3(floorTravel.x, 0f, floorTravel.z) + FloorLocalizer.getGroundingForce(lowestBone, deltaTime)
 			}
 
-			FollowSource.DEAD_RECKONING -> {
-				val deadReckoningTravel = DeadReckoningLocalizer.computeDisplacement(accelVelocity, currentAcceleration, deltaTime)
-				deadReckoningTravel + getGroundingForce(lowestBone, deltaTime)
-			}
+			FollowSource.DEAD_RECKONING ->
+				DeadReckoningLocalizer.computeDisplacement(velocity, bodyAcceleration, deltaTime) + DeadReckoningLocalizer.getGroundingForce(lowestBone, deltaTime)
 
-			FollowSource.SITTING -> computeTravel(currentHip, hipTarget)
+			FollowSource.SITTING ->
+				computeTravel(currentHip, hipTarget)
 		}
 
 		// Update velocity for dead reckoning
-		accelVelocity = if (followSource != FollowSource.DEAD_RECKONING) {
-			-DeadReckoningLocalizer.getAverageLinearVelocity(fk)
-		} else {
-			DeadReckoningLocalizer.computeNewVelocity(accelVelocity, currentAcceleration, deltaTime)
+		if (followSource != FollowSource.DEAD_RECKONING) {
+			// Reset to reliable velocity from velocity processor.
+			velocity = DeadReckoningLocalizer.getVerticalVelocity(fk) + DeadReckoningLocalizer.getHorizontalVelocity(fk)
 		}
+		// Integrate acceleration into running velocity.
+		velocity = DeadReckoningLocalizer.computeNewVelocity(velocity, bodyAcceleration, deltaTime)
 
 		// Update head position from travel
 		val newHeadPosition = (headInput.position ?: Vector3.ZERO) + travel
@@ -262,7 +290,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 		if (resetType == ResetType.FULL) {
 			floorTarget = null
 			lastPlantedBone = null
-			accelVelocity = Vector3.ZERO
+			velocity = Vector3.ZERO
 			hipTarget = Vector3.ZERO
 			sittingTime = 0f
 			lastProcessTime = timeSource.markNow()

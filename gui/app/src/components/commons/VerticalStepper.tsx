@@ -1,6 +1,5 @@
 import classNames from 'classnames';
-import { CheckIcon } from './icon/CheckIcon';
-import { Typography } from './Typography';
+import { Timeline, TimelineItem } from './Timeline';
 import {
   FC,
   ReactNode,
@@ -17,11 +16,13 @@ export function VerticalStep({
   index,
   children,
   title,
+  last,
 }: {
   active: number;
   index: number;
   children: ReactNode;
   title: string;
+  last: boolean;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const refTop = useRef<HTMLLIElement | null>(null);
@@ -61,36 +62,25 @@ export function VerticalStep({
   );
 
   return (
-    <li className="mb-10 scroll-m-4" ref={refTop}>
-      <span
-        className={classNames(
-          'absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 transition-colors fill-background-10',
-          {
-            'bg-accent-background-20': isSelected || isPrevious,
-            'bg-background-40': !isSelected && !isPrevious,
-          }
-        )}
+    <TimelineItem
+      itemRef={refTop}
+      className="scroll-m-4"
+      state={isSelected ? 'current' : isPrevious ? 'done' : 'todo'}
+      number={index + 1}
+      last={last}
+      title={title}
+    >
+      <div
+        style={{ height: !isSelected ? 0 : height }}
+        className={classNames('overflow-clip', {
+          'duration-300 transition-[height]': shouldAnimate,
+        })}
       >
-        {isPrevious ? (
-          <CheckIcon />
-        ) : (
-          <Typography variant="section-title">{index + 1}</Typography>
-        )}
-      </span>
-      <div className="ml-7 pt-1.5">
-        <div className="px-1">
-          <Typography variant="section-title">{title}</Typography>
-        </div>
-        <div
-          style={{ height: !isSelected ? 0 : height }}
-          className={classNames('overflow-clip px-1', {
-            'duration-300 transition-[height]': shouldAnimate,
-          })}
-        >
-          <div ref={ref}>{children}</div>
+        <div ref={ref}>
+          <div className="pt-3">{children}</div>
         </div>
       </div>
-    </li>
+    </TimelineItem>
   );
 }
 
@@ -139,9 +129,15 @@ export default function VerticalStepper({
   }, [currStep]);
 
   return (
-    <ol className="relative border-l border-gray-700 text-gray-400">
+    <Timeline>
       {steps.map(({ title, component: StepComponent }, index) => (
-        <VerticalStep active={currStep} index={index} title={title} key={index}>
+        <VerticalStep
+          active={currStep}
+          index={index}
+          title={title}
+          last={index === steps.length - 1}
+          key={index}
+        >
           <StepComponent
             nextStep={nextStep}
             prevStep={prevStep}
@@ -150,6 +146,6 @@ export default function VerticalStepper({
           />
         </VerticalStep>
       ))}
-    </ol>
+    </Timeline>
   );
 }

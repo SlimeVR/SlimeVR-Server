@@ -31,6 +31,7 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
   [TrackingChecklistStepId.TRACKER_ERROR]: 'tracking_checklist-TRACKER_ERROR',
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]:
     'tracking_checklist-NETWORK_PROFILE_PUBLIC',
+  [TrackingChecklistStepId.MOUNTING_METHOD]: 'tracking_checklist-MOUNTING_METHOD',
   [TrackingChecklistStepId.MOUNTING_CALIBRATION]:
     'tracking_checklist-MOUNTING_CALIBRATION',
   [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]:

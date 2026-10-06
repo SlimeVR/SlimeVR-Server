@@ -195,14 +195,18 @@ internal suspend fun runProvisioningForPort(
 ) {
 	context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.SERIAL_INIT))
 
-	val serialConn = serialServer.awaitConsole(portLocation, 3.seconds)
+	val lease = serialServer.awaitConsole(portLocation, 3.seconds)
 
-	if (serialConn == null) {
+	if (lease == null) {
 		context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.CONNECTION_ERROR))
 		return
 	}
 
-	provisionPort(context, server, settings, serialConn, ssid, password)
+	try {
+		provisionPort(context, server, settings, lease.console, ssid, password)
+	} finally {
+		lease.release()
+	}
 }
 
 // Reboots the tracker and waits for a MAC address in the serial logs.

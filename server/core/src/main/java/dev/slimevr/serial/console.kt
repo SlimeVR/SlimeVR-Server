@@ -41,14 +41,14 @@ class SerialConsole private constructor(
 	}
 
 	companion object {
-		suspend fun open(watcher: SerialPortWatcher, portLocation: String): SerialConsole? {
+		suspend fun open(watcher: SerialPortWatcher, portLocation: String, clearResetLines: Boolean): SerialConsole? {
 			val log = MutableSharedFlow<String>(
 				replay = MAX_LOG_LINES,
 				extraBufferCapacity = LOG_BURST_CAPACITY,
 				onBufferOverflow = BufferOverflow.DROP_OLDEST,
 			)
 			val closed = Job()
-			val handle = watcher.open(portLocation, { line -> log.tryEmit(line) }, { closed.complete() })
+			val handle = watcher.open(portLocation, clearResetLines, { line -> log.tryEmit(line) }, { closed.complete() })
 				?: return null
 			return SerialConsole(handle, log, closed)
 		}

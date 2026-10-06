@@ -41,6 +41,7 @@ be at `server/desktop/build/libs/slimevr.jar` (you can ignore `server.jar`).
 - Make sure you're at the root of the repository.
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
+- If you get an "Electron uninstall" error, run `node .\gui\electron\node_modules\electron\install.js`.
 - Finally, to compile for production, run `pnpm package:build` under `gui/electron`. 
 The result will be in `gui/dist/artifacts/`. Content will change depending on the platform.
 

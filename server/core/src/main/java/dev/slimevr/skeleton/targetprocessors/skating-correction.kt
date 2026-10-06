@@ -288,6 +288,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				// Otherwise pull the last state
 			} ?: lastState ?: continue
 
+			// TODO Smooth tracker to new position on unlock
 			if (activeState.locked) {
 				mutableIkTargets[bodyPart] = activeState.position
 			}

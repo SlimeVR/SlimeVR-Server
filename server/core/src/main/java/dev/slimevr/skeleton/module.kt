@@ -18,13 +18,14 @@ import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PosteriorDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PosteriorInputProcessor
-import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
-import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
+import dev.slimevr.skeleton.inputprocessors.RotationPredictionInputProcessor
+import dev.slimevr.skeleton.inputprocessors.RotationSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TailChainInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TrackerOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.UpsamplingInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
@@ -276,8 +277,9 @@ class Skeleton(
 					waiter = waiter,
 					// Run before FK on the inputs
 					inputProcessors = listOf(
-						PredictionInputProcessor(settings),
-						SmoothingInputProcessor(settings),
+						UpsamplingInputProcessor(),
+						RotationPredictionInputProcessor(settings),
+						RotationSmoothingInputProcessor(settings),
 						TrackerOffsetInputProcessor(),
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
@@ -296,7 +298,7 @@ class Skeleton(
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
-						VelocityComputedProcessor(),
+						VelocityComputedProcessor(false),
 					),
 					// Run on the inputs with the result of FK and run FK
 					fkProcessors = listOf(
@@ -312,7 +314,7 @@ class Skeleton(
 					),
 					// Run on the result of IK and persist.
 					ikComputedProcessors = listOf(
-						VelocityComputedProcessor(),
+						VelocityComputedProcessor(true),
 					),
 				),
 			)
