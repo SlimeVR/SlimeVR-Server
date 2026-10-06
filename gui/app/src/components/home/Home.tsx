@@ -183,7 +183,7 @@ export function Home() {
                 <>
                   <Button
                     variant="primary"
-                    to="/onboarding/connect-trackers"
+                    to="/onboarding/add-trackers"
                     state={{ alonePage: true }}
                     id="home-no_trackers-connect"
                   />
