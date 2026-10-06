@@ -29,14 +29,14 @@ internal fun buildOutgoingBundle(
 	bones: ComputedSkeleton,
 	routedBones: Set<BodyPart>,
 ): OscBundle? {
-	val messages = buildList<OscContent> {
+	val messages = buildList {
 		for ((bodyPart, trackerId) in trackerIdsByBodyPart) {
 			if (bodyPart !in routedBones) continue
 
 			val bone = bones[bodyPart] ?: continue
 			add(
 				OscContent.Message(
-					positionMessage("/tracking/trackers/$trackerId/position", bone.headPosition),
+					positionMessage("/tracking/trackers/$trackerId/position", bone.tailPosition),
 				),
 			)
 			add(
@@ -49,7 +49,7 @@ internal fun buildOutgoingBundle(
 		bones[BodyPart.HEAD]?.let { head ->
 			add(
 				OscContent.Message(
-					positionMessage("/tracking/trackers/head/position", head.headPosition),
+					positionMessage("/tracking/trackers/head/position", head.tailPosition),
 				),
 			)
 		}

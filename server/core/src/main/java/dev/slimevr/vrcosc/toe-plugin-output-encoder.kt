@@ -7,6 +7,7 @@ import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
+import dev.slimevr.util.side
 import io.github.axisangles.ktmath.EulerOrder
 import solarxr_protocol.datatypes.BodyPart
 
@@ -17,62 +18,58 @@ private const val MAXIMUM_ABSOLUTE_TOE_RANGE = 90
 
 internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
-
-	// Left foot and toes
-	val leftFoot = bones[BodyPart.LEFT_FOOT]
-	if (leftFoot != null) {
-		val leftToes = listOf(
+	processToes(
+		bones[BodyPart.LEFT_FOOT],
+		arrayOf(
 			bones[BodyPart.LEFT_BIG_TOE],
 			bones[BodyPart.LEFT_INDEX_TOE],
 			bones[BodyPart.LEFT_MIDDLE_TOE],
 			bones[BodyPart.LEFT_RING_TOE],
 			bones[BodyPart.LEFT_LITTLE_TOE],
-		)
-		processToesForFoot(leftFoot, leftToes, Side.LEFT, messages)
-	}
-
-	// Right foot and toes
-	val rightFoot = bones[BodyPart.RIGHT_FOOT]
-	if (rightFoot != null) {
-		val rightToes = listOf(
+		),
+		Side.LEFT,
+		messages,
+	)
+	processToes(
+		bones[BodyPart.RIGHT_FOOT],
+		arrayOf(
 			bones[BodyPart.RIGHT_BIG_TOE],
 			bones[BodyPart.RIGHT_INDEX_TOE],
 			bones[BodyPart.RIGHT_MIDDLE_TOE],
 			bones[BodyPart.RIGHT_RING_TOE],
 			bones[BodyPart.RIGHT_LITTLE_TOE],
-		)
-		processToesForFoot(rightFoot, rightToes, Side.RIGHT, messages)
-	}
-
+		),
+		Side.RIGHT,
+		messages,
+	)
 	return messages
 }
 
-private fun processToesForFoot(
-	foot: BoneState,
-	toeBones: List<BoneState?>,
+private fun processToes(
+	foot: BoneState?,
+	toeBones: Array<BoneState?>,
 	side: Side,
 	messages: MutableList<OscContent>,
 ) {
-	var lastAssigned: BoneState? = null
-
+	if (foot == null) return
 	for ((segmentIndex, toe) in toeBones.withIndex()) {
-		if (toe != null) {
-			lastAssigned = toe
-		}
+		if (toe == null) continue
 
-		if (lastAssigned == null) continue
+		// Big toe goes inwards (the opposite side)
+		val splayDirection = if (segmentIndex == 0) side.opposite else side
 
-		val splayDirection = if (segmentIndex > 0) side else side.opposite
-
-		processToe(foot, lastAssigned, side, segmentIndex, splayDirection, messages)
+		processToe(foot, toe, side, segmentIndex, splayDirection, messages)
 	}
 }
 
-private val Side.oscName: String
+private val Side.oscName
 	get() = when (this) {
 		Side.LEFT -> "Left"
 		Side.RIGHT -> "Right"
 	}
+
+private val trueArgs = listOf(OscArg.True)
+private val falseArgs = listOf(OscArg.False)
 
 private fun processToe(
 	foot: BoneState,
@@ -83,14 +80,12 @@ private fun processToe(
 	messages: MutableList<OscContent>,
 ) {
 	val oscToeNumber = toeNumber + 1
-	val footRot = foot.rotation
-	val toeRot = toe.rotation
-	val currentRelative = footRot.inv() * toeRot
+	val currentRelative = foot.rotation.inv() * toe.rotation
 
 	val euler = currentRelative.toEulerAngles(EulerOrder.XYZ)
-
 	val pitch = euler.x * FastMath.RAD_TO_DEG
 	val yaw = euler.y * FastMath.RAD_TO_DEG
+
 	val tipToe = pitch < MINIMUM_TIP_TOE_PITCH
 	val bending = pitch > MINIMUM_BENDING_PITCH
 	val splayed = when (splayDirection) {
@@ -99,11 +94,12 @@ private fun processToe(
 	}
 	val toeCurlValue = (pitch / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
 	val toeSplayValue = (yaw / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
+
 	messages.addAll(
 		listOf(
-			OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))),
-			OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${oscToeNumber}Bool", listOf(if (bending) OscArg.True else OscArg.False))),
-			OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}$oscToeNumber", listOf(if (splayed) OscArg.True else OscArg.False))),
+			OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.oscName}", if (tipToe) trueArgs else falseArgs)),
+			OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${oscToeNumber}Bool", if (bending) trueArgs else falseArgs)),
+			OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}$oscToeNumber", if (splayed) trueArgs else falseArgs)),
 			OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(toeCurlValue)))),
 			OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(toeSplayValue)))),
 		),

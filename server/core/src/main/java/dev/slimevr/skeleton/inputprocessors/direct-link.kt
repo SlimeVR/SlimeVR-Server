@@ -45,18 +45,20 @@ val BONE_DIRECT_LINK_SOURCES = arrayOf(
 )
 
 /**
- * Handles setting the rotation of an inactive bone with its source bone.
+ * Handles setting the rotation and acceleration of an inactive bone with its source bone.
  */
-class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
+class DirectLinkInputProcessor : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		for ((bodyPart, source) in BONE_DIRECT_LINK_SOURCES) {
 			val bone = mutableInputSkeleton[bodyPart] ?: continue
-			if (bone.isRotationActive) continue
+			if (bone.isRotationActive && bone.isAccelerationActive) continue
 
-			val rotation = mutableInputSkeleton[source]?.rotation ?: continue
-			if (rotation == bone.rotation) continue
+			val rotation = if (!bone.isRotationActive) mutableInputSkeleton[source]?.rotation ?: bone.rotation else bone.rotation
+			val acceleration = if (!bone.isAccelerationActive) mutableInputSkeleton[source]?.acceleration ?: bone.acceleration else bone.acceleration
 
-			mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
+			if (rotation == bone.rotation && acceleration == bone.acceleration) continue
+
+			mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation, acceleration = acceleration)
 		}
 	}
 }
