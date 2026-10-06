@@ -5,6 +5,8 @@ import { Typography } from '@/components/commons/Typography';
 import { SkiIcon } from '@/components/commons/icon/SkiIcon';
 import { StepIcon } from '@/components/commons/icon/StepIcon';
 import { TuneIcon } from '@/components/commons/icon/TuneIcon';
+import { useResetsSettings } from '@/hooks/resets-settings';
+import classNames from 'classnames';
 
 function MethodCard({
   method,
@@ -21,8 +23,20 @@ function MethodCard({
   recommended?: boolean;
   note?: string;
 }) {
+  const { resetsSettings } = useResetsSettings();
+
+  const selected = resetsSettings?.mountingMethod == method;
+
   return (
-    <div className="rounded-lg p-4 flex flex-col gap-3 relative bg-background-70">
+    <div
+      className={classNames(
+        'rounded-lg p-4 flex flex-col gap-3 relative bg-background-70 border-2',
+        {
+          'border-accent-background-20': selected,
+          'border-background-50': !selected,
+        }
+      )}
+    >
       {recommended && (
         <div className="bg-accent-background-30 absolute -left-4 -top-5 p-1.5 rounded-lg">
           <Typography
@@ -52,12 +66,20 @@ function MethodCard({
 export function MountingMethodModal({
   isOpen,
   onClose,
-  onSelect,
+  triggerReset,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (method: MountingMethod) => void;
+  triggerReset?: (method?: MountingMethod) => void;
 }) {
+  const { setResetsSettings } = useResetsSettings();
+
+  const onSelect = (method: MountingMethod) => {
+    onClose();
+    setResetsSettings({ mountingMethod: method });
+    if (method !== MountingMethod.UNKNOWN) triggerReset?.(method);
+  };
+
   return (
     <BaseModal isOpen={isOpen} onRequestClose={onClose}>
       <div className="flex flex-col gap-4 p-2 max-w-4xl">

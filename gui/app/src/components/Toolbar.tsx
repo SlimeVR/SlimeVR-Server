@@ -12,11 +12,12 @@ import { Tooltip } from './commons/Tooltip';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ResetButtonIcon } from './home/ResetButton';
 import { MountingMethodModal } from './mounting/MountingMethodModal';
-import { useMountingMethod } from '@/hooks/mounting-method';
 import { useResetsSettings } from '@/hooks/resets-settings';
+import { IconButton } from './commons/IconButton';
+import { GearIcon } from './commons/icon/GearIcon';
 
 const MAINBUTTON_CLASSES = ({ disabled }: { disabled: boolean }) =>
   classNames(
@@ -66,7 +67,6 @@ function BasicResetButton({
     duration,
     error,
   } = useReset(options);
-  const { onClick, ...picker } = useMountingMethod(options, triggerReset);
   const { resetsSettings } = useResetsSettings();
 
   const progress = status === 'counting' ? resetProress / duration : 0;
@@ -107,7 +107,9 @@ function BasicResetButton({
           style={{
             animationIterationCount: 1,
           }}
-          onClick={() => !disabled && onClick()}
+          onClick={() =>
+            !disabled && triggerReset(resetsSettings?.mountingMethod)
+          }
         >
           <div
             className={classNames({
@@ -150,11 +152,6 @@ function BasicResetButton({
           </div>
         </button>
       </Tooltip>
-      <MountingMethodModal
-        isOpen={picker.pickerOpen}
-        onClose={picker.closePicker}
-        onSelect={picker.onPick}
-      />
     </>
   );
 }
@@ -162,6 +159,8 @@ function BasicResetButton({
 export function Toolbar() {
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
   const { resetsSettings } = useResetsSettings();
+  const [pickerOpen, setPickerOpen] = useState(false);
+
   const splitMounting = resetsSettings?.mountingMethod === MountingMethod.POSE;
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
@@ -199,10 +198,20 @@ export function Toolbar() {
             </div>
           </div>
           <div className="flex-col flex gap-1 md:flex-grow">
-            <Typography
-              variant="section-title"
-              id="toolbar-mounting_calibration"
-            />
+            <div className="flex justify-between gap-2">
+              <Typography
+                variant="section-title"
+                id="toolbar-mounting_calibration"
+              />
+              <IconButton
+                labelId="toolbar-mounting_calibration-pick_method"
+                className="fill-background-30 hover:fill-background-20 cursor-pointer"
+                onClick={() => setPickerOpen(true)}
+              >
+                <GearIcon size={18}></GearIcon>
+              </IconButton>
+            </div>
+
             <div
               className="gap-2 md:h-[72px] h-[62px] w-full md:grid flex"
               style={{
@@ -241,6 +250,10 @@ export function Toolbar() {
           </div>
         </div>
       </div>
+      <MountingMethodModal
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+      />
     </>
   );
 }

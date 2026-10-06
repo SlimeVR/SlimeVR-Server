@@ -1694,6 +1694,7 @@ preview-render_mode = Change rendering mode
 preview-reset_camera = Reset camera
 
 toolbar-mounting_calibration = Mounting Calibration
+toolbar-mounting_calibration-pick_method = Pick mounting method
 toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
 toolbar-mounting_calibration-toes = Toes

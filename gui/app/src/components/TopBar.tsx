@@ -130,37 +130,6 @@ export function TopBar({
     }
   };
 
-  // useEffect(() => {
-  //   if (!electron.isElectron) return;
-
-  //   const unlistenTrayClose = listen('try-close', async () => {
-  //     const window = getCurrentWindow();
-  //     await window.show();
-  //     await window.requestUserAttention(UserAttentionType.Critical);
-  //     await window.setFocus();
-  //     if (isTrayAvailable) await invoke('update_tray_text');
-  //     await tryCloseApp(true);
-  //   });
-
-  //   const unlistenCloseRequested = getCurrentWindow().listen(
-  //     TauriEvent.WINDOW_CLOSE_REQUESTED,
-  //     async (data) => {
-  //       const ev = new CloseRequestedEvent(data);
-  //       ev.preventDefault();
-  //       await tryCloseApp();
-  //     }
-  //   );
-
-  //   return () => {
-  //     unlistenTrayClose.then((fn) => fn());
-  //     unlistenCloseRequested.then((fn) => fn());
-  //   };
-  // }, [
-  //   config?.useTray,
-  //   config?.connectedTrackersWarning,
-  //   JSON.stringify(connectedIMUTrackers.map((t) => t.tracker.status)),
-  // ]);
-
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
   }, []);
