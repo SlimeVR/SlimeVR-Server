@@ -629,7 +629,6 @@ tray_or_exit_modal-cancel = キャンセル
 
 unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
-vrc_config-spine_mode-UNKNOWN = 不明
 vrc_config-tracker_model-UNKNOWN = 不明
 vrc_config-avatar_measurement_type-UNKNOWN = 不明
 
