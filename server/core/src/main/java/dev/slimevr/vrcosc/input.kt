@@ -111,9 +111,9 @@ class VRCOSCInputBehaviour(
 		var oscReceiver: OscReceiver? = null
 
 		settings.context.state
-			.map { state -> Pair(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.portIn) }
+			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.portIn, state.data.vrcOscConfig.useManualNetwork) }
 			.distinctUntilChanged()
-			.onEach { (enabled, portIn) ->
+			.onEach { (enabled, configPortIn, useManualNetwork) ->
 				oscReceiver?.close()
 				oscReceiver = null
 
@@ -123,17 +123,19 @@ class VRCOSCInputBehaviour(
 					return@onEach
 				}
 
+				val bindPort = if (useManualNetwork) configPortIn else 0
 				val newReceiver = try {
-					OscReceiver(portIn)
+					OscReceiver(bindPort)
 				} catch (e: Exception) {
 					dispatchInputError(
 						receiver = receiver,
-						port = portIn,
+						port = bindPort,
 						message = "Failed to start VRChat OSC receiver",
 						throwable = e,
 					)
 					return@onEach
 				}
+				val portIn = newReceiver.getSocketPort()
 				oscReceiver = newReceiver
 				receiver.context.dispatch(
 					VRCOSCActions.SetInput(state = VRCOSCInputState.LISTENING, port = portIn),
@@ -186,11 +188,11 @@ class VRCOSCInputBehaviour(
 			),
 		)
 
-		if (!message.address.startsWith("$TRACKING_VRSYSTEM_PATH/")) return
+		if (!message.address.startsWith(TRACKING_VRSYSTEM_PATH)) return
 		val tracker = when (message.address) {
-			"$TRACKING_VRSYSTEM_PATH/head/pose" -> VRSystemTracker.HEAD
-			"$TRACKING_VRSYSTEM_PATH/leftwrist/pose" -> VRSystemTracker.LEFT_WRIST
-			"$TRACKING_VRSYSTEM_PATH/rightwrist/pose" -> VRSystemTracker.RIGHT_WRIST
+			"$TRACKING_VRSYSTEM_PATH$HEAD_POSE_SUBPATH" -> VRSystemTracker.HEAD
+			"$TRACKING_VRSYSTEM_PATH$LEFT_WRIST_POSE_SUBPATH" -> VRSystemTracker.LEFT_WRIST
+			"$TRACKING_VRSYSTEM_PATH$RIGHT_WRIST_POSE_SUBPATH" -> VRSystemTracker.RIGHT_WRIST
 			else -> return
 		}
 

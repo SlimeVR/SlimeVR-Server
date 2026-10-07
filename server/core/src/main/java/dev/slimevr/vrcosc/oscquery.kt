@@ -13,6 +13,7 @@ import dev.slimevr.util.formatExceptionMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -39,11 +40,19 @@ class VRCOSCOscQueryBehaviour(
 	override fun observe(receiver: VRCOSCManager) {
 		val runtime = OscQueryRuntime(localIp)
 
-		settings.context.state
-			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.useManualNetwork, state.data.vrcOscConfig.portIn) }
+		val settingsFlow = settings.context.state
+			.map { Pair(it.data.vrcOscConfig.enabled, it.data.vrcOscConfig.useManualNetwork) }
 			.distinctUntilChanged()
-			.onEach { (enabled, useManualNetwork, portIn) ->
-				if (!enabled || useManualNetwork) {
+		val portInFlow = receiver.context.state
+			.map { it.status.inputPort }
+			.distinctUntilChanged()
+		combine(
+			settingsFlow,
+			portInFlow,
+			::Pair
+		)
+			.onEach { (settings, portIn) ->
+				if (!settings.first || settings.second || portIn == null) {
 					stopOscQuery(receiver, runtime)
 					return@onEach
 				}
@@ -83,7 +92,9 @@ class VRCOSCOscQueryBehaviour(
 					oscPort = portIn.toUShort(),
 					serviceFactory = serviceFactory,
 				)
-				newServer.addNode(OscQueryNode(TRACKING_VRSYSTEM_PATH, access = OscQueryAccess.WRITE))
+				arrayOf(HEAD_POSE_SUBPATH, LEFT_WRIST_POSE_SUBPATH, RIGHT_WRIST_POSE_SUBPATH).forEach {
+					newServer.addNode(OscQueryNode("$TRACKING_VRSYSTEM_PATH$it", type = "ffffff", access = OscQueryAccess.WRITE))
+				}
 				withContext(Dispatchers.IO) { newServer.start(receiver.context.scope) }
 				runtime.server = newServer
 				AppLogger.vrc.info("VRChat OSCQuery started on http://${runtime.localIp}:${newServer.oscQueryPort}")

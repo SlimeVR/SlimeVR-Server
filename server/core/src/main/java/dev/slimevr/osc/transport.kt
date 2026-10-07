@@ -6,9 +6,9 @@ import io.ktor.network.sockets.ConnectedDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
+import io.ktor.network.sockets.port
 import kotlinx.coroutines.Dispatchers
 import kotlinx.io.Buffer
-import kotlinx.io.readByteArray
 
 private val selectorManager = SelectorManager(Dispatchers.IO)
 
@@ -41,6 +41,8 @@ class OscSender(private val address: String, private val port: Int) {
 class OscReceiver(private val port: Int) {
 	private var socket: BoundDatagramSocket? = null
 	private var running = false
+
+	suspend fun getSocketPort() = socket().localAddress.port()
 
 	private suspend fun socket(): BoundDatagramSocket {
 		val s = socket ?: aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", port)).also { socket = it }

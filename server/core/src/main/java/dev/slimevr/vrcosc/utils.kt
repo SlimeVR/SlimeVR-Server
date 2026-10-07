@@ -9,6 +9,9 @@ import io.github.axisangles.ktmath.Vector3
 import kotlin.math.PI
 
 internal const val TRACKING_VRSYSTEM_PATH: String = "/tracking/vrsystem"
+internal const val HEAD_POSE_SUBPATH: String = "/head/pose"
+internal const val LEFT_WRIST_POSE_SUBPATH: String = "/leftwrist/pose"
+internal const val RIGHT_WRIST_POSE_SUBPATH: String = "/rightwrist/pose"
 
 internal fun parsePosition(args: List<OscArg>, startIndex: Int = 0): Vector3? {
 	val x = args.getOrNull(startIndex)?.asFloatOrNull() ?: return null

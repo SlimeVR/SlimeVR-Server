@@ -172,10 +172,7 @@ function StatusCard({
             <Typography
               color="secondary"
               id="settings-osc-vrchat-status-input-listening"
-              vars={{
-                port: status.inputPort?.toString() ?? 'null',
-                source: sourceLabel,
-              }}
+              vars={{ port: status.inputPort?.toString() ?? 'null' }}
             />
             {inputState === VRCOSCInputState.ERROR && status.inputError ? (
               <Typography color="secondary">

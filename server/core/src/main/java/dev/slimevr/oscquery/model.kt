@@ -21,6 +21,7 @@ enum class OscQueryTransport {
 enum class OscQueryExtension {
 	ACCESS,
 	VALUE,
+	TYPE,
 	RANGE,
 	DESCRIPTION,
 	TAGS,
@@ -48,10 +49,11 @@ data class OscQueryHostInfo(
 	@SerialName("WS_PORT")
 	val websocketPort: UShort? = null,
 	@SerialName("EXTENSIONS")
-	val extensions: Map<OscQueryExtension, Boolean> = mapOf(OscQueryExtension.VALUE to true),
+	val extensions: Map<OscQueryExtension, Boolean> = mapOf(OscQueryExtension.ACCESS to true, OscQueryExtension.TYPE to true),
 )
 
 object OscQueryAccess {
+	const val NONE = 0
 	const val READ = 1
 	const val WRITE = 2
 	const val READ_WRITE = READ or WRITE
