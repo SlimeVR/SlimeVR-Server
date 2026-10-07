@@ -451,7 +451,6 @@ tray_or_exit_modal-cancel = İptal
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Bilinmeyen
 vrc_config-tracker_model-UNKNOWN = Bilinmeyen
 vrc_config-avatar_measurement_type-UNKNOWN = Bilinmeyen
 
