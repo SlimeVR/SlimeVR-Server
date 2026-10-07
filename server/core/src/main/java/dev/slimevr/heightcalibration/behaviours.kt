@@ -2,6 +2,7 @@
 
 package dev.slimevr.heightcalibration
 
+import com.jme3.math.FastMath
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sqrt
 
@@ -37,8 +37,8 @@ internal const val HEAD_RISE_THRESHOLD = 1.2f
 internal const val HEIGHT_MIN = 1.4f
 internal const val HEIGHT_MAX = 1.936f
 
-private val HEAD_ANGLE_THRESHOLD = cos((PI / 180.0) * 15.0)
-private val CONTROLLER_ANGLE_THRESHOLD = cos((PI / 180.0) * 45.0)
+private val HEAD_ANGLE_THRESHOLD = cos(FastMath.DEG_TO_RAD * 15.0)
+private val CONTROLLER_ANGLE_THRESHOLD = cos(FastMath.DEG_TO_RAD * 60.0)
 
 internal const val TIMEOUT_MS = 30_000L
 

@@ -46,7 +46,7 @@ class UpsamplingInputProcessor :
 			if (bone.expectedTps == null) return@forEachBone
 
 			// For a 100hz tracker on 500hz skeleton, this will be 0.2f (interpolating 1/5 every frame)
-			val interpolationRatio = deltaTime * bone.expectedTps.toFloat()
+			val interpolationRatio = (deltaTime * bone.expectedTps.toFloat()).coerceAtMost(1f)
 			val newBone = interpolationData[bodyPart]?.let { interpolation ->
 				// Interpolate rotation, acceleration and position.
 				val rotation = if (bone.isRotationActive) {
