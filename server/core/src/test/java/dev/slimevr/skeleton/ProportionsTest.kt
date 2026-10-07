@@ -26,13 +26,13 @@ class ProportionsTest {
 	}
 
 	@Test
-	fun `foot shift ranges from minus to plus half a metre`() {
-		assertEquals(-0.5f, BONE_SPECS.getValue(SkeletonBone.FOOT_SHIFT).min)
-		assertEquals(0.5f, BONE_SPECS.getValue(SkeletonBone.FOOT_SHIFT).max)
+	fun `foot shift ranges from minus to plus 20cm`() {
+		assertEquals(-0.2f, BONE_SPECS.getValue(SkeletonBone.FOOT_SHIFT).min)
+		assertEquals(0.2f, BONE_SPECS.getValue(SkeletonBone.FOOT_SHIFT).max)
 		assertEquals(0f, clampBoneValue(SkeletonBone.FOOT_SHIFT, 0f))
 		assertEquals(-0.05f, clampBoneValue(SkeletonBone.FOOT_SHIFT, -0.05f))
-		assertEquals(-0.5f, clampBoneValue(SkeletonBone.FOOT_SHIFT, -2f))
-		assertEquals(0.5f, clampBoneValue(SkeletonBone.FOOT_SHIFT, 2f))
+		assertEquals(-0.2f, clampBoneValue(SkeletonBone.FOOT_SHIFT, -2f))
+		assertEquals(0.2f, clampBoneValue(SkeletonBone.FOOT_SHIFT, 2f))
 	}
 
 	@Test
