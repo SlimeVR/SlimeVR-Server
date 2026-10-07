@@ -28,9 +28,8 @@ const val MAX_TORSO_VERTICAL_ACCEL = 8f
 const val FLOOR_TOUCH_DISTANCE = 0.03f
 
 // 1 = up, -1 = down
-const val SITTING_KNEE_MIN = -0.4f
-
-const val SITTING_THRESHOLD_SECONDS = 0.8f
+const val SITTING_KNEE_THRESHOLD = -0.4f
+const val SITTING_SECONDS_THRESHOLD = 0.8f
 
 // Legs, spine and head are always used even if inactive
 val alwaysActiveBodyParts = arrayOf(
@@ -88,8 +87,8 @@ object SittingLocalizer {
 		// if the y component of the vectors is small then the user is probably sitting
 		val leftKneeVertical = leftKnee.localTailPosition.unit().y
 		val rightKneeVertical = rightKnee.localTailPosition.unit().y
-		val sittingLeft = leftKneeVertical > SITTING_KNEE_MIN
-		val sittingRight = rightKneeVertical > SITTING_KNEE_MIN
+		val sittingLeft = leftKneeVertical > SITTING_KNEE_THRESHOLD
+		val sittingRight = rightKneeVertical > SITTING_KNEE_THRESHOLD
 
 		return sittingLeft && sittingRight
 	}
@@ -227,7 +226,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 		val followSource = getSourceToFollow(fk, lowestBone, bodyAcceleration).let {
 			if (it == FollowSource.SITTING) {
 				sittingTime += deltaTime
-				if (sittingTime < SITTING_THRESHOLD_SECONDS) {
+				if (sittingTime < SITTING_SECONDS_THRESHOLD) {
 					FollowSource.FLOOR
 				} else {
 					FollowSource.SITTING

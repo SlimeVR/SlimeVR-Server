@@ -22,20 +22,19 @@ class FloorClipTargetProcessor(
 
 		for (parentPart in targetParts) {
 			// Get existing target or make a new one at the current bone position.
-			val parentTargetY = mutableIkTargets[parentPart] ?: fk[parentPart]?.tailPosition ?: continue
+			val parentTarget = mutableIkTargets[parentPart] ?: fk[parentPart]?.tailPosition ?: continue
 
-			// Offset the parent target by the lowest child as well so that none of its active children are under the floor either.
-			var lowestChildTargetY = 0f
+			// Find the lowest y position, either the parent's or its children's.
+			var lowestTargetY = parentTarget.y
 			for ((_, childPart) in iterateBodyPartHierarchy(parentPart, true)) {
 				if (inputSkeleton[childPart]?.isRotationActive == false) continue
 				val target = mutableIkTargets[childPart] ?: fk[childPart]?.tailPosition ?: continue
-				if (target.y < lowestChildTargetY) lowestChildTargetY = target.y
+				if (target.y < lowestTargetY) lowestTargetY = target.y
 			}
-			val childOffset = if (lowestChildTargetY < 0f) (parentTargetY.y - lowestChildTargetY).coerceAtLeast(0f) else 0f
 
-			// Snap the parent up.
-			val targetY = parentTargetY.y.coerceAtLeast(floorLevel) + childOffset
-			mutableIkTargets[parentPart] = Vector3(parentTargetY.x, targetY, parentTargetY.z)
+			// Snap the parent up
+			val offsetY = (floorLevel - lowestTargetY).coerceAtLeast(0f)
+			mutableIkTargets[parentPart] = Vector3(parentTarget.x, parentTarget.y + offsetY, parentTarget.z)
 		}
 	}
 }

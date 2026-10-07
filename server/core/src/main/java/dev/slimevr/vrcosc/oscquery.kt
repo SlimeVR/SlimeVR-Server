@@ -49,7 +49,7 @@ class VRCOSCOscQueryBehaviour(
 		combine(
 			settingsFlow,
 			portInFlow,
-			::Pair
+			::Pair,
 		)
 			.onEach { (settings, portIn) ->
 				if (!settings.first || settings.second || portIn == null) {
