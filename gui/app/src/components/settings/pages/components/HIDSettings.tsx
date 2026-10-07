@@ -74,7 +74,7 @@ export function HIDSettings() {
 
   return (
     <>
-      <div className="flex flex-col pb-2">
+      <div className="flex flex-col pt-5 pb-2">
         <Typography variant="section-title">
           {l10n.getString(
             'settings-general-tracker_mechanics-trackers_over_usb'

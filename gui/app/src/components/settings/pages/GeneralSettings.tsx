@@ -45,12 +45,12 @@ export function GroupedTrackersSettings() {
           </Typography>
         </div>
 
-        <HIDSettings />
         <MagnetometerToggleSetting
           settingType="general"
           id="mechanics-magnetometer"
         />
         <TimeoutSettings />
+        <HIDSettings />
       </>
     </SettingsPagePaneLayout>
   );
