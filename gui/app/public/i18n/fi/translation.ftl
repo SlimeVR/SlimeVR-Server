@@ -631,7 +631,6 @@ tray_or_exit_modal-cancel = Peruuta
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Tuntematon
 vrc_config-tracker_model-UNKNOWN = Tuntematon
 vrc_config-avatar_measurement_type-UNKNOWN = Tuntematon
 
