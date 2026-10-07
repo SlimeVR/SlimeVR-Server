@@ -29,6 +29,7 @@ import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
@@ -97,7 +98,9 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		replay = 1,
 		onBufferOverflow = BufferOverflow.DROP_OLDEST,
 	)
-	computed.tryEmit(buildBones(context.state.value.boneInputs))
+	val initialBones: ComputedSkeleton = bodyPartMap()
+	buildBones(initialBones, context.state.value.boneInputs)
+	computed.tryEmit(initialBones)
 	val skeleton = Skeleton(context, computed, buildTestSettings(scope))
 	skeleton.startObserving()
 	return skeleton

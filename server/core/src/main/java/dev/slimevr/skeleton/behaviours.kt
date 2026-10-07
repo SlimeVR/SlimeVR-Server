@@ -275,7 +275,8 @@ class ComputedSkeletonBehaviour(
 						}
 
 						// Run initial FK
-						var fk = buildBones(boneInputs)
+						val fk: ComputedSkeleton = bodyPartMap()
+						buildBones(fk, boneInputs)
 
 						// These write into fk, not the inputs, and the rebuilds below carry their values forward
 						for (processor in fkComputedProcessors) processor.process(fk, boneInputs)
@@ -301,7 +302,7 @@ class ComputedSkeletonBehaviour(
 								}
 							}
 							// Inputs changed; re-run FK
-							if (fkChangedParts.isNotEmpty()) fk = buildBones(boneInputs, fkChangedParts, fk)
+							if (fkChangedParts.isNotEmpty()) buildBones(fk, boneInputs, fkChangedParts)
 						}
 
 						// Run IK processors

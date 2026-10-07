@@ -160,19 +160,15 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
 }
 
 /**
- * Runs FK from boneInputs.
- *
- * If changedParts is used, pass lastResult to fill in the gaps that won't be re-computed.
+ * Runs FK from boneInputs, mutating the passed bones.
  */
-fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet, lastResult: BodyPartMap<BoneState> = bodyPartMap()): ComputedSkeleton {
-	return lastResult.mutateCopy { result ->
-		for (bodyPart in highestBodyParts(changedParts)) {
-			iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
-				val rawBone = boneInputs[childPart] ?: return@forEach
-				val parentBone = parentPart?.let { result[it] }
-				// Velocity is written directly during the skeleton loop computed bones; keep it.
-				result[childPart] = buildBone(rawBone, parentBone, result[childPart]?.velocity ?: ZERO_VELOCITY)
-			}
+fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet) {
+	for (bodyPart in highestBodyParts(changedParts)) {
+		for ((parentPart, childPart) in iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD)) {
+			val rawBone = boneInputs[childPart] ?: continue
+			val parentBone = parentPart?.let { mutableBones[it] }
+			// Velocity is written directly during the skeleton loop computed bones; keep it.
+			mutableBones[childPart] = buildBone(rawBone, parentBone, mutableBones[childPart]?.velocity ?: ZERO_VELOCITY)
 		}
 	}
 }
@@ -257,7 +253,9 @@ class Skeleton(
 				replay = 1,
 				onBufferOverflow = BufferOverflow.DROP_OLDEST,
 			)
-			computed.tryEmit(buildBones(context.state.value.boneInputs))
+			val initialBones: ComputedSkeleton = bodyPartMap()
+			buildBones(initialBones, context.state.value.boneInputs)
+			computed.tryEmit(initialBones)
 
 			val skeleton = Skeleton(context, computed, settings)
 

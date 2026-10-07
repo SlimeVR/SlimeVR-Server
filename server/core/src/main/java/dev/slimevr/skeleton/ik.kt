@@ -5,8 +5,6 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
 	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
@@ -69,8 +67,8 @@ fun rotateChain(
 }
 
 fun ccdIkIteration(
+	mutableBones: ComputedSkeleton,
 	boneInputs: InputSkeleton,
-	bones: ComputedSkeleton,
 	chain: IKChain,
 	target: Vector3,
 	constraints: BodyPartMap<Constraint>?,
@@ -78,14 +76,14 @@ fun ccdIkIteration(
 	// TODO: Do we need annealing and/or dampening?
 	// The first bone in the chain is the one we are adjusting in this iteration
 	val bodyPart = chain.first()
-	val offset = fromChainToTarget(bodyPart, bones, chain, target) ?: return bones
+	val offset = fromChainToTarget(bodyPart, mutableBones, chain, target) ?: return mutableBones
 
 	// We only need to constrain the bone that we are adjusting
 	val constrainedOffset = constraints?.let {
 		constrainOffsetWithSkeleton(
 			bodyPart,
 			offset,
-			bones,
+			mutableBones,
 			it,
 		)
 	} ?: offset
@@ -94,7 +92,8 @@ fun ccdIkIteration(
 	rotateChain(boneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
-	return buildBones(boneInputs, chain.toSet(), bones)
+	buildBones(mutableBones, boneInputs, chain.toSet())
+	return mutableBones
 }
 
 typealias IKChain = List<BodyPart>
@@ -132,12 +131,13 @@ fun ccdIk(
 			// The chain from the current bone to the end, iterating backwards
 			val iterationChain = goal.chain.takeLast((i % goal.chain.size) + 1)
 			ccdIkIteration(
-				workingBoneInputs,
 				bones,
+				workingBoneInputs,
 				iterationChain,
 				goal.target,
 				constraints,
 			)
+			bones
 		}
 	}
 

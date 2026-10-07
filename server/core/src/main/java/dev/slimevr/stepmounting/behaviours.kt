@@ -35,8 +35,8 @@ class StepMountingBasicBehaviour : StepMountingBehaviour {
 		// only looks at bodyPart and whether position is set, so dedup on that per tracker rather
 		// than letting every rotation packet resume the combine.
 		allContextStates(receiver.server.context.state, { it.trackers.values }) { tracker ->
-			tracker.context.state.distinctUntilChanged { a, b ->
-				a.bodyPart == b.bodyPart && (a.position == null) == (b.position == null)
+			tracker.context.state.distinctUntilChanged { old, new ->
+				old.bodyPart == new.bodyPart && (old.position == null) == (new.position == null)
 			}
 		}
 			.map(::canCalibrate)

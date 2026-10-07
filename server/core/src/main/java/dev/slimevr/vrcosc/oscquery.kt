@@ -160,7 +160,7 @@ class VRCOSCOscQueryBehaviour(
 						VRCOSCDiscoveredTargetInfo(
 							name = service.name,
 							address = address,
-							portOut = DEFAULT_VRC_OSC_PORT_OUT,
+							portOut = DEFAULT_VRC_OSC_PORT_OUT, // TODO should read VRChat's /?HOST_INFO
 						)
 					}
 				}

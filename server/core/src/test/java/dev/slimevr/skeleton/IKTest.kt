@@ -1,7 +1,6 @@
 package dev.slimevr.skeleton
 
 import io.github.axisangles.ktmath.EulerOrder
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.test.Test
@@ -35,7 +34,8 @@ class IKTest {
 			offset = Vector3.NEG_Y,
 		)
 
-		val bones = buildBones(boneInputs)
+		val bones: ComputedSkeleton = bodyPartMap()
+		buildBones(bones, boneInputs)
 		val target = Vector3.POS_X * 3f
 		val goal = IKChainGoal(
 			listOf(

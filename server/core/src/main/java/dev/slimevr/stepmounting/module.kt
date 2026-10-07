@@ -26,7 +26,7 @@ import kotlin.time.ComparableTimeMark
 
 // TODO Put this enum in SolarXR
 enum class StepMountingStatus(
-	val `value`: UByte,
+	val value: UByte,
 ) {
 	NONE(0.toUByte()),
 	WAITING_FOR_MOVEMENT(1.toUByte()),
@@ -35,11 +35,6 @@ enum class StepMountingStatus(
 	DONE(4.toUByte()),
 	ERROR_NO_DATA(5.toUByte()),
 	ERROR_TIMEOUT(6.toUByte()),
-	;
-
-	companion object {
-		fun fromValue(`value`: UByte): StepMountingStatus? = entries.firstOrNull { it.value == value }
-	}
 }
 
 data class HeadsetSnapshot(

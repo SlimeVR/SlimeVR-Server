@@ -1,7 +1,9 @@
 package dev.slimevr.bvh
 
 import dev.slimevr.config.TextFileHandle
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
+import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
@@ -16,17 +18,24 @@ class BvhStreamTest {
 	fun `close persists header and frame data`() = runTest {
 		val file = InMemoryBvhFile()
 		val stream = BvhStream(file)
-		val initialBones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
-		val firstFrame = buildBones(
-			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
-				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(1f, 2f, 3f))
-			},
-		)
-		val secondFrame = buildBones(
-			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
-				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(4f, 5f, 6f))
-			},
-		)
+		val initialBones: ComputedSkeleton = bodyPartMap()
+		buildBones(initialBones, DEFAULT_SKELETON_STATE.boneInputs)
+		val firstFrame: ComputedSkeleton = initialBones.mutateCopy { bones ->
+			buildBones(
+				bones,
+				DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
+					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(1f, 2f, 3f))
+				},
+			)
+		}
+		val secondFrame = firstFrame.mutateCopy { bones ->
+			buildBones(
+				bones,
+				DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
+					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(4f, 5f, 6f))
+				},
+			)
+		}
 
 		stream.writeHeader(initialBones)
 		stream.writeFrame(firstFrame)
@@ -45,19 +54,20 @@ class BvhStreamTest {
 	fun `writeFrame after close is ignored`() = runTest {
 		val file = InMemoryBvhFile()
 		val stream = BvhStream(file)
-		val bones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
+		val bones: ComputedSkeleton = bodyPartMap()
+		buildBones(bones, DEFAULT_SKELETON_STATE.boneInputs)
 
 		stream.writeHeader(bones)
 		stream.close()
 		val before = file.content()
 
-		stream.writeFrame(
-			buildBones(
-				DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
-					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(7f, 8f, 9f))
-				},
-			),
+		buildBones(
+			bones,
+			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
+				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(7f, 8f, 9f))
+			},
 		)
+		stream.writeFrame(bones)
 
 		assertEquals(before, file.content())
 	}
