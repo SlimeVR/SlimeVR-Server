@@ -4,7 +4,6 @@ import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import {
   avatarMeasurementTypeTranslationMap,
-  spineModeTranslationMap,
   trackerModelTranslationMap,
   useVRCConfig,
   VRCConfigStateSupported,
@@ -112,7 +111,6 @@ const onOffKey = (value: boolean) =>
   value ? 'vrc_config-on' : 'vrc_config-off';
 
 export function VRCWarningsPage() {
-  const { l10n } = useLocalization();
   const { state, toggleMutedSettings } = useVRCConfig();
   const { currentLocales } = useLocaleConfig();
 
@@ -183,20 +181,6 @@ export function VRCWarningsPage() {
                   }
                 />
                 <SettingRow
-                  {...settingRowProps('shoulderWidthCompensationOk')}
-                  name="vrc_config-shoulder_width_compensation"
-                  recommendedValue={
-                    <Localized
-                      id={onOffKey(state.recommended.shoulderWidthCompensation)}
-                    />
-                  }
-                  value={
-                    <Localized
-                      id={onOffKey(state.state.shoulderWidthCompensation)}
-                    />
-                  }
-                />
-                <SettingRow
                   {...settingRowProps('calibrationVisualsOk')}
                   name="vrc_config-calibration_visuals"
                   recommendedValue={
@@ -243,21 +227,6 @@ export function VRCWarningsPage() {
               />
               <Typography id="vrc_config-page-wrist_menu-desc" />
               <Table>
-                <SettingRow
-                  {...settingRowProps('spineModeOk')}
-                  name="vrc_config-spine_mode"
-                  recommendedValue={state.recommended.spineMode
-                    .map((mode) =>
-                      l10n.getString(spineModeTranslationMap[mode])
-                    )
-                    .join(', ')}
-                  value={
-                    <Localized
-                      id={spineModeTranslationMap[state.state.spineMode]}
-                    />
-                  }
-                />
-
                 <SettingRow
                   {...settingRowProps('avatarMeasurementTypeOk')}
                   name="vrc_config-avatar_measurement_type"

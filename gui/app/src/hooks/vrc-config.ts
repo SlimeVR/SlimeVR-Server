@@ -6,7 +6,6 @@ import {
   VRCConfigSettingToggleMuteT,
   VRCConfigStateChangeResponseT,
   VRCConfigStateRequestT,
-  VRCSpineMode,
   VRCTrackerModel,
 } from 'solarxr-protocol';
 
@@ -18,13 +17,6 @@ export type VRCConfigStateSupported = { isSupported: true } & NonNull<
   Pick<VRCConfigStateChangeResponseT, 'recommended' | 'state' | 'validity' | 'muted'>
 >;
 export type VRCConfigState = { isSupported: false } | VRCConfigStateSupported;
-
-export const spineModeTranslationMap: Record<VRCSpineMode, string> = {
-  [VRCSpineMode.UNKNOWN]: 'vrc_config-spine_mode-UNKNOWN',
-  [VRCSpineMode.LOCK_BOTH]: 'vrc_config-spine_mode-LOCK_BOTH',
-  [VRCSpineMode.LOCK_HEAD]: 'vrc_config-spine_mode-LOCK_HEAD',
-  [VRCSpineMode.LOCK_HIP]: 'vrc_config-spine_mode-LOCK_HIP',
-};
 
 export const trackerModelTranslationMap: Record<VRCTrackerModel, string> = {
   [VRCTrackerModel.UNKNOWN]: 'vrc_config-tracker_model-UNKNOWN',

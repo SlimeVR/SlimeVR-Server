@@ -1594,18 +1594,11 @@ vrc_config-mute-btn = Mute
 vrc_config-unmute-btn = Unmute
 vrc_config-legacy_mode = Use Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
-vrc_config-shoulder_width_compensation = Shoulder Width Compensation
-vrc_config-spine_mode = FBT Spine Mode
 vrc_config-tracker_model = FBT Tracker Model
 vrc_config-avatar_measurement_type = Avatar Measurement
 vrc_config-calibration_range = Calibration Range
 vrc_config-calibration_visuals = Display Calibration Visuals
 vrc_config-user_height = User Real Height
-
-vrc_config-spine_mode-UNKNOWN = Unknown
-vrc_config-spine_mode-LOCK_BOTH = Lock Both
-vrc_config-spine_mode-LOCK_HEAD = Lock Head
-vrc_config-spine_mode-LOCK_HIP = Lock Hip
 
 vrc_config-tracker_model-UNKNOWN = Unknown
 vrc_config-tracker_model-AXIS = Axis

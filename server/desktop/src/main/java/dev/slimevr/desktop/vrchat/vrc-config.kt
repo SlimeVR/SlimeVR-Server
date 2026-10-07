@@ -8,7 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.emptyFlow
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
 import solarxr_protocol.rpc.VRCConfigValues
-import solarxr_protocol.rpc.VRCSpineMode
 import solarxr_protocol.rpc.VRCTrackerModel
 
 internal const val VRC_REG_PATH = "Software\\VRChat\\VRChat"
@@ -42,7 +41,6 @@ internal suspend fun buildVRCConfigValues(
 ): VRCConfigValues = VRCConfigValues(
 	legacyMode = intValue("VRC_IK_LEGACY") == 1,
 	shoulderTrackingDisabled = intValue("VRC_IK_DISABLE_SHOULDER_TRACKING") == 1,
-	shoulderWidthCompensation = intValue("VRC_IK_SHOULDER_WIDTH_COMPENSATION") == 1,
 	userHeight = doubleValue("PlayerHeight")?.toFloat() ?: -1.0f,
 	calibrationRange = doubleValue("VRC_IK_CALIBRATION_RANGE")?.toFloat() ?: -1.0f,
 	trackerModel = when (intValue("VRC_IK_TRACKER_MODEL")) {
@@ -51,12 +49,6 @@ internal suspend fun buildVRCConfigValues(
 		2 -> VRCTrackerModel.BOX
 		3 -> VRCTrackerModel.AXIS
 		else -> VRCTrackerModel.UNKNOWN
-	},
-	spineMode = when (intValue("VRC_IK_FBT_SPINE_MODE")) {
-		0 -> VRCSpineMode.LOCK_HIP
-		1 -> VRCSpineMode.LOCK_HEAD
-		2 -> VRCSpineMode.LOCK_BOTH
-		else -> VRCSpineMode.UNKNOWN
 	},
 	calibrationVisuals = intValue("VRC_IK_CALIBRATION_VIS") == 1,
 	avatarMeasurementType = when (intValue("VRC_IK_AVATAR_MEASUREMENT_TYPE")) {

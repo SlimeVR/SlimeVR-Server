@@ -12,7 +12,6 @@ import solarxr_protocol.rpc.VRCAvatarMeasurementType
 import solarxr_protocol.rpc.VRCConfigRecommendedValues
 import solarxr_protocol.rpc.VRCConfigValidity
 import solarxr_protocol.rpc.VRCConfigValues
-import solarxr_protocol.rpc.VRCSpineMode
 import solarxr_protocol.rpc.VRCTrackerModel
 import kotlin.math.abs
 
@@ -104,31 +103,25 @@ fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigReco
 		userHeight = userHeight / EYE_HEIGHT_TO_HEIGHT_RATIO,
 		calibrationRange = 0.2f,
 		trackerModel = VRCTrackerModel.AXIS,
-		spineMode = listOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
 		calibrationVisuals = true,
 		avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT,
-		shoulderWidthCompensation = true,
 	)
 }
 
 fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): Boolean = (validity.legacyModeOk || "legacyModeOk" in mutedWarnings) &&
 	(validity.shoulderTrackingOk || "shoulderTrackingOk" in mutedWarnings) &&
-	(validity.shoulderWidthCompensationOk || "shoulderWidthCompensationOk" in mutedWarnings) &&
 	(validity.userHeightOk || "userHeightOk" in mutedWarnings) &&
 	(validity.calibrationRangeOk || "calibrationRangeOk" in mutedWarnings) &&
 	(validity.calibrationVisualsOk || "calibrationVisualsOk" in mutedWarnings) &&
 	(validity.trackerModelOk || "trackerModelOk" in mutedWarnings) &&
-	(validity.spineModeOk || "spineModeOk" in mutedWarnings) &&
 	(validity.avatarMeasurementTypeOk || "avatarMeasurementTypeOk" in mutedWarnings)
 
 fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
 	legacyModeOk = values.legacyMode == recommended.legacyMode,
 	shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
-	spineModeOk = recommended.spineMode?.contains(values.spineMode) == true,
 	trackerModelOk = values.trackerModel == recommended.trackerModel,
 	calibrationRangeOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1f,
 	userHeightOk = abs(recommended.userHeight - values.userHeight) < 0.1f,
 	calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 	avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
-	shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
 )
