@@ -715,7 +715,6 @@ unknown_device-modal-description =
     Bạn có muốn kết nối nó với SlimeVR không?
 unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
-vrc_config-spine_mode-UNKNOWN = Không rõ
 vrc_config-tracker_model-UNKNOWN = Không rõ
 vrc_config-avatar_measurement_type-UNKNOWN = Không rõ
 
