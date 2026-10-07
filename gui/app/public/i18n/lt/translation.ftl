@@ -565,7 +565,6 @@ tray_or_exit_modal-cancel = Atšaukti
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Nežinoma
 vrc_config-tracker_model-UNKNOWN = Nežinoma
 vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
 
