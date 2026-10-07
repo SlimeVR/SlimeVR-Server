@@ -821,7 +821,6 @@ tray_or_exit_modal-cancel = 취소
 unknown_device-modal-title = 새로운 트래커를 찾았어요!
 unknown_device-modal-confirm = 당연하죠!
 unknown_device-modal-forget = 무시할게요
-vrc_config-spine_mode-UNKNOWN = 알 수 없음
 vrc_config-tracker_model-UNKNOWN = 알 수 없음
 vrc_config-avatar_measurement_type-UNKNOWN = 알 수 없음
 
