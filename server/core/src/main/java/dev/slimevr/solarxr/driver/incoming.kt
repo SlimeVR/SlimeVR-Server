@@ -153,8 +153,6 @@ class DriverIncomingTrackersBehaviour(
 				driverName = driverName,
 				appContext = appContext,
 			)
-			// Start with non-null position
-			tracker.context.dispatch(TrackerActions.SetRotation(null, null, null, Vector3.ZERO, false))
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 
 			receiver.sendDriverMessage(

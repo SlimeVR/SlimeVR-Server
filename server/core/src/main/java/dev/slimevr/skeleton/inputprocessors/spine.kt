@@ -37,7 +37,7 @@ private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
 // TODO: Fine tune
 private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to mapOf(
-		SpineSource.UPPER_CHEST to Reliability(-6f, 25f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-6.5f, 36f), // Itself
 		// To
 		SpineSource.LOWER_CHEST to Reliability(1f),
 		SpineSource.UPPER_WAIST to Reliability(1.5f),
@@ -47,8 +47,8 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	),
 	SpineSource.LOWER_CHEST to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to Reliability(-10f, 9f),
-		SpineSource.LOWER_CHEST to Reliability(-11f, 10f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-10f, 11f),
+		SpineSource.LOWER_CHEST to Reliability(-11f, 12f), // Itself
 		// To
 		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f),
 		SpineSource.LOWER_WAIST to Reliability(2f, 7f),
