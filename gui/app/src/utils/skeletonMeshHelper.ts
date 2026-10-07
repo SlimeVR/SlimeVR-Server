@@ -2,6 +2,7 @@ import { Box3, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { SkeletonRenderPart } from './skeletonHelper';
 import { BodyPart, BoneT } from 'solarxr-protocol';
+import { FlatDeviceTracker } from '@/store/app-store';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import {
@@ -149,6 +150,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
     this.proportions = proportions;
   }
 
+  setTrackers(trackers: Partial<Record<BodyPart, FlatDeviceTracker>>) {
+    for (const part of this.parts) {
+      part.tracker = trackers[part.bone.bodyPart];
+    }
+  }
+
   setBones(bones: Map<BodyPart, BoneT>) {
     for (const part of this.parts) {
       const bone = bones.get(part.bone.bodyPart);
@@ -158,8 +165,57 @@ export class BasedSkeletonMeshHelper extends Object3D {
   }
 
   updateMatrixWorld(force: boolean) {
+    const hasBustTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.LEFT_BUST ||
+          part.bone.bodyPart === BodyPart.RIGHT_BUST) &&
+        part.tracker
+    );
+    const hasPosteriorTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.LEFT_POSTERIOR ||
+          part.bone.bodyPart === BodyPart.RIGHT_POSTERIOR) &&
+        part.tracker
+    );
+    const hasTailTracker = this.parts.some(
+      (part) =>
+        (part.bone.bodyPart === BodyPart.TAIL ||
+          part.bone.bodyPart === BodyPart.TAIL_1 ||
+          part.bone.bodyPart === BodyPart.TAIL_2 ||
+          part.bone.bodyPart === BodyPart.TAIL_3 ||
+          part.bone.bodyPart === BodyPart.TAIL_4 ||
+          part.bone.bodyPart === BodyPart.TAIL_5 ||
+          part.bone.bodyPart === BodyPart.TAIL_6) &&
+        part.tracker
+    );
+
     for (const part of this.parts) {
       const { bone, shapes } = part;
+      const isBustPart =
+        bone.bodyPart === BodyPart.LEFT_BUST || bone.bodyPart === BodyPart.RIGHT_BUST;
+      const isPosteriorPart =
+        bone.bodyPart === BodyPart.LEFT_POSTERIOR ||
+        bone.bodyPart === BodyPart.RIGHT_POSTERIOR;
+      const isTailPart =
+        bone.bodyPart === BodyPart.TAIL ||
+        bone.bodyPart === BodyPart.TAIL_1 ||
+        bone.bodyPart === BodyPart.TAIL_2 ||
+        bone.bodyPart === BodyPart.TAIL_3 ||
+        bone.bodyPart === BodyPart.TAIL_4 ||
+        bone.bodyPart === BodyPart.TAIL_5 ||
+        bone.bodyPart === BodyPart.TAIL_6;
+
+      const hidden =
+        (isBustPart && !hasBustTracker) ||
+        (isTailPart && !hasTailTracker) ||
+        (isPosteriorPart && !hasPosteriorTracker);
+
+      for (const attached of shapes) {
+        attached.node.visible = !hidden;
+      }
+      if (hidden) {
+        continue;
+      }
 
       position.copy(Vector3FromVec3fT(bone.headPosition));
       quat.copy(QuaternionFromQuatT(bone.orientation)).normalize();

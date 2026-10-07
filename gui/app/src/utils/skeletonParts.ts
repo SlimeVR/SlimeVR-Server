@@ -237,6 +237,32 @@ const footScale: ShapeScale = {
 const footOffset: ShapeOffset = ({ boneLength, proportions }) =>
   new Vector3(0, -0.1 * boneLength, -0.1 * proportions.bodyScale);
 
+const CHEST_TRACKER_OFFSET = 0.2;
+const WAIST_TRACKER_OFFSET = 0.8;
+const HIP_TRACKER_OFFSET = 0.75;
+const UPPER_ARM_TRACKER_OFFSET = 0.75;
+const LOWER_ARM_TRACKER_OFFSET = 0.15;
+const UPPER_LEG_TRACKER_OFFSET = 0.7;
+const LOWER_LEG_TRACKER_OFFSET = 0.75;
+
+
+
+const bustScale: ShapeScale = {
+  compute: ({ proportions }) => {
+    const girth = girthScale(proportions, 'shoulders');
+    const size = 0.08 * girth;
+    return { width: size, depth: size, length: size };
+  },
+};
+
+const posteriorScale: ShapeScale = {
+  compute: ({ proportions }) => {
+    const girth = girthScale(proportions, 'hips');
+    const size = 0.08 * girth;
+    return { width: size, depth: size, length: size };
+  },
+};
+
 export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.NONE]: part(shape(), { visible: false }),
   [BodyPart.HEAD]: part(
@@ -397,6 +423,50 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.RIGHT_MIDDLE_TOE]: toeRight('middle_toe'),
   [BodyPart.RIGHT_RING_TOE]: toeRight('ring_toe'),
   [BodyPart.RIGHT_LITTLE_TOE]: toeRight('little_toe'),
+
+  [BodyPart.LEFT_BUST]: part(
+    model('bust', {
+      scale: bustScale,
+    })
+  ),
+  [BodyPart.RIGHT_BUST]: part(
+    model('bust', {
+      scale: bustScale,
+    })
+  ),
+  [BodyPart.LEFT_POSTERIOR]: part(
+    model('posterior', {
+      scale: posteriorScale,
+    })
+  ),
+  [BodyPart.RIGHT_POSTERIOR]: part(
+    model('posterior', {
+      scale: posteriorScale,
+    })
+  ),
+  [BodyPart.TAIL]: part(
+    model('lower_leg', {
+      scale: spanBone({ girthFrom: 'hips', width: 0.7, depth: 0.7, length: 1 }),
+    })
+  ),
+  [BodyPart.TAIL_1]: part(
+    model('lower_leg', { scale: spanBone({ width: 0.6, depth: 0.6, length: 1 }) })
+  ),
+  [BodyPart.TAIL_2]: part(
+    model('lower_leg', { scale: spanBone({ width: 0.55, depth: 0.55, length: 1 }) })
+  ),
+  [BodyPart.TAIL_3]: part(
+    model('lower_leg', { scale: spanBone({ width: 0.5, depth: 0.5, length: 1 }) })
+  ),
+  [BodyPart.TAIL_4]: part(
+    model('lower_leg', { scale: spanBone({ width: 0.45, depth: 0.45, length: 1 }) })
+  ),
+  [BodyPart.TAIL_5]: part(
+    model('lower_leg', { scale: spanBone({ width: 0.4, depth: 0.4, length: 1 }) })
+  ),
+  [BodyPart.TAIL_6]: part(
+    model('lower_leg', { scale: spanBone({ width: 0.35, depth: 0.35, length: 1 }) })
+  ),
 };
 
 const DEFAULT_SCALE = spanBone();

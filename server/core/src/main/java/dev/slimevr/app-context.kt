@@ -2,6 +2,7 @@ package dev.slimevr
 
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
+import dev.slimevr.customosc.CustomOscOutputManager
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
@@ -51,6 +52,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val bvhManager: BVHManager
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
+	val customOscOutputManager: CustomOscOutputManager
 	val resetsManager: ResetsManager
 	val tapDetectionManager: TapDetectionManager
 	val stepMountingManager: StepMountingManager
@@ -78,6 +80,7 @@ class AppContext(
 	override val bvhManager: BVHManager,
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
+	override val customOscOutputManager: dev.slimevr.customosc.CustomOscOutputManager,
 	override val resetsManager: ResetsManager,
 	override val tapDetectionManager: TapDetectionManager,
 	override val stepMountingManager: StepMountingManager,
@@ -95,6 +98,7 @@ class AppContext(
 		boneRouting.startObserving(this)
 		vmcManager.startObserving(this)
 		vrcOscManager.startObserving(this)
+		customOscOutputManager.startObserving()
 		resetsManager.startObserving()
 		tapDetectionManager.startObserving()
 		stepMountingManager.startObserving()

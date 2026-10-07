@@ -71,6 +71,17 @@ val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 		BodyPart.RIGHT_MIDDLE_TOE to arrayOf("RightMiddleToe"),
 		BodyPart.RIGHT_RING_TOE to arrayOf("RightRingToe"),
 		BodyPart.RIGHT_LITTLE_TOE to arrayOf("RightLittleToe"),
+		BodyPart.LEFT_POSTERIOR to arrayOf("LeftPosterior"),
+		BodyPart.RIGHT_POSTERIOR to arrayOf("RightPosterior"),
+		BodyPart.TAIL to arrayOf("Tail", "Tail1"),
+		BodyPart.TAIL_1 to arrayOf("Tail1"),
+		BodyPart.TAIL_2 to arrayOf("Tail2"),
+		BodyPart.TAIL_3 to arrayOf("Tail3"),
+		BodyPart.TAIL_4 to arrayOf("Tail4"),
+		BodyPart.TAIL_5 to arrayOf("Tail5"),
+		BodyPart.TAIL_6 to arrayOf("Tail6"),
+		BodyPart.LEFT_BUST to arrayOf("LeftBust"),
+		BodyPart.RIGHT_BUST to arrayOf("RightBust"),
 	),
 )
 
@@ -82,7 +93,21 @@ val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 //  and figure out how to deal with it (check if present in VRM?)
 val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	mapOf(
-		BodyPart.HIP to arrayOf(BodyPart.UPPER_WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
+		BodyPart.HIP to arrayOf(
+			BodyPart.UPPER_WAIST,
+			BodyPart.LEFT_UPPER_LEG,
+			BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.LEFT_POSTERIOR,
+			BodyPart.RIGHT_POSTERIOR,
+			BodyPart.TAIL,
+			BodyPart.TAIL_1,
+		),
+		BodyPart.TAIL to arrayOf(BodyPart.TAIL_1),
+		BodyPart.TAIL_1 to arrayOf(BodyPart.TAIL_2),
+		BodyPart.TAIL_2 to arrayOf(BodyPart.TAIL_3),
+		BodyPart.TAIL_3 to arrayOf(BodyPart.TAIL_4),
+		BodyPart.TAIL_4 to arrayOf(BodyPart.TAIL_5),
+		BodyPart.TAIL_5 to arrayOf(BodyPart.TAIL_6),
 		BodyPart.UPPER_WAIST to arrayOf(BodyPart.LOWER_CHEST),
 		BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 		BodyPart.NECK to arrayOf(BodyPart.HEAD),
@@ -144,6 +169,10 @@ val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 			BodyPart.RIGHT_RING_TOE,
 			BodyPart.RIGHT_LITTLE_TOE,
 		),
+		BodyPart.UPPER_CHEST to arrayOf(
+			BodyPart.LEFT_BUST,
+			BodyPart.RIGHT_BUST
+		),
 	),
 )
 
@@ -195,7 +224,7 @@ val UNITY_BONE_TO_BODY_PART: Map<String, BodyPart> = BODY_PART_TO_UNITY_BONE.ent
 	.flatMap { (bodyPart, names) -> names.map { name -> name.lowercase() to bodyPart } }
 	.toMap()
 
-fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = bodyPart.opposite ?: bodyPart
+
 
 // Per-bone rest offset, subtracted from the live world rotation before computing the VMC local.
 // Arms remap our hanging rest (NEG_Y) to the VRM rig's T-pose rest direction so the avatar isn't stuck at T regardless of our pose.
