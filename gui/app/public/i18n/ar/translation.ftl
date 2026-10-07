@@ -868,7 +868,6 @@ unknown_device-modal-description =
     هل تريد توصيله ب SlimeVR؟
 unknown_device-modal-confirm = أكيد
 unknown_device-modal-forget = تجاهلها
-vrc_config-spine_mode-UNKNOWN = مجهول
 vrc_config-tracker_model-UNKNOWN = مجهول
 vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 
