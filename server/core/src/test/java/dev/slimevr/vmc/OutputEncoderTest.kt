@@ -162,7 +162,7 @@ class OutputEncoderTest {
 		val bundle = buildOutgoingBundle(bones, setOf(BodyPart.HIP), config, vrm, 1.7f, 0.3f, 0.seconds)
 
 		val hips = assertNotNull(boneMessage(bundle, "Hips"))
-		vectorAssertEquals(vrm.hipLocalPosition, messagePosition(hips))
+		vectorAssertEquals(vrm.hipPosition, messagePosition(hips))
 	}
 
 	@Test
@@ -243,7 +243,7 @@ class OutputEncoderTest {
 		val bundle = buildOutgoingBundle(bones, setOf(BodyPart.HIP), config, vrm, vrm.outputRestHeight, 0f, 0.seconds)
 
 		val hips = assertNotNull(boneMessage(bundle, "Hips"))
-		vectorAssertEquals(vrm.hipLocalPosition, messagePosition(hips))
+		vectorAssertEquals(vrm.hipPosition, messagePosition(hips))
 	}
 }
 

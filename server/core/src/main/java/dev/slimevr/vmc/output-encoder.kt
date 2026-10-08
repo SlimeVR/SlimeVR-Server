@@ -5,14 +5,21 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.util.inFloatingSeconds
-import dev.slimevr.util.millisecondsInSecond
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.collections.get
 import kotlin.time.Duration
+
+private fun averageRotations(rotations: List<Quaternion>) = rotations.reduceIndexedOrNull { index, acc, rotation ->
+	acc.interpQ(rotation, 1f / (index + 1))
+} ?: Quaternion.IDENTITY
+
+private fun averagePositions(positions: List<Vector3>) = positions.reduceIndexedOrNull { index, acc, position ->
+	acc.lerp(position, 1f / (index + 1))
+} ?: Vector3.ZERO
 
 internal fun buildOutgoingBundle(
 	bones: ComputedSkeleton,
@@ -30,34 +37,61 @@ internal fun buildOutgoingBundle(
 		// Send the origin (0, 0, 0) as root
 		add(OscContent.Message(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.ZERO, Quaternion.IDENTITY)))
 
-		for ((targetBodyPart, unityNames) in BODY_PART_TO_UNITY_BONE) {
-			if (targetBodyPart !in routedBones) continue
+		// Compute global positions and rotations of every UnityBone
+		val unityBoneGlobalRotations: MutableMap<UnityBone, Quaternion> = mutableMapOf()
+		val unityBoneGlobalPositions: MutableMap<UnityBone, Vector3> = mutableMapOf()
+		for (unityBone in UnityBone.entries) {
+			val bodyParts = if ((unityBone == UnityBone.CHEST || unityBone == UnityBone.UPPER_CHEST) && vrm != null && !vrm.hasUpperChest) {
+				// If the VRM doesn't have an upper chest, we merge it with the (lower) chest
+				UnityBone.CHEST.bodyParts + UnityBone.UPPER_CHEST.bodyParts
+			} else {
+				unityBone.bodyParts
+			}
+			unityBoneGlobalRotations[unityBone] = averageRotations(bodyParts.mapNotNull { bones[it]?.rotation })
+			unityBoneGlobalPositions[unityBone] = averagePositions(bodyParts.mapNotNull { bones[it]?.headPosition })
+		}
 
-			val targetParentBodyPart = VMC_OUTPUT_BONE_PARENTS[targetBodyPart]
-			val trackingBodyPart = trackingBodyPart(targetBodyPart, config.mirrorTracking)
-			val trackingBone = bones[trackingBodyPart] ?: continue
+		// Send data for each bone
+		for (targetUnityBone in UnityBone.entries) {
+			if (!targetUnityBone.bodyParts.any { it in routedBones }) continue
 
-			if (targetParentBodyPart == null) {
-				val pos = vmcHipPosition(bones, vrm, config, skeletonHeight, floorLevel)
-				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
-				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", unityNames.first(), pos, rot)))
-				continue
+			val trackingUnityBone = if (config.mirrorTracking) targetUnityBone.opposite else targetUnityBone
+			val targetParentUnityBone = VMC_BONE_PARENTS[targetUnityBone]
+			val trackingParentUnityBone = VMC_BONE_PARENTS[trackingUnityBone]
+
+			// Compute local rotation of bone
+			val boneRotation = unityBoneGlobalRotations[trackingUnityBone] ?: Quaternion.IDENTITY
+			val parentRotation = unityBoneGlobalRotations[trackingParentUnityBone] ?: Quaternion.IDENTITY
+			val localRotation = vmcLocalRotation(boneRotation, parentRotation, targetUnityBone, targetParentUnityBone, config.mirrorTracking)
+
+			// Compute local position of bone
+			val localPosition = if (targetParentUnityBone == null) {
+				// Special case for root
+				vmcHipPosition(
+					unityBoneGlobalRotations,
+					unityBoneGlobalPositions,
+					bones,
+					vrm,
+					config,
+					skeletonHeight,
+					floorLevel,
+				)
+			} else {
+				val bonePosition = unityBoneGlobalPositions[trackingUnityBone] ?: Vector3.ZERO
+				val parentPosition = unityBoneGlobalPositions[trackingParentUnityBone] ?: Vector3.ZERO
+				emittedLocalPosition(targetUnityBone, targetParentUnityBone, bonePosition, parentRotation, parentPosition, vrm, config.mirrorTracking)
 			}
 
-			val trackingParentBodyPart = trackingBodyPart(targetParentBodyPart, config.mirrorTracking)
-			val trackingParent = bones[trackingParentBodyPart] ?: continue
-
-			val pos = emittedLocalPosition(targetBodyPart, targetParentBodyPart, trackingBone, trackingParent, vrm, config.mirrorTracking)
-			val rot = vmcLocalRotation(
-				trackingBone,
-				trackingParent,
-				targetBodyPart,
-				targetParentBodyPart,
-				config.mirrorTracking,
+			add(
+				OscContent.Message(
+					transformMessage(
+						"/VMC/Ext/Bone/Pos",
+						targetUnityBone.serial,
+						localPosition,
+						localRotation,
+					),
+				),
 			)
-			for (outputName in unityNames) {
-				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", outputName, pos, rot)))
-			}
 		}
 	}
 
@@ -66,88 +100,100 @@ internal fun buildOutgoingBundle(
 
 internal fun buildInitRequestMessage(): OscMessage = OscMessage("/VMC/Ext/Req", emptyList())
 
-private fun trackingBodyPart(targetBodyPart: BodyPart, mirror: Boolean): BodyPart = if (mirror) vmcMirrorSource(targetBodyPart) else targetBodyPart
-
 private fun restAdjustedWorld(
-	bone: BoneState,
-	restBodyPart: BodyPart = bone.bodyPart,
-	mirror: Boolean = false,
+	boneRotation: Quaternion,
+	restUnityBone: UnityBone?,
+	mirror: Boolean,
 ): Quaternion {
-	val world = if (mirror) vmcMirrorRotation(bone.rotation) else bone.rotation
-	val rest = VMC_REST_ROTATIONS[restBodyPart] ?: return world
-	return world * rest.inv()
+	val world = if (mirror) vmcMirrorRotation(boneRotation) else boneRotation
+	val rest = VMC_REST_ROTATIONS[restUnityBone] ?: return world
+	return world / rest
 }
 
 internal fun vmcLocalRotation(
-	bone: BoneState,
-	parent: BoneState?,
-	restBodyPart: BodyPart,
-	restParentBodyPart: BodyPart?,
+	boneRotation: Quaternion,
+	parentRotation: Quaternion?,
+	restUnityBone: UnityBone,
+	restParentUnityBone: UnityBone?,
 	mirror: Boolean,
 ): Quaternion {
-	val adjusted = restAdjustedWorld(bone, restBodyPart, mirror)
-	if (parent == null) return adjusted
-	return restAdjustedWorld(parent, restParentBodyPart ?: parent.bodyPart, mirror).inv() * adjusted
+	val adjusted = restAdjustedWorld(boneRotation, restUnityBone, mirror)
+	if (parentRotation == null) return adjusted
+	return restAdjustedWorld(parentRotation, restParentUnityBone, mirror).inv() * adjusted
 }
 
 internal fun vmcLocalPosition(
-	bone: BoneState,
-	parent: BoneState,
-	restParentBodyPart: BodyPart,
+	bonePosition: Vector3,
+	parentRotation: Quaternion,
+	parentPosition: Vector3,
+	restParentUnityBone: UnityBone,
 	mirror: Boolean,
 ): Vector3 {
-	val parentAdjusted = restAdjustedWorld(parent, restParentBodyPart, mirror)
-	val localPosition = bone.headPosition - parent.headPosition
+	val parentAdjusted = restAdjustedWorld(parentRotation, restParentUnityBone, mirror)
+	val localPosition = bonePosition - parentPosition
 	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
 }
 
 private fun emittedLocalPosition(
-	targetBodyPart: BodyPart,
-	targetParentBodyPart: BodyPart,
-	trackingBone: BoneState,
-	trackingParent: BoneState,
+	unityBone: UnityBone,
+	parentUnityBone: UnityBone,
+	bonePosition: Vector3,
+	parentRotation: Quaternion,
+	parentPosition: Vector3,
 	vrm: VrmGeometry?,
 	mirror: Boolean,
 ): Vector3 = if (vrm != null) {
-	vrm.bindOffsets[targetBodyPart] ?: Vector3.ZERO
+	vrm.bindOffsets[unityBone] ?: Vector3.ZERO
 } else {
-	vmcLocalPosition(trackingBone, trackingParent, targetParentBodyPart, mirror)
+	vmcLocalPosition(bonePosition, parentRotation, parentPosition, parentUnityBone, mirror)
 }
 
-private fun hipToNeckOffset(bones: ComputedSkeleton, vrm: VrmGeometry?, mirror: Boolean): Vector3? {
-	var parentBodyPart = BodyPart.HIP
+private fun hipToNeckOffset(
+	unityBoneGlobalRotations: MutableMap<UnityBone, Quaternion>,
+	unityBoneGlobalPositions: MutableMap<UnityBone, Vector3>,
+	vrm: VrmGeometry?,
+	mirror: Boolean,
+): Vector3 {
+	var parentUnityBone = UnityBone.HIPS
 	var offset = Vector3.ZERO
-	for (bodyPart in VMC_HIP_TO_NECK_CHAIN) {
-		val trackingBone = bones[trackingBodyPart(bodyPart, mirror)] ?: return null
-		val trackingParent = bones[trackingBodyPart(parentBodyPart, mirror)] ?: return null
-		val localPosition = emittedLocalPosition(bodyPart, parentBodyPart, trackingBone, trackingParent, vrm, mirror)
-		val parentWorldRotation = restAdjustedWorld(trackingParent, parentBodyPart, mirror)
+	for (childUnityBone in VMC_HIP_TO_NECK_CHAIN) {
+		val parentRotation = unityBoneGlobalRotations[parentUnityBone] ?: Quaternion.IDENTITY
+		val bonePosition = unityBoneGlobalPositions[childUnityBone] ?: Vector3.ZERO
+		val parentPosition = unityBoneGlobalPositions[parentUnityBone] ?: Vector3.ZERO
+
+		val parentWorldRotation = restAdjustedWorld(parentRotation, parentUnityBone, mirror)
+		val localPosition = emittedLocalPosition(childUnityBone, parentUnityBone, bonePosition, parentRotation, parentPosition, vrm, mirror)
 		offset += parentWorldRotation.sandwich(localPosition)
-		parentBodyPart = bodyPart
+
+		parentUnityBone = childUnityBone
 	}
 	return offset
 }
 
 // Hip height above the floor at rest, used when anchored with no VRM loaded
 private fun restHipHeight(bones: ComputedSkeleton, skeletonHeight: Float): Float = skeletonHeight +
-	SPINE_CHAIN_ABOVE_HIP.sumOf { (bones[it]?.offset?.y ?: 0f).toDouble() }.toFloat()
+	SPINE_CHAIN_ABOVE_HIP.sumOf { unityBone -> unityBone.bodyParts.sumOf { (bones[it]?.offset?.y ?: 0f).toDouble() } }.toFloat()
 
 private fun vmcHipPosition(
+	unityBoneGlobalRotations: MutableMap<UnityBone, Quaternion>,
+	unityBoneGlobalPositions: MutableMap<UnityBone, Vector3>,
 	bones: ComputedSkeleton,
 	vrm: VrmGeometry?,
 	config: VMCConfig,
 	skeletonHeight: Float,
 	floorLevel: Float,
 ): Vector3 {
-	val anchoredHipPosition = vrm?.hipLocalPosition ?: Vector3(0f, restHipHeight(bones, skeletonHeight), 0f)
+	val anchoredHipPosition = vrm?.hipPosition ?: Vector3(0f, restHipHeight(bones, skeletonHeight), 0f)
 	if (config.anchorAtHips) return anchoredHipPosition
 
-	val neck = bones[BodyPart.NECK] ?: return anchoredHipPosition
-	val neckOffset = hipToNeckOffset(bones, vrm, config.mirrorTracking) ?: return anchoredHipPosition
-
+	val neckPosition = unityBoneGlobalPositions[UnityBone.NECK] ?: return anchoredHipPosition
+	val adjustedNeckPosition = if (config.mirrorTracking) vmcMirrorPosition(neckPosition) else neckPosition
 	val restHeight = vrm?.outputRestHeight ?: skeletonHeight
 	val scale = if (skeletonHeight != 0f) restHeight / skeletonHeight else 1f
-	val floorRelativeNeck = (neck.headPosition - Vector3(0f, floorLevel, 0f)) * scale
+	val floorRelativeNeck = (adjustedNeckPosition - Vector3(0f, floorLevel, 0f)) * scale
+
+	val neckOffset = hipToNeckOffset(unityBoneGlobalRotations, unityBoneGlobalPositions, vrm, config.mirrorTracking)
+
 	return floorRelativeNeck - neckOffset
 }
 

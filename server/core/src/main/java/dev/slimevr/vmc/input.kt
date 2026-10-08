@@ -207,10 +207,9 @@ class VMCInputBehaviour(
 			scale = scale,
 		)
 
-		for (bodyPart in frame.boneLocalRotations.keys) {
-			val transform = worldTransforms[bodyPart] ?: continue
-			val unityName = BODY_PART_TO_UNITY_BONE[bodyPart]?.first() ?: continue
-			val tracker = registry.boneTracker(bodyPart, unityName)
+		for (unityBone in frame.boneLocalRotations.keys) {
+			val transform = worldTransforms[unityBone] ?: continue
+			val tracker = registry.boneTracker(unityBone.bodyParts.first(), unityBone.serial)
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = transform.rotation, position = transform.position))
 		}

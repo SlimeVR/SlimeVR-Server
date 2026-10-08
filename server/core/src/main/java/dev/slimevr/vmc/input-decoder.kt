@@ -2,10 +2,9 @@ package dev.slimevr.vmc
 
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscMessage
-import dev.slimevr.skeleton.BodyPartMap
-import dev.slimevr.skeleton.bodyPartMap
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import java.util.EnumMap
 
 data class VmcPoseTracker(
 	val serial: String,
@@ -21,8 +20,8 @@ data class VmcPoseTracker(
  * for the rest.
  */
 class VmcInputFrame(
-	val boneLocalRotations: BodyPartMap<Quaternion> = bodyPartMap(),
-	val boneLocalPositions: BodyPartMap<Vector3> = bodyPartMap(),
+	val boneLocalRotations: EnumMap<UnityBone, Quaternion> = EnumMap(UnityBone::class.java),
+	val boneLocalPositions: EnumMap<UnityBone, Vector3> = EnumMap(UnityBone::class.java),
 	val poseTrackers: MutableMap<String, VmcPoseTracker> = mutableMapOf(),
 	var rootPosition: Vector3 = Vector3.ZERO,
 	var rootRotation: Quaternion = Quaternion.IDENTITY,
@@ -34,10 +33,10 @@ internal fun decodeVmcMessage(msg: OscMessage, frame: VmcInputFrame) {
 	when (msg.address) {
 		"/VMC/Ext/Bone/Pos" -> {
 			val name = (msg.args.getOrNull(0) as? OscArg.String)?.value ?: return
-			val bodyPart = UNITY_BONE_TO_BODY_PART[name.lowercase()] ?: return
+			val unityBone = UnityBone.fromSerial(name) ?: return
 			val (pos, rot) = parseVmcTransform(msg.args, startIndex = 1) ?: return
-			frame.boneLocalPositions[bodyPart] = pos
-			frame.boneLocalRotations[bodyPart] = rot
+			frame.boneLocalPositions[unityBone] = pos
+			frame.boneLocalRotations[unityBone] = rot
 		}
 
 		"/VMC/Ext/Root/Pos" -> {
@@ -89,18 +88,18 @@ data class VmcBoneTransform(val rotation: Quaternion, val position: Vector3)
  * rotations and positions.
  */
 fun vmcWorldTransforms(
-	locals: BodyPartMap<Quaternion>,
-	localPositions: BodyPartMap<Vector3>,
+	locals: EnumMap<UnityBone, Quaternion>,
+	localPositions: EnumMap<UnityBone, Vector3>,
 	rootRotation: Quaternion,
 	rootPosition: Vector3,
 	scale: Float,
-): BodyPartMap<VmcBoneTransform> {
-	val restAdjusted = bodyPartMap<Quaternion>()
-	val modelPositions = bodyPartMap<Vector3>()
-	val result = bodyPartMap<VmcBoneTransform>()
+): EnumMap<UnityBone, VmcBoneTransform> {
+	val restAdjusted = mutableMapOf<UnityBone, Quaternion>()
+	val modelPositions = mutableMapOf<UnityBone, Vector3>()
+	val result: EnumMap<UnityBone, VmcBoneTransform> = EnumMap(UnityBone::class.java)
 
-	for (bone in VMC_INPUT_BONE_ORDER) {
-		val parent = VMC_INPUT_BONE_PARENTS[bone]
+	for (bone in VMC_BONE_ORDER) {
+		val parent = VMC_BONE_PARENTS[bone]
 		val local = locals[bone] ?: Quaternion.IDENTITY
 		val localPosition = localPositions[bone] ?: Vector3.ZERO
 		val parentAdjusted = parent?.let { restAdjusted[it] }

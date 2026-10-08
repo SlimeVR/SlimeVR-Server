@@ -14,6 +14,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import kotlin.math.abs
 import kotlin.math.exp
+import kotlin.time.Duration.Companion.seconds
 
 // Constant translations
 const val FLOOR_DOWNWARDS_GROUNDING = -1.5f
@@ -29,7 +30,7 @@ const val FLOOR_TOUCH_DISTANCE = 0.03f
 
 // 1 = up, -1 = down
 const val SITTING_KNEE_THRESHOLD = -0.4f
-const val SITTING_SECONDS_THRESHOLD = 0.8f
+val SITTING_DURATION = 0.8.seconds
 
 // Legs, spine and head are always used even if inactive
 val alwaysActiveBodyParts = arrayOf(
@@ -203,7 +204,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 	private var velocity = Vector3.ZERO
 
 	private var hipTarget = Vector3.ZERO
-	private var sittingTime: Float = 0f
+	private var sittingTime = timeSource.markNow()
 
 	private var lastProcessTime = timeSource.markNow()
 
@@ -213,7 +214,8 @@ class LocalizerFkProcessor(val settings: Settings) :
 		if (headInput.isPositionActive) return
 
 		val now = timeSource.markNow()
-		val deltaTime = (now - lastProcessTime).inFloatingSeconds
+		val deltaTimeDuration = now - lastProcessTime
+		val deltaTime = deltaTimeDuration.inFloatingSeconds
 		lastProcessTime = now
 
 		// The absolute lowest bone
@@ -225,14 +227,13 @@ class LocalizerFkProcessor(val settings: Settings) :
 		// Only follow the hip if the user's been sitting for enough time, else follow the bone on the floor
 		val followSource = getSourceToFollow(fk, lowestBone, bodyAcceleration).let {
 			if (it == FollowSource.SITTING) {
-				sittingTime += deltaTime
-				if (sittingTime < SITTING_SECONDS_THRESHOLD) {
+				if (sittingTime.elapsedNow() < SITTING_DURATION) {
 					FollowSource.FLOOR
 				} else {
 					FollowSource.SITTING
 				}
 			} else {
-				sittingTime = 0f
+				sittingTime = timeSource.markNow()
 				it
 			}
 		}
@@ -291,7 +292,7 @@ class LocalizerFkProcessor(val settings: Settings) :
 			lastPlantedBone = null
 			velocity = Vector3.ZERO
 			hipTarget = Vector3.ZERO
-			sittingTime = 0f
+			sittingTime = timeSource.markNow()
 			lastProcessTime = timeSource.markNow()
 		}
 	}

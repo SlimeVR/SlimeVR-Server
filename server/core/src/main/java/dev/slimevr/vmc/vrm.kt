@@ -2,7 +2,6 @@ package dev.slimevr.vmc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.util.formatExceptionMessage
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.VMCOSCVrmState
 
 private val vrmJsonParser = Json { ignoreUnknownKeys = true }
@@ -93,37 +91,34 @@ data class Node(
 // VRM bind-pose geometry derived from a parsed VRM JSON. Used to keep the avatar's
 // local bone offsets aligned with the model's own proportions.
 data class VrmGeometry(
-	val bindOffsets: BodyPartMap<Vector3>,
-	val hipLocalPosition: Vector3,
+	val bindOffsets: Map<UnityBone, Vector3>,
+	val hipPosition: Vector3,
 	/** Floor-to-neck height, on the same basis as Skeleton.skeletonHeight. Used to scale VMC input positions. */
 	val vrmHeight: Float,
 	/** Floor-to-neck height along the VMC output hierarchy */
 	val outputRestHeight: Float,
+	/** Upper chest is optional, so if the VRM doesn't have it, we merge it with the (lower) chest. */
+	val hasUpperChest: Boolean,
 )
 
 fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
-	val bindOffsets = BodyPartMap(
-		BODY_PART_TO_UNITY_BONE.mapValues { (_, unityNames) -> reader.offsetForBone(unityNames.first()) ?: Vector3.ZERO },
-	)
-	fun offset(bodyPart: BodyPart) = bindOffsets[bodyPart] ?: Vector3.ZERO
+	val bindOffsets = UnityBone.entries.associateWith { reader.offsetForBone(it.serial) ?: Vector3.ZERO }
+	fun offset(unityBone: UnityBone) = bindOffsets[unityBone] ?: Vector3.ZERO
 
-	val hipLocalPosition = offset(BodyPart.HIP)
+	val hipPosition = offset(UnityBone.HIPS)
+	val vrmHeight = hipPosition.y +
+		SPINE_CHAIN_ABOVE_HIP.fold(Vector3.ZERO) { acc, unityBone ->
+			acc + offset(unityBone)
+		}.y
 
-	val vrmHeight = (
-		offset(BodyPart.HIP) +
-			offset(BodyPart.UPPER_WAIST) +
-			offset(BodyPart.LOWER_CHEST) +
-			offset(BodyPart.UPPER_CHEST) +
-			offset(BodyPart.NECK)
-		).y
-
-	val outputRestHeight = hipLocalPosition.y + VMC_HIP_TO_NECK_CHAIN.sumOf { offset(it).y.toDouble() }.toFloat()
+	val outputRestHeight = hipPosition.y + VMC_HIP_TO_NECK_CHAIN.sumOf { offset(it).y.toDouble() }.toFloat()
 
 	return VrmGeometry(
 		bindOffsets = bindOffsets,
-		hipLocalPosition = hipLocalPosition,
+		hipPosition = hipPosition,
 		vrmHeight = vrmHeight,
 		outputRestHeight = outputRestHeight,
+		hasUpperChest = bindOffsets[UnityBone.UPPER_CHEST]?.len()?.let { it > 0f } ?: false,
 	)
 }
 

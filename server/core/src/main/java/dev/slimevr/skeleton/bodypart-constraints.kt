@@ -86,11 +86,11 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			40f * FastMath.DEG_TO_RAD,
 		),
 		// TODO enforcing constraint looks bad
-//		BodyPart.LEFT_FOOT to LooseHingeConstraint(
-//			-60f * FastMath.DEG_TO_RAD,
-//			90f * FastMath.DEG_TO_RAD,
-//			80f * FastMath.DEG_TO_RAD,
-//		),
+// 		BodyPart.LEFT_FOOT to LooseHingeConstraint(
+// 			-60f * FastMath.DEG_TO_RAD,
+// 			90f * FastMath.DEG_TO_RAD,
+// 			80f * FastMath.DEG_TO_RAD,
+// 		),
 
 		// Right leg
 		BodyPart.RIGHT_UPPER_LEG to TwistSwingConstraint(
@@ -102,11 +102,11 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			180f * FastMath.DEG_TO_RAD,
 			40f * FastMath.DEG_TO_RAD,
 		),
-//		BodyPart.RIGHT_FOOT to LooseHingeConstraint(
-//			-60f * FastMath.DEG_TO_RAD,
-//			90f * FastMath.DEG_TO_RAD,
-//			80f * FastMath.DEG_TO_RAD,
-//		),
+// 		BodyPart.RIGHT_FOOT to LooseHingeConstraint(
+// 			-60f * FastMath.DEG_TO_RAD,
+// 			90f * FastMath.DEG_TO_RAD,
+// 			80f * FastMath.DEG_TO_RAD,
+// 		),
 
 		// Left fingers
 		BodyPart.LEFT_THUMB_METACARPAL to DIGIT_CONSTRAINT,
