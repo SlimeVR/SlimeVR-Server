@@ -200,12 +200,29 @@ fun getFootLockLikelihood(
 		)
 }
 
+data class SkatingBodyParts(
+	// ex. Left foot
+	val bodyPart: BodyPart,
+	// Mirror of bodyPart (ex. right foot)
+	val mirrorBodyPart: BodyPart,
+	// ex. Left lower leg (ankle)
+	val ikTargetBodyPart: BodyPart,
+)
+
 class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Skeleton) :
 	SkeletonTargetProcessor,
 	ResettableSkeletonProcessor {
 	val skatingBodyParts = arrayOf(
-		BodyPart.LEFT_LOWER_LEG to BodyPart.RIGHT_LOWER_LEG,
-		BodyPart.RIGHT_LOWER_LEG to BodyPart.LEFT_LOWER_LEG,
+		SkatingBodyParts(
+			BodyPart.LEFT_FOOT,
+			BodyPart.RIGHT_FOOT,
+			BodyPart.LEFT_LOWER_LEG,
+		),
+		SkatingBodyParts(
+			BodyPart.RIGHT_FOOT,
+			BodyPart.LEFT_FOOT,
+			BodyPart.RIGHT_LOWER_LEG,
+		),
 	)
 
 	// Centre of mass
@@ -229,23 +246,23 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		// TODO Clean up whatever the hell this is
 		// Predict the pressure for each foot
 		val (leftPressure, rightPressure) = predictFootPressure(
-			fk[BodyPart.LEFT_LOWER_LEG]?.tailPosition ?: return,
-			fk[BodyPart.RIGHT_LOWER_LEG]?.tailPosition ?: return,
+			fk[BodyPart.LEFT_FOOT]?.tailPosition ?: return,
+			fk[BodyPart.RIGHT_FOOT]?.tailPosition ?: return,
 			comState.position,
 			comState.acceleration,
 			floorLevel,
 		)
-		pressure[BodyPart.LEFT_LOWER_LEG] = leftPressure
-		pressure[BodyPart.RIGHT_LOWER_LEG] = rightPressure
+		pressure[BodyPart.LEFT_FOOT] = leftPressure
+		pressure[BodyPart.RIGHT_FOOT] = rightPressure
 
 		val correctionStrength = skeletonConfig.ratios.skatingCorrectionStrength
 
-		for ((bodyPart, altBodyPart) in skatingBodyParts) {
+		for ((bodyPart, mirrorBodyPart, ikTargetBodyPart) in skatingBodyParts) {
 			val locked = lockState[bodyPart]?.locked ?: false
-			val altLocked = lockState[altBodyPart]?.locked ?: false
+			val altLocked = lockState[mirrorBodyPart]?.locked ?: false
 
 			val bone = fk[bodyPart] ?: return
-			val altBone = fk[bodyPart] ?: return
+			val altBone = fk[mirrorBodyPart] ?: return
 
 			val (velocitySensitivity, accelerationSensitivity) = computeSensitivity(
 				locked,
@@ -290,7 +307,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 
 			// TODO Smooth tracker to new position on unlock
 			if (activeState.locked) {
-				mutableIkTargets[bodyPart] = activeState.position
+				mutableIkTargets[ikTargetBodyPart] = activeState.position
 			}
 		}
 	}
