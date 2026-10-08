@@ -101,7 +101,7 @@ fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigReco
 		(!hasLeftHandWithPosition || !hasRightHandWithPosition || isMissingAnArmTracker) &&
 			((hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker),
 		userHeight = userHeight / EYE_HEIGHT_TO_HEIGHT_RATIO,
-		calibrationRange = 0.2f,
+		calibrationRange = 0.25f,
 		trackerModel = VRCTrackerModel.AXIS,
 		calibrationVisuals = true,
 		avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT,
