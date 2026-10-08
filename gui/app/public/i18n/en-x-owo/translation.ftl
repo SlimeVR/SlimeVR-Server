@@ -854,7 +854,6 @@ unknown_device-modal-description =
     d-do u wanna conect it to SwimeVR?
 unknown_device-modal-confirm = sure!!
 unknown_device-modal-forget = ignowe it
-vrc_config-spine_mode-UNKNOWN = unnown
 vrc_config-tracker_model-UNKNOWN = unnown
 vrc_config-avatar_measurement_type-UNKNOWN = unnown
 
