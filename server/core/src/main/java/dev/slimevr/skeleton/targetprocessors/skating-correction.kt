@@ -13,15 +13,23 @@ import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.computeComState
 import dev.slimevr.skeleton.predictFootPressure
+import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import kotlin.math.abs
+import kotlin.time.ComparableTimeMark
 
 data class LockState(
 	val locked: Boolean,
 	val position: Vector3 = Vector3.ZERO,
+)
+
+data class ReleaseSmoothing(
+	val startTime: ComparableTimeMark,
+	val duration: Float,
+	val offset: Vector3,
 )
 
 const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
@@ -55,6 +63,18 @@ const val MAX_SCALAR_ACTIVE = 0.1f
 // Maximum scalars for the pressure on each foot
 const val PRESSURE_SCALAR_MIN = 0.1f
 const val PRESSURE_SCALAR_MAX = 1.9f
+
+/**
+ * The maximum time in seconds that it can take to reach the unlocked position from the
+ * locked position.
+ */
+const val RELEASE_SMOOTHING_MAX_DURATION = 0.3f
+
+/**
+ * The distance that the max smoothing duration scales over (velocity of smoothing is
+ * [RELEASE_SMOOTHING_MAX_DURATION] divided by [RELEASE_SMOOTHING_DISTANCE]).
+ */
+const val RELEASE_SMOOTHING_DISTANCE = 0.2f
 
 fun shouldLock(
 	position: Vector3,
@@ -197,6 +217,19 @@ fun getFootLockLikelihood(
 		)
 }
 
+/**
+ * Calculates a duration to fit the release smoothing velocity.
+ */
+fun releaseSmoothingDuration(distance: Float): Float = (
+	distance / RELEASE_SMOOTHING_DISTANCE
+	).coerceAtMost(1f) *
+	RELEASE_SMOOTHING_MAX_DURATION
+
+fun releaseSmoothingMultiplier(
+	time: ComparableTimeMark,
+	smoothing: ReleaseSmoothing,
+): Float = 1f - ((time - smoothing.startTime).inFloatingSeconds / smoothing.duration)
+
 data class SkatingBodyParts(
 	// ex. Left foot
 	val bodyPart: BodyPart,
@@ -227,6 +260,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 
 	val pressure: BodyPartMap<Float> = bodyPartMap()
 	val lockState: BodyPartMap<LockState> = bodyPartMap()
+	val releaseSmoothing: BodyPartMap<ReleaseSmoothing> = bodyPartMap()
 
 	override fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		val skeletonConfig = settings.context.state.value.data.skeletonConfig
@@ -243,8 +277,8 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		// TODO Clean up whatever the hell this is
 		// Predict the pressure for each foot
 		val (leftPressure, rightPressure) = predictFootPressure(
-			fk[BodyPart.LEFT_FOOT]?.tailPosition ?: return,
-			fk[BodyPart.RIGHT_FOOT]?.tailPosition ?: return,
+			fk[BodyPart.LEFT_FOOT]?.headPosition ?: return,
+			fk[BodyPart.RIGHT_FOOT]?.headPosition ?: return,
 			comState.position,
 			comState.acceleration,
 			floorLevel,
@@ -255,15 +289,17 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		val correctionStrength = skeletonConfig.ratios.skatingCorrectionStrength
 
 		for ((bodyPart, mirrorBodyPart, ikTargetBodyPart) in skatingBodyParts) {
-			val locked = lockState[bodyPart]?.locked ?: false
-			val altLocked = lockState[mirrorBodyPart]?.locked ?: false
-
 			val input = inputSkeleton[bodyPart] ?: return
 			val bone = fk[bodyPart] ?: return
 			val altBone = fk[mirrorBodyPart] ?: return
+			val curPosition = bone.headPosition
+
+			val lastState = lockState[bodyPart]
+			val wasLocked = lastState?.locked == true
+			val altLocked = lockState[mirrorBodyPart]?.locked ?: false
 
 			val (velocitySensitivity, accelerationSensitivity) = computeSensitivity(
-				locked,
+				wasLocked,
 				altLocked,
 				bone.acceleration.len(),
 				bone.velocity.linear,
@@ -272,16 +308,13 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				pressure[bodyPart] ?: 0.1f,
 			)
 
-			val curPosition = bone.tailPosition
-
 			// Consider locking BodyPart
-			val lastState = lockState[bodyPart]
-			val wasLocked = lastState?.locked == true
 			val isLocked = shouldLock(
 				curPosition,
 				if (wasLocked) {
 					lastState.position
 				} else {
+					// The distance condition is disabled if not locked
 					curPosition
 				},
 				bone.acceleration,
@@ -307,9 +340,46 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				// Otherwise pull the last state
 			} ?: lastState ?: continue
 
-			// TODO Smooth tracker to new position on unlock
+			val now = timeSource.markNow()
+			val lastSmoothingOffset = releaseSmoothing[bodyPart]?.let { smoothing ->
+				val multiplier = releaseSmoothingMultiplier(now, smoothing)
+				if (multiplier > 0f) {
+					smoothing.offset * multiplier
+				} else {
+					// Smoothing is finished, remove it from the map
+					releaseSmoothing[bodyPart] = null
+					null
+				}
+			}
+			val activeSmoothingOffset = if (!isLocked && wasLocked) {
+				// If unlocking, start smoothing from the locked position (plus last
+				// smoothing offset if present) to the current position
+				val lastLockPosition = lastSmoothingOffset?.let { offset ->
+					lastState.position + offset
+				} ?: lastState.position
+
+				// Offset from the current position to the locked position
+				val offset = lastLockPosition - curPosition
+
+				// Save our new smoothing
+				releaseSmoothing[bodyPart] = ReleaseSmoothing(
+					now,
+					releaseSmoothingDuration(offset.len()),
+					offset,
+				)
+				// The first frame will always be the full offset, so just return that
+				offset
+			} else {
+				lastSmoothingOffset
+			}
+
 			if (activeState.locked) {
-				mutableIkTargets[ikTargetBodyPart] = activeState.position
+				mutableIkTargets[ikTargetBodyPart] = activeSmoothingOffset?.let { offset ->
+					activeState.position + offset
+				} ?: activeState.position
+			} else if (activeSmoothingOffset != null) {
+				// Target position with smoothed offset if present
+				mutableIkTargets[ikTargetBodyPart] = curPosition + activeSmoothingOffset
 			}
 		}
 	}
@@ -318,6 +388,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		if (resetType == ResetType.FULL) {
 			comState = null
 			lockState.clear()
+			releaseSmoothing.clear()
 		}
 	}
 }
