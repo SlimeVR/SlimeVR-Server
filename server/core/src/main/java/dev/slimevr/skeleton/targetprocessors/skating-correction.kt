@@ -9,7 +9,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonTargetProcessor
-import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.centreOfMass
 import dev.slimevr.skeleton.computeComState
@@ -30,9 +29,8 @@ const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
 // TODO These were squared for performance, but I think that requires squaring
 //  everything else, and obscures the actual values. We need a better way of doing so if
 //  we want to still do that. - Butterscotch
-const val SKATING_DISTANCE_THRESHOLD = 0.5f
+const val SKATING_DISTANCE_THRESHOLD = 0.2f
 const val SKATING_ANGULAR_VELOCITY_THRESHOLD = 4.5f
-const val SKATING_LINEAR_VELOCITY_THRESHOLD = 2.4f
 const val SKATING_ACCELERATION_THRESHOLD = 0.7f
 
 const val FLOOR_CALIBRATION_OFFSET = 0.0025f
@@ -62,7 +60,7 @@ fun shouldLock(
 	position: Vector3,
 	lastPosition: Vector3,
 	acceleration: Vector3,
-	velocity: Velocity,
+	angularVelocity: Vector3,
 	wasLocked: Boolean,
 	floorLevel: Float = 0f,
 	correctionStrength: Float = 1f,
@@ -72,9 +70,8 @@ fun shouldLock(
 	val thresholdMultiplier = (if (wasLocked) 1f else SKATING_LOCK_ENGAGE_PERCENT) * (correctionStrength * 0.5f + 0.5f)
 	val floorLevel = floorLevel + FLOOR_CALIBRATION_OFFSET
 	return ((position - lastPosition).let { Vector3(it.x, 0f, it.z) }.len() <= SKATING_DISTANCE_THRESHOLD) &&
-		(velocity.linear.len() <= SKATING_LINEAR_VELOCITY_THRESHOLD * thresholdMultiplier * velocitySensitivity) &&
-		(velocity.angular.len() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier * velocitySensitivity) &&
 		(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD) &&
+		(angularVelocity.len() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier * velocitySensitivity) &&
 		(acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier * correctionStrength * accelerationSensitivity)
 }
 
@@ -261,6 +258,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 			val locked = lockState[bodyPart]?.locked ?: false
 			val altLocked = lockState[mirrorBodyPart]?.locked ?: false
 
+			val input = inputSkeleton[bodyPart] ?: return
 			val bone = fk[bodyPart] ?: return
 			val altBone = fk[mirrorBodyPart] ?: return
 
@@ -287,7 +285,11 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 					curPosition
 				},
 				bone.acceleration,
-				bone.velocity,
+				if (input.isRotationActive) {
+					bone.velocity.angular
+				} else {
+					Vector3.ZERO
+				},
 				wasLocked,
 				floorLevel,
 				correctionStrength,
