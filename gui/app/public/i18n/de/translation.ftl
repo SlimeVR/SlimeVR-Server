@@ -38,9 +38,14 @@ unit-cm = Zentimeter
 
 ## Dropdown
 
+dropdown_select-all = Alles auswählen
+dropdown_unselect-all = Alles abwählen
 
 ## Text input
 
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = Passwort anzeigen
+input-password-hide = Passwort verstecken
 
 ## File input
 
