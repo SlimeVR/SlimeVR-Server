@@ -621,7 +621,6 @@ tray_or_exit_modal-cancel = Tühista
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Tundmatu
 vrc_config-tracker_model-UNKNOWN = Tundmatu
 vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
 
