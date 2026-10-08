@@ -176,12 +176,19 @@ const model = (
 
 const fingerScale = spanBone({ girthFrom: 'hand' });
 const finger = (file: string) =>
-  part(model(file, { scale: fingerScale, offset: inMetres({ width: -0.003 }) }));
+  part(
+    model(file, {
+      scale: fingerScale,
+      rotation: turn({ length: 90 }),
+      offset: inMetres({ width: -0.003, length: -0.008 }),
+    })
+  );
 const fingerRight = (file: string) =>
   part(
     model(file, {
       scale: otherSide(fingerScale),
-      offset: inMetres({ width: 0.003 }),
+      rotation: turn({ length: 90 }),
+      offset: inMetres({ width: 0.003, length: 0.008 }),
     })
   );
 
@@ -209,7 +216,7 @@ const headScale: ShapeScale = {
   },
 };
 const headOffset: ShapeOffset = ({ proportions }) =>
-  new Vector3(0, 0.005 * headSize(proportions), 0);
+  new Vector3(0, 0.03 * headSize(proportions), 0);
 
 // Neck circumference goes as stature^0.59 (Snyder et al. 1977), so the neck is thicker
 // than linear scaling gives on a short body and thinner on a tall one.
@@ -221,12 +228,22 @@ const neckScale: ShapeScale = {
   },
 };
 
-const shoulderScale = spanBone({ width: 0.8, depth: 0.8, length: 1.3 });
+const shoulderScale = spanBone({ width: 1, depth: 1, length: 1 });
 const handScale = spanBone({ width: 1.0, depth: 1.0, length: 1.0, girthFrom: 'hand' });
-const upperArmScale = spanBone({ girthFrom: 'shoulders', width: 0.87, depth: 0.87 });
-const lowerArmScale = spanBone({ girthFrom: 'shoulders', width: 0.89, depth: 0.89 });
+const upperArmScale = spanBone({
+  girthFrom: 'shoulders',
+  width: 0.87,
+  depth: 0.87,
+  length: 1,
+});
+const lowerArmScale = spanBone({
+  girthFrom: 'shoulders',
+  width: 0.89,
+  depth: 0.89,
+  length: 1,
+});
 const upperLegScale = spanBone({ girthFrom: 'hips', length: 1.0 });
-const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.9 });
+const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.78 });
 const footScale: ShapeScale = {
   compute: ({ boneLength }) => {
     const ratio = boneLength / RIG_FOOT_LENGTH;
@@ -248,96 +265,124 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.NECK]: part(
     model('neck', {
       scale: neckScale,
-      offset: inBoneLengths({ length: -0.0 }),
+      offset: inBoneLengths({ length: -0.1 }),
     })
   ),
   [BodyPart.UPPER_CHEST]: part(
     model('upper_chest', {
       scale: spanBone({
         girthFrom: 'shoulders',
-        length: 0.95,
+        length: 1.0,
         width: 0.95,
         depth: 0.95,
       }),
-      offset: inBoneLengths({ length: -0.2 }),
+      offset: inBoneLengths({ length: -0.25 }),
     })
   ),
   [BodyPart.LOWER_CHEST]: part(
     model('lower_chest', {
       scale: spanBone({
         girthFrom: 'shoulders',
-        length: 0.95,
+        length: 1.0,
         width: 0.95,
         depth: 0.95,
       }),
-      offset: inBoneLengths({ length: -0.1 }),
+      offset: inBoneLengths({ length: -0.07 }),
     })
   ),
   [BodyPart.UPPER_WAIST]: part(
     model('upper_waist', {
-      scale: spanBone({ girthFrom: 'hips', length: 0.9, width: 0.95, depth: 0.9 }),
-      offset: inBoneLengths({ length: 0.3 }),
+      scale: spanBone({ girthFrom: 'hips', length: 1.05, width: 1.0, depth: 1.0 }),
+      offset: inBoneLengths({ length: 0.02 }),
     })
   ),
   [BodyPart.LOWER_WAIST]: part(
     model('lower_waist', {
-      scale: spanBone({ girthFrom: 'hips', length: 0.85, width: 0.95, depth: 0.9 }),
-      offset: inBoneLengths({ length: 0.1 }),
+      scale: spanBone({ girthFrom: 'hips', length: 1.0, width: 1.0, depth: 1.0 }),
+      offset: inBoneLengths({ length: -0.48 }),
     })
   ),
   [BodyPart.HIP]: part(
     model('hip', {
       scale: spanBone({ girthFrom: 'hips', width: 1, depth: 1, length: 1 }),
-      offset: inBoneLengths({ length: -1.6 }),
+      offset: inBoneLengths({ length: -2.6 }),
     })
   ),
   [BodyPart.LEFT_SHOULDER]: part(
     model('shoulder', {
       scale: shoulderScale,
-      offset: inBoneLengths({ width: 0.075 }),
+      rotation: turn({ width: -15 }),
+      offset: inBoneLengths({ width: -0.0, length: -0.3 }),
     })
   ),
   [BodyPart.RIGHT_SHOULDER]: part(
     model('shoulder', {
       scale: otherSide(shoulderScale),
-      offset: inBoneLengths({ width: -0.075 }),
+      rotation: turn({ width: -15 }),
+      offset: inBoneLengths({ width: 0.0, length: -0.3 }),
     })
   ),
-  [BodyPart.LEFT_UPPER_ARM]: part(model('upper_arm', { scale: upperArmScale })),
-  [BodyPart.RIGHT_UPPER_ARM]: part(
-    model('upper_arm', { scale: otherSide(upperArmScale) })
+  [BodyPart.LEFT_UPPER_ARM]: part(
+    model('upper_arm', {
+      scale: upperArmScale,
+      offset: inBoneLengths({ length: -0.07 }),
+    })
   ),
-  [BodyPart.LEFT_LOWER_ARM]: part(model('lower_arm', { scale: lowerArmScale })),
+  [BodyPart.RIGHT_UPPER_ARM]: part(
+    model('upper_arm', {
+      scale: otherSide(upperArmScale),
+      offset: inBoneLengths({ length: -0.07 }),
+    })
+  ),
+  [BodyPart.LEFT_LOWER_ARM]: part(
+    model('lower_arm', {
+      offset: inBoneLengths({ length: -0.03 }),
+      scale: lowerArmScale,
+    })
+  ),
   [BodyPart.RIGHT_LOWER_ARM]: part(
-    model('lower_arm', { scale: otherSide(lowerArmScale) })
+    model('lower_arm', {
+      offset: inBoneLengths({ length: -0.03 }),
+      scale: otherSide(lowerArmScale),
+    })
   ),
   [BodyPart.LEFT_HAND]: part(
     model('hand', {
-      rotation: turn({ length: 174, width: 5, depth: -5 }),
+      rotation: turn({ length: 180, width: 5, depth: -5 }),
       scale: handScale,
+      offset: inBoneLengths({ length: -0.1 }),
     })
   ),
   [BodyPart.RIGHT_HAND]: part(
     model('hand', {
-      rotation: turn({ length: 186, width: 5, depth: 5 }),
+      rotation: turn({ length: 180, width: 5, depth: -5 }),
       scale: otherSide(handScale),
+      offset: inBoneLengths({ length: -0.1 }),
     })
   ),
 
-  [BodyPart.LEFT_UPPER_LEG]: part(model('upper_leg', { scale: upperLegScale })),
+  [BodyPart.LEFT_UPPER_LEG]: part(
+    model('upper_leg', {
+      offset: inBoneLengths({ length: -0.1 }),
+      scale: upperLegScale,
+    })
+  ),
   [BodyPart.RIGHT_UPPER_LEG]: part(
-    model('upper_leg', { scale: otherSide(upperLegScale) })
+    model('upper_leg', {
+      offset: inBoneLengths({ length: -0.1 }),
+      scale: otherSide(upperLegScale),
+    })
   ),
   [BodyPart.LEFT_LOWER_LEG]: part(
     model('lower_leg', {
       scale: lowerLegScale,
-      offset: inBoneLengths({ depth: -0.0 }),
+      offset: inBoneLengths({ depth: -0.0, length: -0.08 }),
     })
   ),
   [BodyPart.RIGHT_LOWER_LEG]: part(
     model('lower_leg', {
       scale: otherSide(lowerLegScale),
-      offset: inBoneLengths({ depth: -0.0 }),
+      offset: inBoneLengths({ depth: -0.0, length: -0.08 }),
     })
   ),
   [BodyPart.LEFT_FOOT]: part(

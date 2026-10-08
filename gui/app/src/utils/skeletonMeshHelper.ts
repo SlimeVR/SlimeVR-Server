@@ -1,4 +1,15 @@
-import { Box3, Object3D, Quaternion, Vector3 } from 'three';
+import {
+  Box3,
+  BoxGeometry,
+  Color,
+  Matrix4,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Quaternion,
+  Raycaster,
+  Vector3,
+} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { SkeletonRenderPart } from './skeletonHelper';
 import { BodyPart, BoneT } from 'solarxr-protocol';
@@ -121,6 +132,17 @@ export class BasedSkeletonMeshHelper extends Object3D {
           if (og === scene) return;
 
           const addr = addrObject(url, og.name);
+
+          if (og instanceof Mesh) {
+            const mat = og.material as MeshStandardMaterial;
+            if (mat.emissiveMap == null) {
+              mat.emissiveMap = mat.map;
+              mat.emissiveIntensity = 1;
+              mat.emissive = new Color(0.7, 0.7, 0.7);
+              mat.color = new Color(0.5, 0.5, 0.5);
+            }
+          }
+
           for (const [_, attached] of partsByAddr[addr] ?? []) {
             const o = og.clone(true);
 
