@@ -42,7 +42,6 @@ internal suspend fun buildVRCConfigValues(
 	legacyMode = intValue("VRC_IK_LEGACY") == 1,
 	shoulderTrackingDisabled = intValue("VRC_IK_DISABLE_SHOULDER_TRACKING") == 1,
 	userHeight = doubleValue("PlayerHeight")?.toFloat() ?: -1.0f,
-	calibrationRange = doubleValue("VRC_IK_CALIBRATION_RANGE")?.toFloat() ?: -1.0f,
 	trackerModel = when (intValue("VRC_IK_TRACKER_MODEL")) {
 		0 -> VRCTrackerModel.SPHERE
 		1 -> VRCTrackerModel.SYSTEM

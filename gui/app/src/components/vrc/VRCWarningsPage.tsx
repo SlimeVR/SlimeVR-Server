@@ -193,14 +193,6 @@ export function VRCWarningsPage() {
                   }
                 />
                 <SettingRow
-                  {...settingRowProps('calibrationRangeOk')}
-                  name="vrc_config-calibration_range"
-                  recommendedValue={meterFormat.format(
-                    state.recommended.calibrationRange
-                  )}
-                  value={meterFormat.format(state.state.calibrationRange)}
-                />
-                <SettingRow
                   {...settingRowProps('trackerModelOk')}
                   name="vrc_config-tracker_model"
                   recommendedValue={

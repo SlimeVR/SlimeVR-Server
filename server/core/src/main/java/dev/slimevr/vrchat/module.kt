@@ -25,7 +25,6 @@ val VRC_VALID_KEYS = setOf(
 	"shoulderTrackingOk",
 	"shoulderWidthCompensationOk",
 	"userHeightOk",
-	"calibrationRangeOk",
 	"calibrationVisualsOk",
 	"trackerModelOk",
 	"spineModeOk",
@@ -101,7 +100,6 @@ fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigReco
 		(!hasLeftHandWithPosition || !hasRightHandWithPosition || isMissingAnArmTracker) &&
 			((hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker),
 		userHeight = userHeight / EYE_HEIGHT_TO_HEIGHT_RATIO,
-		calibrationRange = 0.25f,
 		trackerModel = VRCTrackerModel.AXIS,
 		calibrationVisuals = true,
 		avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT,
@@ -111,7 +109,6 @@ fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigReco
 fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): Boolean = (validity.legacyModeOk || "legacyModeOk" in mutedWarnings) &&
 	(validity.shoulderTrackingOk || "shoulderTrackingOk" in mutedWarnings) &&
 	(validity.userHeightOk || "userHeightOk" in mutedWarnings) &&
-	(validity.calibrationRangeOk || "calibrationRangeOk" in mutedWarnings) &&
 	(validity.calibrationVisualsOk || "calibrationVisualsOk" in mutedWarnings) &&
 	(validity.trackerModelOk || "trackerModelOk" in mutedWarnings) &&
 	(validity.avatarMeasurementTypeOk || "avatarMeasurementTypeOk" in mutedWarnings)
@@ -120,7 +117,6 @@ fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedVa
 	legacyModeOk = values.legacyMode == recommended.legacyMode,
 	shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
 	trackerModelOk = values.trackerModel == recommended.trackerModel,
-	calibrationRangeOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1f,
 	userHeightOk = abs(recommended.userHeight - values.userHeight) < 0.1f,
 	calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 	avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,

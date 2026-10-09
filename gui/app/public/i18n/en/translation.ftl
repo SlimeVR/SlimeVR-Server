@@ -1596,7 +1596,6 @@ vrc_config-legacy_mode = Use Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
 vrc_config-tracker_model = FBT Tracker Model
 vrc_config-avatar_measurement_type = Avatar Measurement
-vrc_config-calibration_range = Calibration Range
 vrc_config-calibration_visuals = Display Calibration Visuals
 vrc_config-user_height = User Real Height
 
