@@ -37,53 +37,53 @@ private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
 // TODO: Fine tune
 private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to mapOf(
-		SpineSource.UPPER_CHEST to Reliability(-6.5f, 36f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-6.5f, -24f), // Itself
 		// To
 		SpineSource.LOWER_CHEST to Reliability(1f),
 		SpineSource.UPPER_WAIST to Reliability(1.5f),
 		SpineSource.LOWER_WAIST to Reliability(2f),
 		SpineSource.HIP to Reliability(4f),
-		SpineSource.UPPER_LEGS to Reliability(3f),
+		SpineSource.UPPER_LEGS to Reliability(2.5f),
 	),
 	SpineSource.LOWER_CHEST to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to Reliability(-10f, 11f),
-		SpineSource.LOWER_CHEST to Reliability(-11f, 12f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-10f, -42f),
+		SpineSource.LOWER_CHEST to Reliability(-11f, -45f), // Itself
 		// To
 		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f),
 		SpineSource.LOWER_WAIST to Reliability(2f, 7f),
 		SpineSource.HIP to Reliability(4f),
-		SpineSource.UPPER_LEGS to Reliability(3f),
+		SpineSource.UPPER_LEGS to Reliability(2.5f),
 	),
 	SpineSource.UPPER_WAIST to mapOf(
 		// From
-		SpineSource.UPPER_CHEST to Reliability(10f),
-		SpineSource.LOWER_CHEST to Reliability(10f),
-		SpineSource.UPPER_WAIST to Reliability(68f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(11f),
+		SpineSource.LOWER_CHEST to Reliability(11f),
+		SpineSource.UPPER_WAIST to Reliability(60f), // Itself
 		// To
-		SpineSource.LOWER_WAIST to Reliability(17f, 21f),
-		SpineSource.HIP to Reliability(5.5f, 9f),
-		SpineSource.UPPER_LEGS to Reliability(4.5f, 8f),
+		SpineSource.LOWER_WAIST to Reliability(17f, 20f),
+		SpineSource.HIP to Reliability(5.5f, 5.5f),
+		SpineSource.UPPER_LEGS to Reliability(3f, 2.5f),
 	),
 	SpineSource.LOWER_WAIST to mapOf(
 		// From
 		SpineSource.UPPER_CHEST to Reliability(6f),
 		SpineSource.LOWER_CHEST to Reliability(6f),
-		SpineSource.UPPER_WAIST to Reliability(6.25f),
+		SpineSource.UPPER_WAIST to Reliability(9f),
 		SpineSource.LOWER_WAIST to Reliability(44f), // Itself
 		// To
-		SpineSource.HIP to Reliability(10f),
-		SpineSource.UPPER_LEGS to Reliability(4.25f),
+		SpineSource.HIP to Reliability(10f, 6.5f),
+		SpineSource.UPPER_LEGS to Reliability(3.5f, 2.75f),
 	),
 	SpineSource.HIP to mapOf(
 		// From
 		SpineSource.UPPER_CHEST to Reliability(9.5f),
 		SpineSource.LOWER_CHEST to Reliability(9.5f),
-		SpineSource.UPPER_WAIST to Reliability(12.5f),
-		SpineSource.LOWER_WAIST to Reliability(13f),
-		SpineSource.HIP to Reliability(40f), // Itself
+		SpineSource.UPPER_WAIST to Reliability(13f, 14f),
+		SpineSource.LOWER_WAIST to Reliability(14f, 15f),
+		SpineSource.HIP to Reliability(35f), // Itself
 		// To
-		SpineSource.UPPER_LEGS to Reliability(13f),
+		SpineSource.UPPER_LEGS to Reliability(12f, 10f),
 	),
 )
 

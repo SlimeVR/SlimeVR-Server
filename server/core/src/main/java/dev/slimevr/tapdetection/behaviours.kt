@@ -1,7 +1,6 @@
 package dev.slimevr.tapdetection
 
 import dev.slimevr.config.TapDetectionConfig
-import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TapDetectionSetupNotification
@@ -105,13 +105,15 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 					// Inner flow emits whenever a tracker's rawAcceleration is updated
 					tracker.context.state
 						.filter { it.bodyPart in bodyPartsToCheck || setupMode }
-						.map { it.rawAcceleration to it.motion }
+						.map { it.rawAcceleration to it.origin }
 						.distinctUntilChanged()
-						.onEach { (rawAcceleration, motionState) ->
+						.onEach { (rawAcceleration, origin) ->
 							if (rawAcceleration == null) return@onEach
 
+							val thresholdMultiplier = if (origin == DeviceOrigin.HID) HID_MULTIPLIER else 1f
+
 							// Is this tracker over threshold for false positive prevention?
-							val isOverThreshold = if (rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED) {
+							val isOverThreshold = if (rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED * thresholdMultiplier) {
 								trackersOverThreshold.add(trackerTapDetectionState.trackerId)
 								true
 							} else {
@@ -127,7 +129,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 									othersOverThreshold >= numberTrackersOverThreshold,
 									trackerTapDetectionState,
 									rawAcceleration,
-									Motion.RESTING, // TODO motionState, disabled bc ZRock doesn't like it
+									thresholdMultiplier,
 								)
 
 								if (tapTriggered) {
@@ -204,7 +206,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		bodyAccelerating: Boolean,
 		trackerTapDetectionState: TrackerTapDetectionState,
 		trackerAcceleration: Vector3,
-		trackerMotion: Motion,
+		thresholdMultiplier: Float,
 	): Boolean {
 		// TODO check logic against main since taps seem harder to trigger
 
@@ -221,13 +223,13 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		val accelDelta = max - min
 
 		// Check for a single tap
-		if (!bodyAccelerating && trackerMotion != Motion.ROTATING && accelDelta > NEEDED_ACCEL_DELTA && !trackerTapDetectionState.waitForLowAccel) {
+		if (!bodyAccelerating && accelDelta > NEEDED_ACCEL_DELTA * thresholdMultiplier && !trackerTapDetectionState.waitForLowAccel) {
 			trackerTapDetectionState.tapTimestamps.add(now)
 			trackerTapDetectionState.waitForLowAccel = true
 		}
 
 		// Achieved low accel?
-		if (max < ALLOWED_BODY_ACCEL) trackerTapDetectionState.waitForLowAccel = false
+		if (max < ALLOWED_BODY_ACCEL * thresholdMultiplier) trackerTapDetectionState.waitForLowAccel = false
 
 		if (trackerTapDetectionState.tapTimestamps.isNotEmpty()) {
 			// Remove old stored taps (if they are too old)
@@ -252,6 +254,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f
 		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
+		const val HID_MULTIPLIER = 1.2f
 		val ACCEL_WINDOW = 0.06.seconds
 		val TAP_WINDOW_PER_TAP = 0.3.seconds
 	}

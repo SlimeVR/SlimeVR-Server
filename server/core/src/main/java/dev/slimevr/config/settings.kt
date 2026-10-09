@@ -73,8 +73,8 @@ data class DriverConfig(
 @Serializable
 data class TapDetectionConfig(
 	var yawResetDelay: Float = 0.2f,
-	var fullResetDelay: Float = 1.0f,
-	var mountingResetDelay: Float = 1.0f,
+	var fullResetDelay: Float = 1.4f,
+	var mountingResetDelay: Float = 1.4f,
 	var yawResetEnabled: Boolean = true,
 	var fullResetEnabled: Boolean = true,
 	var mountingResetEnabled: Boolean = true,

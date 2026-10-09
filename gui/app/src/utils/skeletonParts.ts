@@ -304,7 +304,7 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   ),
   [BodyPart.HIP]: part(
     model('hip', {
-      scale: spanBone({ girthFrom: 'hips', width: 1, depth: 1, length: 1 }),
+      scale: spanBone({ girthFrom: 'hips', width: 0.98, depth: 1, length: 0.95 }),
       offset: inBoneLengths({ length: -2.6 }),
     })
   ),
