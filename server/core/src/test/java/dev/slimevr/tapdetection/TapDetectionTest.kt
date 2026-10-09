@@ -36,7 +36,7 @@ class TapDetectionTest {
 		tapsNeeded: Int,
 		events: List<AccelEvent>,
 		bodyAccelerating: Boolean = false,
-		motion: Motion = Motion.RESTING,
+		thresholdMultiplier: Float = 1f,
 	) {
 		val state = TapDetectionBasicBehaviour.TrackerTapDetectionState(
 			trackerId = 1,
@@ -54,7 +54,7 @@ class TapDetectionTest {
 					bodyAccelerating = bodyAccelerating,
 					trackerTapDetectionState = state,
 					trackerAcceleration = event.accel,
-					trackerMotion = motion,
+					thresholdMultiplier = thresholdMultiplier,
 				),
 			)
 		}
@@ -141,6 +141,5 @@ class TapDetectionTest {
 			AccelEvent(tapDelay, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 		),
-		motion = Motion.ROTATING,
 	)
 }
