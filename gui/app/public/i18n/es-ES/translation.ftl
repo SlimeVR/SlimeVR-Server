@@ -1025,7 +1025,6 @@ vrc_config-legacy_mode = Utilizar la resolución de IK antigua
 vrc_config-disable_shoulder_tracking = Desactivar el seguimiento de hombros
 vrc_config-tracker_model = Modelo de rastreador para "FBT"
 vrc_config-avatar_measurement_type = Medida del avatar
-vrc_config-calibration_range = Rango de calibración
 vrc_config-calibration_visuals = Mostrar elementos visuales de la calibración
 vrc_config-user_height = Altura real del usuario
 vrc_config-tracker_model-UNKNOWN = Desconocido
