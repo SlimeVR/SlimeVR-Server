@@ -1123,7 +1123,6 @@ vrc_config-legacy_mode = Korzystanie ze starszego rozwiązywania kinematyki odwr
 vrc_config-disable_shoulder_tracking = Wyłącz śledzenie ramienia
 vrc_config-tracker_model = Model śledzenia FBT
 vrc_config-avatar_measurement_type = Pomiar awatara
-vrc_config-calibration_range = Zakres kalibracji
 vrc_config-calibration_visuals = Wyświetlanie wizualizacji kalibracji
 vrc_config-user_height = Rzeczywista wysokość użytkownika
 vrc_config-tracker_model-UNKNOWN = Nieznany
