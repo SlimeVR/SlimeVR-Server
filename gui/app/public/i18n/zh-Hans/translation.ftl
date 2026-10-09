@@ -1148,7 +1148,6 @@ vrc_config-legacy_mode = 使用旧版IK解算
 vrc_config-disable_shoulder_tracking = 禁用肩膀追踪
 vrc_config-tracker_model = 全追追踪器模型
 vrc_config-avatar_measurement_type = 虚拟形象测量
-vrc_config-calibration_range = 校准范围
 vrc_config-calibration_visuals = 显示全追校准范围
 vrc_config-user_height = 用户真实身高
 vrc_config-tracker_model-UNKNOWN = 未知
