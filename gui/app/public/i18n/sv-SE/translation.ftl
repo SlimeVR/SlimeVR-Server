@@ -863,7 +863,6 @@ vrc_config-legacy_mode = Använd gammal IK Solving
 vrc_config-disable_shoulder_tracking = Avaktivera axel-spårning
 vrc_config-tracker_model = FBT Spårnings-modell
 vrc_config-avatar_measurement_type = Avatar-mätning
-vrc_config-calibration_range = Kalibrerings-räckvidd
 vrc_config-calibration_visuals = Visa visuella kalibrerings-element
 vrc_config-user_height = Användarens riktiga längd
 vrc_config-tracker_model-UNKNOWN = Okänd
