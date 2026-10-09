@@ -1109,7 +1109,6 @@ vrc_config-legacy_mode = ใช้การแก้ไข IK แบบเก่
 vrc_config-disable_shoulder_tracking = ปิดการใช้งานการติดตามไหล่
 vrc_config-tracker_model = โมเดลแทร็กเกอร์ FBT
 vrc_config-avatar_measurement_type = การวัดขนาดอวาตาร์
-vrc_config-calibration_range = ช่วงการตั้งศูนย์
 vrc_config-calibration_visuals = แสดงภาพการตั้งศูนย์
 vrc_config-user_height = ความสูงจริงของผู้ใช้
 vrc_config-tracker_model-UNKNOWN = ไม่ทราบ
