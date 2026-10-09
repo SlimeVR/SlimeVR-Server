@@ -38,7 +38,7 @@ fun computeToeSnapRatio(
 
 	// Lessen the ratio with the ankle pointing forward.
 	val ankleDownDirection = abs(ankleLocalPosition.unit().y.coerceAtMost(0f))
-	val ankleDownRatio = FastMath.remap(ankleDownDirection, ANKLE_DOWN_MIN, ANKLE_DOWN_MAX, 0f, 1f).coerceIn(0f, 1f)
+	val ankleDownRatio = FastMath.clampedRemap(ankleDownDirection, ANKLE_DOWN_MIN, ANKLE_DOWN_MAX, 0f, 1f)
 
 	return rangeToFloorRatio * ankleDownRatio
 }
