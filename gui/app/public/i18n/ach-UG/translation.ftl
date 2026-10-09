@@ -1437,7 +1437,6 @@ vrc_config-legacy_mode = crwdns9318:0crwdne9318:0
 vrc_config-disable_shoulder_tracking = crwdns9320:0crwdne9320:0
 vrc_config-tracker_model = crwdns9326:0crwdne9326:0
 vrc_config-avatar_measurement_type = crwdns9328:0crwdne9328:0
-vrc_config-calibration_range = crwdns9330:0crwdne9330:0
 vrc_config-calibration_visuals = crwdns9332:0crwdne9332:0
 vrc_config-user_height = crwdns9334:0crwdne9334:0
 vrc_config-tracker_model-UNKNOWN = crwdns9344:0crwdne9344:0
