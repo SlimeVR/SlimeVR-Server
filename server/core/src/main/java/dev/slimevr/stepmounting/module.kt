@@ -19,23 +19,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.StepMountingStatus
 import kotlin.collections.emptyList
 import kotlin.collections.listOf
 import kotlin.collections.map
 import kotlin.time.ComparableTimeMark
-
-// TODO Put this enum in SolarXR
-enum class StepMountingStatus(
-	val value: UByte,
-) {
-	NONE(0.toUByte()),
-	WAITING_FOR_MOVEMENT(1.toUByte()),
-	RECORDING(2.toUByte()),
-	PROCESSING(3.toUByte()),
-	DONE(4.toUByte()),
-	ERROR_NO_DATA(5.toUByte()),
-	ERROR_TIMEOUT(6.toUByte()),
-}
 
 data class HeadsetSnapshot(
 	val rotation: Quaternion,
@@ -91,7 +79,7 @@ class StepMountingManager(
 			positionalHead.context.state.map { s ->
 				HeadsetSnapshot(
 					rotation = s.rotation,
-					position = s.position ?: error("Head will always have a position here"),
+					position = s.position ?: error("Head will always have a position here."),
 				)
 			}
 		}
@@ -109,7 +97,7 @@ class StepMountingManager(
 			controller to controller.context.state.map { s ->
 				TrackerSnapshot(
 					rotation = s.rotation,
-					acceleration = s.acceleration ?: error("Trackers will always have acceleration in this case"),
+					acceleration = s.acceleration ?: error("Trackers will always have acceleration in this case."),
 				)
 			}
 		}

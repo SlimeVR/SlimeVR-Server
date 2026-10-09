@@ -34,7 +34,6 @@ import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.stepmounting.StepMountingState
-import dev.slimevr.stepmounting.StepMountingStatus
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -57,6 +56,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.rpc.StepMountingStatus
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration

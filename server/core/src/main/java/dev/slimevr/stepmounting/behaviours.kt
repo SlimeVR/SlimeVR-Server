@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.StepMountingStatus
 import kotlin.time.TimeSource
 
 internal const val TIMEOUT_MS = 10_000L
@@ -46,18 +47,26 @@ class StepMountingBasicBehaviour : StepMountingBehaviour {
 	}
 }
 
-val coefficients = ButterworthCoefficients(
+val COEFFICIENTS = ButterworthCoefficients(
 	8f,
 	0.02f,
 )
-const val startThreshold = 0.4f // in m/s^2
-const val endThreshold = 0.5f // in m/s^2
-const val minMovementDurationMs = 3000L
+const val START_THRESHOLD = 0.4f // in m/s^2
+const val END_THRESHOLD = 0.5f // in m/s^2
+const val MIN_MOVEMENT_DURATION_MS = 3000L
+const val ERROR_THRESHOLD = 1f
 
 fun movementDetector(updates: Flow<TrackerSnapshot>) = flow {
-	val lowpass = Vector3Butterworth(coefficients)
+	val lowpass = Vector3Butterworth(COEFFICIENTS)
+	// var lastTime: ComparableTimeMark? = null
 	emit(0f)
 	updates.collect { update ->
+		// Dynamically control lowpass timestep
+		/*
+		val delta = lastTime?.elapsedNow()?.inFloatingSeconds ?: COEFFICIENTS.Ts
+		lastTime = timeSource.markNow()
+		lowpass.swapCoefficients(COEFFICIENTS.copy(Ts = delta))
+		 */
 		val lowpassAccel = lowpass.filter(update.acceleration)
 		emit((update.acceleration - lowpassAccel).len())
 	}
@@ -90,7 +99,7 @@ internal suspend fun runCalibrationSession(
 		}.stateIn(this)
 
 		// Wait for movement to start
-		isMoving.first { it >= startThreshold }
+		isMoving.first { it >= START_THRESHOLD }
 
 		dispatch(StepMountingStatus.RECORDING)
 		AppLogger.stepMounting.info("Movement detected, recording...")
@@ -123,8 +132,8 @@ internal suspend fun runCalibrationSession(
 		}
 
 		// Wait for movement to end
-		delay(minMovementDurationMs)
-		isMoving.first { it < endThreshold }
+		delay(MIN_MOVEMENT_DURATION_MS)
+		isMoving.first { it < END_THRESHOLD }
 
 		dispatch(StepMountingStatus.PROCESSING)
 		AppLogger.stepMounting.info("No more movement detected, processing...")
@@ -136,14 +145,25 @@ internal suspend fun runCalibrationSession(
 
 		val headOffset = headRecording.last().position - headRecording.first().position
 		AppLogger.stepMounting.info("${BodyPart.HEAD}: $headOffset")
-		trackerRecordings.filter {
+		val results = trackerRecordings.filter {
 			it.second.isNotEmpty()
 		}.map { (tracker, recording) ->
 			tracker to estimateHeadingAlign(recording, headOffset)
-		}.forEach { (tracker, result) ->
-			// TODO: Fail on high error
+		}.onEach { (tracker, result) ->
 			AppLogger.stepMounting.info("${tracker.context.state.value.bodyPart}: $result")
+		}
 
+		// Fail on high error
+		results.firstOrNull { (_, result) ->
+			result.errorMeters >= ERROR_THRESHOLD
+		}?.let { (tracker, result) ->
+			dispatch(StepMountingStatus.ERROR_NO_DATA)
+			AppLogger.stepMounting.error("Tracker assigned to ${tracker.context.state.value.bodyPart} exceeded the error threshold (${result.errorMeters}m >= ${ERROR_THRESHOLD}m).")
+			error("Error threshold exceeded.")
+		}
+
+		// Apply to trackers
+		results.forEach { (tracker, result) ->
 			tracker.context.dispatch(
 				TrackerActions.SetStepMounting(
 					result.headingAlignment,

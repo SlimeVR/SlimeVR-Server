@@ -12,7 +12,6 @@ import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.stepmounting.StepMountingManager
-import dev.slimevr.stepmounting.StepMountingStatus
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
@@ -40,11 +39,11 @@ import solarxr_protocol.rpc.ResetLifecycle
 import solarxr_protocol.rpc.ResetStatusResponse
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.StepMountingDetail
+import solarxr_protocol.rpc.StepMountingStatus
 import kotlin.collections.contains
 import kotlin.collections.listOf
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
-import solarxr_protocol.rpc.StepMountingStatus as RpcStepMountingStatus
 
 data class ResetsState(
 	val canDoYawReset: Boolean,
@@ -190,32 +189,31 @@ class ResetsManager(
 		}
 	}
 
-	private suspend fun runStepMounting(onPhase: suspend (RpcStepMountingStatus) -> Unit): RpcStepMountingStatus? {
-		stepMountingManager.cancel()
+	private suspend fun runStepMounting(onPhase: suspend (StepMountingStatus) -> Unit): StepMountingStatus? {
 		stepMountingManager.start()
 		try {
 			val lastStatus = stepMountingManager.context.state
 				.map { it.status }
 				.distinctUntilChanged()
-				.onEach { status -> stepMountingPhase(status)?.let { onPhase(it) } }
-				.first { it == StepMountingStatus.DONE || stepMountingFailure(it) != null }
-			return stepMountingFailure(lastStatus)
+				.onEach(onPhase)
+				.first { it == StepMountingStatus.DONE || stepMountingFailure(it) }
+			return if (stepMountingFailure(lastStatus)) {
+				lastStatus
+			} else {
+				null
+			}
 		} finally {
 			stepMountingManager.cancel()
 		}
 	}
 
-	private fun stepMountingPhase(status: StepMountingStatus) = when (status) {
-		StepMountingStatus.WAITING_FOR_MOVEMENT -> RpcStepMountingStatus.WAITING_FOR_MOVEMENT
-		StepMountingStatus.RECORDING -> RpcStepMountingStatus.RECORDING
-		StepMountingStatus.PROCESSING -> RpcStepMountingStatus.PROCESSING
-		else -> null
-	}
-
 	private fun stepMountingFailure(status: StepMountingStatus) = when (status) {
-		StepMountingStatus.ERROR_NO_DATA -> RpcStepMountingStatus.ERROR_NO_DATA
-		StepMountingStatus.ERROR_TIMEOUT -> RpcStepMountingStatus.ERROR_TIMEOUT
-		else -> null
+		StepMountingStatus.ERROR_NO_DATA,
+		StepMountingStatus.ERROR_THRESHOLD_EXCEEDED,
+		StepMountingStatus.ERROR_TIMEOUT,
+		-> true
+
+		else -> false
 	}
 
 	suspend fun clearTrackersMountingReset(resetSourceName: String) {
