@@ -1496,7 +1496,6 @@ vrc_config-legacy_mode = 使用傳統 IK 解決方案
 vrc_config-disable_shoulder_tracking = 停用肩膀追蹤
 vrc_config-tracker_model = FBT 追蹤器形狀
 vrc_config-avatar_measurement_type = 角色測量
-vrc_config-calibration_range = 校正範圍
 vrc_config-calibration_visuals = 顯示 FBT 校正範圍
 vrc_config-user_height = 用戶真實身高
 vrc_config-tracker_model-UNKNOWN = 不明
