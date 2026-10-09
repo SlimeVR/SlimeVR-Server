@@ -1133,7 +1133,6 @@ vrc_config-legacy_mode = Utiliser l'ancienne méthode de résolution de la CI
 vrc_config-disable_shoulder_tracking = Désactiver le suivi des épaules
 vrc_config-tracker_model = Apparence des traqueurs du suivi du corps
 vrc_config-avatar_measurement_type = Mesure de l'avatar
-vrc_config-calibration_range = Plage de calibration
 vrc_config-calibration_visuals = Afficher les visuels de calibration
 vrc_config-user_height = Taille réelle de l'utilisateur
 vrc_config-tracker_model-UNKNOWN = Inconnu
