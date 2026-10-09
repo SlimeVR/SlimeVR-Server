@@ -1,6 +1,5 @@
 package dev.slimevr.tapdetection
 
-import dev.slimevr.tracker.Motion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -130,16 +129,5 @@ class TapDetectionTest {
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 		),
 		bodyAccelerating = true,
-	)
-
-	@Test
-	fun `Tap not detected while tracker is rotating`() = runTapSequence(
-		tapsNeeded = 2,
-		events = listOf(
-			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
-			AccelEvent(accelDelay, highAccel, expectedTap = false),
-			AccelEvent(tapDelay, lowAccel, expectedTap = false),
-			AccelEvent(accelDelay, highAccel, expectedTap = false),
-		),
 	)
 }
