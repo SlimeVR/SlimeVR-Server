@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton.targetprocessors
 
+import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.COMState
@@ -21,32 +22,21 @@ import solarxr_protocol.rpc.ResetType
 import kotlin.math.abs
 import kotlin.time.ComparableTimeMark
 
-data class LockState(
-	val locked: Boolean,
-	val position: Vector3 = Vector3.ZERO,
-)
+// Higher makes it harder to unlock after being locked
+const val SKATING_LOCK_DISENGAGE_PERCENT = 1.1f
 
-data class ReleaseSmoothing(
-	val startTime: ComparableTimeMark,
-	val duration: Float,
-	val offset: Vector3,
-)
+// Minimum strength for the lock thresholds
+const val CORRECTION_STRENGTH_MIN = 0.35f
 
-const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
-
-// TODO These were squared for performance, but I think that requires squaring
-//  everything else, and obscures the actual values. We need a better way of doing so if
-//  we want to still do that. - Butterscotch
-const val SKATING_DISTANCE_THRESHOLD = 0.2f
-const val SKATING_ANGULAR_VELOCITY_THRESHOLD = 4.5f
-const val SKATING_ACCELERATION_THRESHOLD = 0.7f
-
-const val FLOOR_CALIBRATION_OFFSET = 0.0025f
-const val FLOOR_DISTANCE_THRESHOLD = 0.065f
+// Main parameters to decide if a foot is locked or not
+const val SKATING_DISTANCE_THRESHOLD = 0.25f
+const val FLOOR_DISTANCE_THRESHOLD = 0.08f
+const val SKATING_ANGULAR_VELOCITY_THRESHOLD = 5.8f
+const val SKATING_ACCELERATION_THRESHOLD = 1f
 
 const val PARAM_SCALAR_MAX = 3.2f
-const val PARAM_SCALAR_MIN = 0.25f
 const val PARAM_SCALAR_MID = 1.0f
+const val PARAM_SCALAR_MIN = 0.25f
 
 // The point at which the scalar is at the max or min depending on accel
 const val MAX_SCALAR_ACCEL = 0.2f
@@ -56,43 +46,60 @@ const val MIN_SCALAR_ACCEL = 0.9f
 const val MAX_SCALAR_DORMANT = 0.2f
 const val MIN_SCALAR_DORMANT = 1.50f
 
-// The point at which the scalar is at it max or min in a single locked foot situation
-const val MIN_SCALAR_ACTIVE = 1.75f
+// The point at which the scalar is at its max or min in a single locked foot situation
 const val MAX_SCALAR_ACTIVE = 0.1f
+const val MIN_SCALAR_ACTIVE = 1.75f
 
 // Maximum scalars for the pressure on each foot
 const val PRESSURE_SCALAR_MIN = 0.1f
 const val PRESSURE_SCALAR_MAX = 1.9f
 
-/**
- * The maximum time in seconds that it can take to reach the unlocked position from the
- * locked position.
- */
-const val RELEASE_SMOOTHING_MAX_DURATION = 0.3f
+// The distance correction scales with the distance from locked position to curPosition
+const val DISTANCE_MIN = 0.01f
+const val DISTANCE_MAX = 0.05f
+const val DISTANCE_CORRECTION_MIN = 0.55f
+const val DISTANCE_CORRECTION_MAX = 0.70f
+
+// The correction speed accelerates with time
+const val DURATION_CORRECTION_SPEED = 0.5f
+const val DURATION_CORRECTION_WARMUP = 1.75f
+
+// To not keep smoothing forever, making it so we'd run IK for nothing.
+const val CORRECTION_EPSILON = 0.001f
+
+data class LockState(
+	val locked: Boolean,
+	val position: Vector3 = Vector3.ZERO,
+)
+
+data class ReleaseSmoothing(
+	val startTime: ComparableTimeMark,
+	val offset: Vector3,
+)
 
 /**
- * The distance that the max smoothing duration scales over (velocity of smoothing is
- * [RELEASE_SMOOTHING_MAX_DURATION] divided by [RELEASE_SMOOTHING_DISTANCE]).
+ * Returns if a foot is considered as planted and should be locked using:
+ * - position delta from the locked position
+ * - vertical translation from floor
+ * - angular velocity magnitude
+ * - acceleration magnitude
  */
-const val RELEASE_SMOOTHING_DISTANCE = 0.2f
-
 fun shouldLock(
 	position: Vector3,
-	lastPosition: Vector3,
+	lockedPosition: Vector3?,
 	acceleration: Vector3,
-	angularVelocity: Vector3,
-	wasLocked: Boolean,
+	angularVelocity: Vector3?,
 	floorLevel: Float = 0f,
 	correctionStrength: Float = 1f,
 	velocitySensitivity: Float = 1f,
 	accelerationSensitivity: Float = 1f,
 ): Boolean {
-	val thresholdMultiplier = (if (wasLocked) 1f else SKATING_LOCK_ENGAGE_PERCENT) * (correctionStrength * 0.5f + 0.5f)
-	val floorLevel = floorLevel + FLOOR_CALIBRATION_OFFSET
-	return ((position - lastPosition).let { Vector3(it.x, 0f, it.z) }.len() <= SKATING_DISTANCE_THRESHOLD) &&
-		(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD) &&
-		(angularVelocity.len() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier * velocitySensitivity) &&
-		(acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier * correctionStrength * accelerationSensitivity)
+	val thresholdMultiplier = (if (lockedPosition != null) SKATING_LOCK_DISENGAGE_PERCENT else 1f) * correctionStrength
+	val lockedToCorrectedPosition = lockedPosition == null || (position - lockedPosition).let { Vector3(it.x, 0f, it.z) }.len() <= SKATING_DISTANCE_THRESHOLD * thresholdMultiplier
+	val lockedToFloor = position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier
+	val lockedAngular = angularVelocity == null || angularVelocity.len() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier * velocitySensitivity
+	val lockedAccel = acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier * accelerationSensitivity
+	return lockedToCorrectedPosition && lockedToFloor && lockedAngular && lockedAccel
 }
 
 fun computeLockState(
@@ -131,7 +138,6 @@ fun computeSensitivity(
 	//  lock and dynamically adjusting the scalars (based off the assumption that if you
 	//  are standing one foot is likely planted on the ground unless you are moving
 	//  fast)
-	// TODO Always 3.2?
 	val footScalarVel: Float = getFootLockLikelihood(
 		velocity,
 		altVelocity,
@@ -140,11 +146,7 @@ fun computeSensitivity(
 
 	// Combine the scalars to get the final scalars
 	val footSensitivityVel = (
-		(
-			footScalarAccel +
-				footScalarVel /
-				2f
-			) *
+		((footScalarAccel + footScalarVel) / 2f) *
 			(pressure * 2f).coerceIn(
 				PRESSURE_SCALAR_MIN,
 				PRESSURE_SCALAR_MAX,
@@ -157,78 +159,33 @@ fun computeSensitivity(
 
 // Calculate a scalar using acceleration to apply to the non acceleration based
 // 	hyperparameters when calculating lock states
-fun getFootScalarAccel(
-	isLocked: Boolean,
-	accelerationMagnitude: Float,
-): Float {
-	if (isLocked) {
-		if (accelerationMagnitude < MAX_SCALAR_ACCEL) {
-			return PARAM_SCALAR_MAX
-		} else if (accelerationMagnitude > MIN_SCALAR_ACCEL) {
-			return (
-				PARAM_SCALAR_MAX
-					*
-					(accelerationMagnitude - MIN_SCALAR_ACCEL) /
-					(MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL)
-				)
-		}
-	}
-	return PARAM_SCALAR_MID
+fun getFootScalarAccel(isLocked: Boolean, accelerationMagnitude: Float): Float = if (isLocked) {
+	FastMath.clampedRemap(accelerationMagnitude, MAX_SCALAR_ACCEL, MIN_SCALAR_ACCEL, PARAM_SCALAR_MAX, PARAM_SCALAR_MIN)
+} else {
+	PARAM_SCALAR_MID
 }
 
 // Calculate a scalar using the velocity of the foot trackers and the lock states to
 //  calculate a scalar to apply to the non acceleration based hyperparameters when
 //  calculating lock states
-fun getFootLockLikelihood(
-	primaryFootVel: Vector3,
-	otherFootVel: Vector3,
-	bothLocked: Boolean,
-): Float {
-	if (bothLocked) {
-		var velocityDiff: Vector3 = primaryFootVel - otherFootVel
-		velocityDiff = Vector3(velocityDiff.x, 0f, velocityDiff.z)
-		val velocityDiffMagnitude: Float = velocityDiff.len()
-		if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
-			return PARAM_SCALAR_MAX
-		} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
-			return (
-				PARAM_SCALAR_MAX
-					*
-					(velocityDiffMagnitude - MIN_SCALAR_DORMANT) /
-					(MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT)
-				)
-		}
-	}
-
-	// Calculate the 'unlockedness factor' and use that to determine the scalar (go as
-	// 	low as 0.5 and as high as param_scalar_max)
-	val velocityDiffAbs: Float = abs(primaryFootVel.len() - otherFootVel.len())
-	if (velocityDiffAbs > MIN_SCALAR_ACTIVE) {
-		return PARAM_SCALAR_MIN
-	} else if (velocityDiffAbs < MAX_SCALAR_ACTIVE) {
-		return PARAM_SCALAR_MAX
-	}
-	return (
-		PARAM_SCALAR_MAX
-			*
-			(velocityDiffAbs - MIN_SCALAR_ACTIVE) /
-			(MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE) -
-			PARAM_SCALAR_MID
-		)
+fun getFootLockLikelihood(primaryFootVel: Vector3, otherFootVel: Vector3, bothLocked: Boolean): Float = if (bothLocked) {
+	val velocityDiff = (primaryFootVel - otherFootVel).let { Vector3(it.x, 0f, it.z) }.len()
+	FastMath.clampedRemap(velocityDiff, MAX_SCALAR_DORMANT, MIN_SCALAR_DORMANT, PARAM_SCALAR_MAX, PARAM_SCALAR_MIN)
+} else {
+	val velocityDiffAbs = abs(primaryFootVel.len() - otherFootVel.len())
+	FastMath.clampedRemap(velocityDiffAbs, MAX_SCALAR_ACTIVE, MIN_SCALAR_ACTIVE, PARAM_SCALAR_MAX, PARAM_SCALAR_MIN)
 }
 
-/**
- * Calculates a duration to fit the release smoothing velocity.
- */
-fun releaseSmoothingDuration(distance: Float): Float = (
-	distance / RELEASE_SMOOTHING_DISTANCE
-	).coerceAtMost(1f) *
-	RELEASE_SMOOTHING_MAX_DURATION
+fun computeReleaseSmoothing(offset: Vector3, horizontalSpeed: Float, secondsUnlocked: Float, deltaTime: Float): Vector3 {
+	val length = offset.len()
+	if (length <= CORRECTION_EPSILON) return Vector3.ZERO
 
-fun releaseSmoothingMultiplier(
-	time: ComparableTimeMark,
-	smoothing: ReleaseSmoothing,
-): Float = 1f - ((time - smoothing.startTime).inFloatingSeconds / smoothing.duration)
+	val distanceCorrection = horizontalSpeed * FastMath.clampedRemap(length, DISTANCE_MIN, DISTANCE_MAX, DISTANCE_CORRECTION_MIN, DISTANCE_CORRECTION_MAX)
+	val durationCorrection = DURATION_CORRECTION_SPEED * (secondsUnlocked / DURATION_CORRECTION_WARMUP).coerceAtMost(1f)
+	val totalCorrection = (distanceCorrection + durationCorrection) * deltaTime
+	val remaining = (length - totalCorrection).coerceAtLeast(0f)
+	return offset * (remaining / length)
+}
 
 data class SkatingBodyParts(
 	// ex. Left foot
@@ -255,9 +212,8 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		),
 	)
 
-	// Centre of mass
+	var lastProcessTime = timeSource.markNow()
 	var comState: COMState? = null
-
 	val pressure: BodyPartMap<Float> = bodyPartMap()
 	val lockState: BodyPartMap<LockState> = bodyPartMap()
 	val releaseSmoothing: BodyPartMap<ReleaseSmoothing> = bodyPartMap()
@@ -265,6 +221,10 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 	override fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		val skeletonConfig = settings.context.state.value.data.skeletonConfig
 		if (!skeleton.effectiveSkatingCorrection) return
+
+		val now = timeSource.markNow()
+		val deltaTime = (now - lastProcessTime).inFloatingSeconds.coerceIn(0f, 1f)
+		lastProcessTime = now
 
 		// Update centre of mass
 		val comState = computeComState(
@@ -286,13 +246,14 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		pressure[BodyPart.LEFT_FOOT] = leftPressure
 		pressure[BodyPart.RIGHT_FOOT] = rightPressure
 
-		val correctionStrength = skeletonConfig.ratios.skatingCorrectionStrength
+		val correctionStrength = FastMath.remap(skeletonConfig.ratios.skatingCorrectionStrength, 0f, 1f, CORRECTION_STRENGTH_MIN, 1f)
 
 		for ((bodyPart, mirrorBodyPart, ikTargetBodyPart) in skatingBodyParts) {
-			val input = inputSkeleton[bodyPart] ?: return
-			val bone = fk[bodyPart] ?: return
-			val altBone = fk[mirrorBodyPart] ?: return
-			val curPosition = bone.headPosition
+			val input = inputSkeleton[bodyPart] ?: continue
+			val bone = fk[bodyPart] ?: continue
+			val altBone = fk[mirrorBodyPart] ?: continue
+			val ikBone = fk[ikTargetBodyPart] ?: continue
+			val curPosition = mutableIkTargets[ikTargetBodyPart] ?: ikBone.tailPosition
 
 			val lastState = lockState[bodyPart]
 			val wasLocked = lastState?.locked == true
@@ -304,8 +265,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				bone.acceleration.len(),
 				bone.velocity.linear,
 				altBone.velocity.linear,
-				// TODO Do something better
-				pressure[bodyPart] ?: 0.1f,
+				pressure[bodyPart] ?: 0.5f,
 			)
 
 			// Consider locking BodyPart
@@ -314,22 +274,21 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				if (wasLocked) {
 					lastState.position
 				} else {
-					// The distance condition is disabled if not locked
-					curPosition
+					null
 				},
 				bone.acceleration,
 				if (input.isRotationActive) {
 					bone.velocity.angular
 				} else {
-					Vector3.ZERO
+					null
 				},
-				wasLocked,
 				floorLevel,
 				correctionStrength,
 				velocitySensitivity,
 				accelerationSensitivity,
 			)
 
+			// Update lock state
 			val activeState = computeLockState(
 				wasLocked,
 				isLocked,
@@ -340,21 +299,31 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				// Otherwise pull the last state
 			} ?: lastState ?: continue
 
-			val now = timeSource.markNow()
-			val lastSmoothingOffset = releaseSmoothing[bodyPart]?.let { smoothing ->
-				val multiplier = releaseSmoothingMultiplier(now, smoothing)
-				if (multiplier > 0f) {
-					smoothing.offset * multiplier
+			// Continue smoothing
+			val smoothingOffset = releaseSmoothing[bodyPart]?.let { lastSmoothing ->
+				// Get new smoothing
+				val newSmoothing = computeReleaseSmoothing(
+					lastSmoothing.offset,
+					bone.velocity.linear.let { Vector3(it.x, 0f, it.z) }.len(),
+					(now - lastSmoothing.startTime).inFloatingSeconds,
+					deltaTime,
+				)
+
+				// Update the last smoothing to this new smoothing, if any within epsilon.
+				if (newSmoothing.len() > CORRECTION_EPSILON) {
+					releaseSmoothing[bodyPart] = lastSmoothing.copy(offset = newSmoothing)
+					newSmoothing
 				} else {
-					// Smoothing is finished, remove it from the map
+					// Smoothing finished
 					releaseSmoothing[bodyPart] = null
 					null
 				}
 			}
+			// Start smoothing
 			val activeSmoothingOffset = if (!isLocked && wasLocked) {
 				// If unlocking, start smoothing from the locked position (plus last
 				// smoothing offset if present) to the current position
-				val lastLockPosition = lastSmoothingOffset?.let { offset ->
+				val lastLockPosition = smoothingOffset?.let { offset ->
 					lastState.position + offset
 				} ?: lastState.position
 
@@ -364,19 +333,20 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 				// Save our new smoothing
 				releaseSmoothing[bodyPart] = ReleaseSmoothing(
 					now,
-					releaseSmoothingDuration(offset.len()),
 					offset,
 				)
 				// The first frame will always be the full offset, so just return that
 				offset
 			} else {
-				lastSmoothingOffset
+				smoothingOffset
 			}
 
 			if (activeState.locked) {
-				mutableIkTargets[ikTargetBodyPart] = activeSmoothingOffset?.let { offset ->
-					activeState.position + offset
-				} ?: activeState.position
+				mutableIkTargets[ikTargetBodyPart] = if (activeSmoothingOffset != null) {
+					activeState.position + activeSmoothingOffset
+				} else {
+					activeState.position
+				}
 			} else if (activeSmoothingOffset != null) {
 				// Target position with smoothed offset if present
 				mutableIkTargets[ikTargetBodyPart] = curPosition + activeSmoothingOffset
@@ -386,7 +356,9 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 
 	override fun reset(resetType: ResetType) {
 		if (resetType == ResetType.FULL) {
+			lastProcessTime = timeSource.markNow()
 			comState = null
+			pressure.clear()
 			lockState.clear()
 			releaseSmoothing.clear()
 		}
