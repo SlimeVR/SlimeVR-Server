@@ -10,11 +10,11 @@ import dev.slimevr.quaternionApproxEqual
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Velocity
-import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import java.util.EnumMap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -88,7 +88,7 @@ class InputDecoderTest {
 		)
 		val secondFrame = decodeVmcBundle(second, firstFrame)
 
-		assertApprox(Vector3(0f, 1f, 0f), assertNotNull(secondFrame.boneLocalPositions[BodyPart.HIP]))
+		assertApprox(Vector3(0f, 1f, 0f), assertNotNull(secondFrame.boneLocalPositions[UnityBone.HIPS]))
 	}
 
 	@Test
@@ -152,7 +152,7 @@ class InputDecoderTest {
 		)
 
 		for ((bodyPart, originalBone) in bones) {
-			val recovered = assertNotNull(worldTransforms[bodyPart], "missing $bodyPart")
+			val recovered = assertNotNull(worldTransforms[UnityBone.fromBodyPart(bodyPart)], "missing $bodyPart")
 			assertApprox(originalBone.rotation, recovered.rotation, "$bodyPart rotation")
 			assertApprox(originalBone.headPosition, recovered.position, "$bodyPart position")
 		}
@@ -164,11 +164,11 @@ class InputDecoderTest {
 		val rootRotation = Quaternion.rotationAroundYAxis(0.9f)
 		val rootPosition = Vector3(1f, 0f, 0f)
 
-		val locals = BodyPartMap(mapOf(BodyPart.HIP to hipLocalRotation))
-		val localPositions = bodyPartMap<Vector3>()
+		val locals = EnumMap(mapOf(UnityBone.HIPS to hipLocalRotation))
+		val localPositions: EnumMap<UnityBone, Vector3> = EnumMap(UnityBone::class.java)
 
 		val result = vmcWorldTransforms(locals, localPositions, rootRotation, rootPosition, scale = 1f)
-		val hip = assertNotNull(result[BodyPart.HIP])
+		val hip = assertNotNull(result[UnityBone.HIPS])
 
 		assertApprox(rootRotation * hipLocalRotation, hip.rotation)
 		assertApprox(rootPosition, hip.position)
@@ -176,16 +176,16 @@ class InputDecoderTest {
 
 	@Test
 	fun `Scale multiplies position and leaves rotation alone`() {
-		val locals = BodyPartMap(mapOf(BodyPart.HIP to Quaternion.rotationAroundZAxis(0.3f)))
-		val localPositions = BodyPartMap(mapOf(BodyPart.HIP to Vector3(1f, 2f, 3f)))
+		val locals = EnumMap(mapOf(UnityBone.HIPS to Quaternion.rotationAroundZAxis(0.3f)))
+		val localPositions = EnumMap(mapOf(UnityBone.HIPS to Vector3(1f, 2f, 3f)))
 
 		val unscaled = vmcWorldTransforms(locals, localPositions, Quaternion.IDENTITY, Vector3.ZERO, scale = 1f)
 		val scaled = vmcWorldTransforms(locals, localPositions, Quaternion.IDENTITY, Vector3.ZERO, scale = 2f)
 
-		assertApprox(Quaternion.rotationAroundZAxis(0.3f), assertNotNull(scaled[BodyPart.HIP]).rotation)
+		assertApprox(Quaternion.rotationAroundZAxis(0.3f), assertNotNull(scaled[UnityBone.HIPS]).rotation)
 		assertApprox(
-			assertNotNull(unscaled[BodyPart.HIP]).position * 2f,
-			assertNotNull(scaled[BodyPart.HIP]).position,
+			assertNotNull(unscaled[UnityBone.HIPS]).position * 2f,
+			assertNotNull(scaled[UnityBone.HIPS]).position,
 		)
 	}
 
@@ -196,17 +196,17 @@ class InputDecoderTest {
 		// A sender whose model has no UpperChest bone never emits its local rotation, so it's
 		// absent from the decoded locals map entirely. This should behave exactly as if
 		// UpperChest's local rotation had been received as IDENTITY.
-		val withoutUpperChest = BodyPartMap(mapOf(BodyPart.NECK to neckLocal))
-		val withIdentityUpperChest = BodyPartMap(
-			mapOf(BodyPart.NECK to neckLocal, BodyPart.UPPER_CHEST to Quaternion.IDENTITY),
+		val withoutUpperChest = EnumMap(mapOf(UnityBone.NECK to neckLocal))
+		val withIdentityUpperChest = EnumMap(
+			mapOf(UnityBone.NECK to neckLocal, UnityBone.UPPER_CHEST to Quaternion.IDENTITY),
 		)
-		val emptyPositions = bodyPartMap<Vector3>()
+		val emptyPositions: EnumMap<UnityBone, Vector3> = EnumMap(UnityBone::class.java)
 
 		val a = vmcWorldTransforms(withoutUpperChest, emptyPositions, Quaternion.IDENTITY, Vector3.ZERO, 1f)
 		val b = vmcWorldTransforms(withIdentityUpperChest, emptyPositions, Quaternion.IDENTITY, Vector3.ZERO, 1f)
 
-		assertApprox(assertNotNull(a[BodyPart.NECK]).rotation, assertNotNull(b[BodyPart.NECK]).rotation)
-		assertApprox(assertNotNull(a[BodyPart.HEAD]).rotation, assertNotNull(b[BodyPart.HEAD]).rotation)
+		assertApprox(assertNotNull(a[UnityBone.NECK]).rotation, assertNotNull(b[UnityBone.NECK]).rotation)
+		assertApprox(assertNotNull(a[UnityBone.HEAD]).rotation, assertNotNull(b[UnityBone.HEAD]).rotation)
 	}
 
 	@Test

@@ -119,7 +119,7 @@ val BONE_SPECS: Map<SkeletonBone, BoneSpec> = mapOf(
 	SkeletonBone.LOWER_LEG to BoneSpec(default = 0.5f, min = 0.01f, max = 0.8f, curve = LOWER_LEG_LENGTH_BY_STATURE),
 	SkeletonBone.FOOT_LENGTH to BoneSpec(default = 0.125f, min = 0.01f, max = 0.35f, curve = FOOT_LENGTH_BY_STATURE),
 	SkeletonBone.FOOT_SHIFT to BoneSpec(default = -0.02f, min = -0.2f, max = 0.2f, curve = LINEAR_WITH_HEIGHT),
-	SkeletonBone.SHOULDERS_DISTANCE to BoneSpec(default = 0.06f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.SHOULDERS_DISTANCE to BoneSpec(default = 0.05f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
 	SkeletonBone.SHOULDERS_WIDTH to BoneSpec(default = 0.35f, min = 0.01f, max = 0.8f, curve = SHOULDERS_WIDTH_BY_STATURE),
 	SkeletonBone.UPPER_ARM to BoneSpec(default = 0.29f, min = 0.01f, max = 0.6f, curve = UPPER_ARM_LENGTH_BY_STATURE),
 	SkeletonBone.LOWER_ARM to BoneSpec(default = 0.27f, min = 0.01f, max = 0.6f, curve = LOWER_ARM_LENGTH_BY_STATURE),

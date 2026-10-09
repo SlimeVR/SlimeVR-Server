@@ -93,7 +93,7 @@ class OutputEncoderTest {
 	fun testSkipsRoutedBonesMissingFromTheSkeleton() {
 		val bundle = buildOutgoingBundle(
 			bones = BodyPartMap(mapOf(BodyPart.HIP to bone(BodyPart.HIP))),
-			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST),
+			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST),
 			config = defaultConfig,
 			vrm = null,
 			skeletonHeight = 1.7f,

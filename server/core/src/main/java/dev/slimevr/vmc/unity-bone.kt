@@ -169,5 +169,6 @@ enum class UnityBone(
 
 	companion object {
 		fun fromSerial(serial: String): UnityBone? = entries.firstOrNull { it.serial.equals(serial, ignoreCase = true) }
+		fun fromBodyPart(bodyPart: BodyPart): UnityBone? = entries.firstOrNull { bodyPart in it.bodyParts }
 	}
 }

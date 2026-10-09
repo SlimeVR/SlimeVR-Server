@@ -47,8 +47,10 @@ internal fun buildOutgoingBundle(
 			} else {
 				unityBone.bodyParts
 			}
-			unityBoneGlobalRotations[unityBone] = averageRotations(bodyParts.mapNotNull { bones[it]?.rotation })
-			unityBoneGlobalPositions[unityBone] = averagePositions(bodyParts.mapNotNull { bones[it]?.headPosition })
+			val bones = bodyParts.mapNotNull { bones[it] }
+			if (bones.isEmpty()) continue
+			unityBoneGlobalRotations[unityBone] = averageRotations(bones.map { it.rotation })
+			unityBoneGlobalPositions[unityBone] = averagePositions(bones.map { it.headPosition })
 		}
 
 		// Send data for each bone
@@ -60,8 +62,8 @@ internal fun buildOutgoingBundle(
 			val trackingParentUnityBone = VMC_BONE_PARENTS[trackingUnityBone]
 
 			// Compute local rotation of bone
-			val boneRotation = unityBoneGlobalRotations[trackingUnityBone] ?: Quaternion.IDENTITY
-			val parentRotation = unityBoneGlobalRotations[trackingParentUnityBone] ?: Quaternion.IDENTITY
+			val boneRotation = unityBoneGlobalRotations[trackingUnityBone] ?: continue
+			val parentRotation = unityBoneGlobalRotations[trackingParentUnityBone]
 			val localRotation = vmcLocalRotation(boneRotation, parentRotation, targetUnityBone, targetParentUnityBone, config.mirrorTracking)
 
 			// Compute local position of bone
@@ -79,7 +81,7 @@ internal fun buildOutgoingBundle(
 			} else {
 				val bonePosition = unityBoneGlobalPositions[trackingUnityBone] ?: Vector3.ZERO
 				val parentPosition = unityBoneGlobalPositions[trackingParentUnityBone] ?: Vector3.ZERO
-				emittedLocalPosition(targetUnityBone, targetParentUnityBone, bonePosition, parentRotation, parentPosition, vrm, config.mirrorTracking)
+				emittedLocalPosition(targetUnityBone, targetParentUnityBone, bonePosition, parentRotation ?: Quaternion.IDENTITY, parentPosition, vrm, config.mirrorTracking)
 			}
 
 			add(

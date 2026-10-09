@@ -22,6 +22,7 @@ import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.rpc.VMCOSCVrmState
+import java.util.EnumMap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -117,7 +118,7 @@ class VMCInputBehaviourTest {
 		harness.receiver.context.dispatch(
 			VMCActions.SetVrm(
 				state = VMCOSCVrmState.LOADED,
-				vrm = VrmGeometry(bindOffsets = bodyPartMap(), hipPosition = Vector3.ZERO, vrmHeight = skeletonHeight / 2f, outputRestHeight = skeletonHeight / 2f),
+				vrm = VrmGeometry(bindOffsets = EnumMap(UnityBone::class.java), hipPosition = Vector3.ZERO, vrmHeight = skeletonHeight / 2f, outputRestHeight = skeletonHeight / 2f, hasUpperChest = true),
 			),
 		)
 

@@ -83,7 +83,7 @@ internal fun parseVmcTransform(args: List<OscArg>, startIndex: Int): Pair<Vector
 data class VmcBoneTransform(val rotation: Quaternion, val position: Vector3)
 
 /**
- * Inverse of vmcLocalRotation/vmcLocalPosition (output-encoder.kt): walks VMC_INPUT_BONE_ORDER
+ * Inverse of vmcLocalRotation/vmcLocalPosition (output-encoder.kt): walks VMC_BONE_ORDER
  * parent-before-child, accumulating VMC's parent-local bone rotations/positions into world
  * rotations and positions.
  */
