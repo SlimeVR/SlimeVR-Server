@@ -1,13 +1,10 @@
 import {
   Box3,
-  BoxGeometry,
   Color,
-  Matrix4,
   Mesh,
   MeshStandardMaterial,
   Object3D,
   Quaternion,
-  Raycaster,
   Vector3,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -137,9 +134,9 @@ export class BasedSkeletonMeshHelper extends Object3D {
             const mat = og.material as MeshStandardMaterial;
             if (mat.emissiveMap == null) {
               mat.emissiveMap = mat.map;
-              mat.emissiveIntensity = 1;
-              mat.emissive = new Color(0.7, 0.7, 0.7);
-              mat.color = new Color(0.5, 0.5, 0.5);
+              mat.emissiveIntensity = 0.2;
+              mat.emissive = new Color(1, 1, 1);
+              mat.color = new Color(0.89, 0.89, 0.94);
             }
           }
 

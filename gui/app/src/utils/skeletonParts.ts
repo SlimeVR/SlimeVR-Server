@@ -311,15 +311,15 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.LEFT_SHOULDER]: part(
     model('shoulder', {
       scale: shoulderScale,
-      rotation: turn({ width: -15 }),
-      offset: inBoneLengths({ width: -0.0, length: -0.3 }),
+      rotation: turn({ width: -16 }),
+      offset: inBoneLengths({ width: 0.05, length: -0.33 }),
     })
   ),
   [BodyPart.RIGHT_SHOULDER]: part(
     model('shoulder', {
       scale: otherSide(shoulderScale),
-      rotation: turn({ width: -15 }),
-      offset: inBoneLengths({ width: 0.0, length: -0.3 }),
+      rotation: turn({ width: -16 }),
+      offset: inBoneLengths({ width: -0.05, length: -0.33 }),
     })
   ),
   [BodyPart.LEFT_UPPER_ARM]: part(
