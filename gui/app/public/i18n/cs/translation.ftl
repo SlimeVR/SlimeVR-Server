@@ -1023,7 +1023,6 @@ vrc_config-legacy_mode = Použít starší řešení IK
 vrc_config-disable_shoulder_tracking = Vypnout sledování ramen
 vrc_config-tracker_model = Model FBT trackeru
 vrc_config-avatar_measurement_type = Meření avataru
-vrc_config-calibration_range = Kalibrační rozsah
 vrc_config-calibration_visuals = Zobrazit vizualizaci kalibrace
 vrc_config-user_height = Reálná výška uživatele
 vrc_config-tracker_model-UNKNOWN = Neznýmý
