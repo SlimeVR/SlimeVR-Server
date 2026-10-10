@@ -97,28 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = wight widdle pwoximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = wight widdle imternediate
 body_part-RIGHT_LITTLE_DISTAL = wight widdle distol
 
-## BoardType
-
-board_type-UNKNOWN = unnown
-board_type-NODEMCU = nowdemcu
-board_type-CUSTOM = cusom boawd
-board_type-WROOM32 = wroom32
-board_type-WEMOSD1MINI = wemo d1 meenee
-board_type-TTGO_TBASE = ttgo tbase
-board_type-ESP01 = esp01
-board_type-SLIMEVR = swimevr
-board_type-LOLIN_C3_MINI = lol c3 meenee
-board_type-BEETLE32C3 = 🪲 (beetle) esp32-c3
-board_type-ESP32C3DEVKITM1 = expressive esp32-c3 devkitm1
-board_type-OWOTRACK = owo!!Track
-board_type-WRANGLER = wrangle joycons (yeehaw)
-board_type-MOCOPI = soni mocopi
-board_type-WEMOSWROOM02 = memos vroom-02 d1 meenee
-board_type-XIAO_ESP32C3 = seeeed studio xiao esp32c3
-board_type-HARITORA = hawitowa
-board_type-ESP32C6DEVKITC1 = espresso esp32-c6 devkitc1
-board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
-
 ## Proportions
 
 skeleton_bone-NONE = none
@@ -249,8 +227,6 @@ tracker-settings-mounting_section-description = whewe is the twackaw mownted?
 tracker-settings-mounting_section-edit = edit meownting
 tracker-settings-use_mag = awwow magentometer on dis twackew
 tracker-settings-use_mag-label = awwow magnetomemer
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
 tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
@@ -376,17 +352,9 @@ settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = enfourse constwaints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
-settings-general-fk_settings-arm_fk-reset_mode-description = Change which awm pose is expected fow meownting weset.
-settings-general-fk_settings-arm_fk-back = bak
-settings-general-fk_settings-arm_fk-back-description = The defauwt mode, wit da uppew awms going back and wowew awms going fowwawd.
-settings-general-fk_settings-arm_fk-tpose_up-description = Expects youw awms to be down on the sides duwing Fuww Weset, and 90 degwees up to the sides duwing Meownting Weset.
-settings-general-fk_settings-arm_fk-tpose_down-description = Expects youw awms to be 90 degwees up to the sides duwing Fuww Weset, and down on the sides duwing Meownting Weset.
-settings-general-fk_settings-arm_fk-forward = Fowwawd
-settings-general-fk_settings-arm_fk-forward-description = Expects youw awms to be up 90 degwees fowwawd. Usefuw fow VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
 settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
 settings-general-fk_settings-self_localization-title = mocap mowd
-settings-general-fk_settings-self_localization-description = mocap mowd awwows da skeweton to wuffly twack is own posishun without a hedset or other twackews. note dat dis wequiwes feet and hed twackews to wowk and is stiwll expewimentaw.
 
 ## Gesture control settings (tracker tapping)
 
@@ -492,7 +460,6 @@ settings-serial-send_command-warning-cancel = cancew
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChawt OSC Twayckaws
 settings-osc-vrchat-enable = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
 settings-osc-vrchat-enable-label = enaybwe
@@ -514,7 +481,6 @@ settings-osc-vrchat-status-badge-unknown = unnown
 
 ## VMC OSC settings
 
-settings-osc-vmc = viwtuaw motion captuwe
 # This cares about multilines
 settings-osc-vmc-description =
     change settings specific to the vmc (viwtuaw motion captuwe) pwotocow
@@ -663,89 +629,26 @@ onboarding-assign_trackers-mirror = miwwow vyew
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] weft foot ish assignyed but c-chu nyeed the weft ankwe, weft thigh and eithew da chest, hip o-ow waist to awso be assignyed!
-        [1] weft foot ish assignyed but chu nyeed da weft thigh a-and eithew da chest, hip ow waist to a-awso be assignyed!
-        [2] weft foot ish assignyed but chu nyeed da weft ankwe and eithew da chest, hip ow waist t-to awso be a-assignyed!
-        [3] weft foot ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
-        [4] weft foot i-ish assignyed but chu nyeed da weft a-ankwe a-and weft thigh to awso be assignyed!
-        [5] weft foot ish assignyed but chu nyeed da weft thigh to a-awso be assignyed!
-        [6] wefwft foot ish assignyed but chu nyeed da weft ankwe to awso be assignyed!
-       *[unknown] weft foot is assignyed b-but chu n-nyeed unknyown unyassignyed body pawt to a-awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] w-wight foot ish assignyed but yuu nyeed da wight ankwe, wight thigh and eithew da chest, h-h-hip ow waist to awso be assignyed!
-        [1] wight foot ish assignyed b-but chu nyeed da wight thigh and eithew da c-chest, hip ow w-waist to awso be assignyed!
-        [2] wight foot ish assignyed but chu nyeed da w-wight a-ankwe and eithew da chest, hip ow waist to awso be assignyed!
-        [3] wight foot ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
-        [4] wight foot ish assignyed but chu nyeed da wight ankwe and wight thigh to awso be assignyed!
-        [5] wight foot i-i-ish assignyed but chu nyeed da wight thigh to awso be assignyed!
-        [6] wight foot ish assignyed but chu nyeed da wight ankwe to awso be a-assignyed!
-       *[unknown] wight foot ish assignyed but chu nyeed unknyown u-unyassignyed body pawt t-to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] wight ankwe i-ish assignyed but chu nyeed da wight thigh and eithew da chest, h-hip ow waist to awso be assignyed!
-        [1] wight a-a-ankwe ish assignyed but chu nyeed eithew da chest, hip ow w-waist to awso be assignyed!
-        [2] wight ankwe ish assignyed but chu nyeed da wight thigh to awso be assignyed!
-       *[unknown] wight ankwe i-ish assignyed but chu n-nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] wight ankwe ish a-assignyed but chu nyeed da w-wight thigh and eithew da chest, hip ow waist to awso b-be assignyed!
-        [1] wight ankwe ish assignyed but chu nyeed eithew da c-chest, hip ow waist to awso be assignyed!
-        [2] wight ankwe i-ish assignyed but chu nyeed da wight thigh to awso be assignyed!
-       *[unknown] wight ankwe ish assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] weft thigh is assignyed b-but chu nyeed eithew da chest, hip o-ow waist to awso b-be assignyed!
-       *[unknown] weft t-thigh is assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] wight thigh ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
-       *[unknown] wight thigh ish assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] hip is assignyed but yuw nyeed the chest to awso b-be assignyed!
-       *[unknown] hip is assignyed but yuw nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] waiwst is assignyed b-but you nyeed teh chest to awso b-be assignyed!
-       *[unknown] waiwst is assignyed but you nyeed unknyoun unyassignyed body pawt to awso be assignyed!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = wut meownting cawibwation mefod to use?
 # Multiline text
 onboarding-choose_mounting-description = meownting owientation correct fow da pwacement of twackews on u body.
-onboarding-choose_mounting-auto_mounting = awtomawic meownting
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = wecommended
-onboarding-choose_mounting-auto_mounting-description = dis will automaticawwy detec da meownting diwecshuns fow aww of ya twackews fwom 2 poses
-onboarding-choose_mounting-manual_mounting = manyul meownting
-onboarding-choose_mounting-manual_mounting-description = dis will let u chose da meownting diwecshun manuwawwy fow eech twackew
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = manual meownting
 onboarding-manual_mounting-description = cwick on evewy twackaw and sewect which way they awe mownted
-onboarding-manual_mounting-auto_mounting = awtomawic meownting
 onboarding-manual_mounting-next = newt stewp
 
 ## Tracker automatic mounting setup
@@ -759,14 +662,10 @@ onboarding-automatic_mounting-done-title = mounting wowations cawibwated.
 onboarding-automatic_mounting-done-description = yowo meownting cawibwation is compwete!
 onboarding-automatic_mounting-done-restart = wetuwn to stawt
 onboarding-automatic_mounting-mounting_reset-title = meownting weset
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. squawt in a "skiing" pose with yowo wegs bent, yowo upper body tilted fowwawds, and yowo awems bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. pwess the "weset meownting" button and wait fow 3 seconds befowe the twackaws' meownting wowations will weset.
 onboarding-automatic_mounting-preparation-title = pwepaiwation
-onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
-onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
-onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
@@ -955,11 +854,13 @@ unknown_device-modal-description =
     d-do u wanna conect it to SwimeVR?
 unknown_device-modal-confirm = sure!!
 unknown_device-modal-forget = ignowe it
-vrc_config-spine_mode-UNKNOWN = unnown
 vrc_config-tracker_model-UNKNOWN = unnown
 vrc_config-avatar_measurement_type-UNKNOWN = unnown
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

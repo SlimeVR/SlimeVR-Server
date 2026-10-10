@@ -97,12 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Falange prossimale del mignolo destro
 body_part-RIGHT_LITTLE_INTERMEDIATE = Falange intermedia del mignolo destro
 body_part-RIGHT_LITTLE_DISTAL = Falange distale del mignolo destro
 
-## BoardType
-
-board_type-UNKNOWN = Sconosciuto
-board_type-CUSTOM = Scheda Personalizzata
-board_type-GLOVE_IMU_SLIMEVR_DEV = Guanto SlimeVR Dev IMU
-
 ## Proportions
 
 skeleton_bone-NONE = Nessuna selezione
@@ -292,8 +286,6 @@ tracker-settings-use_mag-description =
     
     È necessario prima consentire l'utilizzo del magnetometro, <magSetting>fare clic qui per accedere alle impostazioni</magSetting>.
 tracker-settings-use_mag-label = Consenti magnetometro
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
 tracker-settings-name_section-description = Scegli un soprannome carino :)
 tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
@@ -446,19 +438,9 @@ settings-general-fk_settings-leg_fk = Tracciamento delle gambe
 settings-general-fk_settings-enforce_joint_constraints = Limiti dello scheletro
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Rispetta i vincoli
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Impedisci ai legamenti di ruotare oltre il loro limite
-settings-general-fk_settings-arm_fk-reset_mode-description = Cambia la posa delle braccia usata per il ripristino del posizionamento.
-settings-general-fk_settings-arm_fk-back = Indietro
-settings-general-fk_settings-arm_fk-back-description = La modalità predefinita, con la parte superiori delle braccia che vanno indietro e le parte inferiori delle braccia che vanno avanti.
-settings-general-fk_settings-arm_fk-tpose_up = Posa a T (in alto)
-settings-general-fk_settings-arm_fk-tpose_up-description = Si aspetta che le braccia siano abbassate sui lati durante il Ripristino Completo e a 90 gradi con il busto ai lati per il Ripristino Posizionamento.
-settings-general-fk_settings-arm_fk-tpose_down = Posa a T (in basso)
-settings-general-fk_settings-arm_fk-tpose_down-description = Si aspetta che le braccia siano a 90 gradi con il busto ai lati durante il Ripristino Completo e abbassate sui lati per il Ripristino Posizionamento.
-settings-general-fk_settings-arm_fk-forward = Avanti
-settings-general-fk_settings-arm_fk-forward-description = Si aspetta che le tue braccia siano alzate di 90 gradi in avanti. Utile per VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Proporzioni dello scheletro
 settings-general-fk_settings-skeleton_settings-ratios-description = Modifica i valori delle impostazioni dello scheletro. Potrebbe essere necessario regolare le proporzioni dopo aver modificato queste impostazioni.
 settings-general-fk_settings-self_localization-title = Modalità Mocap
-settings-general-fk_settings-self_localization-description = La modalità Mocap consente allo scheletro di tracciare approssimativamente la propria posizione senza visore o altri tracker. Si noti che questo richiede trakers per piedi e la testa per funzionare ed è ancora in fase sperimentale.
 
 ## Gesture control settings (tracker tapping)
 
@@ -540,12 +522,6 @@ settings-general-interface-discord_presence-message =
        *[other] Sta usando { $amount } tracker
     }
 settings-interface-behavior-error_tracking = Raccolta degli errori tramite Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Acconsenti alla raccolta di dati di errore anonimizzati?</h1>
-    
-    <b>Non raccogliamo informazioni personali</b> come l'indirizzo IP o le credenziali wireless. SlimeVR ha a cuore la tua privacy!
-    
-    Per offrire la migliore esperienza utente, raccogliamo segnalazioni di errori anonime, metriche delle prestazioni e informazioni sul sistema operativo. Questo ci aiuta a rilevare bug e problemi con SlimeVR. Queste metriche vengono raccolte tramite Sentry.io.
 settings-interface-behavior-error_tracking-label = Invia errori agli sviluppatori
 
 ## Serial settings
@@ -573,7 +549,6 @@ settings-serial-send_command-warning-cancel = Annulla
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = Tracker OSC per VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Modifica impostazioni specifiche dello standard dei Tracker OSC utilizzato per l'invio
@@ -765,89 +740,26 @@ onboarding-assign_trackers-mirror = Inverti interfaccia
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Il piede sinistro è assegnato, ma anche la coscia sinistra e la caviglia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [1] Il piede sinistro è assegnato, ma anche la coscia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [2] Il piede sinistro è assegnato, ma anche la caviglia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [3] Il piede sinistro è assegnato, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [4] Il piede sinistro è assegnato, ma anche la coscia sinistra e la caviglia destra devono avere un tracker assegnato!
-        [5] Il piede sinistro è assegnato, ma anche la coscia sinistra deve avere un tracker assegnato!
-        [6] Il piede sinistro è assegnato, ma anche la caviglia sinistra deve avere un tracker assegnato!
-       *[unknown] Il piede sinistro è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] Il piede destro è assegnato, ma anche la coscia destra e la caviglia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [1] Il piede destro è assegnato, ma anche la coscia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [2] Il piede destro è assegnato, ma anche la caviglia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [3] Il piede destro è assegnato, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [4] Il piede destro è assegnato, ma anche la coscia destra e la caviglia destra devono avere un tracker assegnato!
-        [5] Il piede destro è assegnato, ma anche la coscia destra deve avere un tracker assegnato!
-        [6] Il piede destro è assegnato, ma anche la caviglia destra deve avere un tracker assegnato!
-       *[unknown] Il piede destro è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] La caviglia sinistra è assegnata, ma anche la coscia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [1] La caviglia sinistra è assegnata, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [2] La caviglia sinistra è assegnata, ma anche la coscia sinistra deve avere un tracker assegnato!
-       *[unknown] La caviglia sinistra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] La caviglia destra è assegnata, ma anche la coscia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [1] La caviglia destra è assegnata, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
-        [2] La caviglia destra è assegnata, ma anche la coscia destra deve avere un tracker assegnato!
-       *[unknown] La caviglia destra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] La coscia sinistra è assegnata, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
-       *[unknown] La coscia sinistra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] La coscia destra è assegnata, ma anche il petto o il bacino o il girovita  devono avere un tracker assegnato!
-       *[unknown] La coscia destra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] Il bacino è assegnato, ma anche il petto deve avere un tracker assegnato!
-       *[unknown] Il bacino è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] Il girovita è assegnato, ma anche il petto deve avere un tracker assegnato!
-       *[unknown] Il girovita è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Quale metodo di calibrazione del posizionamento vuoi usare?
 # Multiline text
 onboarding-choose_mounting-description = L'orientamento di posizionamento corregge la posizione dei tracker sul corpo.
-onboarding-choose_mounting-auto_mounting = Posizionamento automatico
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Raccomandato
-onboarding-choose_mounting-auto_mounting-description = Questo processo identificherá automaticamente le direzioni per la posizione di montaggio di tutti i traker facendo 2 pose
-onboarding-choose_mounting-manual_mounting = Posizionamento manuale
-onboarding-choose_mounting-manual_mounting-description = Questo processo ti lascerá scegliere manualmente le direzioni per la posizione di montaggio di tutti i tracker
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Posizionamento manuale
 onboarding-manual_mounting-description = Fare clic su ogni tracker e selezionare in che direzione sono montati
-onboarding-manual_mounting-auto_mounting = Posizionamento automatico
 onboarding-manual_mounting-next = Passaggio successivo
 
 ## Tracker automatic mounting setup
@@ -861,18 +773,14 @@ onboarding-automatic_mounting-done-title = Rotazione delle posizioni di montaggi
 onboarding-automatic_mounting-done-description = La calibrazione della posizione é completa!
 onboarding-automatic_mounting-done-restart = Torna all'inizio
 onboarding-automatic_mounting-mounting_reset-title = Ripristino del posizionamento
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Piegati come per sciare: con le gambe leggermente piegate e unite, la parte superiore del corpo inclinata in avanti e le braccia piegate.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Premere il pulsante "Ripristino del posizionamento" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate.
 onboarding-automatic_mounting-preparation-title = Preparazione
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Premi il pulsante "Ripristino completo".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stai in piedi con le braccia lungo i fianchi. Assicurati di guardare in avanti.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Mantieni la posizione fino allo scadere dei 3 secondi.
-onboarding-automatic_mounting-put_trackers_on-title = Indossa i tuoi tracker
-onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rotazioni delle posizioni di montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
-onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei tracker
 onboarding-automatic_mounting-return-home = Fatto
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Regola automaticamente le proporzioni
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Per piacer collega un visore VR per utilizzare la regolazione automatica
@@ -1111,17 +1019,10 @@ vrc_config-mute-btn = Muto
 vrc_config-unmute-btn = Riattiva il microfono
 vrc_config-legacy_mode = Usa la risoluzione IK versione precedente
 vrc_config-disable_shoulder_tracking = Disabilita il tracciamento della spalla
-vrc_config-shoulder_width_compensation = Compensazione della larghezza delle spalle
-vrc_config-spine_mode = Modalità spina dorsale FBT
 vrc_config-tracker_model = Modello Tracker FBT
 vrc_config-avatar_measurement_type = Misurazione dell'avatar
-vrc_config-calibration_range = Raggio di Calibrazione
 vrc_config-calibration_visuals = Mostra Aiuto Visivo Calibrazione
 vrc_config-user_height = Altezza reale dell'utente
-vrc_config-spine_mode-UNKNOWN = Sconosciuto
-vrc_config-spine_mode-LOCK_BOTH = Blocca entrambi
-vrc_config-spine_mode-LOCK_HEAD = Blocca Testa
-vrc_config-spine_mode-LOCK_HIP = Blocca anca
 vrc_config-tracker_model-UNKNOWN = Sconosciuto
 vrc_config-tracker_model-AXIS = Assi
 vrc_config-tracker_model-BOX = Cubo
@@ -1140,6 +1041,9 @@ error_collection_modal-description_v2 =
     Puoi modificare questa impostazione in un secondo momento nella sezione Comportamento delle impostazioni.
 error_collection_modal-confirm = Acconsento
 error_collection_modal-cancel = Non acconsento
+
+## Crash screen
+
 
 ## Tracking checklist section
 

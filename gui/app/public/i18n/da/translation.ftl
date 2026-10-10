@@ -59,9 +59,6 @@ body_part-LEFT_UPPER_LEG = Venstre lår
 body_part-LEFT_LOWER_LEG = Venstre ankel
 body_part-LEFT_FOOT = Venstre fod
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -157,8 +154,6 @@ tracker-settings-assignment_section-edit = Rediger opgave
 tracker-settings-mounting_section = Monteringsposition
 tracker-settings-mounting_section-description = Hvor er trackeren monteret?
 tracker-settings-mounting_section-edit = Rediger montering
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Giv den et sødt kælenavn :)
 tracker-settings-name_section-placeholder = NightyBeast's venstre ben
@@ -207,13 +202,11 @@ settings-sidebar-title = Indstillinger
 settings-sidebar-general = Generel
 settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Brugergrænseflade
-settings-sidebar-vrchat_osc = VRChat OSC trackere
 settings-sidebar-utils = Hjælpeprogrammer
 settings-sidebar-serial = Seriel konsol
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = VRChat OSC trackere
 settings-routing-hands-warning-cancel = Annuller
 
 ## SteamVR / Monado output settings
@@ -259,7 +252,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan r
 settings-general-fk_settings-leg_tweak-toe_snap-description = Tå-snap forsøger at gætte rotationen af dine fødder, hvis fodtrackere ikke er i brug.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roterer dine fødder så de er parallelle med jorden, når de er i kontakt med jorden.
 settings-general-fk_settings-leg_fk = Bensporing
-settings-general-fk_settings-arm_fk-back = Tilbage
 
 ## Gesture control settings (tracker tapping)
 
@@ -314,7 +306,6 @@ settings-serial-send_command-warning-cancel = Annuller
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC trackere
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skift afsendelse og modtagelse af data.
 settings-osc-vrchat-enable-label = Aktiver
@@ -454,16 +445,20 @@ onboarding-assign_trackers-side-left = Venstre
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Hvilken monteringskalibreringsmetode vil du bruge?
-onboarding-choose_mounting-auto_mounting = Automatisk montering
-onboarding-choose_mounting-auto_mounting-description = Dette registrerer automatisk monteringsretningerne til alle dine trackere fra 2 stillinger
-onboarding-choose_mounting-manual_mounting = Manuel montering
-onboarding-choose_mounting-manual_mounting-description = Dette giver dig mulighed for manuelt at vælge monteringsretningen for hver tracker
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuel montering
 onboarding-manual_mounting-description = Klik på hver tracker og vælg hvilken vej de er monteret
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Næste trin
 
 ## Tracker automatic mounting setup
@@ -474,13 +469,9 @@ onboarding-automatic_mounting-next = Næste trin
 onboarding-automatic_mounting-prev_step = Forrige trin
 onboarding-automatic_mounting-done-restart = Prøv igen
 onboarding-automatic_mounting-mounting_reset-title = Montage Kalibrering
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Sæt dig på hug i en "skiløb" -stilling med bøjede ben, din overkrop vippet fremad og dine arme bøjet.
 onboarding-automatic_mounting-preparation-title = Forberedelse
-onboarding-automatic_mounting-put_trackers_on-title = Tag dine trackere på
-onboarding-automatic_mounting-put_trackers_on-description = For at kalibrere rotationer bruger vi de trackere, du lige har tildelt. Tag alle dine trackere på du kan se hvilke der er hvilke i figuren til højre.
-onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -551,6 +542,9 @@ tray_or_exit_modal-cancel = Annuller
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

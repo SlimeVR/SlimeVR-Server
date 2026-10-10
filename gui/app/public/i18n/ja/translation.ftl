@@ -91,10 +91,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = 右小指近位部
 body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中間部
 body_part-RIGHT_LITTLE_DISTAL = 右小指遠位部
 
-## BoardType
-
-board_type-UNKNOWN = 不明
-
 ## Proportions
 
 skeleton_bone-NONE = 無し
@@ -212,8 +208,6 @@ tracker-settings-use_mag-description =
     このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
     
     まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-label = トラッカー名称
@@ -318,15 +312,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = フロアクリ�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
-settings-general-fk_settings-arm_fk-reset_mode-description = マウンティングリセットのために期待される腕のポーズを変更します。
-settings-general-fk_settings-arm_fk-back = 後ろ
-settings-general-fk_settings-arm_fk-back-description = デフォルトモードで、上腕を後ろに、下腕を前にします。
-settings-general-fk_settings-arm_fk-tpose_up = Tポーズ(上げ)
-settings-general-fk_settings-arm_fk-tpose_up-description = 完全リセット時は腕を下げて立っている姿勢、マウンティングリセット時は腕を体の両側に90度上げる。
-settings-general-fk_settings-arm_fk-tpose_down = Tポーズ(下げ)
-settings-general-fk_settings-arm_fk-tpose_down-description = 完全リセット時は腕を体の両側に90度上げ、マウンティングリセット時は腕を下げて立っている姿勢。
-settings-general-fk_settings-arm_fk-forward = 前方ポーズ
-settings-general-fk_settings-arm_fk-forward-description = リセット時に腕を前方に90度上げる。Vチューバーとして座っている時に便利。
 settings-general-fk_settings-skeleton_settings-ratios = スケルトン比率
 settings-general-fk_settings-skeleton_settings-ratios-description = スケルトン設定の値を変更する。これらを変更した後、体の比率を調整する必要があるかもしれません。
 settings-general-fk_settings-self_localization-title = モーションキャプチャモード
@@ -404,7 +389,6 @@ settings-serial-send_command-warning-cancel = キャンセル
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSCトラッカー
 settings-osc-vrchat-enable = 有効
 settings-osc-vrchat-enable-description = データの送受信を切り替える。
 settings-osc-vrchat-enable-label = 有効
@@ -426,7 +410,6 @@ settings-osc-vrchat-status-badge-unknown = 不明
 
 ## VMC OSC settings
 
-settings-osc-vmc = バーチャルモーションキャプチャ
 settings-osc-vmc-enable = 有効
 settings-osc-vmc-enable-description = データの送受信を切り替える。
 settings-osc-vmc-enable-label = 有効
@@ -533,14 +516,20 @@ onboarding-assign_trackers-side-left = 左
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = 自動マウント
-onboarding-choose_mounting-manual_mounting = マニュアルマウント
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = マニュアルマウント
 onboarding-manual_mounting-description = すべてのトラッカーをクリックし、どの方向にマウントするかを選択
-onboarding-manual_mounting-auto_mounting = 自動マウント
 onboarding-manual_mounting-next = 次のステップ
 
 ## Tracker automatic mounting setup
@@ -554,14 +543,10 @@ onboarding-automatic_mounting-done-title = 取り付け方向の較正を行い�
 onboarding-automatic_mounting-done-description = マウントのキャリブレーションが完了しました！
 onboarding-automatic_mounting-done-restart = 最初に戻る
 onboarding-automatic_mounting-mounting_reset-title = マウントリセット
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着する
-onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
-onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -644,11 +629,13 @@ tray_or_exit_modal-cancel = キャンセル
 
 unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
-vrc_config-spine_mode-UNKNOWN = 不明
 vrc_config-tracker_model-UNKNOWN = 不明
 vrc_config-avatar_measurement_type-UNKNOWN = 不明
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

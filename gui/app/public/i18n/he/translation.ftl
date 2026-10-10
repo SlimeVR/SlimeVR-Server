@@ -56,9 +56,6 @@ body_part-LEFT_UPPER_LEG = ירך שמאל
 body_part-LEFT_LOWER_LEG = קרסול שמאל
 body_part-LEFT_FOOT = רגל שמאל
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = לא נבחר
@@ -208,7 +205,6 @@ settings-keybinds-recorder-modal-cancel-button = ביטול
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-arm_fk-back = אחורה
 
 ## Gesture control settings (tracker tapping)
 
@@ -292,6 +288,15 @@ onboarding-assign_trackers-side-left = שמאל
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
@@ -300,7 +305,7 @@ onboarding-assign_trackers-side-left = שמאל
 onboarding-automatic_mounting-title = כיול ההרכבה
 onboarding-automatic_mounting-mounting_reset-title = כיול ההרכבה
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -356,6 +361,9 @@ tray_or_exit_modal-cancel = ביטול
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

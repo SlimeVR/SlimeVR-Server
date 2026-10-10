@@ -101,15 +101,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = โคนนิ้วก้อยขวา
 body_part-RIGHT_LITTLE_INTERMEDIATE = ข้อนิ้วก้อยกลางขวา
 body_part-RIGHT_LITTLE_DISTAL = ปลายนิ้วก้อยขวา
 
-## BoardType
-
-board_type-UNKNOWN = ไม่ทราบ
-board_type-CUSTOM = บอร์ดปรับแต่ง
-board_type-SLIMEVR_DEV = บอร์ดพัฒนา SlimeVR
-board_type-GLOVE_IMU_SLIMEVR_DEV = บอร์ดพัฒนาถุงมือ IMU SlimeVR
-board_type-GESTURES = ท่าทางสัมผัส
-board_type-GENERIC_NRF = บอร์ด NRF ทั่วไป
-
 ## Proportions
 
 skeleton_bone-NONE = ไม่มี
@@ -309,8 +300,6 @@ tracker-settings-use_mag-description =
     ให้แทร็กเกอร์ตัวนี้เปิดใช้งานเซ็นเซอร์สนามแม่เหล็กเพื่อลดการดริฟท์หรือไม่? <b>โปรดอย่าปิดแทร็กเกอร์ของคุณในขณะที่กำลังสลับการตั้งค่านี้!</b>
     คุณต้องอนุญาตการใช้เซ็นเซอร์สนามแม่เหล็กก่อน <magSetting>คลิกที่นี่เพื่อไปที่การตั้งค่า</magSetting>
 tracker-settings-use_mag-label = เปิดใช้เซ็นเซอร์สนามแม่เหล็ก
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = ชื่อแทร็กเกอร์
 tracker-settings-name_section-description = ตั้งชื่อน่ารักๆ ให้มันสิ :)
 tracker-settings-name_section-placeholder = แข้งซ้ายของ NightyBeast!
@@ -479,19 +468,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position = ใช้ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
-settings-general-fk_settings-arm_fk-reset_mode-description = เปลี่ยนท่าทางแขนที่ใช้สำหรับการรีเซ็ตตั้งศูนย์การติดตั้ง
-settings-general-fk_settings-arm_fk-back = ยื่นไปด้านหลัง
-settings-general-fk_settings-arm_fk-back-description = โหมดค่าเริ่มต้น โดยแขนท่อนบนจะเอียงไปด้านหลัง และแขนท่อนล่างจะชี้ไปด้านหน้า
-settings-general-fk_settings-arm_fk-tpose_up = ที-โพส (แขนขึ้น)
-settings-general-fk_settings-arm_fk-tpose_up-description = กำหนดให้แขนแนบลำตัวระหว่างการรีเซ็ตทั้งหมด และเหยียดออกด้านข้าง 90 องศา ระหว่างการรีเซ็ตตั้งศูนย์การติดตั้ง
-settings-general-fk_settings-arm_fk-tpose_down = ที-โพส (แขนลง)
-settings-general-fk_settings-arm_fk-tpose_down-description = กำหนดให้แขนเหยียดออกด้านข้าง 90 องศา ระหว่างการรีเซ็ตทั้งหมดและแนบลำตัว ระหว่างการรีเซ็ตตั้งศูนย์การติดตั้ง
-settings-general-fk_settings-arm_fk-forward = ไปข้างหน้า
-settings-general-fk_settings-arm_fk-forward-description = กำหนดให้แขนยกไปด้านหน้าทำมุม 90 องศา มีประโยชน์สำหรับงาน VTubing
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
 settings-general-fk_settings-skeleton_settings-ratios-description = เปลี่ยนค่าการตั้งค่าโครงกระดูก คุณอาจต้องปรับสัดส่วนของคุณใหม่หลังจากเปลี่ยนค่าเหล่านี้
 settings-general-fk_settings-self_localization-title = โหมด Mocap
-settings-general-fk_settings-self_localization-description = โหมด Mocap ช่วยให้โมเดลโครงกระดูกสามารถติดตามตำแหน่งโดยประมาณได้ โดยไม่ต้องใช้อุปกรณ์เฮดเซต (แว่น VR ) หรือแทร็กเกอร์อื่น ๆ โปรดทราบว่าฟังก์ชันนี้ต้องใช้แทร็กเกอร์ที่เท้าและศีรษะจึงจะทำงานได้ และยังอยู่ในช่วงทดลอง
 
 ## Gesture control settings (tracker tapping)
 
@@ -563,12 +542,6 @@ settings-general-interface-discord_presence-message =
        *[other] ใช้แทร็กเกอร์อยู่ { $amount } ตัว
     }
 settings-interface-behavior-error_tracking = รวบรวมข้อผิดพลาดผ่าน Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>คุณยินยอมให้รวบรวมข้อมูลข้อผิดพลาดแบบไม่ระบุตัวตนหรือไม่?</h1>
-    
-    <b>เราไม่เก็บรวบรวมข้อมูลส่วนบุคคล</b> เช่น ที่อยู่ IP หรือข้อมูลประจำตัว Wi-Fi ของคุณ SlimeVR ให้ความสำคัญกับความเป็นส่วนตัวของคุณ!
-    
-    เพื่อมอบประสบการณ์การใช้งานที่ดีที่สุด เราจึงรวบรวมรายงานข้อผิดพลาดที่ไม่ระบุตัวตน, เมตริกประสิทธิภาพ, และข้อมูลระบบปฏิบัติการ สิ่งนี้ช่วยให้เราตรวจจับบักและปัญหาของ SlimeVR ได้ เมตริกเหล่านี้จะถูกรวบรวมผ่าน Sentry.io
 settings-interface-behavior-error_tracking-label = ส่งข้อผิดพลาดให้นักพัฒนา
 settings-interface-behavior-bvh_directory = ไดเร็กทอรีสำหรับบันทึกไฟล์ BVH
 settings-interface-behavior-bvh_directory-description = เลือกไดเร็กทอรีเพื่อบันทึกไฟล์ BVH แทนที่จะต้องเลือกที่บันทึกทุกครั้ง
@@ -602,7 +575,6 @@ settings-serial-send_command-warning-cancel = ยกเลิก
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = แทร็กเกอร์ OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     เปลี่ยนการตั้งค่าเฉพาะสำหรับมาตรฐานแทร็กเกอร์ OSC ที่ใช้ในการส่งข้อมูลการติดตาม
@@ -801,89 +773,26 @@ onboarding-assign_trackers-mirror = มุมมองภาพสะท้อ�
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดข้อเท้าซ้าย, ต้นขาซ้าย และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [1] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดต้นขาซ้าย และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [2] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดข้อเท้าซ้าย และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [3] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว ด้วย
-        [4] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [5] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดต้นขาซ้ายเพิ่มเติมด้วย!
-        [6] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดข้อเท้าซ้ายเพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งเท้าซ้ายแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดข้อเท้าขวา, ต้นขาขวา และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [1] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดต้นขาขวา และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [2] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดข้อเท้าขวา และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [3] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [4] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดข้อเท้าขวาและต้นขาขวาเพิ่มเติมด้วย!
-        [5] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดต้นขาขวาเพิ่มเติมด้วย!
-        [6] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดข้อเท้าขวาเพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งเท้าขวาแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งข้อเท้าซ้ายแล้ว แต่ยังต้องกำหนดต้นขาซ้าย และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [1] กำหนดตำแหน่งข้อเท้าซ้ายแล้ว แต่ยังต้องกำหนดส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [2] กำหนดตำแหน่งข้อเท้าซ้ายแล้ว แต่ยังต้องกำหนดต้นขาซ้ายเพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งข้อเท้าซ้ายแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งข้อเท้าขวาแล้ว แต่ยังต้องกำหนดต้นขาขวา และส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [1] กำหนดตำแหน่งข้อเท้าขวาแล้ว แต่ยังต้องกำหนดส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-        [2] กำหนดตำแหน่งข้อเท้าขวาแล้ว แต่ยังต้องกำหนดต้นขาขวาเพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งข้อเท้าขวาแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งต้นขาซ้ายแล้ว แต่ยังต้องกำหนดส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งต้นขาซ้ายแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งต้นขาขวาแล้ว แต่ยังต้องกำหนดส่วนใดส่วนหนึ่งระหว่าง อก, สะโพก หรือ เอว เพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งต้นขาขวาแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งสะโพกแล้ว แต่ยังต้องกำหนดหน้าอกเพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งสะโพกแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] กำหนดตำแหน่งเอวแล้ว แต่ยังต้องกำหนดหน้าอกเพิ่มเติมด้วย!
-       *[unknown] กำหนดตำแหน่งเอวแล้ว แต่ยังต้องกำหนดส่วนของร่างกายที่ยังไม่ได้กำหนดตำแหน่งที่ไม่ทราบเพิ่มเติมด้วย!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = ต้องการใช้วิธีการตั้งศูนย์การติดตั้งแบบใด?
 # Multiline text
 onboarding-choose_mounting-description = การตั้งศูนย์การติดตั้งจะแก้ไขทิศทางการติดตั้งของแทร็กเกอร์บนร่างกายของคุณ
-onboarding-choose_mounting-auto_mounting = ตั้งศูนย์การติดตั้งอัตโนมัติ
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = แนะนำ
-onboarding-choose_mounting-auto_mounting-description = ระบบจะตรวจจับทิศทางการติดตั้งของแทร็กเกอร์ทั้งหมดของคุณโดยอัตโนมัติ จากท่าทาง 2 ท่า
-onboarding-choose_mounting-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตัวเอง
-onboarding-choose_mounting-manual_mounting-description = คุณสามารถเลือกทิศทางการติดตั้งด้วยตนเองสำหรับแทร็กเกอร์แต่ละตัว
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตนเอง
 onboarding-manual_mounting-description = ให้คลิกที่แทร็กเกอร์แต่ละตัว และเลือกทิศทางการติดตั้งที่ถูกต้อง
-onboarding-manual_mounting-auto_mounting = ตั้งศูนย์การติดตั้งแบบอัตโนมัติ
 onboarding-manual_mounting-next = ขั้นตอนถัดไป
 
 ## Tracker automatic mounting setup
@@ -897,7 +806,6 @@ onboarding-automatic_mounting-done-title = ทิศทางแทร็กเ�
 onboarding-automatic_mounting-done-description = ตั้งศูนย์การติดตั้งแทร็กเกอร์ของคุณสำเร็จแล้ว!
 onboarding-automatic_mounting-done-restart = ลองอีกครั้ง
 onboarding-automatic_mounting-mounting_reset-title = ตั้งศูนย์การติดตั้ง
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. ย่อตัวในท่า "เล่นสกี" โดยการงอขา ลำตัวส่วนบนเอียงไปด้านหน้า และงอแขน
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. กดปุ่ม "ตั้งศูนย์การติดตั้ง" และรอ 3 วินาที ก่อนที่ทิศทางการติดตั้งของแทร็กเกอร์จะถูกรีเซ็ต
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. ยืนเขย่งปลายเท้าทั้งสองข้างโดยให้เท้าชี้ไปด้านหน้า หรืออีกทางเลือกหนึ่งคือคุณสามารถทำได้ขณะนั่งอยู่บนเก้าอี้
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. กดปุ่ม "ตั้งศูนย์เท้า" และรอ 3 วินาที ก่อนที่ทิศทางการติดตั้งของแทร็กเกอร์จะถูกรีเซ็ต
@@ -905,12 +813,9 @@ onboarding-automatic_mounting-preparation-title = การเตรียมต
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. กดที่ปุ่ม "รีเซ็ตทั้งหมด"
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. ยืนตัวตรง แขนแนบลำตัว ตรวจสอบให้แน่ใจว่ากำลังมองตรงไปข้างหน้า
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. ค้างท่าทางไว้จนกว่าตัวจับเวลา 3 วินาทีจะสิ้นสุดลง
-onboarding-automatic_mounting-put_trackers_on-title = ใส่แทร็กเกอร์ของคุณ
-onboarding-automatic_mounting-put_trackers_on-description = เพื่อตั้งศูนย์ทิศทางการติดตั้ง เราจะใช้แทร็กเกอร์ที่คุณกำหนดตำแหน่งไปเมื่อสักครู่ โปรดสวมใส่แทร็กเกอร์ของคุณ โดยคุณสามารถดูว่าแทร็กเกอร์ใดคือส่วนใดได้จากภาพด้านขวา
-onboarding-automatic_mounting-put_trackers_on-next = ฉันสวมแทร็กเกอร์ทั้งหมดแล้ว
 onboarding-automatic_mounting-return-home = เสร็จแล้ว
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = กลับไปที่สัดส่วนที่อ้างอิงขนาด
 onboarding-manual_proportions-fine_tuning_button = ปรับสัดส่วนโดยละเอียดอัตโนมัติ
@@ -1202,17 +1107,10 @@ vrc_config-mute-btn = ปิดคำเตือน
 vrc_config-unmute-btn = แสดงคำเตือน
 vrc_config-legacy_mode = ใช้การแก้ไข IK แบบเก่า
 vrc_config-disable_shoulder_tracking = ปิดการใช้งานการติดตามไหล่
-vrc_config-shoulder_width_compensation = การชดเชยความกว้างของไหล่
-vrc_config-spine_mode = โหมดกระดูกสันหลัง FBT
 vrc_config-tracker_model = โมเดลแทร็กเกอร์ FBT
 vrc_config-avatar_measurement_type = การวัดขนาดอวาตาร์
-vrc_config-calibration_range = ช่วงการตั้งศูนย์
 vrc_config-calibration_visuals = แสดงภาพการตั้งศูนย์
 vrc_config-user_height = ความสูงจริงของผู้ใช้
-vrc_config-spine_mode-UNKNOWN = ไม่ทราบ
-vrc_config-spine_mode-LOCK_BOTH = ล็อคทั้งคู่
-vrc_config-spine_mode-LOCK_HEAD = ล็อคศีรษะ
-vrc_config-spine_mode-LOCK_HIP = ล็อคสะโพก
 vrc_config-tracker_model-UNKNOWN = ไม่ทราบ
 vrc_config-tracker_model-AXIS = แกนหมุน
 vrc_config-tracker_model-BOX = กล่อง
@@ -1230,6 +1128,9 @@ error_collection_modal-description_v2 =
     คุณสามารถเปลี่ยนการตั้งค่านี้ในภายหลังได้ในแถบ พฤติกรรมการทำงาน ภายในหน้าการตั้งค่า
 error_collection_modal-confirm = ฉันตกลง
 error_collection_modal-cancel = ฉันไม่ต้องการ
+
+## Crash screen
+
 
 ## Tracking checklist section
 

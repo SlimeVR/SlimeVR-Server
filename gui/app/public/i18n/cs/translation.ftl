@@ -74,15 +74,6 @@ body_part-LEFT_MIDDLE_DISTAL = Vzálená kůstka levého prostředníku
 body_part-LEFT_RING_DISTAL = Vzálená kůstka levého prsteníku
 body_part-RIGHT_THUMB_DISTAL = Vzálená falanga pravého pacle
 
-## BoardType
-
-board_type-UNKNOWN = Neznámý
-board_type-CUSTOM = Vlastní deska
-board_type-WRANGLER = Wrangler Joycony
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR vývojářská IMU rukavice
-board_type-GESTURES = Gesta
-board_type-GENERIC_NRF = Obecné nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Žádný
@@ -227,8 +218,6 @@ tracker-settings-use_mag-description =
     
     Nejprve musíte povolit používání magnetometru, <magSetting>Kliknutím zde přejdete k nastavená magnetometru</magSetting>.
 tracker-settings-use_mag-label = Povolit magnetometr
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Název trackeru
 tracker-settings-name_section-description = Třeba nějakou roztomilou přezdívku :)
 tracker-settings-name_section-placeholder = Erimelova levá tlapka
@@ -294,7 +283,6 @@ settings-sidebar-general = Obecné
 settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-sidebar-trackers = Trackery
 settings-sidebar-interface = Rozhraní
-settings-sidebar-vrchat_osc = Trackery VRChat OSC
 settings-sidebar-utils = Nástroje
 settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
@@ -308,7 +296,6 @@ settings-sidebar-advanced = Pokročilé
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = Trackery VRChat OSC
 settings-routing-output-badge-off = Vypnuto
 settings-routing-group-fingers = Prsty
 settings-routing-hands-warning-cancel = Zrušit
@@ -397,19 +384,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Pro
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
 settings-general-fk_settings-ik = Data pozice
 settings-general-fk_settings-ik-use_position = Použít Data pozice
-settings-general-fk_settings-arm_fk-reset_mode-description = Nastavte pózu rukou použitá pro reset nasazení.
-settings-general-fk_settings-arm_fk-back = Paže dozadu
-settings-general-fk_settings-arm_fk-back-description = Výchozí režim: paže směřují dozadu, předloktí dopředu.
-settings-general-fk_settings-arm_fk-tpose_up = T-póza (ruce nahoru)
-settings-general-fk_settings-arm_fk-tpose_up-description = Před zahájením plného resetu, očekává že stojíte vzpřímeně a máte paže volně spuštěné podél těla. A pro reset umístění zaujměte uvolněný postoj a pomalu zvedněte paže do pozice Téčka (90 stupňů jako písmeno T).
-settings-general-fk_settings-arm_fk-tpose_down = T-póza (ruce dolů)
-settings-general-fk_settings-arm_fk-tpose_down-description = Před zahájením plného resetu, očekává že zaujmete uvolněný postoj a pomalu zvednete paže do pozice Téčka (90 stupňů jako písmeno T). A pro reset umístění, že stojíte vzpřímeně a máte paže volně spuštěné podél těla.
-settings-general-fk_settings-arm_fk-forward = Vpřed
-settings-general-fk_settings-arm_fk-forward-description = Ideální pozice pro Vtubing: zvedněte paže do 90 stupňového úhlu. (90 stupňů jako písmeno T).
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
 settings-general-fk_settings-skeleton_settings-ratios-description = Změňte hodnoty nastavení kostry, Po změně budete možná muset poupravit vaše proporce.
 settings-general-fk_settings-self_localization-title = Režim Mocap
-settings-general-fk_settings-self_localization-description = Režim Mocap je experimentální funkce, která dokáže přibližně určit polohu vašeho těla bez VR Headsetu a dalších trackerů. Pro správnou funkci je však nutné mít trackery pro nohy a hlavu.
 
 ## Gesture control settings (tracker tapping)
 
@@ -495,12 +472,6 @@ settings-general-interface-discord_presence-message =
        *[other] Používá { $amount } trackerů
     }
 settings-interface-behavior-error_tracking = Sběr chyb prostřednictvím Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Souhlasíte se shromažďováním anonymizovaých údajů o chybých?</h1>
-    
-    <b>Neschrožďujeme osobní udaje!</b> pro příklad IP adresy nebo přihlašovací údaje k sítím Wi-Fi. SlimeVR respektuje vaše soukromí!
-    
-    Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
 settings-interface-behavior-bvh_directory = Cesta pro uložení BVH záznamů
 settings-interface-behavior-bvh_directory-description = Vyberte cestu k uložení záznamů BHV. namísto toho, abyste pokaždé vybírali, kam je uložit.
@@ -533,7 +504,6 @@ settings-serial-send_command-warning-cancel = Zrušit
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = Trackery VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Pro změnu nastavení specifických pro standart OSC pro odesílání
@@ -561,7 +531,6 @@ settings-osc-vrchat-status-badge-unknown = Neznýmý
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtuální snímání pohybu (Také známo jako Virtual Motion Capture)
 # This cares about multilines
 settings-osc-vmc-description =
     Změna nastavení specificky pro VCM (Virtual Motion Capture) protokol
@@ -735,37 +704,26 @@ onboarding-assign_trackers-mirror = Zrcadlit náhled
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník, levé stehno a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [1] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazeno levé stehno a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [2] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [3] Levá noha je přiřazena, ale pro správné fungování musí být přiřazena jedna z těchto oblastí: hrudník, bok nebo pas.
-        [4] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník a levé stehno.
-        [5] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazeno levé stehno.
-        [6] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník.
-       *[unknown] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen Neznámá Nepřiřazena část těla.
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Jakou metodu nasazení trackerů chcete použít?
 # Multiline text
 onboarding-choose_mounting-description = Správná orientace nasazení zajistí přesné sledování trackerů na těle.
-onboarding-choose_mounting-auto_mounting = Automatická detekce nasazení
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Doporučeno
-onboarding-choose_mounting-auto_mounting-description = Orientace nasazení všech trackerů bude automaticky rozpoznána ze 2 pozic.
-onboarding-choose_mounting-manual_mounting = Manuální nastavení
-onboarding-choose_mounting-manual_mounting-description = Ručně zadejte orientaci nasazení každého trackeru.
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuální nasazení trackerů
 onboarding-manual_mounting-description = Klikněte na každý tracker a vyberte, jakým směrem jsou nasazeny
-onboarding-manual_mounting-auto_mounting = Automatická detekce nasazení
 onboarding-manual_mounting-next = Další krok
 
 ## Tracker automatic mounting setup
@@ -779,17 +737,13 @@ onboarding-automatic_mounting-done-title = Směr nasazení trackerů zkalibrová
 onboarding-automatic_mounting-done-description = Kalibrace nasazení trackerů je dokončena!
 onboarding-automatic_mounting-done-restart = Začít znovu
 onboarding-automatic_mounting-mounting_reset-title = Reset nasazení trackerů
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Dřepněte si, jako při lyžování: nohy pokrčte v kolenou, trup nakloňte mírně dopředu a paže pokrčte.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Stiskněte tlačítko "Resetovat nasazení trackerů" a  vyčkejte 3 sekundy. Orientace nasazení trackerů se nastaví na základní hodnoty.
 onboarding-automatic_mounting-preparation-title = Příprava
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Stiskněte tlačítko pro "Plný Reset"
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Zůstaňte v pozici, dokud 3s časovač neskončí.
-onboarding-automatic_mounting-put_trackers_on-title = Nasaďte si trackery
-onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci směru nasazení použijeme právě přiřazené trackery. Nasaďte si prosím všechny trackery. Můžete zkontrolovat jejich umístění na obrázku vpravo.
-onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-automatic_mounting-return-home = Hotovo
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Jít zpět na Škálování Proporcí
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
@@ -1067,17 +1021,10 @@ vrc_config-mute-btn = Ztlumení
 vrc_config-unmute-btn = Zrušit ztlumení
 vrc_config-legacy_mode = Použít starší řešení IK
 vrc_config-disable_shoulder_tracking = Vypnout sledování ramen
-vrc_config-shoulder_width_compensation = Kompenzace Šířky Ramen
-vrc_config-spine_mode = Režim páteře FTB
 vrc_config-tracker_model = Model FBT trackeru
 vrc_config-avatar_measurement_type = Meření avataru
-vrc_config-calibration_range = Kalibrační rozsah
 vrc_config-calibration_visuals = Zobrazit vizualizaci kalibrace
 vrc_config-user_height = Reálná výška uživatele
-vrc_config-spine_mode-UNKNOWN = Neznámý
-vrc_config-spine_mode-LOCK_BOTH = Uzamknout obojí
-vrc_config-spine_mode-LOCK_HEAD = Uzamknout hlavu
-vrc_config-spine_mode-LOCK_HIP = Uzamknout boky
 vrc_config-tracker_model-UNKNOWN = Neznýmý
 vrc_config-tracker_model-AXIS = Osy
 vrc_config-tracker_model-SPHERE = Sféra
@@ -1095,6 +1042,9 @@ error_collection_modal-description_v2 =
     Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím
+
+## Crash screen
+
 
 ## Tracking checklist section
 

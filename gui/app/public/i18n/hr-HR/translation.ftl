@@ -32,9 +32,6 @@
 ## Body parts
 
 
-## BoardType
-
-
 ## Proportions
 
 
@@ -168,13 +165,22 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -217,6 +223,9 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

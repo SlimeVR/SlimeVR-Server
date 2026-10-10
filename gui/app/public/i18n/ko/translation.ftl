@@ -67,11 +67,6 @@ body_part-LEFT_UPPER_LEG = 왼쪽 다리 위
 body_part-LEFT_LOWER_LEG = 왼쪽 다리 아래
 body_part-LEFT_FOOT = 왼발
 
-## BoardType
-
-board_type-UNKNOWN = 알 수 없음
-board_type-CUSTOM = 커스텀 보드
-
 ## Proportions
 
 skeleton_bone-NONE = 없음
@@ -204,8 +199,6 @@ tracker-settings-use_mag-description =
     
     먼저 자력계를 사용하도록 설정한 다음, <magSetting>여기를 클릭하여 설정으로 이동하세요</magSetting>.
 tracker-settings-use_mag-label = 자력계 활성화
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
 tracker-settings-name_section-label = 트래커 이름
@@ -333,19 +326,9 @@ settings-general-fk_settings-leg_fk = 발 트래킹
 settings-general-fk_settings-enforce_joint_constraints = 골격 한계
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 상수 강제 적용
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
-settings-general-fk_settings-arm_fk-reset_mode-description = 착용 방향 정렬에 사용되는 팔 자세 설정
-settings-general-fk_settings-arm_fk-back = 뒤쪽
-settings-general-fk_settings-arm_fk-back-description = 기본값. 위쪽 팔은 뒤를 향하고 아래쪽 팔은 앞을 향하게 하는 자세.
-settings-general-fk_settings-arm_fk-tpose_up = T-포즈(올리기)
-settings-general-fk_settings-arm_fk-tpose_up-description = 전체 정렬을 수행할 때에는 팔을 차렷 자세로 내리고, 착용 방향 정렬 중에는 팔을 좌우로 나란히 동작으로 펼치는 자세.
-settings-general-fk_settings-arm_fk-tpose_down = T-포즈(내리기)
-settings-general-fk_settings-arm_fk-tpose_down-description = 전체 정렬에서는 좌우로 나란히 자세, 착용 방향 정렬에서는 팔을 차렷 동작으로 내리는 자세
-settings-general-fk_settings-arm_fk-forward = 앞쪽
-settings-general-fk_settings-arm_fk-forward-description = 앞으로 나란히 자세. 앉아있거나 버튜버 활동 등에서 유용해요.
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
 settings-general-fk_settings-skeleton_settings-ratios-description = 골격 비율을 변경하면 신체 비율 설정을 다시 조절해야 할 수 있어요.
 settings-general-fk_settings-self_localization-title = Mocap 모드
-settings-general-fk_settings-self_localization-description = Mocap 모드에서는 헤드셋이나 다른 트래커 없이 골격이 자신의 위치를 대략적으로 추적할 수 있어요. 발과 머리 트래커가 필요하고 아직 실험적이에요.
 
 ## Gesture control settings (tracker tapping)
 
@@ -446,7 +429,6 @@ settings-serial-send_command-warning-cancel = 취소
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     SteamVR이 없는 애플리케이션(예: Quest 단독 실행)에 추적 데이터를 전송하는 데 사용되는 OSC 트래커 표준에 관한 설정.
@@ -619,89 +601,26 @@ onboarding-assign_trackers-mirror = 좌우 반전
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [6] 왼발 트래커를 할당했다면 왼쪽 다리 아래 트래커도 할당해야 해요.
-        [5] 왼발 트래커를 할당했다면 왼쪽 다리 위 트래커도 할당해야 해요.
-        [4] 왼발 트래커를 할당했다면 왼쪽 다리 아래, 왼쪽 다리 위 트래커도 할당해야 해요.
-        [3] 왼발 트래커를 할당했다면 골반, 허리 또는 가슴 트래커도 할당해야 해요.
-        [2] 왼발 트래커를 할당했다면 왼쪽 다리 아래 트래커와 골반, 허리 또는 가슴 트래커도 할당해야 해요.
-        [1] 왼발 트래커를 할당했다면 왼쪽 다리 위 트래커와 골반, 허리 또는 가슴 트래커도 할당해야 해요.
-        [0] 왼발 트래커를 할당했다면 왼쪽 다리 아래, 왼쪽 다리 위 트래커와 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-       *[other] 왼발 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] 오른발 트래커를 할당했다면 오른쪽 다리 아래, 오른쪽 다리 위 트래커와 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-        [1] 오른발 트래커를 할당했다면 오른쪽 다리 위 트래커와 골반, 허리 또는 가슴 트래커도 할당해야 해요.
-        [2] 오른발 트래커를 할당했다면 오른쪽 다리 아래 트래커와 골반, 허리 또는 가슴 트래커도 할당해야 해요.
-        [3] 오른발 트래커를 할당했다면 골반, 허리 또는 가슴 트래커도 할당해야 해요.
-        [4] 오른발 트래커를 할당했다면 오른쪽 다리 아래, 오른쪽 다리 위 트래커도 할당해야 해요.
-        [5] 오른발 트래커를 할당했다면 오른쪽 다리 위 트래커도 할당해야 해요.
-        [6] 오른발 트래커를 할당했다면 오른쪽 다리 아래 트래커도 할당해야 해요.
-       *[other] 오른발 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] 왼쪽 다리 아래 트래커를 할당했다면 왼쪽 다리 위 트래커도 할당해야 해요.
-        [1] 왼쪽 다리 아래 트래커를 할당했다면 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-        [2] 왼쪽 다리 아래 트래커를 할당했다면 왼쪽 다리 위 트래커와 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-       *[other] 왼쪽 다리 아래 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] 오른쪽 다리 아래 트래커를 할당했다면 오른쪽 다리 위 트래커도 할당해야 해요.
-        [1] 오른쪽 다리 아래 트래커를 할당했다면 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-        [2] 오른쪽 다리 아래 트래커를 할당했다면 오른쪽 다리 위 트래커와 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-       *[other] 오른쪽 다리 아래 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] 왼쪽 다리 위 트래커를 할당했다면 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-       *[other] 왼쪽 다리 위 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] 오른쪽 다리 위 트래커를 할당했다면 허리, 골반 또는 가슴 트래커도 할당해야 해요.
-       *[other] 오른쪽 다리 위 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] 골반 트래커를 할당했다면 가슴 트래커도 할당해야 해요.
-       *[other] 골반 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] 허리 트래커를 할당했다면 가슴 트래커도 할당해야 해요.
-       *[other] 허리 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = 착용 방향 보정을 위해 어떤 방법을 사용할까요?
 # Multiline text
 onboarding-choose_mounting-description = 착용 방향 정렬은 트래커가 몸에 착용된 방향을 찾아 수정하도록 도와줘요.
-onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = 권장됨
-onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 2가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
-onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
-onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = 수동으로 착용 방향 설정
 onboarding-manual_mounting-description = 트래커를 클릭한 다음, 트래커가 바라보는 방향을 선택해주세요
-onboarding-manual_mounting-auto_mounting = 자동으로 착용 방향 설정
 onboarding-manual_mounting-next = 다음 단계
 
 ## Tracker automatic mounting setup
@@ -715,14 +634,10 @@ onboarding-automatic_mounting-done-title = 착용 방향이 정렬되었어요
 onboarding-automatic_mounting-done-description = 트래커의 착용 방향이 잘 설정되었어요!
 onboarding-automatic_mounting-done-restart = 다시 처음으로 돌아가기
 onboarding-automatic_mounting-mounting_reset-title = 착용 방향 정렬
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 몸을 굽혀 낮추세요.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. "착용 방향 재설정" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요.
 onboarding-automatic_mounting-preparation-title = 준비
-onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주세요
-onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향을 보정하기 위해 방금 할당한 트래커들을 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 각각의 트래커가 어떤 위치에 있는지 확인할 수 있어요.
-onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = 신체 비율을 자동으로 조정
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 신체 비율 자동 조정 기능을 이용하려면 VR 헤드셋을 연결해 주세요
@@ -906,7 +821,6 @@ tray_or_exit_modal-cancel = 취소
 unknown_device-modal-title = 새로운 트래커를 찾았어요!
 unknown_device-modal-confirm = 당연하죠!
 unknown_device-modal-forget = 무시할게요
-vrc_config-spine_mode-UNKNOWN = 알 수 없음
 vrc_config-tracker_model-UNKNOWN = 알 수 없음
 vrc_config-avatar_measurement_type-UNKNOWN = 알 수 없음
 
@@ -914,6 +828,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = 알 수 없음
 
 error_collection_modal-title = 오류를 수집해도 될까요?
 error_collection_modal-confirm = 동의해요
+
+## Crash screen
+
 
 ## Tracking checklist section
 
