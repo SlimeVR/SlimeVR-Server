@@ -67,7 +67,7 @@ data class BoneRoutingConfig(
 @Serializable
 data class DriverConfig(
 	val enabled: Boolean = true,
-	val sendVelocity: Boolean = true,
+	val sendVelocity: Boolean = false,
 )
 
 @Serializable
