@@ -1115,6 +1115,7 @@ step_mounting-status-RECORDING = crwdns9620:0crwdne9620:0
 step_mounting-status-PROCESSING = crwdns9622:0crwdne9622:0
 step_mounting-status-DONE = crwdns9624:0crwdne9624:0
 step_mounting-status-ERROR_NO_DATA = crwdns9626:0crwdne9626:0
+step_mounting-status-ERROR_THRESHOLD_EXCEEDED = crwdns9678:0crwdne9678:0
 step_mounting-status-ERROR_TIMEOUT = crwdns9628:0crwdne9628:0
 step_mounting-cancel = crwdns9630:0crwdne9630:0
 step_mounting-close = crwdns9632:0crwdne9632:0
