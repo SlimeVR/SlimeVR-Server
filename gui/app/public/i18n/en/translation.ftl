@@ -1222,6 +1222,7 @@ step_mounting-status-RECORDING = Recording your step...
 step_mounting-status-PROCESSING = Processing...
 step_mounting-status-DONE = Done!
 step_mounting-status-ERROR_NO_DATA = Couldn't detect any movement. Try again.
+step_mounting-status-ERROR_THRESHOLD_EXCEEDED = Tracker acceleration was invalid. Try again.
 step_mounting-status-ERROR_TIMEOUT = Timed out waiting for movement. Try again.
 step_mounting-cancel = Cancel
 step_mounting-close = Close

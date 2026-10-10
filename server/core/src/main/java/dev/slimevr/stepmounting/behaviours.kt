@@ -7,6 +7,9 @@ import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.ButterworthCoefficients
 import dev.slimevr.util.Vector3Butterworth
 import dev.slimevr.util.allContextStates
+import dev.slimevr.util.inFloatingSeconds
+import dev.slimevr.util.timeSource
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -21,9 +24,8 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.StepMountingStatus
+import kotlin.time.ComparableTimeMark
 import kotlin.time.TimeSource
-
-internal const val TIMEOUT_MS = 10_000L
 
 class StepMountingBasicBehaviour : StepMountingBehaviour {
 	fun canCalibrate(trackers: List<TrackerState>): Boolean {
@@ -47,26 +49,29 @@ class StepMountingBasicBehaviour : StepMountingBehaviour {
 	}
 }
 
+const val TIMEOUT_MS = 25_000L
+const val WAIT_TIMEOUT_MS = 10_000L
+const val RECORD_TIMEOUT_MS = 8_000L
+
 val COEFFICIENTS = ButterworthCoefficients(
-	8f,
+	1.3f,
 	0.02f,
 )
 const val START_THRESHOLD = 0.4f // in m/s^2
-const val END_THRESHOLD = 0.5f // in m/s^2
+const val END_THRESHOLD = 0.3f // in m/s^2
 const val MIN_MOVEMENT_DURATION_MS = 3000L
-const val ERROR_THRESHOLD = 1f
+const val ERROR_THRESHOLD = 0.3f
 
 fun movementDetector(updates: Flow<TrackerSnapshot>) = flow {
 	val lowpass = Vector3Butterworth(COEFFICIENTS)
-	// var lastTime: ComparableTimeMark? = null
+	var lastTime: ComparableTimeMark? = null
 	emit(0f)
 	updates.collect { update ->
-		// Dynamically control lowpass timestep
-		/*
+		// Dynamically adjust lowpass timestep
 		val delta = lastTime?.elapsedNow()?.inFloatingSeconds ?: COEFFICIENTS.Ts
 		lastTime = timeSource.markNow()
 		lowpass.swapCoefficients(COEFFICIENTS.copy(Ts = delta))
-		 */
+
 		val lowpassAccel = lowpass.filter(update.acceleration)
 		emit((update.acceleration - lowpassAccel).len())
 	}
@@ -99,7 +104,12 @@ internal suspend fun runCalibrationSession(
 		}.stateIn(this)
 
 		// Wait for movement to start
-		isMoving.first { it >= START_THRESHOLD }
+		withTimeoutOrNull(WAIT_TIMEOUT_MS) {
+			isMoving.first { it >= START_THRESHOLD }
+		} ?: run {
+			dispatch(StepMountingStatus.ERROR_TIMEOUT)
+			return@withTimeoutOrNull
+		}
 
 		dispatch(StepMountingStatus.RECORDING)
 		AppLogger.stepMounting.info("Movement detected, recording...")
@@ -132,15 +142,20 @@ internal suspend fun runCalibrationSession(
 		}
 
 		// Wait for movement to end
-		delay(MIN_MOVEMENT_DURATION_MS)
-		isMoving.first { it < END_THRESHOLD }
+		withTimeoutOrNull(RECORD_TIMEOUT_MS) {
+			delay(MIN_MOVEMENT_DURATION_MS)
+			isMoving.first { it < END_THRESHOLD }
+		} ?: run {
+			dispatch(StepMountingStatus.ERROR_TIMEOUT)
+			return@withTimeoutOrNull
+		}
 
 		dispatch(StepMountingStatus.PROCESSING)
 		AppLogger.stepMounting.info("No more movement detected, processing...")
 
 		if (headRecording.isEmpty() || trackerRecordings.isEmpty()) {
 			dispatch(StepMountingStatus.ERROR_NO_DATA)
-			error("No data found.")
+			return@withTimeoutOrNull
 		}
 
 		val headOffset = headRecording.last().position - headRecording.first().position
@@ -157,9 +172,9 @@ internal suspend fun runCalibrationSession(
 		results.firstOrNull { (_, result) ->
 			result.errorMeters >= ERROR_THRESHOLD
 		}?.let { (tracker, result) ->
-			dispatch(StepMountingStatus.ERROR_NO_DATA)
+			dispatch(StepMountingStatus.ERROR_THRESHOLD_EXCEEDED)
 			AppLogger.stepMounting.error("Tracker assigned to ${tracker.context.state.value.bodyPart} exceeded the error threshold (${result.errorMeters}m >= ${ERROR_THRESHOLD}m).")
-			error("Error threshold exceeded.")
+			return@withTimeoutOrNull
 		}
 
 		// Apply to trackers

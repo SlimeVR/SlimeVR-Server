@@ -1,5 +1,6 @@
 package dev.slimevr.stepmounting
 
+import com.jme3.math.FastMath
 import dev.slimevr.tracker.HeadingAlignment
 import dev.slimevr.util.inFloatingSeconds
 import io.github.axisangles.ktmath.Quaternion
@@ -73,8 +74,14 @@ fun estimateHeadingAlign(
 
 	// Compute mounting to fix the yaw offset from tracker to HMD
 	// OLD: angle(trackerXZ.unit()) * angle(hmdXZ.unit()).inv()
+	val mountingChange = Quaternion.fromTo(hmdXZ.unit(), trackerXZ.unit()).unit()
 	return StepMountingResult(
-		Quaternion.fromTo(hmdXZ.unit(), trackerXZ.unit()).unit(),
+		if (FastMath.isApproxEqual(mountingChange.lenSq(), 1f)) {
+			mountingChange
+		} else {
+			// Vectors are directly opposite
+			Quaternion.SLIMEVR.FRONT
+		},
 		abs(trackerXZ.len() - hmdXZ.len()),
 		trackerOffset,
 		bias,
