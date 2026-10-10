@@ -104,7 +104,7 @@ export const findSystemJRE = async (sharedDir: string) => {
         resolve(version);
       });
     });
-    if (version && version >= 17) return path;
+    if (version && version >= 25) return path;
   }
   return null;
 };

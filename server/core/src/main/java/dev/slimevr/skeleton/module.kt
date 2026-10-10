@@ -1,0 +1,314 @@
+package dev.slimevr.skeleton
+
+import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.config.Settings
+import dev.slimevr.context.Behaviour
+import dev.slimevr.context.Context
+import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
+import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
+import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
+import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
+import dev.slimevr.skeleton.inputprocessors.DirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FallbackInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FingersInputProcessor
+import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
+import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.RotationPredictionInputProcessor
+import dev.slimevr.skeleton.inputprocessors.RotationSmoothingInputProcessor
+import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
+import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
+import dev.slimevr.skeleton.inputprocessors.TrackerOffsetInputProcessor
+import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.UpsamplingInputProcessor
+import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
+import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
+import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
+import dev.slimevr.util.PreciseWaiter
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ResetType
+import solarxr_protocol.rpc.SkeletonBone
+
+data class Velocity(
+	/** In meters/s */
+	val linear: Vector3,
+	/** In radians/s */
+	val angular: Vector3,
+)
+
+val ZERO_VELOCITY = Velocity(Vector3.ZERO, Vector3.ZERO)
+
+/** Pre-FK */
+data class BoneInput(
+	val bodyPart: BodyPart,
+	val headOffset: Vector3,
+	val offset: Vector3,
+	val trackerOffset: Vector3,
+	val expectedTps: UShort?,
+	val rotation: Quaternion,
+	val acceleration: Vector3,
+	val position: Vector3?,
+	val isRotationActive: Boolean,
+	val isAccelerationActive: Boolean,
+	val isPositionActive: Boolean,
+)
+
+/** Post-FK */
+data class BoneState(
+	val parentBone: BoneState?,
+	val bodyPart: BodyPart,
+	val headOffset: Vector3,
+	val offset: Vector3,
+	val trackerOffset: Vector3,
+	val rotation: Quaternion,
+	val acceleration: Vector3,
+	val headPosition: Vector3,
+	val tailPosition: Vector3,
+	val velocity: Velocity,
+) {
+	// FK rebuilds most of the skeleton every frame, so anything read less often than that is
+	// computed on demand rather than per bone
+	private val orientationOffset: Quaternion
+		get() = when {
+			offset.len() == 0f -> Quaternion.IDENTITY
+			offset.unit().y == 1f -> Quaternion.I
+			else -> Quaternion.fromTo(Vector3.NEG_Y, offset)
+		}
+	val orientation: Quaternion
+		get() = rotation * orientationOffset
+
+	val localRotation: Quaternion
+		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
+	val localHeadPosition: Vector3
+		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
+	val localTailPosition: Vector3
+		get() = tailPosition - headPosition
+}
+
+typealias InputSkeleton = BodyPartMap<BoneInput>
+typealias ComputedSkeleton = BodyPartMap<BoneState>
+
+data class LegTweaksTmpOverride(
+	val floorClip: Boolean? = null,
+	val skatingCorrection: Boolean? = null,
+	val toeSnap: Boolean? = null,
+	val footPlant: Boolean? = null,
+)
+
+data class SkeletonState(
+	val boneInputs: InputSkeleton,
+	val skeletonHeight: Float,
+	val floorLevel: Float,
+	val paused: Boolean,
+	val pausedProcessedBoneInputs: InputSkeleton?,
+	val processorResets: List<ResetType> = emptyList(),
+	val legTweaksTmpOverride: LegTweaksTmpOverride = LegTweaksTmpOverride(),
+)
+
+val DEFAULT_BONE_INPUT = BoneInput(
+	bodyPart = BodyPart.NONE,
+	headOffset = Vector3.ZERO,
+	offset = Vector3.ZERO,
+	trackerOffset = Vector3.ZERO,
+	expectedTps = null,
+	rotation = Quaternion.IDENTITY,
+	acceleration = Vector3.ZERO,
+	position = null,
+	isRotationActive = false,
+	isAccelerationActive = false,
+	isPositionActive = false,
+)
+
+val DEFAULT_SKELETON_STATE = run {
+	val offsets = toBoneOffsets(DEFAULT_PROPORTIONS)
+	SkeletonState(
+		boneInputs = offsets.tail.mapValues { bodyPart, tailOffset ->
+			DEFAULT_BONE_INPUT.copy(
+				bodyPart = bodyPart,
+				headOffset = offsets.head[bodyPart] ?: Vector3.ZERO,
+				offset = tailOffset,
+			)
+		},
+		skeletonHeight = DEFAULT_HEIGHT,
+		floorLevel = 0f,
+		paused = false,
+		pausedProcessedBoneInputs = null,
+	)
+}
+
+fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
+	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
+	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) }
+		?: bone.position ?: Vector3.ZERO
+	return BoneState(
+		parentBone = parentBone,
+		bodyPart = bone.bodyPart,
+		headOffset = bone.headOffset,
+		offset = bone.offset,
+		trackerOffset = bone.trackerOffset,
+		rotation = bone.rotation,
+		acceleration = bone.acceleration,
+		headPosition = headPosition,
+		tailPosition = headPosition + bone.rotation.sandwich(bone.offset),
+		velocity = velocity,
+	)
+}
+
+/**
+ * Runs FK from boneInputs, mutating the passed bones.
+ */
+fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet) {
+	for (bodyPart in highestBodyParts(changedParts)) {
+		for ((parentPart, childPart) in iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD)) {
+			val rawBone = boneInputs[childPart] ?: continue
+			val parentBone = parentPart?.let { mutableBones[it] }
+			// Velocity is written directly during the skeleton loop computed bones; keep it.
+			mutableBones[childPart] = buildBone(rawBone, parentBone, mutableBones[childPart]?.velocity ?: ZERO_VELOCITY)
+		}
+	}
+}
+
+sealed interface SkeletonActions {
+	data class SetBonePose(
+		val bodyPart: BodyPart,
+		val trackerOffset: Vector3?,
+		val expectedTps: UShort?,
+		val rotation: Quaternion?,
+		val acceleration: Vector3?,
+		val position: Vector3?,
+		val switchActive: Boolean = true,
+	) : SkeletonActions
+	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
+	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
+	data class PauseTracking(val pause: Boolean) : SkeletonActions
+	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
+	data object ResetHeadPosition : SkeletonActions
+	data object ResetFloorLevel : SkeletonActions
+	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
+	data class ProcessorResetsApplied(val count: Int) : SkeletonActions
+	data class UpdateLegTweaksTmpOverride(val transform: LegTweaksTmpOverride.() -> LegTweaksTmpOverride) : SkeletonActions
+}
+
+typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
+typealias SkeletonBehaviour = Behaviour<Skeleton>
+
+interface ResettableSkeletonProcessor {
+	fun reset(resetType: ResetType)
+}
+interface SkeletonInputProcessor {
+	fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float)
+}
+interface SkeletonFkProcessor {
+	fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
+}
+interface SkeletonComputedProcessor {
+	fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton)
+}
+typealias IKTargets = BodyPartMap<Vector3>
+interface SkeletonTargetProcessor {
+	fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
+}
+
+class Skeleton(
+	val context: SkeletonContext,
+	val computed: MutableSharedFlow<ComputedSkeleton>,
+	val settings: Settings,
+) {
+	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
+
+	val effectiveFloorClip: Boolean
+		get() = context.state.value.legTweaksTmpOverride.floorClip
+			?: settings.context.state.value.data.skeletonConfig.toggles.floorClip
+	val effectiveSkatingCorrection: Boolean
+		get() = context.state.value.legTweaksTmpOverride.skatingCorrection
+			?: settings.context.state.value.data.skeletonConfig.toggles.skatingCorrection
+	val effectiveToeSnap: Boolean
+		get() = context.state.value.legTweaksTmpOverride.toeSnap
+			?: settings.context.state.value.data.skeletonConfig.toggles.toeSnap
+	val effectiveFootPlant: Boolean
+		get() = context.state.value.legTweaksTmpOverride.footPlant
+			?: settings.context.state.value.data.skeletonConfig.toggles.footPlant
+
+	fun startObserving() = context.observeAll(this)
+
+	companion object {
+		const val DEFAULT_HZ = 500
+
+		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
+			val settings = ctx.config.settings
+
+			val context = Context.create(
+				initialState = DEFAULT_SKELETON_STATE,
+				scope = scope,
+				reducer = ::reduce,
+				name = "Skeleton",
+			)
+
+			val computed = MutableSharedFlow<ComputedSkeleton>(
+				replay = 1,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
+			val initialBones: ComputedSkeleton = bodyPartMap()
+			buildBones(initialBones, context.state.value.boneInputs)
+			computed.tryEmit(initialBones)
+
+			val skeleton = Skeleton(context, computed, settings)
+
+			val behaviours = listOf(
+				ProportionsBehaviour(ctx.config.userConfig),
+				HeightLogBehaviour(),
+				LocalizerResetBehaviour(settings),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 50),
+				ComputedSkeletonBehaviour(
+					hz = hz,
+					waiter = waiter,
+					// Run before FK on the inputs
+					inputProcessors = listOf(
+						UpsamplingInputProcessor(),
+						RotationPredictionInputProcessor(settings),
+						RotationSmoothingInputProcessor(settings),
+						TrackerOffsetInputProcessor(),
+						HeadPositionFallbackProcessor(settings),
+						FallbackInputProcessor(),
+						SpineInputProcessor(settings),
+						HipYawRollAlignInputProcessor(settings),
+						UpperLegsRollAlignInputProcessor(settings),
+						DirectLinkInputProcessor(),
+						FingersInputProcessor(),
+						ToesInputProcessor(),
+						ConstraintInputProcessor(settings),
+					),
+					// Run on the result of FK and persist
+					fkComputedProcessors = listOf(
+						VelocityComputedProcessor(false),
+					),
+					// Run on the inputs with the result of FK and run FK
+					fkProcessors = listOf(
+						LocalizerFkProcessor(settings),
+						FootPlantFkProcessor(skeleton),
+						ToeSnapFkProcessor(skeleton),
+					),
+					// Create targets for IK
+					targetProcessors = listOf(
+						PositionalTargetProcessor(settings),
+						SkatingCorrectionTargetProcessor(settings, skeleton),
+						FloorClipTargetProcessor(skeleton),
+					),
+					// Run on the result of IK and persist.
+					ikComputedProcessors = listOf(
+						VelocityComputedProcessor(true),
+					),
+				),
+			)
+
+			context.behaviours.addAll(behaviours)
+
+			return skeleton
+		}
+	}
+}
