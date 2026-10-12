@@ -366,7 +366,6 @@ mounting_selection_menu-close = Fermer
 
 ## Sidebar settings
 
-settings-sidebar-title = Réglages
 settings-sidebar-general = Général
 settings-sidebar-stay_aligned = Garder Aligné
 settings-sidebar-trackers = Capteurs
@@ -398,7 +397,6 @@ settings-general-tracker_mechanics-filtering = Filtrage
 settings-general-tracker_mechanics-filtering-description =
     Choisissez le type de filtrage pour vos capteurs.
     La prédiction prédit les mouvements tandis que la fluidification rend les mouvements plus fluides.
-settings-general-tracker_mechanics-filtering-type = Type de filtrage
 settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
 settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
 settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
@@ -411,19 +409,15 @@ settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibrat
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Enregistre les calibrations des réinitialisation automatiques d'alignement pour les capteurs entre les redémarrages.
     Utile lorsque vous portez une combinaison où les capteurs ne bougent pas entre les sessions. <b>Non recommandé pour les utilisateurs normaux !</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l'alignement
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Utiliser le magnétomètre sur tous les capteurs IMU qui le prennent en charge
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
 settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permettre aux capteurs HID de se connecter directement via USB
 settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
 settings-stay_aligned-setup-label = Configurer Garder Aligné
 settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
-settings-stay_aligned-general-label = Général
 settings-stay_aligned-relaxed_poses-label = Postures détendues
 settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos postures détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
 settings-stay_aligned-relaxed_poses-standing = Ajuster les capteurs en position debout
@@ -466,10 +460,8 @@ settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
 settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-ik = Données de position
-settings-general-fk_settings-ik-use_position = Utiliser les données de position
 settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
 settings-general-fk_settings-skeleton_settings-ratios = Ratios du squelette
 settings-general-fk_settings-skeleton_settings-ratios-description = Modifiez les valeurs des paramètres du squelette. Vous devrez peut-être ajuster vos proportions après les avoir modifiées.
@@ -504,7 +496,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Augme
 settings-interface-appearance = Apparence
 settings-general-interface-dev_mode = Mode développeur
 settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-theme = Thème
 settings-general-interface-lang = Langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
@@ -522,23 +513,18 @@ settings-interface-appearance-font_size-description = Cela affecte la taille du 
 
 settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
-settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
 settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle à chaque fois que vous essaierez de quitter SlimeVR en ayant un ou plusieurs capteurs connectés. Il vous rappelle d'éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
-settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
 
 ## Behavior settings
 
 settings-interface-behavior = Comportement
 settings-general-interface-dev_mode = Mode développeur
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
-settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
 settings-general-interface-discord_presence = Partager l'activité sur Discord
 settings-general-interface-discord_presence-description = Indique à votre client Discord que vous utilisez SlimeVR avec le nombre de capteurs IMU que vous utilisez.
-settings-general-interface-discord_presence-label = Partager l'activité sur Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Aucun capteur
@@ -586,7 +572,6 @@ settings-osc-vrchat-description-v1 =
     Assurez-vous d'activer le protocole OSC dans VRChat via le menu d'action (rond) sous OSC > Enabled.
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
-settings-osc-vrchat-enable-label = Activer
 settings-osc-vrchat-network = Ports réseau
 settings-osc-vrchat-network-port_in =
     .label = Port d'entrée
@@ -612,7 +597,6 @@ settings-osc-vmc-description =
            pour envoyer les données de capture de SlimeVR et recevoir les données de capture d'autres applications.
 settings-osc-vmc-enable = Activer
 settings-osc-vmc-enable-description = Activer/désactiver l'envoi et la réception de données.
-settings-osc-vmc-enable-label = Activer
 settings-osc-vmc-network = Ports réseau
 settings-osc-vmc-network-description = Définissez les ports pour écouter et envoyer des données par VMC.
 settings-osc-vmc-network-port_in =
@@ -630,10 +614,8 @@ settings-osc-vmc-vrm-untitled_model = Modèle sans nom
 settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, ou <u>parcourir</u>.
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
 settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
-settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
 settings-osc-vmc-mirror_tracking = Inverser les mouvements
 settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
-settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
 settings-osc-vmc-status-badge-error = Erreur
 
 ## Common OSC settings
