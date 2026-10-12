@@ -475,7 +475,6 @@ settings-driver-velocity-description = crwdns7808:0crwdne7808:0
 
 ## Tracker mechanics
 
-settings-general-trackers_settings = crwdns7810:0crwdne7810:0
 settings-general-mounting_method = crwdns9568:0crwdne9568:0
 settings-general-mounting_method-description = crwdns9570:0crwdne9570:0
 settings-general-tracker_mechanics-filtering = crwdns7812:0crwdne7812:0
@@ -502,7 +501,6 @@ settings-general-tracker_mechanics-trackers_over_usb-description = crwdns7850:0c
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = crwdns7852:0crwdne7852:0
 settings-general-tracker_mechanics-timeout_delay = crwdns7854:0crwdne7854:0
 settings-general-tracker_mechanics-timeout_delay-description = crwdns7856:0{ tracker-status-disconnected }crwdne7856:0
-settings-stay_aligned = crwdns7858:0crwdne7858:0
 settings-stay_aligned-description = crwdns7860:0crwdne7860:0
 settings-stay_aligned-setup-label = crwdns7862:0crwdne7862:0
 settings-stay_aligned-setup-description = crwdns7864:0crwdne7864:0
@@ -555,7 +553,6 @@ settings-keybinds-error-add-modifier = crwdns7950:0crwdne7950:0
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = crwdns7952:0crwdne7952:0
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -581,7 +578,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = crwdns7984:0crwdne7984:0
 settings-general-fk_settings-ik-use_position = crwdns7986:0crwdne7986:0
 settings-general-fk_settings-ik-use_position-description = crwdns7988:0crwdne7988:0
-settings-general-fk_settings-resets_settings = crwdns7990:0crwdne7990:0
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = crwdns9496:0crwdne9496:0
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = crwdns9498:0crwdne9498:0
 settings-general-fk_settings-arms_mounting_reset_mode = crwdns9648:0crwdne9648:0
@@ -654,7 +650,6 @@ settings-interface-appearance-font_size-description = crwdns8096:0crwdne8096:0
 
 ## Notification settings
 
-settings-interface-notifications = crwdns8098:0crwdne8098:0
 settings-general-interface-feedback_sound = crwdns8100:0crwdne8100:0
 settings-general-interface-feedback_sound-description = crwdns8102:0crwdne8102:0
 settings-general-interface-feedback_sound-label = crwdns8104:0crwdne8104:0
@@ -841,6 +836,8 @@ settings-osc-common-network-port_banned_error = crwdns8410:0$portcrwdne8410:0
 ## Advanced settings
 
 settings-utils-advanced = crwdns8412:0crwdne8412:0
+settings-utils-advanced-danger_zone = crwdns9682:0crwdne9682:0
+settings-utils-advanced-danger_zone-description = crwdns9684:0crwdne9684:0
 settings-utils-advanced-reset-gui = crwdns8414:0crwdne8414:0
 settings-utils-advanced-reset-gui-description = crwdns8416:0crwdne8416:0
 settings-utils-advanced-reset-gui-label = crwdns8418:0crwdne8418:0
