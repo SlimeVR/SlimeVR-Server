@@ -339,7 +339,6 @@ mounting_selection_menu-close = Chiudi
 
 ## Sidebar settings
 
-settings-sidebar-title = Impostazioni
 settings-sidebar-general = Generali
 settings-sidebar-stay_aligned = Rimani Allineato
 settings-sidebar-trackers = Tracker
@@ -347,7 +346,6 @@ settings-sidebar-interface = Interfaccia
 settings-sidebar-utils = Strumenti
 settings-sidebar-serial = Console seriale
 settings-sidebar-appearance = Aspetto
-settings-sidebar-notifications = Notifiche
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Strumento firmware fai-da-te
 settings-sidebar-vrc_warnings = Avvertimenti per le impostazioni di VRChat
@@ -370,7 +368,6 @@ settings-general-tracker_mechanics-filtering = Filtro movimenti
 settings-general-tracker_mechanics-filtering-description =
     Scegli la tipologia di filtro per il tuo tracker.
     Predizione anticipa i movimenti, mentre Attenuazione attenua movimenti eccessivi.
-settings-general-tracker_mechanics-filtering-type = Tipologia di filtro
 settings-general-tracker_mechanics-filtering-type-none = Non usare alcun filtro
 settings-general-tracker_mechanics-filtering-type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
 settings-general-tracker_mechanics-filtering-type-smoothing = Attenuazione
@@ -383,16 +380,13 @@ settings-general-tracker_mechanics-save_mounting_reset = Salva automaticamente l
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Salva in automatico la calibrazione del ripristino del posizionamento per i tracker tra un riavvio e l'altro. Utile
     quando si indossa una tuta in cui la posizione e orientamento dei tracker non cambia tra una sessione e l'altra. <b>Non consigliato per gli utenti normali!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Salva il ripristino del posizionamento
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Utilizza il magnetometro su tutti i tracker IMU che lo supportano
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilizza il magnetometro su tutti i tracker che dispongono di un firmware compatibile, riducendo il drift in ambienti magnetici stabili.
     Può essere disabilitato per ogni tracker nelle impostazioni del tracker. <b>Per favore non spegnere nessuno dei tracker durante l'attivazione!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usa il magnetometro sui tracker
 settings-stay_aligned-description = Rimani Allineato riduce la deriva regolando gradualmente i tracker per allinearsi alle tue pose rilassate.
 settings-stay_aligned-setup-label = Configura Rimani Allineato
 settings-stay_aligned-setup-description = Devi completare "Configura Rimani Allineato" per attivare Rimani Allineato.
-settings-stay_aligned-general-label = Generale
 settings-stay_aligned-relaxed_poses-label = Pose Rilassate
 settings-stay_aligned-relaxed_poses-description = Rimani Allineato utilizza le tue pose rilassate per mantenere allineati i tracker. Usa "Configura Rimani Allineato" per aggiornare queste pose.
 settings-stay_aligned-relaxed_poses-standing = Regola i tracker stando in piedi
@@ -433,7 +427,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = "Dita dei piedi pi
 settings-general-fk_settings-leg_tweak-foot_plant-description = "Piedi piantati" ruota i piedi in modo tale che siano paralleli al terreno quando in contatto con esso.
 settings-general-fk_settings-leg_fk = Tracciamento delle gambe
 settings-general-fk_settings-enforce_joint_constraints = Limiti dello scheletro
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Rispetta i vincoli
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Impedisci ai legamenti di ruotare oltre il loro limite
 settings-general-fk_settings-skeleton_settings-ratios = Proporzioni dello scheletro
 settings-general-fk_settings-skeleton_settings-ratios-description = Modifica i valori delle impostazioni dello scheletro. Potrebbe essere necessario regolare le proporzioni dopo aver modificato queste impostazioni.
@@ -476,7 +469,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 settings-interface-appearance = Aspetto
 settings-general-interface-dev_mode = Modalità sviluppatore
 settings-general-interface-dev_mode-description = Questa modalità è utile se hai bisogno di dati approfonditi o devi interagire in maniera più avanzata con i tracker connessi.
-settings-general-interface-dev_mode-label = Modalità sviluppatore
 settings-general-interface-theme = Colore di tema
 settings-general-interface-lang = Seleziona la lingua
 settings-general-interface-lang-description = Seleziona la lingua che vuoi utilizzare
@@ -494,23 +486,18 @@ settings-interface-appearance-font_size-description = Questo influisce sulla dim
 
 settings-general-interface-feedback_sound = Suono di feedback
 settings-general-interface-feedback_sound-description = Questa opzione riprodurrà un suono quando viene effettuato un ripristino
-settings-general-interface-feedback_sound-label = Suono di feedback
 settings-general-interface-feedback_sound-volume = Volume del suono di feedback
 settings-general-interface-connected_trackers_warning = Avviso di tracker connessi
 settings-general-interface-connected_trackers_warning-description = Questa opzione mostrerà un pop-up ogni volta che proverai ad uscire da SmileVR mentre uno o più tracker sono connessi. Ció ti permetterà di ricordarti di spegnere i tuoi tracker per preservarne la durata delle batterie.
-settings-general-interface-connected_trackers_warning-label = Avviso di tracker connessi alla chiusura dell'applicazione
 
 ## Behavior settings
 
 settings-interface-behavior = Comportamento
 settings-general-interface-dev_mode = Modalità sviluppatore
-settings-general-interface-dev_mode-label = Modalità sviluppatore
 settings-general-interface-use_tray = Riduci a icona nella barra delle applicazioni
 settings-general-interface-use_tray-description = Ti consente di chiudere la finestra senza chiudere il server SlimeVR in modo da poter continuare a usarlo senza che la GUI ti infastidisca.
-settings-general-interface-use_tray-label = Riduci a icona nella barra delle applicazioni
 settings-general-interface-discord_presence = Condividi attività su Discord
 settings-general-interface-discord_presence-description = Dice al tuo client di Discord che stai utilizzando SlimeVR insieme al numero di tracker IMU che stai utilizzando.
-settings-general-interface-discord_presence-label = Condividi attività su Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Slimeggiando qua e là
@@ -554,7 +541,6 @@ settings-osc-vrchat-description-v1 =
     in Tracciamento e IK > Consenti invio dati OSC tracciamento VR testa e polso.
 settings-osc-vrchat-enable = Attiva
 settings-osc-vrchat-enable-description = Attiva o disattiva l'invio e la ricezione dei dati
-settings-osc-vrchat-enable-label = Attiva
 settings-osc-vrchat-network = Porte di rete
 settings-osc-vrchat-network-port_in =
     .label = Porta in ingresso
@@ -580,7 +566,6 @@ settings-osc-vmc-description =
      per inviare dati dello scheletro di SlimeVR e ricevere dati dello scheletro da altre applicazioni.
 settings-osc-vmc-enable = Attiva
 settings-osc-vmc-enable-description = Attiva o disattiva l'invio e la ricezione dei dati
-settings-osc-vmc-enable-label = Attiva
 settings-osc-vmc-network = Porte di rete
 settings-osc-vmc-network-description = Impostare le porte di rete per ascoltare e inviare dati a VMC
 settings-osc-vmc-network-port_in =
@@ -598,10 +583,8 @@ settings-osc-vmc-vrm-untitled_model = Modello senza titolo
 settings-osc-vmc-vrm-file_select = Trascina qui un modello da usare, o <u>sfoglia</u>
 settings-osc-vmc-anchor_hip = Ancoraggio sul bacino
 settings-osc-vmc-anchor_hip-description = Ancora la posizione del tracciamento del bacino; utile per VTubing da seduti. Se disabilitato, carica un modello VRM.
-settings-osc-vmc-anchor_hip-label = Ancoraggio sul bacino
 settings-osc-vmc-mirror_tracking = Tracciamento speculare
 settings-osc-vmc-mirror_tracking-description = Specchia il tracciamento orizzontalmente.
-settings-osc-vmc-mirror_tracking-label = Tracciamento speculare
 settings-osc-vmc-status-badge-error = Errore
 
 ## Common OSC settings
