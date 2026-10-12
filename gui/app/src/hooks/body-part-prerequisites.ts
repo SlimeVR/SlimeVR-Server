@@ -11,28 +11,10 @@ import { useWebsocketAPI } from './websocket-api';
 export type BodyPartPrerequisites = Partial<Record<BodyPart, BodyPart[][]>>;
 
 const bodyPartPrerequisitesAtom = atom<BodyPartPrerequisites>({});
-const requestedAtom = atom(false);
 
-export function useBodyPartPrerequisites() {
-  const { sendRPCPacket, useRPCPacket, isConnected } = useWebsocketAPI();
-  const prerequisites = useAtomValue(bodyPartPrerequisitesAtom);
+export function useProvideBodyPartPrerequisites() {
+  const { useRPCPacket } = useWebsocketAPI();
   const setPrerequisites = useSetAtom(bodyPartPrerequisitesAtom);
-  const requested = useAtomValue(requestedAtom);
-  const setRequested = useSetAtom(requestedAtom);
-
-  useEffect(() => {
-    if (!isConnected) {
-      setRequested(false);
-      return;
-    }
-    if (requested) return;
-
-    setRequested(true);
-    sendRPCPacket(
-      RpcMessage.BodyPartPrerequisitesRequest,
-      new BodyPartPrerequisitesRequestT()
-    );
-  }, [isConnected, requested]);
 
   useRPCPacket(
     RpcMessage.BodyPartPrerequisitesResponse,
@@ -46,8 +28,20 @@ export function useBodyPartPrerequisites() {
         )
       )
   );
+}
 
-  return prerequisites;
+export function useBodyPartPrerequisites() {
+  const { sendRPCPacket, isConnected } = useWebsocketAPI();
+
+  useEffect(() => {
+    if (!isConnected) return;
+    sendRPCPacket(
+      RpcMessage.BodyPartPrerequisitesRequest,
+      new BodyPartPrerequisitesRequestT()
+    );
+  }, [isConnected]);
+
+  return useAtomValue(bodyPartPrerequisitesAtom);
 }
 
 export function unmetRequirements(

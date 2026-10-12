@@ -20,6 +20,7 @@ import {
   resetStatusAtom,
 } from '@/store/app-store';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
+import { useProvideBodyPartPrerequisites } from './body-part-prerequisites';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
 export interface AppContext {
@@ -79,6 +80,8 @@ export function useProvideAppContext(): AppContext {
     if (!isConnected) return;
     sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
   }, [isConnected]);
+
+  useProvideBodyPartPrerequisites();
 
   useEffect(() => {
     if (!config) return;
