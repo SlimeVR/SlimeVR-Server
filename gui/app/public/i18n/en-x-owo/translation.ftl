@@ -277,14 +277,12 @@ mounting_selection_menu-close = cwose
 
 ## Sidebar settings
 
-settings-sidebar-title = settyings~
 settings-sidebar-general = genyawaw
 settings-sidebar-trackers = trayckawws
 settings-sidebar-interface = intyawface~
 settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 settings-sidebar-appearance = appeawance
-settings-sidebar-notifications = notificashuns
 settings-sidebar-behavior = behavur
 
 ## Bone routing settings
@@ -302,7 +300,6 @@ settings-general-tracker_mechanics-filtering = fiwtewing~
 settings-general-tracker_mechanics-filtering-description =
     chooce teh fiwwtewing type fow youw twackaws.
     pwediction pwedicts movment while smowthing smowthens movment.
-settings-general-tracker_mechanics-filtering-type = fiwtewing type~
 settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
 settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
 settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
@@ -315,12 +312,9 @@ settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meowntin
 settings-general-tracker_mechanics-save_mounting_reset-description =
     saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
     wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
     can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = use mangenmometer on twackews
-settings-stay_aligned-general-label = genyawaw
 settings-stay_aligned-relaxed_poses-close = cwose
 
 ## Keybinds Page
@@ -349,7 +343,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts t
 settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
 settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = enfourse constwaints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
 settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
@@ -391,7 +384,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = incwe
 settings-interface-appearance = appeawance
 settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
-settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-theme = cowor theem
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
@@ -409,23 +401,18 @@ settings-interface-appearance-font_size-description = dis affects da fawnt size 
 
 settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
-settings-general-interface-feedback_sound-label = feeback sownd
 settings-general-interface-feedback_sound-volume = feedback sownd volyume
 settings-general-interface-connected_trackers_warning = Connected twackews wawning
 settings-general-interface-connected_trackers_warning-description = This option wiww show a pop-up evewy time you twy exiting SwimeVR whiwe having one ow mowe connected twackews. It weminds you to tuwn off youw twackews when you awe done to pwesewve battewy wife.
-settings-general-interface-connected_trackers_warning-label = Connected twackews wawning on exit
 
 ## Behavior settings
 
 settings-interface-behavior = behavur
 settings-general-interface-dev_mode = devwowwewow mode
-settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-use_tray = minimaize to systewm tway
 settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
-settings-general-interface-use_tray-label = minimaize to systewm tway
 settings-general-interface-discord_presence = shaer activitey on discowd
 settings-general-interface-discord_presence-description = tewws ur discoard cwient dat ur using SlyimeVR awong wif teh nuhmbew of IMU twackewrz u r using.
-settings-general-interface-discord_presence-label = shaer activitey on discowd
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] slimin awaound :3
@@ -460,7 +447,6 @@ settings-serial-send_command-warning-cancel = cancew
 
 settings-osc-vrchat-enable = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
-settings-osc-vrchat-enable-label = enaybwe
 settings-osc-vrchat-network = newtwowk pawts
 settings-osc-vrchat-network-port_in =
     .label = pawt in
@@ -485,7 +471,6 @@ settings-osc-vmc-description =
             to send SwimeVR's twacking data and weceive twacking data fwom othew apps.
 settings-osc-vmc-enable = enaybwe
 settings-osc-vmc-enable-description = toggle teh sending awnd wweceiving of data
-settings-osc-vmc-enable-label = enaybwe
 settings-osc-vmc-network = newtwowk pawts
 settings-osc-vmc-network-description = set the pawts fow wistening awnd sending data via vmc
 settings-osc-vmc-network-port_in =
@@ -502,10 +487,8 @@ settings-osc-vmc-vrm-description = woad a VRM modew to awwow head anchow and ena
 settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse</u>
 settings-osc-vmc-anchor_hip = anchow at hips
 settings-osc-vmc-anchor_hip-description = anchow the twacking at the hips, usefuw fow seated vtubing
-settings-osc-vmc-anchor_hip-label = anchow at hips
 settings-osc-vmc-mirror_tracking = miwwow twacking
 settings-osc-vmc-mirror_tracking-description = miwwow da twacking howizawntawwy.
-settings-osc-vmc-mirror_tracking-label = miwwow twacking
 settings-osc-vmc-status-badge-error = ewwow
 
 ## Common OSC settings
