@@ -305,7 +305,6 @@ settings-keybinds-recorder-modal-cancel-button = 취소
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = 트래킹 설정
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -377,7 +376,6 @@ settings-interface-appearance-font_size-description = 변경하면 이 설정 �
 
 ## Notification settings
 
-settings-interface-notifications = 알림
 settings-general-interface-feedback_sound = 피드백 사운드
 settings-general-interface-feedback_sound-description = 이 옵션을 켜면 트래커를 정렬할 때 효과음을 재생해요
 settings-general-interface-feedback_sound-label = 피드백 사운드
