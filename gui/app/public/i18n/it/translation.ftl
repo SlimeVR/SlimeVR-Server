@@ -389,11 +389,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilizza il magnetometro su tutti i tracker che dispongono di un firmware compatibile, riducendo il drift in ambienti magnetici stabili.
     Può essere disabilitato per ogni tracker nelle impostazioni del tracker. <b>Per favore non spegnere nessuno dei tracker durante l'attivazione!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usa il magnetometro sui tracker
-settings-stay_aligned = Rimani Allineato
 settings-stay_aligned-description = Rimani Allineato riduce la deriva regolando gradualmente i tracker per allinearsi alle tue pose rilassate.
 settings-stay_aligned-setup-label = Configura Rimani Allineato
 settings-stay_aligned-setup-description = Devi completare "Configura Rimani Allineato" per attivare Rimani Allineato.
-settings-stay_aligned-enabled-label = Regola i tracker
 settings-stay_aligned-general-label = Generale
 settings-stay_aligned-relaxed_poses-label = Pose Rilassate
 settings-stay_aligned-relaxed_poses-description = Rimani Allineato utilizza le tue pose rilassate per mantenere allineati i tracker. Usa "Configura Rimani Allineato" per aggiornare queste pose.
@@ -417,7 +415,6 @@ settings-keybinds-recorder-modal-cancel-button = Annulla
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Impostazioni del traciamento
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -495,7 +492,6 @@ settings-interface-appearance-font_size-description = Questo influisce sulla dim
 
 ## Notification settings
 
-settings-interface-notifications = Notifiche
 settings-general-interface-feedback_sound = Suono di feedback
 settings-general-interface-feedback_sound-description = Questa opzione riprodurrà un suono quando viene effettuato un ripristino
 settings-general-interface-feedback_sound-label = Suono di feedback
