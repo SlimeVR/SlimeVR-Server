@@ -393,11 +393,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Использует магнитометр на всех трекерах, которые имеют совместимую с ним прошивку, уменьшая дрифт в стабильных магнитных средах.
     Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Использовать магнитометр трекеров
-settings-stay_aligned = Оставаться выровненным
 settings-stay_aligned-description = Функция "Оставаться выровненным" уменьшает дрифт, постепенно настраивая трекеры в соответствии с вашими расслабленными позами
 settings-stay_aligned-setup-label = Настройки "Оставаться выровненным"
 settings-stay_aligned-setup-description = Необходимо завершить "Настройки "Оставаться выровненным"", чтобы включить эту функцию.
-settings-stay_aligned-enabled-label = Калибровка трекеров
 settings-stay_aligned-general-label = Общие
 settings-stay_aligned-relaxed_poses-label = Расслабленные позы
 settings-stay_aligned-relaxed_poses-description = Функция "Оставаться выровненным" использует ваши расслабленные позы, чтобы трекеры оставались выровнены. Используйте "Настройки "Оставаться выровненным"", чтобы обновить эти позы.
@@ -421,7 +419,6 @@ settings-keybinds-recorder-modal-cancel-button = Отмена
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Настройки трекинга
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -502,7 +499,6 @@ settings-interface-appearance-font_size-description = Это влияет на �
 
 ## Notification settings
 
-settings-interface-notifications = Уведомления
 settings-general-interface-feedback_sound = Звук уведомления
 settings-general-interface-feedback_sound-description = Эта опция будет воспроизводить звук при срабатывании сброса.
 settings-general-interface-feedback_sound-label = Звук уведомления
