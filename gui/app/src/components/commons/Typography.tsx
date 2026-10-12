@@ -13,6 +13,7 @@ export function Typography({
   truncate = false,
   textAlign,
   sentryMask = false,
+  tag,
   id,
   attrs,
   elems,
@@ -44,9 +45,10 @@ export function Typography({
     | 'text-end';
   children?: ReactNode;
   sentryMask?: boolean;
+  tag?: 'p' | 'div' | 'span';
   id?: string;
 } & Omit<LocalizedProps, 'id'>) {
-  const tag = useMemo(() => {
+  const tagName = useMemo(() => {
     const tags = {
       'main-title': 'h1',
       'section-title': 'h2',
@@ -54,12 +56,12 @@ export function Typography({
       standard: 'p',
       'vr-accessible': 'p',
     };
-    return tags[variant];
-  }, [variant]);
+    return tag ?? tags[variant];
+  }, [tag, variant]);
   const { config } = useConfig();
 
   const element = createElement(
-    tag,
+    tagName,
     {
       className: classNames([
         'transition-colors',
