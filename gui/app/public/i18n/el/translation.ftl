@@ -182,7 +182,6 @@ mounting_selection_menu-close = Κλείσιμο
 
 ## Sidebar settings
 
-settings-sidebar-title = Ρυθμίσεις
 
 ## Bone routing settings
 
@@ -208,7 +207,6 @@ settings-keybinds_full-reset = Επαναφορά
 
 settings-general-interface-dev_mode = Λειτουργία προγραμματιστή
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Λειτουργία προγραμματιστή
 
 ## Notification settings
 
@@ -216,7 +214,6 @@ settings-general-interface-dev_mode-label = Λειτουργία προγραμ�
 ## Behavior settings
 
 settings-general-interface-dev_mode = Λειτουργία προγραμματιστή
-settings-general-interface-dev_mode-label = Λειτουργία προγραμματιστή
 
 ## Serial settings
 
