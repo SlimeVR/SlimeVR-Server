@@ -219,14 +219,12 @@ mounting_selection_menu-close = Sulje
 
 ## Sidebar settings
 
-settings-sidebar-title = Asetukset
 settings-sidebar-general = Yleistä
 settings-sidebar-trackers = Jäljittimet
 settings-sidebar-interface = Käyttöliittymä
 settings-sidebar-utils = Lisäohjelmat
 settings-sidebar-serial = Sarjakonsoli
 settings-sidebar-appearance = Ulkonäkö
-settings-sidebar-notifications = Ilmoitukset
 
 ## Bone routing settings
 
@@ -243,7 +241,6 @@ settings-general-tracker_mechanics-filtering = Suodatus
 settings-general-tracker_mechanics-filtering-description =
     Valitse suodatustyyppi jäljittimillesi.
     Ennustus ennustaa liikettä, kun taas tasoitus tasoittaa liikettä.
-settings-general-tracker_mechanics-filtering-type = Suodatustyyppi
 settings-general-tracker_mechanics-filtering-type-none = Ei suodatusta
 settings-general-tracker_mechanics-filtering-type-none-description = Käytä kiertoja sellaisenaan. Ei tee mitään suodatusta.
 settings-general-tracker_mechanics-filtering-type-smoothing = Tasoitus
@@ -251,7 +248,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoit
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähentää viivettä ja tekee liikeistä näppärämpiä, mutta voi lisätä värinää.
 settings-general-tracker_mechanics-filtering-amount = Määrä
-settings-stay_aligned-general-label = Yleistä
 settings-stay_aligned-relaxed_poses-close = Sulje
 
 ## Keybinds Page
@@ -308,7 +304,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Suure
 settings-interface-appearance = Ulkonäkö
 settings-general-interface-dev_mode = Kehittäjätila
 settings-general-interface-dev_mode-description = Tämä tila voi olla hyödyllinen, jos tarvitset perusteellisia tietoja tai haluat olla tekemisissä yhdistettyjen jäljittimien kanssa edistyneemmällä tasolla.
-settings-general-interface-dev_mode-label = Kehittäjätila
 settings-general-interface-theme = Väri teema
 settings-general-interface-lang = Valitse kieli
 settings-general-interface-lang-description = Vaihda oletuskieli, jota haluat käyttää.
@@ -326,7 +321,6 @@ settings-interface-appearance-font_size-description = Tämä vaikuttaa koko käy
 
 settings-general-interface-feedback_sound = Palaute ääni
 settings-general-interface-feedback_sound-description = Tämä asetus toistaa äänen nollauksen tapahtuessa.
-settings-general-interface-feedback_sound-label = Palaute ääni
 settings-general-interface-feedback_sound-volume = Palaute äänen voimakkuus
 settings-general-interface-connected_trackers_warning = Yhdistettyjen jäljittimien varoitus
 settings-general-interface-connected_trackers_warning-description = Tämä vaihtoehto näyttää ponnahdusikkunan aina, kun yrität poistua SlimeVR:stä, kun sinulla on yksi tai useampi yhdistetty jäljitin. Se muistuttaa sinua sammuttamaan jäljittimet, kun olet valmis, akun käyttöiän säästämiseksi.
@@ -334,13 +328,10 @@ settings-general-interface-connected_trackers_warning-description = Tämä vaiht
 ## Behavior settings
 
 settings-general-interface-dev_mode = Kehittäjätila
-settings-general-interface-dev_mode-label = Kehittäjätila
 settings-general-interface-use_tray = Pienennä ilmaisinalueelle
 settings-general-interface-use_tray-description = Voit sulkea ikkunan sulkematta SlimeVR-palvelinta, jotta voit jatkaa sen käyttöä ilman, että graafinen käyttöliittymä häiritsee sinua.
-settings-general-interface-use_tray-label = Pienennä ilmaisinalueelle
 settings-general-interface-discord_presence = Jaa toiminta Discordissa
 settings-general-interface-discord_presence-description = Kertoo Discordille, että käytät SlimeVR:ää, sekä käyttämiesi IMU-seurantalaitteiden määrän.
-settings-general-interface-discord_presence-label = Jaa toiminta Discordissa
 
 ## Serial settings
 
@@ -368,7 +359,6 @@ settings-serial-send_command-warning-cancel = Peruuta
 
 settings-osc-vrchat-enable = Käytä
 settings-osc-vrchat-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
-settings-osc-vrchat-enable-label = Käytä
 settings-osc-vrchat-network = Verkkoportit
 settings-osc-vrchat-network-port_in =
     .label = Portti sisään
@@ -394,7 +384,6 @@ settings-osc-vmc-description =
         lähettääksesi ja vastaanottaaksesi SlimeVR:n luutietoja muihin sovelluksiin.
 settings-osc-vmc-enable = Käytä
 settings-osc-vmc-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
-settings-osc-vmc-enable-label = Käytä
 settings-osc-vmc-network = Verkkoportit
 settings-osc-vmc-network-description = Aseta portit tietojen kuunteluun ja lähettämiseen VMC:n kautta
 settings-osc-vmc-network-port_in =
@@ -411,7 +400,6 @@ settings-osc-vmc-vrm-description = Lataa VRM-malli salliaksesi pääankkurin ja 
 settings-osc-vmc-vrm-file_select = Vedä ja pudota mallia käytettäväksi tai <u>selaa</u>
 settings-osc-vmc-anchor_hip = Ankkuri lantiolla
 settings-osc-vmc-anchor_hip-description = Ankkuroi jäljitin lonkalle, hyödyllinen istuvaan VTubing. Jos poistat käytöstä, lataa VRM-malli.
-settings-osc-vmc-anchor_hip-label = Ankkuroi lonkalle
 settings-osc-vmc-status-badge-error = Virhe
 
 ## Common OSC settings
