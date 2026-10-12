@@ -12,6 +12,7 @@ import { useConfig } from './config';
 import { useResetsSettings } from './resets-settings';
 import { useWebsocketAPI } from './websocket-api';
 import {
+  ArmsMountingResetMode,
   ChangeSkeletonSettingsRequestT,
   RpcMessage,
   SkeletonSettingsRequestT,
@@ -120,7 +121,13 @@ export function useProvideOnboarding() {
     skeletonReq.filtering = skeletonSettings.filtering;
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
-    setResetsSettings({ resetReliableReferenceAttitude: mocapPos === 'forehead' });
+    setResetsSettings({
+      resetReliableReferenceAttitude: mocapPos === 'forehead',
+      // Mocap has no controllers to hold, so the arms rest forward
+      armsMountingResetMode: mocap
+        ? ArmsMountingResetMode.FORWARD
+        : ArmsMountingResetMode.BACK,
+    });
 
     const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;
