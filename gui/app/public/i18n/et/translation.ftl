@@ -212,14 +212,12 @@ mounting_selection_menu-close = Sulge
 
 ## Sidebar settings
 
-settings-sidebar-title = Seaded
 settings-sidebar-general = Tavaline
 settings-sidebar-trackers = Jälgia
 settings-sidebar-interface = Liides
 settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
 settings-sidebar-appearance = Välimus
-settings-sidebar-notifications = Teavitused
 
 ## Bone routing settings
 
@@ -236,7 +234,6 @@ settings-general-tracker_mechanics-filtering = Filtreerimine
 settings-general-tracker_mechanics-filtering-description =
     Vali filtreerimis tüüp enda jälgijatele.
     Ennustus ennustab liikumist, aga silestamine silestab liikumist.
-settings-general-tracker_mechanics-filtering-type = Filtreerimise tüüp
 settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
 settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
 settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
@@ -244,7 +241,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb l
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
 settings-general-tracker_mechanics-filtering-amount = Amount
-settings-stay_aligned-general-label = Tavaline
 settings-stay_aligned-relaxed_poses-close = Sulge
 
 ## Keybinds Page
@@ -312,7 +308,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Suure
 settings-interface-appearance = Välimus
 settings-general-interface-dev_mode = Arendaja režiim
 settings-general-interface-dev_mode-description = See režiim on kasulik, kui on vaja põhjalike andmeid või või suhelda ühendatud jälgijatega kõrgemal tasemel.
-settings-general-interface-dev_mode-label = Arendaja režiim
 settings-general-interface-theme = Värviteema
 settings-general-interface-lang = Vaikekeel
 settings-general-interface-lang-description = Muutke vaikekeelt, mida soovite kasutada.
@@ -328,13 +323,11 @@ settings-interface-appearance-font_size-description = See mõjutab kogu liidese 
 
 settings-general-interface-feedback_sound = Tagasiside heli
 settings-general-interface-feedback_sound-description = See suvand esitab lähtestamise käivitamisel heli.
-settings-general-interface-feedback_sound-label = Tagasiside heli
 settings-general-interface-feedback_sound-volume = Tagasiside helitugevus
 
 ## Behavior settings
 
 settings-general-interface-dev_mode = Arendaja režiim
-settings-general-interface-dev_mode-label = Arendaja režiim
 
 ## Serial settings
 
@@ -361,7 +354,6 @@ settings-serial-send_command-warning-cancel = Tühista
 
 settings-osc-vrchat-enable = Luba
 settings-osc-vrchat-enable-description = Lülitage andmete sisestamine sisse/välja.
-settings-osc-vrchat-enable-label = Luba
 settings-osc-vrchat-network = Võrgupordid
 settings-osc-vrchat-network-port_in =
     .label = Võrguport sisse
@@ -386,7 +378,6 @@ settings-osc-vmc-description =
         SlimeVR-i luuandmete saatmiseks ja luuandmete vastuvõtmiseks teistest rakendustest.
 settings-osc-vmc-enable = Luba
 settings-osc-vmc-enable-description = Lülitage andmete sisestamine sisse/välja.
-settings-osc-vmc-enable-label = Luba
 settings-osc-vmc-network = Pordid
 settings-osc-vmc-network-description = Määrake pordid VMC kaudu andmete kuulamiseks ja saatmiseks.
 settings-osc-vmc-network-port_in =
@@ -403,7 +394,6 @@ settings-osc-vmc-vrm-description = Laadige VRM-mudel, et võimaldada peaankurdam
 settings-osc-vmc-vrm-file_select = Kasutatava mudeli pukseerimine või <u>sirvimine</u>
 settings-osc-vmc-anchor_hip = Ankurda puusadel
 settings-osc-vmc-anchor_hip-description = Ankurdage jälgimine puusadele, mis on kasulik istuva VTubingu jaoks. Keelamise korral laadige VRM-mudel.
-settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 settings-osc-vmc-status-badge-error = Viga
 
 ## Common OSC settings
