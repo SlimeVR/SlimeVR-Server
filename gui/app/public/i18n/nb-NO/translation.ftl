@@ -213,7 +213,6 @@ mounting_selection_menu-close = Lukk
 
 ## Sidebar settings
 
-settings-sidebar-title = Innstillinger
 settings-sidebar-general = Generelle
 settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Grensesnitt
@@ -235,7 +234,6 @@ settings-general-tracker_mechanics-filtering = Filtrering
 settings-general-tracker_mechanics-filtering-description =
     Velg filtrerings-type for dine trackere.
     Prediksjon forutser bevegelser mens Utjevning jevner ut bevegelser.
-settings-general-tracker_mechanics-filtering-type = Filtrerings type
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Bruk rotasjoner som før. Altså ingen filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Utjevning
@@ -247,8 +245,6 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer p
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
     Kan deaktiveres per tracker i trackerens innstillinger. <b>Ikke slå av noen av trackerne mens du endrer denne innstillingen !</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Bruk magnetometer på trackere
-settings-stay_aligned-general-label = Generelle
 settings-stay_aligned-relaxed_poses-close = Lukk
 
 ## Keybinds Page
@@ -288,7 +284,6 @@ settings-general-gesture_control-mountingResetTaps = Trykking for monterings-nul
 
 settings-general-interface-dev_mode = Utvikler modus
 settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
-settings-general-interface-dev_mode-label = Utvikler modus
 settings-general-interface-lang = Velg språk
 settings-general-interface-lang-description = Endre hovedspråket du vil bruke.
 settings-general-interface-lang-placeholder = Velg språket du vil bruke
@@ -299,7 +294,6 @@ settings-general-interface-lang-placeholder = Velg språket du vil bruke
 ## Behavior settings
 
 settings-general-interface-dev_mode = Utvikler modus
-settings-general-interface-dev_mode-label = Utvikler modus
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
 ## Serial settings
@@ -327,7 +321,6 @@ settings-serial-send_command-warning-cancel = Avslutt
 
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skru av/på utsending og mottakelse av data.
-settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Nettverks-porter
 settings-osc-vrchat-network-port_in =
     .label = Port Inn
@@ -348,7 +341,6 @@ settings-osc-vrchat-status-badge-unknown = Ukjent
 
 settings-osc-vmc-enable = Aktiver
 settings-osc-vmc-enable-description = Skru av/på utsending og mottakelse av data.
-settings-osc-vmc-enable-label = Aktiver
 settings-osc-vmc-network = Nettverks-porter
 settings-osc-vmc-network-port_in =
     .label = Port Inn
