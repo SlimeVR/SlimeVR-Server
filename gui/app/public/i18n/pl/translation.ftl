@@ -407,11 +407,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Wykorzystuje magnetometr we wszystkich trackerach, które mają kompatybilne oprogramowanie sprzętowe, redukując dryf w stabilnych środowiskach magnetycznych.¶
     Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Użyj magnetometru na trackerach
-settings-stay_aligned = Wyrównywanie
 settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
 settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
 settings-stay_aligned-setup-description = Musisz ukończyć konfigurację, aby włączyć opcję Wyrównywania.
-settings-stay_aligned-enabled-label = Dostosuj trackery
 settings-stay_aligned-general-label = Ogólne
 settings-stay_aligned-relaxed_poses-label = Zrelaksowane pozy
 settings-stay_aligned-relaxed_poses-description = Opcja Wyrównywania wykorzystuje Twoje zrelaksowane pozy, aby utrzymać trackery w jednej linii. Użyj opcji "Konfiguracja Opcji Wyrównywania", aby zaktualizować te pozy.
@@ -435,7 +433,6 @@ settings-keybinds-recorder-modal-cancel-button = Anuluj
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Ustawienia śledzenia
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -521,7 +518,6 @@ settings-interface-appearance-font_size-description = Wpływa to na rozmiar czci
 
 ## Notification settings
 
-settings-interface-notifications = Powiadomienia
 settings-general-interface-feedback_sound = Dźwięk zwrotny
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
