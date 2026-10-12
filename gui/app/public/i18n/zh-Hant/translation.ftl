@@ -439,7 +439,6 @@ mounting_selection_menu-close = 關閉
 
 ## Sidebar settings
 
-settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-outputs = 輸出
 settings-sidebar-routing = 骨骼路由
@@ -453,7 +452,6 @@ settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
 settings-sidebar-home = 主畫面
 settings-sidebar-checklist = 追蹤清單
-settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
 settings-sidebar-vrc_warnings = VRChat 配置警告
@@ -538,7 +536,6 @@ settings-general-tracker_mechanics-filtering = 濾波
 settings-general-tracker_mechanics-filtering-description =
     選擇追蹤器的濾波類型。
     預測型將會對你的運動加以預測，而平滑型將會讓你的運動更加平滑。
-settings-general-tracker_mechanics-filtering-type = 濾波類型
 settings-general-tracker_mechanics-filtering-type-none = 不進行濾波
 settings-general-tracker_mechanics-filtering-type-none-description = 使用原始資料，不進行濾波。
 settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
@@ -552,21 +549,17 @@ settings-general-tracker_mechanics-save_mounting_reset = 儲存自動配戴重�
 settings-general-tracker_mechanics-save_mounting_reset-description =
     儲存自動配戴重置的校正，重新啟動 SlimeVR 後不需要再進行校正。
     本設定適用於動捕服，因為多次穿戴後追蹤器的位置不會變化。<b>不建議一般使用者使用！</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 儲存自動配戴重置的校正
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 在有磁力計支援的 IMU 追蹤器上啟用磁力計
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有韌體支援的追蹤器上使用磁力計，在磁場穩定的環境中可以減緩偏移。
     開啟此選項後，可以個別在追蹤器選項內停用磁力計。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器上啟用磁力計
 settings-general-tracker_mechanics-trackers_over_usb = 透過 USB 連接的追蹤器
 settings-general-tracker_mechanics-trackers_over_usb-description = 透過 USB 接收 HID 追蹤器的資料，請確保連接的追蹤器已啟用<b>「透過 HID 連接」</b>的功能。
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允許 HID 追蹤器透過 USB 直接連接
 settings-general-tracker_mechanics-timeout_delay = 逾時延遲
 settings-general-tracker_mechanics-timeout_delay-description = 追蹤器離線時，標記成「{ tracker-status-disconnected }」的時間。
 settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
 settings-stay_aligned-setup-label = 設定持續校正
 settings-stay_aligned-setup-description = 完成「設定持續校正」後，才可啟用持續校正功能。
-settings-stay_aligned-general-label = 一般設定
 settings-stay_aligned-relaxed_poses-label = 放鬆的姿態
 settings-stay_aligned-relaxed_poses-description = 持續校正功能會使用各種放鬆的姿態保持追蹤器的定位。請使用「設定持續校正」來更新設定的姿態。
 settings-stay_aligned-relaxed_poses-standing = 使用站立姿勢調整追蹤器
@@ -634,10 +627,8 @@ settings-general-fk_settings-leg_fk = 腿部追蹤
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 強制重置腳部配戴
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的配戴重置時，強制重置腳部配戴。
 settings-general-fk_settings-enforce_joint_constraints = 骨架限制
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
 settings-general-fk_settings-ik = 定位資料
-settings-general-fk_settings-ik-use_position = 使用定位資料
 settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = 重置頭戴顯示器上下旋轉
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = 進行重置時將頭戴顯示器的上下旋轉一併重置，若將頭戴顯示器戴在額頭以進行虛擬直播或動作捕捉時可以使用，進行 VR 時請勿使用。
@@ -682,7 +673,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 如�
 settings-interface-appearance = 外觀
 settings-general-interface-dev_mode = 開發者模式
 settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
-settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-theme = 佈景主題色彩
 settings-general-interface-lang = 選擇語言
 settings-general-interface-lang-description = 更改所使用的介面語言。
@@ -700,24 +690,19 @@ settings-interface-appearance-font_size-description = 本設定會影響整個 U
 
 settings-general-interface-feedback_sound = 聲音回饋
 settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音。
-settings-general-interface-feedback_sound-label = 聲音回饋
 settings-general-interface-feedback_sound-volume = 聲音回饋音量
 settings-general-interface-connected_trackers_warning = 已連接追蹤器警告
 settings-general-interface-connected_trackers_warning-description = 啟用本選項後，每次當退出 SlimeVR 時仍有追蹤器連接著會顯示通知，提醒你在使用完畢時關閉追蹤器電源來節省電池電量。
-settings-general-interface-connected_trackers_warning-label = 當退出程式時，有追蹤器連接中則顯示警告
 
 ## Behavior settings
 
 settings-interface-behavior = 行為
 settings-general-interface-dev_mode = 開發者模式
 settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能在需要與連接中的追蹤器有進階的操作時使用。
-settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓你在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓你在不受圖形介面的打擾下繼續使用追蹤器。
-settings-general-interface-use_tray-label = 最小化到系統列
 settings-general-interface-discord_presence = 在 Discord 上分享活動
 settings-general-interface-discord_presence-description = 在 Discord 上顯示你正在使用 SlimeVR，以及使用中的追蹤器的數量。
-settings-general-interface-discord_presence-label = 在 Discord 上分享活動
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] 正在捕捉史萊姆
@@ -733,7 +718,6 @@ settings-interface-behavior-skeleton_mesh-description = 繪製預覽圖時以 3D
 settings-interface-behavior-skeleton_mesh-label = 使用 3D 造形
 settings-interface-behavior-controller_nav = 遊戲控制器操作
 settings-interface-behavior-controller_nav-description = 使用遊戲控制器選擇項目操作，十字鍵或左搖桿移動游標，A 鍵選擇，B 鍵返回，只有在連接控制器時才會使用。按住 Ctrl 或是 Alt 加上鍵盤方向鍵會以相同方式移動游標。
-settings-interface-behavior-controller_nav-label = 使用遊戲控制器操作
 
 ## Serial settings
 
@@ -777,7 +761,6 @@ settings-osc-vrchat-description-v1 =
     請確保 VRChat 中的動作選單內，OSC 設定「選項→OSC→已啟用」已經開啟。
 settings-osc-vrchat-enable = 啟用
 settings-osc-vrchat-enable-description = 切換資料的傳送和接收。
-settings-osc-vrchat-enable-label = 啟用
 settings-osc-vrchat-network = 連接埠
 settings-osc-vrchat-network-port_in =
     .label = 輸入埠
@@ -816,7 +799,6 @@ settings-osc-vrchat-status-oscquery-discovered-title = 已發現的 VRChat 客�
 settings-osc-vrchat-status-oscquery-switch = 切換
 settings-osc-vrchat-status-network-mode = 網路模式
 settings-osc-vrchat-status-network-mode-description = 自動模式會透過 OSCQuery 尋找 VRChat 客戶端，手動模式會使用已設定的位址與埠號。
-settings-osc-vrchat-status-network-mode-toggle = 手動網路設定
 settings-osc-vrchat-status-network-manual-description = 手動設定本地端的輸入埠號與 VRChat OSC 目標。
 settings-osc-vrchat-status-badge-idle = 閒置
 settings-osc-vrchat-status-badge-listening = 監聽中
@@ -837,7 +819,6 @@ settings-osc-vmc-description =
     以傳送 SlimeVR 的骨骼資料，並接收來自其他應用程式的骨骼資料。
 settings-osc-vmc-enable = 啟用
 settings-osc-vmc-enable-description = 切換資料的傳送和接收。
-settings-osc-vmc-enable-label = 啟用
 settings-osc-vmc-network = 連接埠
 settings-osc-vmc-network-description = 設定用於監聽和傳送 VMC 資料的連接埠。
 settings-osc-vmc-network-port_in =
@@ -855,11 +836,8 @@ settings-osc-vmc-vrm-untitled_model = 未命名模型
 settings-osc-vmc-vrm-file_select = 拖曳檔案或 <u>瀏覽檔案</u> 以載入模型
 settings-osc-vmc-anchor_hip = 臀部錨定
 settings-osc-vmc-anchor_hip-description = 將追蹤錨定在臀部，有利於坐姿進行虛擬直播。若本選項無法切換，請載入 VRM 模型。
-settings-osc-vmc-anchor_hip-label = 臀部錨定
 settings-osc-vmc-mirror_tracking = 鏡像追蹤
 settings-osc-vmc-mirror_tracking-description = 將追蹤的結果水平鏡像。
-settings-osc-vmc-mirror_tracking-label = 鏡像追蹤
-settings-osc-vmc-status-title = 狀態
 settings-osc-vmc-status-input = 輸入
 settings-osc-vmc-status-output = 輸出
 settings-osc-vmc-status-vrm = VRM 模型
@@ -875,6 +853,7 @@ settings-osc-vmc-status-output-last-frame = 最後傳送幀資料：{ $elapsed }
 settings-osc-vmc-status-output-no-frame = 尚未傳送幀資料。
 settings-osc-vmc-status-vrm-none = 沒有載入模型，使用推測的骨骼位移。
 settings-osc-vmc-status-vrm-loaded = 已載入模型，使用模型的骨骼位移。
+settings-osc-vmc-status-title = 狀態
 settings-osc-vmc-status-badge-idle = 閒置
 settings-osc-vmc-status-badge-listening = 監聽中
 settings-osc-vmc-status-badge-ready = 就緒
