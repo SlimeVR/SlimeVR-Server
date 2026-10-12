@@ -317,13 +317,11 @@ mounting_selection_menu-close = Uždaryti
 
 ## Sidebar settings
 
-settings-sidebar-title = Nustatymai
 settings-sidebar-general = Bendrieji
 settings-sidebar-interface = Sąsaja
 settings-sidebar-utils = Įrankiai
 settings-sidebar-serial = Serijinė konsolė
 settings-sidebar-appearance = Išvaizda
-settings-sidebar-notifications = Pranešimai
 settings-sidebar-behavior = Elgsena
 settings-sidebar-firmware-tool = DIY sekiklių programinės įrangos įrankis
 settings-sidebar-advanced = Išplėstiniai
@@ -342,7 +340,6 @@ settings-general-tracker_mechanics-filtering = Filtravimas
 settings-general-tracker_mechanics-filtering-description =
     Pasirinkite filtravimo tipą.
     Prognozavimas numato judesius, o švelninimas juos sušvelnina.
-settings-general-tracker_mechanics-filtering-type = Filtravimo tipas
 settings-general-tracker_mechanics-filtering-type-none = Be filtravimo
 settings-general-tracker_mechanics-filtering-type-none-description = Naudoja judesius be jokio filtravimo.
 settings-general-tracker_mechanics-filtering-type-smoothing = Švelninimas
@@ -355,13 +352,10 @@ settings-general-tracker_mechanics-save_mounting_reset = Išsaugoti automatinio 
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Išsaugo sekiklių automatinio tvirtinimo pozicijų kalibravimą tarp paleidimų iš naujo. Tai yra naudinga,
     jeigu naudojate sekimo aprangą, kuriame sekikliai nepajuda tarp sesijų. <b>Nerekomenduojama įprastiems naudotojams!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Išsaugoti tvirtinimo pozicijų atstatymą
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Naudoti magnetometrą visuose IMU jutikliuose, kurie jį turi
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Naudoja magnetometrą visuose sekikliuose, kurių programinė įrangą jį palaiko. Tai sumažiną dreifą jeigu magnetinė aplinka stabili.
     Galima individualiai tai išjungti kiekvieno sekiklio nustatymuose. <b>Neišjunkite sekiklių keisdami šį nustatymą!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Naudoti magnetometrą sekikliuose
-settings-stay_aligned-general-label = Bendrieji
 settings-stay_aligned-relaxed_poses-close = Uždaryti
 
 ## Keybinds Page
@@ -390,7 +384,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = Bando atspėti pė
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pasuka pėdas taip, kad jos būtų lygiagrečios grindims, kai stovite.
 settings-general-fk_settings-leg_fk = Kojų sekimas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
 
 ## Gesture control settings (tracker tapping)
@@ -421,7 +414,6 @@ settings-general-gesture_control-trackers =
 settings-interface-appearance = Išvaizda
 settings-general-interface-dev_mode = Kūrėjo režimas
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Notification settings
 
@@ -429,7 +421,6 @@ settings-general-interface-dev_mode-label = Kūrėjo režimas
 ## Behavior settings
 
 settings-general-interface-dev_mode = Kūrėjo režimas
-settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Serial settings
 
