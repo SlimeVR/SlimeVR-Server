@@ -393,11 +393,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
 settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Erlaube HID-Tracker eine USB-Direktverbindung
-settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
 settings-stay_aligned-setup-label = Stay Aligned einrichten
 settings-stay_aligned-setup-description = Sie müssen Stay Aligned einrichten, um es zu aktivieren.
-settings-stay_aligned-enabled-label = Tracker anpassen
 settings-stay_aligned-general-label = Allgemein
 settings-stay_aligned-relaxed_poses-label = Entspannte Posen
 settings-stay_aligned-relaxed_poses-standing = Tracker im Stehen anpassen
@@ -419,7 +417,6 @@ settings-keybinds-recorder-modal-cancel-button = Abbruch
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = FK-Einstellungen
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -500,7 +497,6 @@ settings-interface-appearance-font_size-description = Verändert die Schriftgrö
 
 ## Notification settings
 
-settings-interface-notifications = Benachrichtigungen
 settings-general-interface-feedback_sound = Feedback-Geräusch
 settings-general-interface-feedback_sound-description = Diese Option wird ein Geräusch abspielen, wenn ein Reset ausgeführt wurde.
 settings-general-interface-feedback_sound-label = Feedback-Geräusch
