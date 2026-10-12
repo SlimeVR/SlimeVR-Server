@@ -239,7 +239,6 @@ settings-keybinds-recorder-modal-cancel-button = Annuller
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Trackingsindstillinger
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
