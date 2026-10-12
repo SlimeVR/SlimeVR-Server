@@ -14,12 +14,57 @@ import { Button } from '@/components/commons/Button';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { useElectron } from '@/hooks/electron';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 interface AppearanceSettingsForm {
   theme: string;
   textSize: number;
   fonts: string;
 }
+
+export const appearanceSettingsPage = defineSettingsPage({
+  path: 'appearance',
+  title: 'settings-interface-appearance',
+  groups: {
+    main: {
+      rows: {
+        theme: {
+          title: 'settings-general-interface-theme',
+        },
+      },
+    },
+    text: {
+      title: 'settings-interface-appearance-text_group',
+      rows: {
+        font: {
+          title: 'settings-interface-appearance-font',
+          description: 'settings-interface-appearance-font-description',
+        },
+        fontSize: {
+          title: 'settings-interface-appearance-font_size',
+          description: 'settings-interface-appearance-font_size-description',
+        },
+      },
+    },
+    language: {
+      title: 'settings-interface-appearance-language_group',
+      rows: {
+        lang: {
+          title: 'settings-general-interface-lang',
+          description: 'settings-general-interface-lang-description',
+        },
+        crowdinInContext: {
+          title: 'settings-general-interface-crowdin_in_context',
+          description:
+            'settings-general-interface-crowdin_in_context-description',
+          available: ({ isElectron }) => isElectron,
+        },
+      },
+    },
+  },
+});
+
+const { groups } = appearanceSettingsPage;
 
 export function AppearanceSettings() {
   const electron = useElectron();
@@ -116,12 +161,12 @@ export function AppearanceSettings() {
     >
       <SettingsPagePaneLayout
         icon={<SquaresIcon />}
-        title="settings-interface-appearance"
+        title={appearanceSettingsPage.title}
       >
         <div className="flex flex-col">
-          <SettingsGroup>
+          <SettingsGroup group={groups.main}>
             <SettingRow
-              title="settings-general-interface-theme"
+              setting={groups.main.rows.theme}
               {...resetTheme}
               below={
                 <div className="flex flex-wrap gap-3">
@@ -139,10 +184,9 @@ export function AppearanceSettings() {
             />
           </SettingsGroup>
 
-          <SettingsGroup title="settings-interface-appearance-text_group">
+          <SettingsGroup group={groups.text}>
             <SettingRow
-              title="settings-interface-appearance-font"
-              description="settings-interface-appearance-font-description"
+              setting={groups.text.rows.font}
               controlWidth="wide"
               {...resetFonts}
               control={
@@ -167,8 +211,7 @@ export function AppearanceSettings() {
               }
             />
             <SettingRow
-              title="settings-interface-appearance-font_size"
-              description="settings-interface-appearance-font_size-description"
+              setting={groups.text.rows.fontSize}
               controlWidth="wide"
               {...resetTextSize}
               control={
@@ -184,20 +227,19 @@ export function AppearanceSettings() {
             />
           </SettingsGroup>
 
-          <SettingsGroup title="settings-interface-appearance-language_group">
+          <SettingsGroup group={groups.language}>
             <SettingRow
-              title="settings-general-interface-lang"
-              description="settings-general-interface-lang-description"
+              setting={groups.language.rows.lang}
               controlWidth="wide"
               control={<LangSelector alignment="left" display="block" />}
             />
             {electron.isElectron && (
               <SettingRow
-                title="settings-general-interface-crowdin_in_context"
+                setting={groups.language.rows.crowdinInContext}
                 description={
                   inContext
                     ? 'settings-general-interface-crowdin_in_context-description-active'
-                    : 'settings-general-interface-crowdin_in_context-description'
+                    : undefined
                 }
                 details={
                   inContextFailed && (

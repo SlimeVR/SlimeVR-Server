@@ -45,6 +45,7 @@ import { boolean, object } from 'yup';
 import { Button } from '@/components/commons/Button';
 import { useSettingsDefaults } from '@/hooks/settings-defaults';
 import { settingReset } from '@/components/settings/SettingReset';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 interface VMCSettingsForm {
   enabled: boolean;
@@ -316,6 +317,57 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
   );
 }
 
+export const vmcSettingsPage = defineSettingsPage({
+  path: 'osc/vmc',
+  title: 'settings-sidebar-osc_vmc',
+  groups: {
+    output: {
+      title: 'settings-osc-vmc-output_group',
+      rows: {
+        enable: {
+          title: 'settings-osc-vmc-enable',
+          description: 'settings-osc-vmc-enable-description',
+        },
+        bones: {
+          title: 'settings-driver-bones',
+          description: 'settings-driver-bones-description',
+        },
+      },
+    },
+    avatar: {
+      title: 'settings-osc-vmc-avatar_group',
+      rows: {
+        vrm: {
+          title: 'settings-osc-vmc-vrm',
+          description: 'settings-osc-vmc-vrm-description',
+        },
+        anchorHip: {
+          title: 'settings-osc-vmc-anchor_hip',
+          description: 'settings-osc-vmc-anchor_hip-description',
+        },
+        mirrorTracking: {
+          title: 'settings-osc-vmc-mirror_tracking',
+          description: 'settings-osc-vmc-mirror_tracking-description',
+        },
+      },
+    },
+    network: {
+      title: 'settings-osc-vmc-network_group',
+      rows: {
+        network: {
+          title: 'settings-osc-vmc-network',
+        },
+        address: {
+          title: 'settings-osc-vmc-network-address',
+          description: 'settings-osc-vmc-network-address-description',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = vmcSettingsPage;
+
 export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -408,10 +460,7 @@ export function VMCSettings() {
 
   return (
     <form className="w-full">
-      <SettingsPagePaneLayout
-        icon={<VMCIcon />}
-        title="settings-sidebar-osc_vmc"
-      >
+      <SettingsPagePaneLayout icon={<VMCIcon />} title={vmcSettingsPage.title}>
         <div className="flex flex-col">
           <div className="flex flex-col pb-4 max-w-[75ch]">
             {l10n
@@ -422,10 +471,9 @@ export function VMCSettings() {
               ))}
           </div>
 
-          <SettingsGroup title="settings-osc-vmc-output_group">
+          <SettingsGroup group={groups.output}>
             <SettingRow
-              title="settings-osc-vmc-enable"
-              description="settings-osc-vmc-enable-description"
+              setting={groups.output.rows.enable}
               controlId="vmc-enabled"
               {...resetTo('enabled', defaults.enabled)}
               control={
@@ -438,8 +486,7 @@ export function VMCSettings() {
               }
             />
             <SettingRow
-              title="settings-driver-bones"
-              description="settings-driver-bones-description"
+              setting={groups.output.rows.bones}
               control={
                 <Button
                   variant="secondary"
@@ -460,15 +507,13 @@ export function VMCSettings() {
             </div>
           )}
 
-          <SettingsGroup title="settings-osc-vmc-avatar_group">
+          <SettingsGroup group={groups.avatar}>
             <SettingRow
-              title="settings-osc-vmc-vrm"
-              description="settings-osc-vmc-vrm-description"
+              setting={groups.avatar.rows.vrm}
               below={<VRMFileUpload />}
             />
             <SettingRow
-              title="settings-osc-vmc-anchor_hip"
-              description="settings-osc-vmc-anchor_hip-description"
+              setting={groups.avatar.rows.anchorHip}
               controlId="vmc-anchor-hip"
               {...resetTo('anchorHip', defaults.anchorHip)}
               control={
@@ -481,8 +526,7 @@ export function VMCSettings() {
               }
             />
             <SettingRow
-              title="settings-osc-vmc-mirror_tracking"
-              description="settings-osc-vmc-mirror_tracking-description"
+              setting={groups.avatar.rows.mirrorTracking}
               controlId="vmc-mirror"
               {...resetTo('mirrorTracking', defaults.mirrorTracking)}
               control={
@@ -497,9 +541,9 @@ export function VMCSettings() {
           </SettingsGroup>
 
           <SettingsAdvanced>
-            <SettingsGroup title="settings-osc-vmc-network_group">
+            <SettingsGroup group={groups.network}>
               <SettingRow
-                title="settings-osc-vmc-network"
+                setting={groups.network.rows.network}
                 {...resetPorts}
                 details={
                   <>
@@ -541,8 +585,7 @@ export function VMCSettings() {
                 }
               />
               <SettingRow
-                title="settings-osc-vmc-network-address"
-                description="settings-osc-vmc-network-address-description"
+                setting={groups.network.rows.address}
                 {...resetTo(
                   'portsAddress.address',
                   defaults.address?.toString()

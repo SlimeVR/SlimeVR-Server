@@ -1,3 +1,4 @@
+import { SettingDef } from '@/components/settings/settings-definitions';
 import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -32,7 +33,7 @@ const hidSettingsValueAtom = selectAtom(
   isEqual
 );
 
-export function HIDSettings() {
+export function HIDSettings({ setting }: { setting: SettingDef }) {
   const setSettings = useSetAtom(hidSettingsAtom);
   const settings = useAtomValue(hidSettingsValueAtom);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -84,7 +85,8 @@ export function HIDSettings() {
 
   return (
     <SettingRow
-      title="settings-general-tracker_mechanics-trackers_over_usb"
+      setting={setting}
+      description={null}
       details={
         <Localized
           id="settings-general-tracker_mechanics-trackers_over_usb-description"

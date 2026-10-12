@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -132,6 +133,12 @@ function FirmwareToolContent() {
     </FirmwareToolContextC.Provider>
   );
 }
+
+export const firmwareToolSettingsPage = defineSettingsPage({
+  path: 'firmware-tool',
+  title: 'settings-sidebar-firmware-tool',
+  groups: {},
+});
 
 export function FirmwareToolSettings() {
   const queryClient = new QueryClient({

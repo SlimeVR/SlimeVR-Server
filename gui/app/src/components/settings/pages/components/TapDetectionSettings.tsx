@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   BodyPart,
@@ -30,7 +30,12 @@ import {
   SettingRow,
   SettingsGroup,
   SettingsGroupLabel,
+  useFocusSetting,
 } from '@/components/settings/SettingRow';
+import {
+  SettingDef,
+  SettingsGroupDef,
+} from '@/components/settings/settings-definitions';
 
 type TapDetectionForm = {
   yawResetEnabled: boolean;
@@ -78,7 +83,38 @@ const tapDetectionSettingsValueAtom = selectAtom(
   isEqual
 );
 
-export function TapDetectionSettings() {
+function FocusableRow({
+  setting,
+  className,
+  children,
+}: {
+  setting: SettingDef;
+  className: string;
+  children: ReactNode;
+}) {
+  const { ref, highlighted } = useFocusSetting<HTMLTableRowElement>(
+    setting.key
+  );
+  return (
+    <tr
+      ref={ref}
+      className={classNames(
+        className,
+        highlighted && 'bg-accent-background-40/30'
+      )}
+    >
+      {children}
+    </tr>
+  );
+}
+
+export function TapDetectionSettings({
+  resets,
+  threshold,
+}: {
+  resets: SettingsGroupDef<'yawReset' | 'fullReset' | 'mountingReset'>;
+  threshold: SettingsGroupDef<'numberTrackersOverThreshold'>;
+}) {
   const setSettings = useSetAtom(tapDetectionSettingsAtom);
   const settings = useAtomValue(tapDetectionSettingsValueAtom);
   const { l10n } = useLocalization();
@@ -214,8 +250,9 @@ export function TapDetectionSettings() {
           </thead>
           <tbody className="divide-y divide-background-60 block md:table-row-group">
             {resetKinds.map(({ id, enabled, icon }) => (
-              <tr
+              <FocusableRow
                 key={id}
+                setting={resets.rows[id]}
                 className="grid grid-cols-[auto,1fr] md:table-row p-4 md:p-0 gap-x-3 gap-y-3 md:gap-0 items-center border-b border-background-60 md:border-b-0"
               >
                 <td className="py-2 md:py-3 pl-0 md:pl-4 pr-0 md:pr-2 block md:table-cell align-middle">
@@ -300,16 +337,15 @@ export function TapDetectionSettings() {
                     />
                   </fieldset>
                 </td>
-              </tr>
+              </FocusableRow>
             ))}
           </tbody>
         </table>
       </div>
 
-      <SettingsGroup>
+      <SettingsGroup group={threshold}>
         <SettingRow
-          title="settings-general-gesture_control-numberTrackersOverThreshold"
-          description="settings-general-gesture_control-numberTrackersOverThreshold-description"
+          setting={threshold.rows.numberTrackersOverThreshold}
           controlWidth="wide"
           {...resetThreshold}
           control={

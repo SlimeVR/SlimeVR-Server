@@ -20,6 +20,7 @@ import {
 import { RpcMessage, SettingsResetRequestT } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useElectron } from '@/hooks/electron';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 interface DeveloperModeForm {
   developer: DeveloperModeConfig & {
@@ -43,6 +44,55 @@ function guiDefaults() {
 
   return guiDefaults;
 }
+
+export const advancedSettingsPage = defineSettingsPage({
+  path: 'advanced',
+  title: 'settings-utils-advanced',
+  groups: {
+    developer: {
+      title: 'settings-utils-advanced-developer_group',
+      rows: {
+        devMode: {
+          title: 'settings-general-interface-dev_mode',
+          description: 'settings-general-interface-dev_mode-description',
+        },
+      },
+    },
+    folders: {
+      title: 'settings-utils-advanced-folders_group',
+      rows: {
+        openData: {
+          title: 'settings-utils-advanced-open_data-v1',
+          description: 'settings-utils-advanced-open_data-description-v1',
+          available: ({ isElectron }) => isElectron,
+        },
+        openLogs: {
+          title: 'settings-utils-advanced-open_logs',
+          description: 'settings-utils-advanced-open_logs-description',
+          available: ({ isElectron }) => isElectron,
+        },
+      },
+    },
+    dangerZone: {
+      rows: {
+        gui: {
+          title: 'settings-utils-advanced-reset-gui',
+          description: 'settings-utils-advanced-reset-gui-description',
+        },
+        server: {
+          title: 'settings-utils-advanced-reset-server',
+          description: 'settings-utils-advanced-reset-server-description',
+        },
+        all: {
+          title: 'settings-utils-advanced-reset-all',
+          description: 'settings-utils-advanced-reset-all-description',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = advancedSettingsPage;
 
 export function AdvancedSettings() {
   const electron = useElectron();
@@ -115,8 +165,7 @@ export function AdvancedSettings() {
   const resets = [
     {
       id: 'gui',
-      title: 'settings-utils-advanced-reset-gui',
-      description: 'settings-utils-advanced-reset-gui-description',
+      setting: groups.dangerZone.rows.gui,
       label: 'settings-utils-advanced-reset-gui-label',
       open: showWarningGUI,
       setOpen: setShowWarningGUI,
@@ -127,8 +176,7 @@ export function AdvancedSettings() {
     },
     {
       id: 'server',
-      title: 'settings-utils-advanced-reset-server',
-      description: 'settings-utils-advanced-reset-server-description',
+      setting: groups.dangerZone.rows.server,
       label: 'settings-utils-advanced-reset-server-label',
       open: showWarningServer,
       setOpen: setShowWarningServer,
@@ -142,8 +190,7 @@ export function AdvancedSettings() {
     },
     {
       id: 'all',
-      title: 'settings-utils-advanced-reset-all',
-      description: 'settings-utils-advanced-reset-all-description',
+      setting: groups.dangerZone.rows.all,
       label: 'settings-utils-advanced-reset-all-label',
       open: showWarningAll,
       setOpen: setShowWarningAll,
@@ -162,13 +209,12 @@ export function AdvancedSettings() {
     <form className="w-full">
       <SettingsPagePaneLayout
         icon={<BugIcon />}
-        title="settings-utils-advanced"
+        title={advancedSettingsPage.title}
       >
         <div className="flex flex-col">
-          <SettingsGroup title="settings-utils-advanced-developer_group">
+          <SettingsGroup group={groups.developer}>
             <SettingRow
-              title="settings-general-interface-dev_mode"
-              description="settings-general-interface-dev_mode-description"
+              setting={groups.developer.rows.devMode}
               controlId="advanced-dev-mode"
               {...resetDevMode}
               control={
@@ -197,10 +243,9 @@ export function AdvancedSettings() {
           </SettingsGroup>
 
           {electron.isElectron && (
-            <SettingsGroup title="settings-utils-advanced-folders_group">
+            <SettingsGroup group={groups.folders}>
               <SettingRow
-                title="settings-utils-advanced-open_data-v1"
-                description="settings-utils-advanced-open_data-description-v1"
+                setting={groups.folders.rows.openData}
                 control={
                   <Button
                     variant="secondary"
@@ -211,8 +256,7 @@ export function AdvancedSettings() {
                 }
               />
               <SettingRow
-                title="settings-utils-advanced-open_logs"
-                description="settings-utils-advanced-open_logs-description"
+                setting={groups.folders.rows.openLogs}
                 control={
                   <Button
                     variant="secondary"
@@ -236,32 +280,29 @@ export function AdvancedSettings() {
             <div className="px-3 xs:px-4 pb-2 max-w-[75ch]">
               <Typography id="settings-utils-advanced-danger_zone-description" />
             </div>
-            <SettingsGroup>
-              {resets.map(
-                ({ id, title, description, label, open, setOpen, accept }) => (
-                  <SettingRow
-                    key={id}
-                    title={title}
-                    description={description}
-                    control={
-                      <>
-                        <Button
-                          variant="secondary"
-                          className="!bg-status-critical whitespace-nowrap"
-                          onClick={() => setOpen(true)}
-                          id={label}
-                        />
-                        <SettingsResetModal
-                          accept={accept}
-                          onClose={() => setOpen(false)}
-                          isOpen={open}
-                          variant={id}
-                        />
-                      </>
-                    }
-                  />
-                )
-              )}
+            <SettingsGroup group={groups.dangerZone}>
+              {resets.map(({ id, setting, label, open, setOpen, accept }) => (
+                <SettingRow
+                  key={id}
+                  setting={setting}
+                  control={
+                    <>
+                      <Button
+                        variant="secondary"
+                        className="!bg-status-critical whitespace-nowrap"
+                        onClick={() => setOpen(true)}
+                        id={label}
+                      />
+                      <SettingsResetModal
+                        accept={accept}
+                        onClose={() => setOpen(false)}
+                        isOpen={open}
+                        variant={id}
+                      />
+                    </>
+                  }
+                />
+              ))}
             </SettingsGroup>
           </fieldset>
         </div>

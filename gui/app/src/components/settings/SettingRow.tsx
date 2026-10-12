@@ -1,8 +1,10 @@
 import classNames from 'classnames';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { SettingResetButton, SettingResetProps } from './SettingReset';
+import { SettingDef, SettingsGroupDef } from './settings-definitions';
 
 export function SettingsGroupLabel({ id }: { id: string }) {
   return (
@@ -14,8 +16,32 @@ export function SettingsGroupLabel({ id }: { id: string }) {
   );
 }
 
+export interface FocusSettingState {
+  focusSetting?: string;
+}
+
+export function useFocusSetting<T extends HTMLElement>(settingKey: string) {
+  const ref = useRef<T>(null);
+  const [highlighted, setHighlighted] = useState(false);
+  const { state, key } = useLocation() as {
+    state: FocusSettingState | null;
+    key: string;
+  };
+  const targeted = state?.focusSetting === settingKey;
+
+  useEffect(() => {
+    if (!targeted) return;
+    ref.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    setHighlighted(true);
+    const timeout = setTimeout(() => setHighlighted(false), 1800);
+    return () => clearTimeout(timeout);
+  }, [targeted, key]);
+
+  return { ref, highlighted };
+}
+
 export function SettingRow({
-  title,
+  setting,
   description,
   details,
   control,
@@ -28,8 +54,8 @@ export function SettingRow({
   childrenDisabled = false,
   children,
 }: {
-  title: string;
-  description?: string;
+  setting: SettingDef;
+  description?: string | null;
   details?: ReactNode;
   control?: ReactNode;
   below?: ReactNode;
@@ -41,15 +67,22 @@ export function SettingRow({
   childrenDisabled?: boolean;
   children?: ReactNode;
 }) {
-  const hasText = Boolean(description || details);
+  const { ref, highlighted } = useFocusSetting<HTMLFieldSetElement>(
+    setting.key
+  );
+  const descriptionId =
+    description === undefined
+      ? setting.description
+      : (description ?? undefined);
+  const hasText = Boolean(descriptionId || details);
   const band = (
     <>
       <div className="col-start-1 row-start-1 min-w-0">
-        <Typography variant="section-title" id={title} />
+        <Typography variant="section-title" id={setting.title} />
       </div>
       {hasText && (
         <div className="col-start-1 row-start-2 col-span-2 xs:col-span-1 min-w-0 max-w-[75ch]">
-          {description && <Typography id={description} />}
+          {descriptionId && <Typography id={descriptionId} />}
           {details}
         </div>
       )}
@@ -74,10 +107,12 @@ export function SettingRow({
 
   return (
     <fieldset
+      ref={ref}
       disabled={disabled}
       className={classNames(
         'flex flex-col gap-3 min-w-0 pl-1 pr-3 py-3 xs:pl-2 xs:pr-4 xs:py-4 transition-colors',
-        !disabled && 'hover:bg-background-70/30'
+        !disabled && !highlighted && 'hover:bg-background-70/30',
+        highlighted && 'bg-accent-background-40/30'
       )}
     >
       <Tooltip
@@ -106,7 +141,11 @@ export function SettingRow({
           )}
         </div>
       </Tooltip>
-      {below && <div className="min-w-0">{below}</div>}
+      {below && (
+        <div className={classNames('min-w-0', disabled && 'opacity-50')}>
+          {below}
+        </div>
+      )}
       {children && (
         <fieldset
           disabled={childrenDisabled}
@@ -123,16 +162,17 @@ export function SettingRow({
 }
 
 export function SettingsGroup({
-  title,
-  description,
+  group,
   details,
   children,
 }: {
-  title?: string;
-  description?: string;
+  group?: SettingsGroupDef;
   details?: ReactNode;
   children?: ReactNode;
 }) {
+  const title = group?.title;
+  const description = group?.description;
+
   return (
     <div className="flex flex-col gap-3 min-w-0 mt-8 first:mt-0">
       {(title || description || details) && (

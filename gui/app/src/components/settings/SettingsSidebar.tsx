@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { useVRCConfig } from '@/hooks/vrc-config';
+import { QuickSearchField } from './QuickSearch';
 
 export function SettingsLink({ to, id }: { id: string; to: string }) {
   return (
@@ -23,6 +24,7 @@ export function SettingsSidebar() {
 
   return (
     <div className="flex flex-col px-5 py-4 gap-4 overflow-y-auto no-scrollbar bg-background-70 rounded-lg h-full">
+      <QuickSearchField />
       <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-general" />
         <div className="flex flex-col gap-1">

@@ -1,3 +1,4 @@
+import { SettingDef } from '@/components/settings/settings-definitions';
 import { Localized } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -23,7 +24,7 @@ function toForm(settings: TimeoutSettingsResponseT): TimeoutForm {
   return { delay: settings.delay };
 }
 
-export function TimeoutSettings() {
+export function TimeoutSettings({ setting }: { setting: SettingDef }) {
   const [settings, setSettings] = useState<TimeoutSettingsResponseT | null>(
     null
   );
@@ -88,7 +89,8 @@ export function TimeoutSettings() {
 
   return (
     <SettingRow
-      title="settings-general-tracker_mechanics-timeout_delay"
+      setting={setting}
+      description={null}
       details={
         <Localized
           id="settings-general-tracker_mechanics-timeout_delay-description"

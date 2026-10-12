@@ -31,6 +31,7 @@ import {
   SittingRelaxedPoseModal,
   StandingRelaxedPoseModal,
 } from './components/StayAlignedPoseModal';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 export type StayAlignedSettingsForm = {
   setupComplete: boolean;
@@ -131,6 +132,44 @@ ${trackers
   );
 }
 
+export const stayAlignedSettingsPage = defineSettingsPage({
+  path: 'stay-aligned',
+  title: 'settings-sidebar-stay_aligned',
+  groups: {
+    setup: {
+      title: 'settings-stay_aligned-setup_group',
+      rows: {
+        setup: {
+          title: 'settings-stay_aligned-setup-label',
+        },
+        enabled: {
+          title: 'settings-stay_aligned-enabled-label',
+        },
+      },
+    },
+    relaxedPoses: {
+      title: 'settings-stay_aligned-relaxed_poses-label',
+      description: 'settings-stay_aligned-relaxed_poses-description',
+      rows: {
+        standing: { title: 'settings-stay_aligned-relaxed_poses-standing' },
+        sitting: { title: 'settings-stay_aligned-relaxed_poses-sitting' },
+        flat: { title: 'settings-stay_aligned-relaxed_poses-flat' },
+      },
+    },
+    debug: {
+      title: 'settings-stay_aligned-debug-label',
+      rows: {
+        copy: {
+          title: 'settings-stay_aligned-debug-copy-label',
+          description: 'settings-stay_aligned-debug-description',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = stayAlignedSettingsPage;
+
 export function StayAlignedSettings() {
   const setSettings = useSetAtom(stayAlignedSettingsAtom);
   const settings = useAtomValue(stayAlignedSettingsValueAtom);
@@ -218,6 +257,7 @@ export function StayAlignedSettings() {
   const poses = [
     {
       id: 'standing',
+      setting: groups.relaxedPoses.rows.standing,
       name: 'standingEnabled' as const,
       hasPose: hasStandingPose,
       open: openStanding,
@@ -225,6 +265,7 @@ export function StayAlignedSettings() {
     },
     {
       id: 'sitting',
+      setting: groups.relaxedPoses.rows.sitting,
       name: 'sittingEnabled' as const,
       hasPose: hasSittingPose,
       open: openSitting,
@@ -232,6 +273,7 @@ export function StayAlignedSettings() {
     },
     {
       id: 'flat',
+      setting: groups.relaxedPoses.rows.flat,
       name: 'flatEnabled' as const,
       hasPose: hasFlatPose,
       open: openFlat,
@@ -242,7 +284,7 @@ export function StayAlignedSettings() {
   return (
     <SettingsPagePaneLayout
       icon={<HorizontalAlignIcon />}
-      title="settings-sidebar-stay_aligned"
+      title={stayAlignedSettingsPage.title}
     >
       <div className="flex flex-col">
         <div className="flex flex-col gap-1 pb-4 max-w-[75ch]">
@@ -250,9 +292,9 @@ export function StayAlignedSettings() {
           <Typography id="settings-stay_aligned-setup-description" />
         </div>
 
-        <SettingsGroup title="settings-stay_aligned-setup_group">
+        <SettingsGroup group={groups.setup}>
           <SettingRow
-            title="settings-stay_aligned-setup-label"
+            setting={groups.setup.rows.setup}
             control={
               <Button
                 variant="primary"
@@ -263,7 +305,7 @@ export function StayAlignedSettings() {
             }
           />
           <SettingRow
-            title="settings-stay_aligned-enabled-label"
+            setting={groups.setup.rows.enabled}
             disabled={!config.setupComplete}
             disabledReason="settings-stay_aligned-setup-description"
             controlId="stay-aligned-enabled"
@@ -279,14 +321,11 @@ export function StayAlignedSettings() {
           />
         </SettingsGroup>
 
-        <SettingsGroup
-          title="settings-stay_aligned-relaxed_poses-label"
-          description="settings-stay_aligned-relaxed_poses-description"
-        >
-          {poses.map(({ id, name, hasPose, open, modal }) => (
+        <SettingsGroup group={groups.relaxedPoses}>
+          {poses.map(({ id, setting, name, hasPose, open, modal }) => (
             <SettingRow
               key={id}
-              title={`settings-stay_aligned-relaxed_poses-${id}`}
+              setting={setting}
               disabled={!config.setupComplete}
               disabledReason="settings-stay_aligned-setup-description"
               controlId={`stay-aligned-${id}`}
@@ -315,10 +354,9 @@ export function StayAlignedSettings() {
         </SettingsGroup>
 
         <SettingsAdvanced>
-          <SettingsGroup title="settings-stay_aligned-debug-label">
+          <SettingsGroup group={groups.debug}>
             <SettingRow
-              title="settings-stay_aligned-debug-copy-label"
-              description="settings-stay_aligned-debug-description"
+              setting={groups.debug.rows.copy}
               control={<CopySettingsButton values={values} />}
             />
           </SettingsGroup>

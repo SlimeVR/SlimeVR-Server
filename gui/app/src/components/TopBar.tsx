@@ -27,6 +27,8 @@ import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { IconButton } from './commons/IconButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
+import { SearchIcon } from './commons/icon/SearchIcon';
+import { useQuickSearch } from './settings/QuickSearch';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { TrayOrExitModal } from './TrayOrExitModal';
@@ -86,6 +88,7 @@ export function TopBar({
   actions?: ReactNode;
 }) {
   const electron = useElectron();
+  const quickSearch = useQuickSearch();
   const { isMobile } = useBreakpoint('mobile');
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
@@ -216,6 +219,15 @@ export function TopBar({
           </div>
           <div className="flex justify-end items-center px-2 gap-2 z-50">
             {actions}
+            {quickSearch && (
+              <TitleBarButton
+                labelId="titlebar-search"
+                onClick={quickSearch.open}
+                className="fill-background-50 hover:fill-background-10"
+              >
+                <SearchIcon />
+              </TitleBarButton>
+            )}
             <TitleBarButton
               labelId="titlebar-settings"
               to="/settings"

@@ -20,6 +20,7 @@ import {
   ResetType,
 } from 'solarxr-protocol';
 import { useErrorReporting } from '@/hooks/error-reporting';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 interface BehaviorSettingsForm {
   feedbackSound: boolean;
@@ -30,6 +31,69 @@ interface BehaviorSettingsForm {
   bvhDirectory: string | null;
   controllerNav: boolean;
 }
+
+export const behaviorSettingsPage = defineSettingsPage({
+  path: 'behavior',
+  title: 'settings-interface-behavior',
+  groups: {
+    notifications: {
+      title: 'settings-interface-notifications',
+      rows: {
+        feedbackSound: {
+          title: 'settings-general-interface-feedback_sound',
+          description: 'settings-general-interface-feedback_sound-description',
+        },
+        feedbackSoundVolume: {
+          title: 'settings-general-interface-feedback_sound-volume',
+        },
+        connectedTrackersWarning: {
+          title: 'settings-general-interface-connected_trackers_warning',
+          description:
+            'settings-general-interface-connected_trackers_warning-description',
+        },
+      },
+    },
+    desktop: {
+      title: 'settings-interface-behavior-desktop_group',
+      rows: {
+        useTray: {
+          title: 'settings-general-interface-use_tray',
+          description: 'settings-general-interface-use_tray-description',
+          available: ({ isElectron }) => isElectron,
+        },
+        discordPresence: {
+          title: 'settings-general-interface-discord_presence',
+          description:
+            'settings-general-interface-discord_presence-description',
+        },
+        bvhDirectory: {
+          title: 'settings-interface-behavior-bvh_directory',
+          description: 'settings-interface-behavior-bvh_directory-description',
+          available: ({ isElectron }) => isElectron,
+        },
+      },
+    },
+    input: {
+      title: 'settings-interface-behavior-input_group',
+      rows: {
+        controllerNav: {
+          title: 'settings-interface-behavior-controller_nav',
+          description: 'settings-interface-behavior-controller_nav-description',
+        },
+      },
+    },
+    privacy: {
+      title: 'settings-interface-behavior-privacy_group',
+      rows: {
+        errorTracking: {
+          title: 'settings-interface-behavior-error_tracking-label',
+          description:
+            'settings-interface-behavior-error_tracking-description_v2',
+        },
+      },
+    },
+  },
+});
 
 export function BehaviorSettings() {
   const electron = useElectron();
@@ -107,22 +171,24 @@ export function BehaviorSettings() {
     ),
   });
 
+  const { notifications, desktop, input, privacy } =
+    behaviorSettingsPage.groups;
+
   return (
     <form className="w-full">
       <SettingsPagePaneLayout
         icon={<ArrowRightLeftIcon />}
-        title="settings-interface-behavior"
+        title={behaviorSettingsPage.title}
       >
         <div className="flex flex-col">
-          <SettingsGroup title="settings-interface-notifications">
+          <SettingsGroup group={notifications}>
             <SettingRow
-              title="settings-general-interface-feedback_sound"
-              description="settings-general-interface-feedback_sound-description"
+              setting={notifications.rows.feedbackSound}
               childrenDisabled={!watch('feedbackSound')}
               {...toggle('feedbackSound')}
             >
               <SettingRow
-                title="settings-general-interface-feedback_sound-volume"
+                setting={notifications.rows.feedbackSoundVolume}
                 controlWidth="wide"
                 {...resetTo('feedbackSoundVolume')}
                 control={
@@ -138,29 +204,25 @@ export function BehaviorSettings() {
               />
             </SettingRow>
             <SettingRow
-              title="settings-general-interface-connected_trackers_warning"
-              description="settings-general-interface-connected_trackers_warning-description"
+              setting={notifications.rows.connectedTrackersWarning}
               {...toggle('connectedTrackersWarning')}
             />
           </SettingsGroup>
 
-          <SettingsGroup title="settings-interface-behavior-desktop_group">
+          <SettingsGroup group={desktop}>
             {electron.isElectron && (
               <SettingRow
-                title="settings-general-interface-use_tray"
-                description="settings-general-interface-use_tray-description"
+                setting={desktop.rows.useTray}
                 {...toggle('useTray')}
               />
             )}
             <SettingRow
-              title="settings-general-interface-discord_presence"
-              description="settings-general-interface-discord_presence-description"
+              setting={desktop.rows.discordPresence}
               {...toggle('discordPresence')}
             />
             {electron.isElectron && (
               <SettingRow
-                title="settings-interface-behavior-bvh_directory"
-                description="settings-interface-behavior-bvh_directory-description"
+                setting={desktop.rows.bvhDirectory}
                 {...resetTo('bvhDirectory')}
                 below={
                   <SystemFileInput
@@ -176,17 +238,17 @@ export function BehaviorSettings() {
             )}
           </SettingsGroup>
 
-          <SettingsGroup title="settings-interface-behavior-input_group">
+          <SettingsGroup group={input}>
             <SettingRow
-              title="settings-interface-behavior-controller_nav"
-              description="settings-interface-behavior-controller_nav-description"
+              setting={input.rows.controllerNav}
               {...toggle('controllerNav')}
             />
           </SettingsGroup>
 
-          <SettingsGroup title="settings-interface-behavior-privacy_group">
+          <SettingsGroup group={privacy}>
             <SettingRow
-              title="settings-interface-behavior-error_tracking-label"
+              setting={privacy.rows.errorTracking}
+              description={null}
               details={
                 <Localized
                   id="settings-interface-behavior-error_tracking-description_v2"

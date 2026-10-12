@@ -44,6 +44,7 @@ import {
   OSCPortsAddress,
   useOscPortsAddressValidator,
 } from '@/hooks/osc-setting-validator';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 interface VRCOSCSettingsForm {
   enabled: boolean;
@@ -329,6 +330,45 @@ function StatusCard({
   );
 }
 
+export const vrchatOscSettingsPage = defineSettingsPage({
+  path: 'osc/vrchat',
+  title: 'settings-sidebar-vrchat_osc',
+  groups: {
+    output: {
+      title: 'settings-osc-vrchat-output_group',
+      rows: {
+        enable: {
+          title: 'settings-osc-vrchat-enable',
+          description: 'settings-osc-vrchat-enable-description',
+        },
+        bones: {
+          title: 'settings-driver-bones',
+          description: 'settings-driver-bones-description',
+        },
+      },
+    },
+    network: {
+      title: 'settings-osc-vrchat-network_group',
+      rows: {
+        mode: {
+          title: 'settings-osc-vrchat-status-network-mode',
+          description: 'settings-osc-vrchat-status-network-mode-description',
+        },
+        network: {
+          title: 'settings-osc-vrchat-network',
+          description: 'settings-osc-vrchat-status-network-manual-description',
+        },
+        address: {
+          title: 'settings-osc-vrchat-network-address',
+          description: 'settings-osc-vrchat-network-address-description-v1',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = vrchatOscSettingsPage;
+
 export function VRCOSCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -427,7 +467,7 @@ export function VRCOSCSettings() {
     <form className="w-full">
       <SettingsPagePaneLayout
         icon={<VRCIcon />}
-        title="settings-sidebar-vrchat_osc"
+        title={vrchatOscSettingsPage.title}
       >
         <div className="flex flex-col">
           <div className="flex flex-col pb-4 max-w-[75ch]">
@@ -439,10 +479,9 @@ export function VRCOSCSettings() {
               ))}
           </div>
 
-          <SettingsGroup title="settings-osc-vrchat-output_group">
+          <SettingsGroup group={groups.output}>
             <SettingRow
-              title="settings-osc-vrchat-enable"
-              description="settings-osc-vrchat-enable-description"
+              setting={groups.output.rows.enable}
               controlId="vrchat-enabled"
               {...resetTo('enabled', defaults.enabled)}
               control={
@@ -455,8 +494,7 @@ export function VRCOSCSettings() {
               }
             />
             <SettingRow
-              title="settings-driver-bones"
-              description="settings-driver-bones-description"
+              setting={groups.output.rows.bones}
               control={
                 <Button
                   variant="secondary"
@@ -491,12 +529,12 @@ export function VRCOSCSettings() {
           )}
 
           <SettingsAdvanced>
-            <SettingsGroup title="settings-osc-vrchat-network_group">
+            <SettingsGroup group={groups.network}>
               <SettingRow
-                title="settings-osc-vrchat-status-network-mode"
-                description="settings-osc-vrchat-status-network-mode-description"
+                setting={groups.network.rows.mode}
                 controlWidth="wide"
                 {...resetTo('useManualNetwork', defaults.useManualNetwork)}
+                childrenDisabled={!useManualNetwork}
                 control={
                   <DropdownInside
                     name="networkMode"
@@ -527,59 +565,55 @@ export function VRCOSCSettings() {
                   />
                 }
               >
-                {useManualNetwork && (
-                  <>
-                    <SettingRow
-                      title="settings-osc-vrchat-network"
-                      description="settings-osc-vrchat-status-network-manual-description"
-                      {...resetPorts}
-                      below={
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          <Localized
-                            id="settings-osc-vrchat-network-port_in"
-                            attrs={{ placeholder: true, label: true }}
-                          >
-                            <Input
-                              type="number"
-                              control={control}
-                              name="portsAddress.portIn"
-                              placeholder="9001"
-                              label=""
-                            />
-                          </Localized>
-                          <Localized
-                            id="settings-osc-vrchat-network-port_out"
-                            attrs={{ placeholder: true, label: true }}
-                          >
-                            <Input
-                              type="number"
-                              control={control}
-                              name="portsAddress.portOut"
-                              placeholder="9000"
-                              label=""
-                            />
-                          </Localized>
-                        </div>
-                      }
-                    />
-                    <SettingRow
-                      title="settings-osc-vrchat-network-address"
-                      description="settings-osc-vrchat-network-address-description-v1"
-                      {...resetTo('portsAddress.address', defaultAddress)}
-                      below={
-                        <Input
-                          type="text"
-                          control={control}
-                          name="portsAddress.address"
-                          placeholder={l10n.getString(
-                            'settings-osc-vrchat-network-address-placeholder'
-                          )}
-                          label=""
-                        />
-                      }
-                    />
-                  </>
-                )}
+                <>
+                  <SettingRow
+                    setting={groups.network.rows.network}
+                    {...resetPorts}
+                    below={
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <Localized
+                          id="settings-osc-vrchat-network-port_in"
+                          attrs={{ placeholder: true, label: true }}
+                        >
+                          <Input
+                            type="number"
+                            control={control}
+                            name="portsAddress.portIn"
+                            placeholder="9001"
+                            label=""
+                          />
+                        </Localized>
+                        <Localized
+                          id="settings-osc-vrchat-network-port_out"
+                          attrs={{ placeholder: true, label: true }}
+                        >
+                          <Input
+                            type="number"
+                            control={control}
+                            name="portsAddress.portOut"
+                            placeholder="9000"
+                            label=""
+                          />
+                        </Localized>
+                      </div>
+                    }
+                  />
+                  <SettingRow
+                    setting={groups.network.rows.address}
+                    {...resetTo('portsAddress.address', defaultAddress)}
+                    below={
+                      <Input
+                        type="text"
+                        control={control}
+                        name="portsAddress.address"
+                        placeholder={l10n.getString(
+                          'settings-osc-vrchat-network-address-placeholder'
+                        )}
+                        label=""
+                      />
+                    }
+                  />
+                </>
               </SettingRow>
             </SettingsGroup>
           </SettingsAdvanced>

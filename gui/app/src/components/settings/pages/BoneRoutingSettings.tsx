@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { useLocalization } from '@fluent/react';
 import { Clickable } from '@/components/commons/Clickable';
 import classNames from 'classnames';
@@ -323,6 +324,16 @@ function RouteCell({
   );
 }
 
+export const boneRoutingSettingsPage = defineSettingsPage({
+  path: 'routing',
+  title: 'settings-routing',
+  groups: {
+    mode: { title: 'settings-routing-mode', rows: {} },
+    outputs: { title: 'settings-routing-outputs', rows: {} },
+    bones: { title: 'settings-routing-bones', rows: {} },
+  },
+});
+
 export function BoneRoutingSettings() {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
@@ -522,7 +533,10 @@ export function BoneRoutingSettings() {
           setHandsWarning(null);
         }}
       />
-      <SettingsPagePaneLayout icon={<RouterIcon />} title="settings-routing">
+      <SettingsPagePaneLayout
+        icon={<RouterIcon />}
+        title={boneRoutingSettingsPage.title}
+      >
         <>
           <div className="flex flex-col pt-1 pb-4">
             <Typography

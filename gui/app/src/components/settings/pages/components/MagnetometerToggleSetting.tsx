@@ -1,3 +1,4 @@
+import { SettingDef } from '@/components/settings/settings-definitions';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -19,13 +20,15 @@ interface MagnetometerToggleForm {
   magToggle: boolean;
 }
 
+type MagnetometerToggleSettingProps =
+  | { settingType: 'general'; setting: SettingDef; trackerId?: undefined }
+  | { settingType: 'tracker'; trackerId: number; setting?: undefined };
+
 export function MagnetometerToggleSetting({
   trackerId,
   settingType,
-}: {
-  trackerId?: number;
-  settingType: 'general' | 'tracker';
-}) {
+  setting,
+}: MagnetometerToggleSettingProps) {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const originalValue = useRef<boolean | null>(null);
@@ -88,7 +91,8 @@ export function MagnetometerToggleSetting({
 
   return settingType === 'general' ? (
     <SettingRow
-      title="settings-general-tracker_mechanics-use_mag_on_all_trackers"
+      setting={setting}
+      description={null}
       details={
         <Localized
           id="settings-general-tracker_mechanics-use_mag_on_all_trackers-description"

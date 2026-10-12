@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { CheckBox } from '@/components/commons/Checkbox';
 import {
   trackingchecklistIdtoLabel,
@@ -10,6 +11,18 @@ import { TrackingChecklistStepId } from 'solarxr-protocol';
 import { SettingsGroup } from '@/components/settings/SettingRow';
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };
+export const checklistSettingsPage = defineSettingsPage({
+  path: 'checklist',
+  title: 'tracking_checklist',
+  groups: {
+    activeSteps: {
+      title: 'settings-tracking_checklist-active_steps',
+      description: 'settings-tracking_checklist-active_steps-desc',
+      rows: {},
+    },
+  },
+});
+
 export function TrackingChecklistSettings({
   variant,
 }: {
@@ -55,10 +68,7 @@ export function TrackingChecklistSettings({
   };
 
   return (
-    <SettingsGroup
-      title="settings-tracking_checklist-active_steps"
-      description="settings-tracking_checklist-active_steps-desc"
-    >
+    <SettingsGroup group={checklistSettingsPage.groups.activeSteps}>
       <form
         className="grid md:grid-cols-2 gap-2 p-3 xs:p-4 mobile:flex flex-col"
         onChange={handleSubmit(onSubmit)}

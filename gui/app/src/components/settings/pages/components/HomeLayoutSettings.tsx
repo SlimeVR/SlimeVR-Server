@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { track } from '@/utils/sentry';
 import { isEqual } from '@react-hookz/deep-equal';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 export function LayoutSelector({
   children,
@@ -184,6 +185,40 @@ export function TrackerDisplaySettings({
  * The home screen's settings, shared by its settings page and the quick
  * settings modal on the home screen so both read the same.
  */
+export const homeSettingsPage = defineSettingsPage({
+  path: 'home',
+  title: 'home-settings',
+  groups: {
+    main: {
+      rows: {
+        layout: {
+          title: 'settings-home-list-layout',
+          description: 'settings-home-list-layout-desc',
+        },
+        tableColumns: {
+          title: 'settings-home-table_columns',
+          description: 'settings-home-table_columns-desc',
+        },
+      },
+    },
+    display: {
+      title: 'settings-home-display_group',
+      rows: {
+        skeletonMesh: {
+          title: 'settings-interface-behavior-skeleton_mesh',
+          description: 'settings-interface-behavior-skeleton_mesh-description',
+        },
+        trackerDisplay: {
+          title: 'settings-home-tracker_display',
+          description: 'settings-home-tracker_display-desc',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = homeSettingsPage;
+
 export function HomeLayoutSettings({
   variant,
 }: {
@@ -233,10 +268,9 @@ export function HomeLayoutSettings({
 
   return (
     <div className="flex flex-col">
-      <SettingsGroup>
+      <SettingsGroup group={groups.main}>
         <SettingRow
-          title="settings-home-list-layout"
-          description="settings-home-list-layout-desc"
+          setting={groups.main.rows.layout}
           {...resetLayout}
           below={
             <div className="flex gap-4">
@@ -267,20 +301,17 @@ export function HomeLayoutSettings({
             </div>
           }
         />
-        {config?.homeLayout === 'table' && (
-          <SettingRow
-            title="settings-home-table_columns"
-            description="settings-home-table_columns-desc"
-            {...resetColumns}
-            below={<TrackersTableColumnToggles variant={variant} />}
-          />
-        )}
+        <SettingRow
+          setting={groups.main.rows.tableColumns}
+          disabled={config?.homeLayout !== 'table'}
+          {...resetColumns}
+          below={<TrackersTableColumnToggles variant={variant} />}
+        />
       </SettingsGroup>
 
-      <SettingsGroup title="settings-home-display_group">
+      <SettingsGroup group={groups.display}>
         <SettingRow
-          title="settings-interface-behavior-skeleton_mesh"
-          description="settings-interface-behavior-skeleton_mesh-description"
+          setting={groups.display.rows.skeletonMesh}
           controlWidth="wide"
           {...resetMesh}
           control={
@@ -313,8 +344,7 @@ export function HomeLayoutSettings({
           }
         />
         <SettingRow
-          title="settings-home-tracker_display"
-          description="settings-home-tracker_display-desc"
+          setting={groups.display.rows.trackerDisplay}
           {...resetTrackerDisplay}
           below={<TrackerDisplayToggles variant={variant} />}
         />

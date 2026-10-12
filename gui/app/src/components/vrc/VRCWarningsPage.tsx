@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { Typography } from '@/components/commons/Typography';
 import { ReactNode } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
@@ -106,6 +107,13 @@ function Table({ children }: { children: ReactNode }) {
 
 const onOffKey = (value: boolean) =>
   value ? 'vrc_config-on' : 'vrc_config-off';
+
+export const vrcWarningsSettingsPage = defineSettingsPage({
+  path: 'vrc-warnings',
+  title: 'settings-sidebar-vrc_warnings',
+  available: ({ isVrcSupported }) => isVrcSupported,
+  groups: {},
+});
 
 export function VRCWarningsPage() {
   const { state, toggleMutedSettings } = useVRCConfig();

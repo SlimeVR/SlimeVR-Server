@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
@@ -53,6 +54,12 @@ function appendLog(content: string, log: string) {
   const cut = next.indexOf('\n', next.length - MAX_CONSOLE_CHARS);
   return cut === -1 ? next : next.slice(cut + 1);
 }
+
+export const serialSettingsPage = defineSettingsPage({
+  path: 'serial',
+  title: 'settings-serial',
+  groups: {},
+});
 
 export function Serial() {
   const { l10n } = useLocalization();
@@ -341,7 +348,7 @@ export function Serial() {
       <div className="flex flex-col bg-background-70 h-full p-4 mobile:p-2 rounded-md">
         <div className="flex flex-col pb-2 mobile:pt-4">
           <Typography variant="main-title">
-            {l10n.getString('settings-serial')}
+            {l10n.getString(serialSettingsPage.title)}
           </Typography>
           <>
             {l10n

@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { KeybindRecorderModal } from '@/components/commons/KeybindRecorderModal';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { KeyboardIcon } from '@/components/commons/icon/KeyboardIcon';
@@ -50,6 +51,12 @@ function areBindingsEqual(a?: string[], b?: string[]): boolean {
   const setB = new Set(b);
   return a.every((key) => setB.has(key));
 }
+
+export const keybindSettingsPage = defineSettingsPage({
+  path: 'keybinds',
+  title: 'settings-keybinds',
+  groups: {},
+});
 
 export function KeybindSettings() {
   const { l10n } = useLocalization();
@@ -271,7 +278,7 @@ export function KeybindSettings() {
   return (
     <SettingsPagePaneLayout
       icon={<KeyboardIcon size={20} />}
-      title="settings-keybinds"
+      title={keybindSettingsPage.title}
     >
       <div className="flex flex-col gap-4">
         <div>

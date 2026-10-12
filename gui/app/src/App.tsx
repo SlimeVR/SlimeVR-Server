@@ -9,12 +9,9 @@ import {
 import { Home } from './components/home/Home';
 import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
-import { StayAlignedSettings } from './components/settings/pages/StayAlignedSettings';
-import { TrackingSettings } from './components/settings/pages/TrackingSettings';
-import { ResetsSettings } from './components/settings/pages/ResetsSettings';
-import { TrackersSettings } from './components/settings/pages/TrackersSettings';
-import { Serial } from './components/settings/pages/Serial';
 import { SettingsLayout } from './components/settings/SettingsLayout';
+import { settingsPages } from './components/settings/settings-pages';
+import { QuickSearchProvider } from './components/settings/QuickSearch';
 import {
   useProvideWebsocketApi,
   WebSocketApiContext,
@@ -32,20 +29,14 @@ import { ManualMountingPage } from './components/onboarding/pages/mounting/Manua
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
-import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
-import { BoneRoutingSettings } from './components/settings/pages/BoneRoutingSettings';
-import { DriverSettings } from './components/settings/pages/DriverSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { DongleSettingsPage } from './components/tracker/DongleSettings';
-import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import semver from 'semver';
 import { useBreakpoint } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
-import { BehaviorSettings } from './components/settings/pages/BehaviorSettings';
-import { AppearanceSettings } from './components/settings/pages/AppearanceSettings';
 import { error, log } from './utils/logging';
 import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
 import { AppLayout } from './AppLayout';
@@ -58,15 +49,10 @@ import { useInternalLinkGuard } from './hooks/internal-links';
 import * as Sentry from '@sentry/react';
 import { CrashScreen } from './components/CrashScreen';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
-import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
-import { KeybindSettings } from './components/settings/pages/KeybindSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
-import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
-import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
-import { ChecklistSettings } from './components/settings/pages/ChecklistSettings';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
 import { QuizSlimeSetQuestion } from './components/onboarding/pages/quiz/SlimeSetQuestion';
 import { QuizUsageQuestion } from './components/onboarding/pages/quiz/UsageQuestion';
@@ -102,7 +88,9 @@ function ConnectedApp() {
           <UnknownDeviceModal />
           <UdevRulesModal />
           <StepMountingStatusModal />
-          <AppLayout />
+          <QuickSearchProvider>
+            <AppLayout />
+          </QuickSearchProvider>
         </TrackingChecklistProvider>
       </OnboardingContextProvider>
     </AppContextProvider>
@@ -183,23 +171,9 @@ function AppRoutes() {
             }
           >
             <Route index element={<Navigate to="tracking" replace />} />
-            <Route path="firmware-tool" element={<FirmwareToolSettings />} />
-            <Route path="stay-aligned" element={<StayAlignedSettings />} />
-            <Route path="tracking" element={<TrackingSettings />} />
-            <Route path="resets" element={<ResetsSettings />} />
-            <Route path="trackers" element={<TrackersSettings />} />
-            <Route path="serial" element={<Serial />} />
-            <Route path="routing" element={<BoneRoutingSettings />} />
-            <Route path="driver" element={<DriverSettings />} />
-            <Route path="osc/vrchat" element={<VRCOSCSettings />} />
-            <Route path="osc/vmc" element={<VMCSettings />} />
-            <Route path="behavior" element={<BehaviorSettings />} />
-            <Route path="appearance" element={<AppearanceSettings />} />
-            <Route path="home" element={<HomeScreenSettings />} />
-            <Route path="checklist" element={<ChecklistSettings />} />
-            <Route path="advanced" element={<AdvancedSettings />} />
-            <Route path="keybinds" element={<KeybindSettings />} />
-            <Route path="vrc-warnings" element={<VRCWarningsPage />} />
+            {settingsPages.map(({ page, element }) => (
+              <Route key={page.path} path={page.path} element={element} />
+            ))}
           </Route>
           <Route
             path="/onboarding"

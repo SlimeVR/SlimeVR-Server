@@ -23,6 +23,7 @@ import {
 import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
 import { settingReset } from '@/components/settings/SettingReset';
 import { TapDetectionSettings } from './components/TapDetectionSettings';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 type ResetsSettingsForm = {
   resetMountingFeet: boolean;
@@ -41,6 +42,76 @@ function toForm(settings: ResetsSettingsResponseT): ResetsSettingsForm {
     resetReliableReferenceAttitude: settings.resetReliableReferenceAttitude,
   };
 }
+
+export const resetsSettingsPage = defineSettingsPage({
+  path: 'resets',
+  title: 'settings-sidebar-resets',
+  groups: {
+    main: {
+      rows: {
+        mountingMethod: {
+          title: 'settings-general-mounting_method',
+          description: 'settings-general-mounting_method-description',
+        },
+        armsMountingResetMode: {
+          title: 'settings-general-fk_settings-arms_mounting_reset_mode',
+          description:
+            'settings-general-fk_settings-arms_mounting_reset_mode-description',
+        },
+        resetMountingFeet: {
+          title: 'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1',
+          description:
+            'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1',
+        },
+      },
+    },
+    resetBehaviour: {
+      title: 'settings-general-fk_settings-reset_behaviour_group',
+      rows: {
+        yawResetSmoothTime: {
+          title: 'settings-general-tracker_mechanics-yaw-reset-smooth-time',
+          description:
+            'settings-general-tracker_mechanics-yaw-reset-smooth-time-description',
+        },
+        resetReliableReferenceAttitude: {
+          title:
+            'settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude',
+          description:
+            'settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description',
+        },
+        saveMountingReset: {
+          title: 'settings-general-tracker_mechanics-save_mounting_reset',
+        },
+      },
+    },
+    tapResets: {
+      title: 'settings-general-gesture_control-subtitle',
+      description: 'settings-general-gesture_control-description',
+      rows: {
+        yawReset: {
+          title: 'settings-general-gesture_control-yawResetEnabled',
+        },
+        fullReset: {
+          title: 'settings-general-gesture_control-fullResetEnabled',
+        },
+        mountingReset: {
+          title: 'settings-general-gesture_control-mountingResetEnabled',
+        },
+      },
+    },
+    tapThreshold: {
+      rows: {
+        numberTrackersOverThreshold: {
+          title: 'settings-general-gesture_control-numberTrackersOverThreshold',
+          description:
+            'settings-general-gesture_control-numberTrackersOverThreshold-description',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = resetsSettingsPage;
 
 export function ResetsSettings() {
   const { resetsSettings: settings, setResetsSettings } = useResetsSettings();
@@ -107,21 +178,19 @@ export function ResetsSettings() {
   return (
     <SettingsPagePaneLayout
       icon={<FullResetIcon width={20} />}
-      title="settings-sidebar-resets"
+      title={resetsSettingsPage.title}
     >
       <div className="flex flex-col">
-        <SettingsGroup>
+        <SettingsGroup group={groups.main}>
           <SettingRow
-            title="settings-general-mounting_method"
-            description="settings-general-mounting_method-description"
+            setting={groups.main.rows.mountingMethod}
             below={<MountingMethodRadio />}
             {...resetMountingMethod}
-          />
-          {isPoseMounting && (
+            childrenDisabled={!isPoseMounting}
+          >
             <>
               <SettingRow
-                title="settings-general-fk_settings-arms_mounting_reset_mode"
-                description="settings-general-fk_settings-arms_mounting_reset_mode-description"
+                setting={groups.main.rows.armsMountingResetMode}
                 {...resetTo(
                   'armsMountingResetMode',
                   defaults.armsMountingResetMode
@@ -164,8 +233,7 @@ export function ResetsSettings() {
                 </div>
               </SettingRow>
               <SettingRow
-                title="settings-general-fk_settings-leg_fk-reset_mounting_feet-v1"
-                description="settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1"
+                setting={groups.main.rows.resetMountingFeet}
                 controlId="resets-mounting-feet"
                 {...resetTo('resetMountingFeet', defaults.resetMountingFeet)}
                 control={
@@ -178,16 +246,18 @@ export function ResetsSettings() {
                 }
               />
             </>
-          )}
+          </SettingRow>
         </SettingsGroup>
 
-        <TapDetectionSettings />
+        <TapDetectionSettings
+          resets={groups.tapResets}
+          threshold={groups.tapThreshold}
+        />
 
         <SettingsAdvanced>
-          <SettingsGroup title="settings-general-fk_settings-reset_behaviour_group">
+          <SettingsGroup group={groups.resetBehaviour}>
             <SettingRow
-              title="settings-general-tracker_mechanics-yaw-reset-smooth-time"
-              description="settings-general-tracker_mechanics-yaw-reset-smooth-time-description"
+              setting={groups.resetBehaviour.rows.yawResetSmoothTime}
               controlWidth="wide"
               {...resetTo('yawResetSmoothTime', defaults.yawResetSmoothTime)}
               control={
@@ -202,8 +272,9 @@ export function ResetsSettings() {
               }
             />
             <SettingRow
-              title="settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude"
-              description="settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description"
+              setting={
+                groups.resetBehaviour.rows.resetReliableReferenceAttitude
+              }
               controlId="resets-hmd-attitude"
               {...resetTo(
                 'resetReliableReferenceAttitude',
@@ -219,7 +290,7 @@ export function ResetsSettings() {
               }
             />
             <SettingRow
-              title="settings-general-tracker_mechanics-save_mounting_reset"
+              setting={groups.resetBehaviour.rows.saveMountingReset}
               details={
                 <Localized
                   id="settings-general-tracker_mechanics-save_mounting_reset-description"

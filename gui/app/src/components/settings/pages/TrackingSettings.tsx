@@ -29,6 +29,7 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { MartialArtsIcon } from '@/components/commons/icon/MartialArtsIcon';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 type SkeletonForm = {
   toggles: {
@@ -90,6 +91,100 @@ function toForm(settings: SkeletonSettingsResponseT): SkeletonForm {
     },
   };
 }
+
+export const trackingSettingsPage = defineSettingsPage({
+  path: 'tracking',
+  title: 'settings-sidebar-tracking',
+  groups: {
+    filtering: {
+      title: 'settings-general-tracker_mechanics-filtering',
+      rows: {
+        amount: {
+          title: 'settings-general-tracker_mechanics-filtering-amount',
+        },
+      },
+    },
+    legFk: {
+      title: 'settings-general-fk_settings-leg_fk',
+      rows: {
+        floorClip: {
+          title: 'settings-general-fk_settings-leg_tweak-floor_clip',
+          description:
+            'settings-general-fk_settings-leg_tweak-floor_clip-description',
+        },
+        footPlant: {
+          title: 'settings-general-fk_settings-leg_tweak-foot_plant',
+          description:
+            'settings-general-fk_settings-leg_tweak-foot_plant-description',
+        },
+        toeSnap: {
+          title: 'settings-general-fk_settings-leg_tweak-toe_snap',
+          description:
+            'settings-general-fk_settings-leg_tweak-toe_snap-description',
+        },
+        skatingCorrection: {
+          title: 'settings-general-fk_settings-leg_tweak-skating_correction',
+          description:
+            'settings-general-fk_settings-leg_tweak-skating_correction-description',
+        },
+        skatingCorrectionAmount: {
+          title:
+            'settings-general-fk_settings-leg_tweak-skating_correction-amount',
+        },
+      },
+    },
+    position: {
+      title: 'settings-general-fk_settings-position_group',
+      rows: {
+        ik: {
+          title: 'settings-general-fk_settings-ik',
+          description:
+            'settings-general-fk_settings-ik-use_position-description',
+        },
+        selfLocalization: {
+          title: 'settings-general-fk_settings-self_localization-title',
+          description:
+            'settings-general-fk_settings-self_localization-description',
+        },
+      },
+    },
+    constraints: {
+      title: 'settings-general-fk_settings-constraints_group',
+      rows: {
+        enforceJointConstraints: {
+          title: 'settings-general-fk_settings-enforce_joint_constraints',
+          description:
+            'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description',
+        },
+      },
+    },
+    ratios: {
+      title: 'settings-general-fk_settings-skeleton_settings-ratios',
+      description:
+        'settings-general-fk_settings-skeleton_settings-ratios-description',
+      rows: {
+        imputeSpineFromUpperToLower: {
+          title:
+            'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower',
+        },
+        imputeSpineCurvature: {
+          title:
+            'settings-general-fk_settings-skeleton_settings-impute_spine_curvature',
+        },
+        interpolateHipWithUpperLegs: {
+          title:
+            'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs',
+        },
+        interpolateUpperLegsTwistWithLowerLegs: {
+          title:
+            'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = trackingSettingsPage;
 
 export function TrackingSettings() {
   const setSettings = useSetAtom(skeletonSettingsAtom);
@@ -214,11 +309,11 @@ export function TrackingSettings() {
   return (
     <SettingsPagePaneLayout
       icon={<MartialArtsIcon />}
-      title="settings-sidebar-tracking"
+      title={trackingSettingsPage.title}
     >
       <div className="flex flex-col">
         <SettingsGroup
-          title="settings-general-tracker_mechanics-filtering"
+          group={groups.filtering}
           details={l10n
             .getString(
               'settings-general-tracker_mechanics-filtering-description'
@@ -263,83 +358,74 @@ export function TrackingSettings() {
               value={FilteringType.PREDICTION}
             />
           </div>
-          {filteringEnabled && (
-            <SettingRow
-              title="settings-general-tracker_mechanics-filtering-amount"
-              {...stepper('filtering.amount')}
-            />
-          )}
+          <SettingRow
+            setting={groups.filtering.rows.amount}
+            disabled={!filteringEnabled}
+            {...stepper('filtering.amount')}
+          />
         </SettingsGroup>
 
-        <SettingsGroup title="settings-general-fk_settings-leg_fk">
+        <SettingsGroup group={groups.legFk}>
           <SettingRow
-            title="settings-general-fk_settings-leg_tweak-floor_clip"
-            description="settings-general-fk_settings-leg_tweak-floor_clip-description"
+            setting={groups.legFk.rows.floorClip}
             {...toggle('toggles.floorClip')}
           />
           <SettingRow
-            title="settings-general-fk_settings-leg_tweak-foot_plant"
-            description="settings-general-fk_settings-leg_tweak-foot_plant-description"
+            setting={groups.legFk.rows.footPlant}
             {...toggle('toggles.footPlant')}
           />
           <SettingRow
-            title="settings-general-fk_settings-leg_tweak-toe_snap"
-            description="settings-general-fk_settings-leg_tweak-toe_snap-description"
+            setting={groups.legFk.rows.toeSnap}
             {...toggle('toggles.toeSnap')}
           />
           <SettingRow
-            title="settings-general-fk_settings-leg_tweak-skating_correction"
-            description="settings-general-fk_settings-leg_tweak-skating_correction-description"
+            setting={groups.legFk.rows.skatingCorrection}
             childrenDisabled={!skatingCorrection}
             {...toggle('toggles.skatingCorrection')}
           >
             <SettingRow
-              title="settings-general-fk_settings-leg_tweak-skating_correction-amount"
+              setting={groups.legFk.rows.skatingCorrectionAmount}
               {...stepper('ratios.skatingCorrectionStrength', 0.1)}
             />
           </SettingRow>
         </SettingsGroup>
 
-        <SettingsGroup title="settings-general-fk_settings-position_group">
+        <SettingsGroup group={groups.position}>
           <SettingRow
-            title="settings-general-fk_settings-ik"
-            description="settings-general-fk_settings-ik-use_position-description"
+            setting={groups.position.rows.ik}
             {...toggle('toggles.useTrackerPositions')}
           />
           <SettingRow
-            title="settings-general-fk_settings-self_localization-title"
-            description="settings-general-fk_settings-self_localization-description"
+            setting={groups.position.rows.selfLocalization}
             {...toggle('toggles.mocapMode')}
           />
         </SettingsGroup>
 
         <SettingsAdvanced>
-          <SettingsGroup title="settings-general-fk_settings-constraints_group">
+          <SettingsGroup group={groups.constraints}>
             <SettingRow
-              title="settings-general-fk_settings-enforce_joint_constraints"
-              description="settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description"
+              setting={groups.constraints.rows.enforceJointConstraints}
               {...toggle('toggles.enforceConstraints')}
             />
           </SettingsGroup>
 
-          <SettingsGroup
-            title="settings-general-fk_settings-skeleton_settings-ratios"
-            description="settings-general-fk_settings-skeleton_settings-ratios-description"
-          >
+          <SettingsGroup group={groups.ratios}>
             <SettingRow
-              title="settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower"
+              setting={groups.ratios.rows.imputeSpineFromUpperToLower}
               {...stepper('ratios.imputeSpineFromUpperToLower')}
             />
             <SettingRow
-              title="settings-general-fk_settings-skeleton_settings-impute_spine_curvature"
+              setting={groups.ratios.rows.imputeSpineCurvature}
               {...stepper('ratios.imputeSpineCurvature')}
             />
             <SettingRow
-              title="settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs"
+              setting={groups.ratios.rows.interpolateHipWithUpperLegs}
               {...stepper('ratios.interpolateHipWithUpperLegs')}
             />
             <SettingRow
-              title="settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs"
+              setting={
+                groups.ratios.rows.interpolateUpperLegsTwistWithLowerLegs
+              }
               {...stepper('ratios.interpolateUpperLegsTwistWithLowerLegs')}
             />
           </SettingsGroup>

@@ -28,6 +28,7 @@ import {
   SettingsGroupLabel,
 } from '@/components/settings/SettingRow';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 type DriverForm = {
   enabled: boolean;
@@ -82,6 +83,37 @@ function StatusCard({ status }: { status: DriverStatusChangeResponseT }) {
     </div>
   );
 }
+
+export const driverSettingsPage = defineSettingsPage({
+  path: 'driver',
+  title: 'settings-sidebar-driver',
+  groups: {
+    output: {
+      title: 'settings-driver-output_group',
+      rows: {
+        enable: {
+          title: 'settings-driver-enable',
+          description: 'settings-driver-enable-description',
+        },
+        bones: {
+          title: 'settings-driver-bones',
+          description: 'settings-driver-bones-description',
+        },
+      },
+    },
+    data: {
+      title: 'settings-driver-data_group',
+      rows: {
+        velocity: {
+          title: 'settings-driver-velocity',
+          description: 'settings-driver-velocity-description',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = driverSettingsPage;
 
 export function DriverSettings() {
   const [settings, setSettings] = useState<DriverSettingsResponseT | null>(
@@ -153,17 +185,16 @@ export function DriverSettings() {
   return (
     <SettingsPagePaneLayout
       icon={<SteamIcon size={24} />}
-      title="settings-sidebar-driver"
+      title={driverSettingsPage.title}
     >
       <div className="flex flex-col">
         <div className="pb-4 max-w-[75ch]">
           <Typography id="settings-driver-description" />
         </div>
 
-        <SettingsGroup title="settings-driver-output_group">
+        <SettingsGroup group={groups.output}>
           <SettingRow
-            title="settings-driver-enable"
-            description="settings-driver-enable-description"
+            setting={groups.output.rows.enable}
             controlId="driver-enabled"
             {...resetTo('enabled')}
             control={
@@ -176,8 +207,7 @@ export function DriverSettings() {
             }
           />
           <SettingRow
-            title="settings-driver-bones"
-            description="settings-driver-bones-description"
+            setting={groups.output.rows.bones}
             control={
               <Button
                 variant="secondary"
@@ -199,10 +229,9 @@ export function DriverSettings() {
         )}
 
         <SettingsAdvanced>
-          <SettingsGroup title="settings-driver-data_group">
+          <SettingsGroup group={groups.data}>
             <SettingRow
-              title="settings-driver-velocity"
-              description="settings-driver-velocity-description"
+              setting={groups.data.rows.velocity}
               controlId="driver-velocity"
               {...resetTo('sendVelocity')}
               control={

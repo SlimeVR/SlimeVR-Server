@@ -52,6 +52,7 @@ file_input-clear_folder = Clear folder
 ## Window controls
 # Accessible names for the icon-only buttons in the title bar
 titlebar-docs = Open documentation
+titlebar-search = Search
 titlebar-settings = Open settings
 titlebar-update = Download update
 titlebar-minimize = Minimize
@@ -430,6 +431,10 @@ mounting_selection_menu-close = Close
 
 ## Sidebar settings
 settings-advanced_section = Advanced settings
+settings-sidebar-search = Search settings and pages
+settings-sidebar-search-empty = Nothing matches your search
+settings-search-section-page = Page
+settings-search-manual_proportions = Manual Proportions
 settings-sidebar-general = General
 settings-sidebar-outputs = Outputs
 settings-sidebar-routing = Bone Routing
