@@ -258,7 +258,6 @@ settings-keybinds-recorder-modal-cancel-button = Avslutt
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Tracking innstillinger
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
