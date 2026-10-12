@@ -319,7 +319,6 @@ mounting_selection_menu-close = Schließen
 
 ## Sidebar settings
 
-settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
 settings-sidebar-stay_aligned = Bleibe Ausgerichtet
 settings-sidebar-trackers = Tracker
@@ -329,7 +328,6 @@ settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
 settings-sidebar-home = Startbildschirm
 settings-sidebar-checklist = Tracking-Checkliste
-settings-sidebar-notifications = Benachrichtigungen
 settings-sidebar-behavior = Verhalten
 settings-sidebar-firmware-tool = DIY Firmware-Tool
 settings-sidebar-vrc_warnings = VRChat Konfigurations-Warnungen
@@ -372,7 +370,6 @@ settings-general-tracker_mechanics-filtering = Filtern
 settings-general-tracker_mechanics-filtering-description =
     Wählen Sie den Filter-Typ für Ihre Tracker aus.
     Vorhersage: prognostiziert Bewegung. Glättung: Bewegung werden geglättet.
-settings-general-tracker_mechanics-filtering-type = Filter-Typ
 settings-general-tracker_mechanics-filtering-type-none = Kein Filter
 settings-general-tracker_mechanics-filtering-type-none-description = Verwendet die unveränderten Rotationsdaten der Tracker.
 settings-general-tracker_mechanics-filtering-type-smoothing = Glättung
@@ -385,18 +382,14 @@ settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Au
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Speichert die automatische Tracker-Ausrichtung für die Tracker zwischen den Neustarts. Nützlich
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Tracker-Ausrichtung speichern
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Verwende das Magnetometer auf allen IMU-Trackern, die dies unterstützen.
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
     Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
 settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Erlaube HID-Tracker eine USB-Direktverbindung
 settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
 settings-stay_aligned-setup-label = Stay Aligned einrichten
 settings-stay_aligned-setup-description = Sie müssen Stay Aligned einrichten, um es zu aktivieren.
-settings-stay_aligned-general-label = Allgemein
 settings-stay_aligned-relaxed_poses-label = Entspannte Posen
 settings-stay_aligned-relaxed_poses-standing = Tracker im Stehen anpassen
 settings-stay_aligned-relaxed_poses-sitting = Tracker anpassen, während du auf einem Stuhl sitzt
@@ -437,10 +430,8 @@ settings-general-fk_settings-leg_fk = Beintracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Fuß-Ausrichtung kalibrieren
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Erzwinge Fußausrichtungs-Kalibrierung während der Körperausrichtungs-Kalibrierung.
 settings-general-fk_settings-enforce_joint_constraints = Gelenkgrenzen
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Grenzen erzwingen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Verhindert, dass sich Gelenke über ihre Grenzen hinaus drehen
 settings-general-fk_settings-ik = Positionsdaten
-settings-general-fk_settings-ik-use_position = Positionsdaten verwenden
 settings-general-fk_settings-skeleton_settings-ratios = Skelettverhältnisse
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändert die Werte der Skeletteinstellungen. Nachdem Sie diese geändert haben, müssen Sie möglicherweise Ihre Proportionen anpassen.
 settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
@@ -481,7 +472,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Erhö
 settings-interface-appearance = Erscheinungsbild
 settings-general-interface-dev_mode = Entwicklermodus
 settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
-settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-theme = Farbschema
 settings-general-interface-lang = Sprachauswahl
 settings-general-interface-lang-description = Ändern Sie die Standard-Sprache, die Sie verwenden möchten
@@ -499,23 +489,18 @@ settings-interface-appearance-font_size-description = Verändert die Schriftgrö
 
 settings-general-interface-feedback_sound = Feedback-Geräusch
 settings-general-interface-feedback_sound-description = Diese Option wird ein Geräusch abspielen, wenn ein Reset ausgeführt wurde.
-settings-general-interface-feedback_sound-label = Feedback-Geräusch
 settings-general-interface-feedback_sound-volume = Feedback-Sound-Lautstärke
 settings-general-interface-connected_trackers_warning = Warnung zu verbundenen Trackern
 settings-general-interface-connected_trackers_warning-description = Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn Sie versuchen, SlimeVR zu beenden, während ein oder mehrere Tracker verbunden sind. Es erinnert Sie daran, die Tracker auszuschalten, um die Akkulaufzeit zu verlängern.
-settings-general-interface-connected_trackers_warning-label = Warnung vor verbundenen Trackern beim Verlassen
 
 ## Behavior settings
 
 settings-interface-behavior = Verhalten
 settings-general-interface-dev_mode = Entwicklermodus
-settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-use_tray = In den Infobereich minimieren
 settings-general-interface-use_tray-description = Erlaubt Ihnen, das Fenster zu schließen, ohne den SlimeVR-Server zu beenden. Dies erlaubt Ihnen diesen weiterzuverwenden, ohne dass das Fenster stört.
-settings-general-interface-use_tray-label = In den Infobereich minimieren
 settings-general-interface-discord_presence = Aktivität auf Discord teilen
 settings-general-interface-discord_presence-description = Teilt Ihrem Discord-Client mit, dass Sie SlimeVR verwenden, zusammen mit der Anzahl der IMU-Tracker, die Sie benutzen.
-settings-general-interface-discord_presence-label = Aktivität auf Discord teilen
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Sliming around
@@ -567,7 +552,6 @@ settings-osc-vrchat-description-v1 =
     zu den Einstellungen unter Tracking & IK > Erlaube das Senden von Kopf- und Handgelenk-VR-Tracking-OSC-Daten.
 settings-osc-vrchat-enable = Aktivieren
 settings-osc-vrchat-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten
-settings-osc-vrchat-enable-label = Aktivieren
 settings-osc-vrchat-network = Netzwerk-Ports
 settings-osc-vrchat-network-port_in =
     .label = Eingangsport
@@ -595,7 +579,6 @@ settings-osc-vrchat-status-badge-unknown = Unbekannt
 settings-osc-vmc-description = Einstellungsänderungen spezifisch für das VMC-Protokoll (Virtual Motion Capture Protocol), um die Skelett-Daten von SlimeVR zu senden und Skelett-Daten von anderen Applikationen zu empfangen.
 settings-osc-vmc-enable = Aktivieren
 settings-osc-vmc-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten.
-settings-osc-vmc-enable-label = Aktivieren
 settings-osc-vmc-network = Netzwerk-Ports
 settings-osc-vmc-network-description = Port Einstellungen zum Empfangen und Senden von Daten über VMC.
 settings-osc-vmc-network-port_in =
@@ -613,10 +596,8 @@ settings-osc-vmc-vrm-untitled_model = Unbenanntes Modell
 settings-osc-vmc-vrm-file_select = Modell per Drag & Drop laden oder <u>durchsuchen</u>
 settings-osc-vmc-anchor_hip = Hüftenverankerung
 settings-osc-vmc-anchor_hip-description = Die Hüften-Verankerung für das Tracking ist nützlich für VTubing im Sitzen. Beim Deaktivieren muss ein VRM-Model geladen werden.
-settings-osc-vmc-anchor_hip-label = Hüftenverankerung
 settings-osc-vmc-mirror_tracking = Tracking spiegeln
 settings-osc-vmc-mirror_tracking-description = Tracking horizontal spiegeln
-settings-osc-vmc-mirror_tracking-label = Tracking spiegeln
 settings-osc-vmc-status-badge-error = Fehler
 
 ## Common OSC settings
