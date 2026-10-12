@@ -351,7 +351,6 @@ mounting_selection_menu-close = Cerrar
 
 ## Sidebar settings
 
-settings-sidebar-title = Ajustes
 settings-sidebar-stay_aligned = Mantente Alineado
 settings-sidebar-interface = Interfaz
 settings-sidebar-utils = Utilidades
@@ -359,7 +358,6 @@ settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
 settings-sidebar-home = Pantalla de Inicio
 settings-sidebar-checklist = Lista de Tracking
-settings-sidebar-notifications = Notificaciones
 settings-sidebar-behavior = Comportamiento
 settings-sidebar-firmware-tool = Herramienta de firmware DIY
 settings-sidebar-vrc_warnings = Advertencias de la configuración de VRChat
@@ -378,7 +376,6 @@ settings-general-tracker_mechanics-filtering = Filtrado
 settings-general-tracker_mechanics-filtering-description =
     Selecciona un tipo de filtro para tus sensores.
     Predicción predice el movimiento mientras que el suavizado suaviza el movimiento.
-settings-general-tracker_mechanics-filtering-type = Tipos de filtro
 settings-general-tracker_mechanics-filtering-type-none = Sin filtro
 settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones como son. No se realizará ningún filtrado.
 settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
@@ -391,15 +388,12 @@ settings-general-tracker_mechanics-save_mounting_reset = Guardar calibración au
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Guarda las calibraciones automáticas del reinicio de montura para los trackers entre reinicios. Útil
     para cuando se usa un traje donde los trackers no se mueven entre sesiones. <b>¡No se recomienda para usuarios típicos!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Guardar reinicio de montura
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar el magnetómetro en todos los trackers IMU que lo admitan
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa el magnetómetro en todos los trackers que tienen un firmware compatible, lo que reduce la desviación en entornos magnéticos estables.
     Se puede desactivar por sensor en la configuración del sensor. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetómetro en trackers
 settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permite recibir datos de trackers HID por USB. ¡Asegúrate de que los trackers conectados tengan <b>conexión por HID</b> activados!
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permite a los trackers HID conectarse directamente por USB
 settings-stay_aligned-description = Mantente Alineado reduce el desvío ajustando gradualmente tus trackers para calzar tus poses relajadas.
 settings-stay_aligned-setup-label = Configurar Mantente Alineado
 settings-stay_aligned-setup-description = Debes completar «Configurar Mantente Alineado» para activar Mantente Alineado.
@@ -440,10 +434,8 @@ settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forzar reinicio de montura de pies
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar el reinicio de la montura de los pies durante los reinicios generales del montaje.
 settings-general-fk_settings-enforce_joint_constraints = Límites esqueléticos
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imponer restricciones
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-ik = Datos de posición
-settings-general-fk_settings-ik-use_position = Usar datos de posición
 settings-general-fk_settings-ik-use_position-description = Permite el uso de los datos de posición de los trackers que lo proveen. Cuando actives esto asegúrate de hacer un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-skeleton_settings-ratios = Radios del esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de los ajustes del esqueleto. Podrías llegar a necesitar reajustar tus proporciones después de cambiar estos valores.
@@ -479,7 +471,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 settings-interface-appearance = Apariencia
 settings-general-interface-dev_mode = Modo desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados.
-settings-general-interface-dev_mode-label = Modo desarrollador
 settings-general-interface-theme = Tema de color
 settings-general-interface-lang = Selecciona un idioma
 settings-general-interface-lang-description = Cambia el idioma que quieras usar.
@@ -497,21 +488,17 @@ settings-interface-appearance-font_size-description = Esto afecta al tamaño de 
 
 settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se realice un reinicio.
-settings-general-interface-feedback_sound-label = Sonido de feedback
 settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
 settings-general-interface-connected_trackers_warning = Advertencia de trackers conectados
 settings-general-interface-connected_trackers_warning-description = Esta opción hará que aparezca un pop-up cada vez que intentas salir de SlimeVR mientras tienes uno o más trackers conectados. Te recuerda de apagar tus trackers cuando ya paraste de usarlos así preservas la duración de la batería.
-settings-general-interface-connected_trackers_warning-label = Advertencia de trackers conectados al salir
 
 ## Behavior settings
 
 settings-interface-behavior = Comportamiento
 settings-general-interface-use_tray = Minimizar a la bandeja del sistema
 settings-general-interface-use_tray-description = Permite cerrar la ventana sin cerrar el servidor de SlimeVR para que puedas continuar usándolo sin que te moleste la interfaz.
-settings-general-interface-use_tray-label = Minimizar a la bandeja del sistema
 settings-general-interface-discord_presence = Compartir actividad en Discord
 settings-general-interface-discord_presence-description = Le dice a tu cliente de Discord que estás usando SlimeVR junto con la cantidad de sensores IMU que estás usando.
-settings-general-interface-discord_presence-label = Compartir actividad en Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Recolectando slimes
@@ -520,13 +507,13 @@ settings-general-interface-discord_presence-message =
        *[other] Usando { $amount } sensores
     }
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
+settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Consientes a la recopilación de datos de errores anonimizados?</h1>
     
     <b>No recopilamos información personal</b> como tu dirección IP o credenciales del Wi-Fi. ¡SlimeVR respeta tu privacidad!
     
     Para proveer la mejor experiencia de usuario, recopilamos reportes de errores anonimizados, métricas de rendimiento, e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas son recopiladas a través de Sentry.io.
-settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 settings-interface-behavior-bvh_directory = Carpeta para guardar grabaciones de BVH
 settings-interface-behavior-bvh_directory-description = Elige una carpeta para guardar tus grabaciones BVH en lugar de tener que elegir dónde guardarlas cada vez.
 settings-interface-behavior-bvh_directory-label = Carpeta de grabaciones BVH
@@ -569,7 +556,6 @@ settings-osc-vrchat-description-v1 =
     en Tracking & IK > Permitir el envío de datos OSC de seguimiento de RV de cabeza y muñeca.
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Habilita el envio y recibo de datos.
-settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network = Puertos de conexión
 settings-osc-vrchat-network-port_in =
     .label = Puerto de entrada
@@ -592,7 +578,6 @@ settings-osc-vmc-description =
       para enviar datos de los huesos de SlimeVR y recibir data de los huesos de otras aplicaciones.
 settings-osc-vmc-enable = Habilitar
 settings-osc-vmc-enable-description = Habilita el envio y recibo de datos.
-settings-osc-vmc-enable-label = Habilitar
 settings-osc-vmc-network = Puertos de conexión
 settings-osc-vmc-network-description = Establece los puertos de entrada y salida de datos por medio de VMC.
 settings-osc-vmc-network-port_in =
@@ -610,10 +595,8 @@ settings-osc-vmc-vrm-untitled_model = Modelo sin nombre
 settings-osc-vmc-vrm-file_select = Arrastra y suelta un modelo para usar, o <u>selecciona uno</u>.
 settings-osc-vmc-anchor_hip = Anclaje por cadera
 settings-osc-vmc-anchor_hip-description = Anclar el tracking a la cadera, útil para hacer de VTuber sentado. Si lo desactivas, carga un modelo VRM.
-settings-osc-vmc-anchor_hip-label = Anclaje por cadera
 settings-osc-vmc-mirror_tracking = Invertir el tracking
 settings-osc-vmc-mirror_tracking-description = invierte el tracking horizontalmente.
-settings-osc-vmc-mirror_tracking-label = Invertir el tracking
 
 ## Common OSC settings
 
