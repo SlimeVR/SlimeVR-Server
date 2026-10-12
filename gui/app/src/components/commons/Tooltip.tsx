@@ -14,6 +14,7 @@ import {
 import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
 import { CloseIcon } from './icon/CloseIcon';
+import { focusVisible } from '@/utils/focus-nav';
 
 export type Direction = 'top' | 'left' | 'right' | 'bottom';
 interface TooltipProps {
@@ -124,17 +125,23 @@ export function FloatingTooltip({
 
       const open = () => setIsOpen(true);
       const close = () => setIsOpen(false);
+      // Focus only shows the tooltip when the focus is one a user should see
+      // marked. A click focuses the control too, and so does a closing modal
+      // handing focus back to the control that opened it.
+      const focused = () => {
+        if (focusVisible(elem)) setIsOpen(true);
+      };
 
       elem.addEventListener('mouseenter', open);
       elem.addEventListener('mouseleave', close);
-      elem.addEventListener('focus', open);
+      elem.addEventListener('focus', focused);
       elem.addEventListener('blur', close);
 
       return () => {
         elem.style.removeProperty('anchor-name');
         elem.removeEventListener('mouseenter', open);
         elem.removeEventListener('mouseleave', close);
-        elem.removeEventListener('focus', open);
+        elem.removeEventListener('focus', focused);
         elem.removeEventListener('blur', close);
       };
     }
