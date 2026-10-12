@@ -16,11 +16,7 @@ export function useResetsSettings() {
   const { sendRPCPacket } = useWebsocketAPI();
 
   const setResetsSettings = (partial: Partial<ChangeResetsSettingsRequestT>) => {
-    const request = Object.assign(
-      new ChangeResetsSettingsRequestT(),
-      resetsSettings,
-      partial
-    );
+    const request = Object.assign(new ChangeResetsSettingsRequestT(), partial);
     sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, request);
   };
 

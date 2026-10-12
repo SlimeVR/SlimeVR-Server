@@ -42,13 +42,13 @@ class ResetsBehaviour(
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						resetsConfig = ResetsConfig(
-							resetMountingFeet = req.resetMountingFeet,
-							armsMountingResetMode = req.armsMountingResetMode,
-							yawResetSmoothTime = req.yawResetSmoothTime,
-							saveMountingReset = req.saveMountingReset,
-							resetReliableReferenceAttitude = req.resetReliableReferenceAttitude,
-							mountingMethod = req.mountingMethod,
+						resetsConfig = resetsConfig.copy(
+							resetMountingFeet = req.resetMountingFeet ?: resetsConfig.resetMountingFeet,
+							armsMountingResetMode = req.armsMountingResetMode ?: resetsConfig.armsMountingResetMode,
+							yawResetSmoothTime = req.yawResetSmoothTime ?: resetsConfig.yawResetSmoothTime,
+							saveMountingReset = req.saveMountingReset ?: resetsConfig.saveMountingReset,
+							resetReliableReferenceAttitude = req.resetReliableReferenceAttitude ?: resetsConfig.resetReliableReferenceAttitude,
+							mountingMethod = req.mountingMethod ?: resetsConfig.mountingMethod,
 						),
 					)
 				},
