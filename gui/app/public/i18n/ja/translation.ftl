@@ -252,14 +252,12 @@ mounting_selection_menu-close = 閉じる
 
 ## Sidebar settings
 
-settings-sidebar-title = 設定
 settings-sidebar-general = 一般
 settings-sidebar-trackers = トラッカー
 settings-sidebar-interface = インターフェース
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 settings-sidebar-appearance = 外観
-settings-sidebar-notifications = 通知
 
 ## Bone routing settings
 
@@ -276,7 +274,6 @@ settings-general-tracker_mechanics-filtering = フィルター機能
 settings-general-tracker_mechanics-filtering-description =
     トラッカーのフィルタリングの種類を選択します。
     Predictionは動きを予測し、Smoothingは動きを滑らかにする。
-settings-general-tracker_mechanics-filtering-type = フィルタータイプ
 settings-general-tracker_mechanics-filtering-type-none = フィルター無し
 settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
 settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
@@ -284,7 +281,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 動き
 settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
-settings-stay_aligned-general-label = 一般
 settings-stay_aligned-relaxed_poses-close = 閉じる
 
 ## Keybinds Page
@@ -344,7 +340,6 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 settings-interface-appearance = 外観
 settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
@@ -358,16 +353,13 @@ settings-interface-appearance-font-slime_font = デフォルトフォント
 ## Notification settings
 
 settings-general-interface-feedback_sound = フィードバック音
-settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
 settings-general-interface-connected_trackers_warning = 接続されたトラッカー警告
 
 ## Behavior settings
 
 settings-general-interface-dev_mode = 開発者モード
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-use_tray = システムトレイに最小化する
-settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
 
@@ -389,7 +381,6 @@ settings-serial-send_command-warning-cancel = キャンセル
 
 settings-osc-vrchat-enable = 有効
 settings-osc-vrchat-enable-description = データの送受信を切り替える。
-settings-osc-vrchat-enable-label = 有効
 settings-osc-vrchat-network = ネットワークポート
 settings-osc-vrchat-network-port_in =
     .label = ポートイン
@@ -410,7 +401,6 @@ settings-osc-vrchat-status-badge-unknown = 不明
 
 settings-osc-vmc-enable = 有効
 settings-osc-vmc-enable-description = データの送受信を切り替える。
-settings-osc-vmc-enable-label = 有効
 settings-osc-vmc-network = ネットワークポート
 settings-osc-vmc-network-port_in =
     .label = ポートイン
