@@ -162,7 +162,7 @@ export function TapDetectionSettings() {
 
   return (
     <>
-      <div className="flex flex-col pb-2 gap-1">
+      <div className="flex flex-col pt-5 pb-2 gap-1">
         <Typography variant="section-title">
           {l10n.getString('settings-general-gesture_control-subtitle')}
         </Typography>

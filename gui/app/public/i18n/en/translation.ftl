@@ -530,7 +530,6 @@ settings-driver-velocity = Send velocity
 settings-driver-velocity-description = Send linear and angular velocity data to the driver. Allows SteamVR/Monado tracker pose prediction and compatibility with applications that expect this data.
 
 ## Tracker mechanics
-settings-general-trackers_settings = Trackers Settings
 settings-general-mounting_method = Mounting calibration method
 settings-general-mounting_method-description = What mounting calibration method to use to calibrate your trackers' mounting orientations.
 settings-general-tracker_mechanics-filtering = Filtering
@@ -565,11 +564,10 @@ settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID t
 settings-general-tracker_mechanics-timeout_delay = Timeout delay
 settings-general-tracker_mechanics-timeout_delay-description = How long until a tracker is marked as '{ tracker-status-disconnected }' when the connection is lost.
 
-settings-stay_aligned = Stay Aligned Settings
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
-settings-stay_aligned-enabled-label = Adjust trackers
+settings-stay_aligned-enabled-label = Enable Stay Aligned
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
@@ -617,7 +615,6 @@ settings-keybinds-error-add-modifier = Hold Ctrl, Alt, or Super with that key
 
 
 ## FK/Tracking settings
-settings-general-fk_settings = Tracking Settings
 
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
@@ -644,7 +641,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
-settings-general-fk_settings-resets_settings = Resets Settings
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = Reset HMD attitude
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-arms_mounting_reset_mode = Arms mounting reset mode
@@ -720,7 +716,6 @@ settings-interface-appearance-font_size = Base font scaling
 settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel.
 
 ## Notification settings
-settings-interface-notifications = Notifications
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
@@ -928,6 +923,9 @@ settings-osc-common-network-port_banned_error = The port { $port } can't be used
 
 ## Advanced settings
 settings-utils-advanced = Advanced
+
+settings-utils-advanced-danger_zone = Danger zone
+settings-utils-advanced-danger_zone-description = These actions delete your settings and cannot be undone.
 
 settings-utils-advanced-reset-gui = Reset GUI settings
 settings-utils-advanced-reset-gui-description = Restore the default settings for the interface.

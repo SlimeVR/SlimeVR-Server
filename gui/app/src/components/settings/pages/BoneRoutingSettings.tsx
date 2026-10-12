@@ -35,10 +35,7 @@ import {
   type StatusVariant,
 } from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
-import {
-  SettingsPageLayout,
-  SettingsPagePaneLayout,
-} from '@/components/settings/SettingsPageLayout';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -524,152 +521,150 @@ export function BoneRoutingSettings() {
           setHandsWarning(null);
         }}
       />
-      <SettingsPageLayout>
-        <SettingsPagePaneLayout icon={<RouterIcon />} id="routing">
-          <>
-            <Typography variant="main-title" id="settings-routing" />
-            <div className="flex flex-col pt-1 pb-4">
-              <Typography
-                id="settings-routing-description"
-                whitespace="whitespace-pre-line"
+      <SettingsPagePaneLayout icon={<RouterIcon />}>
+        <>
+          <Typography variant="main-title" id="settings-routing" />
+          <div className="flex flex-col pt-1 pb-4">
+            <Typography
+              id="settings-routing-description"
+              whitespace="whitespace-pre-line"
+            />
+          </div>
+
+          <Typography variant="section-title" id="settings-routing-mode" />
+          <div className="flex flex-col gap-2 pt-1 pb-5">
+            <Typography
+              id="settings-routing-mode-description"
+              whitespace="whitespace-pre-line"
+            />
+            <CheckboxInternal
+              variant="toggle"
+              outlined
+              name="automatic"
+              checked={automatic}
+              onChange={() => setMode(!automatic)}
+              label={l10n.getString('settings-routing-automatic-label')}
+            />
+          </div>
+
+          <Typography variant="section-title" id="settings-routing-outputs" />
+          <div className="flex flex-col bg-background-80 px-4 py-2 mt-1 mb-3 rounded-md divide-y divide-background-60">
+            {outputs.map((status) => (
+              <OutputStatusRow
+                key={status.output}
+                status={status}
+                routed={routedCounts.get(status.output) ?? 0}
               />
-            </div>
+            ))}
+          </div>
 
-            <Typography variant="section-title" id="settings-routing-mode" />
-            <div className="flex flex-col gap-2 pt-1 pb-5">
-              <Typography
-                id="settings-routing-mode-description"
-                whitespace="whitespace-pre-line"
-              />
-              <CheckboxInternal
-                variant="toggle"
-                outlined
-                name="automatic"
-                checked={automatic}
-                onChange={() => setMode(!automatic)}
-                label={l10n.getString('settings-routing-automatic-label')}
-              />
+          <Typography variant="section-title" id="settings-routing-bones" />
+          <div className="pt-1 pb-2">
+            <Typography id="settings-routing-bones-description" />
+          </div>
+          {duplicated.size > 0 && (
+            <div className="pb-2">
+              <WarningBox whitespace={false}>
+                {l10n.getString('settings-routing-duplicate-warning', {
+                  boneCount: duplicated.size,
+                  bones: duplicatedNames.bones,
+                  outputs: duplicatedNames.outputs,
+                })}
+              </WarningBox>
             </div>
+          )}
 
-            <Typography variant="section-title" id="settings-routing-outputs" />
-            <div className="flex flex-col bg-background-80 px-4 py-2 mt-1 mb-3 rounded-md divide-y divide-background-60">
-              {outputs.map((status) => (
-                <OutputStatusRow
-                  key={status.output}
-                  status={status}
-                  routed={routedCounts.get(status.output) ?? 0}
-                />
-              ))}
-            </div>
-
-            <Typography variant="section-title" id="settings-routing-bones" />
-            <div className="pt-1 pb-2">
-              <Typography id="settings-routing-bones-description" />
-            </div>
-            {duplicated.size > 0 && (
-              <div className="pb-2">
-                <WarningBox whitespace={false}>
-                  {l10n.getString('settings-routing-duplicate-warning', {
-                    boneCount: duplicated.size,
-                    bones: duplicatedNames.bones,
-                    outputs: duplicatedNames.outputs,
-                  })}
-                </WarningBox>
-              </div>
-            )}
-
-            <div className="rounded-2xl bg-background-80 shadow-sm mb-1 overflow-hidden min-w-0">
-              <div className="overflow-x-auto min-w-0">
-                <div className="min-w-fit mobile:min-w-0">
-                  <div
-                    className={classNames(
-                      ROW_CLASSES,
-                      'py-3 border-b border-background-50 uppercase mobile:[&_h2]:text-standard-bold'
-                    )}
-                  >
-                    <div className={BONE_CELL_CLASSES}>
+          <div className="rounded-2xl bg-background-80 shadow-sm mb-1 overflow-hidden min-w-0">
+            <div className="overflow-x-auto min-w-0">
+              <div className="min-w-fit mobile:min-w-0">
+                <div
+                  className={classNames(
+                    ROW_CLASSES,
+                    'py-3 border-b border-background-50 uppercase mobile:[&_h2]:text-standard-bold'
+                  )}
+                >
+                  <div className={BONE_CELL_CLASSES}>
+                    <Typography
+                      variant="section-title"
+                      id="settings-routing-bone"
+                    />
+                  </div>
+                  {outputs.map((status) => (
+                    <div key={status.output} className={OUTPUT_CELL_CLASSES}>
                       <Typography
                         variant="section-title"
-                        id="settings-routing-bone"
+                        textAlign="text-center"
+                        id={OUTPUT_LABEL_ID[status.output]}
                       />
                     </div>
-                    {outputs.map((status) => (
-                      <div key={status.output} className={OUTPUT_CELL_CLASSES}>
-                        <Typography
-                          variant="section-title"
-                          textAlign="text-center"
-                          id={OUTPUT_LABEL_ID[status.output]}
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  {BONE_GROUPS.map((group) => {
-                    const open = openGroups.has(group.id);
-                    return (
-                      <div
-                        key={group.id}
-                        className="border-b border-background-50 last:border-b-0"
-                      >
-                        <Clickable
-                          onClick={() => toggleGroup(group.id)}
-                          className={classNames(
-                            'w-full flex items-center gap-4 pl-4 pr-4 h-12 bg-background-60 hover:bg-background-50 fill-background-10 transition-colors',
-                            open && 'border-b border-background-50'
-                          )}
-                        >
-                          <div className="w-6">{group.icon}</div>
-                          <Typography
-                            bold
-                            id={`settings-routing-group-${group.id}`}
-                          />
-                          <div className="ml-auto fill-background-10">
-                            {open ? (
-                              <ArrowUpIcon size={20} />
-                            ) : (
-                              <ArrowDownIcon size={20} />
-                            )}
-                          </div>
-                        </Clickable>
-
-                        {open && (
-                          <div className="divide-y divide-background-60">
-                            {group.rows.map((row) => (
-                              <div
-                                key={row.id}
-                                className={classNames(ROW_CLASSES, 'py-1.5')}
-                              >
-                                <div className={BONE_CELL_CLASSES}>
-                                  <Typography truncate id={row.labelId} />
-                                </div>
-
-                                {outputs.map((status) => (
-                                  <RouteCell
-                                    key={status.output}
-                                    row={row}
-                                    output={status.output}
-                                    automatic={automatic}
-                                    unavailable={
-                                      status.state ===
-                                      RoutingOutputState.UNSUPPORTED
-                                    }
-                                    {...cellState(row, status.output, tables)}
-                                    onToggle={toggle}
-                                  />
-                                ))}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                  ))}
                 </div>
+
+                {BONE_GROUPS.map((group) => {
+                  const open = openGroups.has(group.id);
+                  return (
+                    <div
+                      key={group.id}
+                      className="border-b border-background-50 last:border-b-0"
+                    >
+                      <Clickable
+                        onClick={() => toggleGroup(group.id)}
+                        className={classNames(
+                          'w-full flex items-center gap-4 pl-4 pr-4 h-12 bg-background-60 hover:bg-background-50 fill-background-10 transition-colors',
+                          open && 'border-b border-background-50'
+                        )}
+                      >
+                        <div className="w-6">{group.icon}</div>
+                        <Typography
+                          bold
+                          id={`settings-routing-group-${group.id}`}
+                        />
+                        <div className="ml-auto fill-background-10">
+                          {open ? (
+                            <ArrowUpIcon size={20} />
+                          ) : (
+                            <ArrowDownIcon size={20} />
+                          )}
+                        </div>
+                      </Clickable>
+
+                      {open && (
+                        <div className="divide-y divide-background-60">
+                          {group.rows.map((row) => (
+                            <div
+                              key={row.id}
+                              className={classNames(ROW_CLASSES, 'py-1.5')}
+                            >
+                              <div className={BONE_CELL_CLASSES}>
+                                <Typography truncate id={row.labelId} />
+                              </div>
+
+                              {outputs.map((status) => (
+                                <RouteCell
+                                  key={status.output}
+                                  row={row}
+                                  output={status.output}
+                                  automatic={automatic}
+                                  unavailable={
+                                    status.state ===
+                                    RoutingOutputState.UNSUPPORTED
+                                  }
+                                  {...cellState(row, status.output, tables)}
+                                  onToggle={toggle}
+                                />
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          </>
-        </SettingsPagePaneLayout>
-      </SettingsPageLayout>
+          </div>
+        </>
+      </SettingsPagePaneLayout>
     </>
   );
 }

@@ -19,11 +19,9 @@ interface MagnetometerToggleForm {
 export function MagnetometerToggleSetting({
   trackerId,
   settingType,
-  id,
 }: {
   trackerId?: number;
   settingType: 'general' | 'tracker';
-  id?: string;
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -79,10 +77,7 @@ export function MagnetometerToggleSetting({
 
   return settingType === 'general' ? (
     <>
-      <div
-        className="flex flex-col pb-2 scroll-mt-12 mobile:scroll-mt-20"
-        id={id}
-      >
+      <div className="flex flex-col pb-2">
         <Typography variant="section-title">
           {l10n.getString(
             'settings-general-tracker_mechanics-use_mag_on_all_trackers'
@@ -107,7 +102,7 @@ export function MagnetometerToggleSetting({
       />
     </>
   ) : (
-    <div className="flex flex-col gap-2 w-full mt-3" id={id}>
+    <div className="flex flex-col gap-2 w-full mt-3">
       <Typography variant="section-title">
         {l10n.getString('tracker-settings-use_mag')}
       </Typography>
@@ -115,13 +110,7 @@ export function MagnetometerToggleSetting({
         id="tracker-settings-use_mag-description"
         elems={{
           b: <b />,
-          magSetting: (
-            <Link
-              to="/settings/trackers"
-              state={{ scrollTo: 'mechanics-magnetometer' }}
-              className="underline"
-            />
-          ),
+          magSetting: <Link to="/settings/trackers" className="underline" />,
         }}
       >
         <Typography whitespace="whitespace-pre-line" />

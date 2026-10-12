@@ -17,7 +17,7 @@ import { CheckBox } from '@/components/commons/Checkbox';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
-import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
@@ -183,11 +183,9 @@ export function TrackingSettings() {
   );
 
   return (
-    <SettingsPagePaneLayout icon={<MartialArtsIcon />} id="tracking">
+    <SettingsPagePaneLayout icon={<MartialArtsIcon />}>
       <>
-        <Typography variant="main-title">
-          {l10n.getString('settings-general-fk_settings')}
-        </Typography>
+        <Typography variant="main-title" id="settings-sidebar-tracking" />
 
         <div className="flex flex-col pt-3">
           <Typography variant="section-title">

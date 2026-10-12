@@ -19,10 +19,7 @@ import {
   type StatusVariant,
 } from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
-import {
-  SettingsPageLayout,
-  SettingsPagePaneLayout,
-} from '@/components/settings/SettingsPageLayout';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 
 type DriverForm = {
@@ -141,63 +138,61 @@ export function DriverSettings() {
   );
 
   return (
-    <SettingsPageLayout>
-      <SettingsPagePaneLayout icon={<SteamIcon size={24} />} id="driver">
-        <>
-          <Typography variant="main-title">SteamVR / Monado</Typography>
-          <div className="flex flex-col pt-1 pb-4">
-            <Typography id="settings-driver-description" />
-          </div>
+    <SettingsPagePaneLayout icon={<SteamIcon size={24} />}>
+      <>
+        <Typography variant="main-title">SteamVR / Monado</Typography>
+        <div className="flex flex-col pt-1 pb-4">
+          <Typography id="settings-driver-description" />
+        </div>
 
-          <Typography variant="section-title" id="settings-driver-enable" />
-          <div className="flex flex-col pt-1 pb-2">
-            <Typography id="settings-driver-enable-description" />
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="enabled"
-              label={l10n.getString('settings-driver-enable-label')}
-            />
-          </div>
-
-          {enabled && status && (
-            <>
-              <Typography
-                variant="section-title"
-                id="settings-driver-status-title"
-              />
-              <StatusCard status={status} />
-            </>
-          )}
-
-          <Typography variant="section-title" id="settings-driver-bones" />
-          <div className="flex flex-col gap-2 pt-1 pb-4">
-            <Typography id="settings-driver-bones-description" />
-            <div className="w-fit">
-              <Button
-                variant="secondary"
-                to="/settings/routing"
-                id="settings-driver-bones-link"
-              />
-            </div>
-          </div>
-
-          <Typography variant="section-title" id="settings-driver-velocity" />
-          <div className="pt-1 pb-2">
-            <Typography id="settings-driver-velocity-description" />
-          </div>
+        <Typography variant="section-title" id="settings-driver-enable" />
+        <div className="flex flex-col pt-1 pb-2">
+          <Typography id="settings-driver-enable-description" />
+        </div>
+        <div className="grid grid-cols-2 gap-3 pb-5">
           <CheckBox
             variant="toggle"
             outlined
             control={control}
-            name="sendVelocity"
-            label={l10n.getString('settings-driver-velocity')}
+            name="enabled"
+            label={l10n.getString('settings-driver-enable-label')}
           />
-        </>
-      </SettingsPagePaneLayout>
-    </SettingsPageLayout>
+        </div>
+
+        {enabled && status && (
+          <>
+            <Typography
+              variant="section-title"
+              id="settings-driver-status-title"
+            />
+            <StatusCard status={status} />
+          </>
+        )}
+
+        <Typography variant="section-title" id="settings-driver-bones" />
+        <div className="flex flex-col gap-2 pt-1 pb-4">
+          <Typography id="settings-driver-bones-description" />
+          <div className="w-fit">
+            <Button
+              variant="secondary"
+              to="/settings/routing"
+              id="settings-driver-bones-link"
+            />
+          </div>
+        </div>
+
+        <Typography variant="section-title" id="settings-driver-velocity" />
+        <div className="pt-1 pb-2">
+          <Typography id="settings-driver-velocity-description" />
+        </div>
+        <CheckBox
+          variant="toggle"
+          outlined
+          control={control}
+          name="sendVelocity"
+          label={l10n.getString('settings-driver-velocity')}
+        />
+      </>
+    </SettingsPagePaneLayout>
   );
 }

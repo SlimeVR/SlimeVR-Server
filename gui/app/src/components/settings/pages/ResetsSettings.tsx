@@ -9,6 +9,9 @@ import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
 import { MountingMethodRadio } from '@/components/mounting/MountingMethodRadio';
 import { ArmsMountingResetMode, MountingMethod } from 'solarxr-protocol';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
+import { TapDetectionSettings } from './components/TapDetectionSettings';
 
 type ResetsSettingsForm = {
   resetMountingFeet: boolean;
@@ -69,7 +72,11 @@ export function ResetsSettings() {
   }, [settings]);
 
   return (
-    <>
+    <SettingsPagePaneLayout icon={<FullResetIcon width={20} />}>
+      <div className="flex flex-col pb-3">
+        <Typography variant="main-title" id="settings-sidebar-resets" />
+      </div>
+
       <div className="flex flex-col pt-5 gap-1">
         <Typography
           variant="section-title"
@@ -94,7 +101,7 @@ export function ResetsSettings() {
               )}
             </Typography>
 
-            <div className="grid flex-col gap-2">
+            <div className="grid md:grid-cols-3 gap-3">
               <Radio
                 control={control}
                 name="armsMountingResetMode"
@@ -228,6 +235,8 @@ export function ResetsSettings() {
           )}
         />
       </div>
-    </>
+
+      <TapDetectionSettings />
+    </SettingsPagePaneLayout>
   );
 }

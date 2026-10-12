@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import { TrackingChecklistSettings } from '@/components/settings/pages/HomeScreenSettings';
+import { TrackingChecklistSettings } from '@/components/settings/pages/components/TrackingChecklistSettings';
 
 export function TrackingChecklistModal({
   open,

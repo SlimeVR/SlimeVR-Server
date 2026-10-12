@@ -19,11 +19,7 @@ export function DoneStep({ goTo }: VerticalStepComponentProps) {
           <Button variant={'secondary'} onClick={() => goTo('start')} />
         </Localized>
         <Localized id="onboarding-stay_aligned-done">
-          <Button
-            variant="primary"
-            to="/settings/trackers"
-            state={{ scrollTo: 'stayaligned' }}
-          />
+          <Button variant="primary" to="/settings/stay-aligned" />
         </Localized>
       </div>
     </div>

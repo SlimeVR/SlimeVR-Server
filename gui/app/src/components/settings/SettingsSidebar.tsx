@@ -1,38 +1,17 @@
 import classNames from 'classnames';
-import { useMemo } from 'react';
-import { NavLink, useLocation, useMatch } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { useVRCConfig } from '@/hooks/vrc-config';
 
-export function SettingsLink({
-  to,
-  scrollTo,
-  id,
-}: {
-  id: string;
-  to: string;
-  scrollTo?: string;
-}) {
-  const { state } = useLocation();
-  const doesMatch = useMatch({
-    path: to,
-  });
-
-  const isActive = useMemo(() => {
-    const typedState: { scrollTo?: string } = state as any;
-    return (
-      (doesMatch && !scrollTo && !typedState?.scrollTo) ||
-      (doesMatch && typedState?.scrollTo == scrollTo)
-    );
-  }, [state, doesMatch]);
-
+export function SettingsLink({ to, id }: { id: string; to: string }) {
   return (
     <NavLink
       to={to}
-      state={{ scrollTo }}
-      className={classNames('pl-5 py-2 hover:bg-background-60 rounded-lg', {
-        'bg-background-60': isActive,
-      })}
+      className={({ isActive }) =>
+        classNames('pl-5 py-2 hover:bg-background-60 rounded-lg', {
+          'bg-background-60': isActive,
+        })
+      }
     >
       <Typography id={id} />
     </NavLink>
@@ -49,49 +28,17 @@ export function SettingsSidebar() {
         <Typography variant="section-title" id="settings-sidebar-general" />
         <div className="flex flex-col gap-2">
           <SettingsLink
-            to="/settings/trackers"
-            scrollTo="stayAligned"
-            id="settings-sidebar-stay_aligned"
-          />
-          <SettingsLink
-            to="/settings/trackers"
-            scrollTo="tracking"
+            to="/settings/tracking"
             id="settings-sidebar-tracking"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="resets"
-            id="settings-sidebar-resets"
-          />
-          <SettingsLink
-            to="/settings/trackers"
-            scrollTo="trackers"
             id="settings-sidebar-trackers"
           />
-        </div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <Typography variant="section-title" id="settings-sidebar-outputs" />
-        <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/resets" id="settings-sidebar-resets" />
           <SettingsLink
-            to="/settings/routing"
-            scrollTo="routing"
-            id="settings-sidebar-routing"
-          />
-          <SettingsLink
-            to="/settings/driver"
-            scrollTo="driver"
-            id="settings-sidebar-driver"
-          />
-          <SettingsLink
-            to="/settings/osc/vrchat"
-            scrollTo="vrchat"
-            id="settings-sidebar-vrchat_osc"
-          />
-          <SettingsLink
-            to="/settings/osc/vmc"
-            scrollTo="vmc"
-            id="settings-sidebar-osc_vmc"
+            to="/settings/stay-aligned"
+            id="settings-sidebar-stay_aligned"
           />
         </div>
       </div>
@@ -99,40 +46,34 @@ export function SettingsSidebar() {
         <Typography variant="section-title" id="settings-sidebar-interface" />
         <div className="flex flex-col gap-2">
           <SettingsLink
-            to="/settings/interface"
-            scrollTo="notifications"
-            id="settings-sidebar-notifications"
-          />
-          <SettingsLink
-            to="/settings/interface"
-            scrollTo="behavior"
-            id="settings-sidebar-behavior"
-          />
-          <SettingsLink
-            to="/settings/interface"
-            scrollTo="appearance"
+            to="/settings/appearance"
             id="settings-sidebar-appearance"
           />
           <SettingsLink
+            to="/settings/behavior"
+            id="settings-sidebar-behavior"
+          />
+          <SettingsLink to="/settings/home" id="settings-sidebar-home" />
+          <SettingsLink
+            to="/settings/checklist"
+            id="settings-sidebar-checklist"
+          />
+          <SettingsLink
             to="/settings/keybinds"
-            scrollTo="keybinds"
             id="settings-sidebar-keybinds"
           />
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <Typography variant="section-title" id="settings-sidebar-home" />
+        <Typography variant="section-title" id="settings-sidebar-outputs" />
         <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/routing" id="settings-sidebar-routing" />
+          <SettingsLink to="/settings/driver" id="settings-sidebar-driver" />
           <SettingsLink
-            to="/settings/interface/home"
-            scrollTo="home"
-            id="settings-sidebar-home"
+            to="/settings/osc/vrchat"
+            id="settings-sidebar-vrchat_osc"
           />
-          <SettingsLink
-            to="/settings/interface/home"
-            scrollTo="checklist"
-            id="settings-sidebar-checklist"
-          />
+          <SettingsLink to="/settings/osc/vmc" id="settings-sidebar-osc_vmc" />
         </div>
       </div>
       <div className="flex flex-col gap-3">

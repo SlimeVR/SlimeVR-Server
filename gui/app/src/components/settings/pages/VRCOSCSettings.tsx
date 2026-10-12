@@ -28,10 +28,7 @@ import {
   type StatusVariant,
 } from '@/components/commons/StatusBadge';
 import { VRCIcon } from '@/components/commons/icon/VRCIcon';
-import {
-  SettingsPageLayout,
-  SettingsPagePaneLayout,
-} from '@/components/settings/SettingsPageLayout';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useRelativeTime } from '@/hooks/relative-time';
 import {
@@ -439,164 +436,162 @@ export function VRCOSCSettings() {
   );
 
   return (
-    <SettingsPageLayout>
-      <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<VRCIcon />} id="vrchat">
-          <>
-            <Typography variant="main-title">VRChat OSC</Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              <>
-                {l10n
-                  .getString('settings-osc-vrchat-description-v1')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography key={i}>{line}</Typography>
-                  ))}
-              </>
-            </div>
+    <form className="flex flex-col gap-2 w-full">
+      <SettingsPagePaneLayout icon={<VRCIcon />}>
+        <>
+          <Typography variant="main-title">VRChat OSC</Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <>
+              {l10n
+                .getString('settings-osc-vrchat-description-v1')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography key={i}>{line}</Typography>
+                ))}
+            </>
+          </div>
 
-            <Typography variant="section-title">
-              {l10n.getString('settings-osc-vrchat-enable')}
+          <Typography variant="section-title">
+            {l10n.getString('settings-osc-vrchat-enable')}
+          </Typography>
+          <div className="flex flex-col pb-2">
+            <Typography>
+              {l10n.getString('settings-osc-vrchat-enable-description')}
             </Typography>
-            <div className="flex flex-col pb-2">
-              <Typography>
-                {l10n.getString('settings-osc-vrchat-enable-description')}
+          </div>
+          <div className="grid grid-cols-2 gap-3 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="enabled"
+              label={l10n.getString('settings-osc-vrchat-enable-label')}
+            />
+          </div>
+
+          {enabled && status && (
+            <>
+              <Typography variant="section-title">
+                {l10n.getString('settings-osc-vrchat-status-title')}
               </Typography>
-            </div>
-            <div className="grid grid-cols-2 gap-3 pb-5">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="enabled"
-                label={l10n.getString('settings-osc-vrchat-enable-label')}
+              <StatusCard
+                status={status}
+                onSwitchToTarget={(target) => {
+                  setValue('useManualNetwork', true, {
+                    shouldDirty: true,
+                  });
+                  setValue(
+                    'portsAddress.address',
+                    target.address?.toString() ?? '',
+                    {
+                      shouldDirty: true,
+                    }
+                  );
+                  setValue('portsAddress.portOut', target.portOut, {
+                    shouldDirty: true,
+                  });
+                }}
+              />
+            </>
+          )}
+
+          <Typography variant="section-title" id="settings-driver-bones" />
+          <div className="flex flex-col gap-2 pt-1 pb-4">
+            <Typography id="settings-driver-bones-description" />
+            <div className="w-fit">
+              <Button
+                variant="secondary"
+                to="/settings/routing"
+                id="settings-driver-bones-link"
               />
             </div>
+          </div>
 
-            {enabled && status && (
-              <>
-                <Typography variant="section-title">
-                  {l10n.getString('settings-osc-vrchat-status-title')}
+          <Typography variant="section-title">
+            {l10n.getString('settings-osc-vrchat-status-network-mode')}
+          </Typography>
+          <div className="flex flex-col pb-2">
+            <Typography>
+              {l10n.getString(
+                'settings-osc-vrchat-status-network-mode-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid grid-cols-2 gap-3 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="useManualNetwork"
+              label={l10n.getString(
+                'settings-osc-vrchat-status-network-mode-toggle'
+              )}
+            />
+          </div>
+
+          {useManualNetwork && (
+            <>
+              <Typography variant="section-title">
+                {l10n.getString('settings-osc-vrchat-network')}
+              </Typography>
+              <div className="flex flex-col pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-osc-vrchat-status-network-manual-description'
+                  )}
                 </Typography>
-                <StatusCard
-                  status={status}
-                  onSwitchToTarget={(target) => {
-                    setValue('useManualNetwork', true, {
-                      shouldDirty: true,
-                    });
-                    setValue(
-                      'portsAddress.address',
-                      target.address?.toString() ?? '',
-                      {
-                        shouldDirty: true,
-                      }
-                    );
-                    setValue('portsAddress.portOut', target.portOut, {
-                      shouldDirty: true,
-                    });
-                  }}
-                />
-              </>
-            )}
-
-            <Typography variant="section-title" id="settings-driver-bones" />
-            <div className="flex flex-col gap-2 pt-1 pb-4">
-              <Typography id="settings-driver-bones-description" />
-              <div className="w-fit">
-                <Button
-                  variant="secondary"
-                  to="/settings/routing"
-                  id="settings-driver-bones-link"
-                />
               </div>
-            </div>
-
-            <Typography variant="section-title">
-              {l10n.getString('settings-osc-vrchat-status-network-mode')}
-            </Typography>
-            <div className="flex flex-col pb-2">
-              <Typography>
-                {l10n.getString(
-                  'settings-osc-vrchat-status-network-mode-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid grid-cols-2 gap-3 pb-5">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="useManualNetwork"
-                label={l10n.getString(
-                  'settings-osc-vrchat-status-network-mode-toggle'
-                )}
-              />
-            </div>
-
-            {useManualNetwork && (
-              <>
-                <Typography variant="section-title">
-                  {l10n.getString('settings-osc-vrchat-network')}
-                </Typography>
-                <div className="flex flex-col pb-2">
-                  <Typography>
-                    {l10n.getString(
-                      'settings-osc-vrchat-status-network-manual-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid grid-cols-2 gap-3 pb-5">
-                  <Localized
-                    id="settings-osc-vrchat-network-port_in"
-                    attrs={{ placeholder: true, label: true }}
-                  >
-                    <Input
-                      type="number"
-                      control={control}
-                      name="portsAddress.portIn"
-                      placeholder="9001"
-                      label=""
-                    />
-                  </Localized>
-                  <Localized
-                    id="settings-osc-vrchat-network-port_out"
-                    attrs={{ placeholder: true, label: true }}
-                  >
-                    <Input
-                      type="number"
-                      control={control}
-                      name="portsAddress.portOut"
-                      placeholder="9000"
-                      label=""
-                    />
-                  </Localized>
-                </div>
-                <Typography variant="section-title">
-                  {l10n.getString('settings-osc-vrchat-network-address')}
-                </Typography>
-                <div className="flex flex-col pb-2">
-                  <Typography>
-                    {l10n.getString(
-                      'settings-osc-vrchat-network-address-description-v1'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid gap-3 pb-5">
+              <div className="grid grid-cols-2 gap-3 pb-5">
+                <Localized
+                  id="settings-osc-vrchat-network-port_in"
+                  attrs={{ placeholder: true, label: true }}
+                >
                   <Input
-                    type="text"
+                    type="number"
                     control={control}
-                    name="portsAddress.address"
-                    placeholder={l10n.getString(
-                      'settings-osc-vrchat-network-address-placeholder'
-                    )}
+                    name="portsAddress.portIn"
+                    placeholder="9001"
                     label=""
                   />
-                </div>
-              </>
-            )}
-          </>
-        </SettingsPagePaneLayout>
-      </form>
-    </SettingsPageLayout>
+                </Localized>
+                <Localized
+                  id="settings-osc-vrchat-network-port_out"
+                  attrs={{ placeholder: true, label: true }}
+                >
+                  <Input
+                    type="number"
+                    control={control}
+                    name="portsAddress.portOut"
+                    placeholder="9000"
+                    label=""
+                  />
+                </Localized>
+              </div>
+              <Typography variant="section-title">
+                {l10n.getString('settings-osc-vrchat-network-address')}
+              </Typography>
+              <div className="flex flex-col pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-osc-vrchat-network-address-description-v1'
+                  )}
+                </Typography>
+              </div>
+              <div className="grid gap-3 pb-5">
+                <Input
+                  type="text"
+                  control={control}
+                  name="portsAddress.address"
+                  placeholder={l10n.getString(
+                    'settings-osc-vrchat-network-address-placeholder'
+                  )}
+                  label=""
+                />
+              </div>
+            </>
+          )}
+        </>
+      </SettingsPagePaneLayout>
+    </form>
   );
 }

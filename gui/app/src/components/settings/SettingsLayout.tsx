@@ -15,78 +15,91 @@ export function SettingSelectorMobile() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const links: { label: string; value: { url: string; scrollTo?: string } }[] =
-    [
-      {
-        label: l10n.getString('settings-sidebar-general'),
-        value: { url: '/settings/trackers', scrollTo: 'stayAligned' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-interface'),
-        value: { url: '/settings/interface', scrollTo: 'notifications' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-keybinds'),
-        value: { url: '/settings/keybinds' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-routing'),
-        value: { url: '/settings/routing', scrollTo: 'routing' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-driver'),
-        value: { url: '/settings/driver', scrollTo: 'driver' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-vrchat_osc'),
-        value: { url: '/settings/osc/vrchat', scrollTo: 'vrchat' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-osc_vmc'),
-        value: { url: '/settings/osc/vmc', scrollTo: 'vmc' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-serial'),
-        value: { url: '/settings/serial' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-firmware-tool'),
-        value: { url: '/settings/firmware-tool' },
-      },
-      ...(vrcConfigState?.isSupported
-        ? [
-            {
-              label: l10n.getString('settings-sidebar-vrc_warnings'),
-              value: { url: '/settings/vrc-warnings' },
-            },
-          ]
-        : []),
-      {
-        label: l10n.getString('settings-sidebar-advanced'),
-        value: { url: '/settings/advanced' },
-      },
-      {
-        label: l10n.getString('navbar-onboarding'),
-        value: { url: '/onboarding/home' },
-      },
-    ];
-
-  const onSubmit = ({ link }: { link: string }) => {
-    const item = links.find(({ value: { url } }) => url === link);
-
-    if (!item) return;
-    navigate(item.value.url, { state: { scrollTo: item.value.scrollTo } });
-  };
+  const links: { label: string; url: string }[] = [
+    {
+      label: l10n.getString('settings-sidebar-tracking'),
+      url: '/settings/tracking',
+    },
+    {
+      label: l10n.getString('settings-sidebar-trackers'),
+      url: '/settings/trackers',
+    },
+    {
+      label: l10n.getString('settings-sidebar-resets'),
+      url: '/settings/resets',
+    },
+    {
+      label: l10n.getString('settings-sidebar-stay_aligned'),
+      url: '/settings/stay-aligned',
+    },
+    {
+      label: l10n.getString('settings-sidebar-appearance'),
+      url: '/settings/appearance',
+    },
+    {
+      label: l10n.getString('settings-sidebar-behavior'),
+      url: '/settings/behavior',
+    },
+    {
+      label: l10n.getString('settings-sidebar-home'),
+      url: '/settings/home',
+    },
+    {
+      label: l10n.getString('settings-sidebar-checklist'),
+      url: '/settings/checklist',
+    },
+    {
+      label: l10n.getString('settings-sidebar-keybinds'),
+      url: '/settings/keybinds',
+    },
+    {
+      label: l10n.getString('settings-sidebar-routing'),
+      url: '/settings/routing',
+    },
+    {
+      label: l10n.getString('settings-sidebar-driver'),
+      url: '/settings/driver',
+    },
+    {
+      label: l10n.getString('settings-sidebar-vrchat_osc'),
+      url: '/settings/osc/vrchat',
+    },
+    {
+      label: l10n.getString('settings-sidebar-osc_vmc'),
+      url: '/settings/osc/vmc',
+    },
+    {
+      label: l10n.getString('settings-sidebar-serial'),
+      url: '/settings/serial',
+    },
+    {
+      label: l10n.getString('settings-sidebar-firmware-tool'),
+      url: '/settings/firmware-tool',
+    },
+    ...(vrcConfigState?.isSupported
+      ? [
+          {
+            label: l10n.getString('settings-sidebar-vrc_warnings'),
+            url: '/settings/vrc-warnings',
+          },
+        ]
+      : []),
+    {
+      label: l10n.getString('settings-sidebar-advanced'),
+      url: '/settings/advanced',
+    },
+    {
+      label: l10n.getString('navbar-onboarding'),
+      url: '/onboarding/home',
+    },
+  ];
 
   return (
     <div className="fixed top-12 z-50 px-4 w-full">
       <DropdownInside
-        onChange={(value) => onSubmit({ link: value })}
+        onChange={(value) => navigate(value)}
         display="block"
-        items={links.map(({ label, value: { url: value } }) => ({
-          label,
-          value,
-        }))}
+        items={links.map(({ label, url }) => ({ label, value: url }))}
         variant="tertiary"
         direction="down"
         // There is always an option selected; placeholder is not used.

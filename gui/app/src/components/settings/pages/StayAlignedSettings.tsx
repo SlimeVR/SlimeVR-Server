@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
-import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIcon';
 import { useAtomValue, atom, useSetAtom } from 'jotai';
 import { selectAtom } from 'jotai/utils';
@@ -23,7 +23,7 @@ import {
   FlatRelaxedPoseModal,
   SittingRelaxedPoseModal,
   StandingRelaxedPoseModal,
-} from './StayAlignedPoseModal';
+} from './components/StayAlignedPoseModal';
 
 export type StayAlignedSettingsForm = {
   setupComplete: boolean;
@@ -208,10 +208,8 @@ export function StayAlignedSettings() {
   const openFlat = useState(false);
 
   return (
-    <SettingsPagePaneLayout icon={<HorizontalAlignIcon />} id="stayAligned">
-      <Typography variant="main-title">
-        {l10n.getString('settings-stay_aligned')}
-      </Typography>
+    <SettingsPagePaneLayout icon={<HorizontalAlignIcon />}>
+      <Typography variant="main-title" id="settings-sidebar-stay_aligned" />
       <div className="pt-3">
         <Typography>
           {l10n.getString('settings-stay_aligned-description')}
