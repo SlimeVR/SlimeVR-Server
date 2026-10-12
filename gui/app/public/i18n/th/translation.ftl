@@ -359,7 +359,6 @@ mounting_selection_menu-close = ปิด
 
 ## Sidebar settings
 
-settings-sidebar-title = การตั้งค่า
 settings-sidebar-general = ทั่วไป
 settings-sidebar-trackers = แทร็กเกอร์
 settings-sidebar-interface = อินเทอร์เฟซ
@@ -368,7 +367,6 @@ settings-sidebar-serial = คอนโซล Serial
 settings-sidebar-appearance = รูปแบบ
 settings-sidebar-home = หน้าหลัก
 settings-sidebar-checklist = รายการเตรียมความพร้อมแทร็กเกอร์
-settings-sidebar-notifications = การแจ้งเตือน
 settings-sidebar-behavior = พฤติกรรมการทำงาน
 settings-sidebar-firmware-tool = เครื่องมือเฟิร์มแวร์ DIY
 settings-sidebar-vrc_warnings = คำเตือนการตั้งค่า VRChat
@@ -392,7 +390,6 @@ settings-general-tracker_mechanics-filtering = การกรองข้อม
 settings-general-tracker_mechanics-filtering-description =
     เลือกประเภทการกรองสัญญาณรบกวนสำหรับแทร็กเกอร์
     หากใช้การคาดการณ์จะคาดการณ์การเคลื่อนไหว ในขณะที่การทำให้ราบรื่นจะทำให้การเคลื่อนไหวราบรื่นขึ้น
-settings-general-tracker_mechanics-filtering-type = ประเภทการกรองสัญญาณ
 settings-general-tracker_mechanics-filtering-type-none = ไม่มีการกรอง
 settings-general-tracker_mechanics-filtering-type-none-description = ใช้ค่าการหมุนตามจริง จะไม่มีการกรองข้อมูลใดๆ
 settings-general-tracker_mechanics-filtering-type-smoothing = ทำให้ราบรื่น
@@ -405,19 +402,15 @@ settings-general-tracker_mechanics-save_mounting_reset = บันทึกค�
 settings-general-tracker_mechanics-save_mounting_reset-description =
     บันทึกการตั้งศูนย์การติดตั้งแทร็กเกอร์อัตโนมัติ เพื่อใช้ซ้ำเมื่อรีสตาร์ท
     มีประโยชน์เมื่อสวมชุดที่ตำแหน่งแทร็กเกอร์ไม่เปลี่ยนแปลงระหว่างการใช้งาน <b>ไม่แนะนำสำหรับผู้ใช้ทั่วไป!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = บันทึกการรีเซ็ตการติดตั้ง
 settings-general-tracker_mechanics-use_mag_on_all_trackers = ใช้เซ็นเซอร์สนามแม่เหล็กบนแทร็กเกอร์ที่ IMU รองรับ
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     ใช้เซ็นเซอร์สนามแม่เหล็กบนแทร็กเกอร์ทั้งหมดที่มีเฟิร์มแวร์ที่เข้ากันได้ ซึ่งช่วยลดดริฟท์ในสภาพแวดล้อมที่มีสนามแม่เหล็กคงที่
     สามารถปิดการใช้งานสำหรับแทร็กเกอร์แต่ละตัวได้ในการตั้งค่าของแทร็กเกอร์ <b>โปรดอย่าปิดแทร็กเกอร์ ในขณะที่กำลังสลับการตั้งค่านี้!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = ใช้เซ็นเซอร์สนามแม่เหล็กกับแทร็กเกอร์
 settings-general-tracker_mechanics-trackers_over_usb = ต่อแทร็กเกอร์ผ่าน USB
 settings-general-tracker_mechanics-trackers_over_usb-description = เปิดใช้งานการรับข้อมูลแทร็กเกอร์แบบ HID ผ่านสาย USB ตรวจสอบว่าแทร็กเกอร์ของคุณได้เปิด <b>การเชื่อมต่อผ่าน HID</b> เอาไว้!
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = เปิดให้แทร็กเกอร์แบบ HID ต่อโดยตรงผ่านสาย USB
 settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
 settings-stay_aligned-setup-description = คุณต้องทำ "ตั้งค่า Stay Aligned" ให้เสร็จสมบูรณ์เพื่อเปิดใช้งาน Stay Aligned
-settings-stay_aligned-general-label = ทั่วไป
 settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
 settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัปเดตท่าทางเหล่านี้
 settings-stay_aligned-relaxed_poses-standing = ปรับแทร็กเกอร์ขณะยืน
@@ -460,10 +453,8 @@ settings-general-fk_settings-leg_fk = การจับตำแหน่งข
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = บังคับรีเซ็ตการติดตั้งเท้า
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = บังคับรีเซ็ตการติดตั้งเท้าในระหว่างการรีเซ็ตการติดตั้งทั่วไป
 settings-general-fk_settings-enforce_joint_constraints = ขีดจำกัดโครงกระดูก
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = บังคับใช้ขีดจำกัด
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = ป้องกันไม่ให้ข้อต่อหมุนเกินขีดจำกัด
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
-settings-general-fk_settings-ik-use_position = ใช้ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
 settings-general-fk_settings-skeleton_settings-ratios-description = เปลี่ยนค่าการตั้งค่าโครงกระดูก คุณอาจต้องปรับสัดส่วนของคุณใหม่หลังจากเปลี่ยนค่าเหล่านี้
@@ -497,7 +488,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = ใ�
 settings-interface-appearance = รูปแบบ
 settings-general-interface-dev_mode = โหมดนักพัฒนา
 settings-general-interface-dev_mode-description = โหมดนี้มีประโยชน์หากคุณต้องการข้อมูลเชิงลึก หรือต้องการโต้ตอบกับแทร็กเกอร์ที่เชื่อมต่อในระดับที่สูงขึ้น
-settings-general-interface-dev_mode-label = โหมดนักพัฒนา
 settings-general-interface-theme = ธีมสี
 settings-general-interface-lang = เลือกภาษา
 settings-general-interface-lang-description = เปลี่ยนภาษาเริ่มต้น
@@ -515,23 +505,18 @@ settings-interface-appearance-font_size-description = ตัวเลือก�
 
 settings-general-interface-feedback_sound = การแจ้งเตือนด้วยเสียง
 settings-general-interface-feedback_sound-description = ตัวเลือกนี้จะเล่นเสียงเมื่อมีการใช้การรีเซ็ต
-settings-general-interface-feedback_sound-label = แจ้งเตือนด้วยเสียง
 settings-general-interface-feedback_sound-volume = ระดับเสียง
 settings-general-interface-connected_trackers_warning = แจ้งเตือนแทร็กเกอร์ที่ยังเปิดอยู่
 settings-general-interface-connected_trackers_warning-description = ตัวเลือกนี้จะแสดงหน้าต่างป๊อปอัพทุกครั้งที่คุณพยายามออกจาก SlimeVR ในขณะที่มีแทร็กเกอร์เชื่อมต่ออยู่ตั้งแต่หนึ่งตัวขึ้นไป เตือนให้คุณปิดแทร็กเกอร์เมื่อใช้งานเสร็จเพื่อรักษาอายุแบตเตอรี่
-settings-general-interface-connected_trackers_warning-label = เตือนแทร็กเกอร์ที่เปิดอยู่ก่อนออกจากโปรแกรม
 
 ## Behavior settings
 
 settings-interface-behavior = พฤติกรรมการทำงาน
 settings-general-interface-dev_mode = โหมดนักพัฒนา
-settings-general-interface-dev_mode-label = โหมดนักพัฒนา
 settings-general-interface-use_tray = ย่อไปที่ถาดระบบ
 settings-general-interface-use_tray-description = ช่วยให้คุณสามารถปิดหน้าต่างโดยไม่ต้องปิด SlimeVR Server คุณจึงสามารถใช้งานต่อได้โดยไม่มี GUI รบกวน
-settings-general-interface-use_tray-label = ย่อไปที่ถาดระบบ
 settings-general-interface-discord_presence = แชร์กิจกรรมบน Discord
 settings-general-interface-discord_presence-description = บอกโปรแกรม Discord ของคุณว่าคุณกำลังใช้ SlimeVR พร้อมกับจำนวนแทร็กเกอร์ IMU ที่คุณกำลังใช้
-settings-general-interface-discord_presence-label = แชร์กิจกรรมบน Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] กำลังจะใส่ Slime
@@ -578,7 +563,6 @@ settings-osc-vrchat-description-v1 =
     ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน OSC ใน VRChat ผ่านเมนู Action Menu แล้วไปที่ ตัวเลือก>OSC > เปิดใช้งาน
 settings-osc-vrchat-enable = เปิดใช้งาน
 settings-osc-vrchat-enable-description = เปิดการรับและส่งข้อมูล
-settings-osc-vrchat-enable-label = เปิดใช้งาน
 settings-osc-vrchat-network = พอร์ตเครือข่าย
 settings-osc-vrchat-network-port_in =
     .label = พอร์ตขาเข้า
@@ -604,7 +588,6 @@ settings-osc-vmc-description =
     เพื่อส่งข้อมูลกระดูกของ SlimeVR และรับข้อมูลกระดูกจากแอปพลิเคชันอื่น
 settings-osc-vmc-enable = เปิดใช้งาน
 settings-osc-vmc-enable-description = เปิดการรับและส่งข้อมูล OSC
-settings-osc-vmc-enable-label = เปิดใช้งาน
 settings-osc-vmc-network = พอร์ตเครือข่าย
 settings-osc-vmc-network-description = ตั้งพอร์ตสำหรับส่งและรับข้อมูลผ่าน VMC
 settings-osc-vmc-network-port_in =
@@ -622,10 +605,8 @@ settings-osc-vmc-vrm-untitled_model = โมเดลที่ไม่มีช
 settings-osc-vmc-vrm-file_select = ลากและวางโมเดลหรือ <u>ค้นหา</u>
 settings-osc-vmc-anchor_hip = ยึดตำแหน่งที่สะโพก
 settings-osc-vmc-anchor_hip-description = ยึดการติดตามที่สะโพก มีประโยชน์สำหรับการทำ VTubing ในขณะนั่ง หากปิดใช้งาน ให้โหลดโมเดล VRM
-settings-osc-vmc-anchor_hip-label = ยึดแหน่งที่สะโพก
 settings-osc-vmc-mirror_tracking = สะท้อนตำแหน่งการติดตาม
 settings-osc-vmc-mirror_tracking-description = สะท้อนการติดตามในแนวนอน
-settings-osc-vmc-mirror_tracking-label = สะท้อนตำแหน่งการติดตาม
 settings-osc-vmc-status-badge-error = มีปัญหา
 
 ## Common OSC settings
