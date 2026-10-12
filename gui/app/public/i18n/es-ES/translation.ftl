@@ -391,11 +391,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utiliza el magnetómetro en todos los trackers que tienen un firmware compatible con él, lo que reduce el drift en entornos magnéticos estables.
     Se puede desactivar por rastreador en la configuración de los trackers. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetómetro en los rastreadores
-settings-stay_aligned = Mantener Alineado
 settings-stay_aligned-description = Mantener Alineado reduce el drift ajustando gradualmente tus trackers para que coincidan con tus poses relajadas
 settings-stay_aligned-setup-label = Configurar Mantener Alineado
 settings-stay_aligned-setup-description = Debe completar "Configurar Mantener Alineado" para habilitar Mantener Alineado.
-settings-stay_aligned-enabled-label = Ajustar trackers
 settings-stay_aligned-relaxed_poses-label = Posturas relajadas
 settings-stay_aligned-relaxed_poses-description = Mantener Alineado utiliza tus posturas relajadas para mantener los trackers alineados. Usa "Configurar Mantener Alineado" para actualizar estas posturas.
 settings-stay_aligned-relaxed_poses-standing = Ajustar los trackers mientras estás de pie
@@ -418,7 +416,6 @@ settings-keybinds-recorder-modal-cancel-button = Cancelar
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Configuración de FK Tracking
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -499,7 +496,6 @@ settings-interface-appearance-font_size-description = Esto afecta al tamaño de 
 
 ## Notification settings
 
-settings-interface-notifications = Notificaciones
 settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se activa un reinicio
 settings-general-interface-feedback_sound-label = Sonido de feedback
