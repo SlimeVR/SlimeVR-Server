@@ -68,15 +68,32 @@ function BasicResetButton({
     error,
   } = useReset(options);
   const { resetsSettings } = useResetsSettings();
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const progress = status === 'counting' ? resetProress / duration : 0;
 
-  const name = customName || resetName;
+  const needsMethod =
+    options.type === ResetType.MOUNTING &&
+    options.group === 'default' &&
+    resetsSettings?.mountingMethod === MountingMethod.UNKNOWN;
+
+  const name = needsMethod
+    ? 'toolbar-mounting_calibration-pick_method'
+    : customName || resetName;
 
   const skiReset =
     options.type === ResetType.MOUNTING &&
     options.group === 'default' &&
     resetsSettings?.mountingMethod === MountingMethod.POSE;
+
+  const onClick = () => {
+    if (disabled) return;
+    if (needsMethod) {
+      setPickerOpen(true);
+      return;
+    }
+    triggerReset(resetsSettings?.mountingMethod);
+  };
 
   return (
     <>
@@ -107,9 +124,7 @@ function BasicResetButton({
           style={{
             animationIterationCount: 1,
           }}
-          onClick={() =>
-            !disabled && triggerReset(resetsSettings?.mountingMethod)
-          }
+          onClick={onClick}
         >
           <div
             className={classNames({
@@ -152,6 +167,13 @@ function BasicResetButton({
           </div>
         </button>
       </Tooltip>
+      {needsMethod && (
+        <MountingMethodModal
+          isOpen={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          triggerReset={triggerReset}
+        />
+      )}
     </>
   );
 }

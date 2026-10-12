@@ -18,6 +18,7 @@ import { ToesIcon } from '@/components/commons/icon/ToesIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 import { MountingMethodModal } from '@/components/mounting/MountingMethodModal';
+import { QuestionMarkIcon } from '@/components/commons/icon/QuestionMarkIcon';
 
 export function ResetButtonIcon(options: UseResetOptions) {
   const { resetsSettings } = useResetsSettings();
@@ -33,6 +34,8 @@ export function ResetButtonIcon(options: UseResetOptions) {
           return <StepIcon />;
         case MountingMethod.MANUAL:
           return <TuneIcon />;
+        case MountingMethod.UNKNOWN:
+          return <QuestionMarkIcon />;
         default:
           return <SkiIcon />;
       }
