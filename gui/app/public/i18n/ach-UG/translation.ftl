@@ -550,6 +550,7 @@ settings-keybinds-already-assigned = crwdns7938:0$namecrwdne7938:0
 settings-keybinds-click-to-record = crwdns7940:0crwdne7940:0
 settings-keybinds-change-shortcut = crwdns7942:0crwdne7942:0
 settings-keybinds-reset-single = crwdns7944:0crwdne7944:0
+settings-reset-single = crwdns9764:0crwdne9764:0
 settings-keybinds-recorder-hint-recording = crwdns7946:0crwdne7946:0
 settings-keybinds-error-unsupported-key = crwdns7948:0crwdne7948:0
 settings-keybinds-error-add-modifier = crwdns7950:0crwdne7950:0
