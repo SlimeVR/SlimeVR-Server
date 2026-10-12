@@ -400,11 +400,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetó
 settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permite recibir datos de trackers HID por USB. ¡Asegúrate de que los trackers conectados tengan <b>conexión por HID</b> activados!
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permite a los trackers HID conectarse directamente por USB
-settings-stay_aligned = Mantente Alineado
 settings-stay_aligned-description = Mantente Alineado reduce el desvío ajustando gradualmente tus trackers para calzar tus poses relajadas.
 settings-stay_aligned-setup-label = Configurar Mantente Alineado
 settings-stay_aligned-setup-description = Debes completar «Configurar Mantente Alineado» para activar Mantente Alineado.
-settings-stay_aligned-enabled-label = Ajustar trackers
 settings-stay_aligned-relaxed_poses-label = Poses relajadas
 settings-stay_aligned-relaxed_poses-description = Mantente Alineado utiliza tus poses relajadas para mantener tus trackers alineados. Utiliza «Configurar Mantente Alineado» para actualizar estas poses.
 settings-stay_aligned-relaxed_poses-standing = Ajustar trackers al estar parado
@@ -422,7 +420,6 @@ settings-stay_aligned-debug-copy-label = Copiar ajustes al portapapeles
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Ajustes de sensores
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -498,7 +495,6 @@ settings-interface-appearance-font_size-description = Esto afecta al tamaño de 
 
 ## Notification settings
 
-settings-interface-notifications = Notificaciones
 settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se realice un reinicio.
 settings-general-interface-feedback_sound-label = Sonido de feedback
