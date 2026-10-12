@@ -255,7 +255,6 @@ settings-keybinds-recorder-modal-cancel-button = Tühista
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Jälgija seaded
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -327,7 +326,6 @@ settings-interface-appearance-font_size-description = See mõjutab kogu liidese 
 
 ## Notification settings
 
-settings-interface-notifications = Teavitused
 settings-general-interface-feedback_sound = Tagasiside heli
 settings-general-interface-feedback_sound-description = See suvand esitab lähtestamise käivitamisel heli.
 settings-general-interface-feedback_sound-label = Tagasiside heli
