@@ -171,7 +171,6 @@ mounting_selection_menu-close = סגור
 
 ## Sidebar settings
 
-settings-sidebar-title = הגדרות
 settings-sidebar-general = כללי
 settings-sidebar-interface = ממשק
 settings-sidebar-utils = כלי שירות
@@ -187,7 +186,6 @@ settings-routing-hands-warning-cancel = ביטול
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = סינון
-settings-general-tracker_mechanics-filtering-type = סוג סינון
 settings-general-tracker_mechanics-filtering-type-none = ללא סינון
 settings-general-tracker_mechanics-filtering-type-none-description = השתמש בערכי סיבוב כפי שהם. לא יעשה שום סינון.
 settings-general-tracker_mechanics-filtering-type-smoothing = החלקה
@@ -195,7 +193,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = מחל
 settings-general-tracker_mechanics-filtering-type-prediction = חיזוי
 settings-general-tracker_mechanics-filtering-type-prediction-description = מפחית את ההשהיה ומפיק תנועות הדוקות , אך עלול להגביר את הריצוד.
 settings-general-tracker_mechanics-filtering-amount = כמות
-settings-stay_aligned-general-label = כללי
 settings-stay_aligned-relaxed_poses-close = סגור
 
 ## Keybinds Page
@@ -213,7 +210,6 @@ settings-keybinds-recorder-modal-cancel-button = ביטול
 
 settings-general-interface-dev_mode = מצב מפתח
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = מצב מפתח
 
 ## Notification settings
 
@@ -221,7 +217,6 @@ settings-general-interface-dev_mode-label = מצב מפתח
 ## Behavior settings
 
 settings-general-interface-dev_mode = מצב מפתח
-settings-general-interface-dev_mode-label = מצב מפתח
 
 ## Serial settings
 
