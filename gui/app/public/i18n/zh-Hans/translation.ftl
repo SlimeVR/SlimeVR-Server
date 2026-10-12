@@ -421,11 +421,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追踪器�
 settings-general-tracker_mechanics-trackers_over_usb = 通过USB连接的追踪器
 settings-general-tracker_mechanics-trackers_over_usb-description = 通过USB接收HID追踪器数据。清确保连接的追踪器启用了 <b>通过HID连接</b> 功能！
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允许HID追踪器通过USB直接连接
-settings-stay_aligned = 持续校准
 settings-stay_aligned-description = 持续校准会逐渐将追踪器对齐到设置的放松姿势，减少追踪器漂移的影响
 settings-stay_aligned-setup-label = 配置持续校准
 settings-stay_aligned-setup-description = 完成“配置持续校准”后才可启动持续校准。
-settings-stay_aligned-enabled-label = 调整追踪器
 settings-stay_aligned-general-label = 通用设置
 settings-stay_aligned-relaxed_poses-label = 放松姿势
 settings-stay_aligned-relaxed_poses-description = 持续校准使用您设定的放松姿势保持追踪器校准。使用“设置持续校准”来更新放松姿势。
@@ -449,7 +447,6 @@ settings-keybinds-recorder-modal-cancel-button = 取消
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = FK 设置
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -526,7 +523,6 @@ settings-interface-appearance-font_size-description = 这会影响除此设置�
 
 ## Notification settings
 
-settings-interface-notifications = 通知
 settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
 settings-general-interface-feedback_sound-label = 声音反馈
