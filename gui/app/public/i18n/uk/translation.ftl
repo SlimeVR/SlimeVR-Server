@@ -272,7 +272,6 @@ settings-keybinds-recorder-modal-cancel-button = Скасувати
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Налаштування відстеження
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -341,7 +340,6 @@ settings-interface-appearance-font_size-description = Це впливає на �
 
 ## Notification settings
 
-settings-interface-notifications = Повідомлення
 settings-general-interface-feedback_sound = Звук зворотного зв'язку
 settings-general-interface-feedback_sound-description = Ця опція відтворюватиме звуковий сигнал при спрацьовуванні скидання
 settings-general-interface-feedback_sound-label = Звук зворотного зв'язку
