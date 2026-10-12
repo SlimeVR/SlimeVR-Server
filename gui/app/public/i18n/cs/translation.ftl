@@ -332,11 +332,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Použít magnetometru na trackerech
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
-settings-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
 settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
 settings-stay_aligned-setup-description = Musíte dokončit "Nastavení Zůstaň Srovnaný" pro zapnutí Zůstaň Srovnaný.
-settings-stay_aligned-enabled-label = Upravit trackery
 settings-stay_aligned-general-label = Obecné
 settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
 settings-stay_aligned-relaxed_poses-description = Zůstaň Srovnaný používá vaše uvolněné pózy k udržení srovnání trackerů. K aktualizaci těchto póz použijte "Nastavte Zůstaň Srovnaný".
@@ -360,7 +358,6 @@ settings-keybinds-recorder-modal-cancel-button = Zrušit
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Nastavení trackování
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -443,7 +440,6 @@ settings-interface-appearance-font_size-description = Toto ovlivňuje velikost p
 
 ## Notification settings
 
-settings-interface-notifications = Notifikace
 settings-general-interface-feedback_sound = Zvuk zpětné vazby
 settings-general-interface-feedback_sound-description = Tato možnost spustí zvuk, když je aktivován reset.
 settings-general-interface-feedback_sound-label = Zvuk zpětné vazby
