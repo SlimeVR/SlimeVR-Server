@@ -343,13 +343,11 @@ mounting_selection_menu-close = Cerrar
 
 ## Sidebar settings
 
-settings-sidebar-title = Configuración
 settings-sidebar-stay_aligned = Mantener Alineado
 settings-sidebar-interface = Interfaz
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
-settings-sidebar-notifications = Notificaciones
 settings-sidebar-behavior = Comportamiento
 settings-sidebar-firmware-tool = Herramienta de firmware DIY
 settings-sidebar-vrc_warnings = Advertencias de la configuración de VRChat
@@ -372,7 +370,6 @@ settings-general-tracker_mechanics-filtering = Filtro
 settings-general-tracker_mechanics-filtering-description =
     Escoge el tipo de filtro para tus trackers.
     Predicción predice el movimiento mientras que Suavizado suaviza el movimiento.
-settings-general-tracker_mechanics-filtering-type = Tipo de filtro
 settings-general-tracker_mechanics-filtering-type-none = Sin filtrar
 settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones tal como son. No hará ningún filtrado.
 settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
@@ -385,12 +382,10 @@ settings-general-tracker_mechanics-save_mounting_reset = Guardar la calibración
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Guarda las calibraciones de reajuste de montaje automático para los trackers entre reinicios. Útil
     cuando se lleva un traje en el que los trackers no se mueven entre sesiones. <b>No recomendado para usuarios normales!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Guardar restablecimiento de montaje
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar el magnetómetro en todos los trackers IMU que lo soporten
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utiliza el magnetómetro en todos los trackers que tienen un firmware compatible con él, lo que reduce el drift en entornos magnéticos estables.
     Se puede desactivar por rastreador en la configuración de los trackers. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetómetro en los rastreadores
 settings-stay_aligned-description = Mantener Alineado reduce el drift ajustando gradualmente tus trackers para que coincidan con tus poses relajadas
 settings-stay_aligned-setup-label = Configurar Mantener Alineado
 settings-stay_aligned-setup-description = Debe completar "Configurar Mantener Alineado" para habilitar Mantener Alineado.
@@ -436,7 +431,6 @@ settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forzar reinicio de la montura de los pies.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar el restablecimiento del montaje de los pies durante los reinicios generales del montaje.
 settings-general-fk_settings-enforce_joint_constraints = Límites esqueléticos
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imponer restricciones
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-skeleton_settings-ratios = Proporciones del esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de la configuración del esqueleto. Es posible que debas ajustar tus proporciones de nuevo.
@@ -480,7 +474,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 settings-interface-appearance = Apariencia
 settings-general-interface-dev_mode = Modo de desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los trackers conectados a un nivel más avanzado
-settings-general-interface-dev_mode-label = Modo de desarrollador
 settings-general-interface-theme = Temas
 settings-general-interface-lang = Seleccionar idioma
 settings-general-interface-lang-description = Cambiar el idioma predeterminado que deseas utilizar.
@@ -498,23 +491,18 @@ settings-interface-appearance-font_size-description = Esto afecta al tamaño de 
 
 settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se activa un reinicio
-settings-general-interface-feedback_sound-label = Sonido de feedback
 settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
 settings-general-interface-connected_trackers_warning = Advertencia de trackers conectados
 settings-general-interface-connected_trackers_warning-description = Esta opción mostrará una ventana emergente cada vez que intentes salir de SlimeVR mientras tengas uno o más trackers conectados. Te recuerda que debes apagar los trackers cuando hayas terminado para ahorrar batería.
-settings-general-interface-connected_trackers_warning-label = Aviso de trackers conectados al cerrar
 
 ## Behavior settings
 
 settings-interface-behavior = Comportamiento
 settings-general-interface-dev_mode = Modo de desarrollador
-settings-general-interface-dev_mode-label = Modo de desarrollador
 settings-general-interface-use_tray = Minimizar a la bandeja
 settings-general-interface-use_tray-description = Te permite cerrar la ventana sin cerrar SlimeVR para que pueda seguir usándolo sin que la interfaz te moleste.
-settings-general-interface-use_tray-label = Minimizar en la bandeja del sistema
 settings-general-interface-discord_presence = Compartir actividad en Discord
 settings-general-interface-discord_presence-description = Le indica a tu cliente de Discord que estás usando SlimeVR junto con el número de rastreadores IMU que estás usando.
-settings-general-interface-discord_presence-label = Compartir actividad en Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Recolectando slimes
@@ -562,7 +550,6 @@ settings-osc-vrchat-description-v1 =
     settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Alternar el envío y la recepción de datos
-settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network = Puertos de red
 settings-osc-vrchat-network-port_in =
     .label = Puerto de entrada
@@ -585,7 +572,6 @@ settings-osc-vrchat-status-badge-unknown = Desconocido
 settings-osc-vmc-description = Cambiar la configuración al protocolo VMC (Virtual Motion Capture) para enviar datos de SlimeVR y recibir información de otras apps.
 settings-osc-vmc-enable = Habilitar
 settings-osc-vmc-enable-description = Alterna el envío y recepción de datos.
-settings-osc-vmc-enable-label = Habilitar
 settings-osc-vmc-network = Puertos de red
 settings-osc-vmc-network-description = Establece los puertos para escuchar y enviar datos via VMC.
 settings-osc-vmc-network-port_in =
@@ -603,10 +589,8 @@ settings-osc-vmc-vrm-untitled_model = Modelo sin título
 settings-osc-vmc-vrm-file_select = Arrastre y suelte un modelo para utilizarlo, o <u>busquelo</u>
 settings-osc-vmc-anchor_hip = Anclar a la cadera
 settings-osc-vmc-anchor_hip-description = Ancla el tracking a la cadera, útil para VTubing sentado. Si se deshabilita, carga un modelo VRM.
-settings-osc-vmc-anchor_hip-label = Anclar a la cadera
 settings-osc-vmc-mirror_tracking = Invertir el tracking
 settings-osc-vmc-mirror_tracking-description = Invierte el tracking horizontalmente.
-settings-osc-vmc-mirror_tracking-label = Invertir el tracking
 
 ## Common OSC settings
 
