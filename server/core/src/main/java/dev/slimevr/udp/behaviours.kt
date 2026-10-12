@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
@@ -27,6 +28,44 @@ import kotlin.time.Duration.Companion.seconds
  */
 internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 internal const val CONNECTION_TIMEOUT_MS = 5000L
+
+internal suspend fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
+	val deviceState = device.context.state.value
+	val mac = deviceState.macAddress ?: run {
+		AppLogger.udp.warn("No MAC address available, falling back to IP for hardware ID")
+		deviceState.address
+	}
+	val hardwareId = "$mac:${info.sensorId}"
+
+	val existingTracker = receiver.appContext.server.context.state.value.trackers.values
+		.find { t -> t.context.state.value.deviceId == deviceState.id && t.context.state.value.hardwareId == hardwareId }
+
+	if (existingTracker != null) {
+		receiver.context.dispatch(
+			UDPConnectionActions.AssignTracker(
+				trackerId = TrackerSensorIds(trackerId = existingTracker.context.state.value.id, sensorId = info.sensorId),
+			),
+		)
+		return existingTracker to false
+	}
+
+	val trackerId = receiver.appContext.server.nextHandle()
+	val newTracker = Tracker.create(
+		id = trackerId,
+		hardwareId = hardwareId,
+		imuType = info.imuType,
+		deviceId = deviceState.id,
+		origin = DeviceOrigin.UDP,
+		scope = receiver.appContext.server.context.scope,
+		appContext = receiver.appContext,
+		expectedTps = 100u,
+	)
+	receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
+	receiver.context.dispatch(
+		UDPConnectionActions.AssignTracker(trackerId = TrackerSensorIds(trackerId = trackerId, sensorId = info.sensorId)),
+	)
+	return newTracker to true
+}
 
 class PacketBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
@@ -190,6 +229,11 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 				},
 			)
 
+			if (packet.data.protocolVersion < 9) {
+				val (tracker, _) = assignTracker(receiver, device, SensorInfo(status = TrackerStatus.OK, imuType = ImuType.fromValue(packet.data.imuType.toUShort()) ?: ImuType.UNKNOWN))
+				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+			}
+
 			receiver.send(Handshake())
 		}.launchIn(receiver.context.scope)
 	}
@@ -279,44 +323,6 @@ class DeviceStatsBehaviour : UDPConnectionBehaviour {
 }
 
 class SensorInfoBehaviour : UDPConnectionBehaviour {
-	private suspend fun assignTracker(receiver: UDPConnection, device: Device, event: PacketEvent<SensorInfo>): Pair<Tracker, Boolean> {
-		val deviceState = device.context.state.value
-		val mac = deviceState.macAddress ?: run {
-			AppLogger.udp.warn("No MAC address available, falling back to IP for hardware ID")
-			deviceState.address
-		}
-		val hardwareId = "$mac:${event.data.sensorId}"
-
-		val existingTracker = receiver.appContext.server.context.state.value.trackers.values
-			.find { t -> t.context.state.value.deviceId == deviceState.id && t.context.state.value.hardwareId == hardwareId }
-
-		if (existingTracker != null) {
-			receiver.context.dispatch(
-				UDPConnectionActions.AssignTracker(
-					trackerId = TrackerSensorIds(trackerId = existingTracker.context.state.value.id, sensorId = event.data.sensorId),
-				),
-			)
-			return existingTracker to false
-		}
-
-		val trackerId = receiver.appContext.server.nextHandle()
-		val newTracker = Tracker.create(
-			id = trackerId,
-			hardwareId = hardwareId,
-			imuType = event.data.imuType,
-			deviceId = deviceState.id,
-			origin = DeviceOrigin.UDP,
-			scope = receiver.appContext.server.context.scope,
-			appContext = receiver.appContext,
-			expectedTps = 100u,
-		)
-		receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
-		receiver.context.dispatch(
-			UDPConnectionActions.AssignTracker(trackerId = TrackerSensorIds(trackerId = trackerId, sensorId = event.data.sensorId)),
-		)
-		return newTracker to true
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<SensorInfo> { event ->
 			val device = receiver.getDevice() ?: error("invalid state - a device should exist at this point")
@@ -332,7 +338,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 				return@onPacket
 			}
 
-			val (tracker, isNew) = assignTracker(receiver, device, event)
+			val (tracker, isNew) = assignTracker(receiver, device, event.data)
 			tracker.context.dispatchAll(
 				listOf(
 					TrackerActions.Update { copy(imuType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
@@ -371,6 +377,11 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 
 class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<Rotation> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
+		}.launchIn(receiver.context.scope)
+
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))

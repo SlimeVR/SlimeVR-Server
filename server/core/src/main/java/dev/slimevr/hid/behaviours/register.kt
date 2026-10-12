@@ -70,8 +70,6 @@ internal fun ensureHidTracker(receiver: HIDReceiver, hidId: Int, deviceId: Int, 
 				expectedTps = 100u, // TODO: receive from firmware
 			)
 			receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
-			// HID does not have a rest calibration signal
-			newTracker.context.dispatch(TrackerActions.Update { copy(completedRestCalibration = true) })
 			newTracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 			newTracker
 		}

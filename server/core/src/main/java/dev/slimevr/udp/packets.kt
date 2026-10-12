@@ -163,7 +163,10 @@ data class Handshake(
 
 	companion object {
 		fun read(src: Source): Handshake = with(src) {
-			if (remaining == 0L) return Handshake()
+			if (remaining == 0L) {
+				throw UnsupportedOperationException("Empty handshake not supported")
+			}
+
 			val b = if (remaining >= 4) BoardType.fromValue(readInt().toUShort()) ?: BoardType.UNKNOWN else BoardType.UNKNOWN
 			val i = if (remaining >= 4) readInt() else 0
 			val m = if (remaining >= 4) McuType.fromValue(readInt().toUShort()) ?: McuType.UNKNOWN else McuType.UNKNOWN
@@ -508,7 +511,7 @@ fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 	PacketType.PACKET_BUNDLE -> PacketBundle.read(src)
 	PacketType.PACKET_BUNDLE_COMPACT -> PacketBundleCompact.read(src)
 	PacketType.PROTOCOL_CHANGE -> ProtocolChange.read(src)
-	else -> error("Inbound support not implemented for ${type::class.simpleName}")
+	else -> throw UnsupportedOperationException("Inbound support not implemented for ${type::class.simpleName}")
 }
 
 fun writePacket(dst: Sink, packet: UDPPacket) {
@@ -519,7 +522,7 @@ fun writePacket(dst: Sink, packet: UDPPacket) {
 		is SetConfigFlag -> PacketType.SET_CONFIG_FLAG
 		is ProtocolChange -> PacketType.PROTOCOL_CHANGE
 		is FeatureFlags -> PacketType.FEATURE_FLAGS
-		else -> error("Outbound support not implemented for ${packet::class.simpleName}")
+		else -> throw UnsupportedOperationException("Outbound support not implemented for ${packet::class.simpleName}")
 	}
 
 	if (type != PacketType.HANDSHAKE) {

@@ -228,7 +228,7 @@ class Tracker(
 			expectedTps = null,
 			tps = 0u,
 			status = TrackerStatus.DISCONNECTED,
-			completedRestCalibration = false,
+			completedRestCalibration = null,
 			magStatus = MagnetometerStatus.NOT_SUPPORTED,
 			motion = Motion.ROTATING,
 			yawResetSmoothing = null,
