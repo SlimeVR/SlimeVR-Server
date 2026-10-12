@@ -270,7 +270,6 @@ mounting_selection_menu-close = Kapat
 
 ## Sidebar settings
 
-settings-sidebar-title = Ayarlar
 settings-sidebar-general = Genel
 settings-sidebar-interface = Arayüz
 settings-sidebar-serial = Seri konsol
@@ -286,7 +285,6 @@ settings-driver-enable = Etkinleştir
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering-amount = Miktar
-settings-stay_aligned-general-label = Genel
 settings-stay_aligned-relaxed_poses-close = Kapat
 
 ## Keybinds Page
@@ -305,7 +303,6 @@ settings-general-fk_settings-leg_fk = Bacak takibi
 
 settings-general-interface-dev_mode = Geliştirici Modu
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Notification settings
 
@@ -313,7 +310,6 @@ settings-general-interface-dev_mode-label = Geliştirici Modu
 ## Behavior settings
 
 settings-general-interface-dev_mode = Geliştirici Modu
-settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Serial settings
 
@@ -326,7 +322,6 @@ settings-serial-send_command-warning-cancel = İptal
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Etkinleştir
-settings-osc-vrchat-enable-label = Etkinleştir
 settings-osc-vrchat-network-address = Ağ adresi
 
 ## VRChat OSC status
@@ -338,7 +333,6 @@ settings-osc-vrchat-status-badge-unknown = Bilinmeyen
 ## VMC OSC settings
 
 settings-osc-vmc-enable = Etkinleştir
-settings-osc-vmc-enable-label = Etkinleştir
 settings-osc-vmc-network-address = Ağ adresi
 settings-osc-vmc-status-badge-error = Hata
 
