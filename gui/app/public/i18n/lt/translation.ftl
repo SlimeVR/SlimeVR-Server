@@ -372,7 +372,6 @@ settings-keybinds-recorder-modal-cancel-button = Atšaukti
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Sekimo nustatymai
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -426,7 +425,6 @@ settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Notification settings
 
-settings-interface-notifications = Pranešimai
 
 ## Behavior settings
 
