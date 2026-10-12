@@ -365,7 +365,6 @@ mounting_selection_menu-close = 关闭
 
 ## Sidebar settings
 
-settings-sidebar-title = 设置
 settings-sidebar-general = 通用设置
 settings-sidebar-stay_aligned = 持续校准
 settings-sidebar-trackers = 追踪器
@@ -375,7 +374,6 @@ settings-sidebar-serial = 串口控制台
 settings-sidebar-appearance = 外观
 settings-sidebar-home = 主界面
 settings-sidebar-checklist = 追踪检查清单
-settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行为
 settings-sidebar-firmware-tool = DIY固件工具
 settings-sidebar-vrc_warnings = VRChat设置警告
@@ -399,7 +397,6 @@ settings-general-tracker_mechanics-filtering = 滤波
 settings-general-tracker_mechanics-filtering-description =
     选择追踪器的滤波类型。
     预测型将会对你的运动加以预测，而平滑型将会让你的运动更加平滑。
-settings-general-tracker_mechanics-filtering-type = 滤波类型
 settings-general-tracker_mechanics-filtering-type-none = 无滤波
 settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不进行滤波。
 settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
@@ -412,19 +409,15 @@ settings-general-tracker_mechanics-save_mounting_reset = 保存佩戴重置结�
 settings-general-tracker_mechanics-save_mounting_reset-description =
     在SlimeVR服务器关闭时保留追踪器自动佩戴重置结果。适用于一体式动捕服等
     追踪器佩戴位置保持不变的场景。<b>不建议普通用户使用！</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 保存佩戴重置
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 在支持的 IMU 追踪器上启用磁力计
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有固件支持的追踪器上启用磁力计，在磁场稳定的环境中可以减轻飘移。
     可以在个别追踪器上禁用本功能。<b>切换此选项时请勿关闭任何一个追踪器的电源！</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追踪器上启用磁力计
 settings-general-tracker_mechanics-trackers_over_usb = 通过USB连接的追踪器
 settings-general-tracker_mechanics-trackers_over_usb-description = 通过USB接收HID追踪器数据。清确保连接的追踪器启用了 <b>通过HID连接</b> 功能！
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允许HID追踪器通过USB直接连接
 settings-stay_aligned-description = 持续校准会逐渐将追踪器对齐到设置的放松姿势，减少追踪器漂移的影响
 settings-stay_aligned-setup-label = 配置持续校准
 settings-stay_aligned-setup-description = 完成“配置持续校准”后才可启动持续校准。
-settings-stay_aligned-general-label = 通用设置
 settings-stay_aligned-relaxed_poses-label = 放松姿势
 settings-stay_aligned-relaxed_poses-description = 持续校准使用您设定的放松姿势保持追踪器校准。使用“设置持续校准”来更新放松姿势。
 settings-stay_aligned-relaxed_poses-standing = 站立放松姿势
@@ -467,10 +460,8 @@ settings-general-fk_settings-leg_fk = 腿部追踪
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 强制脚部佩戴重置
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
 settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 强制约束
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
 settings-general-fk_settings-ik = 位置数据
-settings-general-fk_settings-ik-use_position = 使用位置数据
 settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-skeleton_settings-ratios-description = 更改骨架设置的参数。您可能需要在更改后调整身体比例。
@@ -507,7 +498,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 如�
 settings-interface-appearance = 外观
 settings-general-interface-dev_mode = 开发者模式
 settings-general-interface-dev_mode-description = 如果你需要深入的资料或对连接的追踪器进行进阶调整，开启此模式将会非常有用。
-settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-theme = 主题颜色
 settings-general-interface-lang = 选择语言
 settings-general-interface-lang-description = 更改要使用的默认语言
@@ -525,23 +515,18 @@ settings-interface-appearance-font_size-description = 这会影响除此设置�
 
 settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
-settings-general-interface-feedback_sound-label = 声音反馈
 settings-general-interface-feedback_sound-volume = 提示音音量
 settings-general-interface-connected_trackers_warning = 已连接追踪器警告
 settings-general-interface-connected_trackers_warning-description = 启用本选项后，每次当退出 SlimeVR 时仍有追踪器连接着会显示通知，提醒你在使用完毕时关闭追踪器电源来节省电池电量。
-settings-general-interface-connected_trackers_warning-label = 退出时，有追踪器连接中则显示警告
 
 ## Behavior settings
 
 settings-interface-behavior = 行为
 settings-general-interface-dev_mode = 开发者模式
-settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
-settings-general-interface-use_tray-label = 最小化至任务栏
 settings-general-interface-discord_presence = 向Discord发送状态
 settings-general-interface-discord_presence-description = 告诉你的Discord客户端你正在使用SlimeVR，同时显示你正在使用的IMU追踪器数量。
-settings-general-interface-discord_presence-label = 向Discord发送状态
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] { "" }
@@ -589,7 +574,6 @@ settings-osc-vrchat-description-v1 =
     打开“通过OSC共享头显和手柄信息”。
 settings-osc-vrchat-enable = 启用
 settings-osc-vrchat-enable-description = 切换数据的发送和接收
-settings-osc-vrchat-enable-label = 启用
 settings-osc-vrchat-network = 网络端口
 settings-osc-vrchat-network-port_in =
     .label = 输入端口
@@ -615,7 +599,6 @@ settings-osc-vmc-description =
     以发送 SlimeVR 的骨骼数据，并接收来自其他应用程序的骨骼数据
 settings-osc-vmc-enable = 启用
 settings-osc-vmc-enable-description = 切换数据的发送和接收
-settings-osc-vmc-enable-label = 启用
 settings-osc-vmc-network = 网络端口
 settings-osc-vmc-network-description = 设置用于监听和发送 VMC 数据的连接端口
 settings-osc-vmc-network-port_in =
@@ -633,10 +616,8 @@ settings-osc-vmc-vrm-untitled_model = 无标题模型
 settings-osc-vmc-vrm-file_select = 拖曳文件或 <u>浏览文件</u> 以加载模型
 settings-osc-vmc-anchor_hip = 髋部锚定
 settings-osc-vmc-anchor_hip-description = 将追踪锚定在髋部，有利于坐姿进行虚拟直播。若本选项无法切换，请加载 VRM 模型。
-settings-osc-vmc-anchor_hip-label = 髋部锚定
 settings-osc-vmc-mirror_tracking = 镜像追踪
 settings-osc-vmc-mirror_tracking-description = 水平镜像追踪结果
-settings-osc-vmc-mirror_tracking-label = 镜像追踪
 settings-osc-vmc-status-badge-error = 错误
 
 ## Common OSC settings
