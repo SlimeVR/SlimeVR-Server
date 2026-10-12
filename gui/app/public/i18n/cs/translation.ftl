@@ -278,7 +278,6 @@ mounting_selection_menu-close = Zavřít
 
 ## Sidebar settings
 
-settings-sidebar-title = Nastavení
 settings-sidebar-general = Obecné
 settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-sidebar-trackers = Trackery
@@ -288,7 +287,6 @@ settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
 settings-sidebar-home = Domovská obrazovka
 settings-sidebar-checklist = Přehled trackování
-settings-sidebar-notifications = Notifikace
 settings-sidebar-behavior = Chování
 settings-sidebar-firmware-tool = Nástroj pro DIY firmware
 settings-sidebar-vrc_warnings = Varovaní VRChat konfigurace
@@ -312,7 +310,6 @@ settings-general-tracker_mechanics-filtering = Filtrování
 settings-general-tracker_mechanics-filtering-description =
     Vyberte typ filtrování pro své trackery.
     Predikce předpovídá pohyb, zatímco vyhlazování pohyb vyhlazuje.
-settings-general-tracker_mechanics-filtering-type = Typ filtrování
 settings-general-tracker_mechanics-filtering-type-none = Žádné filtrování
 settings-general-tracker_mechanics-filtering-type-none-description = Použít rotace tak, jak jsou. Nebude provedeno žádné filtrování.
 settings-general-tracker_mechanics-filtering-type-smoothing = Vyhlazování
@@ -325,17 +322,14 @@ settings-general-tracker_mechanics-save_mounting_reset = Uložit automatickou ka
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Uloží automatické kalibrování resetování umístění pro trackery mezi restarty. Užitečné
     pokud máte oblek, na kterém se umístění trackeru nemění mezi relacemi. <b>Nedoporučováno pro uživatele s běžnou sestavou</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Uložit "Kalibraci nasazení"
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Použít magnetometr na všech IMU trackerech, které jej podporují
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Použití magnetometr na všech trackerech které pro to mají kompatibilní firmware, snížení drifutu v stailních magnetických prostředích.
     Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Použít magnetometru na trackerech
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
 settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
 settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
 settings-stay_aligned-setup-description = Musíte dokončit "Nastavení Zůstaň Srovnaný" pro zapnutí Zůstaň Srovnaný.
-settings-stay_aligned-general-label = Obecné
 settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
 settings-stay_aligned-relaxed_poses-description = Zůstaň Srovnaný používá vaše uvolněné pózy k udržení srovnání trackerů. K aktualizaci těchto póz použijte "Nastavte Zůstaň Srovnaný".
 settings-stay_aligned-relaxed_poses-standing = Upravit trackery při stoje
@@ -377,10 +371,8 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chod
 settings-general-fk_settings-leg_fk = Sledování nohou
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
 settings-general-fk_settings-enforce_joint_constraints = Limity kostry
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Prosazování omezení
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
 settings-general-fk_settings-ik = Data pozice
-settings-general-fk_settings-ik-use_position = Použít Data pozice
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
 settings-general-fk_settings-skeleton_settings-ratios-description = Změňte hodnoty nastavení kostry, Po změně budete možná muset poupravit vaše proporce.
 settings-general-fk_settings-self_localization-title = Režim Mocap
@@ -424,7 +416,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Zvyš
 settings-interface-appearance = Vzhled
 settings-general-interface-dev_mode = Vývojářský režim
 settings-general-interface-dev_mode-description = Tento režim může být užitečný, pokud potřebujete podrobné údaje nebo omunikovat s trackerama na pokročilejší úrovni.
-settings-general-interface-dev_mode-label = Vývojářský režim
 settings-general-interface-theme = Barva tématu
 settings-general-interface-lang = Zvolte jazyk
 settings-general-interface-lang-description = Změňte výchozí jazyk, který chcete používat.
@@ -442,23 +433,18 @@ settings-interface-appearance-font_size-description = Toto ovlivňuje velikost p
 
 settings-general-interface-feedback_sound = Zvuk zpětné vazby
 settings-general-interface-feedback_sound-description = Tato možnost spustí zvuk, když je aktivován reset.
-settings-general-interface-feedback_sound-label = Zvuk zpětné vazby
 settings-general-interface-feedback_sound-volume = Hlasitost zvuku zpětné vazby
 settings-general-interface-connected_trackers_warning = Upozornění o připojených trackerů
 settings-general-interface-connected_trackers_warning-description = Tato možnost zobrazí vyskakovací okno pokaždé, když se pokusíte opustit SlimeVR, když máte připojen jeden nebo více trackerů. Připomene vám, abyste vypnuli své trackery, až budete hotovi, abyste prodloužili životnost baterie.
-settings-general-interface-connected_trackers_warning-label = Upozornění o připojených trackerech při ukončení
 
 ## Behavior settings
 
 settings-interface-behavior = Chování
 settings-general-interface-dev_mode = Vývojářský režim
-settings-general-interface-dev_mode-label = Vývojářský režim
 settings-general-interface-use_tray = Minimalizovat do oznamovací oblasti
 settings-general-interface-use_tray-description = Umožňuje vám zavřít okno, aniž byste zavřeli SlimeVR Server, takže ho můžete nadále používat bez rozhraní.
-settings-general-interface-use_tray-label = Minimalizovat do oznamovací oblasti
 settings-general-interface-discord_presence = Sdílet aktivitu na Discordu
 settings-general-interface-discord_presence-description = Sdělí Discord klientu, že používáte SlimeVR společně s počtem trackerů IMU, které používáte.
-settings-general-interface-discord_presence-label = Sdílet aktivitu na Discordu
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Sliming around
@@ -507,7 +493,6 @@ settings-osc-vrchat-description-v1 =
     Ujistěte se že jste povolili OSC ve VRChat přes nabídku v menu Akcí pod OSC > Povoleno.
 settings-osc-vrchat-enable = Zapnout
 settings-osc-vrchat-enable-description = Vypnutí a zapnutí odesílání a přijímání dat.
-settings-osc-vrchat-enable-label = Zapnout
 settings-osc-vrchat-network = Síťové porty
 settings-osc-vrchat-network-port_in =
     .label = Vstup portu
@@ -533,7 +518,6 @@ settings-osc-vmc-description =
         odesílat data o kostech SlimeVR a přijímat data o kostech z jiných aplikací.
 settings-osc-vmc-enable = Zapnout
 settings-osc-vmc-enable-description = Vypnutí a zapnutí odesílání a přijímání dat.
-settings-osc-vmc-enable-label = Zapnout
 settings-osc-vmc-network = Síťové porty
 settings-osc-vmc-network-description = Nastavte porty pro poslech a odesílání dat pomocí VMC.
 settings-osc-vmc-network-port_in =
@@ -550,10 +534,8 @@ settings-osc-vmc-vrm-untitled_model = Nepojmenovaný model
 settings-osc-vmc-vrm-file_select = Přetáhněte zde model, který chcete použít, nebo <u>procházejte</u>
 settings-osc-vmc-anchor_hip = Zakotvit v bocích
 settings-osc-vmc-anchor_hip-description = Zakotvit sledování u boků, užitečné pro VTubing kde sedíte. Pokud je deaktivováno, načíst VRM model.
-settings-osc-vmc-anchor_hip-label = Zakotvit v bocích
 settings-osc-vmc-mirror_tracking = Zrcadlení sledování
 settings-osc-vmc-mirror_tracking-description = Zrcadlit trakování horizontálně.
-settings-osc-vmc-mirror_tracking-label = Zrcadlení trackování
 settings-osc-vmc-status-badge-error = Chyba
 
 ## Common OSC settings
