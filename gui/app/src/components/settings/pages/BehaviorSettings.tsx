@@ -1,10 +1,11 @@
 import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, FieldPathValue, useForm } from 'react-hook-form';
 import { CheckBox, CheckboxInternal } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
+import { settingReset } from '@/components/settings/SettingReset';
 import { defaultConfig, useConfig } from '@/hooks/config';
 import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 import { NumberSelector } from '@/components/commons/NumberSelector';
@@ -35,20 +36,22 @@ export function BehaviorSettings() {
   const { currentLocales } = useLocaleConfig();
   const { config, setConfig } = useConfig();
   const errorReporting = useErrorReporting();
-  const { control, watch, handleSubmit } = useForm<BehaviorSettingsForm>({
-    defaultValues: {
-      feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
-      feedbackSoundVolume:
-        config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
-      connectedTrackersWarning:
-        config?.connectedTrackersWarning ??
-        defaultConfig.connectedTrackersWarning,
-      useTray: config?.useTray ?? defaultConfig.useTray ?? false,
-      discordPresence: config?.discordPresence ?? defaultConfig.discordPresence,
-      bvhDirectory: config?.bvhDirectory ?? defaultConfig.bvhDirectory,
-      controllerNav: config?.controllerNav ?? defaultConfig.controllerNav,
-    },
-  });
+  const { control, watch, handleSubmit, setValue } =
+    useForm<BehaviorSettingsForm>({
+      defaultValues: {
+        feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
+        feedbackSoundVolume:
+          config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+        connectedTrackersWarning:
+          config?.connectedTrackersWarning ??
+          defaultConfig.connectedTrackersWarning,
+        useTray: config?.useTray ?? defaultConfig.useTray ?? false,
+        discordPresence:
+          config?.discordPresence ?? defaultConfig.discordPresence,
+        bvhDirectory: config?.bvhDirectory ?? defaultConfig.bvhDirectory,
+        controllerNav: config?.controllerNav ?? defaultConfig.controllerNav,
+      },
+    });
 
   const percentageFormat = Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -82,7 +85,17 @@ export function BehaviorSettings() {
     return () => subscription.unsubscribe();
   }, [onSubmit]);
 
+  const resetTo = <P extends FieldPath<BehaviorSettingsForm>>(name: P) =>
+    settingReset<BehaviorSettingsForm, P>(
+      (name === 'useTray'
+        ? (defaultConfig.useTray ?? false)
+        : defaultConfig[name]) as FieldPathValue<BehaviorSettingsForm, P>,
+      watch(name),
+      (next) => setValue(name, next)
+    );
+
   const toggle = (name: keyof BehaviorSettingsForm) => ({
+    ...resetTo(name),
     controlId: `behavior-${name}`,
     control: (
       <CheckBox
@@ -111,6 +124,7 @@ export function BehaviorSettings() {
               <SettingRow
                 title="settings-general-interface-feedback_sound-volume"
                 controlWidth="wide"
+                {...resetTo('feedbackSoundVolume')}
                 control={
                   <NumberSelector
                     control={control}
@@ -147,6 +161,7 @@ export function BehaviorSettings() {
               <SettingRow
                 title="settings-interface-behavior-bvh_directory"
                 description="settings-interface-behavior-bvh_directory-description"
+                {...resetTo('bvhDirectory')}
                 below={
                   <SystemFileInput
                     name="bvhDirectory"

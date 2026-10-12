@@ -29,6 +29,7 @@ import dev.slimevr.solarxr.rpc.ResetsBehaviour
 import dev.slimevr.solarxr.rpc.SerialBehaviour
 import dev.slimevr.solarxr.rpc.ServerInfosBehaviour
 import dev.slimevr.solarxr.rpc.SessionCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.SettingsDefaultsBehaviour
 import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
@@ -197,6 +198,7 @@ class SolarXRBridge(
 			add(HIDSettingsBehaviour(appContext.config.settings))
 			add(ErrorReportingSettingsBehaviour(appContext.config.globalConfig, appContext.errorReporting))
 			add(SettingsResetBehaviour(appContext.config))
+			add(SettingsDefaultsBehaviour())
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton, appContext.errorReporting))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings, appContext.errorReporting))

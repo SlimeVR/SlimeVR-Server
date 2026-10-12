@@ -1,16 +1,28 @@
 import { atom } from 'jotai';
 import {
   BodyPart,
+  BoneRoutingSettingsResponseT,
   BoneT,
   DataFeedUpdateT,
   DeviceDataT,
   DeviceOrigin,
   DongleDataT,
   DongleStatus,
+  DriverSettingsResponseT,
+  ErrorReportingSettingsResponseT,
+  HIDSettingsResponseT,
+  MagToggleResponseT,
   ResetStatusResponseT,
   ResetsSettingsResponseT,
+  SkeletonSettingsResponseT,
+  StayAlignedSettingsResponseT,
+  TapDetectionSettingsResponseT,
+  TimeoutSettingsResponseT,
   TrackerDataT,
   TrackerStatus,
+  VMCOSCSettingsResponseT,
+  VRCOSCSettingsResponseT,
+  VRMSettingsResponseT,
 } from 'solarxr-protocol';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
@@ -30,6 +42,24 @@ export const bonesAtom = atom<BoneT[]>([]);
 export const resetStatusAtom = atom<ResetStatusResponseT | null>(null);
 
 export const resetsSettingsAtom = atom<ResetsSettingsResponseT | null>(null);
+
+export type SettingsDefaults = {
+  skeleton: SkeletonSettingsResponseT;
+  resets: ResetsSettingsResponseT;
+  stayAligned: StayAlignedSettingsResponseT;
+  tapDetection: TapDetectionSettingsResponseT;
+  timeout: TimeoutSettingsResponseT;
+  hid: HIDSettingsResponseT;
+  driver: DriverSettingsResponseT;
+  vrcosc: VRCOSCSettingsResponseT;
+  vmcosc: VMCOSCSettingsResponseT;
+  vrm: VRMSettingsResponseT;
+  boneRouting: BoneRoutingSettingsResponseT;
+  errorReporting: ErrorReportingSettingsResponseT;
+  mag: MagToggleResponseT;
+};
+
+export const settingsDefaultsAtom = atom<SettingsDefaults | null>(null);
 
 export const devicesAtom = selectAtom(
   datafeedAtom,

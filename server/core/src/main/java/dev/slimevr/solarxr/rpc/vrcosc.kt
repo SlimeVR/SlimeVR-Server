@@ -22,6 +22,14 @@ import solarxr_protocol.rpc.VRCOSCDiscoveredTarget as RpcVRCOSCDiscoveredTarget
 
 private const val VRC_STATUS_SAMPLE_MS = 300L
 
+internal fun buildVrcOscSettingsResponse(config: VRCOSCConfig) = VRCOSCSettingsResponse(
+	enabled = config.enabled,
+	useManualNetwork = config.useManualNetwork,
+	portIn = config.portIn.toUShort(),
+	portOut = config.portOut.toUShort(),
+	address = config.address,
+)
+
 internal class VrcOscBehaviour(
 	private val settings: Settings,
 	private val vrcOscManager: VRCOSCManager,
@@ -40,16 +48,7 @@ internal class VrcOscBehaviour(
 			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
-			val config = settings.context.state.value.data.vrcOscConfig
-			receiver.sendRpc(
-				VRCOSCSettingsResponse(
-					enabled = config.enabled,
-					useManualNetwork = config.useManualNetwork,
-					portIn = config.portIn.toUShort(),
-					portOut = config.portOut.toUShort(),
-					address = config.address,
-				),
-			)
+			receiver.sendRpc(buildVrcOscSettingsResponse(settings.context.state.value.data.vrcOscConfig))
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {

@@ -52,6 +52,7 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+import { useProvideSettingsDefaults } from './hooks/settings-defaults';
 import { useControllerNav } from './hooks/controller-nav';
 import { useInternalLinkGuard } from './hooks/internal-links';
 import * as Sentry from '@sentry/react';
@@ -111,6 +112,7 @@ function ConnectedApp() {
 function AppRoutes() {
   const { isMobile } = useBreakpoint('mobile');
   useProvideErrorReporting();
+  useProvideSettingsDefaults();
   useDiscordPresence();
   useControllerNav();
   useInternalLinkGuard();

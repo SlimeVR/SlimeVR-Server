@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   BodyPart,
   ChangeTapDetectionSettingsRequestT,
@@ -9,6 +9,8 @@ import {
   TapDetectionSettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { TAP_DETECTION_BODY_PARTS } from '@/hooks/tracker-picker';
@@ -46,23 +48,30 @@ type TapDetectionForm = {
   numberTrackersOverThreshold: number;
 };
 
-const defaultValues: TapDetectionForm = {
-  yawResetEnabled: false,
-  fullResetEnabled: false,
-  mountingResetEnabled: false,
-  yawResetDelay: 0.2,
-  fullResetDelay: 0.2,
-  mountingResetDelay: 0.2,
-  yawResetTaps: 2,
-  fullResetTaps: 2,
-  mountingResetTaps: 2,
-  yawResetTracker: String(BodyPart.UPPER_CHEST),
-  fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
-  mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
-  numberTrackersOverThreshold: 1,
-};
+// The server always sends every field, the fallbacks only satisfy the optional types
+function toForm(settings: TapDetectionSettingsResponseT): TapDetectionForm {
+  return {
+    yawResetEnabled: settings.yawResetEnabled ?? false,
+    fullResetEnabled: settings.fullResetEnabled ?? false,
+    mountingResetEnabled: settings.mountingResetEnabled ?? false,
+    yawResetDelay: settings.yawResetDelay ?? 0,
+    fullResetDelay: settings.fullResetDelay ?? 0,
+    mountingResetDelay: settings.mountingResetDelay ?? 0,
+    yawResetTaps: settings.yawResetTaps ?? 0,
+    fullResetTaps: settings.fullResetTaps ?? 0,
+    mountingResetTaps: settings.mountingResetTaps ?? 0,
+    yawResetTracker: String(settings.yawResetTracker ?? BodyPart.NONE),
+    fullResetTracker: String(settings.fullResetTracker ?? BodyPart.NONE),
+    mountingResetTracker: String(
+      settings.mountingResetTracker ?? BodyPart.NONE
+    ),
+    numberTrackersOverThreshold: settings.numberTrackersOverThreshold ?? 0,
+  };
+}
 
-const tapDetectionSettingsAtom = atom(new TapDetectionSettingsResponseT());
+const tapDetectionSettingsAtom = atom<TapDetectionSettingsResponseT | null>(
+  null
+);
 const tapDetectionSettingsValueAtom = selectAtom(
   tapDetectionSettingsAtom,
   (settings) => settings,
@@ -75,6 +84,7 @@ export function TapDetectionSettings() {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().tapDetection;
 
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -91,9 +101,9 @@ export function TapDetectionSettings() {
       label: l10n.getString(`body_part-${BodyPart[value]}`),
     }));
 
-  const { control, watch, handleSubmit, getValues, reset, setValue } =
+  const { control, watch, handleSubmit, reset, setValue } =
     useForm<TapDetectionForm>({
-      defaultValues,
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
     });
@@ -133,41 +143,26 @@ export function TapDetectionSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<TapDetectionForm> = {
-      yawResetEnabled:
-        settings.yawResetEnabled ?? defaultValues.yawResetEnabled,
-      fullResetEnabled:
-        settings.fullResetEnabled ?? defaultValues.fullResetEnabled,
-      mountingResetEnabled:
-        settings.mountingResetEnabled ?? defaultValues.mountingResetEnabled,
-      yawResetDelay: settings.yawResetDelay ?? defaultValues.yawResetDelay,
-      fullResetDelay: settings.fullResetDelay ?? defaultValues.fullResetDelay,
-      mountingResetDelay:
-        settings.mountingResetDelay ?? defaultValues.mountingResetDelay,
-      yawResetTaps: settings.yawResetTaps ?? defaultValues.yawResetTaps,
-      fullResetTaps: settings.fullResetTaps ?? defaultValues.fullResetTaps,
-      mountingResetTaps:
-        settings.mountingResetTaps ?? defaultValues.mountingResetTaps,
-      yawResetTracker: String(
-        settings.yawResetTracker ?? defaultValues.yawResetTracker
-      ),
-      fullResetTracker: String(
-        settings.fullResetTracker ?? defaultValues.fullResetTracker
-      ),
-      mountingResetTracker: String(
-        settings.mountingResetTracker ?? defaultValues.mountingResetTracker
-      ),
-      numberTrackersOverThreshold:
-        settings.numberTrackersOverThreshold ??
-        defaultValues.numberTrackersOverThreshold,
-    };
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
     RpcMessage.TapDetectionSettingsResponse,
     (settings: TapDetectionSettingsResponseT) => {
       setSettings(settings);
+    }
+  );
+
+  const resetThreshold = settingReset<
+    TapDetectionForm,
+    'numberTrackersOverThreshold'
+  >(
+    defaults.numberTrackersOverThreshold ?? undefined,
+    watch('numberTrackersOverThreshold'),
+    (next) => {
+      setValue('numberTrackersOverThreshold', next);
+      handleSubmit(onSubmit)();
     }
   );
 
@@ -253,14 +248,11 @@ export function TapDetectionSettings() {
                     />
                   </label>
                 </td>
-                <fieldset
-                  disabled={!enabled}
-                  className={classNames(
-                    'contents',
-                    !enabled && '[&_td]:opacity-50'
-                  )}
-                >
-                  <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                  <fieldset
+                    disabled={!enabled}
+                    className={classNames(!enabled && 'opacity-50')}
+                  >
                     <span className="md:hidden">{column('tracker')}</span>
                     <Dropdown
                       display="block"
@@ -269,8 +261,13 @@ export function TapDetectionSettings() {
                       name={`${id}Tracker` as keyof TapDetectionForm}
                       items={bodyParts}
                     />
-                  </td>
-                  <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                  </fieldset>
+                </td>
+                <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                  <fieldset
+                    disabled={!enabled}
+                    className={classNames(!enabled && 'opacity-50')}
+                  >
                     <span className="md:hidden">{column('taps')}</span>
                     <NumberSelector
                       control={control}
@@ -285,8 +282,13 @@ export function TapDetectionSettings() {
                       max={10}
                       step={1}
                     />
-                  </td>
-                  <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                  </fieldset>
+                </td>
+                <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                  <fieldset
+                    disabled={!enabled}
+                    className={classNames(!enabled && 'opacity-50')}
+                  >
                     <span className="md:hidden">{column('delay')}</span>
                     <NumberSelector
                       control={control}
@@ -296,8 +298,8 @@ export function TapDetectionSettings() {
                       max={3.0}
                       step={0.2}
                     />
-                  </td>
-                </fieldset>
+                  </fieldset>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -309,6 +311,7 @@ export function TapDetectionSettings() {
           title="settings-general-gesture_control-numberTrackersOverThreshold"
           description="settings-general-gesture_control-numberTrackersOverThreshold-description"
           controlWidth="wide"
+          {...resetThreshold}
           control={
             <NumberSelector
               control={control}

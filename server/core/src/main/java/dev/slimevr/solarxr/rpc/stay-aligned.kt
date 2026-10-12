@@ -17,6 +17,23 @@ import solarxr_protocol.rpc.StayAlignedRelaxedPose
 import solarxr_protocol.rpc.StayAlignedSettingsRequest
 import solarxr_protocol.rpc.StayAlignedSettingsResponse
 
+internal fun buildStayAlignedSettingsResponse(config: StayAlignedConfig) = StayAlignedSettingsResponse(
+	enabled = config.enabled,
+	standingEnabled = config.standingRelaxedPose.enabled,
+	standingUpperLegAngle = config.standingRelaxedPose.upperLegAngleInDeg,
+	standingLowerLegAngle = config.standingRelaxedPose.lowerLegAngleInDeg,
+	standingFootAngle = config.standingRelaxedPose.footAngleInDeg,
+	sittingEnabled = config.sittingRelaxedPose.enabled,
+	sittingUpperLegAngle = config.sittingRelaxedPose.upperLegAngleInDeg,
+	sittingLowerLegAngle = config.sittingRelaxedPose.lowerLegAngleInDeg,
+	sittingFootAngle = config.sittingRelaxedPose.footAngleInDeg,
+	flatEnabled = config.flatRelaxedPose.enabled,
+	flatUpperLegAngle = config.flatRelaxedPose.upperLegAngleInDeg,
+	flatLowerLegAngle = config.flatRelaxedPose.lowerLegAngleInDeg,
+	flatFootAngle = config.flatRelaxedPose.footAngleInDeg,
+	setupComplete = config.setupComplete,
+)
+
 class StayAlignedBehaviour(
 	private val settings: Settings,
 	private val server: VRServer,
@@ -85,25 +102,7 @@ class StayAlignedBehaviour(
 	}
 
 	private suspend fun sendConfig(receiver: SolarXRBridge, settings: Settings) {
-		val config = settings.context.state.value.data.stayAlignedConfig
-		receiver.sendRpc(
-			StayAlignedSettingsResponse(
-				enabled = config.enabled,
-				standingEnabled = config.standingRelaxedPose.enabled,
-				standingUpperLegAngle = config.standingRelaxedPose.upperLegAngleInDeg,
-				standingLowerLegAngle = config.standingRelaxedPose.lowerLegAngleInDeg,
-				standingFootAngle = config.standingRelaxedPose.footAngleInDeg,
-				sittingEnabled = config.sittingRelaxedPose.enabled,
-				sittingUpperLegAngle = config.sittingRelaxedPose.upperLegAngleInDeg,
-				sittingLowerLegAngle = config.sittingRelaxedPose.lowerLegAngleInDeg,
-				sittingFootAngle = config.sittingRelaxedPose.footAngleInDeg,
-				flatEnabled = config.flatRelaxedPose.enabled,
-				flatUpperLegAngle = config.flatRelaxedPose.upperLegAngleInDeg,
-				flatLowerLegAngle = config.flatRelaxedPose.lowerLegAngleInDeg,
-				flatFootAngle = config.flatRelaxedPose.footAngleInDeg,
-				setupComplete = config.setupComplete,
-			),
-		)
+		receiver.sendRpc(buildStayAlignedSettingsResponse(settings.context.state.value.data.stayAlignedConfig))
 	}
 
 	private fun updatePoseInConfig(pose: StayAlignedRelaxedPose, poseConfig: StayAlignedRelaxedPoseConfig) {

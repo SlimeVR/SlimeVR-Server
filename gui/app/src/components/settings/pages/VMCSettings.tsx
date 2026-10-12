@@ -1,6 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, FieldPathValue, useForm } from 'react-hook-form';
 import {
   ChangeVMCOSCSettingsRequestT,
   ChangeVRMSettingsRequestT,
@@ -43,6 +43,8 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import { boolean, object } from 'yup';
 import { Button } from '@/components/commons/Button';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 
 interface VMCSettingsForm {
   enabled: boolean;
@@ -51,16 +53,22 @@ interface VMCSettingsForm {
   mirrorTracking: boolean;
 }
 
-const defaultVMCSettings: VMCSettingsForm = {
-  enabled: false,
-  portsAddress: {
-    portIn: 39540,
-    portOut: 39539,
-    address: '127.0.0.1',
-  },
-  anchorHip: true,
-  mirrorTracking: false,
-};
+function toForm(
+  settings: VMCOSCSettingsResponseT,
+  fallback?: VMCSettingsForm
+): VMCSettingsForm {
+  return {
+    enabled: settings.enabled,
+    portsAddress: {
+      portIn: settings.portIn || (fallback?.portsAddress.portIn ?? 0),
+      portOut: settings.portOut || (fallback?.portsAddress.portOut ?? 0),
+      address:
+        settings.address?.toString() || (fallback?.portsAddress.address ?? ''),
+    },
+    anchorHip: settings.anchorHip,
+    mirrorTracking: settings.mirrorTracking,
+  };
+}
 
 export function VRMFileUpload() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -312,23 +320,26 @@ export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { oscValidator } = useOscPortsAddressValidator();
+  const defaults = useSettingsDefaults().vmcosc;
+  const factoryForm = toForm(defaults);
   const [status, setStatus] = useState<VMCOSCStatusChangeResponseT | null>(
     null
   );
 
-  const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
-    defaultValues: defaultVMCSettings,
-    reValidateMode: 'onChange',
-    mode: 'onChange',
-    resolver: yupResolver(
-      object({
-        enabled: boolean().required(),
-        portsAddress: oscValidator,
-        anchorHip: boolean().required(),
-        mirrorTracking: boolean().required(),
-      })
-    ),
-  });
+  const { reset, control, watch, handleSubmit, setValue } =
+    useForm<VMCSettingsForm>({
+      defaultValues: factoryForm,
+      reValidateMode: 'onChange',
+      mode: 'onChange',
+      resolver: yupResolver(
+        object({
+          enabled: boolean().required(),
+          portsAddress: oscValidator,
+          anchorHip: boolean().required(),
+          mirrorTracking: boolean().required(),
+        })
+      ),
+    });
 
   const onSubmit = async (values: VMCSettingsForm) => {
     const req = new ChangeVMCOSCSettingsRequestT();
@@ -344,6 +355,29 @@ export function VMCSettings() {
   };
 
   const enabled = watch('enabled');
+  const resetTo = <P extends FieldPath<VMCSettingsForm>>(
+    name: P,
+    value: FieldPathValue<VMCSettingsForm, P> | undefined
+  ) =>
+    settingReset<VMCSettingsForm, P>(value, watch(name), (next) => {
+      setValue(name, next, { shouldDirty: true });
+      handleSubmit(onSubmit)();
+    });
+
+  const resetPorts = {
+    reset: {
+      modified:
+        watch('portsAddress.portIn') !== defaults.portIn ||
+        watch('portsAddress.portOut') !== defaults.portOut,
+      onReset: () => {
+        setValue('portsAddress.portIn', defaults.portIn, { shouldDirty: true });
+        setValue('portsAddress.portOut', defaults.portOut, {
+          shouldDirty: true,
+        });
+        handleSubmit(onSubmit)();
+      },
+    },
+  };
 
   useEffect(() => {
     const subscription = watch((_value, { type }) => {
@@ -368,22 +402,7 @@ export function VMCSettings() {
   useRPCPacket(
     RpcMessage.VMCOSCSettingsResponse,
     (settings: VMCOSCSettingsResponseT) => {
-      const formData: VMCSettingsForm = {
-        ...defaultVMCSettings,
-        portsAddress: { ...defaultVMCSettings.portsAddress },
-      };
-
-      formData.enabled = settings.enabled;
-      if (settings.portIn != 0) formData.portsAddress.portIn = settings.portIn;
-      if (settings.portOut != 0)
-        formData.portsAddress.portOut = settings.portOut;
-      if (settings.address)
-        formData.portsAddress.address = settings.address.toString();
-
-      formData.anchorHip = settings.anchorHip;
-      formData.mirrorTracking = settings.mirrorTracking;
-
-      reset(formData);
+      reset(toForm(settings, factoryForm));
     }
   );
 
@@ -408,6 +427,7 @@ export function VMCSettings() {
               title="settings-osc-vmc-enable"
               description="settings-osc-vmc-enable-description"
               controlId="vmc-enabled"
+              {...resetTo('enabled', defaults.enabled)}
               control={
                 <CheckBox
                   variant="toggle"
@@ -450,6 +470,7 @@ export function VMCSettings() {
               title="settings-osc-vmc-anchor_hip"
               description="settings-osc-vmc-anchor_hip-description"
               controlId="vmc-anchor-hip"
+              {...resetTo('anchorHip', defaults.anchorHip)}
               control={
                 <CheckBox
                   variant="toggle"
@@ -463,6 +484,7 @@ export function VMCSettings() {
               title="settings-osc-vmc-mirror_tracking"
               description="settings-osc-vmc-mirror_tracking-description"
               controlId="vmc-mirror"
+              {...resetTo('mirrorTracking', defaults.mirrorTracking)}
               control={
                 <CheckBox
                   variant="toggle"
@@ -478,6 +500,7 @@ export function VMCSettings() {
             <SettingsGroup title="settings-osc-vmc-network_group">
               <SettingRow
                 title="settings-osc-vmc-network"
+                {...resetPorts}
                 details={
                   <>
                     {l10n
@@ -520,6 +543,10 @@ export function VMCSettings() {
               <SettingRow
                 title="settings-osc-vmc-network-address"
                 description="settings-osc-vmc-network-address-description"
+                {...resetTo(
+                  'portsAddress.address',
+                  defaults.address?.toString()
+                )}
                 below={
                   <Input
                     type="text"

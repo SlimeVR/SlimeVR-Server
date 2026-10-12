@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
-import { DefaultValues, FieldPath, useForm } from 'react-hook-form';
+import { FieldPath, useForm } from 'react-hook-form';
 import {
   ChangeSkeletonSettingsRequestT,
   FilteringType,
@@ -12,12 +12,14 @@ import {
   SkeletonTogglesT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
 import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { settingReset } from '@/components/settings/SettingReset';
 import {
   SettingRow,
   SettingsAdvanced,
@@ -37,7 +39,6 @@ type SkeletonForm = {
     mocapMode: boolean;
     useTrackerPositions: boolean;
     enforceConstraints: boolean;
-    correctConstraints: boolean;
   };
   ratios: {
     imputeSpineFromUpperToLower: number;
@@ -54,33 +55,41 @@ type SkeletonForm = {
 
 // Exported so other components (e.g. StayAlignedSettings' debug copy) can
 // read the current skeleton toggles/filtering without re-requesting them.
-export const skeletonSettingsAtom = atom(new SkeletonSettingsResponseT());
+export const skeletonSettingsAtom = atom<SkeletonSettingsResponseT | null>(
+  null
+);
 const skeletonSettingsValueAtom = selectAtom(
   skeletonSettingsAtom,
   (settings) => settings,
   isEqual
 );
 
-const defaultValues: SkeletonForm = {
-  toggles: {
-    floorClip: false,
-    skatingCorrection: false,
-    toeSnap: false,
-    footPlant: false,
-    mocapMode: false,
-    useTrackerPositions: false,
-    enforceConstraints: false,
-    correctConstraints: false,
-  },
-  ratios: {
-    imputeSpineFromUpperToLower: 0.0,
-    imputeSpineCurvature: 0.0,
-    interpolateHipWithUpperLegs: 0.0,
-    interpolateUpperLegsTwistWithLowerLegs: 0.0,
-    skatingCorrectionStrength: 0.0,
-  },
-  filtering: { amount: 0.1, type: FilteringType.NONE },
-};
+function toForm(settings: SkeletonSettingsResponseT): SkeletonForm {
+  const { toggles, ratios, filtering } = settings;
+  return {
+    toggles: {
+      floorClip: toggles?.floorClip ?? false,
+      skatingCorrection: toggles?.skatingCorrection ?? false,
+      toeSnap: toggles?.toeSnap ?? false,
+      footPlant: toggles?.footPlant ?? false,
+      mocapMode: toggles?.mocapMode ?? false,
+      useTrackerPositions: toggles?.useTrackerPositions ?? false,
+      enforceConstraints: toggles?.enforceConstraints ?? false,
+    },
+    ratios: {
+      imputeSpineFromUpperToLower: ratios?.imputeSpineFromUpperToLower ?? 0,
+      imputeSpineCurvature: ratios?.imputeSpineCurvature ?? 0,
+      interpolateHipWithUpperLegs: ratios?.interpolateHipWithUpperLegs ?? 0,
+      interpolateUpperLegsTwistWithLowerLegs:
+        ratios?.interpolateUpperLegsTwistWithLowerLegs ?? 0,
+      skatingCorrectionStrength: ratios?.skatingCorrectionStrength ?? 0,
+    },
+    filtering: {
+      type: filtering?.type ?? FilteringType.NONE,
+      amount: filtering?.amount ?? 0,
+    },
+  };
+}
 
 export function TrackingSettings() {
   const setSettings = useSetAtom(skeletonSettingsAtom);
@@ -88,15 +97,16 @@ export function TrackingSettings() {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().skeleton;
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
     maximumFractionDigits: 0,
   });
 
-  const { control, watch, handleSubmit, getValues, reset } =
+  const { control, watch, handleSubmit, reset, setValue } =
     useForm<SkeletonForm>({
-      defaultValues,
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
     });
@@ -148,36 +158,8 @@ export function TrackingSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<SkeletonForm> = {};
-
-    if (settings.toggles) {
-      formData.toggles = Object.keys(settings.toggles).reduce(
-        (curr, key: string) => ({
-          ...curr,
-          [key]: (settings.toggles && (settings.toggles as any)[key]) ?? false,
-        }),
-        {}
-      );
-    }
-
-    if (settings.ratios) {
-      formData.ratios = Object.keys(settings.ratios).reduce(
-        (curr, key: string) => ({
-          ...curr,
-          [key]: (settings.ratios && (settings.ratios as any)[key]) ?? 0.0,
-        }),
-        {}
-      );
-    }
-
-    if (settings.filtering) {
-      formData.filtering = {
-        type: settings.filtering.type,
-        amount: settings.filtering.amount,
-      };
-    }
-
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
@@ -190,7 +172,19 @@ export function TrackingSettings() {
   const filteringEnabled = watch('filtering.type') !== FilteringType.NONE;
   const skatingCorrection = watch('toggles.skatingCorrection');
 
+  const resetTo = (name: FieldPath<SkeletonForm>) =>
+    settingReset<SkeletonForm, FieldPath<SkeletonForm>>(
+      name.split('.').reduce<any>((value, key) => value?.[key], defaults) ??
+        undefined,
+      watch(name),
+      (next) => {
+        setValue(name, next);
+        handleSubmit(onSubmit)();
+      }
+    );
+
   const stepper = (name: FieldPath<SkeletonForm>, min = 0.0) => ({
+    ...resetTo(name),
     controlWidth: 'wide' as const,
     control: (
       <NumberSelector
@@ -205,6 +199,7 @@ export function TrackingSettings() {
   });
 
   const toggle = (name: FieldPath<SkeletonForm>) => ({
+    ...resetTo(name),
     controlId: `tracking-${name}`,
     control: (
       <CheckBox

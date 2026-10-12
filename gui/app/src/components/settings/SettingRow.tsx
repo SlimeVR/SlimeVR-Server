@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import { Tooltip } from '@/components/commons/Tooltip';
+import { SettingResetButton, SettingResetProps } from './SettingReset';
 
 export function SettingsGroupLabel({ id }: { id: string }) {
   return (
@@ -22,6 +23,7 @@ export function SettingRow({
   controlId,
   disabledReason,
   controlWidth = 'auto',
+  reset,
   disabled = false,
   childrenDisabled = false,
   children,
@@ -34,6 +36,7 @@ export function SettingRow({
   controlId?: string;
   disabledReason?: string;
   controlWidth?: 'auto' | 'wide';
+  reset?: SettingResetProps;
   disabled?: boolean;
   childrenDisabled?: boolean;
   children?: ReactNode;
@@ -67,13 +70,13 @@ export function SettingRow({
     </>
   );
   const bandClasses =
-    'grid grid-cols-[minmax(0,1fr)_auto] gap-x-6 gap-y-1 items-center';
+    'grid grid-cols-[minmax(0,1fr)_auto] gap-x-6 gap-y-1 items-center flex-1 min-w-0';
 
   return (
     <fieldset
       disabled={disabled}
       className={classNames(
-        'flex flex-col gap-3 min-w-0 px-3 py-3 xs:px-4 xs:py-4 transition-colors',
+        'flex flex-col gap-3 min-w-0 pl-1 pr-3 py-3 xs:pl-2 xs:pr-4 xs:py-4 transition-colors',
         !disabled && 'hover:bg-background-70/30'
       )}
     >
@@ -82,21 +85,26 @@ export function SettingRow({
         preferedDirection="top"
         disabled={!disabled || !disabledReason}
       >
-        {controlId ? (
-          <label
-            htmlFor={controlId}
-            className={classNames(
-              bandClasses,
-              disabled ? 'opacity-50' : 'cursor-pointer'
-            )}
-          >
-            {band}
-          </label>
-        ) : (
-          <div className={classNames(bandClasses, disabled && 'opacity-50')}>
-            {band}
+        <div
+          className={classNames(
+            'flex items-start gap-2 min-w-0',
+            disabled && 'opacity-50'
+          )}
+        >
+          <div className="w-7 h-6 shrink-0 flex items-center justify-center">
+            {reset && <SettingResetButton {...reset} />}
           </div>
-        )}
+          {controlId ? (
+            <label
+              htmlFor={controlId}
+              className={classNames(bandClasses, !disabled && 'cursor-pointer')}
+            >
+              {band}
+            </label>
+          ) : (
+            <div className={bandClasses}>{band}</div>
+          )}
+        </div>
       </Tooltip>
       {below && <div className="min-w-0">{below}</div>}
       {children && (

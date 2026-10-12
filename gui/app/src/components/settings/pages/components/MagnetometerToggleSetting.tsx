@@ -12,6 +12,8 @@ import {
 } from 'solarxr-protocol';
 import { Link } from 'react-router-dom';
 import { SettingRow } from '@/components/settings/SettingRow';
+import { settingReset } from '@/components/settings/SettingReset';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
 
 interface MagnetometerToggleForm {
   magToggle: boolean;
@@ -30,10 +32,12 @@ export function MagnetometerToggleSetting({
   // used to disable the tracker specific toggle if false
   const [globalToggle, setGlobalToggle] = useState(false);
   const [waitingMag, setWaitingMag] = useState(false);
-  const { control, watch, handleSubmit, reset } =
+  const { control, watch, handleSubmit, reset, setValue } =
     useForm<MagnetometerToggleForm>({
       defaultValues: { magToggle: settingType === 'tracker' },
     });
+
+  const defaultMag = useSettingsDefaults().mag.enable;
 
   const onSubmit = useCallback(
     (values: MagnetometerToggleForm) => {
@@ -76,6 +80,12 @@ export function MagnetometerToggleSetting({
     reset({ magToggle: mag.enable });
   });
 
+  const resetMag = settingReset<MagnetometerToggleForm, 'magToggle'>(
+    defaultMag,
+    watch('magToggle'),
+    (next) => setValue('magToggle', next)
+  );
+
   return settingType === 'general' ? (
     <SettingRow
       title="settings-general-tracker_mechanics-use_mag_on_all_trackers"
@@ -88,6 +98,7 @@ export function MagnetometerToggleSetting({
         </Localized>
       }
       controlId="trackers-magnetometer"
+      {...resetMag}
       control={
         <CheckBox
           variant="toggle"

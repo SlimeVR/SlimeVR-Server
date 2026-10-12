@@ -612,6 +612,7 @@ settings-keybinds-already-assigned = Already used by { $name }
 settings-keybinds-click-to-record = Click to record shortcut
 settings-keybinds-change-shortcut = Click to change shortcut
 settings-keybinds-reset-single = Reset keybind to default
+settings-reset-single = Reset this setting to its default
 settings-keybinds-recorder-hint-recording = Hold the keys you want, then release them
 settings-keybinds-error-unsupported-key = That key can't be used in a shortcut
 settings-keybinds-error-add-modifier = Hold Ctrl, Alt, or Super with that key

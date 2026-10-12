@@ -13,7 +13,7 @@ import solarxr_protocol.rpc.ChangeResetsSettingsRequest
 import solarxr_protocol.rpc.ResetsSettingsRequest
 import solarxr_protocol.rpc.ResetsSettingsResponse
 
-private fun buildResponse(config: ResetsConfig) = ResetsSettingsResponse(
+internal fun buildResetsSettingsResponse(config: ResetsConfig) = ResetsSettingsResponse(
 	resetMountingFeet = config.resetMountingFeet,
 	armsMountingResetMode = config.armsMountingResetMode,
 	yawResetSmoothTime = config.yawResetSmoothTime,
@@ -29,12 +29,12 @@ class ResetsBehaviour(
 		settings.context.state
 			.map { state -> state.data.resetsConfig }
 			.distinctUntilChanged()
-			.onEach { config -> receiver.sendRpc(buildResponse(config)) }
+			.onEach { config -> receiver.sendRpc(buildResetsSettingsResponse(config)) }
 			.launchIn(receiver.context.scope)
 
 		// Send config
 		receiver.rpcDispatcher.on<ResetsSettingsRequest> {
-			receiver.sendRpc(buildResponse(settings.context.state.value.data.resetsConfig))
+			receiver.sendRpc(buildResetsSettingsResponse(settings.context.state.value.data.resetsConfig))
 		}.launchIn(receiver.context.scope)
 
 		// Receive config

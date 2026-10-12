@@ -21,37 +21,36 @@ import solarxr_protocol.rpc.SkeletonToggles
 import solarxr_protocol.rpc.TrackingPauseStateRequest
 import solarxr_protocol.rpc.TrackingPauseStateResponse
 
+internal fun buildSkeletonSettingsResponse(config: SkeletonConfig) = SkeletonSettingsResponse(
+	toggles = SkeletonToggles(
+		floorClip = config.toggles.floorClip,
+		skatingCorrection = config.toggles.skatingCorrection,
+		toeSnap = config.toggles.toeSnap,
+		footPlant = config.toggles.footPlant,
+		mocapMode = config.toggles.mocapMode,
+		useTrackerPositions = config.toggles.useTrackerPositions,
+		enforceConstraints = config.toggles.enforceConstraints,
+	),
+	ratios = SkeletonRatios(
+		imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
+		imputeSpineCurvature = config.ratios.imputeSpineCurvature,
+		interpolateHipWithUpperLegs = config.ratios.interpolateHipWithUpperLegs,
+		interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
+		skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
+	),
+	filtering = SkeletonFiltering(
+		type = config.filtering.type,
+		amount = config.filtering.amount,
+	),
+)
+
 class SkeletonSettingsBehaviour(
 	private val settings: Settings,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
 		receiver.rpcDispatcher.on<SkeletonSettingsRequest> {
-			val config = settings.context.state.value.data.skeletonConfig
-			receiver.sendRpc(
-				SkeletonSettingsResponse(
-					toggles = SkeletonToggles(
-						floorClip = config.toggles.floorClip,
-						skatingCorrection = config.toggles.skatingCorrection,
-						toeSnap = config.toggles.toeSnap,
-						footPlant = config.toggles.footPlant,
-						mocapMode = config.toggles.mocapMode,
-						useTrackerPositions = config.toggles.useTrackerPositions,
-						enforceConstraints = config.toggles.enforceConstraints,
-					),
-					ratios = SkeletonRatios(
-						imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
-						imputeSpineCurvature = config.ratios.imputeSpineCurvature,
-						interpolateHipWithUpperLegs = config.ratios.interpolateHipWithUpperLegs,
-						interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
-						skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
-					),
-					filtering = SkeletonFiltering(
-						type = config.filtering.type,
-						amount = config.filtering.amount,
-					),
-				),
-			)
+			receiver.sendRpc(buildSkeletonSettingsResponse(settings.context.state.value.data.skeletonConfig))
 		}.launchIn(receiver.context.scope)
 
 		// Receive config

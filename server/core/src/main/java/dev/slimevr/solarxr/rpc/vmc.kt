@@ -2,6 +2,7 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.VMCConfig
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vmc.VMCManager
@@ -23,6 +24,19 @@ import solarxr_protocol.rpc.VRMSettingsResponse
 
 private const val VMC_STATUS_SAMPLE_MS = 300L
 
+internal fun buildVmcOscSettingsResponse(config: VMCConfig) = VMCOSCSettingsResponse(
+	enabled = config.enabled,
+	portIn = config.portIn.toUShort(),
+	portOut = config.portOut.toUShort(),
+	address = config.address,
+	anchorHip = config.anchorAtHips,
+	mirrorTracking = config.mirrorTracking,
+)
+
+internal fun buildVrmSettingsResponse(config: VMCConfig) = VRMSettingsResponse(
+	vrmJson = config.vrmJson,
+)
+
 class VmcBehaviour(
 	private val settings: Settings,
 	private val vmcManager: VMCManager,
@@ -38,17 +52,7 @@ class VmcBehaviour(
 
 		// Send VMC config
 		receiver.rpcDispatcher.on<VMCOSCSettingsRequest> {
-			val config = settings.context.state.value.data.vmcConfig
-			receiver.sendRpc(
-				VMCOSCSettingsResponse(
-					enabled = config.enabled,
-					portIn = config.portIn.toUShort(),
-					portOut = config.portOut.toUShort(),
-					address = config.address,
-					anchorHip = config.anchorAtHips,
-					mirrorTracking = config.mirrorTracking,
-				),
-			)
+			receiver.sendRpc(buildVmcOscSettingsResponse(settings.context.state.value.data.vmcConfig))
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VMCOSCStatusRequest> {
@@ -57,12 +61,7 @@ class VmcBehaviour(
 
 		// Send VRM json
 		receiver.rpcDispatcher.on<VRMSettingsRequest> {
-			val config = settings.context.state.value.data.vmcConfig
-			receiver.sendRpc(
-				VRMSettingsResponse(
-					vrmJson = config.vrmJson,
-				),
-			)
+			receiver.sendRpc(buildVrmSettingsResponse(settings.context.state.value.data.vmcConfig))
 		}.launchIn(receiver.context.scope)
 
 		// Receive VMC config

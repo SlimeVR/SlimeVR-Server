@@ -4,6 +4,7 @@ import { FieldPath, useForm } from 'react-hook-form';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
+import { settingReset } from '@/components/settings/SettingReset';
 import { BugIcon } from '@/components/commons/icon/BugIcon';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -53,25 +54,27 @@ export function AdvancedSettings() {
   const [showWarningAll, setShowWarningAll] = useState(false);
   const { sendRPCPacket } = useWebsocketAPI();
 
-  const { control, watch, handleSubmit } = useForm<DeveloperModeForm>({
-    defaultValues: {
-      developer: {
-        enabled: config?.debug ?? defaultGUIConfig.debug,
-        highContrast:
-          config?.devSettings?.highContrast ??
-          defaultGUIConfig.devSettings.highContrast,
-        preciseRotation:
-          config?.devSettings?.preciseRotation ??
-          defaultGUIConfig.devSettings.preciseRotation,
-        fastDataFeed:
-          config?.devSettings?.fastDataFeed ??
-          defaultGUIConfig.devSettings.fastDataFeed,
-        rawSlimeRotation:
-          config?.devSettings?.rawSlimeRotation ??
-          defaultGUIConfig.devSettings.rawSlimeRotation,
+  const { control, watch, handleSubmit, setValue } = useForm<DeveloperModeForm>(
+    {
+      defaultValues: {
+        developer: {
+          enabled: config?.debug ?? defaultGUIConfig.debug,
+          highContrast:
+            config?.devSettings?.highContrast ??
+            defaultGUIConfig.devSettings.highContrast,
+          preciseRotation:
+            config?.devSettings?.preciseRotation ??
+            defaultGUIConfig.devSettings.preciseRotation,
+          fastDataFeed:
+            config?.devSettings?.fastDataFeed ??
+            defaultGUIConfig.devSettings.fastDataFeed,
+          rawSlimeRotation:
+            config?.devSettings?.rawSlimeRotation ??
+            defaultGUIConfig.devSettings.rawSlimeRotation,
+        },
       },
-    },
-  });
+    }
+  );
 
   const onSubmit = (values: DeveloperModeForm) => {
     setConfig({
@@ -84,6 +87,12 @@ export function AdvancedSettings() {
     const subscription = watch(() => handleSubmit(onSubmit)());
     return () => subscription.unsubscribe();
   }, [onSubmit]);
+
+  const resetDevMode = settingReset<DeveloperModeForm, 'developer.enabled'>(
+    defaultGUIConfig.debug,
+    watch('developer.enabled'),
+    (next) => setValue('developer.enabled', next)
+  );
 
   const openConfigFolder = async () => {
     if (!electron.isElectron) throw 'invalid state - no electron';
@@ -161,6 +170,7 @@ export function AdvancedSettings() {
               title="settings-general-interface-dev_mode"
               description="settings-general-interface-dev_mode-description"
               controlId="advanced-dev-mode"
+              {...resetDevMode}
               control={
                 <CheckBox
                   variant="toggle"

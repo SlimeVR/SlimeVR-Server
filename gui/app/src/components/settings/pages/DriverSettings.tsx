@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/commons/Button';
 import {
   ChangeDriverSettingsRequestT,
@@ -11,6 +11,8 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { CheckBox } from '@/components/commons/Checkbox';
 import {
   StatusBadge,
@@ -32,10 +34,12 @@ type DriverForm = {
   sendVelocity: boolean;
 };
 
-const defaultValues: DriverForm = {
-  enabled: true,
-  sendVelocity: false,
-};
+function toForm(settings: DriverSettingsResponseT): DriverForm {
+  return {
+    enabled: settings.enabled,
+    sendVelocity: settings.sendVelocity,
+  };
+}
 
 type Badge = 'connected' | 'waiting' | 'disabled' | 'unavailable';
 
@@ -87,13 +91,15 @@ export function DriverSettings() {
     null
   );
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().driver;
 
-  const { control, watch, handleSubmit, getValues, reset } =
-    useForm<DriverForm>({
-      defaultValues,
+  const { control, watch, handleSubmit, reset, setValue } = useForm<DriverForm>(
+    {
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
-    });
+    }
+  );
 
   const onSubmit = (values: DriverForm) => {
     const settingsReq = new ChangeDriverSettingsRequestT();
@@ -103,6 +109,16 @@ export function DriverSettings() {
   };
 
   const enabled = watch('enabled');
+
+  const resetTo = (name: keyof DriverForm) =>
+    settingReset<DriverForm, typeof name>(
+      defaults?.[name],
+      watch(name),
+      (next) => {
+        setValue(name, next);
+        handleSubmit(onSubmit)();
+      }
+    );
 
   useEffect(() => {
     const subscription = watch((_, { type }) => {
@@ -121,11 +137,7 @@ export function DriverSettings() {
 
   useEffect(() => {
     if (!settings) return;
-    const formData: DefaultValues<DriverForm> = {
-      enabled: settings.enabled,
-      sendVelocity: settings.sendVelocity,
-    };
-    reset({ ...getValues(), ...formData });
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
@@ -153,6 +165,7 @@ export function DriverSettings() {
             title="settings-driver-enable"
             description="settings-driver-enable-description"
             controlId="driver-enabled"
+            {...resetTo('enabled')}
             control={
               <CheckBox
                 variant="toggle"
@@ -191,6 +204,7 @@ export function DriverSettings() {
               title="settings-driver-velocity"
               description="settings-driver-velocity-description"
               controlId="driver-velocity"
+              {...resetTo('sendVelocity')}
               control={
                 <CheckBox
                   variant="toggle"

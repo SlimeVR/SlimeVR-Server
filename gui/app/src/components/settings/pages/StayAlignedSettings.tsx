@@ -1,6 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ChangeStayAlignedSettingsRequestT,
   RpcMessage,
@@ -24,6 +24,8 @@ import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { bodypartToString } from '@/utils/formatting';
 import { useLocaleConfig } from '@/i18n/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import {
   FlatRelaxedPoseModal,
   SittingRelaxedPoseModal,
@@ -47,24 +49,28 @@ export type StayAlignedSettingsForm = {
   flatFootAngle: number;
 };
 
-export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
-  setupComplete: false,
-  enabled: false,
-  standingEnabled: false,
-  standingUpperLegAngle: 0.0,
-  standingLowerLegAngle: 0.0,
-  standingFootAngle: 0.0,
-  sittingEnabled: false,
-  sittingUpperLegAngle: 0.0,
-  sittingLowerLegAngle: 0.0,
-  sittingFootAngle: 0.0,
-  flatEnabled: false,
-  flatUpperLegAngle: 0.0,
-  flatLowerLegAngle: 0.0,
-  flatFootAngle: 0.0,
-};
+function toForm(
+  settings: StayAlignedSettingsResponseT
+): StayAlignedSettingsForm {
+  return {
+    setupComplete: settings.setupComplete,
+    enabled: settings.enabled,
+    standingEnabled: settings.standingEnabled,
+    standingUpperLegAngle: settings.standingUpperLegAngle,
+    standingLowerLegAngle: settings.standingLowerLegAngle,
+    standingFootAngle: settings.standingFootAngle,
+    sittingEnabled: settings.sittingEnabled,
+    sittingUpperLegAngle: settings.sittingUpperLegAngle,
+    sittingLowerLegAngle: settings.sittingLowerLegAngle,
+    sittingFootAngle: settings.sittingFootAngle,
+    flatEnabled: settings.flatEnabled,
+    flatUpperLegAngle: settings.flatUpperLegAngle,
+    flatLowerLegAngle: settings.flatLowerLegAngle,
+    flatFootAngle: settings.flatFootAngle,
+  };
+}
 
-const stayAlignedSettingsAtom = atom(new StayAlignedSettingsResponseT());
+const stayAlignedSettingsAtom = atom<StayAlignedSettingsResponseT | null>(null);
 const stayAlignedSettingsValueAtom = selectAtom(
   stayAlignedSettingsAtom,
   (settings) => settings,
@@ -129,10 +135,11 @@ export function StayAlignedSettings() {
   const setSettings = useSetAtom(stayAlignedSettingsAtom);
   const settings = useAtomValue(stayAlignedSettingsValueAtom);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().stayAligned;
 
-  const { control, watch, handleSubmit, getValues, reset } =
+  const { control, watch, handleSubmit, reset, setValue } =
     useForm<StayAlignedSettingsForm>({
-      defaultValues: defaultStayAlignedSettings,
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
     });
@@ -149,6 +156,18 @@ export function StayAlignedSettings() {
     sendRPCPacket(RpcMessage.ChangeStayAlignedSettingsRequest, settingsReq);
   };
 
+  const resetTo = (
+    name: 'enabled' | 'standingEnabled' | 'sittingEnabled' | 'flatEnabled'
+  ) =>
+    settingReset<StayAlignedSettingsForm, typeof name>(
+      defaults[name],
+      watch(name),
+      (next) => {
+        setValue(name, next);
+        handleSubmit(onSubmit)();
+      }
+    );
+
   useEffect(() => {
     const subscription = watch((_, { type }) => {
       if (type === 'change') handleSubmit(onSubmit)();
@@ -164,27 +183,8 @@ export function StayAlignedSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<StayAlignedSettingsForm> = {};
-
-    formData.setupComplete = settings.setupComplete;
-    formData.enabled = settings.enabled;
-
-    formData.standingEnabled = settings.standingEnabled;
-    formData.standingUpperLegAngle = settings.standingUpperLegAngle;
-    formData.standingLowerLegAngle = settings.standingLowerLegAngle;
-    formData.standingFootAngle = settings.standingFootAngle;
-
-    formData.sittingEnabled = settings.sittingEnabled;
-    formData.sittingUpperLegAngle = settings.sittingUpperLegAngle;
-    formData.sittingLowerLegAngle = settings.sittingLowerLegAngle;
-    formData.sittingFootAngle = settings.sittingFootAngle;
-
-    formData.flatEnabled = settings.flatEnabled;
-    formData.flatUpperLegAngle = settings.flatUpperLegAngle;
-    formData.flatLowerLegAngle = settings.flatLowerLegAngle;
-    formData.flatFootAngle = settings.flatFootAngle;
-
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
@@ -267,6 +267,7 @@ export function StayAlignedSettings() {
             disabled={!config.setupComplete}
             disabledReason="settings-stay_aligned-setup-description"
             controlId="stay-aligned-enabled"
+            {...resetTo('enabled')}
             control={
               <CheckBox
                 variant="toggle"
@@ -289,6 +290,7 @@ export function StayAlignedSettings() {
               disabled={!config.setupComplete}
               disabledReason="settings-stay_aligned-setup-description"
               controlId={`stay-aligned-${id}`}
+              {...resetTo(name)}
               control={
                 <div className="flex gap-2 items-center">
                   {modal}

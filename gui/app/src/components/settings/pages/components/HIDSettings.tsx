@@ -1,6 +1,6 @@
 import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ChangeHIDSettingsRequestT,
   HIDSettingsRequestT,
@@ -8,6 +8,8 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -19,11 +21,11 @@ type HIDForm = {
   trackersOverHID: boolean;
 };
 
-const defaultValues: HIDForm = {
-  trackersOverHID: false,
-};
+function toForm(settings: HIDSettingsResponseT): HIDForm {
+  return { trackersOverHID: settings.trackersOverHid };
+}
 
-const hidSettingsAtom = atom(new HIDSettingsResponseT());
+const hidSettingsAtom = atom<HIDSettingsResponseT | null>(null);
 const hidSettingsValueAtom = selectAtom(
   hidSettingsAtom,
   (settings) => settings,
@@ -34,9 +36,10 @@ export function HIDSettings() {
   const setSettings = useSetAtom(hidSettingsAtom);
   const settings = useAtomValue(hidSettingsValueAtom);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().hid;
 
-  const { control, watch, handleSubmit, getValues, reset } = useForm<HIDForm>({
-    defaultValues,
+  const { control, watch, handleSubmit, reset, setValue } = useForm<HIDForm>({
+    defaultValues: toForm(defaults),
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
@@ -59,16 +62,23 @@ export function HIDSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<HIDForm> = {
-      trackersOverHID: settings.trackersOverHid,
-    };
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
     RpcMessage.HIDSettingsResponse,
     (settings: HIDSettingsResponseT) => {
       setSettings(settings);
+    }
+  );
+
+  const resetTrackersOverHid = settingReset<HIDForm, 'trackersOverHID'>(
+    defaults.trackersOverHid,
+    watch('trackersOverHID'),
+    (next) => {
+      setValue('trackersOverHID', next);
+      handleSubmit(onSubmit)();
     }
   );
 
@@ -84,6 +94,7 @@ export function HIDSettings() {
         </Localized>
       }
       controlId="trackers-over-usb"
+      {...resetTrackersOverHid}
       control={
         <CheckBox
           variant="toggle"

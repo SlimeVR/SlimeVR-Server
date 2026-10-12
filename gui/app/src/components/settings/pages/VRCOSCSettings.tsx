@@ -1,7 +1,7 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, FieldPathValue, useForm } from 'react-hook-form';
 import { boolean, object } from 'yup';
 import {
   ChangeVRCOSCSettingsRequestT,
@@ -37,6 +37,8 @@ import {
   SettingsGroupLabel,
 } from '@/components/settings/SettingRow';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { useRelativeTime } from '@/hooks/relative-time';
 import {
   OSCPortsAddress,
@@ -49,15 +51,17 @@ interface VRCOSCSettingsForm {
   portsAddress: OSCPortsAddress;
 }
 
-const defaultVRCOSCSettings: VRCOSCSettingsForm = {
-  enabled: false,
-  useManualNetwork: false,
-  portsAddress: {
-    portIn: 9001,
-    portOut: 9000,
-    address: '127.0.0.1',
-  },
-};
+function toForm(settings: VRCOSCSettingsResponseT): VRCOSCSettingsForm {
+  return {
+    enabled: settings.enabled,
+    useManualNetwork: settings.useManualNetwork,
+    portsAddress: {
+      portIn: settings.portIn,
+      portOut: settings.portOut,
+      address: settings.address?.toString() ?? '',
+    },
+  };
+}
 
 type Badge =
   | 'listening'
@@ -333,9 +337,10 @@ export function VRCOSCSettings() {
   );
 
   const { oscValidator } = useOscPortsAddressValidator();
+  const defaults = useSettingsDefaults().vrcosc;
   const { reset, control, watch, handleSubmit, setValue } =
     useForm<VRCOSCSettingsForm>({
-      defaultValues: defaultVRCOSCSettings,
+      defaultValues: toForm(defaults),
       reValidateMode: 'onChange',
       mode: 'onChange',
       resolver: yupResolver(
@@ -362,6 +367,31 @@ export function VRCOSCSettings() {
     sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, req);
   };
 
+  const resetTo = <P extends FieldPath<VRCOSCSettingsForm>>(
+    name: P,
+    value: FieldPathValue<VRCOSCSettingsForm, P> | undefined
+  ) =>
+    settingReset<VRCOSCSettingsForm, P>(value, watch(name), (next) => {
+      setValue(name, next, { shouldDirty: true });
+      handleSubmit(onSubmit)();
+    });
+
+  const defaultAddress = defaults.address?.toString();
+  const resetPorts = {
+    reset: {
+      modified:
+        watch('portsAddress.portIn') !== defaults.portIn ||
+        watch('portsAddress.portOut') !== defaults.portOut,
+      onReset: () => {
+        setValue('portsAddress.portIn', defaults.portIn, { shouldDirty: true });
+        setValue('portsAddress.portOut', defaults.portOut, {
+          shouldDirty: true,
+        });
+        handleSubmit(onSubmit)();
+      },
+    },
+  };
+
   useEffect(() => {
     const subscription = watch((_value, { type }) => {
       if (type === 'change') {
@@ -382,18 +412,7 @@ export function VRCOSCSettings() {
   useRPCPacket(
     RpcMessage.VRCOSCSettingsResponse,
     (response: VRCOSCSettingsResponseT) => {
-      const formData: VRCOSCSettingsForm = {
-        ...defaultVRCOSCSettings,
-        portsAddress: { ...defaultVRCOSCSettings.portsAddress },
-      };
-
-      formData.enabled = response.enabled;
-      formData.useManualNetwork = response.useManualNetwork;
-      formData.portsAddress.portIn = response.portIn;
-      formData.portsAddress.portOut = response.portOut;
-      formData.portsAddress.address = response.address?.toString() ?? '';
-
-      reset(formData);
+      reset(toForm(response));
     }
   );
 
@@ -425,6 +444,7 @@ export function VRCOSCSettings() {
               title="settings-osc-vrchat-enable"
               description="settings-osc-vrchat-enable-description"
               controlId="vrchat-enabled"
+              {...resetTo('enabled', defaults.enabled)}
               control={
                 <CheckBox
                   variant="toggle"
@@ -476,6 +496,7 @@ export function VRCOSCSettings() {
                 title="settings-osc-vrchat-status-network-mode"
                 description="settings-osc-vrchat-status-network-mode-description"
                 controlWidth="wide"
+                {...resetTo('useManualNetwork', defaults.useManualNetwork)}
                 control={
                   <DropdownInside
                     name="networkMode"
@@ -511,6 +532,7 @@ export function VRCOSCSettings() {
                     <SettingRow
                       title="settings-osc-vrchat-network"
                       description="settings-osc-vrchat-status-network-manual-description"
+                      {...resetPorts}
                       below={
                         <div className="grid sm:grid-cols-2 gap-3">
                           <Localized
@@ -543,6 +565,7 @@ export function VRCOSCSettings() {
                     <SettingRow
                       title="settings-osc-vrchat-network-address"
                       description="settings-osc-vrchat-network-address-description-v1"
+                      {...resetTo('portsAddress.address', defaultAddress)}
                       below={
                         <Input
                           type="text"

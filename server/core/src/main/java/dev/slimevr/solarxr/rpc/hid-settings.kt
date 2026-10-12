@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr.rpc
 
+import dev.slimevr.config.HidConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.solarxr.SolarXRBridge
@@ -13,16 +14,18 @@ import solarxr_protocol.rpc.ChangeHIDSettingsRequest
 import solarxr_protocol.rpc.HIDSettingsRequest
 import solarxr_protocol.rpc.HIDSettingsResponse
 
+internal fun buildHidSettingsResponse(config: HidConfig) = HIDSettingsResponse(trackersOverHid = config.trackersOverHid)
+
 class HIDSettingsBehaviour(
 	private val settings: Settings,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<HIDSettingsRequest> {
-			receiver.sendRpc(HIDSettingsResponse(trackersOverHid = settings.context.state.value.data.hidConfig.trackersOverHid))
+			receiver.sendRpc(buildHidSettingsResponse(settings.context.state.value.data.hidConfig))
 		}.launchIn(receiver.context.scope)
 
 		settings.context.state
-			.map { HIDSettingsResponse(trackersOverHid = it.data.hidConfig.trackersOverHid) }
+			.map { buildHidSettingsResponse(it.data.hidConfig) }
 			.distinctUntilChanged()
 			.drop(1)
 			.onEach(receiver::sendRpc)

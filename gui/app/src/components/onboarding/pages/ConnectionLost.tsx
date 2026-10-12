@@ -53,10 +53,11 @@ function Error({ title, desc }: { title: string; desc: string }) {
 }
 
 export function ConnectionLost() {
-  const { isFirstConnection, timedOut } = useWebsocketAPI();
+  const { isFirstConnection, isConnected, timedOut } = useWebsocketAPI();
 
-  const isLoading = isFirstConnection && !timedOut;
-  const isCrashed = !isFirstConnection && !timedOut;
+  // Connected but still waiting on the server's settings defaults
+  const isLoading = isConnected || (isFirstConnection && !timedOut);
+  const isCrashed = !isLoading && !isFirstConnection && !timedOut;
   const isTimedOut = isFirstConnection && timedOut;
 
   return (

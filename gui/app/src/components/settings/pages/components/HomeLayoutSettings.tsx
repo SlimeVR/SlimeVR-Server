@@ -17,6 +17,7 @@ import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { track } from '@/utils/sentry';
+import { isEqual } from '@react-hookz/deep-equal';
 
 export function LayoutSelector({
   children,
@@ -193,6 +194,37 @@ export function HomeLayoutSettings({
   const mesh =
     (config?.skeletonPreviewStyle ?? defaultConfig.skeletonPreviewStyle) ===
     'mesh';
+  const columns = config?.trackersTableColumns ?? defaultTrackersTableColumns;
+  const trackerDisplay = config?.trackerDisplay ?? defaultTrackerDisplay;
+
+  const resetLayout = {
+    reset: {
+      modified:
+        (config?.homeLayout ?? defaultConfig.homeLayout) !==
+        defaultConfig.homeLayout,
+      onReset: () => setConfig({ homeLayout: defaultConfig.homeLayout }),
+    },
+  };
+  const resetColumns = {
+    reset: {
+      modified: !isEqual(columns, defaultTrackersTableColumns),
+      onReset: () =>
+        setConfig({ trackersTableColumns: defaultTrackersTableColumns }),
+    },
+  };
+  const resetMesh = {
+    reset: {
+      modified: !mesh === (defaultConfig.skeletonPreviewStyle === 'mesh'),
+      onReset: () =>
+        setConfig({ skeletonPreviewStyle: defaultConfig.skeletonPreviewStyle }),
+    },
+  };
+  const resetTrackerDisplay = {
+    reset: {
+      modified: !isEqual(trackerDisplay, defaultTrackerDisplay),
+      onReset: () => setConfig({ trackerDisplay: defaultTrackerDisplay }),
+    },
+  };
 
   const setLayout = (layout: Config['homeLayout']) => {
     setConfig({ homeLayout: layout });
@@ -201,40 +233,45 @@ export function HomeLayoutSettings({
 
   return (
     <div className="flex flex-col">
-      <SettingsGroup
-        title="settings-home-list-layout"
-        description="settings-home-list-layout-desc"
-      >
-        <div className="flex gap-4 p-3 xs:p-4">
-          <LayoutSelector
-            name="settings-home-list-layout-grid"
-            active={config?.homeLayout === 'default'}
-            onClick={() => setLayout('default')}
-          >
-            <div className="grid grid-cols-2 gap-2 p-2">
-              <div className="h-2 rounded-lg bg-background-40" />
-              <div className="h-2 rounded-lg bg-background-40" />
-              <div className="h-2 rounded-lg bg-background-40" />
-              <div className="h-2 rounded-lg bg-background-40" />
+      <SettingsGroup>
+        <SettingRow
+          title="settings-home-list-layout"
+          description="settings-home-list-layout-desc"
+          {...resetLayout}
+          below={
+            <div className="flex gap-4">
+              <LayoutSelector
+                name="settings-home-list-layout-grid"
+                active={config?.homeLayout === 'default'}
+                onClick={() => setLayout('default')}
+              >
+                <div className="grid grid-cols-2 gap-2 p-2">
+                  <div className="h-2 rounded-lg bg-background-40" />
+                  <div className="h-2 rounded-lg bg-background-40" />
+                  <div className="h-2 rounded-lg bg-background-40" />
+                  <div className="h-2 rounded-lg bg-background-40" />
+                </div>
+              </LayoutSelector>
+              <LayoutSelector
+                name="settings-home-list-layout-table"
+                active={config?.homeLayout === 'table'}
+                onClick={() => setLayout('table')}
+              >
+                <div className="grid grid-cols-1 gap-2 p-2">
+                  <div className="h-2 rounded-lg bg-background-40" />
+                  <div className="h-2 rounded-lg bg-background-40" />
+                  <div className="h-2 rounded-lg bg-background-40" />
+                  <div className="h-2 rounded-lg bg-background-40" />
+                </div>
+              </LayoutSelector>
             </div>
-          </LayoutSelector>
-          <LayoutSelector
-            name="settings-home-list-layout-table"
-            active={config?.homeLayout === 'table'}
-            onClick={() => setLayout('table')}
-          >
-            <div className="grid grid-cols-1 gap-2 p-2">
-              <div className="h-2 rounded-lg bg-background-40" />
-              <div className="h-2 rounded-lg bg-background-40" />
-              <div className="h-2 rounded-lg bg-background-40" />
-              <div className="h-2 rounded-lg bg-background-40" />
-            </div>
-          </LayoutSelector>
-        </div>
+          }
+        />
         {config?.homeLayout === 'table' && (
           <SettingRow
             title="settings-home-table_columns"
             description="settings-home-table_columns-desc"
+            {...resetColumns}
             below={<TrackersTableColumnToggles variant={variant} />}
           />
         )}
@@ -245,6 +282,7 @@ export function HomeLayoutSettings({
           title="settings-interface-behavior-skeleton_mesh"
           description="settings-interface-behavior-skeleton_mesh-description"
           controlWidth="wide"
+          {...resetMesh}
           control={
             <DropdownInside
               name="skeletonPreviewStyle"
@@ -277,6 +315,7 @@ export function HomeLayoutSettings({
         <SettingRow
           title="settings-home-tracker_display"
           description="settings-home-tracker_display-desc"
+          {...resetTrackerDisplay}
           below={<TrackerDisplayToggles variant={variant} />}
         />
       </SettingsGroup>

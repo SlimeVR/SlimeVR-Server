@@ -12,6 +12,22 @@ import solarxr_protocol.rpc.TapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsResponse
 import solarxr_protocol.rpc.TapDetectionSetupModeRequest
 
+internal fun buildTapDetectionSettingsResponse(config: TapDetectionConfig) = TapDetectionSettingsResponse(
+	yawResetDelay = config.yawResetDelay,
+	fullResetDelay = config.fullResetDelay,
+	mountingResetDelay = config.mountingResetDelay,
+	yawResetEnabled = config.yawResetEnabled,
+	fullResetEnabled = config.fullResetEnabled,
+	mountingResetEnabled = config.mountingResetEnabled,
+	yawResetTaps = config.yawResetTaps.toUByte(),
+	fullResetTaps = config.fullResetTaps.toUByte(),
+	mountingResetTaps = config.mountingResetTaps.toUByte(),
+	yawResetTracker = config.yawResetBodyPart,
+	fullResetTracker = config.fullResetBodyPart,
+	mountingResetTracker = config.mountingResetBodyPart,
+	numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
+)
+
 class TapDetectionBehaviour(
 	private val settings: Settings,
 	private val tapDetectionManager: TapDetectionManager,
@@ -19,24 +35,7 @@ class TapDetectionBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
 		receiver.rpcDispatcher.on<TapDetectionSettingsRequest> {
-			val config = settings.context.state.value.data.tapDetectionConfig
-			receiver.sendRpc(
-				TapDetectionSettingsResponse(
-					yawResetDelay = config.yawResetDelay,
-					fullResetDelay = config.fullResetDelay,
-					mountingResetDelay = config.mountingResetDelay,
-					yawResetEnabled = config.yawResetEnabled,
-					fullResetEnabled = config.fullResetEnabled,
-					mountingResetEnabled = config.mountingResetEnabled,
-					yawResetTaps = config.yawResetTaps.toUByte(),
-					fullResetTaps = config.fullResetTaps.toUByte(),
-					mountingResetTaps = config.mountingResetTaps.toUByte(),
-					yawResetTracker = config.yawResetBodyPart,
-					fullResetTracker = config.fullResetBodyPart,
-					mountingResetTracker = config.mountingResetBodyPart,
-					numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
-				),
-			)
+			receiver.sendRpc(buildTapDetectionSettingsResponse(settings.context.state.value.data.tapDetectionConfig))
 		}.launchIn(receiver.context.scope)
 
 		// Receive config

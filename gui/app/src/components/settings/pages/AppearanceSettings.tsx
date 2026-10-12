@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
+import { settingReset } from '@/components/settings/SettingReset';
 import { defaultConfig, useConfig } from '@/hooks/config';
 import { ThemeSelector } from '@/components/commons/ThemeSelector';
 import { SquaresIcon } from '@/components/commons/icon/SquaresIcon';
@@ -25,13 +26,30 @@ export function AppearanceSettings() {
   const { inContext, inContextFailed, setInContext } = useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { control, watch, handleSubmit } = useForm<AppearanceSettingsForm>({
-    defaultValues: {
-      theme: config?.theme ?? defaultConfig.theme,
-      textSize: config?.textSize ?? defaultConfig.textSize,
-      fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
-    },
-  });
+  const { control, watch, handleSubmit, setValue } =
+    useForm<AppearanceSettingsForm>({
+      defaultValues: {
+        theme: config?.theme ?? defaultConfig.theme,
+        textSize: config?.textSize ?? defaultConfig.textSize,
+        fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
+      },
+    });
+
+  const resetTheme = settingReset<AppearanceSettingsForm, 'theme'>(
+    defaultConfig.theme,
+    watch('theme'),
+    (next) => setValue('theme', next)
+  );
+  const resetFonts = settingReset<AppearanceSettingsForm, 'fonts'>(
+    defaultConfig.fonts.join(','),
+    watch('fonts'),
+    (next) => setValue('fonts', next)
+  );
+  const resetTextSize = settingReset<AppearanceSettingsForm, 'textSize'>(
+    defaultConfig.textSize,
+    watch('textSize'),
+    (next) => setValue('textSize', next)
+  );
 
   const fontOptions = [
     {
@@ -101,18 +119,24 @@ export function AppearanceSettings() {
         title="settings-interface-appearance"
       >
         <div className="flex flex-col">
-          <SettingsGroup title="settings-general-interface-theme">
-            <div className="flex flex-wrap gap-3 p-3 xs:p-4">
-              {themes.map(({ value, colors }) => (
-                <ThemeSelector
-                  key={value}
-                  control={control}
-                  name="theme"
-                  value={value}
-                  colors={colors}
-                />
-              ))}
-            </div>
+          <SettingsGroup>
+            <SettingRow
+              title="settings-general-interface-theme"
+              {...resetTheme}
+              below={
+                <div className="flex flex-wrap gap-3">
+                  {themes.map(({ value, colors }) => (
+                    <ThemeSelector
+                      key={value}
+                      control={control}
+                      name="theme"
+                      value={value}
+                      colors={colors}
+                    />
+                  ))}
+                </div>
+              }
+            />
           </SettingsGroup>
 
           <SettingsGroup title="settings-interface-appearance-text_group">
@@ -120,6 +144,7 @@ export function AppearanceSettings() {
               title="settings-interface-appearance-font"
               description="settings-interface-appearance-font-description"
               controlWidth="wide"
+              {...resetFonts}
               control={
                 <Dropdown
                   control={control}
@@ -145,6 +170,7 @@ export function AppearanceSettings() {
               title="settings-interface-appearance-font_size"
               description="settings-interface-appearance-font_size-description"
               controlWidth="wide"
+              {...resetTextSize}
               control={
                 <NumberSelector
                   control={control}

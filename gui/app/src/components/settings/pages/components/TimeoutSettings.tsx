@@ -1,6 +1,6 @@
 import { Localized } from '@fluent/react';
 import { useEffect, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ChangeTimeoutSettingsRequestT,
   TimeoutSettingsRequestT,
@@ -8,6 +8,8 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { Typography } from '@/components/commons/Typography';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
@@ -17,14 +19,17 @@ type TimeoutForm = {
   delay: number;
 };
 
-const defaultValues: TimeoutForm = {
-  delay: 0.0,
-};
+function toForm(settings: TimeoutSettingsResponseT): TimeoutForm {
+  return { delay: settings.delay };
+}
 
 export function TimeoutSettings() {
-  const [settings, setSettings] = useState(new TimeoutSettingsResponseT());
+  const [settings, setSettings] = useState<TimeoutSettingsResponseT | null>(
+    null
+  );
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
+  const defaults = useSettingsDefaults().timeout;
 
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -33,9 +38,9 @@ export function TimeoutSettings() {
     maximumFractionDigits: 2,
   });
 
-  const { control, watch, handleSubmit, getValues, reset } =
+  const { control, watch, handleSubmit, reset, setValue } =
     useForm<TimeoutForm>({
-      defaultValues,
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
     });
@@ -61,16 +66,23 @@ export function TimeoutSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<TimeoutForm> = {
-      delay: settings.delay,
-    };
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
     RpcMessage.TimeoutSettingsResponse,
     (settings: TimeoutSettingsResponseT) => {
       setSettings(settings);
+    }
+  );
+
+  const resetDelay = settingReset<TimeoutForm, 'delay'>(
+    defaults.delay,
+    watch('delay'),
+    (next) => {
+      setValue('delay', next);
+      handleSubmit(onSubmit)();
     }
   );
 
@@ -86,6 +98,7 @@ export function TimeoutSettings() {
         </Localized>
       }
       controlWidth="wide"
+      {...resetDelay}
       control={
         <NumberSelector
           control={control}
