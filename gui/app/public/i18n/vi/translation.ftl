@@ -231,14 +231,12 @@ mounting_selection_menu-close = Đóng
 
 ## Sidebar settings
 
-settings-sidebar-title = Cài đặt
 settings-sidebar-general = Cài đặt chung
 settings-sidebar-trackers = Cấu hình Tracker
 settings-sidebar-interface = Giao diện
 settings-sidebar-utils = Công cụ
 settings-sidebar-serial = Cổng Serial
 settings-sidebar-appearance = Giao diện
-settings-sidebar-notifications = Thông báo
 settings-sidebar-advanced = Cài đặt mở rộng
 
 ## Bone routing settings
@@ -256,7 +254,6 @@ settings-general-tracker_mechanics-filtering = Lọc nhiễu
 settings-general-tracker_mechanics-filtering-description =
     Chọn kiểu lọc nhiễu cho tracker
     "Dự đoán" sẽ dự đoán chuyển động trong khi "Khử nhiễu" sẽ làm chuyển động mềm mại hơn
-settings-general-tracker_mechanics-filtering-type = Kiểu lọc
 settings-general-tracker_mechanics-filtering-type-none = Không lọc
 settings-general-tracker_mechanics-filtering-type-none-description = Sử dụng giá trị thực, không áp dụng bất kì bộ lọc nào
 settings-general-tracker_mechanics-filtering-type-smoothing = Khử nhiễu
@@ -269,8 +266,6 @@ settings-general-tracker_mechanics-save_mounting_reset = Lưu thiết bị đã 
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Lưu thiết bị đã giao tự động cho các thiết bị giữa các lần khởi động lại. Có ích
     khi mặc một bộ đồ SlimeVR mà trình theo dõi không di chuyển giữa các phiên. <b>Không được khuyến khích cho người dùng bình thường!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Đặt lại hướng gắn thiết bị
-settings-stay_aligned-general-label = Cài đặt chung
 settings-stay_aligned-relaxed_poses-close = Đóng
 
 ## Keybinds Page
@@ -335,7 +330,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Tăng
 settings-interface-appearance = Giao diện
 settings-general-interface-dev_mode = Chế độ nhà phát triển
 settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
-settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-theme = Màu giao diện
 settings-general-interface-lang = Thay đổi ngôn ngữ (Change language)
 settings-general-interface-lang-description = Đổi ngôn ngữ hiển thị (Change the default language you want to use)
@@ -353,22 +347,17 @@ settings-interface-appearance-font_size-description = Điều này ảnh hưởn
 
 settings-general-interface-feedback_sound = Âm thanh phản hồi
 settings-general-interface-feedback_sound-description = Tùy chọn này sẽ phát âm thanh khi thiết lập lại được kích hoạt.
-settings-general-interface-feedback_sound-label = Âm thanh phản hồi
 settings-general-interface-feedback_sound-volume = Âm lượng phản hồi
 settings-general-interface-connected_trackers_warning = Cảnh báo với thiết bị đã kết nối
 settings-general-interface-connected_trackers_warning-description = Tùy chọn này sẽ hiển thị cửa sổ bật lên mỗi khi bạn thử thoát khỏi SlimeVR trong khi có một hoặc nhiều thiết bị theo dõi được kết nối. Nó nhắc nhở bạn tắt trình theo dõi khi bạn hoàn tất để duy trì tuổi thọ pin.
-settings-general-interface-connected_trackers_warning-label = Cảnh báo thiết bị đã kết nối khi thoát chương trình
 
 ## Behavior settings
 
 settings-general-interface-dev_mode = Chế độ nhà phát triển
-settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
-settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
 settings-general-interface-discord_presence = Chia sẻ hoạt động trên Discord
 settings-general-interface-discord_presence-description = Cho Discord của bạn biết rằng bạn đang sử dụng SlimeVR cùng với số lượng trình theo dõi IMU bạn đang sử dụng.
-settings-general-interface-discord_presence-label = Chia sẻ hoạt động trên Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Đang quay trên Slime
@@ -409,7 +398,6 @@ settings-osc-vrchat-description-v1 =
     cài đặt trong Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Dữ liệu OSC
 settings-osc-vrchat-enable-description = Cho phép nhận và gửi dữ liệu OSC
-settings-osc-vrchat-enable-label = Giao tiếp dữ liệu OSC
 settings-osc-vrchat-network = Cổng mạng
 settings-osc-vrchat-network-port_in =
     .label = Cổng vào
@@ -435,7 +423,6 @@ settings-osc-vmc-description =
         để gửi dữ liệu thân của SlimeVR và nhận dữ liệu thân từ các ứng dụng khác.
 settings-osc-vmc-enable = Bật
 settings-osc-vmc-enable-description = Cho phép nhận và gửi dữ liệu OSC
-settings-osc-vmc-enable-label = Chuyển tiếp dữ liệu OSC
 settings-osc-vmc-network = Cổng mạng (Network ports)
 settings-osc-vmc-network-description = Đặt các cổng để nghe và gửi dữ liệu qua VMC.
 settings-osc-vmc-network-port_in =
@@ -452,10 +439,8 @@ settings-osc-vmc-vrm-description = Tải mô hình VRM để cho phép neo đầ
 settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
 settings-osc-vmc-anchor_hip = Cố định ở hông
 settings-osc-vmc-anchor_hip-description = Cố định theo dõi ở hông, hữu ích cho VTubing ngồi. Nếu tắt, hãy tải mô hình VRM.
-settings-osc-vmc-anchor_hip-label = Cố định ở hông
 settings-osc-vmc-mirror_tracking = Phản chiếu ngược theo dõi cơ thể
 settings-osc-vmc-mirror_tracking-description = Phản chiếu theo dõi theo chiều ngang.
-settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ thể
 settings-osc-vmc-status-badge-error = Lỗi
 
 ## Common OSC settings
