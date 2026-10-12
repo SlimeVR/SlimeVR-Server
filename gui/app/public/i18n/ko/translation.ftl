@@ -250,14 +250,12 @@ mounting_selection_menu-close = 닫기
 
 ## Sidebar settings
 
-settings-sidebar-title = 설정
 settings-sidebar-general = 일반
 settings-sidebar-trackers = 트래커
 settings-sidebar-interface = 인터페이스
 settings-sidebar-utils = 유틸리티
 settings-sidebar-serial = 시리얼 콘솔
 settings-sidebar-appearance = 모양
-settings-sidebar-notifications = 알림
 settings-sidebar-firmware-tool = DIY 펌웨어 도구
 settings-sidebar-advanced = 고급
 
@@ -276,7 +274,6 @@ settings-general-tracker_mechanics-filtering = 필터링
 settings-general-tracker_mechanics-filtering-description =
     트래커의 필터링 유형을 선택하세요.
     Prediction은 움직임을 예측하고 Smoothing은 움직임을 부드럽게 해요.
-settings-general-tracker_mechanics-filtering-type = 필터링 타입
 settings-general-tracker_mechanics-filtering-type-none = 필터링 없음
 settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
@@ -287,13 +284,10 @@ settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 �
 settings-general-tracker_mechanics-save_mounting_reset-description =
     트래커의 착용 방향 정렬 보정값을 저장합니다. 트래커들의 위치가 고정된
     모션 캡처 슈트 같은 것을 사용할 때 유용해요. <b>일반 사용자들에게는 권장되지 않아요!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 착용 방향 정렬 저장
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 자력계를 지원하는 모든 IMU 트래커에서 자력계 활성화
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     호환 가능한 펌웨어가 있는 모든 트래커에서 자력계를 사용하여 안정적인 자기 환경에서 틀어짐을 줄일 수 있어요.
     트래커의 설정에서 트래커별로 비활성화할 수 있어요. <b>이 기능을 토글하는 동안 트래커를 종료하지 마세요!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 트래커에서 자력계 사용하기
-settings-stay_aligned-general-label = 일반
 settings-stay_aligned-relaxed_poses-close = 닫기
 
 ## Keybinds Page
@@ -323,7 +317,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 
 settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
 settings-general-fk_settings-enforce_joint_constraints = 골격 한계
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 상수 강제 적용
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
 settings-general-fk_settings-skeleton_settings-ratios-description = 골격 비율을 변경하면 신체 비율 설정을 다시 조절해야 할 수 있어요.
@@ -360,7 +353,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 몸�
 settings-interface-appearance = 모양
 settings-general-interface-dev_mode = 개발자 모드
 settings-general-interface-dev_mode-description = 이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.
-settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-theme = 컬러 테마
 settings-general-interface-lang = 언어 선택
 settings-general-interface-lang-description = 사용하고 싶은 기본 언어를 선택하세요.
@@ -378,22 +370,17 @@ settings-interface-appearance-font_size-description = 변경하면 이 설정 �
 
 settings-general-interface-feedback_sound = 피드백 사운드
 settings-general-interface-feedback_sound-description = 이 옵션을 켜면 트래커를 정렬할 때 효과음을 재생해요
-settings-general-interface-feedback_sound-label = 피드백 사운드
 settings-general-interface-feedback_sound-volume = 피드백 사운드 음량
 settings-general-interface-connected_trackers_warning = 작동 중인 트래커 경고
 settings-general-interface-connected_trackers_warning-description = 이 옵션은 트래커가 연결되어 있는 채로 SlimeVR을 종료하려고 할 때 팝업을 표시합니다. 그렇게 하면 실수로 트래커를 끄지 않아 배터리가 방전되는 일을 예방할 수 있어요.
-settings-general-interface-connected_trackers_warning-label = 종료 시 작동 중인 트래커 경고 활성화
 
 ## Behavior settings
 
 settings-general-interface-dev_mode = 개발자 모드
-settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-use_tray = 작업 표시줄로 최소화
 settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
-settings-general-interface-use_tray-label = 작업 표시줄로 최소화
 settings-general-interface-discord_presence = Discord에서 활동 공유
 settings-general-interface-discord_presence-description = Discord 활동 상태에 SlimeVR을 사용 중이라는 것과 사용 중인 트래커의 개수를 같이 표시합니다.
-settings-general-interface-discord_presence-label = DIscord에서 활동 공유
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] 슬라임 갖고 노는 중
@@ -434,7 +421,6 @@ settings-osc-vrchat-description-v1 =
     그리고 HMD 및 컨트롤러 데이터를 수신하려면 '트래킹 및 IK' > 'OSC를 통한 머리와 손목 트래킹 데이터 전송'을 활성화 해주세요.
 settings-osc-vrchat-enable = 활성화
 settings-osc-vrchat-enable-description = 데이터 송/수신 활성화
-settings-osc-vrchat-enable-label = 활성화
 settings-osc-vrchat-network = 네트워크 포트
 settings-osc-vrchat-network-port_in =
     .label = 들어오는 포트
@@ -460,7 +446,6 @@ settings-osc-vmc-description =
     VMC(Virtual Motion Capture) 프로토콜 설정을 변경합니다.
 settings-osc-vmc-enable = 활성화
 settings-osc-vmc-enable-description = 활성화해서 데이터 송수신
-settings-osc-vmc-enable-label = 활성화
 settings-osc-vmc-network = 네트워크 포트
 settings-osc-vmc-network-description = VMC와 데이터를 송수신할 포트 설정
 settings-osc-vmc-network-port_in =
@@ -478,10 +463,8 @@ settings-osc-vmc-vrm-untitled_model = 이름 없는 모델
 settings-osc-vmc-vrm-file_select = 모델을 <u>열거나,</u> 여기에 드래그&드롭하세요.
 settings-osc-vmc-anchor_hip = 골반에 앵커 설정
 settings-osc-vmc-anchor_hip-description = 추적을 엉덩이에 고정해요. 앉은 자세로 VTubing할 때 유용해요. 비활성화하는 경우 VRM 모델에서 가져와요.
-settings-osc-vmc-anchor_hip-label = 골반에 앵커 설정
 settings-osc-vmc-mirror_tracking = 움직임 좌우 반전
 settings-osc-vmc-mirror_tracking-description = 움직임을 수평 방향으로 반전시킵니다.
-settings-osc-vmc-mirror_tracking-label = 움직임 좌우 반전
 settings-osc-vmc-status-badge-error = 오류
 
 ## Common OSC settings
