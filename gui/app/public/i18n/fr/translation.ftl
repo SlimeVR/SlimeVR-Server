@@ -420,11 +420,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le m
 settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permettre aux capteurs HID de se connecter directement via USB
-settings-stay_aligned = Garder Aligné
 settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
 settings-stay_aligned-setup-label = Configurer Garder Aligné
 settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
-settings-stay_aligned-enabled-label = Ajuster les capteurs
 settings-stay_aligned-general-label = Général
 settings-stay_aligned-relaxed_poses-label = Postures détendues
 settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos postures détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
@@ -448,7 +446,6 @@ settings-keybinds-recorder-modal-cancel-button = Annuler
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Paramètres de la capture
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
