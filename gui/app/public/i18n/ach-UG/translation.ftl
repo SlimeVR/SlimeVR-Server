@@ -1518,6 +1518,7 @@ preview-disabled_render = crwdns9458:0crwdne9458:0
 preview-render_mode = crwdns9460:0crwdne9460:0
 preview-reset_camera = crwdns9486:0crwdne9486:0
 toolbar-mounting_calibration = crwdns9462:0crwdne9462:0
+toolbar-mounting_calibration-pick_method = crwdns9680:0crwdne9680:0
 toolbar-mounting_calibration-default = crwdns9464:0crwdne9464:0
 toolbar-mounting_calibration-feet = crwdns9466:0crwdne9466:0
 toolbar-mounting_calibration-toes = crwdns9468:0crwdne9468:0
