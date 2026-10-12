@@ -223,14 +223,12 @@ mounting_selection_menu-close = Закрити
 
 ## Sidebar settings
 
-settings-sidebar-title = Параметри
 settings-sidebar-general = Загальні
 settings-sidebar-trackers = Трекери
 settings-sidebar-interface = Інтерфейс
 settings-sidebar-utils = Утиліти
 settings-sidebar-serial = Послідовна консоль
 settings-sidebar-appearance = Зовнішність
-settings-sidebar-notifications = Сповіщення
 
 ## Bone routing settings
 
@@ -247,7 +245,6 @@ settings-general-tracker_mechanics-filtering = Фільтрація
 settings-general-tracker_mechanics-filtering-description =
     Виберіть тип фільтрації для своїх трекерів.
     Передбачення передбачає рух, а згладжування згладжує рух.
-settings-general-tracker_mechanics-filtering-type = Тип фільтрації
 settings-general-tracker_mechanics-filtering-type-none = Без фільтрації
 settings-general-tracker_mechanics-filtering-type-none-description = Використовуйте обертання як є. Ніякої фільтрації не зробить.
 settings-general-tracker_mechanics-filtering-type-smoothing = Згладжування
@@ -260,8 +257,6 @@ settings-general-tracker_mechanics-save_mounting_reset = Зберегти авт
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Зберігає калібрування положення трекерів на тілі між перезавантаженнями. Корисний
     при носінні костюма, в якому трекери не переміщаються між сесіями. <b>Не рекомендується для звичайних користувачів!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Зберегти калібрування положення
-settings-stay_aligned-general-label = Загальні
 settings-stay_aligned-relaxed_poses-close = Закрити
 
 ## Keybinds Page
@@ -324,7 +319,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Зб�
 settings-interface-appearance = Зовнішність
 settings-general-interface-dev_mode = Режим розробника
 settings-general-interface-dev_mode-description = Цей режим може бути корисним, якщо вам потрібні поглиблені дані або для взаємодії з підключеними трекерами на більш просунутому рівні.
-settings-general-interface-dev_mode-label = Режим розробника
 settings-general-interface-theme = Варіація оформлення
 settings-general-interface-lang = Виберіть мову
 settings-general-interface-lang-description = Змініть мову за замовчуванням, яку ви хочете використовувати.
@@ -342,22 +336,17 @@ settings-interface-appearance-font_size-description = Це впливає на �
 
 settings-general-interface-feedback_sound = Звук зворотного зв'язку
 settings-general-interface-feedback_sound-description = Ця опція відтворюватиме звуковий сигнал при спрацьовуванні скидання
-settings-general-interface-feedback_sound-label = Звук зворотного зв'язку
 settings-general-interface-feedback_sound-volume = Гучність звуку зворотного зв'язку
 settings-general-interface-connected_trackers_warning = Попередження про підключені трекери
 settings-general-interface-connected_trackers_warning-description = Ця опція відображатиме спливаюче вікно кожного разу, коли ви намагатиметеся вийти зі SlimeVR, якщо підключено один або декілька трекерів. Він нагадує вам вимкнути ваші трекери, коли ви закінчите, щоб зберегти заряд батареї.
-settings-general-interface-connected_trackers_warning-label = Попередження про підключені трекери під час виходу
 
 ## Behavior settings
 
 settings-general-interface-dev_mode = Режим розробника
-settings-general-interface-dev_mode-label = Режим розробника
 settings-general-interface-use_tray = Згорнути в системний трей
 settings-general-interface-use_tray-description = Дозволяє закрити вікно, не закриваючи сервер SlimeVR, так що ви можете продовжувати використати його, не турбуючись про інтерфейс.
-settings-general-interface-use_tray-label = Згорнути в системний трей
 settings-general-interface-discord_presence = Ділитися активністю в Discord
 settings-general-interface-discord_presence-description = Повідомляє вашому клієнту Discord, що ви використовуєте SlimeVR, а також передає кількість трекерів IMU, які ви використовуєте.
-settings-general-interface-discord_presence-label = Ділитися активністю в Discord
 
 ## Serial settings
 
@@ -386,7 +375,6 @@ settings-serial-send_command-warning-cancel = Скасувати
 
 settings-osc-vrchat-enable = Увімкнути
 settings-osc-vrchat-enable-description = Перемикайте відправку та отримання даних.
-settings-osc-vrchat-enable-label = Увімкнути
 settings-osc-vrchat-network = Мережеві порти
 settings-osc-vrchat-network-port_in =
     .label = Вхідний Порт
@@ -411,7 +399,6 @@ settings-osc-vmc-description =
         щоб надсилати дані про кістки SlimeVR та отримувати дані про кістки з інших програм.
 settings-osc-vmc-enable = Увімкнути
 settings-osc-vmc-enable-description = Перемикайте відправку та отримання даних.
-settings-osc-vmc-enable-label = Увімкнути
 settings-osc-vmc-network = Мережеві порти
 settings-osc-vmc-network-description = Встановіть порти для прослуховування і відправки даних по VMC
 settings-osc-vmc-network-port_in =
@@ -428,10 +415,8 @@ settings-osc-vmc-vrm-description = Завантажте модель VRM, щоб
 settings-osc-vmc-vrm-file_select = Перетягніть модель для використання або <u>знайдіть</u>
 settings-osc-vmc-anchor_hip = Якір у стегон
 settings-osc-vmc-anchor_hip-description = Закріпіть стеження на стегнах, корисно для сидячих VTubing. Якщо вимкнено, завантажте модель VRM.
-settings-osc-vmc-anchor_hip-label = Якір у стегон
 settings-osc-vmc-mirror_tracking = Дзеркальний трекінг
 settings-osc-vmc-mirror_tracking-description = Віддзеркалити трекери горизонтально.
-settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
 settings-osc-vmc-status-badge-error = Помилка
 
 ## Common OSC settings
