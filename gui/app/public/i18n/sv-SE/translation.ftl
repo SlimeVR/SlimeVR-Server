@@ -339,7 +339,6 @@ mounting_selection_menu-close = Stäng
 
 ## Sidebar settings
 
-settings-sidebar-title = Inställningar
 settings-sidebar-general = Allmänt
 settings-sidebar-stay_aligned = Behåll inriktning
 settings-sidebar-trackers = Spårare
@@ -347,7 +346,6 @@ settings-sidebar-interface = Gränssnitt
 settings-sidebar-utils = Verktyg
 settings-sidebar-serial = Seriell konsol
 settings-sidebar-appearance = Utseende
-settings-sidebar-notifications = Meddelanden
 settings-sidebar-behavior = Beteende
 settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
 settings-sidebar-vrc_warnings = VRChat Config varningar
@@ -370,7 +368,6 @@ settings-general-tracker_mechanics-filtering = Filtrering
 settings-general-tracker_mechanics-filtering-description =
     Välj filtreringstyp för dina trackers.
     Prediction förutspår rörelser medan smoothing jämnar ut rörelser.
-settings-general-tracker_mechanics-filtering-type = Typ av filtrering
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Använd rotationer som de är. Kommer inte att göra någon filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Utjämning
@@ -381,16 +378,13 @@ settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
 settings-general-tracker_mechanics-save_mounting_reset = Spara automatisk montering återställning kalibrering
 settings-general-tracker_mechanics-save_mounting_reset-description = Sparar de automatiska kalibreringarna för återställning av montering för trackers mellan omstarter. Användbart när du bär en dräkt där trackers inte flyttas mellan sessionerna. <b>Rekommenderas inte för normala användare!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Spara återställning av montering
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Använd magnetometern på alla IMU-sensorer som stödjer det
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = använd magnetometer på sensorer.
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
 settings-stay_aligned-setup-description = Du måste kompletera "Ställ in Behåll inriktnining" för att kunna aktivera Behåll inriktning.
-settings-stay_aligned-general-label = Allmän
 settings-stay_aligned-relaxed_poses-label = Avslappnade positioner
 settings-stay_aligned-relaxed_poses-description = Behåll inriktning använder dina avslappnade positioner till att hålla dina sensorer inriktade. Använd "ställ in Behåll inriktning" för att uppdatera dessa positionerna.
 settings-stay_aligned-relaxed_poses-standing = Justera sensorer medans du står
@@ -430,7 +424,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöke
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
 settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
@@ -458,7 +451,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Öka 
 settings-interface-appearance = Utseende
 settings-general-interface-dev_mode = Utvecklarläge
 settings-general-interface-dev_mode-description = Det här läget kan vara användbart om du behöver djupgående data eller vill interagera med anslutna trackers på en mer avancerad nivå.
-settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-theme = Färg tema
 settings-general-interface-lang = Välj språk
 settings-general-interface-lang-description = Ändra det standardspråk som du vill använda.
@@ -476,23 +468,18 @@ settings-interface-appearance-font_size-description = Detta påverkar teckenstor
 
 settings-general-interface-feedback_sound = Feedback-ljud
 settings-general-interface-feedback_sound-description = Detta alternativ spelar upp ett ljud när en återställning utlöses.
-settings-general-interface-feedback_sound-label = Feedback-ljud
 settings-general-interface-feedback_sound-volume = Volym för återkopplingsljud
 settings-general-interface-connected_trackers_warning = Varning för uppkopplade spårare
 settings-general-interface-connected_trackers_warning-description = Detta alternativ kommer att visa ett popup-fönster varje gång du försöker lämna SlimeVR medan du har en eller flera anslutna trackers. Det påminner dig om att stänga av dina trackers när du är klar för att spara batteritid.
-settings-general-interface-connected_trackers_warning-label = Varning för uppkopplade trackers vid utresa
 
 ## Behavior settings
 
 settings-interface-behavior = Beteende
 settings-general-interface-dev_mode = Utvecklarläge
-settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-use_tray = Minimera till systemfältet
 settings-general-interface-use_tray-description = Låter dig stänga fönstret utan att stänga SlimeVR-servern så att du kan fortsätta använda den utan att GUI stör dig.
-settings-general-interface-use_tray-label = Minimera till systemfältet
 settings-general-interface-discord_presence = Dela aktivitet på Discord
 settings-general-interface-discord_presence-description = Berättar för din Discord-klient att du använder SlimeVR tillsammans med antalet IMU-trackers du använder.
-settings-general-interface-discord_presence-label = Dela aktivitet på Discord
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
 
@@ -521,7 +508,6 @@ settings-serial-send_command-warning-cancel = Avbryt
 
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
-settings-osc-vrchat-enable-label = Aktivera
 settings-osc-vrchat-network = Nätverksportar
 settings-osc-vrchat-network-port_in =
     .label = Port in
@@ -543,7 +529,6 @@ settings-osc-vrchat-status-badge-unknown = Okänd
 
 settings-osc-vmc-enable = Aktivera
 settings-osc-vmc-enable-description = Växla mellan sändning och mottagning av data.
-settings-osc-vmc-enable-label = Aktivera
 settings-osc-vmc-network = Nätverksportar
 settings-osc-vmc-network-description = Ställ in portarna för att lyssna på och skicka data via VMC.
 settings-osc-vmc-network-port_in =
@@ -561,10 +546,8 @@ settings-osc-vmc-vrm-untitled_model = Namnlös modell
 settings-osc-vmc-vrm-file_select = Dra och släpp en modell att använda, eller <u>bläddra</u>
 settings-osc-vmc-anchor_hip = Förankring vid höfterna
 settings-osc-vmc-anchor_hip-description = Förankra följningen i höfterna, användbart för sittande VTubing. Om du inaktiverar, ladda en VRM-modell.
-settings-osc-vmc-anchor_hip-label = Förankring vid höfterna
 settings-osc-vmc-mirror_tracking = Spegla spårning
 settings-osc-vmc-mirror_tracking-description = Spegla spårning horisontellt.
-settings-osc-vmc-mirror_tracking-label = Spegla spårning
 settings-osc-vmc-status-badge-error = Fel
 
 ## Common OSC settings
