@@ -57,6 +57,7 @@ file_input-clear_folder = crwdns7086:0crwdne7086:0
 
 # Accessible names for the icon-only buttons in the title bar
 titlebar-docs = crwdns7088:0crwdne7088:0
+titlebar-search = crwdns9766:0crwdne9766:0
 titlebar-settings = crwdns7090:0crwdne7090:0
 titlebar-update = crwdns7092:0crwdne7092:0
 titlebar-minimize = crwdns7094:0crwdne7094:0
@@ -384,6 +385,10 @@ mounting_selection_menu-close = crwdns7648:0crwdne7648:0
 ## Sidebar settings
 
 settings-advanced_section = crwdns9686:0crwdne9686:0
+settings-sidebar-search = crwdns9768:0crwdne9768:0
+settings-sidebar-search-empty = crwdns9770:0crwdne9770:0
+settings-search-section-page = crwdns9772:0crwdne9772:0
+settings-search-manual_proportions = crwdns9774:0crwdne9774:0
 settings-sidebar-general = crwdns7652:0crwdne7652:0
 settings-sidebar-outputs = crwdns7654:0crwdne7654:0
 settings-sidebar-routing = crwdns7656:0crwdne7656:0
