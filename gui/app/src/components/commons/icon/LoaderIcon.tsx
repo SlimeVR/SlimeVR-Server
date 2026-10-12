@@ -95,6 +95,7 @@ export function LoaderIcon({
       style={{
         width: size,
         height: 'auto',
+        aspectRatio: '1 / 1',
         contentVisibility: 'auto',
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden',
