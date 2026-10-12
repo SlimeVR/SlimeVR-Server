@@ -144,6 +144,11 @@
                   pkgs.hidapi
                 ]
               }:$LD_LIBRARY_PATH"
+
+              # VSCode's extension host sets ELECTRON_RUN_AS_NODE=1 on itself, and
+              # shells it forks inherit it. It makes electron run as plain node, so
+              # the main process crashes on `import { app } from 'electron'`.
+              unset ELECTRON_RUN_AS_NODE
             '';
 
             JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";

@@ -626,7 +626,7 @@ export function TrackingChecklist({
             </Timeline>
           </div>
         </div>
-        <div className="flex flex-col flex-grow justify-end pl-[11px] pr-2 transition-all duration-500 delay-100">
+        <div className="flex flex-col flex-grow justify-end pl-[11px] pr-0 transition-all duration-500 delay-100">
           <div className="min-h-3 flex-1 pl-[11.5px]">
             <div
               className={classNames('h-full w-0 border-l-2', {
@@ -648,8 +648,10 @@ export function TrackingChecklist({
                 'bg-status-warning animate-pulse animate-low-priority':
                   completion === 'partial',
               })}
+              className="z-10"
               disabled={!closed}
               expanded={false}
+              expandableArrow={false}
               onToggle={() => toggleClosed()}
               title={
                 <>
