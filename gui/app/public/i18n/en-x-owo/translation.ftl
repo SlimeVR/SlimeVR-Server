@@ -331,7 +331,6 @@ settings-keybinds-recorder-modal-cancel-button = cancew
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = twacking sewttings
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -408,7 +407,6 @@ settings-interface-appearance-font_size-description = dis affects da fawnt size 
 
 ## Notification settings
 
-settings-interface-notifications = notificashuns
 settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
 settings-general-interface-feedback_sound-label = feeback sownd
