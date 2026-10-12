@@ -12,6 +12,8 @@ import {
   useConfig,
 } from '@/hooks/config';
 import { useLocalization } from '@fluent/react';
+import { DropdownInside } from '@/components/commons/Dropdown';
+import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { track } from '@/utils/sentry';
@@ -69,7 +71,7 @@ const trackersTableColumnLabel: Record<
   url: 'tracker-table-column-url',
 };
 
-export function TrackersTableColumnsSettings({
+export function TrackersTableColumnToggles({
   variant,
 }: {
   variant: 'settings' | 'modal';
@@ -85,25 +87,35 @@ export function TrackersTableColumnsSettings({
   };
 
   return (
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+      {trackersTableColumnOrder.map((key) => (
+        <CheckboxInternal
+          key={key}
+          variant="toggle"
+          outlined
+          color={variant === 'settings' ? 'primary' : 'secondary'}
+          name={key}
+          checked={columns[key]}
+          onChange={() => toggleColumn(key)}
+          label={l10n.getString(trackersTableColumnLabel[key])}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function TrackersTableColumnsSettings({
+  variant,
+}: {
+  variant: 'settings' | 'modal';
+}) {
+  return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col pt-4 pb-2">
         <Typography bold id="settings-home-table_columns" />
-        <Typography color="secondary" id="settings-home-table_columns-desc" />
+        <Typography id="settings-home-table_columns-desc" />
       </div>
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
-        {trackersTableColumnOrder.map((key) => (
-          <CheckboxInternal
-            key={key}
-            variant="toggle"
-            outlined
-            color={variant === 'settings' ? 'primary' : 'secondary'}
-            name={key}
-            checked={columns[key]}
-            onChange={() => toggleColumn(key)}
-            label={l10n.getString(trackersTableColumnLabel[key])}
-          />
-        ))}
-      </div>
+      <TrackersTableColumnToggles variant={variant} />
     </div>
   );
 }
@@ -118,7 +130,7 @@ const trackerDisplayToggleLabel: Record<keyof TrackerDisplayConfig, string> = {
   showNumericSignal: 'settings-home-tracker_display-numeric_signal',
 };
 
-export function TrackerDisplaySettings({
+export function TrackerDisplayToggles({
   variant,
 }: {
   variant: 'settings' | 'modal';
@@ -134,30 +146,44 @@ export function TrackerDisplaySettings({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-col pt-4 pb-2">
-        <Typography bold id="settings-home-tracker_display" />
-        <Typography color="secondary" id="settings-home-tracker_display-desc" />
-      </div>
-      <div className="grid sm:grid-cols-2 gap-2">
-        {trackerDisplayToggleOrder.map((key) => (
-          <CheckboxInternal
-            key={key}
-            variant="toggle"
-            outlined
-            color={variant === 'settings' ? 'primary' : 'secondary'}
-            name={key}
-            checked={trackerDisplay[key]}
-            onChange={() => toggle(key)}
-            label={l10n.getString(trackerDisplayToggleLabel[key])}
-          />
-        ))}
-      </div>
+    <div className="grid sm:grid-cols-2 gap-2">
+      {trackerDisplayToggleOrder.map((key) => (
+        <CheckboxInternal
+          key={key}
+          variant="toggle"
+          outlined
+          color={variant === 'settings' ? 'primary' : 'secondary'}
+          name={key}
+          checked={trackerDisplay[key]}
+          onChange={() => toggle(key)}
+          label={l10n.getString(trackerDisplayToggleLabel[key])}
+        />
+      ))}
     </div>
   );
 }
 
-export function SkeletonPreviewSettings({
+export function TrackerDisplaySettings({
+  variant,
+}: {
+  variant: 'settings' | 'modal';
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col pt-4 pb-2">
+        <Typography bold id="settings-home-tracker_display" />
+        <Typography id="settings-home-tracker_display-desc" />
+      </div>
+      <TrackerDisplayToggles variant={variant} />
+    </div>
+  );
+}
+
+/**
+ * The home screen's settings, shared by its settings page and the quick
+ * settings modal on the home screen so both read the same.
+ */
+export function HomeLayoutSettings({
   variant,
 }: {
   variant: 'settings' | 'modal';
@@ -168,83 +194,92 @@ export function SkeletonPreviewSettings({
     (config?.skeletonPreviewStyle ?? defaultConfig.skeletonPreviewStyle) ===
     'mesh';
 
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-col pt-4 pb-2">
-        <Typography bold id="settings-interface-behavior-skeleton_mesh" />
-        <Typography
-          color="secondary"
-          id="settings-interface-behavior-skeleton_mesh-description"
-        />
-      </div>
-      <div className="grid sm:grid-cols-2 gap-2">
-        <CheckboxInternal
-          variant="toggle"
-          outlined
-          color={variant === 'settings' ? 'primary' : 'secondary'}
-          name="skeletonMesh"
-          checked={mesh}
-          onChange={() =>
-            setConfig({ skeletonPreviewStyle: mesh ? 'lines' : 'mesh' })
-          }
-          label={l10n.getString(
-            'settings-interface-behavior-skeleton_mesh-label'
-          )}
-        />
-      </div>
-    </div>
-  );
-}
-
-export function HomeLayoutSettings({
-  variant,
-}: {
-  variant: 'settings' | 'modal';
-}) {
-  const { config, setConfig } = useConfig();
-
   const setLayout = (layout: Config['homeLayout']) => {
     setConfig({ homeLayout: layout });
     track('change_layout', { layout, from: variant });
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-col pt-4 pb-2">
-        <Typography bold id="settings-home-list-layout" />
-        <Typography color="secondary" id="settings-home-list-layout-desc" />
-      </div>
-      <div className="flex gap-4">
-        <LayoutSelector
-          name="settings-home-list-layout-grid"
-          active={config?.homeLayout === 'default'}
-          onClick={() => setLayout('default')}
-        >
-          <div className="grid grid-cols-2 gap-2 p-2">
-            <div className="h-2 rounded-lg bg-background-40" />
-            <div className="h-2 rounded-lg bg-background-40" />
-            <div className="h-2 rounded-lg bg-background-40" />
-            <div className="h-2 rounded-lg bg-background-40" />
-          </div>
-        </LayoutSelector>
-        <LayoutSelector
-          name="settings-home-list-layout-table"
-          active={config?.homeLayout === 'table'}
-          onClick={() => setLayout('table')}
-        >
-          <div className="grid grid-cols-1 gap-2 p-2">
-            <div className="h-2 rounded-lg bg-background-40" />
-            <div className="h-2 rounded-lg bg-background-40" />
-            <div className="h-2 rounded-lg bg-background-40" />
-            <div className="h-2 rounded-lg bg-background-40" />
-          </div>
-        </LayoutSelector>
-      </div>
-      <SkeletonPreviewSettings variant={variant} />
-      <TrackerDisplaySettings variant={variant} />
-      {config?.homeLayout === 'table' && (
-        <TrackersTableColumnsSettings variant={variant} />
-      )}
+    <div className="flex flex-col">
+      <SettingsGroup
+        title="settings-home-list-layout"
+        description="settings-home-list-layout-desc"
+      >
+        <div className="flex gap-4 p-3 xs:p-4">
+          <LayoutSelector
+            name="settings-home-list-layout-grid"
+            active={config?.homeLayout === 'default'}
+            onClick={() => setLayout('default')}
+          >
+            <div className="grid grid-cols-2 gap-2 p-2">
+              <div className="h-2 rounded-lg bg-background-40" />
+              <div className="h-2 rounded-lg bg-background-40" />
+              <div className="h-2 rounded-lg bg-background-40" />
+              <div className="h-2 rounded-lg bg-background-40" />
+            </div>
+          </LayoutSelector>
+          <LayoutSelector
+            name="settings-home-list-layout-table"
+            active={config?.homeLayout === 'table'}
+            onClick={() => setLayout('table')}
+          >
+            <div className="grid grid-cols-1 gap-2 p-2">
+              <div className="h-2 rounded-lg bg-background-40" />
+              <div className="h-2 rounded-lg bg-background-40" />
+              <div className="h-2 rounded-lg bg-background-40" />
+              <div className="h-2 rounded-lg bg-background-40" />
+            </div>
+          </LayoutSelector>
+        </div>
+        {config?.homeLayout === 'table' && (
+          <SettingRow
+            title="settings-home-table_columns"
+            description="settings-home-table_columns-desc"
+            below={<TrackersTableColumnToggles variant={variant} />}
+          />
+        )}
+      </SettingsGroup>
+
+      <SettingsGroup title="settings-home-display_group">
+        <SettingRow
+          title="settings-interface-behavior-skeleton_mesh"
+          description="settings-interface-behavior-skeleton_mesh-description"
+          controlWidth="wide"
+          control={
+            <DropdownInside
+              name="skeletonPreviewStyle"
+              display="block"
+              direction="down"
+              placeholder=""
+              value={mesh ? 'mesh' : 'lines'}
+              onChange={(value) =>
+                setConfig({
+                  skeletonPreviewStyle: value as Config['skeletonPreviewStyle'],
+                })
+              }
+              items={[
+                {
+                  label: l10n.getString(
+                    'settings-interface-behavior-skeleton_mesh-lines'
+                  ),
+                  value: 'lines',
+                },
+                {
+                  label: l10n.getString(
+                    'settings-interface-behavior-skeleton_mesh-mesh'
+                  ),
+                  value: 'mesh',
+                },
+              ]}
+            />
+          }
+        />
+        <SettingRow
+          title="settings-home-tracker_display"
+          description="settings-home-tracker_display-desc"
+          below={<TrackerDisplayToggles variant={variant} />}
+        />
+      </SettingsGroup>
     </div>
   );
 }

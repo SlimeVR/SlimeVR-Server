@@ -11,6 +11,11 @@ import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import {
+  SettingRow,
+  SettingsAdvanced,
+  SettingsGroup,
+} from '@/components/settings/SettingRow';
 import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIcon';
 import { useAtomValue, atom, useSetAtom } from 'jotai';
 import { selectAtom } from 'jotai/utils';
@@ -110,8 +115,12 @@ ${trackers
   };
 
   return (
-    <Button variant="primary" onClick={copySettings}>
-      {l10n.getString('settings-stay_aligned-debug-copy-label')}
+    <Button
+      variant="secondary"
+      className="whitespace-nowrap"
+      onClick={copySettings}
+    >
+      {l10n.getString('settings-stay_aligned-debug-copy-short')}
     </Button>
   );
 }
@@ -119,7 +128,6 @@ ${trackers
 export function StayAlignedSettings() {
   const setSettings = useSetAtom(stayAlignedSettingsAtom);
   const settings = useAtomValue(stayAlignedSettingsValueAtom);
-  const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { control, watch, handleSubmit, getValues, reset } =
@@ -207,126 +215,112 @@ export function StayAlignedSettings() {
   const openSitting = useState(false);
   const openFlat = useState(false);
 
+  const poses = [
+    {
+      id: 'standing',
+      name: 'standingEnabled' as const,
+      hasPose: hasStandingPose,
+      open: openStanding,
+      modal: <StandingRelaxedPoseModal open={openStanding} />,
+    },
+    {
+      id: 'sitting',
+      name: 'sittingEnabled' as const,
+      hasPose: hasSittingPose,
+      open: openSitting,
+      modal: <SittingRelaxedPoseModal open={openSitting} />,
+    },
+    {
+      id: 'flat',
+      name: 'flatEnabled' as const,
+      hasPose: hasFlatPose,
+      open: openFlat,
+      modal: <FlatRelaxedPoseModal open={openFlat} />,
+    },
+  ];
+
   return (
-    <SettingsPagePaneLayout icon={<HorizontalAlignIcon />}>
-      <Typography variant="main-title" id="settings-sidebar-stay_aligned" />
-      <div className="pt-3">
-        <Typography>
-          {l10n.getString('settings-stay_aligned-description')}
-        </Typography>
-        <Typography>
-          {l10n.getString('settings-stay_aligned-setup-description')}
-        </Typography>
-        <div className="flex pt-2">
-          <Button
-            variant="primary"
-            to="/onboarding/stay-aligned"
-            state={{ alonePage: true }}
-          >
-            {l10n.getString('settings-stay_aligned-setup-label')}
-          </Button>
+    <SettingsPagePaneLayout
+      icon={<HorizontalAlignIcon />}
+      title="settings-sidebar-stay_aligned"
+    >
+      <div className="flex flex-col">
+        <div className="flex flex-col gap-1 pb-4 max-w-[75ch]">
+          <Typography id="settings-stay_aligned-description" />
+          <Typography id="settings-stay_aligned-setup-description" />
         </div>
-      </div>
-      <div className="pt-6">
-        <Typography variant="section-title">
-          {l10n.getString('settings-stay_aligned-general-label')}
-        </Typography>
-        <div className="pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="enabled"
-            label={l10n.getString('settings-stay_aligned-enabled-label')}
-            disabled={!config.setupComplete}
+
+        <SettingsGroup title="settings-stay_aligned-setup_group">
+          <SettingRow
+            title="settings-stay_aligned-setup-label"
+            control={
+              <Button
+                variant="primary"
+                to="/onboarding/stay-aligned"
+                state={{ alonePage: true }}
+                id="settings-stay_aligned-setup-open"
+              />
+            }
           />
-        </div>
-      </div>
-      <div className="pt-6">
-        <Typography variant="section-title">
-          {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
-        </Typography>
-        <div className="pt-1">
-          <Typography>
-            {l10n.getString('settings-stay_aligned-relaxed_poses-description')}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 gap-3 pt-2">
-          <div className="flex gap-2">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="standingEnabled"
-              label={l10n.getString(
-                'settings-stay_aligned-relaxed_poses-standing'
-              )}
-              disabled={!config.setupComplete || !hasStandingPose}
-            />
-            <StandingRelaxedPoseModal open={openStanding} />
-            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-              <Button
-                variant="primary"
-                className="w-full max-w-32"
-                disabled={!config.setupComplete}
-                onClick={() => openStanding[1](true)}
+          <SettingRow
+            title="settings-stay_aligned-enabled-label"
+            disabled={!config.setupComplete}
+            disabledReason="settings-stay_aligned-setup-description"
+            controlId="stay-aligned-enabled"
+            control={
+              <CheckBox
+                variant="toggle"
+                control={control}
+                name="enabled"
+                id="stay-aligned-enabled"
               />
-            </Localized>
-          </div>
-          <div className="flex gap-2">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="sittingEnabled"
-              label={l10n.getString(
-                'settings-stay_aligned-relaxed_poses-sitting'
-              )}
-              disabled={!config.setupComplete || !hasSittingPose}
+            }
+          />
+        </SettingsGroup>
+
+        <SettingsGroup
+          title="settings-stay_aligned-relaxed_poses-label"
+          description="settings-stay_aligned-relaxed_poses-description"
+        >
+          {poses.map(({ id, name, hasPose, open, modal }) => (
+            <SettingRow
+              key={id}
+              title={`settings-stay_aligned-relaxed_poses-${id}`}
+              disabled={!config.setupComplete}
+              disabledReason="settings-stay_aligned-setup-description"
+              controlId={`stay-aligned-${id}`}
+              control={
+                <div className="flex gap-2 items-center">
+                  {modal}
+                  <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+                    <Button
+                      variant="secondary"
+                      className="whitespace-nowrap"
+                      onClick={() => open[1](true)}
+                    />
+                  </Localized>
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    name={name}
+                    id={`stay-aligned-${id}`}
+                    disabled={!config.setupComplete || !hasPose}
+                  />
+                </div>
+              }
             />
-            <SittingRelaxedPoseModal open={openSitting} />
-            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-              <Button
-                variant="primary"
-                className="w-full max-w-32"
-                disabled={!config.setupComplete}
-                onClick={() => openSitting[1](true)}
-              />
-            </Localized>
-          </div>
-          <div className="flex gap-2">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="flatEnabled"
-              label={l10n.getString('settings-stay_aligned-relaxed_poses-flat')}
-              disabled={!config.setupComplete || !hasFlatPose}
+          ))}
+        </SettingsGroup>
+
+        <SettingsAdvanced>
+          <SettingsGroup title="settings-stay_aligned-debug-label">
+            <SettingRow
+              title="settings-stay_aligned-debug-copy-label"
+              description="settings-stay_aligned-debug-description"
+              control={<CopySettingsButton values={values} />}
             />
-            <FlatRelaxedPoseModal open={openFlat} />
-            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-              <Button
-                variant="primary"
-                className="w-full max-w-32"
-                disabled={!config.setupComplete}
-                onClick={() => openFlat[1](true)}
-              />
-            </Localized>
-          </div>
-        </div>
-      </div>
-      <div className="pt-6">
-        <Typography variant="section-title">
-          {l10n.getString('settings-stay_aligned-debug-label')}
-        </Typography>
-        <div className="pt-1">
-          <Typography>
-            {l10n.getString('settings-stay_aligned-debug-description')}
-          </Typography>
-        </div>
-        <div className="pt-2">
-          <CopySettingsButton values={values} />
-        </div>
+          </SettingsGroup>
+        </SettingsAdvanced>
       </div>
     </SettingsPagePaneLayout>
   );

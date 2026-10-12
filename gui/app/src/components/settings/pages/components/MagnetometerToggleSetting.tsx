@@ -11,6 +11,7 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { Link } from 'react-router-dom';
+import { SettingRow } from '@/components/settings/SettingRow';
 
 interface MagnetometerToggleForm {
   magToggle: boolean;
@@ -76,31 +77,27 @@ export function MagnetometerToggleSetting({
   });
 
   return settingType === 'general' ? (
-    <>
-      <div className="flex flex-col pb-2">
-        <Typography variant="section-title">
-          {l10n.getString(
-            'settings-general-tracker_mechanics-use_mag_on_all_trackers'
-          )}
-        </Typography>
+    <SettingRow
+      title="settings-general-tracker_mechanics-use_mag_on_all_trackers"
+      details={
         <Localized
           id="settings-general-tracker_mechanics-use_mag_on_all_trackers-description"
           elems={{ b: <b /> }}
         >
           <Typography whitespace="whitespace-pre-line" />
         </Localized>
-      </div>
-      <CheckBox
-        variant="toggle"
-        outlined
-        control={control}
-        loading={waitingMag}
-        name="magToggle"
-        label={l10n.getString(
-          'settings-general-tracker_mechanics-use_mag_on_all_trackers-label'
-        )}
-      />
-    </>
+      }
+      controlId="trackers-magnetometer"
+      control={
+        <CheckBox
+          variant="toggle"
+          control={control}
+          loading={waitingMag}
+          name="magToggle"
+          id="trackers-magnetometer"
+        />
+      }
+    />
   ) : (
     <div className="flex flex-col gap-2 w-full mt-3">
       <Typography variant="section-title">

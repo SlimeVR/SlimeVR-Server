@@ -16,6 +16,7 @@ export const CheckboxInternal = forwardRef<
     outlined?: boolean;
     loading?: boolean;
     name: string;
+    id?: string;
   } & Partial<React.HTMLProps<HTMLInputElement>>
 >(function AppCheckbox(
   {
@@ -28,6 +29,7 @@ export const CheckboxInternal = forwardRef<
     onChange,
     checked,
     name,
+    id,
   },
   ref
 ) {
@@ -85,6 +87,7 @@ export const CheckboxInternal = forwardRef<
       >
         <input
           ref={ref}
+          id={id}
           onChange={onChange}
           checked={checked}
           name={name}
@@ -130,10 +133,12 @@ export function CheckBox<T extends FieldValues = FieldValues>({
   name,
   loading,
   disabled,
+  id,
 }: {
-  label: string;
+  label?: string;
   control: Control<T>;
   name: FieldPath<T>;
+  id?: string;
   variant?: 'checkbox' | 'toggle';
   color?: 'primary' | 'secondary' | 'tertiary';
   outlined?: boolean;
@@ -146,6 +151,7 @@ export function CheckBox<T extends FieldValues = FieldValues>({
       render={({ field: { onChange, value, ref, name } }) => (
         <CheckboxInternal
           label={label}
+          id={id}
           variant={variant}
           color={color}
           outlined={outlined}

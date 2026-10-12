@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { DefaultValues, FieldPath, useForm } from 'react-hook-form';
 import {
   ChangeSkeletonSettingsRequestT,
   FilteringType,
@@ -18,6 +18,11 @@ import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import {
+  SettingRow,
+  SettingsAdvanced,
+  SettingsGroup,
+} from '@/components/settings/SettingRow';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
@@ -182,19 +187,44 @@ export function TrackingSettings() {
     }
   );
 
+  const filteringEnabled = watch('filtering.type') !== FilteringType.NONE;
+  const skatingCorrection = watch('toggles.skatingCorrection');
+
+  const stepper = (name: FieldPath<SkeletonForm>, min = 0.0) => ({
+    controlWidth: 'wide' as const,
+    control: (
+      <NumberSelector
+        control={control}
+        name={name}
+        valueLabelFormat={(value) => percentageFormat.format(value)}
+        min={min}
+        max={1.0}
+        step={0.05}
+      />
+    ),
+  });
+
+  const toggle = (name: FieldPath<SkeletonForm>) => ({
+    controlId: `tracking-${name}`,
+    control: (
+      <CheckBox
+        variant="toggle"
+        control={control}
+        name={name}
+        id={`tracking-${name}`}
+      />
+    ),
+  });
+
   return (
-    <SettingsPagePaneLayout icon={<MartialArtsIcon />}>
-      <>
-        <Typography variant="main-title" id="settings-sidebar-tracking" />
-
-        <div className="flex flex-col pt-3">
-          <Typography variant="section-title">
-            {l10n.getString('settings-general-tracker_mechanics-filtering')}
-          </Typography>
-        </div>
-
-        <div className="flex flex-col pt-1 pb-3">
-          {l10n
+    <SettingsPagePaneLayout
+      icon={<MartialArtsIcon />}
+      title="settings-sidebar-tracking"
+    >
+      <div className="flex flex-col">
+        <SettingsGroup
+          title="settings-general-tracker_mechanics-filtering"
+          details={l10n
             .getString(
               'settings-general-tracker_mechanics-filtering-description'
             )
@@ -202,283 +232,124 @@ export function TrackingSettings() {
             .map((line, i) => (
               <Typography key={i}>{line}</Typography>
             ))}
-        </div>
-        <Typography bold>
-          {l10n.getString('settings-general-tracker_mechanics-filtering-type')}
-        </Typography>
-        <div className="flex md:flex-row flex-col gap-3 pt-2">
-          <Radio
-            control={control}
-            name="filtering.type"
-            label={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-none'
-            )}
-            description={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-none-description'
-            )}
-            value={FilteringType.NONE}
-          />
-          <Radio
-            control={control}
-            name="filtering.type"
-            label={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-smoothing'
-            )}
-            description={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-smoothing-description'
-            )}
-            value={FilteringType.SMOOTHING}
-          />
-          <Radio
-            control={control}
-            name="filtering.type"
-            label={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-prediction'
-            )}
-            description={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-prediction-description'
-            )}
-            value={FilteringType.PREDICTION}
-          />
-        </div>
-        <div className="flex pt-3 md:flex-row flex-col">
-          <NumberSelector
-            control={control}
-            name="filtering.amount"
-            label={l10n.getString(
-              'settings-general-tracker_mechanics-filtering-amount'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.0}
-            max={1.0}
-            step={0.05}
-          />
-        </div>
+        >
+          <div className="flex md:flex-row flex-col gap-3 p-4">
+            <Radio
+              control={control}
+              name="filtering.type"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-none'
+              )}
+              description={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-none-description'
+              )}
+              value={FilteringType.NONE}
+            />
+            <Radio
+              control={control}
+              name="filtering.type"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-smoothing'
+              )}
+              description={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-smoothing-description'
+              )}
+              value={FilteringType.SMOOTHING}
+            />
+            <Radio
+              control={control}
+              name="filtering.type"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-prediction'
+              )}
+              description={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-prediction-description'
+              )}
+              value={FilteringType.PREDICTION}
+            />
+          </div>
+          {filteringEnabled && (
+            <SettingRow
+              title="settings-general-tracker_mechanics-filtering-amount"
+              {...stepper('filtering.amount')}
+            />
+          )}
+        </SettingsGroup>
 
-        <div className="flex flex-col pt-6 pb-2 gap-1">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-fk_settings-leg_tweak-skating_correction'
-            )}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-leg_tweak-skating_correction-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 gap-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.skatingCorrection"
-            label={l10n.getString(
-              'settings-general-fk_settings-leg_tweak-skating_correction'
-            )}
+        <SettingsGroup title="settings-general-fk_settings-leg_fk">
+          <SettingRow
+            title="settings-general-fk_settings-leg_tweak-floor_clip"
+            description="settings-general-fk_settings-leg_tweak-floor_clip-description"
+            {...toggle('toggles.floorClip')}
           />
-          <NumberSelector
-            control={control}
-            name="ratios.skatingCorrectionStrength"
-            label={l10n.getString(
-              'settings-general-fk_settings-leg_tweak-skating_correction-amount'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.1}
-            max={1.0}
-            step={0.1}
+          <SettingRow
+            title="settings-general-fk_settings-leg_tweak-foot_plant"
+            description="settings-general-fk_settings-leg_tweak-foot_plant-description"
+            {...toggle('toggles.footPlant')}
           />
-        </div>
+          <SettingRow
+            title="settings-general-fk_settings-leg_tweak-toe_snap"
+            description="settings-general-fk_settings-leg_tweak-toe_snap-description"
+            {...toggle('toggles.toeSnap')}
+          />
+          <SettingRow
+            title="settings-general-fk_settings-leg_tweak-skating_correction"
+            description="settings-general-fk_settings-leg_tweak-skating_correction-description"
+            childrenDisabled={!skatingCorrection}
+            {...toggle('toggles.skatingCorrection')}
+          >
+            <SettingRow
+              title="settings-general-fk_settings-leg_tweak-skating_correction-amount"
+              {...stepper('ratios.skatingCorrectionStrength', 0.1)}
+            />
+          </SettingRow>
+        </SettingsGroup>
 
-        <div className="flex flex-col pt-6 pb-1">
-          <Typography variant="section-title">
-            {l10n.getString('settings-general-fk_settings-leg_fk')}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 pb-2">
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-leg_tweak-floor_clip-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.floorClip"
-            label={l10n.getString(
-              'settings-general-fk_settings-leg_tweak-floor_clip'
-            )}
+        <SettingsGroup title="settings-general-fk_settings-position_group">
+          <SettingRow
+            title="settings-general-fk_settings-ik"
+            description="settings-general-fk_settings-ik-use_position-description"
+            {...toggle('toggles.useTrackerPositions')}
           />
-        </div>
-        <div className="flex flex-col pt-5 pb-2">
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-leg_tweak-foot_plant-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.footPlant"
-            label={l10n.getString(
-              'settings-general-fk_settings-leg_tweak-foot_plant'
-            )}
+          <SettingRow
+            title="settings-general-fk_settings-self_localization-title"
+            description="settings-general-fk_settings-self_localization-description"
+            {...toggle('toggles.mocapMode')}
           />
-        </div>
-        <div className="flex flex-col pt-5">
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-leg_tweak-toe_snap-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 gap-3 pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.toeSnap"
-            label={l10n.getString(
-              'settings-general-fk_settings-leg_tweak-toe_snap'
-            )}
-          />
-        </div>
+        </SettingsGroup>
 
-        <div className="flex flex-col pt-5">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-fk_settings-enforce_joint_constraints'
-            )}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.enforceConstraints"
-            label={l10n.getString(
-              'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints'
-            )}
-          />
-        </div>
+        <SettingsAdvanced>
+          <SettingsGroup title="settings-general-fk_settings-constraints_group">
+            <SettingRow
+              title="settings-general-fk_settings-enforce_joint_constraints"
+              description="settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description"
+              {...toggle('toggles.enforceConstraints')}
+            />
+          </SettingsGroup>
 
-        <div className="flex flex-col pt-5">
-          <Typography variant="section-title">
-            {l10n.getString('settings-general-fk_settings-ik')}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-ik-use_position-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.useTrackerPositions"
-            label={l10n.getString(
-              'settings-general-fk_settings-ik-use_position'
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col pt-5">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-fk_settings-self_localization-title'
-            )}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-self_localization-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.mocapMode"
-            label={l10n.getString(
-              'settings-general-fk_settings-self_localization-title'
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col pt-5">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-ratios'
-            )}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-ratios-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 pt-2">
-          <NumberSelector
-            control={control}
-            name="ratios.imputeSpineFromUpperToLower"
-            label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.0}
-            max={1.0}
-            step={0.05}
-          />
-          <NumberSelector
-            control={control}
-            name="ratios.imputeSpineCurvature"
-            label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-impute_spine_curvature'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.0}
-            max={1.0}
-            step={0.05}
-          />
-          <NumberSelector
-            control={control}
-            name="ratios.interpolateHipWithUpperLegs"
-            label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.0}
-            max={1.0}
-            step={0.05}
-          />
-          <NumberSelector
-            control={control}
-            name="ratios.interpolateUpperLegsTwistWithLowerLegs"
-            label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.0}
-            max={1.0}
-            step={0.05}
-          />
-        </div>
-      </>
+          <SettingsGroup
+            title="settings-general-fk_settings-skeleton_settings-ratios"
+            description="settings-general-fk_settings-skeleton_settings-ratios-description"
+          >
+            <SettingRow
+              title="settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower"
+              {...stepper('ratios.imputeSpineFromUpperToLower')}
+            />
+            <SettingRow
+              title="settings-general-fk_settings-skeleton_settings-impute_spine_curvature"
+              {...stepper('ratios.imputeSpineCurvature')}
+            />
+            <SettingRow
+              title="settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs"
+              {...stepper('ratios.interpolateHipWithUpperLegs')}
+            />
+            <SettingRow
+              title="settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs"
+              {...stepper('ratios.interpolateUpperLegsTwistWithLowerLegs')}
+            />
+          </SettingsGroup>
+        </SettingsAdvanced>
+      </div>
     </SettingsPagePaneLayout>
   );
 }

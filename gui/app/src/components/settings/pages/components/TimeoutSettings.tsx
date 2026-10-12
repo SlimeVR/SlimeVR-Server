@@ -1,4 +1,4 @@
-import { useLocalization, Localized } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
@@ -11,6 +11,7 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Typography } from '@/components/commons/Typography';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
+import { SettingRow } from '@/components/settings/SettingRow';
 
 type TimeoutForm = {
   delay: number;
@@ -22,7 +23,6 @@ const defaultValues: TimeoutForm = {
 
 export function TimeoutSettings() {
   const [settings, setSettings] = useState(new TimeoutSettingsResponseT());
-  const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
 
@@ -75,26 +75,27 @@ export function TimeoutSettings() {
   );
 
   return (
-    <>
-      <div className="flex flex-col pb-2 pt-5">
-        <Typography variant="section-title">
-          {l10n.getString('settings-general-tracker_mechanics-timeout_delay')}
-        </Typography>
+    <SettingRow
+      title="settings-general-tracker_mechanics-timeout_delay"
+      details={
         <Localized
           id="settings-general-tracker_mechanics-timeout_delay-description"
           elems={{ b: <b /> }}
         >
           <Typography />
         </Localized>
-      </div>
-      <NumberSelector
-        control={control}
-        name="delay"
-        valueLabelFormat={(value) => secondsFormat.format(value)}
-        min={0.0}
-        max={3600}
-        step={1.0}
-      />
-    </>
+      }
+      controlWidth="wide"
+      control={
+        <NumberSelector
+          control={control}
+          name="delay"
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.0}
+          max={3600}
+          step={1.0}
+        />
+      }
+    />
   );
 }

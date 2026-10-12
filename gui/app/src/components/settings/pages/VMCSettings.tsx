@@ -29,6 +29,12 @@ import {
 import { Typography } from '@/components/commons/Typography';
 import { magic } from '@/utils/formatting';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import {
+  SettingRow,
+  SettingsAdvanced,
+  SettingsGroup,
+  SettingsGroupLabel,
+} from '@/components/settings/SettingRow';
 import { error } from '@/utils/logging';
 import {
   OSCPortsAddress,
@@ -208,32 +214,22 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
         }
       >
         {inputState === VMCOSCInputState.IDLE ? (
-          <Typography
-            color="secondary"
-            id="settings-osc-vmc-status-input-idle"
-          />
+          <Typography id="settings-osc-vmc-status-input-idle" />
         ) : (
           <>
             <Typography
-              color="secondary"
               id="settings-osc-vmc-status-input-listening"
               vars={{ port: status.inputPort?.toString() ?? 'null' }}
             />
             {inputState === VMCOSCInputState.ERROR && status.inputError ? (
-              <Typography color="secondary">
-                {status.inputError?.toString() ?? ''}
-              </Typography>
+              <Typography>{status.inputError?.toString() ?? ''}</Typography>
             ) : lastInputElapsed ? (
               <Typography
-                color="secondary"
                 id="settings-osc-vmc-status-input-last-data"
                 vars={{ elapsed: lastInputElapsed }}
               />
             ) : (
-              <Typography
-                color="secondary"
-                id="settings-osc-vmc-status-input-no-data"
-              />
+              <Typography id="settings-osc-vmc-status-input-no-data" />
             )}
           </>
         )}
@@ -251,7 +247,6 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
         {outputState === VMCOSCOutputState.IDLE ? (
           status.targetAddress ? (
             <Typography
-              color="secondary"
               id="settings-osc-vmc-status-output-waiting"
               vars={{
                 address: status.targetAddress.toString(),
@@ -259,15 +254,11 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
               }}
             />
           ) : (
-            <Typography
-              color="secondary"
-              id="settings-osc-vmc-status-output-idle"
-            />
+            <Typography id="settings-osc-vmc-status-output-idle" />
           )
         ) : (
           <>
             <Typography
-              color="secondary"
               id={
                 outputState === VMCOSCOutputState.READY
                   ? 'settings-osc-vmc-status-output-sending'
@@ -279,20 +270,14 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
               }}
             />
             {outputState === VMCOSCOutputState.ERROR && status.outputError ? (
-              <Typography color="secondary">
-                {status.outputError?.toString() ?? ''}
-              </Typography>
+              <Typography>{status.outputError?.toString() ?? ''}</Typography>
             ) : lastFrameElapsed ? (
               <Typography
-                color="secondary"
                 id="settings-osc-vmc-status-output-last-frame"
                 vars={{ elapsed: lastFrameElapsed }}
               />
             ) : (
-              <Typography
-                color="secondary"
-                id="settings-osc-vmc-status-output-no-frame"
-              />
+              <Typography id="settings-osc-vmc-status-output-no-frame" />
             )}
           </>
         )}
@@ -308,12 +293,9 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
         badge={<VmcBadge badge={VRM_BADGES[vrmState]} />}
       >
         {vrmState === VMCOSCVrmState.ERROR && status.vrmError ? (
-          <Typography color="secondary">
-            {status.vrmError?.toString() ?? ''}
-          </Typography>
+          <Typography>{status.vrmError?.toString() ?? ''}</Typography>
         ) : (
           <Typography
-            color="secondary"
             id={
               vrmState === VMCOSCVrmState.LOADED
                 ? 'settings-osc-vmc-status-vrm-loaded'
@@ -406,164 +388,153 @@ export function VMCSettings() {
   );
 
   return (
-    <form className="flex flex-col gap-2 w-full">
-      <SettingsPagePaneLayout icon={<VMCIcon />}>
-        <>
-          <Typography variant="main-title">Virtual Motion Capture</Typography>
-          <div className="flex flex-col pt-2 pb-4">
-            <>
-              {l10n
-                .getString('settings-osc-vmc-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </>
+    <form className="w-full">
+      <SettingsPagePaneLayout
+        icon={<VMCIcon />}
+        title="settings-sidebar-osc_vmc"
+      >
+        <div className="flex flex-col">
+          <div className="flex flex-col pb-4 max-w-[75ch]">
+            {l10n
+              .getString('settings-osc-vmc-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography key={i}>{line}</Typography>
+              ))}
           </div>
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vmc-enable')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString('settings-osc-vmc-enable-description')}
-            </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="enabled"
-              label={l10n.getString('settings-osc-vmc-enable-label')}
+
+          <SettingsGroup title="settings-osc-vmc-output_group">
+            <SettingRow
+              title="settings-osc-vmc-enable"
+              description="settings-osc-vmc-enable-description"
+              controlId="vmc-enabled"
+              control={
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  name="enabled"
+                  id="vmc-enabled"
+                />
+              }
             />
-          </div>
+            <SettingRow
+              title="settings-driver-bones"
+              description="settings-driver-bones-description"
+              control={
+                <Button
+                  variant="secondary"
+                  className="whitespace-nowrap"
+                  to="/settings/routing"
+                  id="settings-driver-bones-link"
+                />
+              }
+            />
+          </SettingsGroup>
 
           {enabled && status && (
-            <>
-              <Typography
-                variant="section-title"
-                id="settings-osc-vmc-status-title"
-              />
+            <div className="flex flex-col gap-2 mt-8 min-w-0">
+              <div className="px-3 xs:px-4">
+                <SettingsGroupLabel id="settings-osc-vmc-status-title" />
+              </div>
               <StatusCard status={status} />
-            </>
+            </div>
           )}
 
-          <Typography variant="section-title" id="settings-driver-bones" />
-          <div className="flex flex-col gap-2 pt-1 pb-4">
-            <Typography id="settings-driver-bones-description" />
-            <div className="w-fit">
-              <Button
-                variant="secondary"
-                to="/settings/routing"
-                id="settings-driver-bones-link"
-              />
-            </div>
-          </div>
+          <SettingsGroup title="settings-osc-vmc-avatar_group">
+            <SettingRow
+              title="settings-osc-vmc-vrm"
+              description="settings-osc-vmc-vrm-description"
+              below={<VRMFileUpload />}
+            />
+            <SettingRow
+              title="settings-osc-vmc-anchor_hip"
+              description="settings-osc-vmc-anchor_hip-description"
+              controlId="vmc-anchor-hip"
+              control={
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  name="anchorHip"
+                  id="vmc-anchor-hip"
+                />
+              }
+            />
+            <SettingRow
+              title="settings-osc-vmc-mirror_tracking"
+              description="settings-osc-vmc-mirror_tracking-description"
+              controlId="vmc-mirror"
+              control={
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  name="mirrorTracking"
+                  id="vmc-mirror"
+                />
+              }
+            />
+          </SettingsGroup>
 
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vmc-network')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <>
-              {l10n
-                .getString('settings-osc-vmc-network-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <Localized
-              id="settings-osc-vmc-network-port_in"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                type="number"
-                control={control}
-                name="portsAddress.portIn"
-                placeholder="9002"
-                label=""
+          <SettingsAdvanced>
+            <SettingsGroup title="settings-osc-vmc-network_group">
+              <SettingRow
+                title="settings-osc-vmc-network"
+                details={
+                  <>
+                    {l10n
+                      .getString('settings-osc-vmc-network-description')
+                      .split('\n')
+                      .map((line, i) => (
+                        <Typography key={i}>{line}</Typography>
+                      ))}
+                  </>
+                }
+                below={
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <Localized
+                      id="settings-osc-vmc-network-port_in"
+                      attrs={{ placeholder: true, label: true }}
+                    >
+                      <Input
+                        type="number"
+                        control={control}
+                        name="portsAddress.portIn"
+                        placeholder="9002"
+                        label=""
+                      />
+                    </Localized>
+                    <Localized
+                      id="settings-osc-vmc-network-port_out"
+                      attrs={{ placeholder: true, label: true }}
+                    >
+                      <Input
+                        type="number"
+                        control={control}
+                        name="portsAddress.portOut"
+                        placeholder="9000"
+                        label=""
+                      />
+                    </Localized>
+                  </div>
+                }
               />
-            </Localized>
-            <Localized
-              id="settings-osc-vmc-network-port_out"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                type="number"
-                control={control}
-                name="portsAddress.portOut"
-                placeholder="9000"
-                label=""
+              <SettingRow
+                title="settings-osc-vmc-network-address"
+                description="settings-osc-vmc-network-address-description"
+                below={
+                  <Input
+                    type="text"
+                    control={control}
+                    name="portsAddress.address"
+                    placeholder={l10n.getString(
+                      'settings-osc-vmc-network-address-placeholder'
+                    )}
+                    label=""
+                  />
+                }
               />
-            </Localized>
-          </div>
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vmc-network-address')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString('settings-osc-vmc-network-address-description')}
-            </Typography>
-          </div>
-          <div className="grid gap-3 pb-5">
-            <Input
-              type="text"
-              control={control}
-              name="portsAddress.address"
-              placeholder={l10n.getString(
-                'settings-osc-vmc-network-address-placeholder'
-              )}
-              label=""
-            />
-          </div>
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vmc-vrm')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString('settings-osc-vmc-vrm-description')}
-            </Typography>
-          </div>
-          <div className="grid gap-3 pb-5">
-            <VRMFileUpload />
-          </div>
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vmc-anchor_hip')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString('settings-osc-vmc-anchor_hip-description')}
-            </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="anchorHip"
-              label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
-            />
-          </div>
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vmc-mirror_tracking')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString('settings-osc-vmc-mirror_tracking-description')}
-            </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="mirrorTracking"
-              label={l10n.getString('settings-osc-vmc-mirror_tracking-label')}
-            />
-          </div>
-        </>
+            </SettingsGroup>
+          </SettingsAdvanced>
+        </div>
       </SettingsPagePaneLayout>
     </form>
   );

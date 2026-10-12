@@ -130,7 +130,6 @@ export function VRCWarningsPage() {
   return (
     <SettingsPagePaneLayout icon={<WarningIcon />} className="w-full min-w-fit">
       <div className="flex flex-col gap-3">
-        <Typography variant="main-title" id={'vrc_config-page-title'} />
         <Typography variant="standard" id={'vrc_config-page-desc'} />
       </div>
       <div className="w-full mt-4 gap-2 flex flex-col">

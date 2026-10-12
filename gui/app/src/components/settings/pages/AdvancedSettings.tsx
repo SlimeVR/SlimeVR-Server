@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 import { BugIcon } from '@/components/commons/icon/BugIcon';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -102,220 +103,158 @@ export function AdvancedSettings() {
     }
   };
 
-  return (
-    <form className="flex flex-col gap-2 w-full">
-      <SettingsPagePaneLayout icon={<BugIcon />}>
-        <>
-          <Typography variant="main-title">
-            {l10n.getString('settings-utils-advanced')}
-          </Typography>
+  const resets = [
+    {
+      id: 'gui',
+      title: 'settings-utils-advanced-reset-gui',
+      description: 'settings-utils-advanced-reset-gui-description',
+      label: 'settings-utils-advanced-reset-gui-label',
+      open: showWarningGUI,
+      setOpen: setShowWarningGUI,
+      accept: () => {
+        setConfig(guiDefaults());
+        setShowWarningGUI(false);
+      },
+    },
+    {
+      id: 'server',
+      title: 'settings-utils-advanced-reset-server',
+      description: 'settings-utils-advanced-reset-server-description',
+      label: 'settings-utils-advanced-reset-server-label',
+      open: showWarningServer,
+      setOpen: setShowWarningServer,
+      accept: () => {
+        sendRPCPacket(
+          RpcMessage.SettingsResetRequest,
+          new SettingsResetRequestT()
+        );
+        setShowWarningServer(false);
+      },
+    },
+    {
+      id: 'all',
+      title: 'settings-utils-advanced-reset-all',
+      description: 'settings-utils-advanced-reset-all-description',
+      label: 'settings-utils-advanced-reset-all-label',
+      open: showWarningAll,
+      setOpen: setShowWarningAll,
+      accept: () => {
+        sendRPCPacket(
+          RpcMessage.SettingsResetRequest,
+          new SettingsResetRequestT()
+        );
+        setConfig(guiDefaults());
+        setShowWarningAll(false);
+      },
+    },
+  ] as const;
 
-          <div className="grid gap-6 pt-4">
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col">
-                <Typography variant="section-title">
-                  {l10n.getString('settings-general-interface-dev_mode')}
-                </Typography>
-                <Typography>
-                  {l10n.getString(
-                    'settings-general-interface-dev_mode-description'
-                  )}
-                </Typography>
-              </div>
-              <div className="grid">
+  return (
+    <form className="w-full">
+      <SettingsPagePaneLayout
+        icon={<BugIcon />}
+        title="settings-utils-advanced"
+      >
+        <div className="flex flex-col">
+          <SettingsGroup title="settings-utils-advanced-developer_group">
+            <SettingRow
+              title="settings-general-interface-dev_mode"
+              description="settings-general-interface-dev_mode-description"
+              controlId="advanced-dev-mode"
+              control={
                 <CheckBox
                   variant="toggle"
                   control={control}
-                  outlined
                   name="developer.enabled"
-                  label={l10n.getString(
-                    'settings-general-interface-dev_mode-label'
-                  )}
+                  id="advanced-dev-mode"
                 />
+              }
+              childrenDisabled={!config?.debug}
+            >
+              <div className="grid sm:grid-cols-2 gap-2 py-1">
+                {Object.entries(devToggles).map(([name, label]) => (
+                  <CheckBox
+                    key={name}
+                    control={control}
+                    variant="toggle"
+                    outlined
+                    name={`developer.${name}` as FieldPath<DeveloperModeForm>}
+                    label={l10n.getString(`widget-developer_mode-${label}`)}
+                  />
+                ))}
               </div>
-              {!!config?.debug && (
-                <div className="grid sm:grid-cols-2 gap-2 p-4 rounded-2xl bg-background-80">
-                  {Object.entries(devToggles).map(([name, label]) => (
-                    <CheckBox
-                      key={name}
-                      control={control}
-                      variant="toggle"
-                      outlined
-                      name={`developer.${name}` as FieldPath<DeveloperModeForm>}
-                      label={l10n.getString(`widget-developer_mode-${label}`)}
-                    />
-                  ))}
-                </div>
+            </SettingRow>
+          </SettingsGroup>
+
+          {electron.isElectron && (
+            <SettingsGroup title="settings-utils-advanced-folders_group">
+              <SettingRow
+                title="settings-utils-advanced-open_data-v1"
+                description="settings-utils-advanced-open_data-description-v1"
+                control={
+                  <Button
+                    variant="secondary"
+                    className="whitespace-nowrap"
+                    onClick={openConfigFolder}
+                    id="settings-utils-advanced-open_data-label"
+                  />
+                }
+              />
+              <SettingRow
+                title="settings-utils-advanced-open_logs"
+                description="settings-utils-advanced-open_logs-description"
+                control={
+                  <Button
+                    variant="secondary"
+                    className="whitespace-nowrap"
+                    onClick={openLogsFolder}
+                    id="settings-utils-advanced-open_logs-label"
+                  />
+                }
+              />
+            </SettingsGroup>
+          )}
+
+          <fieldset className="flex flex-col mt-10 rounded-2xl border border-status-critical px-2 xs:px-3 pt-4 pb-5 min-w-0">
+            <legend className="uppercase px-2 ml-2">
+              <Typography
+                variant="section-title"
+                color="text-status-critical"
+                id="settings-utils-advanced-danger_zone"
+              />
+            </legend>
+            <div className="px-3 xs:px-4 pb-2 max-w-[75ch]">
+              <Typography id="settings-utils-advanced-danger_zone-description" />
+            </div>
+            <SettingsGroup>
+              {resets.map(
+                ({ id, title, description, label, open, setOpen, accept }) => (
+                  <SettingRow
+                    key={id}
+                    title={title}
+                    description={description}
+                    control={
+                      <>
+                        <Button
+                          variant="secondary"
+                          className="!bg-status-critical whitespace-nowrap"
+                          onClick={() => setOpen(true)}
+                          id={label}
+                        />
+                        <SettingsResetModal
+                          accept={accept}
+                          onClose={() => setOpen(false)}
+                          isOpen={open}
+                          variant={id}
+                        />
+                      </>
+                    }
+                  />
+                )
               )}
-            </div>
-
-            {electron.isElectron && (
-              <>
-                <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                  <div>
-                    <Typography variant="section-title">
-                      {l10n.getString('settings-utils-advanced-open_data-v1')}
-                    </Typography>
-                    <div className="flex flex-col">
-                      <Typography>
-                        {l10n.getString(
-                          'settings-utils-advanced-open_data-description-v1'
-                        )}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="flex flex-col nsm:pt-2">
-                    <Button variant="secondary" onClick={openConfigFolder}>
-                      {l10n.getString(
-                        'settings-utils-advanced-open_data-label'
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                  <div>
-                    <Typography variant="section-title">
-                      {l10n.getString('settings-utils-advanced-open_logs')}
-                    </Typography>
-                    <div className="flex flex-col">
-                      <Typography>
-                        {l10n.getString(
-                          'settings-utils-advanced-open_logs-description'
-                        )}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="flex flex-col nsm:pt-2">
-                    <Button variant="secondary" onClick={openLogsFolder}>
-                      {l10n.getString(
-                        'settings-utils-advanced-open_logs-label'
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div className="flex flex-col gap-4 p-4 rounded-2xl border border-status-critical">
-              <div className="flex flex-col">
-                <Typography
-                  variant="section-title"
-                  color="text-status-critical"
-                  id="settings-utils-advanced-danger_zone"
-                />
-                <Typography
-                  color="text-status-critical"
-                  id="settings-utils-advanced-danger_zone-description"
-                />
-              </div>
-
-              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                <div>
-                  <Typography variant="section-title">
-                    {l10n.getString('settings-utils-advanced-reset-gui')}
-                  </Typography>
-                  <div className="flex flex-col">
-                    <Typography>
-                      {l10n.getString(
-                        'settings-utils-advanced-reset-gui-description'
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-                <div className="flex flex-col nsm:pt-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowWarningGUI(true)}
-                  >
-                    {l10n.getString('settings-utils-advanced-reset-gui-label')}
-                  </Button>
-                  <SettingsResetModal
-                    accept={() => {
-                      setConfig(guiDefaults());
-                      setShowWarningGUI(false);
-                    }}
-                    onClose={() => setShowWarningGUI(false)}
-                    isOpen={showWarningGUI}
-                    variant="gui"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                <div>
-                  <Typography variant="section-title">
-                    {l10n.getString('settings-utils-advanced-reset-server')}
-                  </Typography>
-                  <div className="flex flex-col">
-                    <Typography>
-                      {l10n.getString(
-                        'settings-utils-advanced-reset-server-description'
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-                <div className="flex flex-col nsm:pt-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowWarningServer(true)}
-                  >
-                    {l10n.getString(
-                      'settings-utils-advanced-reset-server-label'
-                    )}
-                  </Button>
-                  <SettingsResetModal
-                    accept={() => {
-                      sendRPCPacket(
-                        RpcMessage.SettingsResetRequest,
-                        new SettingsResetRequestT()
-                      );
-                      setShowWarningServer(false);
-                    }}
-                    onClose={() => setShowWarningServer(false)}
-                    isOpen={showWarningServer}
-                    variant="server"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                <div>
-                  <Typography variant="section-title">
-                    {l10n.getString('settings-utils-advanced-reset-all')}
-                  </Typography>
-                  <div className="flex flex-col">
-                    <Typography>
-                      {l10n.getString(
-                        'settings-utils-advanced-reset-all-description'
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-                <div className="flex flex-col nsm:pt-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowWarningAll(true)}
-                  >
-                    {l10n.getString('settings-utils-advanced-reset-all-label')}
-                  </Button>
-                  <SettingsResetModal
-                    accept={() => {
-                      sendRPCPacket(
-                        RpcMessage.SettingsResetRequest,
-                        new SettingsResetRequestT()
-                      );
-                      setConfig(guiDefaults());
-                      setShowWarningAll(false);
-                    }}
-                    onClose={() => setShowWarningAll(false)}
-                    isOpen={showWarningAll}
-                    variant="all"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
+            </SettingsGroup>
+          </fieldset>
+        </div>
       </SettingsPagePaneLayout>
     </form>
   );

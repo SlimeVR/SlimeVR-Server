@@ -1,4 +1,4 @@
-import { useLocalization, Localized } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
@@ -13,6 +13,7 @@ import { Typography } from '@/components/commons/Typography';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
+import { SettingRow } from '@/components/settings/SettingRow';
 
 type HIDForm = {
   trackersOverHID: boolean;
@@ -32,7 +33,6 @@ const hidSettingsValueAtom = selectAtom(
 export function HIDSettings() {
   const setSettings = useSetAtom(hidSettingsAtom);
   const settings = useAtomValue(hidSettingsValueAtom);
-  const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { control, watch, handleSubmit, getValues, reset } = useForm<HIDForm>({
@@ -73,29 +73,25 @@ export function HIDSettings() {
   );
 
   return (
-    <>
-      <div className="flex flex-col pt-5 pb-2">
-        <Typography variant="section-title">
-          {l10n.getString(
-            'settings-general-tracker_mechanics-trackers_over_usb'
-          )}
-        </Typography>
+    <SettingRow
+      title="settings-general-tracker_mechanics-trackers_over_usb"
+      details={
         <Localized
           id="settings-general-tracker_mechanics-trackers_over_usb-description"
           elems={{ b: <b /> }}
         >
           <Typography />
         </Localized>
-      </div>
-      <CheckBox
-        variant="toggle"
-        outlined
-        control={control}
-        name="trackersOverHID"
-        label={l10n.getString(
-          'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
-        )}
-      />
-    </>
+      }
+      controlId="trackers-over-usb"
+      control={
+        <CheckBox
+          variant="toggle"
+          control={control}
+          name="trackersOverHID"
+          id="trackers-over-usb"
+        />
+      }
+    />
   );
 }

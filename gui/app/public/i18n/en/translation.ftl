@@ -429,7 +429,7 @@ mounting_selection_menu = Which way is this tracker facing?
 mounting_selection_menu-close = Close
 
 ## Sidebar settings
-settings-sidebar-title = Settings
+settings-advanced_section = Advanced settings
 settings-sidebar-general = General
 settings-sidebar-outputs = Outputs
 settings-sidebar-routing = Bone Routing
@@ -446,7 +446,6 @@ settings-sidebar-serial = USB Serial Console
 settings-sidebar-appearance = Appearance
 settings-sidebar-home = Home Screen
 settings-sidebar-checklist = Tracking checklist
-settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Behaviour
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Config Warnings
@@ -510,9 +509,10 @@ settings-routing-hands-warning-done = Route hands
 
 settings-driver = SteamVR / Monado
 settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
+settings-driver-output_group = Output
+settings-driver-data_group = Data sent
 settings-driver-enable = Enable
 settings-driver-enable-description = Send your trackers to and receive trackers from SteamVR or Monado through the SlimeVR driver. If this is off, they won't be able to connect to SlimeVR at all.
-settings-driver-enable-label = Enable
 settings-driver-status-title = Status
 settings-driver-status-connection = Driver connection
 settings-driver-status-badge-connected = Connected
@@ -531,13 +531,13 @@ settings-driver-velocity-description = Send linear and angular velocity data to 
 
 ## Tracker mechanics
 settings-general-mounting_method = Mounting calibration method
+settings-general-mounting_method-pose_only = Only used by pose mounting calibration.
 settings-general-mounting_method-description = What mounting calibration method to use to calibrate your trackers' mounting orientations.
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
     Prediction predicts movement while smoothing smooths movement.
-settings-general-tracker_mechanics-filtering-type = Filter type
 settings-general-tracker_mechanics-filtering-type-none = No filtering
 settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
@@ -545,30 +545,32 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooth
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Filter strength
+settings-general-tracker_mechanics-filtering-amount-no_filtering = Pick a filtering type to set its strength.
+settings-general-fk_settings-reset_behaviour_group = Reset behaviour
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Smooths the trackers' rotations upon doing a yaw reset. 0s disables smoothing.
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting calibration
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting calibration for the trackers between restarts. Useful
     when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting calibration
+settings-general-tracker_mechanics-magnetometer_group = Magnetometer
+settings-general-tracker_mechanics-connection_group = Connection
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
     Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
 settings-general-tracker_mechanics-trackers_over_usb-description =
     Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 settings-general-tracker_mechanics-timeout_delay = Timeout delay
 settings-general-tracker_mechanics-timeout_delay-description = How long until a tracker is marked as '{ tracker-status-disconnected }' when the connection is lost.
 
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
+settings-stay_aligned-setup_group = Setup
 settings-stay_aligned-setup-label = Setup Stay Aligned
+settings-stay_aligned-setup-open = Open setup
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-enabled-label = Enable Stay Aligned
-settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
 settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
@@ -580,6 +582,7 @@ settings-stay_aligned-relaxed_poses-close = Close
 settings-stay_aligned-debug-label = Debugging
 settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
+settings-stay_aligned-debug-copy-short = Copy
 
 ## Keybinds Page
 settings-keybinds = Keybind settings
@@ -635,11 +638,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotat
 settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
+settings-general-fk_settings-constraints_group = Constraints
 settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
+settings-general-fk_settings-position_group = Position tracking
 settings-general-fk_settings-ik = Position data
-settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = Reset HMD attitude
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
@@ -675,6 +678,13 @@ settings-general-gesture_control-trackers = { $amount ->
     [one] 1 tracker
     *[other] { $amount } trackers
 }
+settings-general-gesture_control-column-reset = Reset
+settings-general-gesture_control-column-tracker = Tracker
+settings-general-gesture_control-column-taps = Taps
+settings-general-gesture_control-column-delay = Delay
+settings-general-gesture_control-yawReset-name = Yaw reset
+settings-general-gesture_control-fullReset-name = Full reset
+settings-general-gesture_control-mountingReset-name = Mounting calibration
 settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
 settings-general-gesture_control-yawResetDelay = Yaw reset delay
 settings-general-gesture_control-yawResetTaps = Taps for yaw reset
@@ -693,9 +703,11 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Incre
 
 ## Appearance settings
 settings-interface-appearance = Appearance
+settings-interface-appearance-text_group = Text
+settings-interface-appearance-language_group = Language
+settings-utils-advanced-developer_group = Developer
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Colour theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language.
@@ -718,29 +730,29 @@ settings-interface-appearance-font_size-description = This affects the font size
 ## Notification settings
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
-settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
-settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
 
 ## Behavior settings
 settings-interface-behavior = Behaviour
+settings-interface-notifications = Notifications
+settings-interface-behavior-desktop_group = Desktop
+settings-interface-behavior-input_group = Input
+settings-interface-behavior-privacy_group = Privacy
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bother you.
-settings-general-interface-use_tray-label = Minimize to system tray
 settings-general-interface-discord_presence = Share activity on Discord
 settings-general-interface-discord_presence-description = Tells your Discord client that you are using SlimeVR along with the number of IMU trackers you are using.
-settings-general-interface-discord_presence-label = Share activity on Discord
 settings-general-interface-discord_presence-message = { $amount ->
     [0] Sliming around
     [one] Using 1 tracker
     *[other] Using { $amount } trackers
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
+settings-interface-behavior-error_tracking-label = Send errors to developers
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Do you consent to the collection of error and diagnostic data?</h1>
 
@@ -755,16 +767,16 @@ settings-interface-behavior-error_tracking-description_v2 =
 
     This data is linked to a random ID, not to your identity, and helps us detect bugs and issues with SlimeVR. It is collected via Sentry.io.
 
-settings-interface-behavior-error_tracking-label = Send errors to developers
 settings-interface-behavior-bvh_directory = Directory to save BVH recordings
 settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
 settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 settings-interface-behavior-skeleton_mesh = Skeleton preview style
 settings-interface-behavior-skeleton_mesh-description = Draw the body preview with solid 3D shapes instead of simple lines. Turn this off on low-end machines.
 settings-interface-behavior-skeleton_mesh-label = Use 3D shapes
+settings-interface-behavior-skeleton_mesh-lines = Lines
+settings-interface-behavior-skeleton_mesh-mesh = 3D shapes
 settings-interface-behavior-controller_nav = Game controller navigation
 settings-interface-behavior-controller_nav-description = Move focus around the interface with a game controller: the D-pad or left stick move between controls, A activates, B goes back, only while a controller is connected. Holding Ctrl or Alt with the arrow keys always moves focus the same way.
-settings-interface-behavior-controller_nav-label = Navigate with a controller
 
 ## Serial settings
 settings-serial = USB Serial Console
@@ -809,9 +821,10 @@ settings-osc-vrchat-description-v1 =
     Change settings specific to VRChat OSC and the OSC Trackers standard used to send
     tracking data to applications without SteamVR (ex. Quest standalone).
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
+settings-osc-vrchat-output_group = Output
+settings-osc-vrchat-network_group = Network
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
-settings-osc-vrchat-enable-label = Enable
 settings-osc-vrchat-network = Network ports
 settings-osc-vrchat-network-port_in =
     .label = Port In
@@ -850,8 +863,10 @@ settings-osc-vrchat-status-oscquery-searching = No VRChat clients found yet.
 settings-osc-vrchat-status-oscquery-discovered-title = Discovered VRChat clients:
 settings-osc-vrchat-status-oscquery-switch = Switch
 settings-osc-vrchat-status-network-mode = Network mode
+settings-osc-vrchat-status-network-mode-auto = Automatic
+settings-osc-vrchat-status-network-mode-manual = Manual
+settings-osc-vrchat-status-network-mode-manual_only = Only used while the network mode is manual.
 settings-osc-vrchat-status-network-mode-description = Automatic mode discovers VRChat through OSCQuery. Manual mode uses the configured address and ports.
-settings-osc-vrchat-status-network-mode-toggle = Manual network settings
 settings-osc-vrchat-status-network-manual-description = Configure the local input port and the VRChat OSC target manually.
 
 settings-osc-vrchat-status-badge-idle = Idle
@@ -871,9 +886,10 @@ settings-osc-vmc = Virtual Motion Capture
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
     to send SlimeVR's bone data and receive bone data from other apps.
+settings-osc-vmc-output_group = Output
+settings-osc-vmc-network_group = Network
 settings-osc-vmc-enable = Enable
 settings-osc-vmc-enable-description = Toggle the sending and receiving of data.
-settings-osc-vmc-enable-label = Enable
 settings-osc-vmc-network = Network ports
 settings-osc-vmc-network-description = Set the ports for listening and sending data via VMC.
 settings-osc-vmc-network-port_in =
@@ -885,17 +901,15 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = Network address
 settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC.
 settings-osc-vmc-network-address-placeholder = IPV4 address
+settings-osc-vmc-avatar_group = Avatar
 settings-osc-vmc-vrm = VRM Model
 settings-osc-vmc-vrm-description = Load a VRM model to use its own bone proportions and enable a higher compatibility with other applications.
 settings-osc-vmc-vrm-untitled_model = Untitled model
 settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = When enabled, the avatar stays pinned at its hips and only rotations are sent, useful for seated VTubing. When disabled, the avatar follows your head and moves around.
-settings-osc-vmc-anchor_hip-label = Anchor at hips
 settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
-settings-osc-vmc-mirror_tracking-label = Mirror tracking
-settings-osc-vmc-status-title = Status
 settings-osc-vmc-status-input = Input
 settings-osc-vmc-status-output = Output
 settings-osc-vmc-status-vrm = VRM model
@@ -911,6 +925,7 @@ settings-osc-vmc-status-output-last-frame = Last frame sent: {$elapsed}.
 settings-osc-vmc-status-output-no-frame = No frame sent yet.
 settings-osc-vmc-status-vrm-none = No model loaded, using estimated bone offsets.
 settings-osc-vmc-status-vrm-loaded = Model loaded, using its bone offsets.
+settings-osc-vmc-status-title = Status
 settings-osc-vmc-status-badge-idle = Idle
 settings-osc-vmc-status-badge-listening = Listening
 settings-osc-vmc-status-badge-ready = Ready
@@ -946,6 +961,7 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
+settings-utils-advanced-folders_group = Folders
 settings-utils-advanced-open_data-v1 = Config folder
 settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = Open folder
@@ -962,6 +978,7 @@ settings-home-list-layout-table = Table
 settings-home-table_columns = Table columns
 settings-home-table_columns-desc = Choose which columns are shown in the trackers table
 
+settings-home-display_group = Display
 settings-home-tracker_display = Tracker info
 settings-home-tracker_display-desc = Choose which extra details are shown on trackers
 settings-home-tracker_display-battery_voltage = Battery voltage

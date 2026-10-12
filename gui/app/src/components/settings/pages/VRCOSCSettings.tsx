@@ -21,6 +21,7 @@ import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Input } from '@/components/commons/Input';
+import { DropdownInside } from '@/components/commons/Dropdown';
 import { Typography } from '@/components/commons/Typography';
 import {
   StatusBadge,
@@ -29,6 +30,12 @@ import {
 } from '@/components/commons/StatusBadge';
 import { VRCIcon } from '@/components/commons/icon/VRCIcon';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import {
+  SettingRow,
+  SettingsAdvanced,
+  SettingsGroup,
+  SettingsGroupLabel,
+} from '@/components/settings/SettingRow';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useRelativeTime } from '@/hooks/relative-time';
 import {
@@ -160,32 +167,22 @@ function StatusCard({
         }
       >
         {inputState === VRCOSCInputState.IDLE ? (
-          <Typography
-            color="secondary"
-            id="settings-osc-vrchat-status-input-idle"
-          />
+          <Typography id="settings-osc-vrchat-status-input-idle" />
         ) : (
           <>
             <Typography
-              color="secondary"
               id="settings-osc-vrchat-status-input-listening"
               vars={{ port: status.inputPort?.toString() ?? 'null' }}
             />
             {inputState === VRCOSCInputState.ERROR && status.inputError ? (
-              <Typography color="secondary">
-                {status.inputError?.toString() ?? ''}
-              </Typography>
+              <Typography>{status.inputError?.toString() ?? ''}</Typography>
             ) : lastInputElapsed ? (
               <Typography
-                color="secondary"
                 id="settings-osc-vrchat-status-input-last-data"
                 vars={{ elapsed: lastInputElapsed }}
               />
             ) : (
-              <Typography
-                color="secondary"
-                id="settings-osc-vrchat-status-input-no-data"
-              />
+              <Typography id="settings-osc-vrchat-status-input-no-data" />
             )}
           </>
         )}
@@ -203,14 +200,12 @@ function StatusCard({
         {trackingDataState === VRCOSCTrackingDataState.RECEIVED ? (
           lastTrackingElapsed ? (
             <Typography
-              color="secondary"
               id="settings-osc-vrchat-status-tracking-received"
               vars={{ elapsed: lastTrackingElapsed }}
             />
           ) : null
         ) : trackingDataState === VRCOSCTrackingDataState.DISABLED_IN_VRCHAT ? (
           <Typography
-            color="secondary"
             id="settings-osc-vrchat-status-tracking-disabled"
             elems={{
               OscTrackingLink: (
@@ -219,10 +214,7 @@ function StatusCard({
             }}
           />
         ) : (
-          <Typography
-            color="secondary"
-            id="settings-osc-vrchat-status-tracking-unknown"
-          />
+          <Typography id="settings-osc-vrchat-status-tracking-unknown" />
         )}
       </StatusRow>
 
@@ -238,7 +230,6 @@ function StatusCard({
         {outputState === VRCOSCOutputState.IDLE ? (
           <>
             <Typography
-              color="secondary"
               id={
                 status.targetAddress
                   ? 'settings-osc-vrchat-status-output-waiting'
@@ -250,15 +241,11 @@ function StatusCard({
                 source: sourceLabel,
               }}
             />
-            <Typography
-              color="secondary"
-              id="settings-osc-vrchat-status-output-no-frame"
-            />
+            <Typography id="settings-osc-vrchat-status-output-no-frame" />
           </>
         ) : (
           <>
             <Typography
-              color="secondary"
               id={
                 outputState === VRCOSCOutputState.READY
                   ? 'settings-osc-vrchat-status-output-sending'
@@ -271,20 +258,14 @@ function StatusCard({
               }}
             />
             {outputState === VRCOSCOutputState.ERROR && status.outputError ? (
-              <Typography color="secondary">
-                {status.outputError?.toString() ?? ''}
-              </Typography>
+              <Typography>{status.outputError?.toString() ?? ''}</Typography>
             ) : lastFrameElapsed ? (
               <Typography
-                color="secondary"
                 id="settings-osc-vrchat-status-output-last-frame"
                 vars={{ elapsed: lastFrameElapsed }}
               />
             ) : (
-              <Typography
-                color="secondary"
-                id="settings-osc-vrchat-status-output-no-frame"
-              />
+              <Typography id="settings-osc-vrchat-status-output-no-frame" />
             )}
           </>
         )}
@@ -295,18 +276,12 @@ function StatusCard({
         badge={<VrcBadge badge={OSCQUERY_BADGES[oscQueryState]} />}
       >
         {oscQueryState === VRCOSCOscQueryState.DISABLED ? (
-          <Typography
-            color="secondary"
-            id="settings-osc-vrchat-status-oscquery-disabled"
-          />
+          <Typography id="settings-osc-vrchat-status-oscquery-disabled" />
         ) : oscQueryState === VRCOSCOscQueryState.ERROR ? (
-          <Typography color="secondary">
-            {status.oscqueryError?.toString() ?? ''}
-          </Typography>
+          <Typography>{status.oscqueryError?.toString() ?? ''}</Typography>
         ) : (
           <>
             <Typography
-              color="secondary"
               id="settings-osc-vrchat-status-oscquery-advertising"
               vars={{
                 port: status.oscqueryAdvertisedPort?.toString() ?? 'null',
@@ -315,17 +290,14 @@ function StatusCard({
             {oscQueryState === VRCOSCOscQueryState.FOUND &&
             status.discoveredTargets.length > 0 ? (
               <>
-                <Typography
-                  color="secondary"
-                  id="settings-osc-vrchat-status-oscquery-discovered-title"
-                />
+                <Typography id="settings-osc-vrchat-status-oscquery-discovered-title" />
                 <ul className="flex flex-col gap-1">
                   {status.discoveredTargets.map((target, index) => (
                     <li
                       key={index}
                       className="flex items-center justify-between gap-2"
                     >
-                      <Typography color="secondary">
+                      <Typography>
                         {target.name?.toString() ?? ''} (
                         {target.address?.toString() ?? ''}:{target.portOut})
                       </Typography>
@@ -344,10 +316,7 @@ function StatusCard({
                 </ul>
               </>
             ) : (
-              <Typography
-                color="secondary"
-                id="settings-osc-vrchat-status-oscquery-searching"
-              />
+              <Typography id="settings-osc-vrchat-status-oscquery-searching" />
             )}
           </>
         )}
@@ -436,161 +405,162 @@ export function VRCOSCSettings() {
   );
 
   return (
-    <form className="flex flex-col gap-2 w-full">
-      <SettingsPagePaneLayout icon={<VRCIcon />}>
-        <>
-          <Typography variant="main-title">VRChat OSC</Typography>
-          <div className="flex flex-col pt-2 pb-4">
-            <>
-              {l10n
-                .getString('settings-osc-vrchat-description-v1')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </>
+    <form className="w-full">
+      <SettingsPagePaneLayout
+        icon={<VRCIcon />}
+        title="settings-sidebar-vrchat_osc"
+      >
+        <div className="flex flex-col">
+          <div className="flex flex-col pb-4 max-w-[75ch]">
+            {l10n
+              .getString('settings-osc-vrchat-description-v1')
+              .split('\n')
+              .map((line, i) => (
+                <Typography key={i}>{line}</Typography>
+              ))}
           </div>
 
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vrchat-enable')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString('settings-osc-vrchat-enable-description')}
-            </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="enabled"
-              label={l10n.getString('settings-osc-vrchat-enable-label')}
+          <SettingsGroup title="settings-osc-vrchat-output_group">
+            <SettingRow
+              title="settings-osc-vrchat-enable"
+              description="settings-osc-vrchat-enable-description"
+              controlId="vrchat-enabled"
+              control={
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  name="enabled"
+                  id="vrchat-enabled"
+                />
+              }
             />
-          </div>
+            <SettingRow
+              title="settings-driver-bones"
+              description="settings-driver-bones-description"
+              control={
+                <Button
+                  variant="secondary"
+                  className="whitespace-nowrap"
+                  to="/settings/routing"
+                  id="settings-driver-bones-link"
+                />
+              }
+            />
+          </SettingsGroup>
 
           {enabled && status && (
-            <>
-              <Typography variant="section-title">
-                {l10n.getString('settings-osc-vrchat-status-title')}
-              </Typography>
+            <div className="flex flex-col gap-2 mt-8 min-w-0">
+              <div className="px-3 xs:px-4">
+                <SettingsGroupLabel id="settings-osc-vrchat-status-title" />
+              </div>
               <StatusCard
                 status={status}
                 onSwitchToTarget={(target) => {
-                  setValue('useManualNetwork', true, {
-                    shouldDirty: true,
-                  });
+                  setValue('useManualNetwork', true, { shouldDirty: true });
                   setValue(
                     'portsAddress.address',
                     target.address?.toString() ?? '',
-                    {
-                      shouldDirty: true,
-                    }
+                    { shouldDirty: true }
                   );
                   setValue('portsAddress.portOut', target.portOut, {
                     shouldDirty: true,
                   });
                 }}
               />
-            </>
-          )}
-
-          <Typography variant="section-title" id="settings-driver-bones" />
-          <div className="flex flex-col gap-2 pt-1 pb-4">
-            <Typography id="settings-driver-bones-description" />
-            <div className="w-fit">
-              <Button
-                variant="secondary"
-                to="/settings/routing"
-                id="settings-driver-bones-link"
-              />
             </div>
-          </div>
-
-          <Typography variant="section-title">
-            {l10n.getString('settings-osc-vrchat-status-network-mode')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography>
-              {l10n.getString(
-                'settings-osc-vrchat-status-network-mode-description'
-              )}
-            </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="useManualNetwork"
-              label={l10n.getString(
-                'settings-osc-vrchat-status-network-mode-toggle'
-              )}
-            />
-          </div>
-
-          {useManualNetwork && (
-            <>
-              <Typography variant="section-title">
-                {l10n.getString('settings-osc-vrchat-network')}
-              </Typography>
-              <div className="flex flex-col pb-2">
-                <Typography>
-                  {l10n.getString(
-                    'settings-osc-vrchat-status-network-manual-description'
-                  )}
-                </Typography>
-              </div>
-              <div className="grid grid-cols-2 gap-3 pb-5">
-                <Localized
-                  id="settings-osc-vrchat-network-port_in"
-                  attrs={{ placeholder: true, label: true }}
-                >
-                  <Input
-                    type="number"
-                    control={control}
-                    name="portsAddress.portIn"
-                    placeholder="9001"
-                    label=""
-                  />
-                </Localized>
-                <Localized
-                  id="settings-osc-vrchat-network-port_out"
-                  attrs={{ placeholder: true, label: true }}
-                >
-                  <Input
-                    type="number"
-                    control={control}
-                    name="portsAddress.portOut"
-                    placeholder="9000"
-                    label=""
-                  />
-                </Localized>
-              </div>
-              <Typography variant="section-title">
-                {l10n.getString('settings-osc-vrchat-network-address')}
-              </Typography>
-              <div className="flex flex-col pb-2">
-                <Typography>
-                  {l10n.getString(
-                    'settings-osc-vrchat-network-address-description-v1'
-                  )}
-                </Typography>
-              </div>
-              <div className="grid gap-3 pb-5">
-                <Input
-                  type="text"
-                  control={control}
-                  name="portsAddress.address"
-                  placeholder={l10n.getString(
-                    'settings-osc-vrchat-network-address-placeholder'
-                  )}
-                  label=""
-                />
-              </div>
-            </>
           )}
-        </>
+
+          <SettingsAdvanced>
+            <SettingsGroup title="settings-osc-vrchat-network_group">
+              <SettingRow
+                title="settings-osc-vrchat-status-network-mode"
+                description="settings-osc-vrchat-status-network-mode-description"
+                controlWidth="wide"
+                control={
+                  <DropdownInside
+                    name="networkMode"
+                    display="block"
+                    direction="down"
+                    placeholder=""
+                    value={useManualNetwork ? 'manual' : 'auto'}
+                    onChange={(value) => {
+                      setValue('useManualNetwork', value === 'manual', {
+                        shouldDirty: true,
+                      });
+                      handleSubmit(onSubmit)();
+                    }}
+                    items={[
+                      {
+                        label: l10n.getString(
+                          'settings-osc-vrchat-status-network-mode-auto'
+                        ),
+                        value: 'auto',
+                      },
+                      {
+                        label: l10n.getString(
+                          'settings-osc-vrchat-status-network-mode-manual'
+                        ),
+                        value: 'manual',
+                      },
+                    ]}
+                  />
+                }
+              >
+                {useManualNetwork && (
+                  <>
+                    <SettingRow
+                      title="settings-osc-vrchat-network"
+                      description="settings-osc-vrchat-status-network-manual-description"
+                      below={
+                        <div className="grid sm:grid-cols-2 gap-3">
+                          <Localized
+                            id="settings-osc-vrchat-network-port_in"
+                            attrs={{ placeholder: true, label: true }}
+                          >
+                            <Input
+                              type="number"
+                              control={control}
+                              name="portsAddress.portIn"
+                              placeholder="9001"
+                              label=""
+                            />
+                          </Localized>
+                          <Localized
+                            id="settings-osc-vrchat-network-port_out"
+                            attrs={{ placeholder: true, label: true }}
+                          >
+                            <Input
+                              type="number"
+                              control={control}
+                              name="portsAddress.portOut"
+                              placeholder="9000"
+                              label=""
+                            />
+                          </Localized>
+                        </div>
+                      }
+                    />
+                    <SettingRow
+                      title="settings-osc-vrchat-network-address"
+                      description="settings-osc-vrchat-network-address-description-v1"
+                      below={
+                        <Input
+                          type="text"
+                          control={control}
+                          name="portsAddress.address"
+                          placeholder={l10n.getString(
+                            'settings-osc-vrchat-network-address-placeholder'
+                          )}
+                          label=""
+                        />
+                      }
+                    />
+                  </>
+                )}
+              </SettingRow>
+            </SettingsGroup>
+          </SettingsAdvanced>
+        </div>
       </SettingsPagePaneLayout>
     </form>
   );

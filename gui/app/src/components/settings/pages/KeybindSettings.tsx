@@ -1,6 +1,6 @@
 import { KeybindRecorderModal } from '@/components/commons/KeybindRecorderModal';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
+import { KeyboardIcon } from '@/components/commons/icon/KeyboardIcon';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
@@ -269,10 +269,12 @@ export function KeybindSettings() {
   }, [watch]);
 
   return (
-    <SettingsPagePaneLayout icon={<WrenchIcon />}>
+    <SettingsPagePaneLayout
+      icon={<KeyboardIcon size={20} />}
+      title="settings-keybinds"
+    >
       <div className="flex flex-col gap-4">
         <div>
-          <Typography variant="main-title" id="settings-keybinds" />
           <div className="flex flex-col pt-2 text-background-30">
             {l10n
               .getString('settings-keybinds-description')

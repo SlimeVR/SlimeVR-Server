@@ -141,7 +141,7 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
         <div
           data-nav-region="page"
           style={{ gridArea: 'c' }}
-          className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
+          className="xs:pl-2 xs:pr-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
         >
           {isMobile && <SettingSelectorMobile />}
           {children}

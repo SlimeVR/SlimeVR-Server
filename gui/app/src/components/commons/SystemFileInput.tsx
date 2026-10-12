@@ -14,12 +14,14 @@ export function InnerSystemFileInput({
   value,
   onChange,
   directory,
+  compact = false,
   refCallback: refCallback,
 }: {
   label: string;
   value: string | null;
   onChange: (...event: any[]) => void;
   directory: boolean;
+  compact?: boolean;
   refCallback: RefCallBack;
 }) {
   const electron = useElectron();
@@ -45,7 +47,12 @@ export function InnerSystemFileInput({
             importedFileName: value,
             onClearPicker: () => onChange(null),
           })
-        : FileInputContentBlank({ isDragging: false, label, directory })}
+        : FileInputContentBlank({
+            isDragging: false,
+            label,
+            directory,
+            compact,
+          })}
     </div>
   );
 }
@@ -56,6 +63,7 @@ export function SystemFileInput<T extends FieldValues = FieldValues>({
   name,
   label,
   directory = false,
+  compact = false,
 }: {
   rules: UseControllerProps<T, FieldPath<T>>['rules'];
   control: Control<T>;
@@ -65,6 +73,7 @@ export function SystemFileInput<T extends FieldValues = FieldValues>({
   label: string;
   name: FieldPath<T>;
   directory?: boolean;
+  compact?: boolean;
   disabled?: boolean;
 }) {
   return (
@@ -79,6 +88,7 @@ export function SystemFileInput<T extends FieldValues = FieldValues>({
           onChange={onChange}
           refCallback={ref}
           directory={directory}
+          compact={compact}
         />
       )}
     />

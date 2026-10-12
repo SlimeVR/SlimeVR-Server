@@ -36,6 +36,7 @@ import {
 } from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { SettingsGroupLabel } from '@/components/settings/SettingRow';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -521,9 +522,8 @@ export function BoneRoutingSettings() {
           setHandsWarning(null);
         }}
       />
-      <SettingsPagePaneLayout icon={<RouterIcon />}>
+      <SettingsPagePaneLayout icon={<RouterIcon />} title="settings-routing">
         <>
-          <Typography variant="main-title" id="settings-routing" />
           <div className="flex flex-col pt-1 pb-4">
             <Typography
               id="settings-routing-description"
@@ -531,7 +531,7 @@ export function BoneRoutingSettings() {
             />
           </div>
 
-          <Typography variant="section-title" id="settings-routing-mode" />
+          <SettingsGroupLabel id="settings-routing-mode" />
           <div className="flex flex-col gap-2 pt-1 pb-5">
             <Typography
               id="settings-routing-mode-description"
@@ -547,8 +547,8 @@ export function BoneRoutingSettings() {
             />
           </div>
 
-          <Typography variant="section-title" id="settings-routing-outputs" />
-          <div className="flex flex-col bg-background-80 px-4 py-2 mt-1 mb-3 rounded-md divide-y divide-background-60">
+          <SettingsGroupLabel id="settings-routing-outputs" />
+          <div className="flex flex-col bg-background-80 px-4 py-2 mt-2 mb-3 rounded-md divide-y divide-background-60">
             {outputs.map((status) => (
               <OutputStatusRow
                 key={status.output}
@@ -558,7 +558,7 @@ export function BoneRoutingSettings() {
             ))}
           </div>
 
-          <Typography variant="section-title" id="settings-routing-bones" />
+          <SettingsGroupLabel id="settings-routing-bones" />
           <div className="pt-1 pb-2">
             <Typography id="settings-routing-bones-description" />
           </div>

@@ -1,5 +1,4 @@
 import { CheckBox } from '@/components/commons/Checkbox';
-import { Typography } from '@/components/commons/Typography';
 import {
   trackingchecklistIdtoLabel,
   useTrackingChecklist,
@@ -8,6 +7,7 @@ import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
 import { TrackingChecklistStepId } from 'solarxr-protocol';
+import { SettingsGroup } from '@/components/settings/SettingRow';
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };
 export function TrackingChecklistSettings({
@@ -55,16 +55,12 @@ export function TrackingChecklistSettings({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col pt-4 pb-2">
-        <Typography bold id="settings-tracking_checklist-active_steps" />
-        <Typography
-          color="secondary"
-          id="settings-tracking_checklist-active_steps-desc"
-        />
-      </div>
+    <SettingsGroup
+      title="settings-tracking_checklist-active_steps"
+      description="settings-tracking_checklist-active_steps-desc"
+    >
       <form
-        className="grid md:grid-cols-2 gap-2 grid-rows-3 mobile:flex flex-col"
+        className="grid md:grid-cols-2 gap-2 p-3 xs:p-4 mobile:flex flex-col"
         onChange={handleSubmit(onSubmit)}
       >
         {steps
@@ -82,6 +78,6 @@ export function TrackingChecklistSettings({
             </div>
           ))}
       </form>
-    </div>
+    </SettingsGroup>
   );
 }

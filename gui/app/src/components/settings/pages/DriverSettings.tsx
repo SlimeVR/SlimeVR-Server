@@ -1,4 +1,3 @@
-import { useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import { Button } from '@/components/commons/Button';
@@ -20,6 +19,12 @@ import {
 } from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import {
+  SettingRow,
+  SettingsAdvanced,
+  SettingsGroup,
+  SettingsGroupLabel,
+} from '@/components/settings/SettingRow';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 
 type DriverForm = {
@@ -68,10 +73,7 @@ function StatusCard({ status }: { status: DriverStatusChangeResponseT }) {
           />
         }
       >
-        <Typography
-          color="secondary"
-          id={`settings-driver-status-connection-${badge}`}
-        />
+        <Typography id={`settings-driver-status-connection-${badge}`} />
       </StatusRow>
     </div>
   );
@@ -84,7 +86,6 @@ export function DriverSettings() {
   const [status, setStatus] = useState<DriverStatusChangeResponseT | null>(
     null
   );
-  const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { control, watch, handleSubmit, getValues, reset } =
@@ -138,61 +139,70 @@ export function DriverSettings() {
   );
 
   return (
-    <SettingsPagePaneLayout icon={<SteamIcon size={24} />}>
-      <>
-        <Typography variant="main-title">SteamVR / Monado</Typography>
-        <div className="flex flex-col pt-1 pb-4">
+    <SettingsPagePaneLayout
+      icon={<SteamIcon size={24} />}
+      title="settings-sidebar-driver"
+    >
+      <div className="flex flex-col">
+        <div className="pb-4 max-w-[75ch]">
           <Typography id="settings-driver-description" />
         </div>
 
-        <Typography variant="section-title" id="settings-driver-enable" />
-        <div className="flex flex-col pt-1 pb-2">
-          <Typography id="settings-driver-enable-description" />
-        </div>
-        <div className="grid grid-cols-2 gap-3 pb-5">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="enabled"
-            label={l10n.getString('settings-driver-enable-label')}
+        <SettingsGroup title="settings-driver-output_group">
+          <SettingRow
+            title="settings-driver-enable"
+            description="settings-driver-enable-description"
+            controlId="driver-enabled"
+            control={
+              <CheckBox
+                variant="toggle"
+                control={control}
+                name="enabled"
+                id="driver-enabled"
+              />
+            }
           />
-        </div>
+          <SettingRow
+            title="settings-driver-bones"
+            description="settings-driver-bones-description"
+            control={
+              <Button
+                variant="secondary"
+                className="whitespace-nowrap"
+                to="/settings/routing"
+                id="settings-driver-bones-link"
+              />
+            }
+          />
+        </SettingsGroup>
 
         {enabled && status && (
-          <>
-            <Typography
-              variant="section-title"
-              id="settings-driver-status-title"
-            />
+          <div className="flex flex-col gap-2 mt-8 min-w-0">
+            <div className="px-3 xs:px-4">
+              <SettingsGroupLabel id="settings-driver-status-title" />
+            </div>
             <StatusCard status={status} />
-          </>
+          </div>
         )}
 
-        <Typography variant="section-title" id="settings-driver-bones" />
-        <div className="flex flex-col gap-2 pt-1 pb-4">
-          <Typography id="settings-driver-bones-description" />
-          <div className="w-fit">
-            <Button
-              variant="secondary"
-              to="/settings/routing"
-              id="settings-driver-bones-link"
+        <SettingsAdvanced>
+          <SettingsGroup title="settings-driver-data_group">
+            <SettingRow
+              title="settings-driver-velocity"
+              description="settings-driver-velocity-description"
+              controlId="driver-velocity"
+              control={
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  name="sendVelocity"
+                  id="driver-velocity"
+                />
+              }
             />
-          </div>
-        </div>
-
-        <Typography variant="section-title" id="settings-driver-velocity" />
-        <div className="pt-1 pb-2">
-          <Typography id="settings-driver-velocity-description" />
-        </div>
-        <CheckBox
-          variant="toggle"
-          outlined
-          control={control}
-          name="sendVelocity"
-          label={l10n.getString('settings-driver-velocity')}
-        />
-      </>
+          </SettingsGroup>
+        </SettingsAdvanced>
+      </div>
     </SettingsPagePaneLayout>
   );
 }

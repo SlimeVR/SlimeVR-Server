@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 import { defaultConfig, useConfig } from '@/hooks/config';
 import { ThemeSelector } from '@/components/commons/ThemeSelector';
 import { SquaresIcon } from '@/components/commons/icon/SquaresIcon';
 import { useLocaleConfig } from '@/i18n/config';
 import { LangSelector } from '@/components/commons/LangSelector';
 import { Button } from '@/components/commons/Button';
-import { Range } from '@/components/commons/Range';
+import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { useElectron } from '@/hooks/electron';
 
@@ -69,9 +70,22 @@ export function AppearanceSettings() {
     return () => subscription.unsubscribe();
   }, [onSubmit]);
 
+  const themes = [
+    { value: 'slime', colors: '!bg-slime' },
+    { value: 'slime-green', colors: '!bg-slime-green' },
+    { value: 'slime-yellow', colors: '!bg-slime-yellow' },
+    { value: 'slime-orange', colors: '!bg-slime-orange' },
+    { value: 'slime-red', colors: '!bg-slime-red' },
+    { value: 'dark', colors: '!bg-dark' },
+    { value: 'light', colors: '!bg-light' },
+    { value: 'trans', colors: '!bg-trans-flag' },
+    { value: 'asexual', colors: '!bg-asexual-flag' },
+    { value: 'snep', colors: '!bg-snep' },
+  ];
+
   return (
     <form
-      className="flex flex-col gap-2 w-full"
+      className="w-full"
       // Don't resize the font size for this page because you have access to font resizing on it and we don't want to break the layout just in case
       style={
         {
@@ -82,183 +96,107 @@ export function AppearanceSettings() {
         } as React.CSSProperties
       }
     >
-      <SettingsPagePaneLayout icon={<SquaresIcon />}>
-        <>
-          <Typography variant="main-title">
-            {l10n.getString('settings-interface-appearance')}
-          </Typography>
-
-          <div className="pb-4">
-            <Typography variant="section-title">
-              {l10n.getString('settings-general-interface-theme')}
-            </Typography>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'slime'}
-                colors="!bg-slime"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'slime-green'}
-                colors="!bg-slime-green"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'slime-yellow'}
-                colors="!bg-slime-yellow"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'slime-orange'}
-                colors="!bg-slime-orange"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'slime-red'}
-                colors="!bg-slime-red"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'dark'}
-                colors="!bg-dark"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'light'}
-                colors="!bg-light"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'trans'}
-                colors="!bg-trans-flag"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'asexual'}
-                colors="!bg-asexual-flag"
-              />
-              <ThemeSelector
-                control={control}
-                name="theme"
-                value={'snep'}
-                colors="!bg-snep"
-              />
+      <SettingsPagePaneLayout
+        icon={<SquaresIcon />}
+        title="settings-interface-appearance"
+      >
+        <div className="flex flex-col">
+          <SettingsGroup title="settings-general-interface-theme">
+            <div className="flex flex-wrap gap-3 p-3 xs:p-4">
+              {themes.map(({ value, colors }) => (
+                <ThemeSelector
+                  key={value}
+                  control={control}
+                  name="theme"
+                  value={value}
+                  colors={colors}
+                />
+              ))}
             </div>
-          </div>
+          </SettingsGroup>
 
-          <Typography variant="section-title">
-            {l10n.getString('settings-interface-appearance-font')}
-          </Typography>
-          <div className="flex flex-col pt-1 pb-2">
-            <Typography>
-              {l10n.getString('settings-interface-appearance-font-description')}
-            </Typography>
-          </div>
-          <div className="grid sm:grid-cols-2 pb-4">
-            <Dropdown
-              control={control}
-              name="fonts"
-              placeholder={l10n.getString(
-                'settings-interface-appearance-font-placeholder'
-              )}
-              /* Supports multiple items by separating them with a comma */
-              items={fontOptions.map((option) => ({
-                label: (
-                  <span style={{ fontFamily: option.fontName }}>
-                    {option.label}
-                  </span>
-                ),
-                value: option.value,
-              }))}
-              alignment="left"
-            />
-          </div>
-
-          <Typography variant="section-title">
-            {l10n.getString('settings-interface-appearance-font_size')}
-          </Typography>
-          <div className="flex flex-col pt-1 pb-2">
-            <Typography>
-              {l10n.getString(
-                'settings-interface-appearance-font_size-description'
-              )}
-            </Typography>
-          </div>
-          <div className="grid sm:grid-cols-2 pb-4">
-            <Range
-              control={control}
-              name="textSize"
-              min={10}
-              max={15}
-              step={1}
-              values={[
-                { value: 10, label: '10pt' },
-                { value: 11, label: '11pt' },
-                { value: 12, label: '12pt', defaultValue: true },
-                { value: 13, label: '13pt' },
-                { value: 14, label: '14pt' },
-                { value: 15, label: '15pt' },
-              ]}
-            />
-          </div>
-
-          <Typography variant="section-title">
-            {l10n.getString('settings-general-interface-lang')}
-          </Typography>
-          <div className="flex flex-col pt-1 pb-2">
-            <Typography>
-              {l10n.getString('settings-general-interface-lang-description')}
-            </Typography>
-          </div>
-          <div className="grid sm:grid-cols-2 pb-4">
-            <LangSelector alignment="left" />
-          </div>
-
-          {electron.isElectron && (
-            <>
-              <Typography
-                variant="section-title"
-                id="settings-general-interface-crowdin_in_context"
-              />
-              <div className="flex flex-col pt-1 pb-2">
-                <Typography
-                  id={
-                    inContext
-                      ? 'settings-general-interface-crowdin_in_context-description-active'
-                      : 'settings-general-interface-crowdin_in_context-description'
-                  }
+          <SettingsGroup title="settings-interface-appearance-text_group">
+            <SettingRow
+              title="settings-interface-appearance-font"
+              description="settings-interface-appearance-font-description"
+              controlWidth="wide"
+              control={
+                <Dropdown
+                  control={control}
+                  name="fonts"
+                  placeholder={l10n.getString(
+                    'settings-interface-appearance-font-placeholder'
+                  )}
+                  /* Supports multiple items by separating them with a comma */
+                  display="block"
+                  items={fontOptions.map((option) => ({
+                    label: (
+                      <span style={{ fontFamily: option.fontName }}>
+                        {option.label}
+                      </span>
+                    ),
+                    value: option.value,
+                  }))}
+                  alignment="left"
                 />
-                {inContextFailed && (
-                  <Typography
-                    color="text-status-critical"
-                    id="settings-general-interface-crowdin_in_context-failed"
+              }
+            />
+            <SettingRow
+              title="settings-interface-appearance-font_size"
+              description="settings-interface-appearance-font_size-description"
+              controlWidth="wide"
+              control={
+                <NumberSelector
+                  control={control}
+                  name="textSize"
+                  valueLabelFormat={(value) => `${Math.round(value)}pt`}
+                  min={10}
+                  max={15}
+                  step={1}
+                />
+              }
+            />
+          </SettingsGroup>
+
+          <SettingsGroup title="settings-interface-appearance-language_group">
+            <SettingRow
+              title="settings-general-interface-lang"
+              description="settings-general-interface-lang-description"
+              controlWidth="wide"
+              control={<LangSelector alignment="left" display="block" />}
+            />
+            {electron.isElectron && (
+              <SettingRow
+                title="settings-general-interface-crowdin_in_context"
+                description={
+                  inContext
+                    ? 'settings-general-interface-crowdin_in_context-description-active'
+                    : 'settings-general-interface-crowdin_in_context-description'
+                }
+                details={
+                  inContextFailed && (
+                    <Typography
+                      color="text-status-critical"
+                      id="settings-general-interface-crowdin_in_context-failed"
+                    />
+                  )
+                }
+                control={
+                  <Button
+                    variant={inContext ? 'tertiary' : 'secondary'}
+                    className="whitespace-nowrap"
+                    id={
+                      inContext
+                        ? 'settings-general-interface-crowdin_in_context-close'
+                        : 'settings-general-interface-crowdin_in_context-enable'
+                    }
+                    onClick={() => setInContext(!inContext)}
                   />
-                )}
-              </div>
-              <div className="grid sm:grid-cols-2 pb-4">
-                <Button
-                  variant={inContext ? 'tertiary' : 'secondary'}
-                  id={
-                    inContext
-                      ? 'settings-general-interface-crowdin_in_context-close'
-                      : 'settings-general-interface-crowdin_in_context-enable'
-                  }
-                  onClick={() => setInContext(!inContext)}
-                />
-              </div>
-            </>
-          )}
-        </>
+                }
+              />
+            )}
+          </SettingsGroup>
+        </div>
       </SettingsPagePaneLayout>
     </form>
   );

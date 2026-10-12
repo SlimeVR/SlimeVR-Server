@@ -8,7 +8,7 @@ export function SettingsLink({ to, id }: { id: string; to: string }) {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        classNames('pl-5 py-2 hover:bg-background-60 rounded-lg', {
+        classNames('pl-5 py-1.5 hover:bg-background-60 rounded-lg', {
           'bg-background-60': isActive,
         })
       }
@@ -22,11 +22,10 @@ export function SettingsSidebar() {
   const { state: vrcConfigState } = useVRCConfig();
 
   return (
-    <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
-      <Typography variant="main-title" id="settings-sidebar-title" />
-      <div className="flex flex-col gap-3">
+    <div className="flex flex-col px-5 py-4 gap-4 overflow-y-auto no-scrollbar bg-background-70 rounded-lg h-full">
+      <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-general" />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <SettingsLink
             to="/settings/tracking"
             id="settings-sidebar-tracking"
@@ -42,9 +41,9 @@ export function SettingsSidebar() {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-interface" />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <SettingsLink
             to="/settings/appearance"
             id="settings-sidebar-appearance"
@@ -64,9 +63,9 @@ export function SettingsSidebar() {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-outputs" />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <SettingsLink to="/settings/routing" id="settings-sidebar-routing" />
           <SettingsLink to="/settings/driver" id="settings-sidebar-driver" />
           <SettingsLink
@@ -76,9 +75,9 @@ export function SettingsSidebar() {
           <SettingsLink to="/settings/osc/vmc" id="settings-sidebar-osc_vmc" />
         </div>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-utils" />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <SettingsLink to="/settings/serial" id="settings-sidebar-serial" />
           <SettingsLink
             to="/settings/firmware-tool"
