@@ -414,11 +414,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = ใช้เ�
 settings-general-tracker_mechanics-trackers_over_usb = ต่อแทร็กเกอร์ผ่าน USB
 settings-general-tracker_mechanics-trackers_over_usb-description = เปิดใช้งานการรับข้อมูลแทร็กเกอร์แบบ HID ผ่านสาย USB ตรวจสอบว่าแทร็กเกอร์ของคุณได้เปิด <b>การเชื่อมต่อผ่าน HID</b> เอาไว้!
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = เปิดให้แทร็กเกอร์แบบ HID ต่อโดยตรงผ่านสาย USB
-settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
 settings-stay_aligned-setup-description = คุณต้องทำ "ตั้งค่า Stay Aligned" ให้เสร็จสมบูรณ์เพื่อเปิดใช้งาน Stay Aligned
-settings-stay_aligned-enabled-label = เปิดใช้งาน
 settings-stay_aligned-general-label = ทั่วไป
 settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
 settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัปเดตท่าทางเหล่านี้
@@ -442,7 +440,6 @@ settings-keybinds-recorder-modal-cancel-button = ยกเลิก
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = การตั้งค่าการติดตาม
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -516,7 +513,6 @@ settings-interface-appearance-font_size-description = ตัวเลือก�
 
 ## Notification settings
 
-settings-interface-notifications = การแจ้งเตือน
 settings-general-interface-feedback_sound = การแจ้งเตือนด้วยเสียง
 settings-general-interface-feedback_sound-description = ตัวเลือกนี้จะเล่นเสียงเมื่อมีการใช้การรีเซ็ต
 settings-general-interface-feedback_sound-label = แจ้งเตือนด้วยเสียง
