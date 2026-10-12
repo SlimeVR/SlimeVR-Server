@@ -289,14 +289,12 @@ mounting_selection_menu-close = أغلق
 
 ## Sidebar settings
 
-settings-sidebar-title = الإعدادات
 settings-sidebar-general = الاعدادات العامة
 settings-sidebar-trackers = أجهزة التعقب
 settings-sidebar-interface = واجهة المستخدم
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 settings-sidebar-appearance = مظهر
-settings-sidebar-notifications = إشعارات
 settings-sidebar-behavior = سلوك
 settings-sidebar-firmware-tool = أداة برامج الجهاز المصنوع بنفسك
 settings-sidebar-advanced = متقدم
@@ -316,7 +314,6 @@ settings-general-tracker_mechanics-filtering = تصفية
 settings-general-tracker_mechanics-filtering-description =
     اختر نوع التصفية لأجهزة التعقب الخاصة بك.
     يتنبأ التنبؤ بالحركة بينما يعمل على تنعيم الحركة.
-settings-general-tracker_mechanics-filtering-type = نوع التصفية
 settings-general-tracker_mechanics-filtering-type-none = بدون تصفية
 settings-general-tracker_mechanics-filtering-type-none-description = استخدم التدوير كما هو. لن تفعل أي تصفية
 settings-general-tracker_mechanics-filtering-type-smoothing = التنعيم
@@ -329,13 +326,10 @@ settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إ�
 settings-general-tracker_mechanics-save_mounting_reset-description =
     يحفظ معايرة إعادة تعيين التثبيت التلقائي لأجهزة التتبع بين عمليات إعادة التشغيل. مفيد
     عند ارتداء بدلة حيث لا تتحرك المتتبعات بين الجلسات. <b>لا ينصح به للمستخدمين العاديين!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = حفظ إعادة تعيين التركيب
 settings-general-tracker_mechanics-use_mag_on_all_trackers = استخدم المقياس المغناطيسي على جميع أجهزة تتبع IMU التي تدعمه
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     يستخدم المقياس المغناطيسي على جميع أجهزة التعقب التي تحتوي على برامج ثابتة متوافقة له ، مما يقلل من الانحراف في البيئات المغناطيسية المستقرة.
     يمكن تعطيله لكل جهاز تعقب في إعدادات التعقب. <b>من فضلك لا تغلق أيا من أجهزة التعقب أثناء تبديل هذا!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = استخدم المقياس المغناطيسي على أجهزة التعقب
-settings-stay_aligned-general-label = الاعدادات العامة
 settings-stay_aligned-relaxed_poses-close = أغلق
 
 ## Keybinds Page
@@ -365,7 +359,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب �
 settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = فرض القيود
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
 settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
@@ -415,7 +408,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = قم 
 settings-interface-appearance = مظهر
 settings-general-interface-dev_mode = وضع المطوّر
 settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
-settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-theme = موضوع اللون
 settings-general-interface-lang = اختر اللغة
 settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
@@ -433,23 +425,18 @@ settings-interface-appearance-font_size-description = يؤثر هذا على ح�
 
 settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
-settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
 settings-general-interface-connected_trackers_warning = تحذير عن أجهزة التعقب المتصلة
 settings-general-interface-connected_trackers_warning-description = سيعرض هذا الخيار نافذة كل مرة تحاول فيها الخروج من SlimeVR أثناء وجود جهاز أو أكثر من أجهزة التعقب المتصلة. سيذكرك بإيقاف تشغيل أجهزة التعقب عند الانتهاء للحفاظ على عمر البطارية.
-settings-general-interface-connected_trackers_warning-label = تحذير عن أجهزة التعقب المتصلة عند الخروج
 
 ## Behavior settings
 
 settings-interface-behavior = السلوك
 settings-general-interface-dev_mode = وضع المطوّر
-settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-use_tray = تصغير إلى علبة النظام
 settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
-settings-general-interface-use_tray-label = تصغير إلى علبة النظام
 settings-general-interface-discord_presence = مشاركة النشاط على Discord
 settings-general-interface-discord_presence-description = يخبر عميل Discord الخاص بك أنك تستخدم SlimeVR جنبا إلى جنب مع عدد أجهزة تعقب IMU التي تستخدمها.
-settings-general-interface-discord_presence-label = مشاركة النشاط على Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] صفر
@@ -495,7 +482,6 @@ settings-osc-vrchat-description-v1 =
     تأكد من تمكين OSC في VRChat عبر قائمة الإجراءات ضمن OSC > ممكن.
 settings-osc-vrchat-enable = تمكين
 settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
-settings-osc-vrchat-enable-label = تمكين
 settings-osc-vrchat-network = منافذ الشبكة
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
@@ -521,7 +507,6 @@ settings-osc-vmc-description =
     لإرسال بيانات عظام سلايم في ار وتلقي بيانات العظام من تطبيقات أخرى.
 settings-osc-vmc-enable = تمكين
 settings-osc-vmc-enable-description = تبديل إرسال واستقبال البيانات.
-settings-osc-vmc-enable-label = تمكين
 settings-osc-vmc-network = منافذ الشبكة
 settings-osc-vmc-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى التقاط الحركة الافتراضية
 settings-osc-vmc-network-port_in =
@@ -539,10 +524,8 @@ settings-osc-vmc-vrm-untitled_model = نموذج بدون عنوان
 settings-osc-vmc-vrm-file_select = اسحب نموذج وأفلته لاستخدامه أو <u> تصفح </ u>
 settings-osc-vmc-anchor_hip = ثبت في الوركين
 settings-osc-vmc-anchor_hip-description = ثبت التعقب في الوركين، هو مفيد إن كنت تيوبنغ جالسًا. في حالة التعطيل، قم بتحميل نموذج في ار إم.
-settings-osc-vmc-anchor_hip-label = ثبت في الوركين
 settings-osc-vmc-mirror_tracking = اعكس التعقب
 settings-osc-vmc-mirror_tracking-description = اعكس التعقب أفقيا.
-settings-osc-vmc-mirror_tracking-label = اعكس التعقب
 settings-osc-vmc-status-badge-error = خطأ
 
 ## Common OSC settings
