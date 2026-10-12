@@ -411,11 +411,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar o magnet
 settings-general-tracker_mechanics-trackers_over_usb = Trackers via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Ativa o recebimento de dados de trackers HID via USB. Certifique-se de que os trackers conectados tenham a opção <b>conexão via HID</b> ativada!
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permitir que trackers HID se conectem diretamente via USB
-settings-stay_aligned = Manter Alinhado
 settings-stay_aligned-description = O Manter Alinhado reduz o drift ao ajustar gradualmente seus trackers para corresponder às suas poses relaxadas
 settings-stay_aligned-setup-label = Configurar o Manter Alinhado
 settings-stay_aligned-setup-description = É necessário concluir “Configurar o Manter Alinhado” para ativar o Manter Alinhado.
-settings-stay_aligned-enabled-label = Ajustar trackers
 settings-stay_aligned-general-label = Geral
 settings-stay_aligned-relaxed_poses-label = Poses Relaxadas
 settings-stay_aligned-relaxed_poses-description = O Manter Alinhado usa suas poses relaxadas para manter os trackers alinhados. Use “Configurar o Manter Alinhado” para atualizar essas poses.
@@ -439,7 +437,6 @@ settings-keybinds-recorder-modal-cancel-button = Cancelar
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Opções de Tracker
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -522,7 +519,6 @@ settings-interface-appearance-font_size-description = Isso afeta o tamanho da fo
 
 ## Notification settings
 
-settings-interface-notifications = Notificações
 settings-general-interface-feedback_sound = Som de feedback
 settings-general-interface-feedback_sound-description = Essa opção reproduzirá um som quando um reset for acionado.
 settings-general-interface-feedback_sound-label = Som de feedback
