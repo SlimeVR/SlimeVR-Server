@@ -198,7 +198,6 @@ mounting_selection_menu-close = Luk
 
 ## Sidebar settings
 
-settings-sidebar-title = Indstillinger
 settings-sidebar-general = Generel
 settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Brugergrænseflade
@@ -220,7 +219,6 @@ settings-general-tracker_mechanics-filtering = Filtrering
 settings-general-tracker_mechanics-filtering-description =
     Vælg filtreringstypen for dine trackere.
     Forudsigelse forudsiger bevægelse, mens udjævning udjævner bevægelse.
-settings-general-tracker_mechanics-filtering-type = Filtrerings type
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Brug rotationer, som de er. Vil ikke foretage nogen filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Udjævning
@@ -228,7 +226,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Udjæv
 settings-general-tracker_mechanics-filtering-type-prediction = Forudsigelse
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reducerer latens og gør bevægelser hutigere, men kan forårsage rystelser.
 settings-general-tracker_mechanics-filtering-amount = Mængde
-settings-stay_aligned-general-label = Generel
 settings-stay_aligned-relaxed_poses-close = Tæt
 
 ## Keybinds Page
@@ -268,7 +265,6 @@ settings-general-gesture_control-yawResetEnabled = Aktivér tryk for at yaw rese
 
 settings-general-interface-dev_mode = Udvikler-tilstand
 settings-general-interface-dev_mode-description = Denne tilstand kan være nyttig, hvis du har brug for dybdegående data eller for at interagere med tilsluttede trackere på et mere avanceret niveau.
-settings-general-interface-dev_mode-label = Udvikler-tilstand
 settings-general-interface-theme = Farvetema
 settings-general-interface-lang = Vælg sprog
 settings-general-interface-lang-description = Skift det standardsprog, du vil bruge.
@@ -278,13 +274,11 @@ settings-general-interface-lang-placeholder = Vælg det sprog, der skal bruges
 
 settings-general-interface-feedback_sound = Feedback lyd
 settings-general-interface-feedback_sound-description = Denne indstilling afspiller en lyd, når du nulstiller
-settings-general-interface-feedback_sound-label = Feedback lyd
 settings-general-interface-feedback_sound-volume = Feedback lydstyrke
 
 ## Behavior settings
 
 settings-general-interface-dev_mode = Udvikler-tilstand
-settings-general-interface-dev_mode-label = Udvikler-tilstand
 
 ## Serial settings
 
@@ -307,7 +301,6 @@ settings-serial-send_command-warning-cancel = Annuller
 
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skift afsendelse og modtagelse af data.
-settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Netværksporte
 settings-osc-vrchat-network-port_in =
     .label = Port ind
@@ -331,7 +324,6 @@ settings-osc-vmc-description =
         for at sende SlimeVRs data og modtage data fra andre apps.
 settings-osc-vmc-enable = Aktiver
 settings-osc-vmc-enable-description = Skift afsendelse og modtagelse af data.
-settings-osc-vmc-enable-label = Aktiver
 settings-osc-vmc-network = Netværksporte
 settings-osc-vmc-network-description = Vælg portene til at lytte og sende data via VMC
 settings-osc-vmc-network-port_in =
