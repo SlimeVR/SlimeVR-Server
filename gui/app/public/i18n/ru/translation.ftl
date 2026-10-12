@@ -343,7 +343,6 @@ mounting_selection_menu-close = Закрыть
 
 ## Sidebar settings
 
-settings-sidebar-title = Настройки
 settings-sidebar-general = Общие
 settings-sidebar-stay_aligned = Оставаться выровненным
 settings-sidebar-trackers = Трекеры
@@ -351,7 +350,6 @@ settings-sidebar-interface = Интерфейс
 settings-sidebar-utils = Утилиты
 settings-sidebar-serial = Консоль
 settings-sidebar-appearance = Внешний вид
-settings-sidebar-notifications = Уведомления
 settings-sidebar-behavior = Поведение
 settings-sidebar-firmware-tool = Инструмент Прошивки DIY
 settings-sidebar-vrc_warnings = Предупреждения конфигурации VRChat
@@ -374,7 +372,6 @@ settings-general-tracker_mechanics-filtering = Фильтрация
 settings-general-tracker_mechanics-filtering-description =
     Выберите тип фильтрации для ваших трекеров.
     Прогнозирование предсказывает движение, в то время как сглаживание сглаживает движение.
-settings-general-tracker_mechanics-filtering-type = Тип фильтрации
 settings-general-tracker_mechanics-filtering-type-none = Нет фильтрации
 settings-general-tracker_mechanics-filtering-type-none-description = Используется вращение как есть. Не применяет никакой фильтрации.
 settings-general-tracker_mechanics-filtering-type-smoothing = Сглаживание
@@ -387,16 +384,13 @@ settings-general-tracker_mechanics-save_mounting_reset = Сохранить ка
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Сохраняет автоматические калибровки сброса крепления для трекеров между перезапусками. Полезно
     при ношении костюма, в котором трекеры не перемещаются между сессиями. <b>Не рекомендуется для обычных пользователей!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Сохранить сброс крепления
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Использовать магнитометр на всех IMU трекерах, которые его поддерживают
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Использует магнитометр на всех трекерах, которые имеют совместимую с ним прошивку, уменьшая дрифт в стабильных магнитных средах.
     Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Использовать магнитометр трекеров
 settings-stay_aligned-description = Функция "Оставаться выровненным" уменьшает дрифт, постепенно настраивая трекеры в соответствии с вашими расслабленными позами
 settings-stay_aligned-setup-label = Настройки "Оставаться выровненным"
 settings-stay_aligned-setup-description = Необходимо завершить "Настройки "Оставаться выровненным"", чтобы включить эту функцию.
-settings-stay_aligned-general-label = Общие
 settings-stay_aligned-relaxed_poses-label = Расслабленные позы
 settings-stay_aligned-relaxed_poses-description = Функция "Оставаться выровненным" использует ваши расслабленные позы, чтобы трекеры оставались выровнены. Используйте "Настройки "Оставаться выровненным"", чтобы обновить эти позы.
 settings-stay_aligned-relaxed_poses-standing = Калибровка трекеров в положении стоя
@@ -437,7 +431,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap пыта�
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-Plant поворачивает ваши ступни так, чтобы они были параллельны земле при контакте.
 settings-general-fk_settings-leg_fk = Отслеживание ног
 settings-general-fk_settings-enforce_joint_constraints = Ограничения Скелета
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Применять ограничения
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Предотвращает вращение суставов за пределы их возможностей
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
@@ -483,7 +476,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Ув�
 settings-interface-appearance = Внешний вид
 settings-general-interface-dev_mode = Режим разработчика
 settings-general-interface-dev_mode-description = Этот режим может быть полезен, если вам нужны подробные данные или для взаимодействия с подключенными трекерами на более продвинутом уровне.
-settings-general-interface-dev_mode-label = Режим разработчика
 settings-general-interface-theme = Варианты оформления
 settings-general-interface-lang = Выбрать язык
 settings-general-interface-lang-description = Измените язык по умолчанию, который вы хотите использовать.
@@ -501,23 +493,18 @@ settings-interface-appearance-font_size-description = Это влияет на �
 
 settings-general-interface-feedback_sound = Звук уведомления
 settings-general-interface-feedback_sound-description = Эта опция будет воспроизводить звук при срабатывании сброса.
-settings-general-interface-feedback_sound-label = Звук уведомления
 settings-general-interface-feedback_sound-volume = Громкость звука уведомления
 settings-general-interface-connected_trackers_warning = Предупреждение о подключенных трекерах
 settings-general-interface-connected_trackers_warning-description = Эта опция будет показывать предупреждение каждый раз, когда вы пытаетесь выйти из SlimeVR с одним или несколькими подключенными трекерами. Он напомнит вам о необходимости выключить трекеры, когда вы закончите, чтобы продлить срок службы батареи.
-settings-general-interface-connected_trackers_warning-label = Предупреждение о подключенных трекеров при выходе
 
 ## Behavior settings
 
 settings-interface-behavior = Поведение
 settings-general-interface-dev_mode = Режим разработчика
-settings-general-interface-dev_mode-label = Режим разработчика
 settings-general-interface-use_tray = Свернуть в системный трей
 settings-general-interface-use_tray-description = Позволяет закрыть окно, не закрывая сервер SlimeVR, так что вы можете продолжать использовать его, не беспокоясь о графическом интерфейсе.
-settings-general-interface-use_tray-label = Свернуть в системный трей
 settings-general-interface-discord_presence = Поделиться активностью в Discord
 settings-general-interface-discord_presence-description = Сообщает вашему приложению Discord, что вы используете SlimeVR, вместе с количеством IMU трекеров, которые вы используете.
-settings-general-interface-discord_presence-label = Поделиться активностью в Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Чиллим со Слаймами
@@ -562,7 +549,6 @@ settings-osc-vrchat-description-v1 =
     и далее перейдите в Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Включить
 settings-osc-vrchat-enable-description = Переключить отправку и получение данных.
-settings-osc-vrchat-enable-label = Включить
 settings-osc-vrchat-network = Порты сети
 settings-osc-vrchat-network-port_in =
     .label = Порт Входа
@@ -588,7 +574,6 @@ settings-osc-vmc-description =
     , чтобы отправлять данные о костях SlimeVR и получать данные о костях из других приложений.
 settings-osc-vmc-enable = Включить
 settings-osc-vmc-enable-description = Переключить отправку и получение данных.
-settings-osc-vmc-enable-label = Включить
 settings-osc-vmc-network = Сетевые порты
 settings-osc-vmc-network-description = Установите порты для прослушивания и отправки данных через VMC
 settings-osc-vmc-network-port_in =
@@ -606,10 +591,8 @@ settings-osc-vmc-vrm-untitled_model = Модель без названия
 settings-osc-vmc-vrm-file_select = Перетащите модель для использования, или <u>выбрать</u>
 settings-osc-vmc-anchor_hip = Привязка к бедрам
 settings-osc-vmc-anchor_hip-description = Привязать трекинг к бедрам, полезно для сидячего VTubing'а. Если выключено, загрузите VRM модель.
-settings-osc-vmc-anchor_hip-label = Привязать к бедрам
 settings-osc-vmc-mirror_tracking = Отзеркалить отслеживание
 settings-osc-vmc-mirror_tracking-description = Отзеркалить отслеживание горизонтально.
-settings-osc-vmc-mirror_tracking-label = Отзеркалить отслеживание
 settings-osc-vmc-status-badge-error = Ошибка
 
 ## Common OSC settings
