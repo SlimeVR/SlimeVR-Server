@@ -533,7 +533,6 @@ settings-driver-velocity-description = 傳送直線速度與角速度到驅動�
 
 ## Tracker mechanics
 
-settings-general-trackers_settings = 追蹤器設定
 settings-general-tracker_mechanics-filtering = 濾波
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -564,11 +563,9 @@ settings-general-tracker_mechanics-trackers_over_usb-description = 透過 USB �
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允許 HID 追蹤器透過 USB 直接連接
 settings-general-tracker_mechanics-timeout_delay = 逾時延遲
 settings-general-tracker_mechanics-timeout_delay-description = 追蹤器離線時，標記成「{ tracker-status-disconnected }」的時間。
-settings-stay_aligned = 持續校正
 settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
 settings-stay_aligned-setup-label = 設定持續校正
 settings-stay_aligned-setup-description = 完成「設定持續校正」後，才可啟用持續校正功能。
-settings-stay_aligned-enabled-label = 調整追蹤器
 settings-stay_aligned-general-label = 一般設定
 settings-stay_aligned-relaxed_poses-label = 放鬆的姿態
 settings-stay_aligned-relaxed_poses-description = 持續校正功能會使用各種放鬆的姿態保持追蹤器的定位。請使用「設定持續校正」來更新設定的姿態。
@@ -617,7 +614,6 @@ settings-keybinds-error-add-modifier = 設定時請同時按住 Ctrl、Alt 或 S
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = 追蹤設定
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -643,7 +639,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = 定位資料
 settings-general-fk_settings-ik-use_position = 使用定位資料
 settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
-settings-general-fk_settings-resets_settings = 重置設定
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = 重置頭戴顯示器上下旋轉
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = 進行重置時將頭戴顯示器的上下旋轉一併重置，若將頭戴顯示器戴在額頭以進行虛擬直播或動作捕捉時可以使用，進行 VR 時請勿使用。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
@@ -703,7 +698,6 @@ settings-interface-appearance-font_size-description = 本設定會影響整個 U
 
 ## Notification settings
 
-settings-interface-notifications = 通知
 settings-general-interface-feedback_sound = 聲音回饋
 settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音。
 settings-general-interface-feedback_sound-label = 聲音回饋
