@@ -282,7 +282,6 @@ settings-keybinds-recorder-modal-cancel-button = Hủy
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Cài đặt nâng cao
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -352,7 +351,6 @@ settings-interface-appearance-font_size-description = Điều này ảnh hưởn
 
 ## Notification settings
 
-settings-interface-notifications = Thông báo
 settings-general-interface-feedback_sound = Âm thanh phản hồi
 settings-general-interface-feedback_sound-description = Tùy chọn này sẽ phát âm thanh khi thiết lập lại được kích hoạt.
 settings-general-interface-feedback_sound-label = Âm thanh phản hồi
