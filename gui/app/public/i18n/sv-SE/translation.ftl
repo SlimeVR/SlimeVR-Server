@@ -387,11 +387,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = använd magnetometer på sensorer.
-settings-stay_aligned = Behåll inriktning
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
 settings-stay_aligned-setup-description = Du måste kompletera "Ställ in Behåll inriktnining" för att kunna aktivera Behåll inriktning.
-settings-stay_aligned-enabled-label = Justera sensorer
 settings-stay_aligned-general-label = Allmän
 settings-stay_aligned-relaxed_poses-label = Avslappnade positioner
 settings-stay_aligned-relaxed_poses-description = Behåll inriktning använder dina avslappnade positioner till att hålla dina sensorer inriktade. Använd "ställ in Behåll inriktning" för att uppdatera dessa positionerna.
@@ -414,7 +412,6 @@ settings-keybinds-recorder-modal-cancel-button = Avbryt
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Inställningar för spårning
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -477,7 +474,6 @@ settings-interface-appearance-font_size-description = Detta påverkar teckenstor
 
 ## Notification settings
 
-settings-interface-notifications = Meddelanden
 settings-general-interface-feedback_sound = Feedback-ljud
 settings-general-interface-feedback_sound-description = Detta alternativ spelar upp ett ljud när en återställning utlöses.
 settings-general-interface-feedback_sound-label = Feedback-ljud
