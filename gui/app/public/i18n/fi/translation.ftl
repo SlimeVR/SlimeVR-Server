@@ -262,7 +262,6 @@ settings-keybinds-recorder-modal-cancel-button = Peruuta
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Jäljityksen asetukset
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction vahvuus
 settings-general-fk_settings-leg_tweak-skating_correction-description = Skating correction helpottaa jalkojen luistelua, mutta voi heikentää tarkkuutta tietyissä liikekuvioissa. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
 settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi vähentää tai korjata jalan kulun lattian läpi. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
@@ -325,7 +324,6 @@ settings-interface-appearance-font_size-description = Tämä vaikuttaa koko käy
 
 ## Notification settings
 
-settings-interface-notifications = Ilmoitukset
 settings-general-interface-feedback_sound = Palaute ääni
 settings-general-interface-feedback_sound-description = Tämä asetus toistaa äänen nollauksen tapahtuessa.
 settings-general-interface-feedback_sound-label = Palaute ääni
