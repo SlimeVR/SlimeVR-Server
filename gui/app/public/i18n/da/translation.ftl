@@ -230,8 +230,6 @@ settings-stay_aligned-relaxed_poses-close = Tæt
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Fuld nulstilling
-settings-keybinds_yaw-reset = Yaw Nulstil
 settings-keybinds-recorder-modal-cancel-button = Annuller
 
 ## FK/Tracking settings
@@ -263,7 +261,6 @@ settings-general-gesture_control-yawResetEnabled = Aktivér tryk for at yaw rese
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Udvikler-tilstand
 settings-general-interface-dev_mode-description = Denne tilstand kan være nyttig, hvis du har brug for dybdegående data eller for at interagere med tilsluttede trackere på et mere avanceret niveau.
 settings-general-interface-theme = Farvetema
 settings-general-interface-lang = Vælg sprog
@@ -278,7 +275,6 @@ settings-general-interface-feedback_sound-volume = Feedback lydstyrke
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Udvikler-tilstand
 
 ## Serial settings
 
@@ -309,7 +305,6 @@ settings-osc-vrchat-network-port_out =
     .label = Port ud
     .placeholder = Port ud (standard: 9000)
 settings-osc-vrchat-network-address = Netværksadresse
-settings-osc-vrchat-network-address-placeholder = VRChat ip-adresse
 
 ## VRChat OSC status
 
@@ -334,7 +329,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port ud (standard: 39539)
 settings-osc-vmc-network-address = Netværksadresse
 settings-osc-vmc-network-address-description = Vælg hvilken adresse du vil sende data på via VMC
-settings-osc-vmc-network-address-placeholder = IPV4-adresse
 settings-osc-vmc-vrm = VRM-model
 settings-osc-vmc-vrm-description = Indlæs en VRM-model for at tillade hovedanker og muliggøre en højere kompatibilitet med andre applikationer
 settings-osc-vmc-vrm-file_select = Træk og slip en model, du vil bruge, eller <u>gennemse</u>
