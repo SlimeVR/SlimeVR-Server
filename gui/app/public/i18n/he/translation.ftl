@@ -197,7 +197,6 @@ settings-stay_aligned-relaxed_poses-close = סגור
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = איפוס
 settings-keybinds-recorder-modal-cancel-button = ביטול
 
 ## FK/Tracking settings
@@ -208,7 +207,6 @@ settings-keybinds-recorder-modal-cancel-button = ביטול
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = מצב מפתח
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 
 ## Notification settings
@@ -216,7 +214,6 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = מצב מפתח
 
 ## Serial settings
 
