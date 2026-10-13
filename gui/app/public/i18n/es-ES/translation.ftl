@@ -595,23 +595,9 @@ settings-utils-advanced-reset-gui = Restablecer configucación del GUI
 settings-utils-advanced-reset-gui-description = Restaurar la configuración predeterminado para el interfaz.
 settings-utils-advanced-reset-gui-label = Restablecer el GUI
 settings-utils-advanced-reset-server = Restablecer la configuración del tracking
-settings-utils-advanced-reset-server-description = Restaurar la configuración predeterminado para el tracking,
 settings-utils-advanced-reset-server-label = Restablecer el tracking,
 settings-utils-advanced-reset-all = Restablecer todas las configuraciónes
-settings-utils-advanced-reset-all-description = Restaurar la configuración predeterminada para el interfaz y el tracking.
 settings-utils-advanced-reset-all-label = Restablecer todo
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Advertencia:</b> Esto restablecerá la configuración de la interfaz a los valores predeterminados
-            ¿Esta seguro de que quiere hacer esto?
-        [server]
-            <b>Advertencia:</b> Esto restablecerá la configuración de los trackers a los valores predeterminados
-            ¿Esta seguro de que quiere hacer esto?
-       *[all]
-            <b>Advertencia:</b> Esto restablecerá todas las configuraciones a los valores predeterminados
-            ¿Esta seguro de que quiere hacer esto?
-    }
 settings-utils-advanced-reset_warning-reset = Restablecer la configuración
 settings-utils-advanced-reset_warning-cancel = Cancelar
 settings-utils-advanced-open_data-v1 = Carpeta de configuración
