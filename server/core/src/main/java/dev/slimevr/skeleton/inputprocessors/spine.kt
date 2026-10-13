@@ -211,9 +211,9 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			// Get the interpolation ratios. sideRatio is null if nothing specified for side.
 			val fromReliability = reliabilities[fromSpineSource] ?: continue
 			val toReliability = reliabilities[toSpineSource] ?: continue
-			val forwardRatio = interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.forward, toReliability.forward, sourceActive)
+			val forwardRatio = interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.spineCurvature, fromReliability.forward, toReliability.forward, sourceActive)
 			val sideRatio = if (fromReliability.side != null || toReliability.side != null) {
-				interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.imputeSpineCurvature, fromReliability.side ?: fromReliability.forward, toReliability.side ?: toReliability.forward, sourceActive)
+				interpolateRatio(ratios.imputeSpineFromUpperToLower, ratios.spineCurvature, fromReliability.side ?: fromReliability.forward, toReliability.side ?: toReliability.forward, sourceActive)
 			} else {
 				null
 			}

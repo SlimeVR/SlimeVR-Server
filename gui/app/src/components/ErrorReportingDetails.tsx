@@ -30,7 +30,7 @@ export function ErrorReportingDetails({
         bold
         id="settings-interface-behavior-error_tracking-collects"
       />
-      <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
+      <ul className="gap-x-6 gap-y-2">
         {COLLECTED_DATA.map((item) => (
           <li key={item} className="flex items-start gap-2">
             <div className="mt-1 shrink-0 fill-accent-background-10">

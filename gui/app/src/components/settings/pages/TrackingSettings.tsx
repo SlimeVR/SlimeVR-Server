@@ -43,7 +43,7 @@ type SkeletonForm = {
   };
   ratios: {
     imputeSpineFromUpperToLower: number;
-    imputeSpineCurvature: number;
+    spineCurvature: number;
     interpolateHipWithUpperLegs: number;
     interpolateUpperLegsTwistWithLowerLegs: number;
     skatingCorrectionStrength: number;
@@ -79,7 +79,7 @@ function toForm(settings: SkeletonSettingsResponseT): SkeletonForm {
     },
     ratios: {
       imputeSpineFromUpperToLower: ratios?.imputeSpineFromUpperToLower ?? 0,
-      imputeSpineCurvature: ratios?.imputeSpineCurvature ?? 0,
+      spineCurvature: ratios?.spineCurvature ?? 0,
       interpolateHipWithUpperLegs: ratios?.interpolateHipWithUpperLegs ?? 0,
       interpolateUpperLegsTwistWithLowerLegs:
         ratios?.interpolateUpperLegsTwistWithLowerLegs ?? 0,
@@ -114,6 +114,17 @@ export const trackingSettingsPage = defineSettingsPage({
     legFk: {
       title: 'settings-general-fk_settings-leg_fk',
       rows: {
+        skatingCorrection: {
+          title: 'settings-general-fk_settings-leg_tweak-skating_correction',
+          description:
+            'settings-general-fk_settings-leg_tweak-skating_correction-description',
+        },
+        skatingCorrectionAmount: {
+          title:
+            'settings-general-fk_settings-leg_tweak-skating_correction-amount',
+          description:
+            'settings-general-fk_settings-leg_tweak-skating_correction-amount-description',
+        },
         floorClip: {
           title: 'settings-general-fk_settings-leg_tweak-floor_clip',
           description:
@@ -128,17 +139,6 @@ export const trackingSettingsPage = defineSettingsPage({
           title: 'settings-general-fk_settings-leg_tweak-toe_snap',
           description:
             'settings-general-fk_settings-leg_tweak-toe_snap-description',
-        },
-        skatingCorrection: {
-          title: 'settings-general-fk_settings-leg_tweak-skating_correction',
-          description:
-            'settings-general-fk_settings-leg_tweak-skating_correction-description',
-        },
-        skatingCorrectionAmount: {
-          title:
-            'settings-general-fk_settings-leg_tweak-skating_correction-amount',
-          description:
-            'settings-general-fk_settings-leg_tweak-skating_correction-amount-description',
         },
       },
     },
@@ -178,11 +178,11 @@ export const trackingSettingsPage = defineSettingsPage({
           description:
             'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description',
         },
-        imputeSpineCurvature: {
+        spineCurvature: {
           title:
-            'settings-general-fk_settings-skeleton_settings-impute_spine_curvature',
+            'settings-general-fk_settings-skeleton_settings-spine_curvature',
           description:
-            'settings-general-fk_settings-skeleton_settings-impute_spine_curvature-description',
+            'settings-general-fk_settings-skeleton_settings-spine_curvature-description',
         },
         interpolateHipWithUpperLegs: {
           title:
@@ -239,7 +239,7 @@ export function TrackingSettings() {
     const ratios = new SkeletonRatiosT();
     ratios.imputeSpineFromUpperToLower =
       values.ratios.imputeSpineFromUpperToLower;
-    ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature;
+    ratios.spineCurvature = values.ratios.spineCurvature;
     ratios.interpolateHipWithUpperLegs =
       values.ratios.interpolateHipWithUpperLegs;
     ratios.interpolateUpperLegsTwistWithLowerLegs =
@@ -381,6 +381,16 @@ export function TrackingSettings() {
 
         <SettingsGroup group={groups.legFk}>
           <SettingRow
+            setting={groups.legFk.rows.skatingCorrection}
+            childrenDisabled={!skatingCorrection}
+            {...toggle('toggles.skatingCorrection')}
+          >
+            <SettingRow
+              setting={groups.legFk.rows.skatingCorrectionAmount}
+              {...stepper('ratios.skatingCorrectionStrength', 0.1)}
+            />
+          </SettingRow>
+          <SettingRow
             setting={groups.legFk.rows.floorClip}
             {...toggle('toggles.floorClip')}
           />
@@ -392,16 +402,6 @@ export function TrackingSettings() {
             setting={groups.legFk.rows.toeSnap}
             {...toggle('toggles.toeSnap')}
           />
-          <SettingRow
-            setting={groups.legFk.rows.skatingCorrection}
-            childrenDisabled={!skatingCorrection}
-            {...toggle('toggles.skatingCorrection')}
-          >
-            <SettingRow
-              setting={groups.legFk.rows.skatingCorrectionAmount}
-              {...stepper('ratios.skatingCorrectionStrength', 0.1)}
-            />
-          </SettingRow>
         </SettingsGroup>
 
         <SettingsGroup group={groups.position}>
@@ -429,8 +429,8 @@ export function TrackingSettings() {
               {...stepper('ratios.imputeSpineFromUpperToLower')}
             />
             <SettingRow
-              setting={groups.ratios.rows.imputeSpineCurvature}
-              {...stepper('ratios.imputeSpineCurvature')}
+              setting={groups.ratios.rows.spineCurvature}
+              {...stepper('ratios.spineCurvature')}
             />
             <SettingRow
               setting={groups.ratios.rows.interpolateHipWithUpperLegs}

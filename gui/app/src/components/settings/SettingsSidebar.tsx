@@ -32,14 +32,18 @@ export function SettingsSidebar() {
             to="/settings/tracking"
             id="settings-sidebar-tracking"
           />
-          <SettingsLink
-            to="/settings/trackers"
-            id="settings-sidebar-trackers"
-          />
           <SettingsLink to="/settings/resets" id="settings-sidebar-resets" />
           <SettingsLink
             to="/settings/stay-aligned"
             id="settings-sidebar-stay_aligned"
+          />
+          <SettingsLink
+            to="/settings/trackers"
+            id="settings-sidebar-trackers"
+          />
+          <SettingsLink
+            to="/settings/keybinds"
+            id="settings-sidebar-keybinds"
           />
           <SettingsLink
             to="/settings/profiles"
@@ -62,10 +66,6 @@ export function SettingsSidebar() {
           <SettingsLink
             to="/settings/checklist"
             id="settings-sidebar-checklist"
-          />
-          <SettingsLink
-            to="/settings/keybinds"
-            id="settings-sidebar-keybinds"
           />
         </div>
       </div>
