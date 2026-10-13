@@ -52,7 +52,14 @@ input-password-hide = Passwort verstecken
 
 ## Window controls
 
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = Dokumentation öffnen
+titlebar-settings = Einstellungen öffnen
+titlebar-update = Update herunterladen
+titlebar-minimize = Minimieren
+titlebar-maximize = Maximieren
 titlebar-close = Schließen
+titlebar-profiles-settings = Einstellungen
 
 ## Body parts
 
@@ -204,10 +211,15 @@ tracker-status-timed_out = Zeitüberschreitung
 
 ## Tracker status columns
 
+tracker-table-column-name = Name
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batterie
 tracker-table-column-ping = Latenz
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Beschleunigung X/Y/Z
+tracker-table-column-rotation = Rotation X/Y/Z
+tracker-table-column-position = Position X/Y/Z
 tracker-table-column-url = Adresse
 
 ## Tracker rotation
@@ -229,9 +241,11 @@ tracker-infos-display_name = Anzeigename
 tracker-infos-custom_name = Benutzerdefinierter Name
 tracker-infos-url = Tracker-Adresse
 tracker-infos-hardware_identifier = Hardware-ID
+tracker-infos-data_type = Datentyp
 tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Platine
 tracker-infos-network_version = Protokoll Version
+tracker-infos-magnetometer = Magnetometer
 tracker-infos-magnetometer-status-v1 =
     { $status ->
         [DISABLED] Ausgeschalten
@@ -279,9 +293,13 @@ tracker-settings-build-date = Herstellungsdatum
 
 ## Dongle settings
 
+dongle-infos-model = Modell
 dongle-infos-hardware_revision = Hardware-Version
+dongle-status-connected = Verbunden
 dongle-status-disconnected = Getrennt
 dongle-settings-back = Zurück zur Tracker-Liste
+dongle-settings-title = Dongle Einstellungen
+dongle-settings-name_section = Dongle Name
 dongle-settings-name_section-description = Geben Sie ihm einen süßen Spitznamen :)
 dongle-settings-update = Jetzt aktualisieren
 dongle-settings-update-title = Firmware-Version
@@ -387,7 +405,6 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
 settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
 settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
 settings-stay_aligned-setup-label = Stay Aligned einrichten
-settings-stay_aligned-setup-description = Sie müssen Stay Aligned einrichten, um es zu aktivieren.
 settings-stay_aligned-relaxed_poses-label = Entspannte Posen
 settings-stay_aligned-relaxed_poses-standing = Tracker im Stehen anpassen
 settings-stay_aligned-relaxed_poses-sitting = Tracker anpassen, während du auf einem Stuhl sitzt
@@ -418,8 +435,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Rutschkorrektur
 settings-general-fk_settings-leg_tweak-toe_snap = Zehenausrichtung
 settings-general-fk_settings-leg_tweak-foot_plant = Fußkorrektur
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Rutschkorrekturstärke
-settings-general-fk_settings-leg_tweak-skating_correction-description = Die Rutschkorrektur korrigiert das Wegrutschen des Fußes, kann aber die Genauigkeit bestimmter Bewegungsmuster verringern. Wenn Sie dies aktivieren, stellen Sie sicher, dass Sie im Spiel Ihr Tracking vollständig zurücksetzten und neu kalibrieren.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Bodenclip kann das Clipping durch den Boden reduzieren oder sogar eliminieren. Wenn Sie dies aktivieren, stellen Sie sicher, dass Sie im Spiel Ihr Tracking vollständig zurücksetzten und neu kalibrieren.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation Ihrer Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet Ihre Füße parallel zum Boden aus, wenn sie den Boden berühren.
 settings-general-fk_settings-leg_fk = Beintracking
@@ -428,7 +443,6 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Erzwing
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Verhindert, dass sich Gelenke über ihre Grenzen hinaus drehen
 settings-general-fk_settings-ik = Positionsdaten
 settings-general-fk_settings-skeleton_settings-ratios = Skelettverhältnisse
-settings-general-fk_settings-skeleton_settings-ratios-description = Ändert die Werte der Skeletteinstellungen. Nachdem Sie diese geändert haben, müssen Sie möglicherweise Ihre Proportionen anpassen.
 settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 
 ## Gesture control settings (tracker tapping)
@@ -731,6 +745,8 @@ onboarding-choose_mounting-description = Die Montageausrichtung korrigiert die P
 
 ## Step mounting calibration
 
+step_mounting-cancel = Abbruch
+step_mounting-close = Schließen
 
 ## Tracker manual mounting setup
 
@@ -871,7 +887,6 @@ onboarding-stay_aligned-previous_step = Zurück
 onboarding-stay_aligned-next_step = Weiter
 onboarding-stay_aligned-restart = Neu starten
 onboarding-stay_aligned-done = Fertig
-onboarding-stay_aligned-manual_mounting-done = Fertig
 
 ## Home
 
@@ -1078,7 +1093,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Tracker-Ausrichtung durchführen
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Führe eine Fußmontage-Kalibrierung durch
 tracking_checklist-FULL_RESET = Führe einen vollständigen Reset durch
 tracking_checklist-FULL_RESET-desc = Manche Tracker benötigen eine erneute Kalibrierung.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR läuft nicht
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibriere deine Tracker
@@ -1098,13 +1112,17 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Kontrollpanel öffnen
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Stay Aligned konfigurieren
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zeichne die Stay Aligned-Posen auf, um Drift zu reduzieren
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öffne den Stay Aligned Assistent
+tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = Gehe zu VRChat OSC Einstellungen
 tracking_checklist-ignore = Ignorieren
 preview-mocap_mode_soon = Mocap-Modus (Bald™)
 preview-disable_render = Vorschau deaktivieren
 preview-disabled_render = Vorschau deaktiviert
+preview-render_mode = Rendering-Modus ändern
+preview-reset_camera = Kamera zurücksetzen
 toolbar-mounting_calibration = Tracker-Ausrichtung
 toolbar-mounting_calibration-default = Körper
 toolbar-mounting_calibration-feet = Füße
+toolbar-mounting_calibration-toes = Zehen
 toolbar-mounting_calibration-fingers = Finger
 toolbar-drift_reset = Drift-Reset
 toolbar-assigned_trackers = { $count } Tracker zugewiesen
