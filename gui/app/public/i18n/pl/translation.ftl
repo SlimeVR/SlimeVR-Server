@@ -419,8 +419,6 @@ settings-stay_aligned-debug-copy-label = Skopiuj ustawienia do schowka
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Pełny Reset
-settings-keybinds_yaw-reset = Reset odchylenia
 settings-keybinds_reset-all-button = Zresetuj wszystko
 settings-keybinds-recorder-modal-done-button = Gotowy
 settings-keybinds-recorder-modal-cancel-button = Anuluj
@@ -446,7 +444,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obrac
 settings-general-fk_settings-leg_fk = Śledzenie nóg
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Wymuś kalibracje mocowania stóp
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Wymuś kalibracje montażu stóp podczas kalibracji pozycji.
-settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
 settings-general-fk_settings-ik = Dane pozycji
 settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
@@ -492,7 +489,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Zwię
 ## Appearance settings
 
 settings-interface-appearance = Wygląd
-settings-general-interface-dev_mode = Tryb Dewelopera
 settings-general-interface-dev_mode-description = Ten tryb przydaje się do sprawdzania większej ilości danych.
 settings-general-interface-theme = Motyw kolorystyczny
 settings-general-interface-lang = Wybierz Język
@@ -518,7 +514,6 @@ settings-general-interface-connected_trackers_warning-description = Ta opcja wy�
 ## Behavior settings
 
 settings-interface-behavior = Zachowanie
-settings-general-interface-dev_mode = Tryb Dewelopera
 settings-general-interface-use_tray = Minimalizuj do zasobnika systemowego
 settings-general-interface-use_tray-description = Pozwala zamknąć okno bez wyłączania serwera SlimeVR, aby używać trackerów bez interfejsu graficznego.
 settings-general-interface-discord_presence = Udostępniaj aktywność na Discordzie
@@ -582,7 +577,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port wyjściowy (domyślnie: 9000)
 settings-osc-vrchat-network-address = Adres sieciowy
 settings-osc-vrchat-network-address-description-v1 = Wybierz adres, na który mają być wysyłane dane. Można pozostawić domyślnie dla VRChata.
-settings-osc-vrchat-network-address-placeholder = Adres IP VRChata
 
 ## VRChat OSC status
 
@@ -608,7 +602,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port Wyjścia (domyślnie: 39539)
 settings-osc-vmc-network-address = Adres sieciowy
 settings-osc-vmc-network-address-description = Wybierz adres, na który chcesz wysłać dane przez WRR
-settings-osc-vmc-network-address-placeholder = IPV4 adres
 settings-osc-vmc-vrm = Model VRM
 settings-osc-vmc-vrm-description = Załaduj model VRM, aby umożliwić zablokowanie głowy i zapewnić większą kompatybilność z innymi aplikacjami
 settings-osc-vmc-vrm-untitled_model = Model bez nazwy
@@ -661,8 +654,6 @@ settings-home-list-layout-table = Tabela
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Aktywne Kroki
-settings-tracking_checklist-active_steps-desc = Lista wszystkich kroków kontrolnych. Możesz wyłączyć konkretne punkty.
 
 ## Setup/onboarding menu
 
@@ -1114,10 +1105,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpiętość ramion
 ## Error collection consent modal
 
 error_collection_modal-title = Czy możemy zbierać błędy?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę
 
