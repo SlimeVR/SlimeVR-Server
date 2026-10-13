@@ -360,8 +360,6 @@ settings-stay_aligned-relaxed_poses-close = Uždaryti
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Pilnas atstatymas
-settings-keybinds_yaw-reset = Horizontalus atstatymas
 settings-keybinds-recorder-modal-cancel-button = Atšaukti
 
 ## FK/Tracking settings
@@ -383,7 +381,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Neleidžia pėdo
 settings-general-fk_settings-leg_tweak-toe_snap-description = Bando atspėti pėdų pasukimą, jei nenaudojate pėdų sekiklius.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pasuka pėdas taip, kad jos būtų lygiagrečios grindims, kai stovite.
 settings-general-fk_settings-leg_fk = Kojų sekimas
-settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
 
 ## Gesture control settings (tracker tapping)
@@ -412,7 +409,6 @@ settings-general-gesture_control-trackers =
 ## Appearance settings
 
 settings-interface-appearance = Išvaizda
-settings-general-interface-dev_mode = Kūrėjo režimas
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 
 ## Notification settings
@@ -420,7 +416,6 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Kūrėjo režimas
 
 ## Serial settings
 
