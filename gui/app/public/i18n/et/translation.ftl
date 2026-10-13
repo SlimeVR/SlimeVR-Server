@@ -261,13 +261,10 @@ settings-general-fk_settings-leg_tweak-skating_correction = Libisemise korrigeer
 settings-general-fk_settings-leg_tweak-toe_snap = Varba klõpsatus maha
 settings-general-fk_settings-leg_tweak-foot_plant = Jalg maas
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Libisemise korrigeerimine jõud
-settings-general-fk_settings-leg_tweak-skating_correction-description = Uisukorrektsioon korrigeerib uisutamist, kuid võib vähendada teatud liikumismustrite täpsust. Selle lubamisel veenduge, et mängus lähtestatakse jälgimine ja kalibreeritakse jälgimine uuesti.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Põrandaklõpsatus võib vähendada või isegi välistada jalgade läbi põranda minemise. Selle lubamisel veenduge, et mängus lähtestatakse jälgimine ja kalibreeritakse jälgimine uuesti.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Varvaste klõpsatus maha üritab ära arvata jalgade pöörlemist, kui jalgade jälgijaid ei kasutata.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Jalg-maas pöörab jalad kokkupuutel maapinnaga paralleelseks.
 settings-general-fk_settings-leg_fk = Jalgade jälgimine
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
-settings-general-fk_settings-skeleton_settings-ratios-description = Muutke skeleti seadete väärtusi. Võimalik, et peate pärast nende muutmist oma proportsioone kohandama.
 settings-general-fk_settings-self_localization-title = Mocapi režiim
 
 ## Gesture control settings (tracker tapping)
