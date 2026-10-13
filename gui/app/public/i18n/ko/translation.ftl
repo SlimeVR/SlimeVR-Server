@@ -292,8 +292,6 @@ settings-stay_aligned-relaxed_poses-close = 닫기
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = 전체 정렬
-settings-keybinds_yaw-reset = Yaw 정렬
 settings-keybinds_reset-all-button = 모든 설정 초기화
 settings-keybinds-recorder-modal-cancel-button = 취소
 
@@ -316,7 +314,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 플로어 클립
 settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 트래커가 없을 때, 발 트래커가 있는 것처럼 예측해서 움직여주는 기능이에요.
 settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
-settings-general-fk_settings-enforce_joint_constraints = 골격 한계
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
 settings-general-fk_settings-skeleton_settings-ratios-description = 골격 비율을 변경하면 신체 비율 설정을 다시 조절해야 할 수 있어요.
@@ -351,7 +348,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 몸�
 ## Appearance settings
 
 settings-interface-appearance = 모양
-settings-general-interface-dev_mode = 개발자 모드
 settings-general-interface-dev_mode-description = 이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.
 settings-general-interface-theme = 컬러 테마
 settings-general-interface-lang = 언어 선택
@@ -376,7 +372,6 @@ settings-general-interface-connected_trackers_warning-description = 이 옵션�
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = 개발자 모드
 settings-general-interface-use_tray = 작업 표시줄로 최소화
 settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
 settings-general-interface-discord_presence = Discord에서 활동 공유
@@ -430,7 +425,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port out (기본값: 9000)
 settings-osc-vrchat-network-address = 네트워크 주소
 settings-osc-vrchat-network-address-description-v1 = OSC 데이터를 보낼 주소, VRChat에서 사용하려면 그냥 두세요.
-settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 
 ## VRChat OSC status
 
@@ -456,7 +450,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = 나가는 포트 (기본: 39539)
 settings-osc-vmc-network-address = 네트워크 주소
 settings-osc-vmc-network-address-description = 데이터를 받을 VMC 클라이언트의 주소
-settings-osc-vmc-network-address-placeholder = IPV4 주소
 settings-osc-vmc-vrm = VRM 모델
 settings-osc-vmc-vrm-description = VRM 모델을 로드할 때 헤드 앵커를 허용하고 다른 애플리케이션과의 호환성을 높여줘요.
 settings-osc-vmc-vrm-untitled_model = 이름 없는 모델
