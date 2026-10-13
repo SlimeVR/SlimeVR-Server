@@ -489,18 +489,6 @@ settings-osc-vmc-status-badge-error = ewwow
 
 ## Advanced settings
 
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>wawning!!</b> this wiww weset youw gui settings to defawts :(
-            aw you supew dupew sure?
-        [server]
-            <b>wawning!!</b> this wiww weset youw twacking settings to defawts :(
-            aw you supew dupew sure?
-       *[all]
-            <b>wawning!!</b> this wiww make aww youw settings go bye-bye!!
-            aw you supew dupew sure??
-    }
 settings-utils-advanced-reset_warning-reset = weset setings
 settings-utils-advanced-reset_warning-cancel = cancew :o
 settings-utils-advanced-open_data-v1 = config fowdew
