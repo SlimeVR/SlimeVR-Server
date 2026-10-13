@@ -309,14 +309,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = 스케이팅 보정
 settings-general-fk_settings-leg_tweak-toe_snap = 토 스냅
 settings-general-fk_settings-leg_tweak-foot_plant = 풋 플랜트
 settings-general-fk_settings-leg_tweak-skating_correction-amount = 스케이팅 보정 강도
-settings-general-fk_settings-leg_tweak-skating_correction-description = 스케이트 보정은 바닥에서 미끄러지는 문제를 보정해주지만 특정 움직임 패턴에서 정확도가 낮아질 수도 있어요. 이 기능을 활성화한다면 게임에서 다시 전체 정렬 및 캘리브레이션을 해야 해요.
-settings-general-fk_settings-leg_tweak-floor_clip-description = 플로어 클립은 바닥을 통한 클리핑을 줄이거나 없앨 수 있어요.  이 기능을 활성화한다면 게임에서 다시 전체 정렬 및 캘리브레이션을 해야 해요.
 settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 트래커가 없을 때, 발 트래커가 있는 것처럼 예측해서 움직여주는 기능이에요.
 settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
-settings-general-fk_settings-skeleton_settings-ratios-description = 골격 비율을 변경하면 신체 비율 설정을 다시 조절해야 할 수 있어요.
 settings-general-fk_settings-self_localization-title = Mocap 모드
 
 ## Gesture control settings (tracker tapping)
