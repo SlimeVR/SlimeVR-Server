@@ -384,9 +384,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
-settings-stay_aligned-setup-description = Du måste kompletera "Ställ in Behåll inriktnining" för att kunna aktivera Behåll inriktning.
 settings-stay_aligned-relaxed_poses-label = Avslappnade positioner
-settings-stay_aligned-relaxed_poses-description = Behåll inriktning använder dina avslappnade positioner till att hålla dina sensorer inriktade. Använd "ställ in Behåll inriktning" för att uppdatera dessa positionerna.
 settings-stay_aligned-relaxed_poses-standing = Justera sensorer medans du står
 settings-stay_aligned-relaxed_poses-sitting = Justera sensorer medans du sitter i en stol
 settings-stay_aligned-relaxed_poses-flat = Justera sensorer medans du sitter på golvet, eller ligger på ryggen.
@@ -416,14 +414,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = Korrigering av skrid
 settings-general-fk_settings-leg_tweak-toe_snap = Snäppning av tå
 settings-general-fk_settings-leg_tweak-foot_plant = Fotväxt
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Styrka vid korrigering av skridskoåkning
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction korrigerar för skridskoåkning men kan försämra precisionen i vissa rörelsemönster. När du aktiverar detta, se till att återställa och kalibrera om i spelet.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan minska eller till och med eliminera klippning genom golvet. När du aktiverar detta, se till att återställa och kalibrera om i spelet.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
-settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
 settings-general-fk_settings-self_localization-title = Mocap-läge
 
 ## Gesture control settings (tracker tapping)
