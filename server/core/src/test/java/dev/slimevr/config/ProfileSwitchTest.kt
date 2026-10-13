@@ -19,6 +19,8 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ProfileKind
+import solarxr_protocol.rpc.ProfileOperationStatus
 import solarxr_protocol.rpc.VMCOSCInputState
 import solarxr_protocol.rpc.VMCOSCVrmState
 import java.net.DatagramSocket
@@ -82,7 +84,7 @@ class ProfileSwitchTest {
 	fun `switching to a profile that does not exist changes nothing`() = runTest {
 		val config = buildConfig(this, MemoryStorage())
 
-		assertEquals(ProfileStatus.NOT_FOUND, config.switchProfile(ProfileKind.SETTINGS, "missing"))
+		assertEquals(ProfileOperationStatus.NOT_FOUND, config.switchProfile(ProfileKind.SETTINGS, "missing"))
 
 		assertEquals("default", config.settings.context.state.value.name)
 		assertEquals("default", config.globalConfig.context.state.value.selectedSettingsProfile)
@@ -94,7 +96,7 @@ class ProfileSwitchTest {
 		storage.files[settingsFile("broken")] = "{ not json"
 		val config = buildConfig(this, storage)
 
-		assertEquals(ProfileStatus.OK, config.switchProfile(ProfileKind.SETTINGS, "broken"))
+		assertEquals(ProfileOperationStatus.OK, config.switchProfile(ProfileKind.SETTINGS, "broken"))
 
 		assertEquals("broken", config.settings.context.state.value.name)
 		assertEquals(SettingsConfigState(), config.settings.context.state.value.data)

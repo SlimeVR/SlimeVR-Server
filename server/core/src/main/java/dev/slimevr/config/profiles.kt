@@ -8,13 +8,15 @@ const val USER_PROFILE_DIR = "user"
 private const val PROFILE_FILE_EXTENSION = ".json"
 private val PROFILE_NAME = Regex("[A-Za-z0-9 _-]{1,64}")
 
-enum class ProfileKind { SETTINGS, USER }
-
-enum class ProfileStatus { OK, INVALID_NAME, ALREADY_EXISTS, NOT_FOUND, IS_ACTIVE, FAILED }
+/** The profiles of one kind on disk, [active] is always one of [names]. */
+data class ProfileNames(
+	val active: String,
+	val names: List<String>,
+)
 
 data class ProfilesState(
-	val settings: List<String> = emptyList(),
-	val user: List<String> = emptyList(),
+	val settings: ProfileNames,
+	val user: ProfileNames,
 )
 
 fun isValidProfileName(name: String): Boolean = PROFILE_NAME.matches(name) && name == name.trim()

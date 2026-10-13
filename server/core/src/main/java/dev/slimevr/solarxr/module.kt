@@ -24,6 +24,7 @@ import dev.slimevr.solarxr.rpc.InstalledInfoBehaviour
 import dev.slimevr.solarxr.rpc.KeybindsBehaviour
 import dev.slimevr.solarxr.rpc.KnownTrackersBehaviour
 import dev.slimevr.solarxr.rpc.MagBehaviour
+import dev.slimevr.solarxr.rpc.ProfilesBehaviour
 import dev.slimevr.solarxr.rpc.ProvisioningBehaviour
 import dev.slimevr.solarxr.rpc.ResetsBehaviour
 import dev.slimevr.solarxr.rpc.SerialBehaviour
@@ -197,6 +198,7 @@ class SolarXRBridge(
 			add(DriverSettingsBehaviour(appContext))
 			add(HIDSettingsBehaviour(appContext.config.settings))
 			add(ErrorReportingSettingsBehaviour(appContext.config.globalConfig, appContext.errorReporting))
+			add(ProfilesBehaviour(appContext.config))
 			add(SettingsResetBehaviour(appContext.config))
 			add(SettingsDefaultsBehaviour())
 			add(SkeletonSettingsBehaviour(appContext.config.settings))

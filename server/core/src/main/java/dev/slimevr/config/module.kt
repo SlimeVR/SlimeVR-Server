@@ -16,6 +16,8 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.rpc.ErrorReportingConsent
+import solarxr_protocol.rpc.ProfileKind
+import solarxr_protocol.rpc.ProfileOperationStatus
 import java.util.UUID
 
 private const val GLOBAL_CONFIG_VERSION = 1
@@ -118,21 +120,27 @@ class AppConfig(
 	private val storage: ConfigStorage,
 ) {
 	private val profilesLock = Mutex()
-	private val profilesState = MutableStateFlow(ProfilesState())
+	private val profilesState = MutableStateFlow(
+		ProfilesState(
+			settings = ProfileNames(settings.context.state.value.name, listOf(settings.context.state.value.name)),
+			user = ProfileNames(userConfig.context.state.value.name, listOf(userConfig.context.state.value.name)),
+		),
+	)
 
 	/** Names of the profiles on disk, always including the active ones. */
 	val profiles: StateFlow<ProfilesState> = profilesState
 
 	suspend fun refreshProfiles() {
 		profilesState.value = ProfilesState(
-			settings = listProfiles(ProfileKind.SETTINGS),
-			user = listProfiles(ProfileKind.USER),
+			settings = ProfileNames(activeProfile(ProfileKind.SETTINGS), listProfiles(ProfileKind.SETTINGS)),
+			user = ProfileNames(activeProfile(ProfileKind.USER), listProfiles(ProfileKind.USER)),
 		)
 	}
 
 	private fun dirOf(kind: ProfileKind) = when (kind) {
 		ProfileKind.SETTINGS -> SETTINGS_PROFILE_DIR
 		ProfileKind.USER -> USER_PROFILE_DIR
+		ProfileKind.UNKNOWN -> error("No profile directory for $kind")
 	}
 
 	private fun pathOf(kind: ProfileKind, name: String) = configPath(dirOf(kind), profileFileName(name))
@@ -140,29 +148,32 @@ class AppConfig(
 	private fun activeProfile(kind: ProfileKind) = when (kind) {
 		ProfileKind.SETTINGS -> settings.context.state.value.name
 		ProfileKind.USER -> userConfig.context.state.value.name
+		ProfileKind.UNKNOWN -> error("No active profile for $kind")
 	}
 
 	private suspend fun flushActive(kind: ProfileKind) = when (kind) {
 		ProfileKind.SETTINGS -> settings.flush()
 		ProfileKind.USER -> userConfig.flush()
+		ProfileKind.UNKNOWN -> error("No active profile for $kind")
 	}
 
 	private suspend fun listProfiles(kind: ProfileKind): List<String> =
 		(profileNamesIn(storage.list(dirOf(kind))) + activeProfile(kind)).distinct().sortedBy { it.lowercase() }
 
-	private suspend fun profileOperation(block: suspend () -> ProfileStatus): ProfileStatus = profilesLock.withLock {
+	private suspend fun profileOperation(kind: ProfileKind, block: suspend () -> ProfileOperationStatus): ProfileOperationStatus = profilesLock.withLock {
+		if (kind == ProfileKind.UNKNOWN) return@withLock ProfileOperationStatus.INVALID_KIND
 		try {
 			block()
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Exception) {
 			AppLogger.config.error(e, "Profile operation failed")
-			ProfileStatus.FAILED
+			ProfileOperationStatus.FAILED
 		}
 	}
 
-	suspend fun switchProfile(kind: ProfileKind, name: String): ProfileStatus = profileOperation {
-		if (name !in listProfiles(kind)) return@profileOperation ProfileStatus.NOT_FOUND
+	suspend fun switchProfile(kind: ProfileKind, name: String): ProfileOperationStatus = profileOperation(kind) {
+		if (name !in listProfiles(kind)) return@profileOperation ProfileOperationStatus.NOT_FOUND
 		when (kind) {
 			ProfileKind.SETTINGS -> {
 				globalConfig.context.dispatch(GlobalConfigActions.SetSettingsProfile(name))
@@ -173,37 +184,40 @@ class AppConfig(
 				globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(name))
 				userConfig.swap(name)
 			}
+
+			ProfileKind.UNKNOWN -> error("Cannot switch $kind")
 		}
 		refreshProfiles()
-		ProfileStatus.OK
+		ProfileOperationStatus.OK
 	}
 
 	/** Creates a profile from the defaults, or as a copy of [copyFrom]. Does not switch to it. */
-	suspend fun createProfile(kind: ProfileKind, name: String, copyFrom: String?): ProfileStatus = profileOperation {
-		if (!isValidProfileName(name)) return@profileOperation ProfileStatus.INVALID_NAME
+	suspend fun createProfile(kind: ProfileKind, name: String, copyFrom: String?): ProfileOperationStatus = profileOperation(kind) {
+		if (!isValidProfileName(name)) return@profileOperation ProfileOperationStatus.INVALID_NAME
 		val names = listProfiles(kind)
-		if (hasProfileNamed(names, name)) return@profileOperation ProfileStatus.ALREADY_EXISTS
+		if (hasProfileNamed(names, name)) return@profileOperation ProfileOperationStatus.ALREADY_EXISTS
 
 		val content = if (copyFrom == null) {
 			when (kind) {
 				ProfileKind.SETTINGS -> jsonConfig.encodeToString(SettingsConfigState())
 				ProfileKind.USER -> jsonConfig.encodeToString(UserConfigData())
+				ProfileKind.UNKNOWN -> error("No default profile for $kind")
 			}
 		} else {
-			if (copyFrom !in names) return@profileOperation ProfileStatus.NOT_FOUND
+			if (copyFrom !in names) return@profileOperation ProfileOperationStatus.NOT_FOUND
 			if (copyFrom == activeProfile(kind)) flushActive(kind)
-			storage.read(pathOf(kind, copyFrom)) ?: return@profileOperation ProfileStatus.NOT_FOUND
+			storage.read(pathOf(kind, copyFrom)) ?: return@profileOperation ProfileOperationStatus.NOT_FOUND
 		}
-		if (!storage.write(pathOf(kind, name), content, overwrite = false)) return@profileOperation ProfileStatus.ALREADY_EXISTS
+		if (!storage.write(pathOf(kind, name), content, overwrite = false)) return@profileOperation ProfileOperationStatus.ALREADY_EXISTS
 		refreshProfiles()
-		ProfileStatus.OK
+		ProfileOperationStatus.OK
 	}
 
-	suspend fun renameProfile(kind: ProfileKind, from: String, to: String): ProfileStatus = profileOperation {
-		if (!isValidProfileName(to)) return@profileOperation ProfileStatus.INVALID_NAME
+	suspend fun renameProfile(kind: ProfileKind, from: String, to: String): ProfileOperationStatus = profileOperation(kind) {
+		if (!isValidProfileName(to)) return@profileOperation ProfileOperationStatus.INVALID_NAME
 		val names = listProfiles(kind)
-		if (from !in names) return@profileOperation ProfileStatus.NOT_FOUND
-		if (hasProfileNamed(names, to)) return@profileOperation ProfileStatus.ALREADY_EXISTS
+		if (from !in names) return@profileOperation ProfileOperationStatus.NOT_FOUND
+		if (hasProfileNamed(names, to)) return@profileOperation ProfileOperationStatus.ALREADY_EXISTS
 
 		if (from != activeProfile(kind)) {
 			storage.move(pathOf(kind, from), pathOf(kind, to))
@@ -218,19 +232,21 @@ class AppConfig(
 					userConfig.rename(to)
 					globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(to))
 				}
+
+				ProfileKind.UNKNOWN -> error("Cannot rename $kind")
 			}
 		}
 		refreshProfiles()
-		ProfileStatus.OK
+		ProfileOperationStatus.OK
 	}
 
-	suspend fun deleteProfile(kind: ProfileKind, name: String): ProfileStatus = profileOperation {
-		if (name !in listProfiles(kind)) return@profileOperation ProfileStatus.NOT_FOUND
-		if (name == activeProfile(kind)) return@profileOperation ProfileStatus.IS_ACTIVE
+	suspend fun deleteProfile(kind: ProfileKind, name: String): ProfileOperationStatus = profileOperation(kind) {
+		if (name !in listProfiles(kind)) return@profileOperation ProfileOperationStatus.NOT_FOUND
+		if (name == activeProfile(kind)) return@profileOperation ProfileOperationStatus.IS_ACTIVE
 
 		storage.delete(pathOf(kind, name))
 		refreshProfiles()
-		ProfileStatus.OK
+		ProfileOperationStatus.OK
 	}
 
 	fun reset() {

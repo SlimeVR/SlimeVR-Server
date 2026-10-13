@@ -4,6 +4,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.rpc.ProfileKind
+import solarxr_protocol.rpc.ProfileOperationStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -18,10 +20,10 @@ class ProfilesTest {
 		config.settings.context.dispatch(SettingsActions.Update { copy(trackersConfig = trackersConfig.copy(timeoutDelay = 99f)) })
 		runCurrent()
 
-		assertEquals(ProfileStatus.OK, config.createProfile(ProfileKind.SETTINGS, "second", copyFrom = null))
+		assertEquals(ProfileOperationStatus.OK, config.createProfile(ProfileKind.SETTINGS, "second", copyFrom = null))
 
 		assertEquals("default", config.settings.context.state.value.name)
-		assertEquals(listOf("default", "second"), config.profiles.value.settings)
+		assertEquals(listOf("default", "second"), config.profiles.value.settings.names)
 		config.switchProfile(ProfileKind.SETTINGS, "second")
 		assertEquals(TrackersConfig().timeoutDelay, config.settings.context.state.value.data.trackersConfig.timeoutDelay)
 	}
@@ -32,7 +34,7 @@ class ProfilesTest {
 		config.settings.context.dispatch(SettingsActions.Update { copy(trackersConfig = trackersConfig.copy(timeoutDelay = 99f)) })
 		runCurrent()
 
-		assertEquals(ProfileStatus.OK, config.createProfile(ProfileKind.SETTINGS, "copy", copyFrom = "default"))
+		assertEquals(ProfileOperationStatus.OK, config.createProfile(ProfileKind.SETTINGS, "copy", copyFrom = "default"))
 
 		config.switchProfile(ProfileKind.SETTINGS, "copy")
 		assertEquals(99f, config.settings.context.state.value.data.trackersConfig.timeoutDelay)
@@ -42,10 +44,10 @@ class ProfilesTest {
 	fun `names are validated and compared case-insensitively`() = runTest {
 		val config = buildConfig(this)
 
-		assertEquals(ProfileStatus.INVALID_NAME, config.createProfile(ProfileKind.USER, "../evil", copyFrom = null))
-		assertEquals(ProfileStatus.INVALID_NAME, config.createProfile(ProfileKind.USER, "", copyFrom = null))
-		assertEquals(ProfileStatus.ALREADY_EXISTS, config.createProfile(ProfileKind.USER, "DEFAULT", copyFrom = null))
-		assertEquals(ProfileStatus.NOT_FOUND, config.createProfile(ProfileKind.USER, "x", copyFrom = "missing"))
+		assertEquals(ProfileOperationStatus.INVALID_NAME, config.createProfile(ProfileKind.USER, "../evil", copyFrom = null))
+		assertEquals(ProfileOperationStatus.INVALID_NAME, config.createProfile(ProfileKind.USER, "", copyFrom = null))
+		assertEquals(ProfileOperationStatus.ALREADY_EXISTS, config.createProfile(ProfileKind.USER, "DEFAULT", copyFrom = null))
+		assertEquals(ProfileOperationStatus.NOT_FOUND, config.createProfile(ProfileKind.USER, "x", copyFrom = "missing"))
 	}
 
 	@Test
@@ -53,10 +55,10 @@ class ProfilesTest {
 		val config = buildConfig(this)
 		config.createProfile(ProfileKind.SETTINGS, "other", copyFrom = null)
 
-		assertEquals(ProfileStatus.IS_ACTIVE, config.deleteProfile(ProfileKind.SETTINGS, "default"))
-		assertEquals(ProfileStatus.OK, config.deleteProfile(ProfileKind.SETTINGS, "other"))
-		assertEquals(listOf("default"), config.profiles.value.settings)
-		assertEquals(ProfileStatus.NOT_FOUND, config.deleteProfile(ProfileKind.SETTINGS, "other"))
+		assertEquals(ProfileOperationStatus.IS_ACTIVE, config.deleteProfile(ProfileKind.SETTINGS, "default"))
+		assertEquals(ProfileOperationStatus.OK, config.deleteProfile(ProfileKind.SETTINGS, "other"))
+		assertEquals(listOf("default"), config.profiles.value.settings.names)
+		assertEquals(ProfileOperationStatus.NOT_FOUND, config.deleteProfile(ProfileKind.SETTINGS, "other"))
 	}
 
 	@Test
@@ -64,14 +66,14 @@ class ProfilesTest {
 		val storage = MemoryStorage()
 		val config = buildConfig(this, storage)
 
-		assertEquals(ProfileStatus.OK, config.renameProfile(ProfileKind.USER, "default", "me"))
+		assertEquals(ProfileOperationStatus.OK, config.renameProfile(ProfileKind.USER, "default", "me"))
 		runCurrent()
 
 		assertEquals("me", config.userConfig.context.state.value.name)
 		assertEquals("me", config.globalConfig.context.state.value.selectedUserProfile)
 		assertTrue("user/me.json" in storage.files)
 		assertTrue("user/default.json" !in storage.files)
-		assertEquals(listOf("me"), config.profiles.value.user)
+		assertEquals(listOf("me"), config.profiles.value.user.names)
 	}
 
 	@Test

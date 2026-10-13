@@ -3,7 +3,6 @@ package dev.slimevr.udp
 import dev.slimevr.TestAppContext
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.MemoryStorage
-import dev.slimevr.config.ProfileKind
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.TrackersConfig
 import dev.slimevr.config.jsonConfig
@@ -15,8 +14,12 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import java.net.BindException
+import solarxr_protocol.rpc.ProfileKind
+import java.net.DatagramPacket
 import java.net.DatagramSocket
+import java.net.InetAddress
+import java.net.PortUnreachableException
+import java.net.SocketTimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -25,11 +28,19 @@ import kotlin.time.Duration.Companion.seconds
 
 private fun freeUdpPort(): Int = DatagramSocket(0).use { it.localPort }
 
-private fun isBound(port: Int): Boolean = try {
-	DatagramSocket(port).close()
-	false
-} catch (_: BindException) {
-	true
+// Probes with a datagram so the probe never holds the port, a closed port answers with ICMP unreachable
+private fun isBound(port: Int): Boolean = DatagramSocket().use { probe ->
+	probe.connect(InetAddress.getLoopbackAddress(), port)
+	probe.soTimeout = 50
+	try {
+		probe.send(DatagramPacket(ByteArray(1), 1))
+		probe.receive(DatagramPacket(ByteArray(1), 1))
+		true
+	} catch (_: PortUnreachableException) {
+		false
+	} catch (_: SocketTimeoutException) {
+		true
+	}
 }
 
 private suspend fun awaitUntil(what: String, condition: () -> Boolean) {
