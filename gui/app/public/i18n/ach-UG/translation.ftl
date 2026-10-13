@@ -63,6 +63,11 @@ titlebar-update = crwdns7092:0crwdne7092:0
 titlebar-minimize = crwdns7094:0crwdne7094:0
 titlebar-maximize = crwdns7096:0crwdne7096:0
 titlebar-close = crwdns7098:0crwdne7098:0
+titlebar-profiles = crwdns9868:0crwdne9868:0
+titlebar-profiles-tooltip = crwdns9870:0crwdne9870:0
+titlebar-profiles-settings = crwdns9872:0crwdne9872:0
+titlebar-profiles-user = crwdns9874:0crwdne9874:0
+titlebar-profiles-manage = crwdns9876:0crwdne9876:0
 
 ## Body parts
 
@@ -385,6 +390,34 @@ mounting_selection_menu-close = crwdns7648:0crwdne7648:0
 ## Sidebar settings
 
 settings-advanced_section = crwdns9686:0crwdne9686:0
+settings-sidebar-profiles = crwdns9878:0crwdne9878:0
+settings-profiles-settings = crwdns9880:0crwdne9880:0
+settings-profiles-settings-description = crwdns9882:0crwdne9882:0
+settings-profiles-user = crwdns9884:0crwdne9884:0
+settings-profiles-user-description = crwdns9886:0crwdne9886:0
+settings-profiles-new_settings = crwdns9888:0crwdne9888:0
+settings-profiles-new_user = crwdns9890:0crwdne9890:0
+settings-profiles-default_name = crwdns9892:0$ncrwdne9892:0
+settings-profiles-start_from = crwdns9894:0crwdne9894:0
+settings-profiles-start_from-defaults = crwdns9896:0crwdne9896:0
+settings-profiles-start_from-copy = crwdns9898:0$namecrwdne9898:0
+settings-profiles-name = crwdns9900:0crwdne9900:0
+settings-profiles-create = crwdns9902:0crwdne9902:0
+settings-profiles-save = crwdns9904:0crwdne9904:0
+settings-profiles-cancel = crwdns9906:0crwdne9906:0
+settings-profiles-rename = crwdns9908:0crwdne9908:0
+settings-profiles-duplicate = crwdns9910:0crwdne9910:0
+settings-profiles-delete = crwdns9912:0crwdne9912:0
+settings-profiles-delete-active = crwdns9914:0crwdne9914:0
+settings-profiles-delete_action = crwdns9916:0crwdne9916:0
+settings-profiles-delete_confirm = crwdns9918:0$namecrwdne9918:0
+settings-profiles-copy_name = crwdns9920:0$namecrwdne9920:0
+settings-profiles-error-invalid_kind = crwdns9922:0crwdne9922:0
+settings-profiles-error-invalid_name = crwdns9924:0crwdne9924:0
+settings-profiles-error-already_exists = crwdns9926:0crwdne9926:0
+settings-profiles-error-not_found = crwdns9928:0crwdne9928:0
+settings-profiles-error-is_active = crwdns9930:0crwdne9930:0
+settings-profiles-error-failed = crwdns9932:0crwdne9932:0
 settings-sidebar-search = crwdns9768:0crwdne9768:0
 settings-sidebar-search-empty = crwdns9770:0crwdne9770:0
 settings-sidebar-search-hint = crwdns9776:0crwdne9776:0
@@ -893,7 +926,7 @@ settings-utils-advanced-reset-server-label = crwdns8424:0crwdne8424:0
 settings-utils-advanced-reset-all = crwdns8426:0crwdne8426:0
 settings-utils-advanced-reset-all-description = crwdns8428:0crwdne8428:0
 settings-utils-advanced-reset-all-label = crwdns8430:0crwdne8430:0
-settings-utils-advanced-reset_warning = crwdns8432:0$typecrwdne8432:0
+settings-utils-advanced-reset_warning = crwdns8432:0$typecrwdnd8432:0$typecrwdne8432:0
 settings-utils-advanced-reset_warning-reset = crwdns8434:0crwdne8434:0
 settings-utils-advanced-reset_warning-cancel = crwdns8436:0crwdne8436:0
 settings-utils-advanced-folders_group = crwdns9760:0crwdne9760:0
