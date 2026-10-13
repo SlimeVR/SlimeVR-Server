@@ -386,9 +386,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Può essere disabilitato per ogni tracker nelle impostazioni del tracker. <b>Per favore non spegnere nessuno dei tracker durante l'attivazione!</b>
 settings-stay_aligned-description = Rimani Allineato riduce la deriva regolando gradualmente i tracker per allinearsi alle tue pose rilassate.
 settings-stay_aligned-setup-label = Configura Rimani Allineato
-settings-stay_aligned-setup-description = Devi completare "Configura Rimani Allineato" per attivare Rimani Allineato.
 settings-stay_aligned-relaxed_poses-label = Pose Rilassate
-settings-stay_aligned-relaxed_poses-description = Rimani Allineato utilizza le tue pose rilassate per mantenere allineati i tracker. Usa "Configura Rimani Allineato" per aggiornare queste pose.
 settings-stay_aligned-relaxed_poses-standing = Regola i tracker stando in piedi
 settings-stay_aligned-relaxed_poses-sitting = Regola i tracker mentre sei seduto su una sedia
 settings-stay_aligned-relaxed_poses-flat = Regola i tracker mentre sei seduto a terra o sdraiato sulla schiena
@@ -419,14 +417,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = Correzione slittamen
 settings-general-fk_settings-leg_tweak-toe_snap = Dita dei piedi piantate
 settings-general-fk_settings-leg_tweak-foot_plant = Piedi piantati
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore di correzione slittamento
-settings-general-fk_settings-leg_tweak-skating_correction-description = "Correzione slittamento" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti. Quando abiliti questa funzione é necessario eseguire un ripristino completo e ri-calibrazione in gioco per il corretto funzionamento.
-settings-general-fk_settings-leg_tweak-floor_clip-description = "Compenetrazione pavimento" può ridurre o anche eliminare completamente la compenetrazione con il pavimento. Quando abiliti questa funzione é necessario eseguire un ripristino completo e ri-calibrazione in gioco per il corretto funzionamento.
 settings-general-fk_settings-leg_tweak-toe_snap-description = "Dita dei piedi piantate" prova ad indovinare la rotazione dei tuoi piedi quando non stai usando dei tracker per i piedi.
 settings-general-fk_settings-leg_tweak-foot_plant-description = "Piedi piantati" ruota i piedi in modo tale che siano paralleli al terreno quando in contatto con esso.
 settings-general-fk_settings-leg_fk = Tracciamento delle gambe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Impedisci ai legamenti di ruotare oltre il loro limite
 settings-general-fk_settings-skeleton_settings-ratios = Proporzioni dello scheletro
-settings-general-fk_settings-skeleton_settings-ratios-description = Modifica i valori delle impostazioni dello scheletro. Potrebbe essere necessario regolare le proporzioni dopo aver modificato queste impostazioni.
 settings-general-fk_settings-self_localization-title = Modalità Mocap
 
 ## Gesture control settings (tracker tapping)
@@ -838,7 +833,6 @@ onboarding-stay_aligned-previous_step = Precedente
 onboarding-stay_aligned-next_step = Successivo
 onboarding-stay_aligned-restart = Riavvia
 onboarding-stay_aligned-done = Fatto
-onboarding-stay_aligned-manual_mounting-done = Fatto
 
 ## Home
 
