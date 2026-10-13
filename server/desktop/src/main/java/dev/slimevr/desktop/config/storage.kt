@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.RandomAccessFile
+import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
@@ -17,13 +18,22 @@ class DesktopConfigStorage(
 		if (file.exists()) file.readText() else null
 	}
 
-	override suspend fun write(path: String, content: String) = withContext(Dispatchers.IO) {
+	override suspend fun write(path: String, content: String, overwrite: Boolean): Boolean = withContext(Dispatchers.IO) {
 		val file = resolve(path)
 		file.parentFile?.mkdirs()
 		val tmp = File(file.parent, "${file.name}.tmp")
 		tmp.writeText(content)
-		Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-		Unit
+		if (overwrite) {
+			Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+			return@withContext true
+		}
+		try {
+			Files.move(tmp.toPath(), file.toPath())
+			true
+		} catch (_: FileAlreadyExistsException) {
+			tmp.delete()
+			false
+		}
 	}
 
 	override suspend fun backup(path: String) = withContext(Dispatchers.IO) {
@@ -41,6 +51,22 @@ class DesktopConfigStorage(
 
 	override suspend fun exists(path: String): Boolean = withContext(Dispatchers.IO) {
 		resolve(path).exists()
+	}
+
+	override suspend fun list(dir: String): List<String> = withContext(Dispatchers.IO) {
+		resolve(dir).list()?.toList() ?: emptyList()
+	}
+
+	override suspend fun delete(path: String) = withContext(Dispatchers.IO) {
+		Files.deleteIfExists(resolve(path).toPath())
+		Unit
+	}
+
+	override suspend fun move(from: String, to: String) = withContext(Dispatchers.IO) {
+		val target = resolve(to)
+		target.parentFile?.mkdirs()
+		Files.move(resolve(from).toPath(), target.toPath())
+		Unit
 	}
 
 	override suspend fun ensureDirectory(path: String): Boolean = withContext(Dispatchers.IO) {

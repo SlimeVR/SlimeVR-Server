@@ -5,6 +5,8 @@ fun reduce(state: SettingsState, action: SettingsActions): SettingsState = when 
 
 	is SettingsActions.LoadProfile -> action.newState
 
+	is SettingsActions.Rename -> state.copy(name = action.name)
+
 	is SettingsActions.UpdateTracker -> {
 		val existing = state.data.trackers[action.hardwareId] ?: TrackerConfig()
 		state.copy(data = state.data.copy(trackers = state.data.trackers + (action.hardwareId to action.transform(existing))))

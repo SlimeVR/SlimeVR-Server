@@ -86,12 +86,12 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	return userConfig
 }
 
-fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
+fun buildTestSkeleton(scope: CoroutineScope, userConfig: UserConfig = buildTestUserConfig(scope)): Skeleton {
 	val context = Context.create(
 		initialState = DEFAULT_SKELETON_STATE,
 		scope = scope,
 		reducer = ::reduceSkeleton,
-		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
+		behaviours = listOf(ProportionsBehaviour(userConfig)),
 		name = "TestSkeleton",
 	)
 	val computed = MutableSharedFlow<ComputedSkeleton>(
@@ -219,9 +219,12 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 
 private object NoopConfigStorage : ConfigStorage {
 	override suspend fun read(path: String): String? = null
-	override suspend fun write(path: String, content: String) = Unit
+	override suspend fun write(path: String, content: String, overwrite: Boolean): Boolean = true
 	override suspend fun backup(path: String) = Unit
 	override suspend fun exists(path: String): Boolean = false
+	override suspend fun list(dir: String): List<String> = emptyList()
+	override suspend fun delete(path: String) = Unit
+	override suspend fun move(from: String, to: String) = Unit
 	override suspend fun ensureDirectory(path: String): Boolean = true
 	override suspend fun openTextFile(path: String): TextFileHandle = error("Not used in tests")
 }
@@ -241,6 +244,7 @@ fun buildTestAppConfig(scope: CoroutineScope): AppConfig {
 		globalConfig = GlobalConfig(globalContext).also { it.startObserving() },
 		userConfig = buildTestUserConfig(scope),
 		settings = buildTestSettings(scope),
+		storage = NoopConfigStorage,
 	)
 }
 

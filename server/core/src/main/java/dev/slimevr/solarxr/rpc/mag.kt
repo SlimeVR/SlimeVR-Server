@@ -8,8 +8,13 @@ import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import solarxr_protocol.datatypes.DeviceOrigin
@@ -35,6 +40,13 @@ class MagBehaviour(
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
+		receiver.appContext.config.settings.context.state
+			.map { it.data.trackersConfig.globalMagEnabled }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach { enable -> receiver.sendRpc(MagToggleResponse(trackerId = 0u, enable = enable)) }
+			.launchIn(receiver.context.scope)
+
 		receiver.rpcDispatcher.on<ChangeMagToggleRequest> { req ->
 			val trackerId = req.trackerId.toInt()
 			val enable = req.enable

@@ -5,7 +5,7 @@ package dev.slimevr.heightcalibration
 import com.jme3.math.FastMath
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
-import dev.slimevr.skeleton.computeDefaultProportionsByBone
+import dev.slimevr.config.withUserHeight
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.allContextStates
 import io.github.axisangles.ktmath.Vector3
@@ -207,9 +207,7 @@ internal suspend fun runCalibrationSession(
 
 					if (finalStatus == UserHeightCalibrationStatus.DONE) {
 						userConfig.context.dispatch(
-							UserConfigActions.Update {
-								copy(userHeight = relativeY, proportions = computeDefaultProportionsByBone(relativeY))
-							},
+							UserConfigActions.Update { withUserHeight(this, relativeY) },
 						)
 					}
 				}

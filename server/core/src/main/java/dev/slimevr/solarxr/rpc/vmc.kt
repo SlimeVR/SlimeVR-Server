@@ -8,6 +8,7 @@ import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vmc.VMCStatus
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -55,6 +56,14 @@ class VmcBehaviour(
 			receiver.sendRpc(buildVmcOscSettingsResponse(settings.context.state.value.data.vmcConfig))
 		}.launchIn(receiver.context.scope)
 
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildVmcOscSettingsResponse(it.data.vmcConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
+
 		receiver.rpcDispatcher.on<VMCOSCStatusRequest> {
 			receiver.sendRpc(buildStatusResponse(vmcManager.context.state.value.status))
 		}.launchIn(receiver.context.scope)
@@ -63,6 +72,14 @@ class VmcBehaviour(
 		receiver.rpcDispatcher.on<VRMSettingsRequest> {
 			receiver.sendRpc(buildVrmSettingsResponse(settings.context.state.value.data.vmcConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildVrmSettingsResponse(it.data.vmcConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		// Receive VMC config
 		receiver.rpcDispatcher.on<ChangeVMCOSCSettingsRequest> { req ->

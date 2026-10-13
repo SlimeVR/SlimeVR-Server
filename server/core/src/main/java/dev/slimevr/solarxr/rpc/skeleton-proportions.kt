@@ -2,6 +2,8 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.config.withDefaultProportions
+import dev.slimevr.config.withUserHeight
 import dev.slimevr.sentry.ErrorReportingManager
 import dev.slimevr.skeleton.ALL_BODY_PARTS
 import dev.slimevr.skeleton.BONE_SPECS
@@ -9,8 +11,6 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.clampBoneValue
-import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
-import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.skeleton.height
 import dev.slimevr.skeleton.reportProportionsMethodUsage
 import dev.slimevr.skeleton.toBoneValues
@@ -72,9 +72,7 @@ class SkeletonProportionsBehaviour(
 			val height = headHeight - floorHeight
 			if (height >= MIN_HEIGHT) {
 				userConfig.context.dispatch(
-					UserConfigActions.Update {
-						copy(userHeight = height, proportions = computeDefaultProportionsByBone(height))
-					},
+					UserConfigActions.Update { withUserHeight(this, height) },
 				)
 				reportProportionsMethodUsage(errorReporting, "scaled", calibration = "manual")
 			}
@@ -83,8 +81,7 @@ class SkeletonProportionsBehaviour(
 		receiver.rpcDispatcher.on<SkeletonProportionsResetAllRequest> {
 			val height = userConfig.context.state.value.data.userHeight
 			if (height >= MIN_HEIGHT) {
-				val defaults = computeAllDefaultProportionsByBone(height)
-				userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = defaults) })
+				userConfig.context.dispatch(UserConfigActions.Update { withDefaultProportions(this) })
 			}
 		}.launchIn(receiver.context.scope)
 

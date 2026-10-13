@@ -6,8 +6,6 @@ import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -253,6 +251,7 @@ data class SettingsState(
 sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
+	data class Rename(val name: String) : SettingsActions
 	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
 	data class UpdateDongle(val serialNumber: String, val transform: DongleConfig.() -> DongleConfig) : SettingsActions
 	data class AddAllowedUdpDevice(val mac: String) : SettingsActions
@@ -270,7 +269,7 @@ class Settings(
 ) {
 	fun startObserving() = context.observeAll(this)
 
-	private var autosaveJob: Job = startAutosave()
+	private var autosave: Autosave = startAutosave()
 
 	private fun startAutosave() = launchAutosave(
 		scope = scope,
@@ -280,8 +279,20 @@ class Settings(
 		serialize = { state -> jsonConfig.encodeToString(state.data) },
 	)
 
+	suspend fun flush() = autosave.flush()
+
+	suspend fun rename(newName: String) {
+		autosave.stop()
+		try {
+			storage.move(configPath(settingsDir, profileFileName(context.state.value.name)), configPath(settingsDir, profileFileName(newName)))
+			context.dispatch(SettingsActions.Rename(newName))
+		} finally {
+			autosave = startAutosave()
+		}
+	}
+
 	suspend fun swap(newName: String) {
-		autosaveJob.cancelAndJoin()
+		autosave.stop()
 
 		val newData = loadFileWithBackup(storage, configPath(settingsDir, "$newName.json"), SettingsConfigState()) {
 			parseAndMigrateSettingsConfig(it)
@@ -289,7 +300,7 @@ class Settings(
 		val newState = SettingsState(name = newName, data = newData)
 		context.dispatch(SettingsActions.LoadProfile(newState))
 
-		autosaveJob = startAutosave()
+		autosave = startAutosave()
 	}
 
 	companion object {

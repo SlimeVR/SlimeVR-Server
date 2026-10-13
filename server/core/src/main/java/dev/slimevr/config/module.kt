@@ -2,7 +2,13 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.logging.AppLogger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -61,7 +67,7 @@ class GlobalConfig(
 		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): GlobalConfig {
 			val initialState = loadFileWithBackup(storage, "global.json", GlobalConfigState()) {
 				parseAndMigrateGlobalConfig(it)
-			}
+			}.let(::withSafeProfileNames)
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
@@ -84,6 +90,14 @@ class GlobalConfig(
 	}
 }
 
+private fun withSafeProfileNames(state: GlobalConfigState): GlobalConfigState {
+	val defaults = GlobalConfigState()
+	return state.copy(
+		selectedUserProfile = state.selectedUserProfile.takeIf(::isSafeProfileName) ?: defaults.selectedUserProfile,
+		selectedSettingsProfile = state.selectedSettingsProfile.takeIf(::isSafeProfileName) ?: defaults.selectedSettingsProfile,
+	)
+}
+
 private fun migrateGlobalConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
 	return when {
@@ -101,15 +115,122 @@ class AppConfig(
 	val globalConfig: GlobalConfig,
 	val userConfig: UserConfig,
 	val settings: Settings,
+	private val storage: ConfigStorage,
 ) {
-	suspend fun switchUserProfile(name: String) {
-		globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(name))
-		userConfig.swap(name)
+	private val profilesLock = Mutex()
+	private val profilesState = MutableStateFlow(ProfilesState())
+
+	/** Names of the profiles on disk, always including the active ones. */
+	val profiles: StateFlow<ProfilesState> = profilesState
+
+	suspend fun refreshProfiles() {
+		profilesState.value = ProfilesState(
+			settings = listProfiles(ProfileKind.SETTINGS),
+			user = listProfiles(ProfileKind.USER),
+		)
 	}
 
-	suspend fun switchSettingsProfile(name: String) {
-		globalConfig.context.dispatch(GlobalConfigActions.SetSettingsProfile(name))
-		settings.swap(name)
+	private fun dirOf(kind: ProfileKind) = when (kind) {
+		ProfileKind.SETTINGS -> SETTINGS_PROFILE_DIR
+		ProfileKind.USER -> USER_PROFILE_DIR
+	}
+
+	private fun pathOf(kind: ProfileKind, name: String) = configPath(dirOf(kind), profileFileName(name))
+
+	private fun activeProfile(kind: ProfileKind) = when (kind) {
+		ProfileKind.SETTINGS -> settings.context.state.value.name
+		ProfileKind.USER -> userConfig.context.state.value.name
+	}
+
+	private suspend fun flushActive(kind: ProfileKind) = when (kind) {
+		ProfileKind.SETTINGS -> settings.flush()
+		ProfileKind.USER -> userConfig.flush()
+	}
+
+	private suspend fun listProfiles(kind: ProfileKind): List<String> =
+		(profileNamesIn(storage.list(dirOf(kind))) + activeProfile(kind)).distinct().sortedBy { it.lowercase() }
+
+	private suspend fun profileOperation(block: suspend () -> ProfileStatus): ProfileStatus = profilesLock.withLock {
+		try {
+			block()
+		} catch (e: CancellationException) {
+			throw e
+		} catch (e: Exception) {
+			AppLogger.config.error(e, "Profile operation failed")
+			ProfileStatus.FAILED
+		}
+	}
+
+	suspend fun switchProfile(kind: ProfileKind, name: String): ProfileStatus = profileOperation {
+		if (name !in listProfiles(kind)) return@profileOperation ProfileStatus.NOT_FOUND
+		when (kind) {
+			ProfileKind.SETTINGS -> {
+				globalConfig.context.dispatch(GlobalConfigActions.SetSettingsProfile(name))
+				settings.swap(name)
+			}
+
+			ProfileKind.USER -> {
+				globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(name))
+				userConfig.swap(name)
+			}
+		}
+		refreshProfiles()
+		ProfileStatus.OK
+	}
+
+	/** Creates a profile from the defaults, or as a copy of [copyFrom]. Does not switch to it. */
+	suspend fun createProfile(kind: ProfileKind, name: String, copyFrom: String?): ProfileStatus = profileOperation {
+		if (!isValidProfileName(name)) return@profileOperation ProfileStatus.INVALID_NAME
+		val names = listProfiles(kind)
+		if (hasProfileNamed(names, name)) return@profileOperation ProfileStatus.ALREADY_EXISTS
+
+		val content = if (copyFrom == null) {
+			when (kind) {
+				ProfileKind.SETTINGS -> jsonConfig.encodeToString(SettingsConfigState())
+				ProfileKind.USER -> jsonConfig.encodeToString(UserConfigData())
+			}
+		} else {
+			if (copyFrom !in names) return@profileOperation ProfileStatus.NOT_FOUND
+			if (copyFrom == activeProfile(kind)) flushActive(kind)
+			storage.read(pathOf(kind, copyFrom)) ?: return@profileOperation ProfileStatus.NOT_FOUND
+		}
+		if (!storage.write(pathOf(kind, name), content, overwrite = false)) return@profileOperation ProfileStatus.ALREADY_EXISTS
+		refreshProfiles()
+		ProfileStatus.OK
+	}
+
+	suspend fun renameProfile(kind: ProfileKind, from: String, to: String): ProfileStatus = profileOperation {
+		if (!isValidProfileName(to)) return@profileOperation ProfileStatus.INVALID_NAME
+		val names = listProfiles(kind)
+		if (from !in names) return@profileOperation ProfileStatus.NOT_FOUND
+		if (hasProfileNamed(names, to)) return@profileOperation ProfileStatus.ALREADY_EXISTS
+
+		if (from != activeProfile(kind)) {
+			storage.move(pathOf(kind, from), pathOf(kind, to))
+		} else {
+			when (kind) {
+				ProfileKind.SETTINGS -> {
+					settings.rename(to)
+					globalConfig.context.dispatch(GlobalConfigActions.SetSettingsProfile(to))
+				}
+
+				ProfileKind.USER -> {
+					userConfig.rename(to)
+					globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(to))
+				}
+			}
+		}
+		refreshProfiles()
+		ProfileStatus.OK
+	}
+
+	suspend fun deleteProfile(kind: ProfileKind, name: String): ProfileStatus = profileOperation {
+		if (name !in listProfiles(kind)) return@profileOperation ProfileStatus.NOT_FOUND
+		if (name == activeProfile(kind)) return@profileOperation ProfileStatus.IS_ACTIVE
+
+		storage.delete(pathOf(kind, name))
+		refreshProfiles()
+		ProfileStatus.OK
 	}
 
 	fun reset() {
@@ -132,7 +253,8 @@ class AppConfig(
 				globalConfig = globalConfig,
 				userConfig = userConfig,
 				settings = settings,
-			)
+				storage = storage,
+			).also { it.refreshProfiles() }
 		}
 	}
 }

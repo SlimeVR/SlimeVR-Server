@@ -14,6 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -33,13 +34,11 @@ import kotlin.time.measureTime
 class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
-			.distinctUntilChangedBy { it.data.proportions }
 			.map { it.data.proportions }
+			.distinctUntilChanged()
 			.onEach { proportions ->
-				if (proportions.isNotEmpty()) {
-					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
-					receiver.context.dispatch(SkeletonActions.RequestProcessorReset(ResetType.FULL))
-				}
+				receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
+				receiver.context.dispatch(SkeletonActions.RequestProcessorReset(ResetType.FULL))
 			}
 			.launchIn(receiver.context.scope)
 	}

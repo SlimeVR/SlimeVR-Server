@@ -7,6 +7,11 @@ import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tapdetection.TapDetectionActions
 import dev.slimevr.tapdetection.TapDetectionManager
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeTapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsResponse
@@ -37,6 +42,14 @@ class TapDetectionBehaviour(
 		receiver.rpcDispatcher.on<TapDetectionSettingsRequest> {
 			receiver.sendRpc(buildTapDetectionSettingsResponse(settings.context.state.value.data.tapDetectionConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildTapDetectionSettingsResponse(it.data.tapDetectionConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->

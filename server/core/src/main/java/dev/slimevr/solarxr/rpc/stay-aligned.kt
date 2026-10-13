@@ -9,6 +9,11 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeStayAlignedEnabledRequest
 import solarxr_protocol.rpc.ChangeStayAlignedSettingsRequest
 import solarxr_protocol.rpc.DetectStayAlignedRelaxedPoseRequest
@@ -43,6 +48,14 @@ class StayAlignedBehaviour(
 		receiver.rpcDispatcher.on<StayAlignedSettingsRequest> {
 			sendConfig(receiver, settings)
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildStayAlignedSettingsResponse(it.data.stayAlignedConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeStayAlignedSettingsRequest> { req ->

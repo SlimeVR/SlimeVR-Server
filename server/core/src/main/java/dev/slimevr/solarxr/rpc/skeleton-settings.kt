@@ -9,6 +9,11 @@ import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
 import solarxr_protocol.rpc.LegTweaksTmpChange
 import solarxr_protocol.rpc.LegTweaksTmpClear
@@ -52,6 +57,14 @@ class SkeletonSettingsBehaviour(
 		receiver.rpcDispatcher.on<SkeletonSettingsRequest> {
 			receiver.sendRpc(buildSkeletonSettingsResponse(settings.context.state.value.data.skeletonConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildSkeletonSettingsResponse(it.data.skeletonConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeSkeletonSettingsRequest> { req ->

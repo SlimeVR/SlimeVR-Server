@@ -8,6 +8,7 @@ import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vrcosc.VRCOSCManager
 import dev.slimevr.vrcosc.VRCOSCStatus
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -50,6 +51,14 @@ internal class VrcOscBehaviour(
 		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
 			receiver.sendRpc(buildVrcOscSettingsResponse(settings.context.state.value.data.vrcOscConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildVrcOscSettingsResponse(it.data.vrcOscConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
 			receiver.sendRpc(buildStatusResponse(vrcOscManager.context.state.value.status))

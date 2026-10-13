@@ -181,7 +181,7 @@ class Tracker(
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerStaleCalibrationBehaviour(),
-				TrackerConfigBehaviour(settings, hardwareId),
+				TrackerConfigBehaviour(settings, hardwareId, baseState),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
 				TrackerStayAlignedBehaviour(settings),
