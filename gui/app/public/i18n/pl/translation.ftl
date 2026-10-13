@@ -623,19 +623,9 @@ settings-utils-advanced-reset-gui = Zresetuj ustawienia GUI
 settings-utils-advanced-reset-gui-description = Przywróć domyślne ustawienia interfejsu.
 settings-utils-advanced-reset-gui-label = Zresetuj GUI
 settings-utils-advanced-reset-server = Zresetuj ustawienia śledzenia
-settings-utils-advanced-reset-server-description = Przywróć domyślne ustawienia śledzenia.
 settings-utils-advanced-reset-server-label = Zresetuj śledzenie
 settings-utils-advanced-reset-all = Zresetuj wszystkie ustawienia
-settings-utils-advanced-reset-all-description = Przywróć ustawienia domyślne interfejsu i śledzenia.
 settings-utils-advanced-reset-all-label = Zresetuj wszystko
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui] <b>Ostrzeżenie:</b> Spowoduje to przywrócenie ustawień domyślnych interfejsu GUI.¶
-        [server] <b>Ostrzeżenie:</b>Spowoduje to przywrócenie domyślnych ustawień śledzenia.¶
-       *[all]
-            <b>Ostrzeżenie:</b> Spowoduje to zresetowanie wszystkich ustawień do wartości domyślnych.¶
-            Czy na pewno chcesz to zrobić?
-    }
 settings-utils-advanced-reset_warning-reset = Zresetuj ustawienia
 settings-utils-advanced-reset_warning-cancel = Anuluj
 settings-utils-advanced-open_data-v1 = Folder konfiguracyjny
