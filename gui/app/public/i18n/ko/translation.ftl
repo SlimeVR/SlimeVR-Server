@@ -470,17 +470,9 @@ settings-utils-advanced-reset-gui = GUI 설정 초기화하기
 settings-utils-advanced-reset-gui-description = 인터페이스 관련 설정을 원래대로 되돌려요.
 settings-utils-advanced-reset-gui-label = GUI 설정 초기화
 settings-utils-advanced-reset-server = 트래킹 설정 초기화하기
-settings-utils-advanced-reset-server-description = 트래킹 관련 설정을 원래대로 되돌려요.
 settings-utils-advanced-reset-server-label = 트래킹 설정 초기화
 settings-utils-advanced-reset-all = 모든 설정 초기화하기
-settings-utils-advanced-reset-all-description = 인터페이스와 트래킹 설정을 모두 원래대로 되돌려요.
 settings-utils-advanced-reset-all-label = 모든 설정 초기화
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui] <b>경고:</b> 이렇게 하면 화면 표시와 관련된 모든 설정이 초기화돼요. 계속하시겠어요?
-        [server] <b>경고:</b> 이렇게 하면 화면 트래커의 움직임에 관한 모든 설정이 초기화돼요. 계속하시겠어요?
-       *[all] <b>경고:</b> 이렇게 하면 지금까지 변경한 모든 설정이 초기화돼요. 계속하시겠어요?
-    }
 settings-utils-advanced-reset_warning-reset = 설정 초기화
 settings-utils-advanced-reset_warning-cancel = 취소
 settings-utils-advanced-open_data-v1 = 설정 폴더
