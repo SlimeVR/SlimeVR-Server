@@ -6,7 +6,12 @@ import {
   SittingRelaxedPoseStep,
   StandingRelaxedPoseStep,
 } from './stay-aligned-steps/RelaxedPoseSteps';
-import { ChangeStayAlignedEnabledRequestT, RpcMessage } from 'solarxr-protocol';
+import {
+  ChangeStayAlignedEnabledRequestT,
+  MountingMethod,
+  RpcMessage,
+} from 'solarxr-protocol';
+import { useResetsSettings } from '@/hooks/resets-settings';
 import { RPCPacketType, useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useRef } from 'react';
 import VerticalStepper from '@/components/commons/VerticalStepper';
@@ -34,6 +39,7 @@ export function StayAlignedSetup() {
   const { l10n } = useLocalization();
   const { isMobile } = useBreakpoint('mobile');
   const { sendRPCPacket } = useWebsocketAPI();
+  const { resetsSettings } = useResetsSettings();
 
   const viewsRef = useRef<{
     cam1?: SkeletonPreviewView;
@@ -157,12 +163,16 @@ export function StayAlignedSetup() {
                 ),
                 component: PreparationStep,
               },
-              {
-                title: l10n.getString(
-                  'onboarding-stay_aligned-verify_mounting-title'
-                ),
-                component: VerifyMountingStep,
-              },
+              ...(resetsSettings?.mountingMethod === MountingMethod.MANUAL
+                ? []
+                : [
+                    {
+                      title: l10n.getString(
+                        'onboarding-stay_aligned-verify_mounting-title'
+                      ),
+                      component: VerifyMountingStep,
+                    },
+                  ]),
               {
                 title: l10n.getString(
                   'onboarding-stay_aligned-relaxed_poses-standing-title'

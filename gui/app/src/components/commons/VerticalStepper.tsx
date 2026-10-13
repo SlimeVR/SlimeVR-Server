@@ -98,6 +98,10 @@ export type VerticalStep = {
   component: VerticalStepComponentType;
 };
 
+function stepKey({ id, title }: Pick<VerticalStep, 'id' | 'title'>) {
+  return id ?? title;
+}
+
 export default function VerticalStepper({
   steps,
   onStepChange,
@@ -105,7 +109,12 @@ export default function VerticalStepper({
   steps: VerticalStep[];
   onStepChange?: (index: number, id?: string) => void;
 }) {
-  const [currStep, setStep] = useState(0);
+  const [active, setActive] = useState({ key: stepKey(steps[0]), index: 0 });
+  const found = steps.findIndex((step) => stepKey(step) === active.key);
+  const currStep =
+    found !== -1 ? found : Math.min(active.index, steps.length - 1);
+  const setStep = (index: number) =>
+    setActive({ key: stepKey(steps[index]), index });
 
   const nextStep = () => {
     if (currStep + 1 === steps.length) return;
@@ -124,19 +133,20 @@ export default function VerticalStepper({
     setStep(step);
   };
 
+  const currKey = stepKey(steps[currStep]);
   useEffect(() => {
     onStepChange?.(currStep, steps[currStep].id);
-  }, [currStep]);
+  }, [currKey]);
 
   return (
     <Timeline>
-      {steps.map(({ title, component: StepComponent }, index) => (
+      {steps.map(({ title, id, component: StepComponent }, index) => (
         <VerticalStep
           active={currStep}
           index={index}
           title={title}
           last={index === steps.length - 1}
-          key={index}
+          key={stepKey({ title, id })}
         >
           <StepComponent
             nextStep={nextStep}

@@ -1335,6 +1335,7 @@ onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
+onboarding-automatic_mounting-preparation-v2-done = Looks like you've already performed a full reset recently!
 onboarding-automatic_mounting-preparation-example-front = Stand upright, legs parallel, arms at your sides, looking forward.
 onboarding-automatic_mounting-preparation-example-side = From the side, stay straight and don't lean.
 onboarding-automatic_mounting-preparation-example-wrong = Don't spread your legs or arms.
@@ -1450,6 +1451,7 @@ onboarding-stay_aligned-put_trackers_on-description = To save your resting poses
 onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
 onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
 onboarding-stay_aligned-verify_mounting-title = Mounting Calibration
+onboarding-stay_aligned-verify_mounting-change_method = Change method
 onboarding-stay_aligned-preparation-title = Preparation
 onboarding-stay_aligned-preparation-tip = Make sure to stand upright. Keep looking forward with your arms down at your sides.
 onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
@@ -1469,7 +1471,6 @@ onboarding-stay_aligned-previous_step = Previous
 onboarding-stay_aligned-next_step = Next
 onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Done
-onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 home-settings = Home Page Settings
