@@ -942,23 +942,9 @@ settings-utils-advanced-reset-gui = 重置 UI 設定
 settings-utils-advanced-reset-gui-description = 將 UI 設定恢復成預設值。
 settings-utils-advanced-reset-gui-label = 重置 UI 設定
 settings-utils-advanced-reset-server = 重置追蹤設定
-settings-utils-advanced-reset-server-description = 將追蹤設定恢復成預設值。
 settings-utils-advanced-reset-server-label = 重置追蹤設定
 settings-utils-advanced-reset-all = 重置全部設定
-settings-utils-advanced-reset-all-description = 將 UI 與追蹤設定恢復成預設值。
 settings-utils-advanced-reset-all-label = 重置全部設定
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>警告：</b> 這會將 UI 設定重置為預設值。
-            你確定要執行此操作嗎？
-        [server]
-            <b>警告：</b> 這會將追蹤設定重置為預設值。
-            你確定要執行此操作嗎？
-       *[all]
-            <b>警告：</b> 這會將所有設定重置為預設值。
-            你確定要執行此操作嗎？
-    }
 settings-utils-advanced-reset_warning-reset = 重置設定
 settings-utils-advanced-reset_warning-cancel = 取消
 settings-utils-advanced-folders_group = 資料夾
