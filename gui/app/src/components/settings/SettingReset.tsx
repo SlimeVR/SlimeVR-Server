@@ -17,10 +17,10 @@ export function SettingResetButton({ modified, onReset }: SettingResetProps) {
       disabled={!modified}
       onClick={onReset}
       className={classNames(
-        'w-7 h-7 rounded-xl flex items-center justify-center transition-all',
+        'w-7 h-7 rounded-xl flex items-center justify-center transition-colors',
         modified
-          ? 'text-accent hover:bg-background-60 cursor-pointer opacity-100'
-          : 'text-background-40 opacity-30 cursor-not-allowed'
+          ? 'text-accent hover:bg-background-60 cursor-pointer'
+          : 'text-background-40 cursor-not-allowed'
       )}
     >
       <ResetIcon size={16} />

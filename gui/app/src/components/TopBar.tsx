@@ -223,7 +223,7 @@ export function TopBar({
               <TitleBarButton
                 labelId="titlebar-search"
                 onClick={quickSearch.open}
-                className="fill-background-50 hover:fill-background-10"
+                className="fill-window-icon hover:fill-background-10"
               >
                 <SearchIcon />
               </TitleBarButton>
@@ -231,7 +231,7 @@ export function TopBar({
             <TitleBarButton
               labelId="titlebar-settings"
               to="/settings"
-              className="fill-background-50 hover:fill-background-10"
+              className="fill-window-icon hover:fill-background-10"
             >
               <GearIcon />
             </TitleBarButton>

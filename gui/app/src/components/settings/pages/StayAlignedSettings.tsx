@@ -141,9 +141,11 @@ export const stayAlignedSettingsPage = defineSettingsPage({
       rows: {
         setup: {
           title: 'settings-stay_aligned-setup-label',
+          description: 'settings-stay_aligned-setup-label-description',
         },
         enabled: {
           title: 'settings-stay_aligned-enabled-label',
+          description: 'settings-stay_aligned-enabled-label-description',
         },
       },
     },
@@ -151,9 +153,18 @@ export const stayAlignedSettingsPage = defineSettingsPage({
       title: 'settings-stay_aligned-relaxed_poses-label',
       description: 'settings-stay_aligned-relaxed_poses-description',
       rows: {
-        standing: { title: 'settings-stay_aligned-relaxed_poses-standing' },
-        sitting: { title: 'settings-stay_aligned-relaxed_poses-sitting' },
-        flat: { title: 'settings-stay_aligned-relaxed_poses-flat' },
+        standing: {
+          title: 'settings-stay_aligned-relaxed_poses-standing',
+          description: 'settings-stay_aligned-relaxed_poses-pose-description',
+        },
+        sitting: {
+          title: 'settings-stay_aligned-relaxed_poses-sitting',
+          description: 'settings-stay_aligned-relaxed_poses-pose-description',
+        },
+        flat: {
+          title: 'settings-stay_aligned-relaxed_poses-flat',
+          description: 'settings-stay_aligned-relaxed_poses-pose-description',
+        },
       },
     },
     debug: {

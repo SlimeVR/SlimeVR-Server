@@ -195,43 +195,44 @@ export function ResetsSettings() {
                   'armsMountingResetMode',
                   defaults.armsMountingResetMode
                 )}
-              >
-                <div className="grid md:grid-cols-3 gap-3">
-                  <Radio
-                    control={control}
-                    name="armsMountingResetMode"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-arms_mounting_reset_mode-back'
-                    )}
-                    description={l10n.getString(
-                      'settings-general-fk_settings-arms_mounting_reset_mode-back-description'
-                    )}
-                    value={ArmsMountingResetMode.BACK}
-                  />
-                  <Radio
-                    control={control}
-                    name="armsMountingResetMode"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-arms_mounting_reset_mode-forward'
-                    )}
-                    description={l10n.getString(
-                      'settings-general-fk_settings-arms_mounting_reset_mode-forward-description'
-                    )}
-                    value={ArmsMountingResetMode.FORWARD}
-                  />
-                  <Radio
-                    control={control}
-                    name="armsMountingResetMode"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-arms_mounting_reset_mode-t_pose'
-                    )}
-                    description={l10n.getString(
-                      'settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description'
-                    )}
-                    value={ArmsMountingResetMode.SIDE}
-                  />
-                </div>
-              </SettingRow>
+                below={
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <Radio
+                      control={control}
+                      name="armsMountingResetMode"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-arms_mounting_reset_mode-back'
+                      )}
+                      description={l10n.getString(
+                        'settings-general-fk_settings-arms_mounting_reset_mode-back-description'
+                      )}
+                      value={ArmsMountingResetMode.BACK}
+                    />
+                    <Radio
+                      control={control}
+                      name="armsMountingResetMode"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-arms_mounting_reset_mode-forward'
+                      )}
+                      description={l10n.getString(
+                        'settings-general-fk_settings-arms_mounting_reset_mode-forward-description'
+                      )}
+                      value={ArmsMountingResetMode.FORWARD}
+                    />
+                    <Radio
+                      control={control}
+                      name="armsMountingResetMode"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-arms_mounting_reset_mode-t_pose'
+                      )}
+                      description={l10n.getString(
+                        'settings-general-fk_settings-arms_mounting_reset_mode-t_pose-description'
+                      )}
+                      value={ArmsMountingResetMode.SIDE}
+                    />
+                  </div>
+                }
+              />
               <SettingRow
                 setting={groups.main.rows.resetMountingFeet}
                 controlId="resets-mounting-feet"

@@ -269,7 +269,7 @@ export function AdvancedSettings() {
             </SettingsGroup>
           )}
 
-          <fieldset className="flex flex-col mt-10 rounded-2xl border border-status-critical px-2 xs:px-3 pt-4 pb-5 min-w-0">
+          <fieldset className="flex flex-col mt-10 rounded-lg border border-status-critical px-2 xs:px-3 pt-4 pb-5 min-w-0">
             <legend className="uppercase px-2 ml-2">
               <Typography
                 variant="section-title"
@@ -288,8 +288,8 @@ export function AdvancedSettings() {
                   control={
                     <>
                       <Button
-                        variant="secondary"
-                        className="!bg-status-critical whitespace-nowrap"
+                        variant="danger"
+                        className="whitespace-nowrap"
                         onClick={() => setOpen(true)}
                         id={label}
                       />

@@ -99,8 +99,15 @@ export const trackingSettingsPage = defineSettingsPage({
     filtering: {
       title: 'settings-general-tracker_mechanics-filtering',
       rows: {
+        type: {
+          title: 'settings-general-tracker_mechanics-filtering-type',
+          description:
+            'settings-general-tracker_mechanics-filtering-description',
+        },
         amount: {
           title: 'settings-general-tracker_mechanics-filtering-amount',
+          description:
+            'settings-general-tracker_mechanics-filtering-amount-description',
         },
       },
     },
@@ -130,6 +137,8 @@ export const trackingSettingsPage = defineSettingsPage({
         skatingCorrectionAmount: {
           title:
             'settings-general-fk_settings-leg_tweak-skating_correction-amount',
+          description:
+            'settings-general-fk_settings-leg_tweak-skating_correction-amount-description',
         },
       },
     },
@@ -166,18 +175,26 @@ export const trackingSettingsPage = defineSettingsPage({
         imputeSpineFromUpperToLower: {
           title:
             'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower',
+          description:
+            'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description',
         },
         imputeSpineCurvature: {
           title:
             'settings-general-fk_settings-skeleton_settings-impute_spine_curvature',
+          description:
+            'settings-general-fk_settings-skeleton_settings-impute_spine_curvature-description',
         },
         interpolateHipWithUpperLegs: {
           title:
             'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs',
+          description:
+            'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs-description',
         },
         interpolateUpperLegsTwistWithLowerLegs: {
           title:
             'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs',
+          description:
+            'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs-description',
         },
       },
     },
@@ -312,57 +329,54 @@ export function TrackingSettings() {
       title={trackingSettingsPage.title}
     >
       <div className="flex flex-col">
-        <SettingsGroup
-          group={groups.filtering}
-          details={l10n
-            .getString(
-              'settings-general-tracker_mechanics-filtering-description'
-            )
-            .split('\n')
-            .map((line, i) => (
-              <Typography key={i}>{line}</Typography>
-            ))}
-        >
-          <div className="flex md:flex-row flex-col gap-3 p-4">
-            <Radio
-              control={control}
-              name="filtering.type"
-              label={l10n.getString(
-                'settings-general-tracker_mechanics-filtering-type-none'
-              )}
-              description={l10n.getString(
-                'settings-general-tracker_mechanics-filtering-type-none-description'
-              )}
-              value={FilteringType.NONE}
-            />
-            <Radio
-              control={control}
-              name="filtering.type"
-              label={l10n.getString(
-                'settings-general-tracker_mechanics-filtering-type-smoothing'
-              )}
-              description={l10n.getString(
-                'settings-general-tracker_mechanics-filtering-type-smoothing-description'
-              )}
-              value={FilteringType.SMOOTHING}
-            />
-            <Radio
-              control={control}
-              name="filtering.type"
-              label={l10n.getString(
-                'settings-general-tracker_mechanics-filtering-type-prediction'
-              )}
-              description={l10n.getString(
-                'settings-general-tracker_mechanics-filtering-type-prediction-description'
-              )}
-              value={FilteringType.PREDICTION}
-            />
-          </div>
+        <SettingsGroup group={groups.filtering}>
           <SettingRow
-            setting={groups.filtering.rows.amount}
-            disabled={!filteringEnabled}
-            {...stepper('filtering.amount')}
-          />
+            setting={groups.filtering.rows.type}
+            {...resetTo('filtering.type')}
+            childrenDisabled={!filteringEnabled}
+            below={
+              <div className="flex md:flex-row flex-col gap-3">
+                <Radio
+                  control={control}
+                  name="filtering.type"
+                  label={l10n.getString(
+                    'settings-general-tracker_mechanics-filtering-type-none'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-tracker_mechanics-filtering-type-none-description'
+                  )}
+                  value={FilteringType.NONE}
+                />
+                <Radio
+                  control={control}
+                  name="filtering.type"
+                  label={l10n.getString(
+                    'settings-general-tracker_mechanics-filtering-type-smoothing'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-tracker_mechanics-filtering-type-smoothing-description'
+                  )}
+                  value={FilteringType.SMOOTHING}
+                />
+                <Radio
+                  control={control}
+                  name="filtering.type"
+                  label={l10n.getString(
+                    'settings-general-tracker_mechanics-filtering-type-prediction'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-tracker_mechanics-filtering-type-prediction-description'
+                  )}
+                  value={FilteringType.PREDICTION}
+                />
+              </div>
+            }
+          >
+            <SettingRow
+              setting={groups.filtering.rows.amount}
+              {...stepper('filtering.amount')}
+            />
+          </SettingRow>
         </SettingsGroup>
 
         <SettingsGroup group={groups.legFk}>

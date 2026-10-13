@@ -1,8 +1,6 @@
-import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
 import { FieldPath, FieldPathValue, useForm } from 'react-hook-form';
 import { CheckBox, CheckboxInternal } from '@/components/commons/Checkbox';
-import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 import { settingReset } from '@/components/settings/SettingReset';
@@ -20,6 +18,7 @@ import {
   ResetType,
 } from 'solarxr-protocol';
 import { useErrorReporting } from '@/hooks/error-reporting';
+import { ErrorReportingDetails } from '@/components/ErrorReportingDetails';
 import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 interface BehaviorSettingsForm {
@@ -45,6 +44,8 @@ export const behaviorSettingsPage = defineSettingsPage({
         },
         feedbackSoundVolume: {
           title: 'settings-general-interface-feedback_sound-volume',
+          description:
+            'settings-general-interface-feedback_sound-volume-description',
         },
         connectedTrackersWarning: {
           title: 'settings-general-interface-connected_trackers_warning',
@@ -87,8 +88,7 @@ export const behaviorSettingsPage = defineSettingsPage({
       rows: {
         errorTracking: {
           title: 'settings-interface-behavior-error_tracking-label',
-          description:
-            'settings-interface-behavior-error_tracking-description_v2',
+          description: 'settings-interface-behavior-error_tracking-summary',
         },
       },
     },
@@ -248,15 +248,7 @@ export function BehaviorSettings() {
           <SettingsGroup group={privacy}>
             <SettingRow
               setting={privacy.rows.errorTracking}
-              description={null}
-              details={
-                <Localized
-                  id="settings-interface-behavior-error_tracking-description_v2"
-                  elems={{ b: <b /> }}
-                >
-                  <Typography whitespace="whitespace-pre-line" />
-                </Localized>
-              }
+              below={<ErrorReportingDetails />}
               controlId="behavior-error-reporting"
               control={
                 <CheckboxInternal

@@ -54,7 +54,7 @@ function areBindingsEqual(a?: string[], b?: string[]): boolean {
 
 export const keybindSettingsPage = defineSettingsPage({
   path: 'keybinds',
-  title: 'settings-keybinds',
+  title: 'settings-sidebar-keybinds',
   groups: {},
 });
 

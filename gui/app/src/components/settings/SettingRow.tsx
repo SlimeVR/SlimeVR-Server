@@ -142,7 +142,7 @@ export function SettingRow({
         </div>
       </Tooltip>
       {below && (
-        <div className={classNames('min-w-0', disabled && 'opacity-50')}>
+        <div className={classNames('min-w-0 pl-9', disabled && 'opacity-50')}>
           {below}
         </div>
       )}
@@ -150,7 +150,7 @@ export function SettingRow({
         <fieldset
           disabled={childrenDisabled}
           className={classNames(
-            'flex flex-col gap-4 pl-3 ml-1 xs:pl-4 border-l-2 border-background-60 min-w-0',
+            'flex flex-col gap-4 pl-3 ml-1 xs:pl-4 border-l-2 border-background-60 min-w-0 [&>fieldset]:pr-0',
             childrenDisabled && 'opacity-50'
           )}
         >
@@ -186,7 +186,7 @@ export function SettingsGroup({
           )}
         </div>
       )}
-      <div className="flex flex-col rounded-2xl bg-background-80 divide-y divide-background-70 overflow-hidden">
+      <div className="flex flex-col rounded-lg bg-background-80 divide-y divide-background-70 overflow-hidden">
         {children}
       </div>
     </div>
@@ -195,7 +195,7 @@ export function SettingsGroup({
 
 export function SettingsAdvanced({ children }: { children?: ReactNode }) {
   return (
-    <fieldset className="flex flex-col mt-10 rounded-2xl border border-background-50 px-2 xs:px-3 pt-4 pb-5 min-w-0">
+    <fieldset className="flex flex-col mt-10 rounded-lg border border-background-10/15 px-2 xs:px-3 pt-4 pb-5 min-w-0">
       <legend className="uppercase px-2 ml-2">
         <Typography variant="section-title" id="settings-advanced_section" />
       </legend>

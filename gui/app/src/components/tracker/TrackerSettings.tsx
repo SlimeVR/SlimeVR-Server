@@ -587,8 +587,8 @@ export function TrackerSettingsPage() {
                 {l10n.getString('tracker-settings-forget-description')}
               </Typography>
               <Button
-                variant="secondary"
-                className="!bg-status-critical self-start"
+                variant="danger"
+                className="self-start"
                 onClick={() => {
                   sendRPCPacket(
                     RpcMessage.ForgetDeviceRequest,

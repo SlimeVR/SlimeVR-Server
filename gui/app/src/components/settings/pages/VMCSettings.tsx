@@ -208,7 +208,7 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
   const lastFrameElapsed = relativeTime(status.lastFrameSentMillis);
 
   return (
-    <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-md divide-y divide-background-60">
+    <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-lg divide-y divide-background-60">
       <StatusRow
         label={
           <Typography

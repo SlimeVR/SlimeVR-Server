@@ -11,7 +11,7 @@ export function ChecklistSettings() {
       icon={<Checklist size={22} />}
       title={checklistSettingsPage.title}
     >
-      <TrackingChecklistSettings variant="settings" />
+      <TrackingChecklistSettings />
     </SettingsPagePaneLayout>
   );
 }

@@ -433,6 +433,10 @@ mounting_selection_menu-close = Close
 settings-advanced_section = Advanced settings
 settings-sidebar-search = Search settings and pages
 settings-sidebar-search-empty = Nothing matches your search
+settings-sidebar-search-hint = Type to search every setting and page
+settings-sidebar-search-navigate = Navigate
+settings-sidebar-search-open = Open
+settings-sidebar-search-close = Close
 settings-search-section-page = Page
 settings-search-manual_proportions = Manual Proportions
 settings-sidebar-general = General
@@ -463,9 +467,7 @@ settings-routing-description =
     SteamVR/Monado, VRChat OSC and VMC can each get a different set of body parts.
 settings-routing-mode = Routing mode
 settings-routing-automatic-label = Automatic routing
-settings-routing-mode-description =
-    While Automatic routing is on, SlimeVR picks the best output for every bone so nothing is sent twice: SteamVR/Monado is preferred, VRChat OSC covers the bones it cannot take, and VMC always gets the full skeleton.
-    Turn it off to decide where every bone goes yourself, including sending a bone to several outputs at once.
+settings-routing-automatic-description = Sends each bone to the best output so nothing is sent twice. Turn it off to choose the outputs for every bone yourself.
 settings-routing-bone = Bone
 settings-routing-cell-required = Mandatory for this output
 settings-routing-cell-unavailable = Output is unavailable on this platform
@@ -477,7 +479,11 @@ settings-routing-duplicate-warning =
     } routed to multiple outputs ({ $outputs }), which may show duplicate trackers in applications.
 settings-routing-outputs = Outputs
 settings-routing-bones = Bones
-settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
+settings-routing-bones-description = Turn off Automatic to pick the bones for each output yourself.
+settings-routing-legend-sent = Sent
+settings-routing-legend-not_sent = Supported, not sent
+settings-routing-legend-unsupported = Not supported
+settings-routing-legend-editable = Can be changed
 settings-routing-output-driver = SteamVR / Monado
 settings-routing-output-vrc_osc = VRChat OSC
 settings-routing-output-vmc = VMC
@@ -539,6 +545,7 @@ settings-general-mounting_method = Mounting calibration method
 settings-general-mounting_method-pose_only = Only used by pose mounting calibration.
 settings-general-mounting_method-description = What mounting calibration method to use to calibrate your trackers' mounting orientations.
 settings-general-tracker_mechanics-filtering = Filtering
+settings-general-tracker_mechanics-filtering-type = Filtering type
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
@@ -550,6 +557,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooth
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Filter strength
+settings-general-tracker_mechanics-filtering-amount-description = How strong the selected filter is. A stronger filter smooths or predicts more.
 settings-general-tracker_mechanics-filtering-amount-no_filtering = Pick a filtering type to set its strength.
 settings-general-fk_settings-reset_behaviour_group = Reset behaviour
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
@@ -573,11 +581,14 @@ settings-general-tracker_mechanics-timeout_delay-description = How long until a 
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
 settings-stay_aligned-setup_group = Setup
 settings-stay_aligned-setup-label = Setup Stay Aligned
+settings-stay_aligned-setup-label-description = Record how your legs look when relaxed, so Stay Aligned has a reference to align to.
 settings-stay_aligned-setup-open = Open setup
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-enabled-label = Enable Stay Aligned
+settings-stay_aligned-enabled-label-description = Turn Stay Aligned on or off. Each relaxed pose below can also be turned on or off.
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
+settings-stay_aligned-relaxed_poses-pose-description = Turn this on to let Stay Aligned use this pose. Use Save pose to record it.
 settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
 settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a chair
 settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
@@ -590,16 +601,15 @@ settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 settings-stay_aligned-debug-copy-short = Copy
 
 ## Keybinds Page
-settings-keybinds = Keybind settings
 settings-keybinds-description = Change keybinds for various shortcuts
 keybind_config-keybind_name = Keybind
 keybind_config-keybind_value = Combination
-keybind_config-keybind_delay = Delay before trigger (s)
-settings-keybinds_full-reset = Full Reset
-settings-keybinds_yaw-reset = Yaw Reset
-settings-keybinds_mounting-reset = Mounting Reset
-settings-keybinds_feet-mounting-reset = Feet Mounting Reset
-settings-keybinds_pause-tracking = Pause Tracking
+keybind_config-keybind_delay = Delay (seconds)
+settings-keybinds_full-reset = Full reset
+settings-keybinds_yaw-reset = Yaw reset
+settings-keybinds_mounting-reset = Mounting reset
+settings-keybinds_feet-mounting-reset = Feet mounting reset
+settings-keybinds_pause-tracking = Pause tracking
 settings-keybinds_reset-all-button = Reset all
 settings-keybinds-system-managed-description = Your desktop manages global shortcuts itself, so they have to be changed from your system settings.
 settings-keybinds-open-system-settings-button = Open system settings
@@ -637,6 +647,7 @@ settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-amount-description = Higher values correct skating more, at the cost of accuracy in some movements.
 settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns. When enabling this, make sure to perform a full reset and recalibrate in-game.
 settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to perform a full reset and recalibrate in-game.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
@@ -645,7 +656,7 @@ settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
 settings-general-fk_settings-constraints_group = Constraints
-settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
+settings-general-fk_settings-enforce_joint_constraints = Skeletal limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
 settings-general-fk_settings-position_group = Position tracking
 settings-general-fk_settings-ik = Position data
@@ -663,9 +674,13 @@ settings-general-fk_settings-arms_mounting_reset_mode-forward-description = Expe
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
+settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description = When some spine trackers are missing, how the rotation is shared between the upper and the lower spine tracker.
 settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature
+settings-general-fk_settings-skeleton_settings-impute_spine_curvature-description = How much the estimated spine bends according to how flexible each part of your back is, instead of a plain split.
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Estimate missing hip tracker from the upper legs
+settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs-description = Without a hip tracker, how much your hip's turn and tilt follow your upper legs.
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
+settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs-description = How much the twist of your upper legs follows your lower legs.
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its position in space without any positional tracker.
 
@@ -712,9 +727,10 @@ settings-interface-appearance = Appearance
 settings-interface-appearance-text_group = Text
 settings-interface-appearance-language_group = Language
 settings-utils-advanced-developer_group = Developer
-settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode = Developer mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-theme = Colour theme
+settings-general-interface-theme-description = The colours used across the whole interface.
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -737,6 +753,7 @@ settings-interface-appearance-font_size-description = This affects the font size
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-volume = Feedback sound volume
+settings-general-interface-feedback_sound-volume-description = How loud the reset sound is.
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 
@@ -746,8 +763,6 @@ settings-interface-notifications = Notifications
 settings-interface-behavior-desktop_group = Desktop
 settings-interface-behavior-input_group = Input
 settings-interface-behavior-privacy_group = Privacy
-settings-general-interface-dev_mode = Developer Mode
-settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bother you.
 settings-general-interface-discord_presence = Share activity on Discord
@@ -759,19 +774,15 @@ settings-general-interface-discord_presence-message = { $amount ->
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
 settings-interface-behavior-error_tracking-label = Send errors to developers
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Do you consent to the collection of error and diagnostic data?</h1>
-
-    <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
-
-    To provide the best user experience, we collect:
-    - Error reports and performance metrics
-    - Operating system and tracker hardware information
-    - Recordings of the SlimeVR interface (text fields are hidden)
-    - Which features you use
-    - Your body proportions, to help us improve automatic proportions
-
-    This data is linked to a random ID, not to your identity, and helps us detect bugs and issues with SlimeVR. It is collected via Sentry.io.
+settings-interface-behavior-error_tracking-summary = Share error reports and diagnostic data so bugs can be found and fixed.
+settings-interface-behavior-error_tracking-no_personal_data = <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
+settings-interface-behavior-error_tracking-collects = To provide the best user experience, we collect:
+settings-interface-behavior-error_tracking-collects-errors = Error reports and performance metrics
+settings-interface-behavior-error_tracking-collects-system = Operating system and tracker hardware information
+settings-interface-behavior-error_tracking-collects-recordings = Recordings of the SlimeVR interface (text fields are hidden)
+settings-interface-behavior-error_tracking-collects-usage = Which features you use
+settings-interface-behavior-error_tracking-collects-proportions = Your body proportions, to help us improve automatic proportions
+settings-interface-behavior-error_tracking-footer = This data is linked to a random ID, not to your identity, and helps us detect bugs and issues with SlimeVR. It is collected via Sentry.io.
 
 settings-interface-behavior-bvh_directory = Directory to save BVH recordings
 settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
@@ -840,7 +851,7 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
 settings-osc-vrchat-network-address-description-v1 = Choose which address to send out data to. Can be left untouched for VRChat.
-settings-osc-vrchat-network-address-placeholder = VRChat ip address
+settings-osc-vrchat-network-address-placeholder = VRChat IP address
 
 ## VRChat OSC status
 settings-osc-vrchat-status-title = Status
@@ -906,7 +917,7 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port out (default: 39539)
 settings-osc-vmc-network-address = Network address
 settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC.
-settings-osc-vmc-network-address-placeholder = IPV4 address
+settings-osc-vmc-network-address-placeholder = IPv4 address
 settings-osc-vmc-avatar_group = Avatar
 settings-osc-vmc-vrm = VRM Model
 settings-osc-vmc-vrm-description = Load a VRM model to use its own bone proportions and enable a higher compatibility with other applications.
@@ -991,8 +1002,8 @@ settings-home-tracker_display-battery_voltage = Battery voltage
 settings-home-tracker_display-numeric_signal = Numeric signal strength
 
 ## Tracking Checklist
-settings-tracking_checklist-active_steps = Active Steps
-settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
+settings-tracking_checklist-active_steps = Active steps
+settings-tracking_checklist-active_steps-desc = Choose which steps appear in the tracking checklist. Turning a step off hides it until you turn it back on, unlike Ignore, which only lasts for the current session.
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -1633,9 +1644,8 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Error collection consent modal
 error_collection_modal-title = Can we collect errors?
-error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
-
-    You can change this setting later in the Behaviour section of the settings page.
+error_collection_modal-subtitle = Sharing errors helps us find and fix bugs faster.
+error_collection_modal-change_later = You can change this setting later in the Behaviour section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 
@@ -1661,12 +1671,17 @@ tracking_checklist-status-partial = {$count ->
 tracking_checklist-status-complete = You are prepared to use SlimeVR!
 tracking_checklist-MOUNTING_METHOD = Pick a mounting calibration method
 tracking_checklist-MOUNTING_METHOD-desc = Choose how your trackers are calibrated to the way they are mounted on your body.
+tracking_checklist-MOUNTING_METHOD-settings_desc = Shown when you have not picked a mounting calibration method.
 tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-MOUNTING_CALIBRATION-settings_desc = Shown when your trackers need a mounting calibration.
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
+tracking_checklist-FEET_MOUNTING_CALIBRATION-settings_desc = Shown when your feet trackers need a mounting calibration.
 tracking_checklist-FULL_RESET = Perform a full reset
 tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
+tracking_checklist-FULL_RESET-settings_desc = Shown when some of your trackers need a full reset.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR disconnected
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
+tracking_checklist-STEAMVR_DISCONNECTED-settings_desc = Shown when SteamVR is not running or the SlimeVR driver cannot be used.
 tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
 tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
 tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
@@ -1674,20 +1689,26 @@ tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
 tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
 tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-settings_desc = Shown when your hands are routed to SteamVR/Monado in a way that replaces the input from your real controllers.
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
 tracking_checklist-STANDABLE_INSTALLED = Standable is installed
 tracking_checklist-STANDABLE_INSTALLED-desc =
     Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
     You must close SteamVR before uninstalling Standable in Steam.
+tracking_checklist-STANDABLE_INSTALLED-settings_desc = Shown when Standable is installed, because it often causes tracking issues with SlimeVR.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
+tracking_checklist-TRACKERS_REST_CALIBRATION-settings_desc = Shown when your trackers still need to rest on a stable surface to calibrate.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors
 tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
+tracking_checklist-TRACKER_ERROR-settings_desc = Shown when a tracker reports an error and needs to be restarted.
 tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
 tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
+tracking_checklist-VRCHAT_SETTINGS-settings_desc = Shown when your VRChat settings could hurt your tracking.
 tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
 tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
 tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+tracking_checklist-UNASSIGNED_HMD-settings_desc = Shown when your VR headset is not assigned to the head.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
     [one] Your network profile is currently set to Public ({$adapters}).
@@ -1699,11 +1720,14 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
             <PublicFixLink>See how to fix it here.</PublicFixLink>
 }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+tracking_checklist-NETWORK_PROFILE_PUBLIC-settings_desc = Shown when a network adapter is set to Public, which can stop trackers from connecting.
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-settings_desc = Shown when Stay Aligned is not enabled.
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED = Enable VRChat OSC tracking data
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-desc = VRChat is connected, but isn't sending back your head and hand tracking data. Turn on the OSC tracking-data toggle in VRChat's settings. <OscTrackingLink>See how to enable it.</OscTrackingLink>
+tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-settings_desc = Shown when VRChat is connected but does not send back your head and hand tracking data.
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = Go to VRChat OSC Settings
 
 tracking_checklist-ignore = Ignore

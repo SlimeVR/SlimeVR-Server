@@ -559,11 +559,7 @@ export function DropdownInside(
             {getShownValue()}
           </span>
           <div className="fill-background-10 pointer-events-none absolute inset-y-0 right-5 flex items-center">
-            {direction === 'up' ? (
-              <ArrowUpIcon size={16} />
-            ) : (
-              <ArrowDownIcon size={16} />
-            )}
+            {isOpen ? <ArrowUpIcon size={16} /> : <ArrowDownIcon size={16} />}
           </div>
           {loading && (
             <div className="absolute left-0 right-0 bottom-0">

@@ -2,51 +2,61 @@ import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { CheckBox } from '@/components/commons/Checkbox';
 import {
   trackingchecklistIdtoLabel,
+  trackingchecklistIdtoSettingsDescription,
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
-import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
 import { TrackingChecklistStepId } from 'solarxr-protocol';
-import { SettingsGroup } from '@/components/settings/SettingRow';
+import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };
+
+const stepIds = Object.values(TrackingChecklistStepId).filter(
+  (id): id is TrackingChecklistStepId =>
+    typeof id === 'number' && id !== TrackingChecklistStepId.UNKNOWN
+);
+const toFormSteps = (ignoredSteps: TrackingChecklistStepId[]) =>
+  Object.fromEntries(
+    stepIds.map((id) => [id, !ignoredSteps.includes(id)])
+  ) as Record<TrackingChecklistStepId, boolean>;
+
+const stepRowName = (id: TrackingChecklistStepId) =>
+  TrackingChecklistStepId[id];
+
 export const checklistSettingsPage = defineSettingsPage({
   path: 'checklist',
-  title: 'tracking_checklist',
+  title: 'settings-sidebar-checklist',
   groups: {
     activeSteps: {
       title: 'settings-tracking_checklist-active_steps',
       description: 'settings-tracking_checklist-active_steps-desc',
-      rows: {},
+      rows: Object.fromEntries(
+        stepIds.map((id) => [
+          stepRowName(id),
+          {
+            title: trackingchecklistIdtoLabel[id],
+            description: trackingchecklistIdtoSettingsDescription[id],
+          },
+        ])
+      ),
     },
   },
 });
 
-export function TrackingChecklistSettings({
-  variant,
-}: {
-  variant: 'settings' | 'modal';
-}) {
-  const { l10n } = useLocalization();
+export function TrackingChecklistSettings() {
   const { ignoredSteps, steps, ignoreStep } = useTrackingChecklist();
 
   const { control, reset, handleSubmit } = useForm<StepsForm>({
     defaultValues: {
-      steps: steps.reduce(
-        (curr, { id }) => ({ [id]: !ignoredSteps.includes(id), ...curr }),
-        {}
-      ),
+      steps: toFormSteps(ignoredSteps),
     },
     mode: 'onChange',
   });
 
   useEffect(() => {
     reset({
-      steps: steps.reduce(
-        (curr, { id }) => ({ [id]: !ignoredSteps.includes(id), ...curr }),
-        {}
-      ),
+      steps: toFormSteps(ignoredSteps),
     });
   }, [ignoredSteps]);
 
@@ -67,27 +77,32 @@ export function TrackingChecklistSettings({
     }
   };
 
+  const group = checklistSettingsPage.groups.activeSteps;
+  const position = (id: TrackingChecklistStepId) => {
+    const index = steps.findIndex((step) => step.id === id);
+    return index === -1 ? steps.length : index;
+  };
+  const orderedIds = [...stepIds].sort((a, b) => position(a) - position(b));
+
   return (
-    <SettingsGroup group={checklistSettingsPage.groups.activeSteps}>
-      <form
-        className="grid md:grid-cols-2 gap-2 p-3 xs:p-4 mobile:flex flex-col"
-        onChange={handleSubmit(onSubmit)}
-      >
-        {steps
-          .filter((step) => step.enabled)
-          .map((step) => (
-            <div key={step.id}>
+    <form onChange={handleSubmit(onSubmit)}>
+      <SettingsGroup group={group}>
+        {orderedIds.map((id) => (
+          <SettingRow
+            key={id}
+            setting={group.rows[stepRowName(id)]}
+            controlId={`checklist-step-${id}`}
+            control={
               <CheckBox
+                variant="toggle"
                 control={control}
-                name={`steps.${step.id}` as FieldPath<StepsForm>}
-                disabled={!step.ignorable || !step.enabled}
-                label={l10n.getString(trackingchecklistIdtoLabel[step.id])}
-                outlined
-                color={variant === 'settings' ? 'primary' : 'secondary'}
+                name={`steps.${id}` as FieldPath<StepsForm>}
+                id={`checklist-step-${id}`}
               />
-            </div>
-          ))}
-      </form>
-    </SettingsGroup>
+            }
+          />
+        ))}
+      </SettingsGroup>
+    </form>
   );
 }

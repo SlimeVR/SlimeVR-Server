@@ -124,6 +124,7 @@ class TrackerRestCheckBehaviour(private val trackerStates: StateFlow<List<Checkl
 		return TrackingChecklistStep(
 			valid = uncalibratedTrackers.isEmpty(),
 			enabled = trackers.isNotEmpty(),
+			ignorable = true,
 			extraData = if (uncalibratedTrackers.isNotEmpty()) {
 				TrackingChecklistNeedCalibration(
 					trackersId = uncalibratedTrackers.map { tracker -> tracker.id.toUShort() },

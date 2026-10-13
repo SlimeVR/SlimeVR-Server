@@ -37,7 +37,7 @@ import {
 } from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
-import { SettingsGroupLabel } from '@/components/settings/SettingRow';
+import { SettingRow, SettingsGroup } from '@/components/settings/SettingRow';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -230,15 +230,11 @@ function OutputStatusRow({
       }
     >
       <div className="flex items-baseline justify-between gap-3 mobile:flex-col mobile:gap-0">
-        <Typography
-          color="secondary"
-          id={`settings-routing-output-${summary}-description`}
-        />
+        <Typography id={`settings-routing-output-${summary}-description`} />
         {(summary === 'sending' ||
           summary === 'idle' ||
           summary === 'empty') && (
           <Typography
-            color="secondary"
             whitespace="whitespace-nowrap"
             id="settings-routing-output-bone-count"
             vars={{ routed, accepts }}
@@ -246,6 +242,58 @@ function OutputStatusRow({
         )}
       </div>
     </StatusRow>
+  );
+}
+
+function SentMark() {
+  return (
+    <span className="fill-accent-background-20">
+      <CheckIcon size={13} />
+    </span>
+  );
+}
+
+function NotSentMark() {
+  return <div className="w-1.5 h-1.5 rounded-full bg-background-50" />;
+}
+
+function UnsupportedMark() {
+  return <div className="w-2.5 h-0.5 rounded bg-background-40" />;
+}
+
+function EditableMark() {
+  return (
+    <input
+      type="checkbox"
+      className={classNames(CHECKBOX_CLASSES, 'pointer-events-none')}
+      disabled
+      tabIndex={-1}
+      aria-hidden
+    />
+  );
+}
+
+function RoutingLegend({ automatic }: { automatic: boolean }) {
+  const entries = [
+    ...(automatic
+      ? [
+          { id: 'sent', mark: <SentMark /> },
+          { id: 'not_sent', mark: <NotSentMark /> },
+        ]
+      : []),
+    { id: 'unsupported', mark: <UnsupportedMark /> },
+    { id: 'editable', mark: <EditableMark /> },
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-x-5 gap-y-1 pb-2">
+      {entries.map(({ id, mark }) => (
+        <div key={id} className="flex items-center gap-2">
+          <div className="w-5 h-5 flex items-center justify-center">{mark}</div>
+          <Typography id={`settings-routing-legend-${id}`} />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -281,13 +329,11 @@ function RouteCell({
   );
 
   if (!accepted) {
-    return cell(<div className="w-2.5 h-0.5 rounded bg-background-40" />);
+    return cell(<UnsupportedMark />);
   }
 
   if (automatic && !overridable) {
-    return routed
-      ? cell(<CheckIcon size={13} />, 'fill-accent-background-20')
-      : cell(<div className="w-1.5 h-1.5 rounded-full bg-background-50" />);
+    return cell(routed ? <SentMark /> : <NotSentMark />);
   }
 
   const lockedId = required
@@ -328,13 +374,26 @@ export const boneRoutingSettingsPage = defineSettingsPage({
   path: 'routing',
   title: 'settings-routing',
   groups: {
-    mode: { title: 'settings-routing-mode', rows: {} },
+    mode: {
+      title: 'settings-routing-mode',
+      rows: {
+        automatic: {
+          title: 'settings-routing-automatic-label',
+          description: 'settings-routing-automatic-description',
+        },
+      },
+    },
     outputs: { title: 'settings-routing-outputs', rows: {} },
-    bones: { title: 'settings-routing-bones', rows: {} },
+    bones: {
+      title: 'settings-routing-bones',
+      description: 'settings-routing-bones-description',
+      rows: {},
+    },
   },
 });
 
 export function BoneRoutingSettings() {
+  const groups = boneRoutingSettingsPage.groups;
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -545,50 +604,50 @@ export function BoneRoutingSettings() {
             />
           </div>
 
-          <SettingsGroupLabel id="settings-routing-mode" />
-          <div className="flex flex-col gap-2 pt-1 pb-5">
-            <Typography
-              id="settings-routing-mode-description"
-              whitespace="whitespace-pre-line"
+          <SettingsGroup group={groups.mode}>
+            <SettingRow
+              setting={groups.mode.rows.automatic}
+              controlId="routing-automatic"
+              control={
+                <CheckboxInternal
+                  variant="toggle"
+                  name="automatic"
+                  id="routing-automatic"
+                  checked={automatic}
+                  onChange={() => setMode(!automatic)}
+                />
+              }
             />
-            <CheckboxInternal
-              variant="toggle"
-              outlined
-              name="automatic"
-              checked={automatic}
-              onChange={() => setMode(!automatic)}
-              label={l10n.getString('settings-routing-automatic-label')}
-            />
-          </div>
+          </SettingsGroup>
 
-          <SettingsGroupLabel id="settings-routing-outputs" />
-          <div className="flex flex-col bg-background-80 px-4 py-2 mt-2 mb-3 rounded-md divide-y divide-background-60">
+          <SettingsGroup group={groups.outputs}>
             {outputs.map((status) => (
-              <OutputStatusRow
-                key={status.output}
-                status={status}
-                routed={routedCounts.get(status.output) ?? 0}
-              />
+              <div key={status.output} className="px-3 py-1 xs:px-4">
+                <OutputStatusRow
+                  status={status}
+                  routed={routedCounts.get(status.output) ?? 0}
+                />
+              </div>
             ))}
-          </div>
+          </SettingsGroup>
 
-          <SettingsGroupLabel id="settings-routing-bones" />
-          <div className="pt-1 pb-2">
-            <Typography id="settings-routing-bones-description" />
-          </div>
-          {duplicated.size > 0 && (
-            <div className="pb-2">
-              <WarningBox whitespace={false}>
-                {l10n.getString('settings-routing-duplicate-warning', {
-                  boneCount: duplicated.size,
-                  bones: duplicatedNames.bones,
-                  outputs: duplicatedNames.outputs,
-                })}
-              </WarningBox>
-            </div>
-          )}
-
-          <div className="rounded-2xl bg-background-80 shadow-sm mb-1 overflow-hidden min-w-0">
+          <SettingsGroup
+            group={groups.bones}
+            details={
+              <>
+                <RoutingLegend automatic={automatic} />
+                {duplicated.size > 0 && (
+                  <WarningBox whitespace={false}>
+                    {l10n.getString('settings-routing-duplicate-warning', {
+                      boneCount: duplicated.size,
+                      bones: duplicatedNames.bones,
+                      outputs: duplicatedNames.outputs,
+                    })}
+                  </WarningBox>
+                )}
+              </>
+            }
+          >
             <div className="overflow-x-auto min-w-0">
               <div className="min-w-fit mobile:min-w-0">
                 <div
@@ -676,7 +735,7 @@ export function BoneRoutingSettings() {
                 })}
               </div>
             </div>
-          </div>
+          </SettingsGroup>
         </>
       </SettingsPagePaneLayout>
     </>

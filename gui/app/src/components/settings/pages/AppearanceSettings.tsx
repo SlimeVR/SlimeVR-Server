@@ -30,6 +30,7 @@ export const appearanceSettingsPage = defineSettingsPage({
       rows: {
         theme: {
           title: 'settings-general-interface-theme',
+          description: 'settings-general-interface-theme-description',
         },
       },
     },

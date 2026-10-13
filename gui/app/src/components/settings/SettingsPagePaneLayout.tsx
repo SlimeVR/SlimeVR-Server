@@ -5,6 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 export function SettingsPagePaneLayout({
   children,
   className,
+  contentClassName,
   icon,
   title,
   ...props
@@ -12,6 +13,7 @@ export function SettingsPagePaneLayout({
   children: ReactNode;
   icon: ReactNode;
   title?: string;
+  contentClassName?: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -27,7 +29,9 @@ export function SettingsPagePaneLayout({
         </div>
         {title && <Typography variant="main-title" id={title} />}
       </div>
-      <div className="flex-col w-full min-w-0">{children}</div>
+      <div className={classNames('flex-col w-full min-w-0', contentClassName)}>
+        {children}
+      </div>
     </div>
   );
 }

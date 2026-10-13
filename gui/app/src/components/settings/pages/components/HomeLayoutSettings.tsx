@@ -187,7 +187,7 @@ export function TrackerDisplaySettings({
  */
 export const homeSettingsPage = defineSettingsPage({
   path: 'home',
-  title: 'home-settings',
+  title: 'settings-sidebar-home',
   groups: {
     main: {
       rows: {

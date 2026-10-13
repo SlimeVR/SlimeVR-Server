@@ -442,7 +442,7 @@ h1,
 h2,
 button,
 div {
-  hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 [data-electron-drag-region='true'] {

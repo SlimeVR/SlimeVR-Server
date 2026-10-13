@@ -23,6 +23,8 @@ import { FlashingMethodStep } from './steps/FlashingMethodStep';
 import { FirmwareUpdateMethod } from 'solarxr-protocol';
 import { FlashBtnStep } from './steps/FlashBtnStep';
 import { FlashingStep } from './steps/FlashingStep';
+import { CubeIcon } from '@/components/commons/icon/CubeIcon';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 
 function FirmwareToolContent() {
   const { l10n } = useLocalization();
@@ -87,11 +89,11 @@ function FirmwareToolContent() {
 
   return (
     <FirmwareToolContextC.Provider value={context}>
-      <div className="flex flex-col bg-background-70 p-4 rounded-md">
-        <Typography variant="main-title">
-          {l10n.getString('firmware_tool')}
-        </Typography>
-        <div className="flex flex-col pt-2 pb-4">
+      <SettingsPagePaneLayout
+        icon={<CubeIcon />}
+        title={firmwareToolSettingsPage.title}
+      >
+        <div className="flex flex-col pb-4">
           <>
             {l10n
               .getString('firmware_tool-description')
@@ -129,7 +131,7 @@ function FirmwareToolContent() {
           )}
           {!isError && !isLoading && <VerticalStepper steps={steps} />}
         </div>
-      </div>
+      </SettingsPagePaneLayout>
     </FirmwareToolContextC.Provider>
   );
 }

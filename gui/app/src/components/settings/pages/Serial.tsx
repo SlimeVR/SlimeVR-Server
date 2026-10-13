@@ -30,6 +30,8 @@ import { waitUntil } from '@/utils/a11y';
 import { Input } from '@/components/commons/Input';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
+import { USBIcon } from '@/components/commons/icon/UsbIcon';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 
 export interface SerialForm {
   port: string;
@@ -345,11 +347,13 @@ export function Serial() {
           </Button>
         </div>
       </BaseModal>
-      <div className="flex flex-col bg-background-70 h-full p-4 mobile:p-2 rounded-md">
-        <div className="flex flex-col pb-2 mobile:pt-4">
-          <Typography variant="main-title">
-            {l10n.getString(serialSettingsPage.title)}
-          </Typography>
+      <SettingsPagePaneLayout
+        icon={<USBIcon size={24} />}
+        title={serialSettingsPage.title}
+        className="h-full"
+        contentClassName="flex flex-col flex-grow"
+      >
+        <div className="flex flex-col pb-2">
           <>
             {l10n
               .getString('settings-serial-description')
@@ -501,7 +505,7 @@ export function Serial() {
             </div>
           </div>
         </div>
-      </div>
+      </SettingsPagePaneLayout>
     </>
   );
 }

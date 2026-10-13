@@ -12,9 +12,7 @@ export function TrackingChecklistModal({
   return (
     <BaseModal
       isOpen={open[0]}
-      appendClasses={
-        'max-w-xl md:w-full mobile:max-h-[400px] mobile:overflow-y-auto'
-      }
+      appendClasses={'max-w-xl md:w-full'}
       closeable
       onRequestClose={() => {
         open[1](false);
@@ -22,7 +20,9 @@ export function TrackingChecklistModal({
     >
       <div className="flex flex-col gap-4">
         <Typography variant="main-title" id="tracking_checklist-settings" />
-        <TrackingChecklistSettings variant="modal" />
+        <div className="max-h-[60vh] overflow-y-auto min-w-0 -mr-2 pr-2">
+          <TrackingChecklistSettings />
+        </div>
         <div className="flex justify-end">
           <Button
             variant="tertiary"
