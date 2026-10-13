@@ -602,23 +602,9 @@ settings-utils-advanced-reset-gui = Einstellungen der Benutzeroberfläche zurüc
 settings-utils-advanced-reset-gui-description = Stellt die Standardeinstellungen für die Benutzeroberfläche wieder her.
 settings-utils-advanced-reset-gui-label = Benutzeroberfläche zurücksetzen
 settings-utils-advanced-reset-server = Tracking-Einstellungen zurücksetzen
-settings-utils-advanced-reset-server-description = Stellen Sie die Standardeinstellungen für das Tracking wieder her.
 settings-utils-advanced-reset-server-label = Tracking zurücksetzen
 settings-utils-advanced-reset-all = Alle Einstellungen zurücksetzen
-settings-utils-advanced-reset-all-description = Stellt die Standardeinstellungen für die Benutzeroberfläche und das Tracking wieder her.
 settings-utils-advanced-reset-all-label = Alles zurücksetzen
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Warnung:</b> Dadurch werden Ihre Benutzeroberfläche-Einstellungen auf die Standardeinstellungen zurückgesetzt.
-            Möchten Sie das wirklich tun?
-        [server]
-            <b>Warnung:</b> Dadurch werden Ihre Tracking-Einstellungen auf die Standardeinstellungen zurückgesetzt.
-            Möchten Sie das wirklich tun?
-       *[all]
-            <b>Warnung:</b> Dadurch werden alle Ihre Einstellungen auf die Standardeinstellungen zurückgesetzt.
-            Möchten Sie das wirklich tun?
-    }
 settings-utils-advanced-reset_warning-reset = Einstellungen zurücksetzen
 settings-utils-advanced-reset_warning-cancel = Abbrechen
 settings-utils-advanced-open_data-v1 = Konfigurationsordner
