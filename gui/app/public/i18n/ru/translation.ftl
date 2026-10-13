@@ -405,8 +405,6 @@ settings-stay_aligned-debug-copy-label = Копирование настроек
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Полный сброс
-settings-keybinds_yaw-reset = Горизонтальный сброс
 settings-keybinds_reset-all-button = Сбросить всё
 settings-keybinds-recorder-modal-done-button = Выполнено
 settings-keybinds-recorder-modal-cancel-button = Отмена
@@ -430,7 +428,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Привязка
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap пытается угадать вращение ваших ступней, если трекеры для них не используются.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-Plant поворачивает ваши ступни так, чтобы они были параллельны земле при контакте.
 settings-general-fk_settings-leg_fk = Отслеживание ног
-settings-general-fk_settings-enforce_joint_constraints = Ограничения Скелета
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Предотвращает вращение суставов за пределы их возможностей
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
@@ -474,7 +471,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Ув�
 ## Appearance settings
 
 settings-interface-appearance = Внешний вид
-settings-general-interface-dev_mode = Режим разработчика
 settings-general-interface-dev_mode-description = Этот режим может быть полезен, если вам нужны подробные данные или для взаимодействия с подключенными трекерами на более продвинутом уровне.
 settings-general-interface-theme = Варианты оформления
 settings-general-interface-lang = Выбрать язык
@@ -500,7 +496,6 @@ settings-general-interface-connected_trackers_warning-description = Эта оп�
 ## Behavior settings
 
 settings-interface-behavior = Поведение
-settings-general-interface-dev_mode = Режим разработчика
 settings-general-interface-use_tray = Свернуть в системный трей
 settings-general-interface-use_tray-description = Позволяет закрыть окно, не закрывая сервер SlimeVR, так что вы можете продолжать использовать его, не беспокоясь о графическом интерфейсе.
 settings-general-interface-discord_presence = Поделиться активностью в Discord
@@ -558,7 +553,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Порт Выхода (по умолчанию: 9000)
 settings-osc-vrchat-network-address = Адрес сети
 settings-osc-vrchat-network-address-description-v1 = Выберите, на какой адрес отправлять данные. Можно оставить нетронутым для VRChat.
-settings-osc-vrchat-network-address-placeholder = VRChat IP адрес
 
 ## VRChat OSC status
 
@@ -584,7 +578,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Порт Выход (по умолчанию 39539)
 settings-osc-vmc-network-address = Адрес сети
 settings-osc-vmc-network-address-description = Выберите, на какой адрес отправлять данные через VMC
-settings-osc-vmc-network-address-placeholder = IPv4 адрес
 settings-osc-vmc-vrm = VRM Модель
 settings-osc-vmc-vrm-description = Загрузите модель VRM, чтобы предоставить возможность крепления на голове и обеспечить большую совместимость с другими приложениями.
 settings-osc-vmc-vrm-untitled_model = Модель без названия
@@ -1026,10 +1019,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Размах Рук
 ## Error collection consent modal
 
 error_collection_modal-title = Можем ли мы собирать данные об ошибках?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Вы можете изменить эту настройку позже на странице настроек в разделе Поведение.
 error_collection_modal-confirm = Я согласен
 error_collection_modal-cancel = Я не согласен
 
