@@ -432,8 +432,6 @@ settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-p
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Réinitialisation complète
-settings-keybinds_yaw-reset = Réinitialisation horizontale
 settings-keybinds_reset-all-button = Tout réinitialiser
 settings-keybinds-recorder-modal-done-button = Fait
 settings-keybinds-recorder-modal-cancel-button = Annuler
@@ -459,7 +457,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = La correction de
 settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
-settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-ik = Données de position
 settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
@@ -494,7 +491,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Augme
 ## Appearance settings
 
 settings-interface-appearance = Apparence
-settings-general-interface-dev_mode = Mode développeur
 settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
 settings-general-interface-theme = Thème
 settings-general-interface-lang = Langue
@@ -520,7 +516,6 @@ settings-general-interface-connected_trackers_warning-description = Cette option
 ## Behavior settings
 
 settings-interface-behavior = Comportement
-settings-general-interface-dev_mode = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
 settings-general-interface-discord_presence = Partager l'activité sur Discord
@@ -581,7 +576,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port de sortie (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
 settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
-settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 
 ## VRChat OSC status
 
@@ -607,7 +601,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port de sortie (par défaut : 39539)
 settings-osc-vmc-network-address = Adresse réseau
 settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquelle envoyer des données VMC.
-settings-osc-vmc-network-address-placeholder = Adresse IPv4
 settings-osc-vmc-vrm = Modèle VRM
 settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l'ancrage à la tête et permettre une plus grande compatibilité avec d'autres applications
 settings-osc-vmc-vrm-untitled_model = Modèle sans nom
@@ -664,8 +657,6 @@ settings-home-list-layout-table = Tableau
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Etapes actives
-settings-tracking_checklist-active_steps-desc = Liste de toutes les étapes de la checklist de suivi. Vous pouvez choisir de désactiver certaines étapes.
 
 ## Setup/onboarding menu
 
@@ -1126,10 +1117,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Envergure des bras
 ## Error collection consent modal
 
 error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
 error_collection_modal-cancel = Je ne veux pas
 
