@@ -622,23 +622,9 @@ settings-utils-advanced-reset-gui = Redefinir configurações da interface
 settings-utils-advanced-reset-gui-description = Restaurar as configurações padrão da interface.
 settings-utils-advanced-reset-gui-label = Redefinir interface
 settings-utils-advanced-reset-server = Redefinir configurações de rastreamento
-settings-utils-advanced-reset-server-description = Restaura as configurações padrão do rastreamento.
 settings-utils-advanced-reset-server-label = Redefinir rastreamento
 settings-utils-advanced-reset-all = Resetar todas as configurações
-settings-utils-advanced-reset-all-description = Restaura a configuração da interface e de tracking para as configurações iniciais.
 settings-utils-advanced-reset-all-label = Redefinir todas as configurações
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Aviso:</b> Isso irá restaurar as configurações da interface gráfica para as configurações iniciais.
-            Tem certeza de que deseja fazer isso?
-        [server]
-            <b>Aviso:</b> Isso irá restaurar as configurações de tracking para as configurações iniciais.
-            Tem certeza de que deseja fazer isso?
-       *[all]
-            <b>Aviso:</b> Isso irá restaurar todas as suas configurações para as configurações iniciais.
-            Tem certeza de que deseja fazer isso?
-    }
 settings-utils-advanced-reset_warning-reset = Resetar configurações
 settings-utils-advanced-reset_warning-cancel = Cancelar
 settings-utils-advanced-open_data-v1 = Pasta de configuração
