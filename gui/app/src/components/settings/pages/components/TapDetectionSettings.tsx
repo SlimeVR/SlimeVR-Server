@@ -10,7 +10,10 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useSettingsDefaults } from '@/hooks/settings-defaults';
-import { settingReset } from '@/components/settings/SettingReset';
+import {
+  SettingResetButton,
+  settingReset,
+} from '@/components/settings/SettingReset';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { TAP_DETECTION_BODY_PARTS } from '@/hooks/tracker-picker';
@@ -202,6 +205,20 @@ export function TapDetectionSettings({
     }
   );
 
+  const defaultForm = toForm(defaults);
+  const resetKindFields = (id: (typeof resetKinds)[number]['id']) =>
+    [`${id}Enabled`, `${id}Tracker`, `${id}Taps`, `${id}Delay`] as const;
+  const kindReset = (id: (typeof resetKinds)[number]['id']) => {
+    const fields = resetKindFields(id);
+    return {
+      modified: fields.some((field) => watch(field) !== defaultForm[field]),
+      onReset: () => {
+        fields.forEach((field) => setValue(field, defaultForm[field]));
+        handleSubmit(onSubmit)();
+      },
+    };
+  };
+
   const resetKinds = [
     {
       id: 'yawReset',
@@ -256,19 +273,22 @@ export function TapDetectionSettings({
                 className="grid grid-cols-[auto,1fr] md:table-row p-4 md:p-0 gap-x-3 gap-y-3 md:gap-0 items-center border-b border-background-60 md:border-b-0"
               >
                 <td className="py-2 md:py-3 pl-0 md:pl-4 pr-0 md:pr-2 block md:table-cell align-middle">
-                  <CheckboxInternal
-                    variant="toggle"
-                    name={`${id}Enabled`}
-                    id={`tap-${id}`}
-                    checked={enabled}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setValue(
-                        `${id}Enabled` as keyof TapDetectionForm,
-                        event.currentTarget.checked,
-                        { shouldDirty: true }
-                      )
-                    }
-                  />
+                  <div className="flex items-center gap-2">
+                    <SettingResetButton {...kindReset(id)} />
+                    <CheckboxInternal
+                      variant="toggle"
+                      name={`${id}Enabled`}
+                      id={`tap-${id}`}
+                      checked={enabled}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        setValue(
+                          `${id}Enabled` as keyof TapDetectionForm,
+                          event.currentTarget.checked,
+                          { shouldDirty: true }
+                        )
+                      }
+                    />
+                  </div>
                 </td>
                 <td className="py-2 md:py-3 pl-0 md:pr-4 block md:table-cell align-middle">
                   <label
