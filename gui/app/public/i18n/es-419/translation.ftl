@@ -396,9 +396,7 @@ settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permite recibir datos de trackers HID por USB. ¡Asegúrate de que los trackers conectados tengan <b>conexión por HID</b> activados!
 settings-stay_aligned-description = Mantente Alineado reduce el desvío ajustando gradualmente tus trackers para calzar tus poses relajadas.
 settings-stay_aligned-setup-label = Configurar Mantente Alineado
-settings-stay_aligned-setup-description = Debes completar «Configurar Mantente Alineado» para activar Mantente Alineado.
 settings-stay_aligned-relaxed_poses-label = Poses relajadas
-settings-stay_aligned-relaxed_poses-description = Mantente Alineado utiliza tus poses relajadas para mantener tus trackers alineados. Utiliza «Configurar Mantente Alineado» para actualizar estas poses.
 settings-stay_aligned-relaxed_poses-standing = Ajustar trackers al estar parado
 settings-stay_aligned-relaxed_poses-sitting = Ajustar trackers al sentarse en una silla
 settings-stay_aligned-relaxed_poses-flat = Ajustar trackers al sentarse en el suelo o recostándose en su espalda.
@@ -426,8 +424,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Corrección del pati
 settings-general-fk_settings-leg_tweak-toe_snap = Encajado de dedos
 settings-general-fk_settings-leg_tweak-foot_plant = Plantado del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Agresividad de la corrección del patinaje
-settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el patinaje en hielo que sucede en los pies, pero puede disminuir la precisión de ciertos patrones de movimientos. Al activar esto, asegúrate de realizar un reinicio completo y recalibrar en el juego.
-settings-general-fk_settings-leg_tweak-floor_clip-description = El clip del suelo puede reducir o incluso evitar que tus pies atraviesen el suelo. Al activar esto, asegúrate de realizar un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-leg_tweak-toe_snap-description = El encajado de dedos intenta adivinar la rotación de los pies si sus respectivos trackers no están en uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del pie rota los pies para que sean paralelos con el suelo al entrar en contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
@@ -437,7 +433,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Datos de posición
 settings-general-fk_settings-ik-use_position-description = Permite el uso de los datos de posición de los trackers que lo proveen. Cuando actives esto asegúrate de hacer un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-skeleton_settings-ratios = Radios del esqueleto
-settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de los ajustes del esqueleto. Podrías llegar a necesitar reajustar tus proporciones después de cambiar estos valores.
 settings-general-fk_settings-self_localization-title = Modo mocap
 settings-general-fk_settings-self_localization-description = El modo mocap permite al esqueleto rastrear de forma aproximada su propia posición sin un casco o otros sensores. Nota que esto requiere que los trackers en el pie y cabeza estén y sigue siendo experimental.
 
@@ -908,7 +903,6 @@ onboarding-stay_aligned-previous_step = Atrás
 onboarding-stay_aligned-next_step = Siguiente
 onboarding-stay_aligned-restart = Reiniciar
 onboarding-stay_aligned-done = Hecho
-onboarding-stay_aligned-manual_mounting-done = Hecho
 
 ## Home
 
@@ -1117,7 +1111,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Realizar una calibración de montura
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Realizar una calibración de montura de los pies
 tracking_checklist-FULL_RESET = Realizar un reinicio completo
 tracking_checklist-FULL_RESET-desc = Algunos trackers necesitan realizar un reinicio.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR no se está ejecutando
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR no se esta ejecutando. ¿Lo estas usando para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED = Trackers de mano activados
