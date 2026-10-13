@@ -329,9 +329,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
 settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
 settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
-settings-stay_aligned-setup-description = Musíte dokončit "Nastavení Zůstaň Srovnaný" pro zapnutí Zůstaň Srovnaný.
 settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
-settings-stay_aligned-relaxed_poses-description = Zůstaň Srovnaný používá vaše uvolněné pózy k udržení srovnání trackerů. K aktualizaci těchto póz použijte "Nastavte Zůstaň Srovnaný".
 settings-stay_aligned-relaxed_poses-standing = Upravit trackery při stoje
 settings-stay_aligned-relaxed_poses-sitting = Upravit pozici trackerů při sezení na židli
 settings-stay_aligned-relaxed_poses-flat = Upravte pozici trackerů při sezení na zemi, nebo ležení na zádech
@@ -362,8 +360,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Korekce bruslení
 settings-general-fk_settings-leg_tweak-toe_snap = Přichycení špiček
 settings-general-fk_settings-leg_tweak-foot_plant = Narovnání chodidla
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Síla korekce "bruslení"
-settings-general-fk_settings-leg_tweak-skating_correction-description = Korekce bruslení snižuje effect "bruslení", ale může snížit přesnost u některých pohybů. Pokud tuto funkci povolíte, nezapomeňte provést úplný reset a zkalibrovat se ve hře.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Připnutí k podlaze může zlepšit nebo dokonce zabránit propadání trackerů podlahou. Při zapnutí této funkce nezapomeňte provést úplný reset a zkalibrovat se ve hře.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
@@ -371,7 +367,6 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci n
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
 settings-general-fk_settings-ik = Data pozice
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
-settings-general-fk_settings-skeleton_settings-ratios-description = Změňte hodnoty nastavení kostry, Po změně budete možná muset poupravit vaše proporce.
 settings-general-fk_settings-self_localization-title = Režim Mocap
 
 ## Gesture control settings (tracker tapping)
@@ -811,7 +806,6 @@ onboarding-stay_aligned-done-description-2 = Vaše nastavení je dokončeno! Pok
 onboarding-stay_aligned-previous_step = Předchozí
 onboarding-stay_aligned-next_step = Další
 onboarding-stay_aligned-done = Hotovo
-onboarding-stay_aligned-manual_mounting-done = Hotovo
 
 ## Home
 
@@ -1004,7 +998,6 @@ tracking_checklist-settings-close = Zavřít
 tracking_checklist-status-incomplete = Nejste připraveni používat SlimeVR!
 tracking_checklist-status-complete = Jste připravení k použití SlimeVR
 tracking_checklist-FULL_RESET = Proveďte plné obnovení
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR není zapnut
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
