@@ -249,7 +249,6 @@ settings-stay_aligned-relaxed_poses-close = Lukk
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Nullstill
 settings-keybinds-recorder-modal-cancel-button = Avslutt
 
 ## FK/Tracking settings
@@ -282,7 +281,6 @@ settings-general-gesture_control-mountingResetTaps = Trykking for monterings-nul
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Utvikler modus
 settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
 settings-general-interface-lang = Velg språk
 settings-general-interface-lang-description = Endre hovedspråket du vil bruke.
@@ -293,7 +291,6 @@ settings-general-interface-lang-placeholder = Velg språket du vil bruke
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Utvikler modus
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
 ## Serial settings
@@ -329,7 +326,6 @@ settings-osc-vrchat-network-port_out =
     .label = Port Ut
     .placeholder = Port ut (standardisering: 9000)
 settings-osc-vrchat-network-address = Nettverksadresse
-settings-osc-vrchat-network-address-placeholder = VRChat ip adresse
 
 ## VRChat OSC status
 
@@ -349,7 +345,6 @@ settings-osc-vmc-network-port_out =
     .label = Port Ut
     .placeholder = Port out (default: 39539)
 settings-osc-vmc-network-address = Nettverksadresse
-settings-osc-vmc-network-address-placeholder = IPV4 adresse
 settings-osc-vmc-status-badge-error = Feilmelding
 
 ## Common OSC settings
