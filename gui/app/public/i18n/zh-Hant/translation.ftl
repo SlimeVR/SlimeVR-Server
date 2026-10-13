@@ -665,7 +665,6 @@ settings-general-fk_settings-arms_mounting_reset_mode-forward = 向前伸平
 settings-general-fk_settings-arms_mounting_reset_mode-forward-description = 重置時雙臂向前伸展，建議在虛擬直播中使用。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = 下脊椎無追蹤器時，從上脊椎推測其餘的脊椎追蹤器位置
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = 從上腿部推測遺失的臀部追蹤器的位置
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = 從上腿部的旋轉推測下腿部的旋轉
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
 settings-general-fk_settings-self_localization-description = 動作捕捉模式允許在沒有定位式追蹤器時，粗略的追蹤身體骨架的定位。
