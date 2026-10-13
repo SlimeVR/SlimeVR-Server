@@ -285,8 +285,6 @@ settings-stay_aligned-relaxed_poses-close = 閉じる
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = リセット
-settings-keybinds_yaw-reset = ヨーリセット
 settings-keybinds-recorder-modal-cancel-button = キャンセル
 
 ## FK/Tracking settings
@@ -338,7 +336,6 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 ## Appearance settings
 
 settings-interface-appearance = 外観
-settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
 settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
@@ -358,7 +355,6 @@ settings-general-interface-connected_trackers_warning = 接続されたトラッ
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-use_tray = システムトレイに最小化する
 
 ## Serial settings
@@ -389,7 +385,6 @@ settings-osc-vrchat-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト (デフォルト: 9000)
 settings-osc-vrchat-network-address = ネットワークアドレス
-settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 
 ## VRChat OSC status
 
@@ -409,7 +404,6 @@ settings-osc-vmc-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト（デフォルト：３９５３９）
 settings-osc-vmc-network-address = ネットワークアドレス
-settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
 settings-osc-vmc-status-badge-error = エラー
 
