@@ -432,8 +432,6 @@ settings-stay_aligned-debug-copy-label = 复制设置信息到剪贴板
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = 完整重置
-settings-keybinds_yaw-reset = 重置航向轴
 settings-keybinds_reset-all-button = 重置所有设置
 settings-keybinds-recorder-modal-done-button = 完成
 settings-keybinds-recorder-modal-cancel-button = 取消
@@ -459,7 +457,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会�
 settings-general-fk_settings-leg_fk = 腿部追踪
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 强制脚部佩戴重置
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
-settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
 settings-general-fk_settings-ik = 位置数据
 settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
@@ -496,7 +493,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 如�
 ## Appearance settings
 
 settings-interface-appearance = 外观
-settings-general-interface-dev_mode = 开发者模式
 settings-general-interface-dev_mode-description = 如果你需要深入的资料或对连接的追踪器进行进阶调整，开启此模式将会非常有用。
 settings-general-interface-theme = 主题颜色
 settings-general-interface-lang = 选择语言
@@ -522,7 +518,6 @@ settings-general-interface-connected_trackers_warning-description = 启用本选
 ## Behavior settings
 
 settings-interface-behavior = 行为
-settings-general-interface-dev_mode = 开发者模式
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
 settings-general-interface-discord_presence = 向Discord发送状态
@@ -583,7 +578,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = 输出端口（默认 9000）
 settings-osc-vrchat-network-address = 网络地址
 settings-osc-vrchat-network-address-description-v1 = 选择传输OSC数据的IP地址。用于VRChat时无需修改。
-settings-osc-vrchat-network-address-placeholder = VRChat IP 地址
 
 ## VRChat OSC status
 
@@ -609,7 +603,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = 输出端口 (默认: 39539)
 settings-osc-vmc-network-address = 网络地址
 settings-osc-vmc-network-address-description = 设置用来发送 VMC 数据的地址
-settings-osc-vmc-network-address-placeholder = IPV4 地址
 settings-osc-vmc-vrm = VRM 模型
 settings-osc-vmc-vrm-description = 加载 VRM 模型以允许头部锚定，并增进与其他程序的兼容
 settings-osc-vmc-vrm-untitled_model = 无标题模型
@@ -666,8 +659,6 @@ settings-home-list-layout-table = 列表
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = 启用的检查项
-settings-tracking_checklist-active_steps-desc = 追踪检查清单中所有项目的列表。您可以禁用不需要的步骤。
 
 ## Setup/onboarding menu
 
@@ -1139,10 +1130,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 ## Error collection consent modal
 
 error_collection_modal-title = 我们可以收集错误信息吗？
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了
 
