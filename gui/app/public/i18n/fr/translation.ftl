@@ -622,23 +622,9 @@ settings-utils-advanced-reset-gui = Réinitialiser les paramètres de l'interfac
 settings-utils-advanced-reset-gui-description = Restaurez les paramètres par défaut de l'interface.
 settings-utils-advanced-reset-gui-label = Réinitialiser l'interface graphique
 settings-utils-advanced-reset-server = Réinitialiser les paramètres de la capture
-settings-utils-advanced-reset-server-description = Restaurez les paramètres par défaut de la capture
 settings-utils-advanced-reset-server-label = Réinitialiser la capture
 settings-utils-advanced-reset-all = Réinitialiser tous les paramètres
-settings-utils-advanced-reset-all-description = Restaurez les paramètres de l'interface et de la capture.
 settings-utils-advanced-reset-all-label = Tout réinitialiser
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Avertissement:</b> Cela réinitialisera vos paramètres de l'interface.
-            Êtes-vous sûr de vouloir faire cela ?
-        [server]
-            <b>Avertissement:</b> Cela réinitialisera vos paramètres de la capture.
-            Êtes-vous sûr de vouloir faire cela ?
-       *[all]
-            <b>Avertissement:</b> Cela réinitialisera tous vos paramètres.
-            Êtes-vous sûr de vouloir faire cela ?
-    }
 settings-utils-advanced-reset_warning-reset = Réinitialiser les paramètres
 settings-utils-advanced-reset_warning-cancel = Annuler
 settings-utils-advanced-open_data-v1 = Dossier de configuration
