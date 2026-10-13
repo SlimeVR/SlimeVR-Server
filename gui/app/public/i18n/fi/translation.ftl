@@ -252,8 +252,6 @@ settings-stay_aligned-relaxed_poses-close = Sulje
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Täysinollaus
-settings-keybinds_yaw-reset = Nollaa Kallistuma
 settings-keybinds-recorder-modal-cancel-button = Peruuta
 
 ## FK/Tracking settings
@@ -302,7 +300,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Suure
 ## Appearance settings
 
 settings-interface-appearance = Ulkonäkö
-settings-general-interface-dev_mode = Kehittäjätila
 settings-general-interface-dev_mode-description = Tämä tila voi olla hyödyllinen, jos tarvitset perusteellisia tietoja tai haluat olla tekemisissä yhdistettyjen jäljittimien kanssa edistyneemmällä tasolla.
 settings-general-interface-theme = Väri teema
 settings-general-interface-lang = Valitse kieli
@@ -327,7 +324,6 @@ settings-general-interface-connected_trackers_warning-description = Tämä vaiht
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Kehittäjätila
 settings-general-interface-use_tray = Pienennä ilmaisinalueelle
 settings-general-interface-use_tray-description = Voit sulkea ikkunan sulkematta SlimeVR-palvelinta, jotta voit jatkaa sen käyttöä ilman, että graafinen käyttöliittymä häiritsee sinua.
 settings-general-interface-discord_presence = Jaa toiminta Discordissa
@@ -368,7 +364,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Portti ulos (oletus: 9000)
 settings-osc-vrchat-network-address = Verkon osoite
 settings-osc-vrchat-network-address-description-v1 = Valitse, mihin osoitteeseen tiedot lähetetään. Voidaan jättää koskematta VRChatille.
-settings-osc-vrchat-network-address-placeholder = VRChat IP-osoite
 
 ## VRChat OSC status
 
@@ -394,7 +389,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Portti ulos (oletus: 39539)
 settings-osc-vmc-network-address = Verkon osoite
 settings-osc-vmc-network-address-description = Määritä osoite, johon tietoja lähetetään VMC:n kautta
-settings-osc-vmc-network-address-placeholder = IPV4-osoite
 settings-osc-vmc-vrm = VRM-malli
 settings-osc-vmc-vrm-description = Lataa VRM-malli salliaksesi pääankkurin ja mahdollistaaksesi paremman yhteensopivuuden muiden sovellusten kanssa
 settings-osc-vmc-vrm-file_select = Vedä ja pudota mallia käytettäväksi tai <u>selaa</u>
