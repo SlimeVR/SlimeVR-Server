@@ -613,17 +613,9 @@ settings-utils-advanced-reset-gui = รีเซ็ตตั้งค่า GUI
 settings-utils-advanced-reset-gui-description = คืนค่าการตั้งค่าเริ่มต้นสำหรับอินเทอร์เฟซ
 settings-utils-advanced-reset-gui-label = รีเซ็ต GUI
 settings-utils-advanced-reset-server = รีเซ็ตการตั้งค่าแทร็กเกอร์
-settings-utils-advanced-reset-server-description = คืนค่าเกี่ยวกับแทร็กเกอร์เป็นค่าเริ่มต้น
 settings-utils-advanced-reset-server-label = รีเซ็ตการจับตำแหน่ง
 settings-utils-advanced-reset-all = รีเซ็ตการตั้งค่าทั้งหมด
-settings-utils-advanced-reset-all-description = คืนค่าการตั้งค่าเริ่มต้นสำหรับทั้งอินเทอร์เฟซและการจับตำแหน่ง
 settings-utils-advanced-reset-all-label = รีเซ็ตทั้งหมด
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui] <b>คำเตือน:</b>การดำเนินการนี้จะรีเซ็ตการตั้งค่าอินเทอร์เฟซทั้งหมดเป็นค่าเริ่มต้น  คุณแน่ใจที่จะดำเนินการต่อไหม?
-        [server] <b>คำเตือน:</b>การดำเนินการนี้จะรีเซ็ตการตั้งค่าการจับตำแหน่งเป็นค่าเริ่มต้น  คุณแน่ใจที่จะดำเนินการต่อไหม?
-       *[all] <b>คำเตือน:</b>การดำเนินการนี้จะรีเซ็ตการตั้งค่าทั้งหมดเป็นค่าเริ่มต้น คุณแน่ใจที่จะดำเนินการต่อไหม?
-    }
 settings-utils-advanced-reset_warning-reset = รีเซ็ตการตั้งค่า
 settings-utils-advanced-reset_warning-cancel = ยกเลิก
 settings-utils-advanced-open_data-v1 = โฟลเดอร์การตั้งค่า
