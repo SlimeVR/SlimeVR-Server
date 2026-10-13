@@ -407,9 +407,7 @@ settings-general-tracker_mechanics-trackers_over_usb = Trackers via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Ativa o recebimento de dados de trackers HID via USB. Certifique-se de que os trackers conectados tenham a opção <b>conexão via HID</b> ativada!
 settings-stay_aligned-description = O Manter Alinhado reduz o drift ao ajustar gradualmente seus trackers para corresponder às suas poses relaxadas
 settings-stay_aligned-setup-label = Configurar o Manter Alinhado
-settings-stay_aligned-setup-description = É necessário concluir “Configurar o Manter Alinhado” para ativar o Manter Alinhado.
 settings-stay_aligned-relaxed_poses-label = Poses Relaxadas
-settings-stay_aligned-relaxed_poses-description = O Manter Alinhado usa suas poses relaxadas para manter os trackers alinhados. Use “Configurar o Manter Alinhado” para atualizar essas poses.
 settings-stay_aligned-relaxed_poses-standing = Ajustar trackers enquanto estiver em pé
 settings-stay_aligned-relaxed_poses-sitting = Ajustar trackers enquanto estiver sentado em uma cadeira
 settings-stay_aligned-relaxed_poses-flat = Ajustar trackers sentado no chão ou deitado de costas
@@ -440,8 +438,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Correção de desliz
 settings-general-fk_settings-leg_tweak-toe_snap = Encaixar os dedos do pé
 settings-general-fk_settings-leg_tweak-foot_plant = Pé plantado
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Força da correção de deslize
-settings-general-fk_settings-leg_tweak-skating_correction-description = A correção de deslizamento corrige o efeito de patinação, mas pode reduzir a precisão em certos padrões de movimento. Ao ativá-la, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Limite de chão pode reduzir ou eliminar o atravessamento do chão. Ao ativá-lo, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Encaixar os dedos do pé, tenta adivinhar a rotação dos seus pés se os trackers dos pés não estiverem em uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pé plantado gira os pés para ficarem paralelos ao chão quando em contato.
 settings-general-fk_settings-leg_fk = Tracking de pernas
@@ -451,7 +447,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Dados de posição
 settings-general-fk_settings-ik-use_position-description = Ativa o uso de dados de posição dos trackers que os fornecem. Ao ativar isso, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
 settings-general-fk_settings-skeleton_settings-ratios = Proporções do esqueleto
-settings-general-fk_settings-skeleton_settings-ratios-description = Mude os valores das configurações do esqueleto. Pode ser necessário ajustar suas proporções depois de alterá-las.
 settings-general-fk_settings-self_localization-title = Modo mocap
 
 ## Gesture control settings (tracker tapping)
@@ -934,7 +929,6 @@ onboarding-stay_aligned-previous_step = Anterior
 onboarding-stay_aligned-next_step = Próximo
 onboarding-stay_aligned-restart = Reiniciar
 onboarding-stay_aligned-done = Concluído
-onboarding-stay_aligned-manual_mounting-done = Concluído
 
 ## Home
 
@@ -1147,7 +1141,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Realize uma calibração de montagem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Realize uma calibração de montagem dos pés
 tracking_checklist-FULL_RESET = Execute "Redefinir Tudo"
 tracking_checklist-FULL_RESET-desc = Alguns trackers precisam que uma redefinição seja realizada.
-tracking_checklist-STEAMVR_DISCONNECTED = O SteamVR não está em execução
 tracking_checklist-STEAMVR_DISCONNECTED-desc = O SteamVR não está em execução. Você está usando ele para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Iniciar o SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Você ativou os Trackers de mãos virtuais do SteamVR. Isso fará com que os comandos feitos por meio de botões não funcionem no SteamVR e nos jogos.
