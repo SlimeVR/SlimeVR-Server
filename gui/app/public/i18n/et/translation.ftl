@@ -245,8 +245,6 @@ settings-stay_aligned-relaxed_poses-close = Sulge
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Lähtesta
-settings-keybinds_yaw-reset = Lähtesta lengerdus
 settings-keybinds-recorder-modal-cancel-button = Tühista
 
 ## FK/Tracking settings
@@ -306,7 +304,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Suure
 ## Appearance settings
 
 settings-interface-appearance = Välimus
-settings-general-interface-dev_mode = Arendaja režiim
 settings-general-interface-dev_mode-description = See režiim on kasulik, kui on vaja põhjalike andmeid või või suhelda ühendatud jälgijatega kõrgemal tasemel.
 settings-general-interface-theme = Värviteema
 settings-general-interface-lang = Vaikekeel
@@ -327,7 +324,6 @@ settings-general-interface-feedback_sound-volume = Tagasiside helitugevus
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Arendaja režiim
 
 ## Serial settings
 
@@ -362,7 +358,6 @@ settings-osc-vrchat-network-port_out =
     .label = Võrguport välja
     .placeholder = Võrguport välja (vaikimisi: 9000)
 settings-osc-vrchat-network-address = Võrgu aadress
-settings-osc-vrchat-network-address-placeholder = VRChat ip aadress
 
 ## VRChat OSC status
 
@@ -388,7 +383,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port välja (vaikimisi 39539)
 settings-osc-vmc-network-address = Võrgu aadress
 settings-osc-vmc-network-address-description = Valige, millisel aadressil soovite VMC kaudu andmeid saata.
-settings-osc-vmc-network-address-placeholder = IPV4 aadress
 settings-osc-vmc-vrm = VRM-mudel
 settings-osc-vmc-vrm-description = Laadige VRM-mudel, et võimaldada peaankurdamist ja suuremat ühilduvust teiste rakendustega.
 settings-osc-vmc-vrm-file_select = Kasutatava mudeli pukseerimine või <u>sirvimine</u>
