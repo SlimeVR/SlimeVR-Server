@@ -425,8 +425,6 @@ settings-stay_aligned-debug-copy-label = คัดลอกการตั้ง
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = รีเซ็ตทั้งหมด
-settings-keybinds_yaw-reset = รีเซ็ตแกนตั้ง
 settings-keybinds_reset-all-button = รีเซ็ตทั้งหมด
 settings-keybinds-recorder-modal-done-button = เสร็จแล้ว
 settings-keybinds-recorder-modal-cancel-button = ยกเลิก
@@ -452,7 +450,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = การปร�
 settings-general-fk_settings-leg_fk = การจับตำแหน่งขา
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = บังคับรีเซ็ตการติดตั้งเท้า
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = บังคับรีเซ็ตการติดตั้งเท้าในระหว่างการรีเซ็ตการติดตั้งทั่วไป
-settings-general-fk_settings-enforce_joint_constraints = ขีดจำกัดโครงกระดูก
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = ป้องกันไม่ให้ข้อต่อหมุนเกินขีดจำกัด
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
@@ -486,7 +483,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = ใ�
 ## Appearance settings
 
 settings-interface-appearance = รูปแบบ
-settings-general-interface-dev_mode = โหมดนักพัฒนา
 settings-general-interface-dev_mode-description = โหมดนี้มีประโยชน์หากคุณต้องการข้อมูลเชิงลึก หรือต้องการโต้ตอบกับแทร็กเกอร์ที่เชื่อมต่อในระดับที่สูงขึ้น
 settings-general-interface-theme = ธีมสี
 settings-general-interface-lang = เลือกภาษา
@@ -512,7 +508,6 @@ settings-general-interface-connected_trackers_warning-description = ตัวเ
 ## Behavior settings
 
 settings-interface-behavior = พฤติกรรมการทำงาน
-settings-general-interface-dev_mode = โหมดนักพัฒนา
 settings-general-interface-use_tray = ย่อไปที่ถาดระบบ
 settings-general-interface-use_tray-description = ช่วยให้คุณสามารถปิดหน้าต่างโดยไม่ต้องปิด SlimeVR Server คุณจึงสามารถใช้งานต่อได้โดยไม่มี GUI รบกวน
 settings-general-interface-discord_presence = แชร์กิจกรรมบน Discord
@@ -572,7 +567,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 9000)
 settings-osc-vrchat-network-address = ที่อยู่เครือข่าย
 settings-osc-vrchat-network-address-description-v1 = เลือกที่อยู่ที่จะส่งข้อมูลออกไป สามารถปล่อยว่างไว้สำหรับ VRChat
-settings-osc-vrchat-network-address-placeholder = ที่อยู่ IP VRChat
 
 ## VRChat OSC status
 
@@ -598,7 +592,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 39539)
 settings-osc-vmc-network-address = ที่อยู่เครือข่าย
 settings-osc-vmc-network-address-description = เลือกที่อยู่เครือข่ายที่จะส่งข้อมูลผ่าน VMC
-settings-osc-vmc-network-address-placeholder = ที่อยู่ IPV4
 settings-osc-vmc-vrm = โมเดล VRM
 settings-osc-vmc-vrm-description = โหลดโมเดล VRM เพื่อเปิดใช้งานการยึดศีรษะและเพิ่มความเข้ากันได้กับแอปพลิเคชันอื่น
 settings-osc-vmc-vrm-untitled_model = โมเดลที่ไม่มีชื่อ
@@ -649,8 +642,6 @@ settings-home-list-layout-table = แบบรายการ
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = รายการที่ต้องดำเนินการ
-settings-tracking_checklist-active_steps-desc = รายการขั้นตอนทั้งหมดในการเตรียมพร้อมแทร็กเกอร์ของคุณ สามารถเลือกที่จะปิดคำแนะนำขั้นตอนใดขั้นตอนหนึ่งได้
 
 ## Setup/onboarding menu
 
@@ -1100,9 +1091,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = ช่วงแขน
 ## Error collection consent modal
 
 error_collection_modal-title = อนุญาตให้เราเก็บข้อมูลข้อผิดพลาดหรือไม่?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    คุณสามารถเปลี่ยนการตั้งค่านี้ในภายหลังได้ในแถบ พฤติกรรมการทำงาน ภายในหน้าการตั้งค่า
 error_collection_modal-confirm = ฉันตกลง
 error_collection_modal-cancel = ฉันไม่ต้องการ
 
