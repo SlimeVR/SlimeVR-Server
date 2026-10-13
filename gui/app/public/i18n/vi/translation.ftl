@@ -287,13 +287,10 @@ settings-general-fk_settings-leg_tweak-skating_correction = Sửa trượt
 settings-general-fk_settings-leg_tweak-toe_snap = Đoán hướng xoay chân
 settings-general-fk_settings-leg_tweak-foot_plant = Cân bằng chân
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Mức độ sửa
-settings-general-fk_settings-leg_tweak-skating_correction-description = Sửa trượt sẽ điều chỉnh nhằm giảm thiểu hiện tượng trượt băng nhưng có thể làm giảm độ chính xác trong một vài kiểu chuyển động nhất định. Khi bật tính năng này, vui lòng đảm bảo thực hiện thao tác đặt lại hoàn toàn và hiệu chỉnh lại trong trò chơi.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Ngăn xuyên sàn có thể giảm hoặc loại bỏ khả năng tracker của bạn đi xuyên sàn nhà. Khi bật tính năng này, vui lòng đảm bảo thực hiện thao tác đặt lại hoàn toàn và hiệu chỉnh lại trong trò chơi.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
 settings-general-fk_settings-skeleton_settings-ratios = Tỷ lệ khung xương
-settings-general-fk_settings-skeleton_settings-ratios-description = Thay đổi các giá trị của cài đặt bộ xương. Bạn có thể cần phải điều chỉnh tỷ lệ của bạn sau khi thay đổi những điều này.
 settings-general-fk_settings-self_localization-title = Chế độ Mocap
 
 ## Gesture control settings (tracker tapping)
