@@ -270,8 +270,6 @@ settings-stay_aligned-relaxed_poses-close = Đóng
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Đặt lại
-settings-keybinds_yaw-reset = Đặt lại chiều quay lệch
 settings-keybinds_reset-all-button = Đặt lại tất cả
 settings-keybinds-recorder-modal-cancel-button = Hủy
 
@@ -328,7 +326,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Tăng
 ## Appearance settings
 
 settings-interface-appearance = Giao diện
-settings-general-interface-dev_mode = Chế độ nhà phát triển
 settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
 settings-general-interface-theme = Màu giao diện
 settings-general-interface-lang = Thay đổi ngôn ngữ (Change language)
@@ -353,7 +350,6 @@ settings-general-interface-connected_trackers_warning-description = Tùy chọn 
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Chế độ nhà phát triển
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
 settings-general-interface-discord_presence = Chia sẻ hoạt động trên Discord
@@ -407,7 +403,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Cổng ra (Mặc định: 9000)
 settings-osc-vrchat-network-address = Địa chỉ mạng
 settings-osc-vrchat-network-address-description-v1 = Chọn địa chỉ để gửi dữ liệu đến. Có thể giữ nguyên cho VRChat.
-settings-osc-vrchat-network-address-placeholder = Địa chỉ IP của thiết bị chơi VRChat
 
 ## VRChat OSC status
 
@@ -433,7 +428,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port out (default: 39539)
 settings-osc-vmc-network-address = Địa chỉ mạng (Network address)
 settings-osc-vmc-network-address-description = Chọn địa chỉ để gửi dữ liệu qua VMC.
-settings-osc-vmc-network-address-placeholder = Địa chỉ IPV4
 settings-osc-vmc-vrm = Model VRM
 settings-osc-vmc-vrm-description = Tải mô hình VRM để cho phép neo đầu và cho phép khả năng tương thích cao hơn với các ứng dụng khác.
 settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
