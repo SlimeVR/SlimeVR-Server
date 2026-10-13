@@ -335,14 +335,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwecti
 settings-general-fk_settings-leg_tweak-toe_snap = toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = pawb pwant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
-settings-general-fk_settings-leg_tweak-skating_correction-description = skating-cowwection cowwects fow ice skating but can decwease accuwacy in cewtain movement pattewns. When enabwing this make suwe to fuww weset and wecawibwate in game.
-settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can reduce ow even ewiminates cwipping thwough the fwoow. When enabwing this, make suwe to fuww weset and wecawibwate in game.
 settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
 settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
 settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
-settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
 settings-general-fk_settings-self_localization-title = mocap mowd
 
 ## Gesture control settings (tracker tapping)
