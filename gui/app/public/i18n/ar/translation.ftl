@@ -334,8 +334,6 @@ settings-stay_aligned-relaxed_poses-close = أغلق
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = اعاده تعيين
-settings-keybinds_yaw-reset = إعادة تعيين الانعراج
 settings-keybinds_reset-all-button = إعادة تعيين الكل
 settings-keybinds-recorder-modal-cancel-button = إلغاء
 
@@ -358,7 +356,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = يمكن أن ي
 settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
-settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
 settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
@@ -406,7 +403,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = قم 
 ## Appearance settings
 
 settings-interface-appearance = مظهر
-settings-general-interface-dev_mode = وضع المطوّر
 settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
 settings-general-interface-theme = موضوع اللون
 settings-general-interface-lang = اختر اللغة
@@ -432,7 +428,6 @@ settings-general-interface-connected_trackers_warning-description = سيعرض �
 ## Behavior settings
 
 settings-interface-behavior = السلوك
-settings-general-interface-dev_mode = وضع المطوّر
 settings-general-interface-use_tray = تصغير إلى علبة النظام
 settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
 settings-general-interface-discord_presence = مشاركة النشاط على Discord
@@ -491,7 +486,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = منفذ الخروج (الإفتراضي: 9000)
 settings-osc-vrchat-network-address = عنوان الشبكة
 settings-osc-vrchat-network-address-description-v1 = اختر العنوان الذي تريد إرسال البيانات إليه. يمكن تركها دون أن تمس ل VRChat.
-settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخاص بفي ار تشات
 
 ## VRChat OSC status
 
@@ -517,7 +511,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = منفذ الخروج (الافتراضي: 39539)
 settings-osc-vmc-network-address = عنوان الشبكة
 settings-osc-vmc-network-address-description = قم بتعيين العنوان لإرسال البيانات إلى التقاط الحركة الافتراضية.
-settings-osc-vmc-network-address-placeholder = عنوان آي بي في 4
 settings-osc-vmc-vrm = نموذج في ار إم
 settings-osc-vmc-vrm-description = قم بتحميل نموذج في ار إم للسماح بتركيز الرأس وتمكين توافق أعلى مع تطبيقات الأخرى
 settings-osc-vmc-vrm-untitled_model = نموذج بدون عنوان
