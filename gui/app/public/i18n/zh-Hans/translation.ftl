@@ -624,23 +624,9 @@ settings-utils-advanced-reset-gui = 重置GUI设置
 settings-utils-advanced-reset-gui-description = 恢复界面设置的初始配置。
 settings-utils-advanced-reset-gui-label = 重置GUI设置
 settings-utils-advanced-reset-server = 重置追踪设置
-settings-utils-advanced-reset-server-description = 恢复追踪设置的初始配置。
 settings-utils-advanced-reset-server-label = 重置追踪设置
 settings-utils-advanced-reset-all = 重置所有设置
-settings-utils-advanced-reset-all-description = 恢复界面设置与追踪设置的初始配置。
 settings-utils-advanced-reset-all-label = 重置所有设置
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>警告：</b> 将要恢复界面设置为初始配置。
-            是否确认进行此操作？
-        [server]
-            <b>警告：</b> 将要恢复追踪设置为初始配置。
-            是否确认进行此操作？
-       *[all]
-            <b>警告：</b> 将要恢复所有设置为初始配置。
-            是否确认进行此操作？
-    }
 settings-utils-advanced-reset_warning-reset = 重置设置
 settings-utils-advanced-reset_warning-cancel = 取消
 settings-utils-advanced-open_data-v1 = 配置文件夹
