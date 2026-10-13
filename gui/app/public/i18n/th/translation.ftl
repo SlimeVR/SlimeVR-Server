@@ -410,9 +410,7 @@ settings-general-tracker_mechanics-trackers_over_usb = ต่อแทร็ก�
 settings-general-tracker_mechanics-trackers_over_usb-description = เปิดใช้งานการรับข้อมูลแทร็กเกอร์แบบ HID ผ่านสาย USB ตรวจสอบว่าแทร็กเกอร์ของคุณได้เปิด <b>การเชื่อมต่อผ่าน HID</b> เอาไว้!
 settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
-settings-stay_aligned-setup-description = คุณต้องทำ "ตั้งค่า Stay Aligned" ให้เสร็จสมบูรณ์เพื่อเปิดใช้งาน Stay Aligned
 settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
-settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัปเดตท่าทางเหล่านี้
 settings-stay_aligned-relaxed_poses-standing = ปรับแทร็กเกอร์ขณะยืน
 settings-stay_aligned-relaxed_poses-sitting = ปรับแทร็กเกอร์ขณะนั่งเก้าอี้
 settings-stay_aligned-relaxed_poses-flat = ปรับแทร็กเกอร์ขณะนั่งบนพื้น หรือนอนหงาย
@@ -443,8 +441,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = การแก้�
 settings-general-fk_settings-leg_tweak-toe_snap = เดาการหมุนเท้า
 settings-general-fk_settings-leg_tweak-foot_plant = ปรับสมดุลเท้า
 settings-general-fk_settings-leg_tweak-skating_correction-amount = ปริมาณการแก้ไขการไถล
-settings-general-fk_settings-leg_tweak-skating_correction-description = การแก้ไขการไถล จะแก้ไขปัญหาที่เท้าสไลด์เหมือนเล่นสเก็ตน้ำแข็ง แต่สามารถลดความแม่นยำในการเคลื่อนไหวบางรูปแบบ เมื่อเปิดใช้งานแล้วต้องทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
-settings-general-fk_settings-leg_tweak-floor_clip-description = การล็อกระดับพื้นสามารถลดหรือกำจัดการทะลุผ่านพื้นได้ เมื่อเปิดใช้งานแล้วต้องทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
 settings-general-fk_settings-leg_tweak-toe_snap-description = การเดาการหมุนของเท้า จะพยายามคาดเดาการหมุนของเท้า หากไม่ได้ใช้แทร็กเกอร์เท้า
 settings-general-fk_settings-leg_tweak-foot_plant-description = การปรับสมดุลเท้า จะหมุนเท้าให้ขนานกับพื้นเมื่อมีการสัมผัสพื้น
 settings-general-fk_settings-leg_fk = การจับตำแหน่งขา
@@ -454,7 +450,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
-settings-general-fk_settings-skeleton_settings-ratios-description = เปลี่ยนค่าการตั้งค่าโครงกระดูก คุณอาจต้องปรับสัดส่วนของคุณใหม่หลังจากเปลี่ยนค่าเหล่านี้
 settings-general-fk_settings-self_localization-title = โหมด Mocap
 
 ## Gesture control settings (tracker tapping)
@@ -891,7 +886,6 @@ onboarding-stay_aligned-previous_step = ก่อนหน้า
 onboarding-stay_aligned-next_step = ต่อไป
 onboarding-stay_aligned-restart = เริ่มใหม่
 onboarding-stay_aligned-done = เสร็จแล้ว
-onboarding-stay_aligned-manual_mounting-done = เสร็จแล้ว
 
 ## Home
 
@@ -1101,7 +1095,6 @@ tracking_checklist-MOUNTING_CALIBRATION = ทำการตั้งศูน�
 tracking_checklist-FEET_MOUNTING_CALIBRATION = ตั้งศูนย์การติดตั้งแทร็กเกอร์เท้า
 tracking_checklist-FULL_RESET = ทำการรีเซ็ตทั้งหมด
 tracking_checklist-FULL_RESET-desc = แทร็กเกอร์บางส่วนจำเป็นต้องทำการรีเซ็ต
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR ไม่ได้ทำงานอยู่
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR ไม่ได้ทำงานอยู่ คุณจะใช้เพื่อเล่น VR ใช่หรือไม่?
 tracking_checklist-STEAMVR_DISCONNECTED-open = เปิด SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = ตั้งศูนย์แทร็กเกอร์ของคุณ
