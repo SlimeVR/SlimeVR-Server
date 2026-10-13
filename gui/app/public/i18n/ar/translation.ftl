@@ -531,21 +531,9 @@ settings-utils-advanced-reset-gui = إعادة تعيين إعدادات واج�
 settings-utils-advanced-reset-gui-description = قم باستعادة الإعدادات الافتراضية للواجهة.
 settings-utils-advanced-reset-gui-label = إعادة تعيين واجهة المستخدم الرسومية
 settings-utils-advanced-reset-server = إعادة تعيين إعدادات التعقب
-settings-utils-advanced-reset-server-description = استعادة الإعدادات الافتراضية للتعقب.
 settings-utils-advanced-reset-server-label = إعادة تعيين التعقب
 settings-utils-advanced-reset-all = إعادة تعيين جميع الإعدادات
-settings-utils-advanced-reset-all-description = قم باستعادة الإعدادات الافتراضية لكل من الواجهة و التعقب.
 settings-utils-advanced-reset-all-label = إعادة تعيين الكل
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين جميع الإعدادات الخاصة بك إلى الإعدادات الافتراضية.
-            هل أنت متأكد من أنك تريد القيام بذلك؟
-        [server] <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين إعدادات التعقب إلى الإعدادات الافتراضية. هل أنت متأكد من أنك تريد القيام بذلك؟
-       *[all]
-            <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين جميع الإعدادات الخاصة بك إلى الإعدادات الافتراضية.
-            هل أنت متأكد من أنك تريد القيام بذلك؟
-    }
 settings-utils-advanced-reset_warning-reset = إعادة تعيين الإعدادات
 settings-utils-advanced-reset_warning-cancel = إلغاء
 settings-utils-advanced-open_data-v1 = مجلد التكوين
