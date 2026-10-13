@@ -344,8 +344,6 @@ settings-stay_aligned-debug-copy-label = Zkopírovat nastavení do schránky
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Plný Reset
-settings-keybinds_yaw-reset = Rychlý reset
 settings-keybinds_reset-all-button = Obnovit vše
 settings-keybinds-recorder-modal-done-button = Hotovo
 settings-keybinds-recorder-modal-cancel-button = Zrušit
@@ -370,7 +368,6 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špi�
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
-settings-general-fk_settings-enforce_joint_constraints = Limity kostry
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
 settings-general-fk_settings-ik = Data pozice
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
@@ -414,7 +411,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Zvyš
 ## Appearance settings
 
 settings-interface-appearance = Vzhled
-settings-general-interface-dev_mode = Vývojářský režim
 settings-general-interface-dev_mode-description = Tento režim může být užitečný, pokud potřebujete podrobné údaje nebo omunikovat s trackerama na pokročilejší úrovni.
 settings-general-interface-theme = Barva tématu
 settings-general-interface-lang = Zvolte jazyk
@@ -440,7 +436,6 @@ settings-general-interface-connected_trackers_warning-description = Tato možnos
 ## Behavior settings
 
 settings-interface-behavior = Chování
-settings-general-interface-dev_mode = Vývojářský režim
 settings-general-interface-use_tray = Minimalizovat do oznamovací oblasti
 settings-general-interface-use_tray-description = Umožňuje vám zavřít okno, aniž byste zavřeli SlimeVR Server, takže ho můžete nadále používat bez rozhraní.
 settings-general-interface-discord_presence = Sdílet aktivitu na Discordu
@@ -502,7 +497,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Výstup portu (výchozí: 9000)
 settings-osc-vrchat-network-address = Síťová adresa
 settings-osc-vrchat-network-address-description-v1 = Zvolte na jakou adresu zasílat data, Může zůstat nezměneno pro Vrchat.
-settings-osc-vrchat-network-address-placeholder = VRChat ip adresa
 
 ## VRChat OSC status
 
@@ -528,7 +522,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port pro odesílání (výchozí: 39539)
 settings-osc-vmc-network-address = Síťová adresa
 settings-osc-vmc-network-address-description = Vyberte, na kterou adresu odesílat data pomocí VMC.
-settings-osc-vmc-network-address-placeholder = Adresa IPV4
 settings-osc-vmc-vrm-description = Načtěte VRM model, k umožnení lepšímu sledování hlavy a zlepšení kompatibility s dalšími aplikacemi.
 settings-osc-vmc-vrm-untitled_model = Nepojmenovaný model
 settings-osc-vmc-vrm-file_select = Přetáhněte zde model, který chcete použít, nebo <u>procházejte</u>
@@ -584,7 +577,6 @@ settings-home-list-layout-table = Tabulka
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Aktivní kroky
 
 ## Setup/onboarding menu
 
@@ -1014,10 +1006,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpětí paží
 ## Error collection consent modal
 
 error_collection_modal-title = Můžeme sbírat chyby?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím
 
