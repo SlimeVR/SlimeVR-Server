@@ -433,7 +433,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del 
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forzar reinicio de montura de pies
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar el reinicio de la montura de los pies durante los reinicios generales del montaje.
-settings-general-fk_settings-enforce_joint_constraints = Límites esqueléticos
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-ik = Datos de posición
 settings-general-fk_settings-ik-use_position-description = Permite el uso de los datos de posición de los trackers que lo proveen. Cuando actives esto asegúrate de hacer un reinicio completo y recalibrar en el juego.
@@ -469,7 +468,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 ## Appearance settings
 
 settings-interface-appearance = Apariencia
-settings-general-interface-dev_mode = Modo desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados.
 settings-general-interface-theme = Tema de color
 settings-general-interface-lang = Selecciona un idioma
@@ -508,12 +506,6 @@ settings-general-interface-discord_presence-message =
     }
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
 settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Consientes a la recopilación de datos de errores anonimizados?</h1>
-    
-    <b>No recopilamos información personal</b> como tu dirección IP o credenciales del Wi-Fi. ¡SlimeVR respeta tu privacidad!
-    
-    Para proveer la mejor experiencia de usuario, recopilamos reportes de errores anonimizados, métricas de rendimiento, e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas son recopiladas a través de Sentry.io.
 settings-interface-behavior-bvh_directory = Carpeta para guardar grabaciones de BVH
 settings-interface-behavior-bvh_directory-description = Elige una carpeta para guardar tus grabaciones BVH en lugar de tener que elegir dónde guardarlas cada vez.
 settings-interface-behavior-bvh_directory-label = Carpeta de grabaciones BVH
@@ -565,7 +557,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Puerto de salida (por defecto: 9000)
 settings-osc-vrchat-network-address = Dirección de red
 settings-osc-vrchat-network-address-description-v1 = Elige a qué dirección enviar los datos. Se puede dejar sin cambiar para VRChat.
-settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 
 ## VRChat OSC status
 
@@ -588,7 +579,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Puerto de salida (por defecto: 39539)
 settings-osc-vmc-network-address = Dirección de red
 settings-osc-vmc-network-address-description = Establece la dirección donde se enviarán los datos por VMC
-settings-osc-vmc-network-address-placeholder = Dirección IPv4
 settings-osc-vmc-vrm = Modelo VRM
 settings-osc-vmc-vrm-description = Carga un modelo VRM para permitir el anclaje de cabeza y habilitar una mejor compatibilidad con otras aplicaciones
 settings-osc-vmc-vrm-untitled_model = Modelo sin nombre
@@ -644,8 +634,6 @@ settings-home-list-layout-table = Tabla
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Pasos Activos
-settings-tracking_checklist-active_steps-desc = Lista de todos los pasos en la lista de tracking. Puedes elegir desactivar pasos específicos.
 
 ## Setup/onboarding menu
 
@@ -1120,10 +1108,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Longitud del brazo
 ## Error collection consent modal
 
 error_collection_modal-title = ¿Podemos recopilar errores?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
 
