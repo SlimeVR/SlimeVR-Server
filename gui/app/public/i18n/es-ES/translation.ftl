@@ -403,8 +403,6 @@ settings-stay_aligned-debug-copy-label = Copiar ajustes al portapapeles
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Reinicio completo
-settings-keybinds_yaw-reset = Restablecimiento horizontal
 settings-keybinds_reset-all-button = Restablecer todo
 settings-keybinds-recorder-modal-done-button = Hecho
 settings-keybinds-recorder-modal-cancel-button = Cancelar
@@ -430,7 +428,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado de p
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forzar reinicio de la montura de los pies.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar el restablecimiento del montaje de los pies durante los reinicios generales del montaje.
-settings-general-fk_settings-enforce_joint_constraints = Límites esqueléticos
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-skeleton_settings-ratios = Proporciones del esqueleto
 settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de la configuración del esqueleto. Es posible que debas ajustar tus proporciones de nuevo.
@@ -472,7 +469,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 ## Appearance settings
 
 settings-interface-appearance = Apariencia
-settings-general-interface-dev_mode = Modo de desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los trackers conectados a un nivel más avanzado
 settings-general-interface-theme = Temas
 settings-general-interface-lang = Seleccionar idioma
@@ -498,7 +494,6 @@ settings-general-interface-connected_trackers_warning-description = Esta opción
 ## Behavior settings
 
 settings-interface-behavior = Comportamiento
-settings-general-interface-dev_mode = Modo de desarrollador
 settings-general-interface-use_tray = Minimizar a la bandeja
 settings-general-interface-use_tray-description = Te permite cerrar la ventana sin cerrar SlimeVR para que pueda seguir usándolo sin que la interfaz te moleste.
 settings-general-interface-discord_presence = Compartir actividad en Discord
@@ -559,7 +554,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Puerto de salida (Por defecto: 9000)
 settings-osc-vrchat-network-address = Dirección de red
 settings-osc-vrchat-network-address-description-v1 = Elige a qué dirección enviar los datos. Se puede dejar sin modificar para VRChat.
-settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 
 ## VRChat OSC status
 
@@ -582,7 +576,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Puerto de salida (Por defecto: 39539)
 settings-osc-vmc-network-address = Dirección de red
 settings-osc-vmc-network-address-description = Elige la dirección a la que se enviarán los datos vía VMC.
-settings-osc-vmc-network-address-placeholder = Dirección IPV4
 settings-osc-vmc-vrm = Modelo VRM
 settings-osc-vmc-vrm-description = Cargar un modelo VRM para permitir el anclaje de la cabeza y posibilitar una mayor compatibilidad con otras aplicaciones.
 settings-osc-vmc-vrm-untitled_model = Modelo sin título
@@ -1019,10 +1012,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Amplitud de los brazos
 ## Error collection consent modal
 
 error_collection_modal-title = ¿Podemos recopilar errores?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Puede cambiar esta configuración más adelante en la sección Comportamiento de la página de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
 
