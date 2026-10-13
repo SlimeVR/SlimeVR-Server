@@ -351,14 +351,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = تصحيح التز�
 settings-general-fk_settings-leg_tweak-toe_snap = انجذاب إلى أصابع القدم
 settings-general-fk_settings-leg_tweak-foot_plant = تثبيت اصبع القدم
 settings-general-fk_settings-leg_tweak-skating_correction-amount = قوة تصحيح التزحلق
-settings-general-fk_settings-leg_tweak-skating_correction-description = تصحيح التزحلق يصحح التزحلق على الجليد، ولكن يمكن أن يقلل الدقة في أنماط حركة معينة. عند تمكين هذا، تأكد من إعادة الضبط وإعادة المعايرة بالكامل في اللعبة.
-settings-general-fk_settings-leg_tweak-floor_clip-description = يمكن أن يقلل التثبيت الأرضية من الإجتياز الأرضية أو حتى يزيله. عند تمكين هذا، تأكد من إعادة الضبط وإعادة المعايرة بالكامل في اللعبة.
 settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
-settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
 settings-general-fk_settings-self_localization-title = وضع Mocap
 
 ## Gesture control settings (tracker tapping)
