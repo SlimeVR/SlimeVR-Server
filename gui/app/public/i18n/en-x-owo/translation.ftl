@@ -319,8 +319,6 @@ settings-stay_aligned-relaxed_poses-close = cwose
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = fuww weset~
-settings-keybinds_yaw-reset = yaw weset
 settings-keybinds-recorder-modal-cancel-button = cancew
 
 ## FK/Tracking settings
@@ -342,7 +340,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can r
 settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
 settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
 settings-general-fk_settings-leg_fk = leg twacking
-settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
 settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
@@ -382,7 +379,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = incwe
 ## Appearance settings
 
 settings-interface-appearance = appeawance
-settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
 settings-general-interface-theme = cowor theem
 settings-general-interface-lang = sewect wanguage
@@ -408,7 +404,6 @@ settings-general-interface-connected_trackers_warning-description = This option 
 ## Behavior settings
 
 settings-interface-behavior = behavur
-settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-use_tray = minimaize to systewm tway
 settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
 settings-general-interface-discord_presence = shaer activitey on discowd
@@ -455,7 +450,6 @@ settings-osc-vrchat-network-port_out =
     .label = pawt out
     .placeholder = pawt out (defawwt: 9000)
 settings-osc-vrchat-network-address = network addwess
-settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 
 ## VRChat OSC status
 
@@ -481,7 +475,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = pawt out (defawwt: 39539)
 settings-osc-vmc-network-address = network addwess
 settings-osc-vmc-network-address-description = choose which addwess to send out data at via vmc
-settings-osc-vmc-network-address-placeholder = IPV4 addwess
 settings-osc-vmc-vrm = VRM modew
 settings-osc-vmc-vrm-description = woad a VRM modew to awwow head anchow and enabwe a highew compatibiwity with othew appwications
 settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse</u>
