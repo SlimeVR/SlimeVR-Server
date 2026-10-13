@@ -338,13 +338,11 @@ settings-sidebar-advanced = Erweitert
 settings-routing-description =
     Wählen Sie aus, was jede Ausgabe sendet.
     SteamVR/Monado, VRChat OSC und VMC können jeweils ein anderes Set von Körperteilen erhalten.
-settings-routing-mode-description = Während automatisches Routing eingeschaltet ist, wählt SlimeVR den besten Output für jeden Knochen damit nichts zweimal gesendet wird: SteamVR/Monado ist bevorzugt, VRChat OSC deckt die Knochen ab, die es nicht aufnehmen kann und VMC bekommt immer das gesamte Skelett. Schalte es aus um selbst zu entscheiden wohin welcher Knochen gehen soll, einschließlich einen Knochen zu mehreren Outputs gleichzeitig senden.
 settings-routing-duplicate-warning =
     { $bones } { $boneCount ->
         [one] ist
        *[many] sind
     } zu mehreren Ausgängen geleitet ({ $outputs }), die doppelte Tracker in Anwendungen anzeigen können.
-settings-routing-bones-description = Ein Haken bedeutet, dass der Knochen zu diesem Output gesendet wird. Ein Bindestrich bedeutet, dass der Output diesen Knochen nicht unterstützt. Deaktiviere Automatisch um selbst zu wählen.
 settings-routing-output-stopped-description = SteamVR oder Monado Treiber nicht verbunden.
 settings-routing-output-badge-off = Aus
 settings-routing-group-fingers = Finger
@@ -402,8 +400,6 @@ settings-stay_aligned-debug-copy-label = Einstellungen in die Zwischenablage kop
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Reset
-settings-keybinds_yaw-reset = Horizontaler Reset
 settings-keybinds_reset-all-button = Alles zurücksetzen
 settings-keybinds-recorder-modal-done-button = Fertig
 settings-keybinds-recorder-modal-cancel-button = Abbruch
@@ -429,7 +425,6 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur ri
 settings-general-fk_settings-leg_fk = Beintracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Fuß-Ausrichtung kalibrieren
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Erzwinge Fußausrichtungs-Kalibrierung während der Körperausrichtungs-Kalibrierung.
-settings-general-fk_settings-enforce_joint_constraints = Gelenkgrenzen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Verhindert, dass sich Gelenke über ihre Grenzen hinaus drehen
 settings-general-fk_settings-ik = Positionsdaten
 settings-general-fk_settings-skeleton_settings-ratios = Skelettverhältnisse
@@ -470,7 +465,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Erhö
 ## Appearance settings
 
 settings-interface-appearance = Erscheinungsbild
-settings-general-interface-dev_mode = Entwicklermodus
 settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
 settings-general-interface-theme = Farbschema
 settings-general-interface-lang = Sprachauswahl
@@ -496,7 +490,6 @@ settings-general-interface-connected_trackers_warning-description = Diese Option
 ## Behavior settings
 
 settings-interface-behavior = Verhalten
-settings-general-interface-dev_mode = Entwicklermodus
 settings-general-interface-use_tray = In den Infobereich minimieren
 settings-general-interface-use_tray-description = Erlaubt Ihnen, das Fenster zu schließen, ohne den SlimeVR-Server zu beenden. Dies erlaubt Ihnen diesen weiterzuverwenden, ohne dass das Fenster stört.
 settings-general-interface-discord_presence = Aktivität auf Discord teilen
@@ -561,7 +554,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Ausgangsport (Standard: 9000)
 settings-osc-vrchat-network-address = Netzwerkadresse
 settings-osc-vrchat-network-address-description-v1 = Wählen Sie die IP-Adresse, an die die Daten gesendet werden sollen. Kann für VRChat unverändert bleiben.
-settings-osc-vrchat-network-address-placeholder = VRChat-IP-Adresse
 
 ## VRChat OSC status
 
@@ -589,7 +581,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Ausgehender Port (default: 39539)
 settings-osc-vmc-network-address = Netzwerkadresse
 settings-osc-vmc-network-address-description = Setze die Adresse, wo die Daten hinversendet werden sollen.
-settings-osc-vmc-network-address-placeholder = IPv4-Adresse
 settings-osc-vmc-vrm = VRM-Model
 settings-osc-vmc-vrm-description = Lade ein VRM-Modell um die Kopfverankerung anzuschalten und eine bessere Kompatibilität mit anderen Anwendungen zu bekommen.
 settings-osc-vmc-vrm-untitled_model = Unbenanntes Modell
@@ -646,7 +637,6 @@ settings-home-list-layout-table = Tabelle
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Aktive Schritte
 
 ## Setup/onboarding menu
 
@@ -1080,10 +1070,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Armspannweite
 ## Error collection consent modal
 
 error_collection_modal-title = Können wir Fehler sammeln?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Sie können diese Einstellung später im Abschnitt Verhalten auf der Einstellungsseite ändern.
 error_collection_modal-confirm = Ich stimme zu
 error_collection_modal-cancel = Ich will nicht
 
