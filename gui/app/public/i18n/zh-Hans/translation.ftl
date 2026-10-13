@@ -417,9 +417,7 @@ settings-general-tracker_mechanics-trackers_over_usb = 通过USB连接的追踪�
 settings-general-tracker_mechanics-trackers_over_usb-description = 通过USB接收HID追踪器数据。清确保连接的追踪器启用了 <b>通过HID连接</b> 功能！
 settings-stay_aligned-description = 持续校准会逐渐将追踪器对齐到设置的放松姿势，减少追踪器漂移的影响
 settings-stay_aligned-setup-label = 配置持续校准
-settings-stay_aligned-setup-description = 完成“配置持续校准”后才可启动持续校准。
 settings-stay_aligned-relaxed_poses-label = 放松姿势
-settings-stay_aligned-relaxed_poses-description = 持续校准使用您设定的放松姿势保持追踪器校准。使用“设置持续校准”来更新放松姿势。
 settings-stay_aligned-relaxed_poses-standing = 站立放松姿势
 settings-stay_aligned-relaxed_poses-sitting = 椅子上放松姿势
 settings-stay_aligned-relaxed_poses-flat = 地面/平躺放松姿势
@@ -450,8 +448,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = 脚滑矫正
 settings-general-fk_settings-leg_tweak-toe_snap = 脚趾着地
 settings-general-fk_settings-leg_tweak-foot_plant = 脚掌着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正量
-settings-general-fk_settings-leg_tweak-skating_correction-description = 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。启用前请先进行完整重置，启用后在游戏内重新校准。
-settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可以减轻甚至消除脚部穿入地板的情况。启用前请先进行完整重置，启用后在游戏内重新校准。
 settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
@@ -461,7 +457,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = 位置数据
 settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
-settings-general-fk_settings-skeleton_settings-ratios-description = 更改骨架设置的参数。您可能需要在更改后调整身体比例。
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
 
 ## Gesture control settings (tracker tapping)
@@ -927,7 +922,6 @@ onboarding-stay_aligned-previous_step = 上一步
 onboarding-stay_aligned-next_step = 下一步
 onboarding-stay_aligned-restart = 重新开始
 onboarding-stay_aligned-done = 完成
-onboarding-stay_aligned-manual_mounting-done = 完成
 
 ## Home
 
@@ -1134,7 +1128,6 @@ tracking_checklist-MOUNTING_CALIBRATION = 进行佩戴校准
 tracking_checklist-FEET_MOUNTING_CALIBRATION = 进行脚部佩戴校准
 tracking_checklist-FULL_RESET = 进行完整重置
 tracking_checklist-FULL_RESET-desc = 有些追踪器需要进行重置
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未在运行
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未在运行。你要将追踪器用于 VR 吗？
 tracking_checklist-STEAMVR_DISCONNECTED-open = 启动 SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = 你已经启用了SteamVR的虚拟手部追踪器。这会导致SteamVR和游戏中的按键输入无法使用。
