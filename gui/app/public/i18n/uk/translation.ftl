@@ -261,8 +261,6 @@ settings-stay_aligned-relaxed_poses-close = Закрити
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Повне скидання
-settings-keybinds_yaw-reset = Скинути нахил
 settings-keybinds-recorder-modal-cancel-button = Скасувати
 
 ## FK/Tracking settings
@@ -317,7 +315,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Зб�
 ## Appearance settings
 
 settings-interface-appearance = Зовнішність
-settings-general-interface-dev_mode = Режим розробника
 settings-general-interface-dev_mode-description = Цей режим може бути корисним, якщо вам потрібні поглиблені дані або для взаємодії з підключеними трекерами на більш просунутому рівні.
 settings-general-interface-theme = Варіація оформлення
 settings-general-interface-lang = Виберіть мову
@@ -342,7 +339,6 @@ settings-general-interface-connected_trackers_warning-description = Ця опц�
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Режим розробника
 settings-general-interface-use_tray = Згорнути в системний трей
 settings-general-interface-use_tray-description = Дозволяє закрити вікно, не закриваючи сервер SlimeVR, так що ви можете продовжувати використати його, не турбуючись про інтерфейс.
 settings-general-interface-discord_presence = Ділитися активністю в Discord
@@ -384,7 +380,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Вихідний Порт (зазвичай: 9000)
 settings-osc-vrchat-network-address = Мережева адреса
 settings-osc-vrchat-network-address-description-v1 = Виберіть, за якою адресою надсилати дані. Можна залишити без змін для VRChat.
-settings-osc-vrchat-network-address-placeholder = IP-адреса VRChat
 
 ## VRChat OSC status
 
@@ -409,7 +404,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Вихідний Порт (зазвичай: 39539)
 settings-osc-vmc-network-address = Мережева адреса
 settings-osc-vmc-network-address-description = Виберіть, за якою адресою надсилати дані через VMC
-settings-osc-vmc-network-address-placeholder = IPV4-адреса
 settings-osc-vmc-vrm = Модель VRM
 settings-osc-vmc-vrm-description = Завантажте модель VRM, щоб дозволити головний якір і забезпечити більш високу сумісність з іншими програмами
 settings-osc-vmc-vrm-file_select = Перетягніть модель для використання або <u>знайдіть</u>
