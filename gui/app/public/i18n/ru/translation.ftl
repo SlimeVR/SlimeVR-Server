@@ -390,9 +390,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
 settings-stay_aligned-description = Функция "Оставаться выровненным" уменьшает дрифт, постепенно настраивая трекеры в соответствии с вашими расслабленными позами
 settings-stay_aligned-setup-label = Настройки "Оставаться выровненным"
-settings-stay_aligned-setup-description = Необходимо завершить "Настройки "Оставаться выровненным"", чтобы включить эту функцию.
 settings-stay_aligned-relaxed_poses-label = Расслабленные позы
-settings-stay_aligned-relaxed_poses-description = Функция "Оставаться выровненным" использует ваши расслабленные позы, чтобы трекеры оставались выровнены. Используйте "Настройки "Оставаться выровненным"", чтобы обновить эти позы.
 settings-stay_aligned-relaxed_poses-standing = Калибровка трекеров в положении стоя
 settings-stay_aligned-relaxed_poses-sitting = Калибровка трекеров в положении сидя (на стуле)
 settings-stay_aligned-relaxed_poses-flat = Калибровка трекеров в положении сидя (на полу) или лежа (на спине)
@@ -423,14 +421,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = Коррекция �
 settings-general-fk_settings-leg_tweak-toe_snap = Коррекция пальцев ног
 settings-general-fk_settings-leg_tweak-foot_plant = Коррекция стоп
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Сила коррекции скольжения
-settings-general-fk_settings-leg_tweak-skating_correction-description = Коррекция скольжения корректирует скольжение по полу, но может снизить точность некоторых форм движений. При включении обязательно выполните полный сброс и повторную калибровку в игре.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Привязка к полу может уменьшить или даже полностью исключить прохождение через пол. При включении обязательно выполните полный сброс и повторную калибровку в игре.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap пытается угадать вращение ваших ступней, если трекеры для них не используются.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-Plant поворачивает ваши ступни так, чтобы они были параллельны земле при контакте.
 settings-general-fk_settings-leg_fk = Отслеживание ног
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Предотвращает вращение суставов за пределы их возможностей
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
-settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
 settings-general-fk_settings-self_localization-title = Режим Mocap
 
 ## Gesture control settings (tracker tapping)
@@ -849,7 +844,6 @@ onboarding-stay_aligned-previous_step = Предыдущий
 onboarding-stay_aligned-next_step = Следующий
 onboarding-stay_aligned-restart = Перезапустить
 onboarding-stay_aligned-done = Выполнено
-onboarding-stay_aligned-manual_mounting-done = Выполнено
 
 ## Home
 
