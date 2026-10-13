@@ -257,13 +257,10 @@ settings-keybinds-recorder-modal-cancel-button = Peruuta
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction vahvuus
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating correction helpottaa jalkojen luistelua, mutta voi heikentää tarkkuutta tietyissä liikekuvioissa. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi vähentää tai korjata jalan kulun lattian läpi. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
 settings-general-fk_settings-leg_fk = Jalkojen jäljitys
 settings-general-fk_settings-skeleton_settings-ratios = Luurankosuhteet
-settings-general-fk_settings-skeleton_settings-ratios-description = Muuta luurankoasetusten arvoja. Saatat joutua säätämään mittasuhteitasi muutosten jälkeen.
 settings-general-fk_settings-self_localization-title = Mocap-tila
 
 ## Gesture control settings (tracker tapping)
