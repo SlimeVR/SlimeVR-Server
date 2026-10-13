@@ -300,13 +300,10 @@ settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
 settings-general-fk_settings-leg_tweak-foot_plant = 足の着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーティング補正の強さ
-settings-general-fk_settings-leg_tweak-skating_correction-description = スケート補正はアイススケートを補正しますが、特定の動きでは精度が低下する場合があります。これを有効にする際は、フルリセットし、ゲーム内で再校正してください。
-settings-general-fk_settings-leg_tweak-floor_clip-description = フロアクリップを有効にすると、床を通り抜けることを減少させるか、完全に排除できます。これを有効にする際は、フルリセットし、ゲーム内で再校正してください。
 settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
 settings-general-fk_settings-skeleton_settings-ratios = スケルトン比率
-settings-general-fk_settings-skeleton_settings-ratios-description = スケルトン設定の値を変更する。これらを変更した後、体の比率を調整する必要があるかもしれません。
 settings-general-fk_settings-self_localization-title = モーションキャプチャモード
 
 ## Gesture control settings (tracker tapping)
