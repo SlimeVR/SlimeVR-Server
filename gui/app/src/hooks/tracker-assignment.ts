@@ -83,15 +83,10 @@ export function useTrackerAssignment(mode: AssignmentMode) {
       occupant &&
       occupant.tracker.trackerId !== trackerId
     ) {
-      sendAssign(
-        occupant.tracker.trackerId,
-        BodyPart.NONE,
-        occupant.tracker.info?.mountingOrientation ?? null
-      );
+      sendAssign(occupant.tracker.trackerId, BodyPart.NONE);
     }
 
-    const moved = flatTrackers.find((td) => td.tracker.trackerId === trackerId);
-    sendAssign(trackerId, bodyPart, moved?.tracker.info?.mountingOrientation ?? null);
+    sendAssign(trackerId, bodyPart);
   };
 
   const { tryOpenChokerWarning, closeChokerWarning, shouldShowChokerWarn } =
@@ -123,11 +118,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const unassignPart = (part: BodyPart) => {
     const td = trackerByPart[part];
     if (td) {
-      sendAssign(
-        td.tracker.trackerId,
-        BodyPart.NONE,
-        td.tracker.info?.mountingOrientation ?? null
-      );
+      sendAssign(td.tracker.trackerId, BodyPart.NONE);
     }
     if (armedPart === part) clearPending();
   };

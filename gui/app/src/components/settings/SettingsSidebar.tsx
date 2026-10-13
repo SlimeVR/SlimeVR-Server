@@ -84,12 +84,12 @@ export function SettingsSidebar() {
       <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-utils" />
         <div className="flex flex-col gap-1">
+          <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
           <SettingsLink to="/settings/serial" id="settings-sidebar-serial" />
           <SettingsLink
             to="/settings/firmware-tool"
             id="settings-sidebar-firmware-tool"
           />
-          <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
           {vrcConfigState?.isSupported && (
             <SettingsLink
               to="/settings/vrc-warnings"

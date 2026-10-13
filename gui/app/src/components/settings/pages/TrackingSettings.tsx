@@ -44,7 +44,6 @@ type SkeletonForm = {
   ratios: {
     imputeSpineFromUpperToLower: number;
     spineCurvature: number;
-    interpolateHipWithUpperLegs: number;
     interpolateUpperLegsTwistWithLowerLegs: number;
     skatingCorrectionStrength: number;
   };
@@ -80,7 +79,6 @@ function toForm(settings: SkeletonSettingsResponseT): SkeletonForm {
     ratios: {
       imputeSpineFromUpperToLower: ratios?.imputeSpineFromUpperToLower ?? 0,
       spineCurvature: ratios?.spineCurvature ?? 0,
-      interpolateHipWithUpperLegs: ratios?.interpolateHipWithUpperLegs ?? 0,
       interpolateUpperLegsTwistWithLowerLegs:
         ratios?.interpolateUpperLegsTwistWithLowerLegs ?? 0,
       skatingCorrectionStrength: ratios?.skatingCorrectionStrength ?? 0,
@@ -172,23 +170,17 @@ export const trackingSettingsPage = defineSettingsPage({
       description:
         'settings-general-fk_settings-skeleton_settings-ratios-description',
       rows: {
-        imputeSpineFromUpperToLower: {
-          title:
-            'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower',
-          description:
-            'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description',
-        },
         spineCurvature: {
           title:
             'settings-general-fk_settings-skeleton_settings-spine_curvature',
           description:
             'settings-general-fk_settings-skeleton_settings-spine_curvature-description',
         },
-        interpolateHipWithUpperLegs: {
+        imputeSpineFromUpperToLower: {
           title:
-            'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs',
+            'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower',
           description:
-            'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs-description',
+            'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description',
         },
         interpolateUpperLegsTwistWithLowerLegs: {
           title:
@@ -240,8 +232,6 @@ export function TrackingSettings() {
     ratios.imputeSpineFromUpperToLower =
       values.ratios.imputeSpineFromUpperToLower;
     ratios.spineCurvature = values.ratios.spineCurvature;
-    ratios.interpolateHipWithUpperLegs =
-      values.ratios.interpolateHipWithUpperLegs;
     ratios.interpolateUpperLegsTwistWithLowerLegs =
       values.ratios.interpolateUpperLegsTwistWithLowerLegs;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;
@@ -425,16 +415,12 @@ export function TrackingSettings() {
 
           <SettingsGroup group={groups.ratios}>
             <SettingRow
-              setting={groups.ratios.rows.imputeSpineFromUpperToLower}
-              {...stepper('ratios.imputeSpineFromUpperToLower')}
-            />
-            <SettingRow
               setting={groups.ratios.rows.spineCurvature}
               {...stepper('ratios.spineCurvature')}
             />
             <SettingRow
-              setting={groups.ratios.rows.interpolateHipWithUpperLegs}
-              {...stepper('ratios.interpolateHipWithUpperLegs')}
+              setting={groups.ratios.rows.imputeSpineFromUpperToLower}
+              {...stepper('ratios.imputeSpineFromUpperToLower')}
             />
             <SettingRow
               setting={

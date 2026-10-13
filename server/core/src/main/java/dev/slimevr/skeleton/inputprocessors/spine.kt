@@ -34,7 +34,6 @@ private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
 // If a "To" is the same as "From", it'll do 50-50.
 // A negative value will go towards the opposite rotation.
 // A From and To may be taken from different roots.
-// TODO: Fine tune
 private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to mapOf(
 		SpineSource.UPPER_CHEST to Reliability(-6.5f, -24f), // Itself
@@ -43,7 +42,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_WAIST to Reliability(1.5f),
 		SpineSource.LOWER_WAIST to Reliability(2f),
 		SpineSource.HIP to Reliability(4f),
-		SpineSource.UPPER_LEGS to Reliability(2.5f),
+		SpineSource.UPPER_LEGS to Reliability(1.5f, 1.75f),
 	),
 	SpineSource.LOWER_CHEST to mapOf(
 		// From
@@ -53,7 +52,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f),
 		SpineSource.LOWER_WAIST to Reliability(2f, 7f),
 		SpineSource.HIP to Reliability(4f),
-		SpineSource.UPPER_LEGS to Reliability(2.5f),
+		SpineSource.UPPER_LEGS to Reliability(3.25f, 3.75f),
 	),
 	SpineSource.UPPER_WAIST to mapOf(
 		// From
@@ -63,7 +62,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		// To
 		SpineSource.LOWER_WAIST to Reliability(17f, 20f),
 		SpineSource.HIP to Reliability(5.5f, 5.5f),
-		SpineSource.UPPER_LEGS to Reliability(3f, 2.5f),
+		SpineSource.UPPER_LEGS to Reliability(0.25f, 2.5f),
 	),
 	SpineSource.LOWER_WAIST to mapOf(
 		// From
@@ -72,8 +71,8 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_WAIST to Reliability(9f),
 		SpineSource.LOWER_WAIST to Reliability(44f), // Itself
 		// To
-		SpineSource.HIP to Reliability(10f, 6.5f),
-		SpineSource.UPPER_LEGS to Reliability(3.5f, 2.75f),
+		SpineSource.HIP to Reliability(10f, 9f),
+		SpineSource.UPPER_LEGS to Reliability(1.75f, 6f),
 	),
 	SpineSource.HIP to mapOf(
 		// From
@@ -81,9 +80,9 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.LOWER_CHEST to Reliability(9.5f),
 		SpineSource.UPPER_WAIST to Reliability(13f, 14f),
 		SpineSource.LOWER_WAIST to Reliability(14f, 15f),
-		SpineSource.HIP to Reliability(35f), // Itself
+		SpineSource.HIP to Reliability(32f, 48f), // Itself
 		// To
-		SpineSource.UPPER_LEGS to Reliability(12f, 10f),
+		SpineSource.UPPER_LEGS to Reliability(7f, 18f),
 	),
 )
 

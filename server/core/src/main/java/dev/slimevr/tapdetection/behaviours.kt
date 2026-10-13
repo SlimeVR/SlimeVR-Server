@@ -44,6 +44,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		BodyPart.RIGHT_UPPER_LEG,
 		BodyPart.LEFT_LOWER_LEG,
 		BodyPart.RIGHT_LOWER_LEG,
+		BodyPart.LEFT_FOOT,
+		BodyPart.RIGHT_FOOT,
 	)
 
 	@OptIn(ExperimentalCoroutinesApi::class)
@@ -208,8 +210,6 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		trackerAcceleration: Vector3,
 		thresholdMultiplier: Float,
 	): Boolean {
-		// TODO check logic against main since taps seem harder to trigger
-
 		// Remove old stored accelerations (if they are too old)
 		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
 			trackerTapDetectionState.accelList.removeFirst()
@@ -254,7 +254,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f
 		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
-		const val HID_MULTIPLIER = 1.2f
+		const val HID_MULTIPLIER = 1.25f
 		val ACCEL_WINDOW = 0.06.seconds
 		val TAP_WINDOW_PER_TAP = 0.3.seconds
 	}

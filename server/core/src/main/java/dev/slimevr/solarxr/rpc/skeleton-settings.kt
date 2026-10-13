@@ -37,9 +37,8 @@ internal fun buildSkeletonSettingsResponse(config: SkeletonConfig) = SkeletonSet
 		enforceConstraints = config.toggles.enforceConstraints,
 	),
 	ratios = SkeletonRatios(
-		imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
 		spineCurvature = config.ratios.spineCurvature,
-		interpolateHipWithUpperLegs = config.ratios.interpolateHipWithUpperLegs,
+		imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
 		interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
 		skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
 	),
@@ -85,9 +84,8 @@ class SkeletonSettingsBehaviour(
 							} ?: skeletonConfig.toggles,
 							ratios = req.ratios?.let {
 								SkeletonRatiosConfig(
-									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
 									spineCurvature = it.spineCurvature ?: 0f,
-									interpolateHipWithUpperLegs = it.interpolateHipWithUpperLegs ?: 0f,
+									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
 									interpolateUpperLegsTwistWithLowerLegs = it.interpolateUpperLegsTwistWithLowerLegs ?: 0f,
 									skatingCorrectionStrength = it.skatingCorrectionStrength ?: 0f,
 								)

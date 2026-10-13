@@ -157,8 +157,7 @@ class AppConfig(
 		ProfileKind.UNKNOWN -> error("No active profile for $kind")
 	}
 
-	private suspend fun listProfiles(kind: ProfileKind): List<String> =
-		(profileNamesIn(storage.list(dirOf(kind))) + activeProfile(kind)).distinct().sortedBy { it.lowercase() }
+	private suspend fun listProfiles(kind: ProfileKind): List<String> = (profileNamesIn(storage.list(dirOf(kind))) + activeProfile(kind)).distinct().sortedBy { it.lowercase() }
 
 	private suspend fun profileOperation(kind: ProfileKind, block: suspend () -> ProfileOperationStatus): ProfileOperationStatus = profilesLock.withLock {
 		if (kind == ProfileKind.UNKNOWN) return@withLock ProfileOperationStatus.INVALID_KIND
@@ -275,8 +274,7 @@ class AppConfig(
 	}
 
 	// A profile named like the default in another case is the same file on case-insensitive filesystems
-	private suspend fun defaultProfileName(kind: ProfileKind, name: String): String =
-		listProfiles(kind).firstOrNull { it.equals(name, ignoreCase = true) } ?: name
+	private suspend fun defaultProfileName(kind: ProfileKind, name: String): String = listProfiles(kind).firstOrNull { it.equals(name, ignoreCase = true) } ?: name
 
 	companion object {
 		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): AppConfig {

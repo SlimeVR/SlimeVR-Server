@@ -706,14 +706,12 @@ settings-general-fk_settings-arms_mounting_reset_mode-forward = Forward
 settings-general-fk_settings-arms_mounting_reset_mode-forward-description = Expects your arms to be raised forward. Recommended for VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Tweak the behaviour of the skeleton. You may need to adjust your proportions after changing these.
+settings-general-fk_settings-skeleton_settings-spine_curvature = Spine curvature
+settings-general-fk_settings-skeleton_settings-spine_curvature-description = How much the spine curves when bending instead of remaining straight. Use a lower value for stiffer movements or a higher one for more flexible movements.
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description = For missing spine trackers, how much to rely on the lower trackers instead of the upper trackers. Use a lower value for more hip isolation or a higher one to increase stability lying down.
-settings-general-fk_settings-skeleton_settings-spine_curvature = Spine curvature
-settings-general-fk_settings-skeleton_settings-spine_curvature-description = How much the spine curves when bending instead of remaining straight. Use a lower value for stiffer movements or a higher value for more flexible movements.
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Estimate missing hip tracker from the upper legs
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs-description = For a missing hip tracker, how much to make it follow your upper legs' twist and tilt.
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
-settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs-description = How much the twist of your upper legs follows your lower legs. Use a lower value for motion capture or a higher value for VR.
+settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs-description = How much the twist of your upper legs follows your lower legs. Use a lower value for motion capture or a higher one for VR.
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its position in space without any positional tracker.
 
