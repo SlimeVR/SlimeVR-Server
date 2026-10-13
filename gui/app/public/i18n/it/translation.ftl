@@ -590,23 +590,9 @@ settings-utils-advanced-reset-gui = Ripristina impostazioni della GUI
 settings-utils-advanced-reset-gui-description = Ripristina le impostazioni predefinite per l'interfaccia.
 settings-utils-advanced-reset-gui-label = Ripristina GUI
 settings-utils-advanced-reset-server = Reimpostare le impostazioni di tracciamento
-settings-utils-advanced-reset-server-description = Ripristina le impostazioni predefinite per il tracciamento.
 settings-utils-advanced-reset-server-label = Ripristina il tracciamento
 settings-utils-advanced-reset-all = Ripristina tutte le impostazioni
-settings-utils-advanced-reset-all-description = Ripristina le impostazioni predefinite sia per l'interfaccia che per il tracciamento.
 settings-utils-advanced-reset-all-label = Ripristina tutto
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Attenzione:</b> Tutte le impostazioni della GUI verranno ripristinate ai valori predefiniti.
-            Sei sicuro di volerlo fare?
-        [server]
-            <b>Attenzione:</b> Tutte le impostazioni di tracciento verranno ripristinate ai valori predefiniti.
-            Sei sicuro di volerlo fare?
-       *[all]
-            <b>Attenzione:</b> Tutte le impostazioni verranno ripristinate ai valori predefiniti.
-            Sei sicuro di volerlo fare?
-    }
 settings-utils-advanced-reset_warning-reset = Ripristina impostazioni
 settings-utils-advanced-reset_warning-cancel = Annulla
 settings-utils-advanced-open_data-v1 = Cartella di configurazione
