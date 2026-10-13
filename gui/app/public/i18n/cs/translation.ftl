@@ -542,23 +542,9 @@ settings-utils-advanced-reset-gui = Obnovení GUI nastavení
 settings-utils-advanced-reset-gui-description = Obnovení výchozího nastavení pro rozhraní.
 settings-utils-advanced-reset-gui-label = Obnovit GUI
 settings-utils-advanced-reset-server = Obnovení nastavení sledování
-settings-utils-advanced-reset-server-description = Obnovit výchozí nastavení pro sledovaní.
 settings-utils-advanced-reset-server-label = Obnovení sledování
 settings-utils-advanced-reset-all = Obnovit všechna nastavení
-settings-utils-advanced-reset-all-description = Obnoví výchozí nastavení pro rozhraní a sledování.
 settings-utils-advanced-reset-all-label = Obnovit vše
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Varování:</b> Tímhle se všechna vaše nastavení GUI obnoví na výchozí hodnoty.
-            Jste si jisti že to chcete udělat?
-        [server]
-            <b>Varování:</b> Tímhle se všechna vaše nastavení Sledování obnoví na výchozí hodnoty.
-            Jste si jisti že to chcete udělat?
-       *[all]
-            <b>Varování:</b> Tímhle se všechna vaše nastavení obnoví na výchozí hodnoty.
-            Jste si jisti že to chcete udělat?
-    }
 settings-utils-advanced-reset_warning-reset = Obnovit nastavení
 settings-utils-advanced-reset_warning-cancel = Zrušit
 settings-utils-advanced-open_data-v1 = Složka s konfigurací
