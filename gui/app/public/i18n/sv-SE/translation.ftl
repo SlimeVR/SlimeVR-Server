@@ -553,23 +553,9 @@ settings-utils-advanced-reset-gui = Återställ GUI-inställningar
 settings-utils-advanced-reset-gui-description = Återställ standardinställningarna för gränssnittet
 settings-utils-advanced-reset-gui-label = Återställ GUI
 settings-utils-advanced-reset-server = Återställ spårnings-inställningarna
-settings-utils-advanced-reset-server-description = Återställ standardinställningarna för spårningen.
 settings-utils-advanced-reset-server-label = Återställ spårning
 settings-utils-advanced-reset-all = Återställ alla inställningar
-settings-utils-advanced-reset-all-description = Återställ standardinställningarna för både gränssnittet och spårningen.
 settings-utils-advanced-reset-all-label = Återställ allt
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Varning;</b> Detta kommer att återställa dina GUI-inställningar till Standard.
-            Är du säker på att du vill göra detta?
-        [server]
-            <b>Varning;</b> Detta kommer att återställa dina spårnings-inställningar till Standard.
-            Är du säker på att du vill göra detta?
-       *[all]
-            <b>Varning;</b> Detta kommer att återställa alla dina inställningar till Standard.
-            Är du säker på att du vill göra detta?
-    }
 settings-utils-advanced-reset_warning-reset = Återställ inställningar
 settings-utils-advanced-reset_warning-cancel = Avbryt
 settings-utils-advanced-open_data-v1 = Config mapp
