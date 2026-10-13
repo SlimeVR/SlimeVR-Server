@@ -399,8 +399,6 @@ settings-stay_aligned-debug-copy-label = Kopiera inställningar till urklipp
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Fullständig återställning
-settings-keybinds_yaw-reset = Återställning av gir
 settings-keybinds_reset-all-button = Återställ allt
 settings-keybinds-recorder-modal-cancel-button = Avbryt
 
@@ -423,7 +421,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan m
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
-settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
@@ -449,7 +446,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Öka 
 ## Appearance settings
 
 settings-interface-appearance = Utseende
-settings-general-interface-dev_mode = Utvecklarläge
 settings-general-interface-dev_mode-description = Det här läget kan vara användbart om du behöver djupgående data eller vill interagera med anslutna trackers på en mer avancerad nivå.
 settings-general-interface-theme = Färg tema
 settings-general-interface-lang = Välj språk
@@ -475,7 +471,6 @@ settings-general-interface-connected_trackers_warning-description = Detta altern
 ## Behavior settings
 
 settings-interface-behavior = Beteende
-settings-general-interface-dev_mode = Utvecklarläge
 settings-general-interface-use_tray = Minimera till systemfältet
 settings-general-interface-use_tray-description = Låter dig stänga fönstret utan att stänga SlimeVR-servern så att du kan fortsätta använda den utan att GUI stör dig.
 settings-general-interface-discord_presence = Dela aktivitet på Discord
@@ -517,7 +512,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port ut (default: 9000)
 settings-osc-vrchat-network-address = Nätverksadress
 settings-osc-vrchat-network-address-description-v1 = Välj vilken adress du vill skicka data till. Kan lämnas orörd för VRChat.
-settings-osc-vrchat-network-address-placeholder = VRChat ip-adress
 
 ## VRChat OSC status
 
@@ -539,7 +533,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port ut (standard: 39539)
 settings-osc-vmc-network-address = Nätverksadress
 settings-osc-vmc-network-address-description = Välj vilken adress du vill skicka ut data till via VMC.
-settings-osc-vmc-network-address-placeholder = IPV4-adress
 settings-osc-vmc-vrm = VRM-modell
 settings-osc-vmc-vrm-description = Ladda en VRM-modell för att tillåta huvudförankring och möjliggöra högre kompatibilitet med andra applikationer.
 settings-osc-vmc-vrm-untitled_model = Namnlös modell
@@ -855,10 +848,6 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Armspann
 ## Error collection consent modal
 
 error_collection_modal-title = Kan vi samla errors?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
 error_collection_modal-cancel = Jag vill inte
 
