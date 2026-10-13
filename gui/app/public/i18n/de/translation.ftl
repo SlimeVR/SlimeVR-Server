@@ -651,6 +651,10 @@ onboarding-setup_warning-cancel = Einrichtung fortsetzen
 
 onboarding-quiz_continue = Fortsetzen
 onboarding-quiz_back = nach Hinten
+onboarding-quiz-slimeset-official-sets = Offizielle SlimeVR Tracker
+onboarding-quiz-slimeset-thirdparty-sets = Drittanbieter oder DIY Tracker
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
 onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
 
 ## Wi-Fi setup
