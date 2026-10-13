@@ -404,9 +404,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
 settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
 settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
-settings-stay_aligned-setup-description = Musisz ukończyć konfigurację, aby włączyć opcję Wyrównywania.
 settings-stay_aligned-relaxed_poses-label = Zrelaksowane pozy
-settings-stay_aligned-relaxed_poses-description = Opcja Wyrównywania wykorzystuje Twoje zrelaksowane pozy, aby utrzymać trackery w jednej linii. Użyj opcji "Konfiguracja Opcji Wyrównywania", aby zaktualizować te pozy.
 settings-stay_aligned-relaxed_poses-standing = Dostosuj trackery w pozycji stojącej
 settings-stay_aligned-relaxed_poses-sitting = Dostosuj trackery, siedząc na krześle
 settings-stay_aligned-relaxed_poses-flat = Dostosuj trackery, siedząc na podłodze lub leżąc na plecach
@@ -437,8 +435,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Korekta jazdy na ły
 settings-general-fk_settings-leg_tweak-toe_snap = Pstryknięcie palcem
 settings-general-fk_settings-leg_tweak-foot_plant = Korekta stopy
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Siła korekcji efektu jazdy na łyżwach
-settings-general-fk_settings-leg_tweak-skating_correction-description = Korekta jazdy na łyżwach koryguje jazdę na łyżwach, ale może zmniejszyć dokładność niektórych wzorców ruchu. Włączając tę opcję, pamiętaj o pełnym zresetowaniu i ponownej kalibracji w grze.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może zmniejszyć lub nawet wyeliminować przecinanie podłogi. Włączając tę opcję, pamiętaj o pełnym zresetowaniu i ponownej kalibracji w grze.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
@@ -448,7 +444,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Dane pozycji
 settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
 settings-general-fk_settings-skeleton_settings-ratios = Proporcje szkieletu
-settings-general-fk_settings-skeleton_settings-ratios-description = Zmień wartości ustawień szkieletu. Po zmianie może być konieczne dostosowanie proporcji.
 settings-general-fk_settings-self_localization-title = Tryb Mocap
 
 ## Gesture control settings (tracker tapping)
@@ -906,7 +901,6 @@ onboarding-stay_aligned-done-description-2 = Konfiguracja została zakończona! 
 onboarding-stay_aligned-previous_step = Poprzednie
 onboarding-stay_aligned-next_step = Następne
 onboarding-stay_aligned-done = Gotowy
-onboarding-stay_aligned-manual_mounting-done = Gotowy
 
 ## Home
 
@@ -1118,7 +1112,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Wykonaj kalibrację montażu
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Wykonaj kalibrację montażu stóp
 tracking_checklist-FULL_RESET = Wykonaj pełny reset
 tracking_checklist-FULL_RESET-desc = Niektóre urządzenia wymagają resetu.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR nie jest uruchomiony
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR nie jest uruchomiony. Czy twoje gogle są podłączone?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Uruchom SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Skalibruj swoje urządzenia
