@@ -598,23 +598,9 @@ settings-utils-advanced-reset-gui = Сброс настроек графичес
 settings-utils-advanced-reset-gui-description = Восстановить стандартные настройки интерфейса.
 settings-utils-advanced-reset-gui-label = Сбросить графический интерфейс
 settings-utils-advanced-reset-server = Сброс настроек отслеживания
-settings-utils-advanced-reset-server-description = Восстановить стандартные настройки для отслеживания.
 settings-utils-advanced-reset-server-label = Сбросить отслеживание
 settings-utils-advanced-reset-all = Сбросить все настройки
-settings-utils-advanced-reset-all-description = Восстановить стандартные настройки как для интерфейса, так и для отслеживания.
 settings-utils-advanced-reset-all-label = Сбросить всё
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Предупреждение:</b> Это сбросит ваши настройки графического интерфейса до значений по умолчанию.
-            Вы уверены, что хотите это сделать?
-        [server]
-            <b>Предупреждение:</b> Это сбросит ваши настройки отслеживания до значений по умолчанию.
-            Вы уверены, что хотите это сделать?
-       *[all]
-            <b>Предупреждение:</b> Это сбросит все ваши настройки до значений по умолчанию.
-            Вы уверены, что хотите это сделать?
-    }
 settings-utils-advanced-reset_warning-reset = Сброс настроек
 settings-utils-advanced-reset_warning-cancel = Отмена
 settings-utils-advanced-open_data-v1 = Папка конфигурации
