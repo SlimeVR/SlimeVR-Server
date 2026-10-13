@@ -417,9 +417,7 @@ settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
 settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
 settings-stay_aligned-setup-label = Configurer Garder Aligné
-settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
 settings-stay_aligned-relaxed_poses-label = Postures détendues
-settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos postures détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
 settings-stay_aligned-relaxed_poses-standing = Ajuster les capteurs en position debout
 settings-stay_aligned-relaxed_poses-sitting = Ajuster les capteurs en position assise sur une chaise
 settings-stay_aligned-relaxed_poses-flat = Ajuster les capteurs en position assise sur le sol ou allongée sur le dos
@@ -450,8 +448,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Correction du glisse
 settings-general-fk_settings-leg_tweak-toe_snap = Correction des orteils
 settings-general-fk_settings-leg_tweak-foot_plant = Correction des pieds
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la correction du glissement
-settings-general-fk_settings-leg_tweak-skating_correction-description = La correction de patinage corrige le patinage des pieds mais peut diminuer la précision de certains mouvements. Lorsque vous activez cette option, assurez-vous d'effectuer une réinitialisation complète et de le recalibrer en jeu.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au sol tente de réduire ou même d'empêcher que vos pieds traversent le sol. Lorsque vous activez cette fonction, assurez-vous d'effectuer une réinitialisation complète et de recalibrer en jeu.
 settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
@@ -461,7 +457,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Données de position
 settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
 settings-general-fk_settings-skeleton_settings-ratios = Ratios du squelette
-settings-general-fk_settings-skeleton_settings-ratios-description = Modifiez les valeurs des paramètres du squelette. Vous devrez peut-être ajuster vos proportions après les avoir modifiées.
 settings-general-fk_settings-self_localization-title = Mode Mocap
 
 ## Gesture control settings (tracker tapping)
@@ -913,7 +908,6 @@ onboarding-stay_aligned-previous_step = Précédent
 onboarding-stay_aligned-next_step = Prochain
 onboarding-stay_aligned-restart = Recommencer
 onboarding-stay_aligned-done = Fait
-onboarding-stay_aligned-manual_mounting-done = Terminé
 
 ## Home
 
@@ -1125,7 +1119,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l'alignem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement des pieds
 tracking_checklist-FULL_RESET = Faire une réinitialisation complète
 tracking_checklist-FULL_RESET-desc = Certains capteurs nécessitent une réinitialisation.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n'est pas lancé
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrer vos capteurs
