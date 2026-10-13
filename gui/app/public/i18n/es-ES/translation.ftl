@@ -388,9 +388,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Se puede desactivar por rastreador en la configuración de los trackers. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
 settings-stay_aligned-description = Mantener Alineado reduce el drift ajustando gradualmente tus trackers para que coincidan con tus poses relajadas
 settings-stay_aligned-setup-label = Configurar Mantener Alineado
-settings-stay_aligned-setup-description = Debe completar "Configurar Mantener Alineado" para habilitar Mantener Alineado.
 settings-stay_aligned-relaxed_poses-label = Posturas relajadas
-settings-stay_aligned-relaxed_poses-description = Mantener Alineado utiliza tus posturas relajadas para mantener los trackers alineados. Usa "Configurar Mantener Alineado" para actualizar estas posturas.
 settings-stay_aligned-relaxed_poses-standing = Ajustar los trackers mientras estás de pie
 settings-stay_aligned-relaxed_poses-sitting = Ajustar los trackers mientras estás sentado en una silla
 settings-stay_aligned-relaxed_poses-flat = Ajuste los trackers mientras estás sentado en el suelo o acostado boca arriba
@@ -421,8 +419,6 @@ settings-general-fk_settings-leg_tweak-skating_correction = Corrección del pati
 settings-general-fk_settings-leg_tweak-toe_snap = Alineación de pies
 settings-general-fk_settings-leg_tweak-foot_plant = Planta del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Intensidad de la corrección del patinaje
-settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el deslizamiento en el suelo, pero puede disminuir la precisión en ciertos movimientos. Activar esta opción requerirá realizar un reinicio general y recalibrar en el juego.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Anclado al suelo puede reducir o incluso eliminar el atravesar el piso con tu modelo. Al habilitar esto, asegúrese de hacer un "reinicio completo" y recalibrar en el juego.
 settings-general-fk_settings-leg_tweak-toe_snap-description = "Acople de puntera" intenta adivinar la rotación de tus pies si los trackers de estos no están en uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado de pie gira los pies para que queden paralelos al suelo en el momento del contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
@@ -430,7 +426,6 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forzar reinicio de 
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar el restablecimiento del montaje de los pies durante los reinicios generales del montaje.
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-skeleton_settings-ratios = Proporciones del esqueleto
-settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de la configuración del esqueleto. Es posible que debas ajustar tus proporciones de nuevo.
 settings-general-fk_settings-self_localization-title = Modo Captura de movimiento
 
 ## Gesture control settings (tracker tapping)
@@ -842,7 +837,6 @@ onboarding-stay_aligned-previous_step = Atrás
 onboarding-stay_aligned-next_step = Siguiente
 onboarding-stay_aligned-restart = Reiniciar
 onboarding-stay_aligned-done = Hecho
-onboarding-stay_aligned-manual_mounting-done = Hecho
 
 ## Home
 
