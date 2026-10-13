@@ -289,7 +289,6 @@ settings-stay_aligned-relaxed_poses-close = Kapat
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Sıfırlama
 settings-keybinds-recorder-modal-cancel-button = İptal
 
 ## FK/Tracking settings
@@ -301,7 +300,6 @@ settings-general-fk_settings-leg_fk = Bacak takibi
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Geliştirici Modu
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 
 ## Notification settings
@@ -309,7 +307,6 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Geliştirici Modu
 
 ## Serial settings
 
