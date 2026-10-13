@@ -2,18 +2,29 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.TestAppContext
 import dev.slimevr.buildTestAppConfig
+import dev.slimevr.config.AppConfig
 import dev.slimevr.config.GlobalConfigActions
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.config.changeConsent
 import dev.slimevr.context.Context
 import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.rpc.ErrorReportingConsent
 import solarxr_protocol.rpc.SettingsResetRequest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
+private fun awaitReset(scope: TestScope, config: AppConfig) {
+	val deadline = System.nanoTime() + 5_000_000_000L
+	while (config.globalConfig.context.state.value.errorReporting.consent != ErrorReportingConsent.UNDECIDED && System.nanoTime() < deadline) {
+		scope.runCurrent()
+		Thread.sleep(5)
+	}
+	scope.runCurrent()
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsResetTest {
@@ -40,7 +51,7 @@ class SettingsResetTest {
 		runCurrent()
 
 		bridge.rpcDispatcher.emit(SettingsResetRequest())
-		runCurrent()
+		awaitReset(this, config)
 
 		val errorReporting = config.globalConfig.context.state.value.errorReporting
 		assertEquals(ErrorReportingConsent.UNDECIDED, errorReporting.consent)

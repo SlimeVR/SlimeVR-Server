@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
-import { CloseIcon } from './icon/CloseIcon';
+import { Drawer } from './Drawer';
 import { focusVisible } from '@/utils/focus-nav';
 
 export type Direction = 'top' | 'left' | 'right' | 'bottom';
@@ -202,10 +202,6 @@ export function FloatingTooltip({
 
 const TOOLTIP_DELAY = 500;
 
-interface DrawerStyle {
-  bottom: number;
-}
-
 export function DrawerTooltip({
   children,
   childRef,
@@ -215,10 +211,7 @@ export function DrawerTooltip({
 }) {
   const touchTimestamp = useRef<number>(0);
   const touchTimeout = useRef<number>(0);
-  const drawerRef = useRef<HTMLDivElement | null>(null);
-  const [drawerStyle, setDrawerStyle] = useState<DrawerStyle | undefined>(
-    undefined
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   const touchStart = () => {
     if (childRef.current && childRef.current.children[0]) {
@@ -266,16 +259,13 @@ export function DrawerTooltip({
   };
 
   const open = () => {
-    if (drawerStyle) return;
+    if (isOpen) return;
     clearEffect();
-
-    if (!drawerRef.current) throw new Error('invalid state');
-
-    setDrawerStyle({ bottom: 0 });
+    setIsOpen(true);
   };
 
   const close = () => {
-    setDrawerStyle(undefined);
+    setIsOpen(false);
   };
 
   useLayoutEffect(() => {
@@ -301,45 +291,17 @@ export function DrawerTooltip({
   // FIXME: Completely broken not sure why. Will be solved when tooltips on mobile actually work
 
   return (
-    <>
-      <div
-        className="fixed top-[44px] rounded-t-lg h-screen z-50 w-full bg-background-90 opacity-50"
-        onClick={() => close()}
-        style={{
-          opacity: drawerStyle ? 0.5 : 0,
-          pointerEvents: drawerStyle ? 'all' : 'none',
-        }}
-      />
-      <div
-        className={classNames(
-          'fixed z-50 w-full text-background-10 max-h-full -bottom-full transition-all overflow-clip'
-        )}
-        style={drawerStyle}
-      >
-        <div
-          className="bg-background-60 rounded-t-lg border-background-40 border-t-2"
-          ref={drawerRef}
-        >
-          <div className="h-12 rounded-t-lg relative flex justify-center items-center">
-            <Typography variant="section-title" textAlign="text-center">
-              Pro tip
-            </Typography>
-            <button
-              className="absolute right-4 top-3 h-6 w-6 bg-background-70 rounded-full flex justify-center items-center"
-              onClick={() => close()}
-            >
-              <CloseIcon size={20} className="stroke-white" />
-            </button>
-          </div>
-          <div
-            className="p-4 overflow-y-auto"
-            style={{ maxHeight: 'calc(100vh - 49px - 44px)' }}
-          >
-            {children}
-          </div>
-        </div>
-      </div>
-    </>
+    <Drawer
+      isOpen={isOpen}
+      onClose={close}
+      title={
+        <Typography variant="section-title" textAlign="text-center">
+          Pro tip
+        </Typography>
+      }
+    >
+      <div className="p-4">{children}</div>
+    </Drawer>
   );
 }
 

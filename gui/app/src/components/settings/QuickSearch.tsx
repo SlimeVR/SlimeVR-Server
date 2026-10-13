@@ -278,12 +278,18 @@ export function QuickSearchField() {
   return (
     <button
       type="button"
-      className="flex items-center gap-3 w-full min-h-[40px] px-3 rounded-lg bg-background-60 hover:bg-background-50 transition-colors text-left"
+      className="flex items-center gap-2 w-full min-w-0 min-h-[40px] px-3 rounded-lg bg-background-60 hover:bg-background-50 transition-colors text-left"
       onClick={launcher.open}
     >
       <SearchIcon className="fill-background-10 shrink-0" />
-      <Typography id="titlebar-search" whitespace="whitespace-nowrap" />
-      <kbd className="ml-auto shrink-0 px-2 py-0.5 rounded bg-background-70 text-background-10 text-xs whitespace-nowrap">
+      <span className="min-w-0 truncate">
+        <Typography
+          id="titlebar-search"
+          whitespace="whitespace-nowrap"
+          tag="span"
+        />
+      </span>
+      <kbd className="hidden lg:inline ml-auto shrink-0 px-2 py-0.5 rounded bg-background-70 text-background-10 text-xs whitespace-nowrap">
         {SHORTCUT_LABEL}
       </kbd>
     </button>

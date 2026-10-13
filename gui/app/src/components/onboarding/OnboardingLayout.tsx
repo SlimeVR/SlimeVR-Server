@@ -20,6 +20,7 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
         style={{ gridArea: 't' }}
       >
         <TopBar
+          profiles={false}
           progress={state.progress}
           actions={
             <SkipSetupButton

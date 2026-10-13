@@ -23,7 +23,7 @@ export function SettingsSidebar() {
   const { state: vrcConfigState } = useVRCConfig();
 
   return (
-    <div className="flex flex-col px-5 py-4 gap-4 overflow-y-auto no-scrollbar bg-background-70 rounded-lg h-full">
+    <div className="flex flex-col px-5 py-4 gap-4 overflow-y-auto bg-background-70 rounded-lg h-full">
       <QuickSearchField />
       <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-general" />
@@ -40,6 +40,10 @@ export function SettingsSidebar() {
           <SettingsLink
             to="/settings/stay-aligned"
             id="settings-sidebar-stay_aligned"
+          />
+          <SettingsLink
+            to="/settings/profiles"
+            id="settings-sidebar-profiles"
           />
         </div>
       </div>

@@ -58,6 +58,11 @@ titlebar-update = Download update
 titlebar-minimize = Minimize
 titlebar-maximize = Maximize
 titlebar-close = Close
+titlebar-profiles = Profiles
+titlebar-profiles-tooltip = Switch settings and user profiles
+titlebar-profiles-settings = Settings
+titlebar-profiles-user = User
+titlebar-profiles-manage = Manage profiles
 
 
 ## Body parts
@@ -431,6 +436,34 @@ mounting_selection_menu-close = Close
 
 ## Sidebar settings
 settings-advanced_section = Advanced settings
+settings-sidebar-profiles = Profiles
+settings-profiles-settings = Settings profiles
+settings-profiles-settings-description = Your setup: trackers, outputs, resets, keybinds and every other setting. Switching applies it right away.
+settings-profiles-user = User profiles
+settings-profiles-user-description = The person wearing the trackers: height and body proportions.
+settings-profiles-new_settings = New profile
+settings-profiles-new_user = New profile
+settings-profiles-default_name = Profile { $n }
+settings-profiles-start_from = Start from
+settings-profiles-start_from-defaults = Defaults
+settings-profiles-start_from-copy = Copy of { $name }
+settings-profiles-name = Profile name
+settings-profiles-create = Create
+settings-profiles-save = Save
+settings-profiles-cancel = Cancel
+settings-profiles-rename = Rename
+settings-profiles-duplicate = Duplicate
+settings-profiles-delete = Delete
+settings-profiles-delete-active = Select another profile to delete this one
+settings-profiles-delete_action = Delete
+settings-profiles-delete_confirm = Delete "{ $name }"? This can't be undone.
+settings-profiles-copy_name = { $name } copy
+settings-profiles-error-invalid_kind = The profile type is missing.
+settings-profiles-error-invalid_name = Names can only contain letters, numbers, spaces, - and _, up to 64 characters.
+settings-profiles-error-already_exists = A profile with this name already exists.
+settings-profiles-error-not_found = This profile doesn't exist anymore.
+settings-profiles-error-is_active = The selected profile can't be deleted. Select another one first.
+settings-profiles-error-failed = The server couldn't save the profile files.
 settings-sidebar-search = Search settings and pages
 settings-sidebar-search-empty = Nothing matches your search
 settings-sidebar-search-hint = Type to search every setting and page
@@ -963,17 +996,20 @@ settings-utils-advanced-reset-gui = Reset GUI settings
 settings-utils-advanced-reset-gui-description = Restore the default settings for the interface.
 settings-utils-advanced-reset-gui-label = Reset GUI
 settings-utils-advanced-reset-server = Reset tracking settings
-settings-utils-advanced-reset-server-description = Restore the default settings for the tracking.
+settings-utils-advanced-reset-server-description = Switch back to the default profiles and restore their default tracking settings.
 settings-utils-advanced-reset-server-label = Reset tracking
 settings-utils-advanced-reset-all = Reset all settings
-settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
+settings-utils-advanced-reset-all-description = Restore the default settings for the interface, and switch back to the default profiles with their default tracking settings.
 settings-utils-advanced-reset-all-label = Reset all
 settings-utils-advanced-reset_warning =
         <b>Warning:</b> This will reset { $type ->
             [gui] your GUI
             [server] your tracking
             *[all] all your
-        } settings to the defaults.
+        } settings to the defaults.{ $type ->
+            [gui] {""}
+           *[other] {" "}You will be switched back to the default settings and user profiles.
+        }
         Are you sure you want to do this?
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel

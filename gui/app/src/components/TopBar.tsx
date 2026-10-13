@@ -36,6 +36,7 @@ import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { useElectron } from '@/hooks/electron';
 import { openUrl } from '@/hooks/crossplatform';
+import { ProfileQuickSwitch } from './ProfileQuickSwitch';
 
 // Title bar buttons share one round hit target.
 const TITLE_BAR_BUTTON_CLASS =
@@ -82,10 +83,12 @@ export function VersionTag() {
 export function TopBar({
   progress,
   actions,
+  profiles = true,
 }: {
   children?: ReactNode;
   progress?: number;
   actions?: ReactNode;
+  profiles?: boolean;
 }) {
   const electron = useElectron();
   const quickSearch = useQuickSearch();
@@ -219,6 +222,7 @@ export function TopBar({
           </div>
           <div className="flex justify-end items-center px-2 gap-2 z-50">
             {actions}
+            {profiles && <ProfileQuickSwitch />}
             {quickSearch && (
               <TitleBarButton
                 labelId="titlebar-search"

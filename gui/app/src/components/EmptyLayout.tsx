@@ -10,7 +10,7 @@ export function EmptyLayout({ children }: { children: ReactNode }) {
         data-nav-area="topbar"
         style={{ gridArea: 't' }}
       >
-        <TopBar />
+        <TopBar profiles={false} />
       </div>
       <div
         data-nav-region="page"

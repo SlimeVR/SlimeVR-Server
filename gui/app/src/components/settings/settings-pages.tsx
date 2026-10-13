@@ -27,6 +27,10 @@ import { checklistSettingsPage } from './pages/components/TrackingChecklistSetti
 import { ChecklistSettings } from './pages/ChecklistSettings';
 import { keybindSettingsPage, KeybindSettings } from './pages/KeybindSettings';
 import {
+  profilesSettingsPage,
+  ProfilesSettings,
+} from './pages/ProfilesSettings';
+import {
   boneRoutingSettingsPage,
   BoneRoutingSettings,
 } from './pages/BoneRoutingSettings';
@@ -58,6 +62,7 @@ export const settingsPages: SettingsPageRoute[] = [
   { page: trackersSettingsPage, element: <TrackersSettings /> },
   { page: resetsSettingsPage, element: <ResetsSettings /> },
   { page: stayAlignedSettingsPage, element: <StayAlignedSettings /> },
+  { page: profilesSettingsPage, element: <ProfilesSettings /> },
   { page: appearanceSettingsPage, element: <AppearanceSettings /> },
   { page: behaviorSettingsPage, element: <BehaviorSettings /> },
   { page: homeSettingsPage, element: <HomeScreenSettings /> },

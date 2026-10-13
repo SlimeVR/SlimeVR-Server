@@ -71,6 +71,7 @@ import {
   ERROR_REPORTING_CONSENT_PATH,
 } from './components/AppStatusGate';
 import { useProvideErrorReporting } from './hooks/error-reporting';
+import { useProvideProfiles } from './hooks/profiles';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -100,6 +101,7 @@ function ConnectedApp() {
 function AppRoutes() {
   const { isMobile } = useBreakpoint('mobile');
   useProvideErrorReporting();
+  useProvideProfiles();
   useProvideSettingsDefaults();
   useDiscordPresence();
   useControllerNav();

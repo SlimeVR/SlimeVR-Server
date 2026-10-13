@@ -249,14 +249,34 @@ class AppConfig(
 		ProfileOperationStatus.OK
 	}
 
-	fun reset() {
+	/**
+	 * Switches both kinds back to the default profile and restores its default values. Other profiles are kept.
+	 * A deleted default profile is created again.
+	 */
+	suspend fun reset() = profilesLock.withLock {
+		val defaults = GlobalConfigState()
+		val settingsName = defaultProfileName(ProfileKind.SETTINGS, defaults.selectedSettingsProfile)
+		if (settings.context.state.value.name != settingsName) {
+			globalConfig.context.dispatch(GlobalConfigActions.SetSettingsProfile(settingsName))
+			settings.swap(settingsName)
+		}
+		val userName = defaultProfileName(ProfileKind.USER, defaults.selectedUserProfile)
+		if (userConfig.context.state.value.name != userName) {
+			globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(userName))
+			userConfig.swap(userName)
+		}
 		settings.context.dispatch(SettingsActions.Update { SettingsConfigState() })
 		userConfig.context.dispatch(UserConfigActions.Update { UserConfigData() })
 		val errorReporting = globalConfig.context.state.value.errorReporting
 		globalConfig.context.dispatch(
 			GlobalConfigActions.SetErrorReporting(changeConsent(errorReporting, ErrorReportingConsent.UNDECIDED)),
 		)
+		refreshProfiles()
 	}
+
+	// A profile named like the default in another case is the same file on case-insensitive filesystems
+	private suspend fun defaultProfileName(kind: ProfileKind, name: String): String =
+		listProfiles(kind).firstOrNull { it.equals(name, ignoreCase = true) } ?: name
 
 	companion object {
 		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): AppConfig {

@@ -33,6 +33,10 @@ export function SettingSelectorMobile() {
       url: '/settings/stay-aligned',
     },
     {
+      label: l10n.getString('settings-sidebar-profiles'),
+      url: '/settings/profiles',
+    },
+    {
       label: l10n.getString('settings-sidebar-appearance'),
       url: '/settings/appearance',
     },
