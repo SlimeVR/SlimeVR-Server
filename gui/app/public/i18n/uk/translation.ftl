@@ -277,13 +277,10 @@ settings-general-fk_settings-leg_tweak-skating_correction = корекція к�
 settings-general-fk_settings-leg_tweak-toe_snap = корекція пальців ноги
 settings-general-fk_settings-leg_tweak-foot_plant = корекція ступні
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Сила корекції ковзання
-settings-general-fk_settings-leg_tweak-skating_correction-description = Корекція ковзання коригує катання на ковзанах, але може знизити точність певних моделей руху. Увімкнувши це, обов'язково повністю скиньте та відкалібруйте у грі.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Прив'язка до підлоги може зменшити або навіть прибрати проходження через підлогу. Коли вмикаєте, обов'язково зробіть повне скидання і перекалібровку у грі
 settings-general-fk_settings-leg_tweak-toe_snap-description = Корекція пальців ноги намагається вгадати обертання ваших ступень, якщо трекери для них не використовуються
 settings-general-fk_settings-leg_tweak-foot_plant-description = Корекція ступні повертає ваші ступні так, щоб вони були паралельні землі при контакті
 settings-general-fk_settings-leg_fk = Трекінг ноги
 settings-general-fk_settings-skeleton_settings-ratios = Співвідношення скелета
-settings-general-fk_settings-skeleton_settings-ratios-description = Змініть параметри скелета. Можливо, вам доведеться скоригувати пропорції після їхньої зміни.
 settings-general-fk_settings-self_localization-title = Режим Мокап
 
 ## Gesture control settings (tracker tapping)
