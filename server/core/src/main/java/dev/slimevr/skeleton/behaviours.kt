@@ -187,9 +187,10 @@ class ComputedSkeletonBehaviour(
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
+	private val IK_THRESHOLD = 0.005f // 0.002 would be ideal for accuracy, but we need performance
+	private val IK_MAX_ITERATIONS = 100
 
 	private val intervalDuration = (1.0 / hz).seconds
-
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
 	private val minimumGap = intervalDuration * 0.75
 
@@ -319,8 +320,8 @@ class ComputedSkeletonBehaviour(
 								)
 							},
 							BODY_PART_CONSTRAINT_MAP,
-							0.01f,
-							100,
+							IK_THRESHOLD,
+							IK_MAX_ITERATIONS,
 						)
 
 						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
