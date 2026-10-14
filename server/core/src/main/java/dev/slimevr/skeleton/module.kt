@@ -74,7 +74,7 @@ data class BoneState(
 	// computed on demand rather than per bone
 	private val orientationOffset: Quaternion
 		get() = when {
-			offset.len() == 0f -> Quaternion.IDENTITY
+			offset.isZero() -> Quaternion.IDENTITY
 			offset.unit().y == 1f -> Quaternion.I
 			else -> Quaternion.fromTo(Vector3.NEG_Y, offset)
 		}
@@ -141,9 +141,14 @@ val DEFAULT_SKELETON_STATE = run {
 }
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
-	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
-	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) }
-		?: bone.position ?: Vector3.ZERO
+	// Position of the bone input is used for the root since it has no parent
+	val headPosition = parentBone?.let {
+		if (bone.headOffset.isZero()) {
+			it.tailPosition
+		} else {
+			it.tailPosition + it.rotation.sandwich(bone.headOffset)
+		}
+	} ?: bone.position ?: Vector3.ZERO
 	return BoneState(
 		parentBone = parentBone,
 		bodyPart = bone.bodyPart,
@@ -154,6 +159,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
 		acceleration = bone.acceleration,
 		headPosition = headPosition,
 		tailPosition = headPosition + bone.rotation.sandwich(bone.offset),
+		// Velocity is written directly during the skeleton loop computed bones; keep it.
 		velocity = velocity,
 	)
 }
@@ -163,10 +169,9 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
  */
 fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet) {
 	for (bodyPart in highestBodyParts(changedParts)) {
-		for ((parentPart, childPart) in iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD)) {
+		for ((parentPart, childPart) in iterateBodyPartHierarchy(bodyPart, false)) {
 			val rawBone = boneInputs[childPart] ?: continue
-			val parentBone = parentPart?.let { mutableBones[it] }
-			// Velocity is written directly during the skeleton loop computed bones; keep it.
+			val parentBone = (parentPart ?: parentOf(childPart))?.let { mutableBones[it] }
 			mutableBones[childPart] = buildBone(rawBone, parentBone, mutableBones[childPart]?.velocity ?: ZERO_VELOCITY)
 		}
 	}

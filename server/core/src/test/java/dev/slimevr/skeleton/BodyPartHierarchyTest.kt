@@ -2,6 +2,7 @@ package dev.slimevr.skeleton
 
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -14,21 +15,21 @@ import kotlin.test.assertTrue
  */
 class BodyPartHierarchyTest {
 
-	private fun walk(root: BodyPart, onlyChildren: Boolean): List<Pair<BodyPart?, BodyPart>> {
+	private fun walk(root: BodyPart, onlyChildren: Boolean): Array<Pair<BodyPart?, BodyPart>> {
 		val expected = mutableListOf<Pair<BodyPart?, BodyPart>>()
 		fun visit(parent: BodyPart?, bone: BodyPart, skipSelf: Boolean) {
 			if (!skipSelf) expected += parent to bone
 			for (child in BODY_PART_HIERARCHY_MAP[bone] ?: return) visit(bone, child, false)
 		}
 		visit(null, root, onlyChildren)
-		return expected
+		return expected.toTypedArray()
 	}
 
 	@Test
 	fun `cached traversal matches a fresh walk for every root`() {
 		for (root in BodyPart.entries) {
-			for (onlyChildren in listOf(false, true)) {
-				assertEquals(
+			for (onlyChildren in arrayOf(false, true)) {
+				assertContentEquals(
 					walk(root, onlyChildren),
 					iterateBodyPartHierarchy(root, onlyChildren),
 					"traversal drifted for root=$root onlyChildren=$onlyChildren",

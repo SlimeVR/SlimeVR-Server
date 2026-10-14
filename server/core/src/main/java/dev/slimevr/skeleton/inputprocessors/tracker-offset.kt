@@ -10,7 +10,7 @@ import io.github.axisangles.ktmath.Vector3
 class TrackerOffsetInputProcessor : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		mutableInputSkeleton.forEach { (part, input) ->
-			if (input.trackerOffset == Vector3.ZERO) return@forEach
+			if (input.trackerOffset.isZero()) return@forEach
 			val localOffset = input.rotation.sandwich(input.trackerOffset)
 			mutableInputSkeleton[part] = input.copy(position = input.position?.plus(localOffset))
 		}
