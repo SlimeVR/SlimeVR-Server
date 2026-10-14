@@ -32,6 +32,7 @@ import { MountingSelectionMenu } from '@/components/onboarding/pages/mounting/Mo
 import { IMUVisualizerWidget } from '@/components/widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { TrackerImuGraphs } from './TrackerImuGraphs';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
@@ -437,172 +438,179 @@ export function TrackerSettingsPage() {
           </div>
           {tracker && <IMUVisualizerWidget td={tracker} />}
         </div>
-        <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
-          <ArrowLink to="/">
-            {l10n.getString('tracker-settings-back')}
-          </ArrowLink>
-          <Typography variant="main-title">
-            {l10n.getString('tracker-settings-title')}
-          </Typography>
-          <div className="flex flex-col gap-2 w-full mt-3">
-            <Typography variant="section-title">
-              {l10n.getString('tracker-settings-assignment_section')}
+        <div className="flex flex-col flex-grow gap-2 min-w-0">
+          <div className="flex flex-col bg-background-70 rounded-lg p-5 gap-3">
+            <ArrowLink to="/">
+              {l10n.getString('tracker-settings-back')}
+            </ArrowLink>
+            <Typography variant="main-title">
+              {l10n.getString('tracker-settings-title')}
             </Typography>
-            <Typography>
-              {l10n.getString(
-                'tracker-settings-assignment_section-description'
-              )}
-            </Typography>
-            <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-              <div className="flex gap-3 items-center fill-background-10">
-                {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
-                  <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
-                )}
-                {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
-                  <WarningIcon className="fill-status-warning" />
-                )}
-                <Typography
-                  color={classNames({
-                    'text-status-warning':
-                      tracker?.tracker.info?.bodyPart === BodyPart.NONE,
-                  })}
-                >
-                  {l10n.getString(
-                    'body_part-' +
-                      BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
-                  )}
-                </Typography>
-              </div>
-              <div className="flex">
-                <Button
-                  variant="secondary"
-                  onClick={() => setSelectBodyPart(true)}
-                >
-                  {l10n.getString('tracker-settings-assignment_section-edit')}
-                </Button>
-              </div>
-            </div>
-          </div>
-          {(tracker?.tracker.info?.isImu ||
-            (tracker?.tracker.origin == DeviceOrigin.DRIVER &&
-              tracker?.tracker.info?.intendedBodyPart !=
-                tracker?.tracker.info?.bodyPart)) && (
             <div className="flex flex-col gap-2 w-full mt-3">
               <Typography variant="section-title">
-                {l10n.getString('tracker-settings-mounting_section')}
+                {l10n.getString('tracker-settings-assignment_section')}
               </Typography>
               <Typography>
                 {l10n.getString(
-                  'tracker-settings-mounting_section-description'
+                  'tracker-settings-assignment_section-description'
                 )}
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-                <div className="flex gap-3 items-center">
-                  <BodyPartIcon bodyPart={BodyPart.NONE} />
-                  <Typography>
+                <div className="flex gap-3 items-center fill-background-10">
+                  {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
+                    <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
+                  )}
+                  {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
+                    <WarningIcon className="fill-status-warning" />
+                  )}
+                  <Typography
+                    color={classNames({
+                      'text-status-warning':
+                        tracker?.tracker.info?.bodyPart === BodyPart.NONE,
+                    })}
+                  >
                     {l10n.getString(
-                      tracker.tracker.info?.lastMountingMethod !=
-                        MountingMethod.MANUAL
-                        ? `${l10n.getString('tracker-rotation-custom')} ${l10n.getString('tracker-rotation-mounting_reset')}`
-                        : (rotationsLabels.find(
-                            (q) =>
-                              currRotation &&
-                              similarQuaternions(q[0], currRotation)
-                          ) || [])[1] || 'tracker-rotation-custom'
+                      'body_part-' +
+                        BodyPart[
+                          tracker?.tracker.info?.bodyPart || BodyPart.NONE
+                        ]
                     )}
                   </Typography>
                 </div>
                 <div className="flex">
                   <Button
                     variant="secondary"
-                    onClick={() => setSelectRotation(true)}
+                    onClick={() => setSelectBodyPart(true)}
                   >
-                    {l10n.getString('tracker-settings-mounting_section-edit')}
+                    {l10n.getString('tracker-settings-assignment_section-edit')}
                   </Button>
                 </div>
               </div>
             </div>
-          )}
-          {tracker?.tracker.info?.isImu &&
-            tracker?.tracker.info?.magnetometer !==
-              MagnetometerStatus.NOT_SUPPORTED && (
-              <MagnetometerToggleSetting
-                settingType="tracker"
-                trackerId={tracker.tracker.trackerId}
-              />
-            )}
-          {!!tracker?.tracker.position && (
-            <div className="flex flex-col gap-2 w-full mt-3">
-              <Typography
-                variant="section-title"
-                id="tracker-settings-bone_offset_section"
-              />
-              <Typography id="tracker-settings-bone_offset_section-description" />
-              <div className="grid grid-cols-3 gap-2">
-                {(['x', 'y', 'z'] as const).map((axis) => (
-                  <Input
-                    key={axis}
-                    type="number"
-                    step="any"
-                    name={`boneOffset.${axis}`}
-                    control={control}
-                    autocomplete="off"
-                    disabled={
-                      (tracker.tracker.info?.bodyPart ?? BodyPart.NONE) ===
-                      BodyPart.NONE
-                    }
-                    placeholder={l10n.getString(
-                      `tracker-settings-bone_offset_section-${axis}`
-                    )}
-                  />
-                ))}
+            {(tracker?.tracker.info?.isImu ||
+              (tracker?.tracker.origin == DeviceOrigin.DRIVER &&
+                tracker?.tracker.info?.intendedBodyPart !=
+                  tracker?.tracker.info?.bodyPart)) && (
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography variant="section-title">
+                  {l10n.getString('tracker-settings-mounting_section')}
+                </Typography>
+                <Typography>
+                  {l10n.getString(
+                    'tracker-settings-mounting_section-description'
+                  )}
+                </Typography>
+                <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
+                  <div className="flex gap-3 items-center">
+                    <BodyPartIcon bodyPart={BodyPart.NONE} />
+                    <Typography>
+                      {l10n.getString(
+                        tracker.tracker.info?.lastMountingMethod !=
+                          MountingMethod.MANUAL
+                          ? `${l10n.getString('tracker-rotation-custom')} ${l10n.getString('tracker-rotation-mounting_reset')}`
+                          : (rotationsLabels.find(
+                              (q) =>
+                                currRotation &&
+                                similarQuaternions(q[0], currRotation)
+                            ) || [])[1] || 'tracker-rotation-custom'
+                      )}
+                    </Typography>
+                  </div>
+                  <div className="flex">
+                    <Button
+                      variant="secondary"
+                      onClick={() => setSelectRotation(true)}
+                    >
+                      {l10n.getString('tracker-settings-mounting_section-edit')}
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
-          <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
-            <Typography variant="section-title">
-              {l10n.getString('tracker-settings-name_section')}
-            </Typography>
-            <Typography>
-              {l10n.getString('tracker-settings-name_section-description')}
-            </Typography>
-            <Input
-              placeholder={l10n.getString(
-                'tracker-settings-name_section-placeholder'
+            )}
+            {tracker?.tracker.info?.isImu &&
+              tracker?.tracker.info?.magnetometer !==
+                MagnetometerStatus.NOT_SUPPORTED && (
+                <MagnetometerToggleSetting
+                  settingType="tracker"
+                  trackerId={tracker.tracker.trackerId}
+                />
               )}
-              type="text"
-              name="trackerName"
-              control={control}
-              autocomplete="off"
-              rules={undefined}
-              label={l10n.getString('tracker-settings-name_section-label')}
-            />
-          </div>
-          {macAddress && (
-            <div className="flex flex-col gap-2 w-full mt-3">
+            {!!tracker?.tracker.position && (
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography
+                  variant="section-title"
+                  id="tracker-settings-bone_offset_section"
+                />
+                <Typography id="tracker-settings-bone_offset_section-description" />
+                <div className="grid grid-cols-3 gap-2">
+                  {(['x', 'y', 'z'] as const).map((axis) => (
+                    <Input
+                      key={axis}
+                      type="number"
+                      step="any"
+                      name={`boneOffset.${axis}`}
+                      control={control}
+                      autocomplete="off"
+                      disabled={
+                        (tracker.tracker.info?.bodyPart ?? BodyPart.NONE) ===
+                        BodyPart.NONE
+                      }
+                      placeholder={l10n.getString(
+                        `tracker-settings-bone_offset_section-${axis}`
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
               <Typography variant="section-title">
-                {l10n.getString('tracker-settings-forget')}
+                {l10n.getString('tracker-settings-name_section')}
               </Typography>
               <Typography>
-                {l10n.getString('tracker-settings-forget-description')}
+                {l10n.getString('tracker-settings-name_section-description')}
               </Typography>
-              <Button
-                variant="danger"
-                className="self-start"
-                onClick={() => {
-                  sendRPCPacket(
-                    RpcMessage.ForgetDeviceRequest,
-                    new ForgetDeviceRequestT(macAddress)
-                  );
-                  setIgnoredTracker((state) => {
-                    state.add(macAddress);
-                    return state;
-                  });
-                }}
-              >
-                {l10n.getString('tracker-settings-forget-label')}
-              </Button>
+              <Input
+                placeholder={l10n.getString(
+                  'tracker-settings-name_section-placeholder'
+                )}
+                type="text"
+                name="trackerName"
+                control={control}
+                autocomplete="off"
+                rules={undefined}
+                label={l10n.getString('tracker-settings-name_section-label')}
+              />
             </div>
+            {macAddress && (
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography variant="section-title">
+                  {l10n.getString('tracker-settings-forget')}
+                </Typography>
+                <Typography>
+                  {l10n.getString('tracker-settings-forget-description')}
+                </Typography>
+                <Button
+                  variant="danger"
+                  className="self-start"
+                  onClick={() => {
+                    sendRPCPacket(
+                      RpcMessage.ForgetDeviceRequest,
+                      new ForgetDeviceRequestT(macAddress)
+                    );
+                    setIgnoredTracker((state) => {
+                      state.add(macAddress);
+                      return state;
+                    });
+                  }}
+                >
+                  {l10n.getString('tracker-settings-forget-label')}
+                </Button>
+              </div>
+            )}
+          </div>
+          {tracker && (
+            <TrackerImuGraphs trackerId={tracker.tracker.trackerId} />
           )}
         </div>
       </div>

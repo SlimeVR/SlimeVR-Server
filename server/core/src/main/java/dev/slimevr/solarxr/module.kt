@@ -37,6 +37,7 @@ import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
 import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
 import dev.slimevr.solarxr.rpc.TapDetectionBehaviour
 import dev.slimevr.solarxr.rpc.TelemetryBehaviour
+import dev.slimevr.solarxr.rpc.TrackerImuTelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
 import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
 import dev.slimevr.solarxr.rpc.UpdateTrackerBehaviour
@@ -207,6 +208,7 @@ class SolarXRBridge(
 			add(UpdateTrackerBehaviour(appContext.server, appContext.errorReporting))
 			add(DongleSettingsBehaviour(appContext.server))
 			add(TelemetryBehaviour(appContext.server))
+			add(TrackerImuTelemetryBehaviour(appContext.server))
 			add(DriverHandshakeBehaviour(appContext))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext))

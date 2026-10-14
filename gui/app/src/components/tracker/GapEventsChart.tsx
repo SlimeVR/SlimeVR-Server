@@ -1,29 +1,21 @@
 import classNames from 'classnames';
-import {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Typography } from '@/components/commons/Typography';
-import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
+import { GapEvent } from '@/hooks/telemetry-history';
+import { ChartRow } from '@/components/commons/charts/time-series';
+import { TOOLTIP_OFFSET } from '@/components/commons/charts/ChartPopover';
 import {
   flipTooltipLeft,
-  getGapColor,
-  HoveredChart,
-  isGapEventActive,
   relativeTimeTick,
   screenXToTimeSec,
-  TelemetryTracker,
   timeSecToScreenX,
-} from './DongleTelemetry';
+} from '@/components/commons/charts/time-axis';
 import {
-  TelemetryPopoverTooltip,
-  TOOLTIP_OFFSET,
-  TOOLTIP_WIDTH,
-} from './TelemetryTooltip';
+  getGapColor,
+  isGapEventActive,
+  TelemetryTracker,
+} from './DongleTelemetry';
+import { TelemetryPopoverTooltip, TOOLTIP_WIDTH } from './TelemetryTooltip';
 
 const Y_AXIS_WIDTH = 64;
 const RIGHT_AXIS_WIDTH = 48;
@@ -72,8 +64,6 @@ function GapEventsChartComponent({
   xAxisTicks,
   hoveredTime,
   onHoveredTimeChange,
-  isActive,
-  onActiveChange,
   variant = 'default',
 }: {
   chartData: ChartRow[];
@@ -85,8 +75,6 @@ function GapEventsChartComponent({
   xAxisTicks: number[];
   hoveredTime: number | null;
   onHoveredTimeChange: (t: number | null) => void;
-  isActive: boolean;
-  onActiveChange: Dispatch<SetStateAction<HoveredChart>>;
   variant?: 'default' | 'modal';
 }) {
   const visible = trackers.filter((t) => visibleIds.includes(t.deviceId));
@@ -222,11 +210,10 @@ function GapEventsChartComponent({
       screenXToTimeSec(e.clientX, plotLeftScreen, plotWidth, startSec, endSec)
     );
     setHoveredY(e.clientY);
-    onActiveChange('gap');
   };
 
   let clientPos: { x: number; y: number } | null = null;
-  if (hoveredTime != null && canvasRef.current) {
+  if (hoveredTime != null && hoveredY != null && canvasRef.current) {
     const canvasRect = canvasRef.current.getBoundingClientRect();
     const plotLeftScreen = canvasRect.left;
     const plotWidth = canvasRect.width - RIGHT_AXIS_WIDTH;
@@ -246,7 +233,7 @@ function GapEventsChartComponent({
 
     clientPos = {
       x: tooltipX,
-      y: (hoveredY ?? canvasRect.top) + TOOLTIP_OFFSET,
+      y: hoveredY + TOOLTIP_OFFSET,
     };
   }
 
@@ -274,7 +261,6 @@ function GapEventsChartComponent({
           onMouseLeave={() => {
             onHoveredTimeChange(null);
             setHoveredY(null);
-            onActiveChange((prev) => (prev === 'gap' ? null : prev));
           }}
         >
           <RowLabels trackers={trackers} visibleIds={visibleIds} />
@@ -284,7 +270,6 @@ function GapEventsChartComponent({
         </div>
 
         <TelemetryPopoverTooltip
-          isOpen={isActive && hoveredTime != null && clientPos != null}
           clientPos={clientPos}
           trackers={visible}
           chartData={chartData}
