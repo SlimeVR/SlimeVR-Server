@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { GapEvent } from '@/hooks/telemetry-history';
-import { ChartRow, rowsSource } from '@/components/commons/charts/time-series';
+import { ChartRow, rowsSource } from '@/hooks/time-series';
 import {
   ChartAxis,
   ChartBand,

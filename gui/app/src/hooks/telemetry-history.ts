@@ -14,7 +14,7 @@ import {
   createSourceClock,
   observeSourceTime,
   SourceClock,
-} from '@/components/commons/charts/time-series';
+} from './time-series';
 
 export interface GapEvent {
   t: number;

@@ -7,7 +7,7 @@ import {
   rowsSource,
   sourceNow,
   useLiveFrame,
-} from '@/components/commons/charts/time-series';
+} from './time-series';
 
 export interface TrackerDisplayStat {
   rssi: number | null;

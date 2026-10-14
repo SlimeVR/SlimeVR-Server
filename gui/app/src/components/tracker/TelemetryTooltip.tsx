@@ -5,7 +5,7 @@ import {
   ChartRow,
   nearestIndex,
   rowsSource,
-} from '@/components/commons/charts/time-series';
+} from '@/hooks/time-series';
 import {
   getGapTextColor,
   isGapEventActive,

@@ -16,7 +16,7 @@ import {
   observeSourceTime,
   pushColumnRing,
   SourceClock,
-} from '@/components/commons/charts/time-series';
+} from './time-series';
 import { useWebsocketAPI } from './websocket-api';
 
 export const IMU_KEYS = [

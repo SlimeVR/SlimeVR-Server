@@ -17,7 +17,7 @@ import { defaultDongleTelemetryConfig, useConfig } from '@/hooks/config';
 import {
   useTimeAxisTicks,
   WINDOW_OPTIONS,
-} from '@/components/commons/charts/time-axis';
+} from '@/hooks/time-axis';
 
 import { GapEvent } from '@/hooks/telemetry-history';
 

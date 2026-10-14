@@ -13,7 +13,7 @@ import {
 import {
   useTimeAxisTicks,
   WINDOW_OPTIONS,
-} from '@/components/commons/charts/time-axis';
+} from '@/hooks/time-axis';
 import {
   ChartSource,
   downsampleMinMax,
@@ -22,7 +22,7 @@ import {
   rowsSource,
   sourceNow,
   useLiveFrame,
-} from '@/components/commons/charts/time-series';
+} from '@/hooks/time-series';
 import { defaultTrackerGraphsConfig, useConfig } from '@/hooks/config';
 import {
   IMU_HISTORY_SEC,

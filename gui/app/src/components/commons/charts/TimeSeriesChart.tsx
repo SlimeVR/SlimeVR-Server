@@ -4,7 +4,7 @@ import {
   drawDashedPath,
   drawLine,
   drawSeries,
-} from './chart-drawing';
+} from '@/hooks/chart-drawing';
 import { ChartPopover, TOOLTIP_OFFSET } from './ChartPopover';
 import {
   flipTooltipLeft,
@@ -12,8 +12,8 @@ import {
   relativeTimeTick,
   screenXToTimeSec,
   timeSecToScreenX,
-} from './time-axis';
-import { ChartSource } from './time-series';
+} from '@/hooks/time-axis';
+import { ChartSource } from '@/hooks/time-series';
 
 const DEFAULT_LEFT_AXIS_WIDTH = 48;
 const RIGHT_AXIS_WIDTH = 40;

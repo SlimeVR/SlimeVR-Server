@@ -2,14 +2,14 @@ import classNames from 'classnames';
 import { memo, useEffect, useRef, useState } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import { GapEvent } from '@/hooks/telemetry-history';
-import { ChartRow } from '@/components/commons/charts/time-series';
+import { ChartRow } from '@/hooks/time-series';
 import { TOOLTIP_OFFSET } from '@/components/commons/charts/ChartPopover';
 import {
   flipTooltipLeft,
   relativeTimeTick,
   screenXToTimeSec,
   timeSecToScreenX,
-} from '@/components/commons/charts/time-axis';
+} from '@/hooks/time-axis';
 import {
   getGapColor,
   isGapEventActive,
