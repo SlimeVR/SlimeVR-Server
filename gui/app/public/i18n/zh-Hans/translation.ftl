@@ -681,12 +681,6 @@ onboarding-quiz-mocap_preferences-head_tracker-yes = 是
 
 onboarding-wifi_creds-back-v2 = 返回
 onboarding-wifi_creds-v2 = 通过 Wi-Fi 连接
-# This cares about multilines
-onboarding-wifi_creds-description-v2 =
-    大多数追踪器（例如官方的 SlimeVR 追踪器）都通过 Wi-Fi 连接服务器。
-    请输入当前设备连接的网络的 Wi-Fi 凭证。
-    
-    请确保输入的是 2.4GHz 频段的 Wi-Fi 凭证！
 onboarding-wifi_creds-submit = 提交！
 onboarding-wifi_creds-retry = 重试
 onboarding-wifi_creds-ssid-label = SSID
