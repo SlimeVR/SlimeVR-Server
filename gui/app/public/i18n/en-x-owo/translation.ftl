@@ -232,7 +232,6 @@ tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
 tracker-settings-name_section-label = twackaw name
 tracker-settings-forget = *forgors the tracker*
-tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
 tracker-settings-update-up_to_date = up to dayte!! ^w^
 tracker-settings-update = uwupdate meow!
@@ -807,12 +806,6 @@ tray_or_exit_modal-cancel = cancew :o
 
 ## Unknown device modal
 
-unknown_device-modal-title = da twackew was find owo
-unknown_device-modal-description =
-    therwe is a nyew twackew wif MAC addwess <b>{ $deviceId }</b>..
-    d-do u wanna conect it to SwimeVR?
-unknown_device-modal-confirm = sure!!
-unknown_device-modal-forget = ignowe it
 vrc_config-tracker_model-UNKNOWN = unnown
 vrc_config-avatar_measurement_type-UNKNOWN = unnown
 
