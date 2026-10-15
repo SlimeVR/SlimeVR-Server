@@ -311,7 +311,6 @@ tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=
 tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
 tracker-settings-name_section-label = 追踪器名称
 tracker-settings-forget = 忘记追踪器
-tracker-settings-forget-description = 从 SlimeVR 服务器中移除该追踪器，并在服务器重启前不再连接这一追踪器。追踪器的配置信息不会被清除。
 tracker-settings-forget-label = 忘记追踪器
 tracker-settings-update-unavailable-v2 = 未找到可用版本
 tracker-settings-update-incompatible = 电路板不兼容，无法升级。
@@ -1069,12 +1068,6 @@ tray_or_exit_modal-cancel = 取消
 
 ## Unknown device modal
 
-unknown_device-modal-title = 发现了一个新的追踪器！
-unknown_device-modal-description =
-    发现一个MAC地址为 <b>{ $deviceId }</b> 的新追踪器。
-    要将它连接到 SlimeVR 吗？
-unknown_device-modal-confirm = 是的！
-unknown_device-modal-forget = 忽略它
 # VRChat config warnings
 vrc_config-page-title = VRChat设置警告
 vrc_config-page-desc = 本页会显示当前VRChat设置的状态，并显示哪些设置与SlimeVR存在冲突。为获得最好的体验，建议修复此处显示的所有警告后再进行使用。
