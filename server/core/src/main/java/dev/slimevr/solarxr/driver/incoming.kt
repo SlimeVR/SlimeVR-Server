@@ -83,7 +83,7 @@ private val BODY_PART_TO_OFFSET = mapOf(
 )
 
 // I don't know why linear velocity seems to be in a different coordinate system. -Erimel
-private fun remapVelocity(velocity: Vector3) = Vector3(velocity.z, -velocity.y, velocity.x)
+private fun remapVelocity(velocity: Vector3) = Vector3(velocity.z, velocity.y, velocity.x)
 
 class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,
