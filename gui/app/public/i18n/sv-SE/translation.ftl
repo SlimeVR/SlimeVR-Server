@@ -291,7 +291,6 @@ tracker-settings-name_section-description = Ge den ett gulligt smeknamn :)
 tracker-settings-name_section-placeholder = Bokstensmannens vänstra ben
 tracker-settings-name_section-label = Sensorns namn
 tracker-settings-forget = Glöm spårning
-tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern och förhindrar den från att ansluta till den tills servern startas om. Konfigurationen av trackern kommer inte att gå förlorad.
 tracker-settings-forget-label = Glöm spårning
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
@@ -795,9 +794,6 @@ tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
-unknown_device-modal-description =
-    Det finns en ny tracker med MAC-adress <b>{ $deviceId }</b>.
-    Vill du ansluta den till SlimeVR?
 vrc_config-page-help = Hittar inte inställningen?
 vrc_config-page-help-desc = Kolla vår <a>dokumentation på detta området!</a>
 vrc_config-page-big_menu = Tracking & IK (stora menyn)
