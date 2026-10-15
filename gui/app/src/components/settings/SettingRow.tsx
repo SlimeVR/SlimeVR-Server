@@ -126,7 +126,12 @@ export function SettingRow({
             disabled && 'opacity-50'
           )}
         >
-          <div className="w-7 h-6 shrink-0 flex items-center justify-center">
+          <div
+            className={classNames(
+              'w-7 shrink-0 flex items-center justify-center',
+              control && controlWidth === 'auto' ? 'h-12 xs:h-6' : 'h-6'
+            )}
+          >
             {reset && <SettingResetButton {...reset} />}
           </div>
           {controlId ? (

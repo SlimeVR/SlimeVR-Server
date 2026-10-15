@@ -244,6 +244,12 @@ export function TapDetectionSettings({
     />
   );
 
+  const mobileCaption = (id: string) => (
+    <div className="md:hidden">
+      <Typography bold id={`settings-general-gesture_control-column-${id}`} />
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-2 min-w-0 mt-8">
       <div className="px-3 xs:px-4">
@@ -270,27 +276,33 @@ export function TapDetectionSettings({
               <FocusableRow
                 key={id}
                 setting={resets.rows[id]}
-                className="grid grid-cols-[auto,1fr] md:table-row p-4 md:p-0 gap-x-3 gap-y-3 md:gap-0 items-center border-b border-background-60 md:border-b-0"
+                className="grid grid-cols-[1.75rem_minmax(0,1fr)_minmax(0,1fr)] md:table-row gap-x-2 gap-y-3 md:gap-0 items-center pl-1 pr-3 py-3 xs:pl-2 xs:pr-4 xs:py-4 md:p-0"
               >
-                <td className="py-2 md:py-3 pl-0 md:pl-4 pr-0 md:pr-2 block md:table-cell align-middle">
-                  <div className="flex items-center gap-2">
-                    <SettingResetButton {...kindReset(id)} />
-                    <CheckboxInternal
-                      variant="toggle"
-                      name={`${id}Enabled`}
-                      id={`tap-${id}`}
-                      checked={enabled}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setValue(
-                          `${id}Enabled` as keyof TapDetectionForm,
-                          event.currentTarget.checked,
-                          { shouldDirty: true }
-                        )
-                      }
-                    />
+                <td className="contents md:table-cell md:py-3 md:pl-4 md:pr-2 align-middle">
+                  <div className="contents md:flex md:items-center md:gap-2">
+                    <div className="col-start-1 row-start-1 flex justify-center">
+                      <SettingResetButton {...kindReset(id)} />
+                    </div>
+                    <div className="col-start-3 row-start-1 justify-self-end flex">
+                      <CheckboxInternal
+                        variant="toggle"
+                        name={`${id}Enabled`}
+                        id={`tap-${id}`}
+                        checked={enabled}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) =>
+                          setValue(
+                            `${id}Enabled` as keyof TapDetectionForm,
+                            event.currentTarget.checked,
+                            { shouldDirty: true }
+                          )
+                        }
+                      />
+                    </div>
                   </div>
                 </td>
-                <td className="py-2 md:py-3 pl-0 md:pr-4 block md:table-cell align-middle">
+                <td className="col-start-2 col-span-2 row-start-1 min-w-0 pr-12 block md:table-cell md:py-3 md:pr-4 align-middle">
                   <label
                     htmlFor={`tap-${id}`}
                     className="flex items-center gap-2.5 cursor-pointer whitespace-nowrap"
@@ -305,12 +317,15 @@ export function TapDetectionSettings({
                     />
                   </label>
                 </td>
-                <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                <td className="col-start-2 col-span-2 row-start-2 block md:table-cell md:py-3 md:px-4 align-middle">
                   <fieldset
                     disabled={!enabled}
-                    className={classNames(!enabled && 'opacity-50')}
+                    className={classNames(
+                      'flex flex-col gap-1.5',
+                      !enabled && 'opacity-50'
+                    )}
                   >
-                    <span className="md:hidden">{column('tracker')}</span>
+                    {mobileCaption('tracker')}
                     <Dropdown
                       display="block"
                       control={control}
@@ -320,12 +335,15 @@ export function TapDetectionSettings({
                     />
                   </fieldset>
                 </td>
-                <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                <td className="col-start-2 col-span-2 row-start-3 smol:col-start-2 smol:col-span-1 min-w-0 block md:table-cell md:py-3 md:px-4 align-middle">
                   <fieldset
                     disabled={!enabled}
-                    className={classNames(!enabled && 'opacity-50')}
+                    className={classNames(
+                      'flex flex-col gap-1.5',
+                      !enabled && 'opacity-50'
+                    )}
                   >
-                    <span className="md:hidden">{column('taps')}</span>
+                    {mobileCaption('taps')}
                     <NumberSelector
                       control={control}
                       name={`${id}Taps` as keyof TapDetectionForm}
@@ -341,12 +359,15 @@ export function TapDetectionSettings({
                     />
                   </fieldset>
                 </td>
-                <td className="col-span-2 py-2 md:py-3 px-0 md:px-4 block md:table-cell align-middle">
+                <td className="col-start-2 col-span-2 row-start-4 smol:col-start-3 smol:col-span-1 smol:row-start-3 min-w-0 block md:table-cell md:py-3 md:px-4 align-middle">
                   <fieldset
                     disabled={!enabled}
-                    className={classNames(!enabled && 'opacity-50')}
+                    className={classNames(
+                      'flex flex-col gap-1.5',
+                      !enabled && 'opacity-50'
+                    )}
                   >
-                    <span className="md:hidden">{column('delay')}</span>
+                    {mobileCaption('delay')}
                     <NumberSelector
                       control={control}
                       name={`${id}Delay` as keyof TapDetectionForm}
