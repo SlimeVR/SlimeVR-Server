@@ -292,7 +292,6 @@ tracker-settings-name_section-description = Dale un sobrenombre lindo :)
 tracker-settings-name_section-placeholder = Pata izquierda del Eevee
 tracker-settings-name_section-label = Nombre del tracker
 tracker-settings-forget = Olvidar tracker
-tracker-settings-forget-description = Elimina el tracker del servidor SlimeVR y evita que se conecte a él hasta que se reinicie el servidor. La configuración del tracker no se perderá.
 tracker-settings-forget-label = Olvidar tracker
 tracker-settings-update-incompatible = No se puede actualizar. Versión de placa o firmware incompatible
 tracker-settings-update-low-battery = No se puede actualizar. Batería inferior al 50%
@@ -951,12 +950,6 @@ tray_or_exit_modal-cancel = Cancelar
 
 ## Unknown device modal
 
-unknown_device-modal-title = ¡Se ha encontrado un nuevo tracker!
-unknown_device-modal-description =
-    Hay un nuevo tracker con dirección MAC <b>{ $deviceId }</b>.
-    ¿Quieres conectarlo a SlimeVR?
-unknown_device-modal-confirm = ¡Claro!
-unknown_device-modal-forget = Ignóralo
 # VRChat config warnings
 vrc_config-page-title = Advertencias sobre la configuración de VRChat
 vrc_config-page-desc = Esta página muestra el estado de la configuración de VRChat y dice qué configuración es incompatible con SlimeVR. Se recomienda encarecidamente que corrijas las advertencias que aparecen aquí para obtener la mejor experiencia con SlimeVR.
