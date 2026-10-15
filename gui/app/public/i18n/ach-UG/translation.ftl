@@ -280,6 +280,7 @@ tracker-infos-display_name = crwdns7498:0crwdne7498:0
 tracker-infos-custom_name = crwdns7500:0crwdne7500:0
 tracker-infos-url = crwdns7502:0crwdne7502:0
 tracker-infos-hardware_identifier = crwdns7504:0crwdne7504:0
+tracker-infos-mac_address = crwdns9956:0crwdne9956:0
 tracker-infos-data_type = crwdns7506:0crwdne7506:0
 tracker-infos-imu = crwdns7508:0crwdne7508:0
 tracker-infos-board_type = crwdns7510:0crwdne7510:0
@@ -318,6 +319,9 @@ tracker-settings-name_section-label = crwdns7552:0crwdne7552:0
 tracker-settings-forget = crwdns7554:0crwdne7554:0
 tracker-settings-forget-description = crwdns7556:0crwdne7556:0
 tracker-settings-forget-label = crwdns7558:0crwdne7558:0
+tracker-settings-forget-modal-title = crwdns9958:0crwdne9958:0
+tracker-settings-forget-modal-cancel = crwdns9960:0crwdne9960:0
+tracker-settings-forget-modal-confirm = crwdns9962:0crwdne9962:0
 tracker-settings-imu_graphs-title = crwdns9942:0crwdne9942:0
 tracker-settings-imu_graphs-raw_accel = crwdns9944:0crwdne9944:0
 tracker-settings-imu_graphs-linear_accel = crwdns9946:0crwdne9946:0
@@ -1352,6 +1356,13 @@ home-settings = crwdns9042:0crwdne9042:0
 home-settings-close = crwdns9044:0crwdne9044:0
 home-connection_group-wifi = crwdns9046:0crwdne9046:0
 home-connection_group-driver = crwdns9048:0crwdne9048:0
+home-new_trackers-count = crwdns9964:0$countcrwdnd9964:0$countcrwdnd9964:0$countcrwdne9964:0
+home-new_trackers-pill = crwdns9966:0$countcrwdne9966:0
+home-new_trackers-add = crwdns9968:0crwdne9968:0
+home-new_trackers-add_all = crwdns9970:0crwdne9970:0
+home-new_trackers-adding = crwdns9972:0crwdne9972:0
+home-new_trackers-ignore = crwdns9974:0crwdne9974:0
+home-new_trackers-official_board = crwdns9976:0crwdne9976:0
 home-no_trackers-title = crwdns9050:0crwdne9050:0
 home-no_trackers-description = crwdns9052:0crwdne9052:0
 home-no_trackers-connect = crwdns9054:0crwdne9054:0
@@ -1497,10 +1508,6 @@ tray_or_exit_modal-cancel = crwdns9276:0crwdne9276:0
 
 ## Unknown device modal
 
-unknown_device-modal-title = crwdns9278:0crwdne9278:0
-unknown_device-modal-description = crwdns9280:0$deviceIdcrwdne9280:0
-unknown_device-modal-confirm = crwdns9282:0crwdne9282:0
-unknown_device-modal-forget = crwdns9284:0crwdne9284:0
 # VRChat config warnings
 vrc_config-page-title = crwdns9286:0crwdne9286:0
 vrc_config-page-desc = crwdns9288:0crwdne9288:0
