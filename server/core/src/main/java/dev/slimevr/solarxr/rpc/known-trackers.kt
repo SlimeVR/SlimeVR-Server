@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.udp.UdpServerActions
@@ -20,13 +20,13 @@ import solarxr_protocol.rpc.UnknownDevice
 import solarxr_protocol.rpc.UnknownDeviceStatus
 import solarxr_protocol.rpc.UnknownDevicesResponse
 
-internal fun createUnknownDevice(device: UnknownDeviceState, allowedMacs: Set<String>) = UnknownDevice(
-	macAddress = device.macAddress,
+internal fun createUnknownDevice(device: UnknownDeviceState, allowed: Set<String>) = UnknownDevice(
+	hardwareId = device.hardwareId,
 	ipAddress = ipv4AddressFromString(device.address),
 	boardType = device.boardType,
 	mcuType = device.mcuType,
 	firmwareVersion = device.firmwareVersion,
-	status = if (device.macAddress in allowedMacs) UnknownDeviceStatus.ADDING else UnknownDeviceStatus.WAITING,
+	status = if (device.hardwareId in allowed) UnknownDeviceStatus.ADDING else UnknownDeviceStatus.WAITING,
 )
 
 class KnownTrackersBehaviour(
@@ -36,25 +36,25 @@ class KnownTrackersBehaviour(
 		val udpServer = appContext.udpServer
 
 		receiver.rpcDispatcher.on<AddUnknownDeviceRequest> { req ->
-			val mac = req.macAddress ?: return@on
-			appContext.config.settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(mac))
+			val hardwareId = req.hardwareId ?: return@on
+			appContext.config.devices.context.dispatch(DevicesConfigActions.AddAllowedUdpDevice(hardwareId))
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<IgnoreUnknownDeviceRequest> { req ->
-			val mac = req.macAddress ?: return@on
-			udpServer.context.dispatch(UdpServerActions.IgnoreUnknownDevice(mac))
+			val hardwareId = req.hardwareId ?: return@on
+			udpServer.context.dispatch(UdpServerActions.IgnoreUnknownDevice(hardwareId))
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ForgetDeviceRequest> { req ->
-			val mac = req.macAddress ?: return@on
-			forgetUdpDevice(appContext, mac)
+			val hardwareId = req.hardwareId ?: return@on
+			forgetUdpDevice(appContext, hardwareId)
 		}.launchIn(receiver.context.scope)
 
 		combine(
 			udpServer.context.state.map { it.unknownDevices },
-			appContext.config.settings.context.state.map { it.data.allowedUdpDevices },
-		) { unknownDevices, allowedMacs ->
-			unknownDevices.values.map { createUnknownDevice(it, allowedMacs) }
+			appContext.config.devices.context.state.map { it.allowedUdpDevices },
+		) { unknownDevices, allowed ->
+			unknownDevices.values.map { createUnknownDevice(it, allowed) }
 		}
 			.distinctUntilChanged()
 			.onEach { devices -> receiver.sendRpc(UnknownDevicesResponse(devices = devices)) }

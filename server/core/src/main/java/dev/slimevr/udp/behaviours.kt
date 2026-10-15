@@ -7,6 +7,7 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.udpHardwareId
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -30,11 +31,8 @@ internal const val CONNECTION_TIMEOUT_MS = 5000L
 
 internal suspend fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
 	val deviceState = device.context.state.value
-	val mac = deviceState.macAddress ?: run {
-		AppLogger.udp.warn("No MAC address available, falling back to IP for hardware ID")
-		deviceState.address
-	}
-	val hardwareId = "$mac:${info.sensorId}"
+	val deviceHardwareId = deviceState.hardwareId ?: udpHardwareId(deviceState.macAddress, deviceState.address)
+	val hardwareId = "$deviceHardwareId:${info.sensorId}"
 
 	val existingTracker = receiver.appContext.server.context.state.value.trackers.values
 		.find { t -> t.context.state.value.deviceId == deviceState.id && t.context.state.value.hardwareId == hardwareId }
@@ -147,13 +145,11 @@ class PingBehaviour : UDPConnectionBehaviour {
 }
 
 class HandshakeBehaviour : UDPConnectionBehaviour {
-	private fun findOrCreateDevice(receiver: UDPConnection, state: UDPConnectionState, data: Handshake): Device {
+	private fun findOrCreateDevice(receiver: UDPConnection, state: UDPConnectionState, data: Handshake, hardwareId: String): Device {
 		val devices = receiver.appContext.server.context.state.value.devices.values
-		val existing = data.macString?.let { mac ->
-			devices.find { device ->
-				val ds = device.context.state.value
-				ds.macAddress == mac && ds.origin == DeviceOrigin.UDP
-			}
+		val existing = devices.find { device ->
+			val ds = device.context.state.value
+			ds.hardwareId == hardwareId && ds.origin == DeviceOrigin.UDP
 		}
 		if (existing != null) {
 			val existingId = existing.context.state.value.id
@@ -172,6 +168,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			id = deviceId,
 			address = state.address,
 			macAddress = data.macString,
+			hardwareId = hardwareId,
 			origin = DeviceOrigin.UDP,
 			protocolVersion = data.protocolVersion,
 		)
@@ -183,33 +180,31 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<Handshake> { packet ->
 			val state = receiver.context.state.value
-			val mac = packet.data.macString
+			val hardwareId = udpHardwareId(packet.data.macString, state.address)
 
-			if (mac != null) {
-				val settings = receiver.appContext.config.settings.context.state.value.data
-				val udpServer = receiver.appContext.udpServer
-				if (mac !in settings.allowedUdpDevices) {
-					udpServer.context.dispatch(
-						UdpServerActions.UnknownDeviceSeen(
-							UnknownDeviceState(
-								macAddress = mac,
-								address = state.address,
-								boardType = packet.data.boardType,
-								mcuType = packet.data.mcuType,
-								firmwareVersion = packet.data.firmware,
-								lastSeen = udpServer.clock(),
-							),
+			val allowed = receiver.appContext.config.devices.context.state.value.allowedUdpDevices
+			val udpServer = receiver.appContext.udpServer
+			if (hardwareId !in allowed) {
+				udpServer.context.dispatch(
+					UdpServerActions.UnknownDeviceSeen(
+						UnknownDeviceState(
+							hardwareId = hardwareId,
+							address = state.address,
+							boardType = packet.data.boardType,
+							mcuType = packet.data.mcuType,
+							firmwareVersion = packet.data.firmware,
+							lastSeen = udpServer.clock(),
 						),
-					)
-					return@onPacket
-				}
-				if (mac in udpServer.context.state.value.unknownDevices) {
-					udpServer.context.dispatch(UdpServerActions.UnknownDeviceRemoved(mac))
-				}
+					),
+				)
+				return@onPacket
+			}
+			if (hardwareId in udpServer.context.state.value.unknownDevices) {
+				udpServer.context.dispatch(UdpServerActions.UnknownDeviceRemoved(hardwareId))
 			}
 
 			val device = if (state.deviceId == null) {
-				findOrCreateDevice(receiver, state, packet.data)
+				findOrCreateDevice(receiver, state, packet.data, hardwareId)
 			} else {
 				receiver.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
 				receiver.getDevice() ?: run {
@@ -221,7 +216,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 
 			val previousStatus = device.context.state.value.status
 			if (previousStatus != TrackerStatus.OK) {
-				AppLogger.udp.info("Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
+				AppLogger.udp.info("Handshake from $hardwareId, was $previousStatus")
 			}
 
 			// Apply handshake fields to device, always, for both first connect and reconnect

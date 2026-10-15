@@ -31,7 +31,7 @@ export function pendingBoardLabel(
 export function PendingTrackerActions({ device }: { device: UnknownDeviceT }) {
   const { add, ignore } = usePendingTrackerActions();
   const adding = device.status === UnknownDeviceStatus.ADDING;
-  const macAddress = device.macAddress as string;
+  const hardwareId = device.hardwareId as string;
 
   return (
     <div className="grid items-center justify-items-center shrink-0">
@@ -45,7 +45,7 @@ export function PendingTrackerActions({ device }: { device: UnknownDeviceT }) {
           labelId="home-new_trackers-ignore"
           tooltipDirection="top"
           className="rounded-full w-[35px] h-[35px] flex items-center justify-center text-background-30 hover:text-background-10 hover:bg-background-60"
-          onClick={() => ignore(macAddress)}
+          onClick={() => ignore(hardwareId)}
         >
           <CloseIcon className="stroke-current" size={30} />
         </IconButton>
@@ -54,7 +54,7 @@ export function PendingTrackerActions({ device }: { device: UnknownDeviceT }) {
           rounded
           className="px-4"
           id="home-new_trackers-add"
-          onClick={() => add(macAddress)}
+          onClick={() => add(hardwareId)}
         />
       </div>
       <div
@@ -83,7 +83,7 @@ export function PendingTrackerGlyph({ size }: { size: number }) {
 
 export function PendingTrackerCard({ device }: { device: UnknownDeviceT }) {
   const { l10n } = useLocalization();
-  const details = [device.macAddress, device.firmwareVersion]
+  const details = [device.hardwareId, device.firmwareVersion]
     .filter(Boolean)
     .join(' · ');
 

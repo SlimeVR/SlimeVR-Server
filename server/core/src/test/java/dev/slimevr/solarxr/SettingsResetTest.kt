@@ -7,8 +7,8 @@ import dev.slimevr.buildTestAppConfig
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.config.AppConfig
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.config.GlobalConfigActions
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.config.changeConsent
 import dev.slimevr.context.Context
@@ -83,13 +83,14 @@ class SettingsResetTest {
 		val server = buildTestVrServerStub(backgroundScope)
 		val bridge = buildBridge(backgroundScope, config, server)
 		val mac = "AA:BB:CC:DD:EE:FF"
-		config.settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(mac))
+		config.devices.context.dispatch(DevicesConfigActions.AddAllowedUdpDevice(mac))
 		val device = Device.create(
 			scope = server.context.scope,
 			appContext = bridge.appContext,
 			id = server.nextHandle(),
 			address = "127.0.0.1",
 			macAddress = mac,
+			hardwareId = mac,
 			origin = DeviceOrigin.UDP,
 			protocolVersion = 21,
 		)
@@ -97,7 +98,7 @@ class SettingsResetTest {
 		val tracker = buildTestTracker(server.context.scope, bridge.appContext, config.settings, server.nextHandle())
 		tracker.context.dispatch(TrackerActions.Update { copy(deviceId = device.context.state.value.id, hardwareId = "$mac:0") })
 		server.context.dispatch(VRServerActions.NewTracker(tracker.context.state.value.id, tracker))
-		config.settings.context.dispatch(SettingsActions.UpdateTracker("$mac:0") { copy(customName = "Left foot") })
+		config.devices.context.dispatch(DevicesConfigActions.UpdateTracker("$mac:0") { copy(customName = "Left foot") })
 		config.globalConfig.context.dispatch(
 			GlobalConfigActions.SetErrorReporting(
 				changeConsent(config.globalConfig.context.state.value.errorReporting, ErrorReportingConsent.ALLOWED),
@@ -111,7 +112,7 @@ class SettingsResetTest {
 
 		assertTrue(server.context.state.value.devices.isEmpty())
 		assertTrue(server.context.state.value.trackers.isEmpty())
-		assertTrue(config.settings.context.state.value.data.trackers.isEmpty())
-		assertTrue(config.settings.context.state.value.data.allowedUdpDevices.isEmpty())
+		assertTrue(config.devices.context.state.value.trackers.isEmpty())
+		assertTrue(config.devices.context.state.value.allowedUdpDevices.isEmpty())
 	}
 }

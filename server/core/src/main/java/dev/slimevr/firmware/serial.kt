@@ -1,8 +1,8 @@
 package dev.slimevr.firmware
 
 import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.DevicesConfig
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConsole
@@ -36,7 +36,7 @@ suspend fun doSerialFlash(
 	ssid: String?,
 	password: String?,
 	serialServer: SerialServer,
-	settings: Settings,
+	devices: DevicesConfig,
 	server: VRServer,
 	flasher: FirmwareFlasher,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
@@ -91,7 +91,7 @@ suspend fun doSerialFlash(
 		ssid = ssid,
 		password = password,
 		serialServer = serialServer,
-		settings = settings,
+		devices = devices,
 		server = server,
 		onStatus = onStatus,
 	)
@@ -111,7 +111,7 @@ internal suspend fun doSerialFlashPostFlash(
 	ssid: String?,
 	password: String?,
 	serialServer: SerialServer,
-	settings: Settings,
+	devices: DevicesConfig,
 	server: VRServer,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
 ) {
@@ -132,7 +132,7 @@ internal suspend fun doSerialFlashPostFlash(
 	}
 
 	try {
-		provisionFlashedPort(lease.console, needManualReboot, ssid, password, settings, server, onStatus)
+		provisionFlashedPort(lease.console, needManualReboot, ssid, password, devices, server, onStatus)
 	} finally {
 		lease.release()
 	}
@@ -144,7 +144,7 @@ private suspend fun provisionFlashedPort(
 	needManualReboot: Boolean,
 	ssid: String?,
 	password: String?,
-	settings: Settings,
+	devices: DevicesConfig,
 	server: VRServer,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
 ) {
@@ -174,7 +174,7 @@ private suspend fun provisionFlashedPort(
 		return
 	}
 
-	settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(macAddress))
+	devices.context.dispatch(DevicesConfigActions.AddAllowedUdpDevice(macAddress))
 
 	// Remove old UDP connection for this MAC before rebooting to prevent false inactivity timeouts
 	val existingDevice = server.context.state.value.devices.values.find { d ->

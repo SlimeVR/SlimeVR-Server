@@ -6,22 +6,22 @@ fun reduce(state: UdpServerState, action: UdpServerActions): UdpServerState = wh
 	is UdpServerActions.ConnectionRemoved -> state.copy(connections = state.connections - action.address)
 
 	is UdpServerActions.UnknownDeviceSeen -> {
-		val mac = action.device.macAddress
-		if (mac in state.ignoredMacs) {
+		val id = action.device.hardwareId
+		if (id in state.ignoredHardwareIds) {
 			state
 		} else {
-			state.copy(unknownDevices = state.unknownDevices + (mac to action.device))
+			state.copy(unknownDevices = state.unknownDevices + (id to action.device))
 		}
 	}
 
-	is UdpServerActions.UnknownDeviceRemoved -> state.copy(unknownDevices = state.unknownDevices - action.macAddress)
+	is UdpServerActions.UnknownDeviceRemoved -> state.copy(unknownDevices = state.unknownDevices - action.hardwareId)
 
 	is UdpServerActions.UnknownDevicesExpired -> state.copy(
 		unknownDevices = state.unknownDevices.filterValues { it.lastSeen > action.cutoff },
 	)
 
 	is UdpServerActions.IgnoreUnknownDevice -> state.copy(
-		unknownDevices = state.unknownDevices - action.macAddress,
-		ignoredMacs = state.ignoredMacs + action.macAddress,
+		unknownDevices = state.unknownDevices - action.hardwareId,
+		ignoredHardwareIds = state.ignoredHardwareIds + action.hardwareId,
 	)
 }

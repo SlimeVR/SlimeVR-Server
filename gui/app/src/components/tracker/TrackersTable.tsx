@@ -475,7 +475,7 @@ function PendingRow({
         </div>
         <div className="flex flex-col">
           <Typography bold whitespace="whitespace-nowrap">
-            {device.macAddress as string}
+            {device.hardwareId as string}
           </Typography>
           <Typography color={fontColor} whitespace="whitespace-nowrap">
             {device.firmwareVersion}
@@ -689,7 +689,7 @@ export function TrackersTable({
                     />
                     {group.pending.map((device) => (
                       <PendingRow
-                        key={device.macAddress as string}
+                        key={device.hardwareId as string}
                         device={device}
                         gridTemplateColumns={gridTemplateColumns}
                         columns={columns}

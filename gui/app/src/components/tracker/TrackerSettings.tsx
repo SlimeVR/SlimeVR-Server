@@ -178,17 +178,20 @@ export function TrackerSettingsPage() {
     l10n,
   ]);
 
-  const macAddress = useMemo(() => {
-    if (
-      /(?:[a-zA-Z\d]{2}:){5}[a-zA-Z\d]{2}/.test(
-        (tracker?.device?.hardwareInfo?.hardwareIdentifier as string | null) ??
-          ''
-      )
-    ) {
-      return tracker?.device?.hardwareInfo?.hardwareIdentifier as string;
-    }
-    return null;
-  }, [tracker?.device?.hardwareInfo?.hardwareIdentifier]);
+  // MAC address, or IP for firmware that sends no MAC
+  const hardwareId =
+    (tracker?.device?.hardwareInfo?.hardwareIdentifier as string | null) ??
+    null;
+  const macAddressNumber = tracker?.device?.hardwareInfo?.hardwareAddress?.addr;
+  const macAddress =
+    macAddressNumber != null
+      ? macAddressNumber
+          .toString(16)
+          .padStart(12, '0')
+          .toUpperCase()
+          .match(/.{2}/g)
+          ?.join(':')
+      : null;
 
   const { currentFirmwareRelease } = useAppContext();
 
@@ -356,12 +359,8 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography>
-                {l10n.getString('tracker-infos-hardware_identifier')}
-              </Typography>
-              <Typography>
-                {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
-              </Typography>
+              <Typography id="tracker-infos-mac_address" />
+              <Typography>{macAddress || '--'}</Typography>
             </div>
             <div className="flex justify-between">
               <Typography>
@@ -581,7 +580,7 @@ export function TrackerSettingsPage() {
                 label={l10n.getString('tracker-settings-name_section-label')}
               />
             </div>
-            {macAddress && tracker?.device?.origin === DeviceOrigin.UDP && (
+            {hardwareId && tracker?.device?.origin === DeviceOrigin.UDP && (
               <div className="flex flex-col gap-2 w-full mt-3">
                 <Typography variant="section-title">
                   {l10n.getString('tracker-settings-forget')}
@@ -599,7 +598,7 @@ export function TrackerSettingsPage() {
                   onConfirm={() => {
                     sendRPCPacket(
                       RpcMessage.ForgetDeviceRequest,
-                      new ForgetDeviceRequestT(macAddress)
+                      new ForgetDeviceRequestT(hardwareId)
                     );
                     navigate('/');
                   }}

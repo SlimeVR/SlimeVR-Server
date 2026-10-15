@@ -117,6 +117,7 @@ class AppConfig(
 	val globalConfig: GlobalConfig,
 	val userConfig: UserConfig,
 	val settings: Settings,
+	val devices: DevicesConfig,
 	private val storage: ConfigStorage,
 ) {
 	private val profilesLock = Mutex()
@@ -250,7 +251,7 @@ class AppConfig(
 
 	/**
 	 * Switches both kinds back to the default profile and restores its default values. Other profiles are kept.
-	 * A deleted default profile is created again.
+	 * A deleted default profile is created again. Known devices are cleared.
 	 */
 	suspend fun reset() = profilesLock.withLock {
 		val defaults = GlobalConfigState()
@@ -266,6 +267,7 @@ class AppConfig(
 		}
 		settings.context.dispatch(SettingsActions.Update { SettingsConfigState() })
 		userConfig.context.dispatch(UserConfigActions.Update { UserConfigData() })
+		devices.context.dispatch(DevicesConfigActions.Update { DevicesConfigState() })
 		val errorReporting = globalConfig.context.state.value.errorReporting
 		globalConfig.context.dispatch(
 			GlobalConfigActions.SetErrorReporting(changeConsent(errorReporting, ErrorReportingConsent.UNDECIDED)),
@@ -282,11 +284,13 @@ class AppConfig(
 
 			val userConfig = UserConfig.create(scope, storage, globalConfig.context.state.value.selectedUserProfile)
 			val settings = Settings.create(scope, storage, globalConfig.context.state.value.selectedSettingsProfile)
+			val devices = DevicesConfig.create(scope, storage)
 
 			return AppConfig(
 				globalConfig = globalConfig,
 				userConfig = userConfig,
 				settings = settings,
+				devices = devices,
 				storage = storage,
 			).also { it.refreshProfiles() }
 		}

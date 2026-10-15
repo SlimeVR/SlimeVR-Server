@@ -3,6 +3,9 @@ package dev.slimevr
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.config.DEVICES_CONFIG_PATH
+import dev.slimevr.config.DevicesConfig
+import dev.slimevr.config.DevicesConfigState
 import dev.slimevr.config.GlobalConfig
 import dev.slimevr.config.GlobalConfigState
 import dev.slimevr.config.Settings
@@ -12,6 +15,7 @@ import dev.slimevr.config.TextFileHandle
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
+import dev.slimevr.config.launchAutosave
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
@@ -205,6 +209,17 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	return Settings(context, scope, NoopConfigStorage, "settings")
 }
 
+fun buildTestDevicesConfig(scope: CoroutineScope): DevicesConfig {
+	val context = Context.create(
+		initialState = DevicesConfigState(),
+		scope = scope,
+		reducer = ::reduceConfig,
+		name = "DevicesConfig[test]",
+	)
+	val autosave = launchAutosave(scope, context.state, NoopConfigStorage, toPath = { DEVICES_CONFIG_PATH }, serialize = { "" })
+	return DevicesConfig(context, autosave)
+}
+
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
 	val initialState = HeightCalibrationState(status = UserHeightCalibrationStatus.NONE, currentHeight = 1.6f, canDoUserHeightCalibration = true)
 	val context = Context.create(
@@ -244,6 +259,7 @@ fun buildTestAppConfig(scope: CoroutineScope): AppConfig {
 		globalConfig = GlobalConfig(globalContext).also { it.startObserving() },
 		userConfig = buildTestUserConfig(scope),
 		settings = buildTestSettings(scope),
+		devices = buildTestDevicesConfig(scope),
 		storage = NoopConfigStorage,
 	)
 }

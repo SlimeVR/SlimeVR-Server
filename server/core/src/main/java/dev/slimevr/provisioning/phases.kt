@@ -1,8 +1,8 @@
 package dev.slimevr.provisioning
 
 import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.DevicesConfig
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.firmware.waitForConnected
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConsole
@@ -187,7 +187,7 @@ internal suspend fun selectScanPort(
 internal suspend fun runProvisioningForPort(
 	context: ProvisioningManagerContext,
 	server: VRServer,
-	settings: Settings,
+	devices: DevicesConfig,
 	serialServer: SerialServer,
 	portLocation: String,
 	ssid: String,
@@ -203,7 +203,7 @@ internal suspend fun runProvisioningForPort(
 	}
 
 	try {
-		provisionPort(context, server, settings, lease.console, ssid, password)
+		provisionPort(context, server, devices, lease.console, ssid, password)
 	} finally {
 		lease.release()
 	}
@@ -346,7 +346,7 @@ internal suspend fun waitForWifiConnect(
 internal suspend fun provisionPort(
 	context: ProvisioningManagerContext,
 	server: VRServer,
-	settings: Settings,
+	devices: DevicesConfig,
 	serialConn: SerialConsole,
 	ssid: String,
 	password: String?,
@@ -356,7 +356,7 @@ internal suspend fun provisionPort(
 	if (!obtainMacAddress(context, serialConn)) return
 	val macAddress = context.state.value.trackers[portLocation]?.macAddress ?: return
 
-	settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(macAddress))
+	devices.context.dispatch(DevicesConfigActions.AddAllowedUdpDevice(macAddress))
 
 	// Remove old UDP connection for this MAC before rebooting to prevent false inactivity timeouts
 	val existingDevice = server.context.state.value.devices.values.find { d ->

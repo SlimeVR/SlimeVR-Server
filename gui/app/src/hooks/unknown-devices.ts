@@ -25,26 +25,26 @@ export function useProvideUnknownDevices() {
 export function usePendingTrackerActions() {
   const { sendRPCPacket } = useWebsocketAPI();
 
-  const add = (macAddress: string) => {
+  const add = (hardwareId: string) => {
     sendRPCPacket(
       RpcMessage.AddUnknownDeviceRequest,
-      new AddUnknownDeviceRequestT(macAddress)
+      new AddUnknownDeviceRequestT(hardwareId)
     );
   };
 
-  const ignore = (macAddress: string) => {
+  const ignore = (hardwareId: string) => {
     sendRPCPacket(
       RpcMessage.IgnoreUnknownDeviceRequest,
-      new IgnoreUnknownDeviceRequestT(macAddress)
+      new IgnoreUnknownDeviceRequestT(hardwareId)
     );
   };
 
   const addAll = (devices: UnknownDeviceT[]) => {
     devices
       .filter(
-        (device) => device.status !== UnknownDeviceStatus.ADDING && device.macAddress
+        (device) => device.status !== UnknownDeviceStatus.ADDING && device.hardwareId
       )
-      .forEach((device) => add(device.macAddress as string));
+      .forEach((device) => add(device.hardwareId as string));
   };
 
   return { add, ignore, addAll };

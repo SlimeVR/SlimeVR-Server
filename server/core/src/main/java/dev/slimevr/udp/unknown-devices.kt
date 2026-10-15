@@ -15,7 +15,7 @@ internal const val UNKNOWN_DEVICE_TIMEOUT_MS = 5000L
 
 /** A device handshaking without being on the allowed list. */
 data class UnknownDeviceState(
-	val macAddress: String,
+	val hardwareId: String,
 	// Same "ip/port" form as UDPConnectionState.address
 	val address: String,
 	val boardType: BoardType,

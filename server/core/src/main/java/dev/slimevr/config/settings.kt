@@ -3,8 +3,6 @@ package dev.slimevr.config
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -20,24 +18,6 @@ import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
 
 private const val SETTINGS_CONFIG_VERSION = 2
-
-@Serializable
-data class TrackerConfig(
-	@Serializable(with = BodyPartSerializer::class)
-	val bodyPart: BodyPart? = null,
-	val customName: String? = null,
-	@Serializable(with = QuaternionSerializer::class)
-	val mountingOrientation: Quaternion = Quaternion.IDENTITY,
-	@Serializable(with = QuaternionSerializer::class)
-	val mountingResetOrientation: Quaternion? = null,
-	val magEnabled: Boolean? = null,
-	val boneOffsets: Map<BodyPart, Vector3> = emptyMap(),
-)
-
-@Serializable
-data class DongleConfig(
-	val customName: String? = null,
-)
 
 @Serializable
 data class TrackersConfig(
@@ -214,9 +194,6 @@ data class SettingsConfigState(
 	val version: Int = SETTINGS_CONFIG_VERSION,
 	val mutedVRCWarnings: List<String> = listOf(),
 	val mutedChecklistSteps: Set<String> = emptySet(),
-	val allowedUdpDevices: Set<String> = emptySet(),
-	val trackers: Map<String, TrackerConfig> = emptyMap(),
-	val dongles: Map<String, DongleConfig> = emptyMap(),
 	val trackersConfig: TrackersConfig = TrackersConfig(),
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
@@ -251,10 +228,6 @@ sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
 	data class Rename(val name: String) : SettingsActions
-	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
-	data class UpdateDongle(val serialNumber: String, val transform: DongleConfig.() -> DongleConfig) : SettingsActions
-	data class AddAllowedUdpDevice(val mac: String) : SettingsActions
-	data class RemoveAllowedUdpDevice(val mac: String) : SettingsActions
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>

@@ -1,6 +1,8 @@
 package dev.slimevr.udp
 
 import dev.slimevr.solarxr.rpc.createUnknownDevice
+import dev.slimevr.util.macAddressToULong
+import dev.slimevr.util.udpHardwareId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
@@ -17,7 +19,7 @@ private const val MAC = "AA:BB:CC:DD:EE:FF"
 private const val OTHER_MAC = "11:22:33:44:55:66"
 
 private fun device(mac: String = MAC, lastSeen: Long = 1000L, firmware: String? = "0.6.3") = UnknownDeviceState(
-	macAddress = mac,
+	hardwareId = mac,
 	address = "192.168.1.70/54321",
 	boardType = BoardType.SLIMEVR,
 	mcuType = McuType.ESP32_C3,
@@ -29,13 +31,17 @@ private val EMPTY = UdpServer.INITIAL_STATE
 
 class UnknownDevicesTest {
 	@Test
-	fun `status follows the allowed list and the address drops its port`() {
+	fun `status follows the allowed list, and identity is the mac or the ip without port`() {
 		val allowed = createUnknownDevice(device(), setOf(MAC))
 		val waiting = createUnknownDevice(device(), setOf(OTHER_MAC))
 
 		assertEquals(UnknownDeviceStatus.ADDING, allowed.status)
 		assertEquals(UnknownDeviceStatus.WAITING, waiting.status)
 		assertEquals(0xC0A80146u, allowed.ipAddress)
+		assertEquals(MAC, udpHardwareId(MAC, "192.168.1.70/54321"))
+		assertEquals("192.168.1.70", udpHardwareId(null, "192.168.1.70/54321"))
+		assertEquals(0xAABBCCDDEEFFuL, macAddressToULong(MAC))
+		assertEquals(null, macAddressToULong("not a mac"))
 	}
 
 	@Test

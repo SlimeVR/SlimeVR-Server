@@ -165,7 +165,7 @@ export function Home() {
                         <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
                           {group.pending.map((device) => (
                             <PendingTrackerCard
-                              key={device.macAddress as string}
+                              key={device.hardwareId as string}
                               device={device}
                             />
                           ))}

@@ -9,7 +9,7 @@ import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.config.AppConfig
-import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.device.Device
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
@@ -50,6 +50,7 @@ private fun addDevice(appContext: AppContextProvider, origin: DeviceOrigin): Dev
 		id = id,
 		address = "127.0.0.$id",
 		macAddress = MAC,
+		hardwareId = MAC,
 		origin = origin,
 		protocolVersion = 21,
 	)
@@ -77,7 +78,7 @@ private fun addTracker(
 	val hardwareId = "$MAC:$sensorId"
 	tracker.context.dispatch(TrackerActions.Update { copy(deviceId = device.context.state.value.id, hardwareId = hardwareId) })
 	appContext.server.context.dispatch(VRServerActions.NewTracker(id, tracker))
-	appContext.config.settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { copy(bodyPart = bodyPart) })
+	appContext.config.devices.context.dispatch(DevicesConfigActions.UpdateTracker(hardwareId) { copy(bodyPart = bodyPart) })
 	return tracker
 }
 
@@ -86,8 +87,8 @@ class ForgetDeviceTest {
 	@Test
 	fun `forget removes the udp device, its trackers, the allowed mac and saved config, and nothing else`() = runTest {
 		val appContext = buildContext(backgroundScope)
-		val settings = appContext.config.settings
-		settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(MAC))
+		val devices = appContext.config.devices
+		devices.context.dispatch(DevicesConfigActions.AddAllowedUdpDevice(MAC))
 		val device = addDevice(appContext, DeviceOrigin.UDP)
 		val trackers = listOf(
 			addTracker(appContext, device, 0, BodyPart.UPPER_CHEST, TrackerStatus.OK),
@@ -108,8 +109,8 @@ class ForgetDeviceTest {
 		assertFalse(device.context.scope.isActive)
 		trackers.forEach { assertFalse(it.context.scope.isActive) }
 		assertTrue(hidDevice.context.scope.isActive)
-		assertFalse(MAC in settings.context.state.value.data.allowedUdpDevices)
-		assertEquals(setOf("$MAC:5"), settings.context.state.value.data.trackers.keys)
+		assertFalse(MAC in devices.context.state.value.allowedUdpDevices)
+		assertEquals(setOf("$MAC:5"), devices.context.state.value.trackers.keys)
 		assertEquals(false, appContext.skeleton.context.state.value.boneInputs[BodyPart.UPPER_CHEST]?.isRotationActive)
 	}
 }

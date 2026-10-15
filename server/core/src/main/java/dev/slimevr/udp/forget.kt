@@ -2,7 +2,7 @@ package dev.slimevr.udp
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
-import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.device.Device
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.SkeletonActions
@@ -13,8 +13,8 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 private fun findUdpDevices(appContext: AppContextProvider, predicate: (String) -> Boolean): List<Device> = appContext.server.context.state.value.devices.values.filter { device ->
 	val state = device.context.state.value
-	val mac = state.macAddress
-	state.origin == DeviceOrigin.UDP && mac != null && predicate(mac)
+	val hardwareId = state.hardwareId
+	state.origin == DeviceOrigin.UDP && hardwareId != null && predicate(hardwareId)
 }
 
 /**
@@ -47,19 +47,19 @@ fun removeUdpDevice(appContext: AppContextProvider, device: Device) {
 
 	// After the scopes are cancelled, so the tracker config behaviour can't write it back
 	val hardwareIds = trackerStates.map { it.hardwareId }.toSet()
-	appContext.config.settings.context.dispatch(SettingsActions.Update { copy(trackers = trackers - hardwareIds) })
+	appContext.config.devices.context.dispatch(DevicesConfigActions.Update { copy(trackers = trackers - hardwareIds) })
 }
 
-/** Drops a MAC from the allowed list and removes its UDP device from the server. */
-suspend fun forgetUdpDevice(appContext: AppContextProvider, mac: String) {
+/** Drops a hardware ID from the allowed list and removes its UDP device from the server. */
+suspend fun forgetUdpDevice(appContext: AppContextProvider, hardwareId: String) {
 	// Removed first so a handshake arriving mid-forget gets rejected instead of recreating the device
-	appContext.config.settings.context.dispatch(SettingsActions.RemoveAllowedUdpDevice(mac))
-	findUdpDevices(appContext) { it == mac }.forEach { removeUdpDevice(appContext, it) }
-	AppLogger.udp.info("Forgot device $mac")
+	appContext.config.devices.context.dispatch(DevicesConfigActions.RemoveAllowedUdpDevice(hardwareId))
+	findUdpDevices(appContext) { it == hardwareId }.forEach { removeUdpDevice(appContext, it) }
+	AppLogger.udp.info("Forgot device $hardwareId")
 }
 
 suspend fun forgetAllUdpDevices(appContext: AppContextProvider) {
 	findUdpDevices(appContext) { true }
-		.mapNotNull { it.context.state.value.macAddress }
-		.forEach { mac -> forgetUdpDevice(appContext, mac) }
+		.mapNotNull { it.context.state.value.hardwareId }
+		.forEach { hardwareId -> forgetUdpDevice(appContext, hardwareId) }
 }

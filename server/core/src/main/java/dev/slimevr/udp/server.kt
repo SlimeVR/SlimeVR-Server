@@ -26,16 +26,16 @@ import kotlin.time.measureTime
 data class UdpServerState(
 	val connections: Map<String, UDPConnection>,
 	val unknownDevices: Map<String, UnknownDeviceState> = emptyMap(),
-	val ignoredMacs: Set<String> = emptySet(),
+	val ignoredHardwareIds: Set<String> = emptySet(),
 )
 
 sealed interface UdpServerActions {
 	data class ConnectionAdded(val address: String, val conn: UDPConnection) : UdpServerActions
 	data class ConnectionRemoved(val address: String) : UdpServerActions
 	data class UnknownDeviceSeen(val device: UnknownDeviceState) : UdpServerActions
-	data class UnknownDeviceRemoved(val macAddress: String) : UdpServerActions
+	data class UnknownDeviceRemoved(val hardwareId: String) : UdpServerActions
 	data class UnknownDevicesExpired(val cutoff: Long) : UdpServerActions
-	data class IgnoreUnknownDevice(val macAddress: String) : UdpServerActions
+	data class IgnoreUnknownDevice(val hardwareId: String) : UdpServerActions
 }
 
 typealias UdpServerContext = Context<UdpServerState, UdpServerActions>

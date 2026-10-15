@@ -17,6 +17,7 @@ import dev.slimevr.solarxr.toVec3f
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.ipv4AddressFromString
+import dev.slimevr.util.macAddressToULong
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -39,6 +40,7 @@ import solarxr_protocol.data_feed.tracker_data.TrackerInfo
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.HardwareAddress
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
@@ -117,7 +119,8 @@ private fun createDevice(
 			firmwareVersion = deviceState.firmwareVersion,
 			firmwareDate = deviceState.firmwareDate,
 			ipAddress = ipv4AddressFromString(deviceState.address),
-			hardwareIdentifier = deviceState.macAddress,
+			hardwareIdentifier = deviceState.hardwareId ?: deviceState.macAddress,
+			hardwareAddress = deviceState.macAddress?.let(::macAddressToULong)?.let(::HardwareAddress),
 			networkProtocolVersion = deviceState.protocolVersion.toUShort(),
 			// TODO missing fields
 		),

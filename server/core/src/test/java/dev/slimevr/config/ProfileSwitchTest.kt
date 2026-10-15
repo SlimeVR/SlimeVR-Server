@@ -9,6 +9,7 @@ import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.vmc.VMCInputBehaviour
 import dev.slimevr.vmc.VMCManager
@@ -27,7 +28,6 @@ import java.net.DatagramSocket
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 private fun settingsFile(name: String) = "settings/$name.json"
@@ -169,47 +169,25 @@ class ProfileSwitchTest {
 	private fun buildTracker(scope: TestScope, config: AppConfig): Tracker {
 		val server = buildTestVrServerStub(scope.backgroundScope)
 		val tracker = buildTestTracker(scope.backgroundScope, buildTestAppContext(server), config.settings, id = 1)
-		TrackerConfigBehaviour(config.settings, "test-1", Tracker.DEFAULT_STATE).observe(tracker)
+		TrackerConfigBehaviour(config.devices, "test-1").observe(tracker)
 		return tracker
 	}
 
 	@Test
-	fun `a live tracker takes the config of the selected profile and never writes its old one into it`() = runTest {
+	fun `switching the settings profile keeps the tracker config`() = runTest {
 		val storage = MemoryStorage()
-		putSettings(storage, "default", SettingsConfigState(trackers = mapOf("test-1" to TrackerConfig(bodyPart = BodyPart.HIP, customName = "hip"))))
-		putSettings(storage, "feet", SettingsConfigState(trackers = mapOf("test-1" to TrackerConfig(bodyPart = BodyPart.LEFT_FOOT))))
+		putSettings(storage, "other", SettingsConfigState())
 		val config = buildConfig(this, storage)
 		val tracker = buildTracker(this, config)
-
-		config.switchProfile(ProfileKind.SETTINGS, "feet")
 		runCurrent()
-		assertEquals(BodyPart.LEFT_FOOT, tracker.context.state.value.bodyPart)
-		assertNull(tracker.context.state.value.customName)
-
-		config.switchProfile(ProfileKind.SETTINGS, "default")
+		tracker.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HIP) })
 		runCurrent()
+
+		config.switchProfile(ProfileKind.SETTINGS, "other")
+		runCurrent()
+
 		assertEquals(BodyPart.HIP, tracker.context.state.value.bodyPart)
-		assertEquals("hip", tracker.context.state.value.customName)
-
-		config.switchProfile(ProfileKind.SETTINGS, "feet")
-		runCurrent()
-		assertEquals(BodyPart.LEFT_FOOT, config.settings.context.state.value.data.trackers.getValue("test-1").bodyPart)
-	}
-
-	@Test
-	fun `a tracker missing from the selected profile returns to its creation state`() = runTest {
-		val storage = MemoryStorage()
-		putSettings(storage, "default", SettingsConfigState(trackers = mapOf("test-1" to TrackerConfig(bodyPart = BodyPart.HIP, customName = "hip"))))
-		val config = buildConfig(this, storage)
-		val tracker = buildTracker(this, config)
-		config.switchProfile(ProfileKind.SETTINGS, "default")
-		config.createProfile(ProfileKind.SETTINGS, "empty", copyFrom = null)
-
-		config.switchProfile(ProfileKind.SETTINGS, "empty")
-		runCurrent()
-
-		assertNull(tracker.context.state.value.bodyPart)
-		assertNull(tracker.context.state.value.customName)
+		assertEquals(BodyPart.HIP, config.devices.context.state.value.trackers.getValue("test-1").bodyPart)
 	}
 
 	private fun vmcHarness(scope: TestScope, config: AppConfig): VMCManager {

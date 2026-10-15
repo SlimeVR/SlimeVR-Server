@@ -4,7 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
 import dev.slimevr.buildTestSerial
-import dev.slimevr.buildTestSettings
+import dev.slimevr.buildTestDevicesConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -39,7 +39,7 @@ private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: C
 		reducer = ::reduceProvisioning,
 		name = "ProvisioningManagerTest",
 	)
-	return ProvisioningManager(context = context, serialServer = serialServer, settings = buildTestSettings(scope), scope = scope).also { it.startObserving() }
+	return ProvisioningManager(context = context, serialServer = serialServer, devices = buildTestDevicesConfig(scope), scope = scope).also { it.startObserving() }
 }
 
 private fun ProvisioningManager.trackerStatus(port: String = "COM1") = context.state.value.trackers[port]?.status

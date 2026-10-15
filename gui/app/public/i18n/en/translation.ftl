@@ -322,6 +322,7 @@ tracker-infos-display_name = Display Name
 tracker-infos-custom_name = Custom Name
 tracker-infos-url = Tracker URL
 tracker-infos-hardware_identifier = Hardware ID
+tracker-infos-mac_address = MAC address
 tracker-infos-data_type = Data type
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board

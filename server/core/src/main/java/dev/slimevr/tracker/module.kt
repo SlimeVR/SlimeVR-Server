@@ -152,7 +152,8 @@ class Tracker(
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
-			val trackerConfigs = settings.context.state.value.data.trackers
+			val devices = appContext.config.devices
+			val trackerConfigs = devices.context.state.value.trackers
 			val savedConfig = trackerConfigs[hardwareId]
 			val baseState = DEFAULT_STATE.copy(
 				id = id,
@@ -181,7 +182,7 @@ class Tracker(
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerStaleCalibrationBehaviour(),
-				TrackerConfigBehaviour(settings, hardwareId, baseState),
+				TrackerConfigBehaviour(devices, hardwareId),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
 				TrackerStayAlignedBehaviour(settings),
