@@ -158,7 +158,7 @@ private fun hipToNeckOffset(
 ): Vector3 {
 	var parentUnityBone = UnityBone.HIPS
 	var offset = Vector3.ZERO
-	for (childUnityBone in VMC_HIP_TO_NECK_CHAIN) {
+	for (childUnityBone in VMC_HIP_TO_HEAD_CHAIN) {
 		val parentRotation = unityBoneGlobalRotations[parentUnityBone] ?: Quaternion.IDENTITY
 		val bonePosition = unityBoneGlobalPositions[childUnityBone] ?: Vector3.ZERO
 		val parentPosition = unityBoneGlobalPositions[parentUnityBone] ?: Vector3.ZERO

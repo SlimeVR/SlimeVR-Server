@@ -111,7 +111,7 @@ fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 			acc + offset(unityBone)
 		}.y
 
-	val outputRestHeight = hipPosition.y + VMC_HIP_TO_NECK_CHAIN.sumOf { offset(it).y.toDouble() }.toFloat()
+	val outputRestHeight = hipPosition.y + VMC_HIP_TO_HEAD_CHAIN.sumOf { offset(it).y.toDouble() }.toFloat()
 
 	return VrmGeometry(
 		bindOffsets = bindOffsets,

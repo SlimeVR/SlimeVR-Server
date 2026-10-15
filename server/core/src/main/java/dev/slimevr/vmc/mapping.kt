@@ -97,8 +97,8 @@ private val VMC_TREE = VmcBoneTree(VMC_HIERARCHY)
 val VMC_BONE_ORDER: List<UnityBone> = VMC_TREE.order
 val VMC_BONE_PARENTS: EnumMap<UnityBone, UnityBone?> = VMC_TREE.parents
 
-// Bones between the hips and the neck, hips first, as VMC's hierarchy links them.
-val VMC_HIP_TO_NECK_CHAIN: List<UnityBone> = generateSequence(UnityBone.NECK) { VMC_BONE_PARENTS[it] }
+// Bones between the hips and the head, hips first, as VMC's hierarchy links them.
+val VMC_HIP_TO_HEAD_CHAIN: List<UnityBone> = generateSequence(UnityBone.HEAD) { VMC_BONE_PARENTS[it] }
 	.takeWhile { it != UnityBone.HIPS }
 	.toList()
 	.asReversed()
