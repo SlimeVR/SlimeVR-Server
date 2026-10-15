@@ -374,7 +374,6 @@ tracker-settings-name_section-description = 給它起一個可愛的名字吧 ow
 tracker-settings-name_section-placeholder = ↖★煞氣a黑貓☆↘的美味右腿
 tracker-settings-name_section-label = 追蹤器名稱
 tracker-settings-forget = 忘記追蹤器
-tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
 tracker-settings-update-unavailable-v2 = 未找到可用版本
 tracker-settings-update-incompatible = 電路板不相容，無法更新。
@@ -1552,12 +1551,6 @@ tray_or_exit_modal-cancel = 取消
 
 ## Unknown device modal
 
-unknown_device-modal-title = 找到了新的追蹤器！
-unknown_device-modal-description =
-    偵測到新的追蹤器，其 MAC 位址為 <b>{ $deviceId }</b>。
-    要將它連接到 SlimeVR 嗎？
-unknown_device-modal-confirm = 好喔！
-unknown_device-modal-forget = 忽略它
 # VRChat config warnings
 vrc_config-page-title = VRChat 設定警告
 vrc_config-page-desc = 本頁會顯示 VRChat 的設定並顯示哪些設定與 SlimeVR 不相容。非常建議您根據這裡顯示的警告來修改設定，以獲得最佳的 SlimeVR 使用體驗。
