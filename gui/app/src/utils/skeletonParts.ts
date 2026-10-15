@@ -247,7 +247,7 @@ const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.78 });
 const footScale: ShapeScale = {
   compute: ({ boneLength }) => {
     const ratio = boneLength / RIG_FOOT_LENGTH;
-    return { width: 0.9 * ratio, length: 1.12 * ratio, depth: 1.14 };
+    return { width: 0.91 * ratio, length: 1.12 * ratio, depth: 1.195 };
   },
 };
 // Forward follows foot length; the drop from the ankle to the sole doesn't.
