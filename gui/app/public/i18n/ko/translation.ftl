@@ -203,7 +203,6 @@ tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
 tracker-settings-name_section-label = 트래커 이름
 tracker-settings-forget = 트래커 삭제
-tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
 tracker-settings-forget-label = 트래커 삭제
 tracker-settings-update-up_to_date = 최신 버전
 tracker-settings-update = 지금 업데이트
@@ -781,9 +780,6 @@ tray_or_exit_modal-cancel = 취소
 
 ## Unknown device modal
 
-unknown_device-modal-title = 새로운 트래커를 찾았어요!
-unknown_device-modal-confirm = 당연하죠!
-unknown_device-modal-forget = 무시할게요
 vrc_config-tracker_model-UNKNOWN = 알 수 없음
 vrc_config-avatar_measurement_type-UNKNOWN = 알 수 없음
 
