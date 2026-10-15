@@ -650,12 +650,6 @@ onboarding-quiz-mocap_preferences-head_tracker-yes = ตกลง
 
 onboarding-wifi_creds-back-v2 = ย้อนกลับ
 onboarding-wifi_creds-v2 = แทร็กเกอร์ที่ใช้ Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description-v2 =
-    แทร็กเกอร์ส่วนใหญ่ (เช่นแทร็กเกอร์ทางการของ SlimeVR ) ใช้ Wi-Fi เพื่อเชื่อมต่อกับเซิร์ฟเวอร์ 
-    โปรดใช้ข้อมูลเครือข่าย Wi-Fi ที่อุปกรณ์ของคุณกำลังเชื่อมต่ออยู่
-    
-    และตรวจสอบให้แน่ใจว่าคุณใช้การเชื่อมต่อ Wi-Fi  เป็นคลื่น 2.4GHz กับแทร็กเกอร์นี้
 onboarding-wifi_creds-submit = ยืนยัน!
 onboarding-wifi_creds-retry = ลองอีกครั้ง
 onboarding-wifi_creds-ssid-label = ชื่อ Wi-Fi
