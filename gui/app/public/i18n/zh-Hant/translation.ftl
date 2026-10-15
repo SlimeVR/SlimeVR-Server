@@ -1017,12 +1017,6 @@ onboarding-quiz-mocap_preferences-head_tracker_location-face = 臉上
 
 onboarding-wifi_creds-back-v2 = 返回
 onboarding-wifi_creds-v2 = 透過 Wi-Fi 連接
-# This cares about multilines
-onboarding-wifi_creds-description-v2 =
-    大多數的追蹤器（例如官方的 SlimeVR 追蹤器）使用 Wi-Fi 連接伺服器程式。
-    請輸入目前設備連接的網路的 Wi-Fi 憑證。
-    
-    請確保輸入的是 2.4 GHz 頻道的 Wi-Fi 憑證。
 onboarding-wifi_creds-continue = 以 Wi-Fi 繼續
 onboarding-wifi_creds-submit = 送出！
 onboarding-wifi_creds-retry = 重試
