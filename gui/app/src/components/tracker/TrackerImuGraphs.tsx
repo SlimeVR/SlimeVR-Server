@@ -10,10 +10,7 @@ import {
   ChartSeries,
   TimeSeriesChart,
 } from '@/components/commons/charts/TimeSeriesChart';
-import {
-  useTimeAxisTicks,
-  WINDOW_OPTIONS,
-} from '@/hooks/time-axis';
+import { useTimeAxisTicks, WINDOW_OPTIONS } from '@/hooks/time-axis';
 import {
   ChartSource,
   downsampleMinMax,

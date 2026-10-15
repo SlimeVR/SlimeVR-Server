@@ -39,7 +39,15 @@ import {
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
   TrackingChecklistStepT,
+  UnknownDeviceStatus,
+  UnknownDeviceT,
 } from 'solarxr-protocol';
+import {
+  PendingTrackerActions,
+  PendingTrackerGlyph,
+  PendingTrackersDivider,
+  pendingBoardLabel,
+} from './PendingTrackers';
 import {
   highlightedTrackers,
   trackingchecklistIdtoLabel,
@@ -256,6 +264,7 @@ function Row({
   gridTemplateColumns,
   columns,
   lastColumn,
+  pendingColumn,
 }: {
   data: FlatDeviceTracker;
   highlightedTrackers: highlightedTrackers | undefined;
@@ -263,6 +272,7 @@ function Row({
   gridTemplateColumns: string;
   columns: TrackersTableColumnsConfig;
   lastColumn: TrackersTableOptionalColumn | null;
+  pendingColumn: boolean;
 }) {
   const { config } = useConfig();
   const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
@@ -307,12 +317,15 @@ function Row({
             style={{ gridTemplateColumns }}
             onClick={() => clickedTracker(tracker)}
           >
-            <Cell first last={!lastColumn}>
+            <Cell first last={!lastColumn && !pendingColumn}>
               <TrackerNameCell
                 tracker={tracker}
                 device={device}
                 warning={warning}
               />
+            </Cell>
+            <Cell show={pendingColumn} last={!lastColumn}>
+              {null}
             </Cell>
             <Cell {...col('type')}>
               <Typography color={fontColor}>
@@ -400,6 +413,102 @@ function Row({
   );
 }
 
+function PendingCell({
+  children,
+  first = false,
+  last = false,
+  show = true,
+  adding,
+}: {
+  children: ReactNode;
+  first?: boolean;
+  last?: boolean;
+  show?: boolean;
+  adding: boolean;
+}) {
+  return (
+    <div className={classNames('py-0.5', { hidden: !show })}>
+      <div
+        className={classNames(
+          {
+            'rounded-l-md ml-1 border-l-2': first,
+            'rounded-r-md mr-1 border-r-2': last,
+          },
+          adding
+            ? 'border-solid border-accent-background-30'
+            : 'border-dashed border-background-50',
+          'border-y-2 px-2 h-[50px] flex items-center gap-2 overflow-hidden transition-colors'
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function PendingRow({
+  device,
+  gridTemplateColumns,
+  columns,
+  lastColumn,
+}: {
+  device: UnknownDeviceT;
+  gridTemplateColumns: string;
+  columns: TrackersTableColumnsConfig;
+  lastColumn: TrackersTableOptionalColumn | null;
+}) {
+  const { config } = useConfig();
+  const { l10n } = useLocalization();
+  const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
+  const adding = device.status === UnknownDeviceStatus.ADDING;
+  const cell = (column: TrackersTableOptionalColumn) => ({
+    ...columnProps(column, columns, lastColumn),
+    adding,
+  });
+  const noData = <Typography color={fontColor}>—</Typography>;
+
+  return (
+    <div className="grid items-center" style={{ gridTemplateColumns }}>
+      <PendingCell first adding={adding}>
+        <div className="border-2 border-transparent">
+          <PendingTrackerGlyph size={24} />
+        </div>
+        <div className="flex flex-col">
+          <Typography bold whitespace="whitespace-nowrap">
+            {device.macAddress as string}
+          </Typography>
+          <Typography color={fontColor} whitespace="whitespace-nowrap">
+            {device.firmwareVersion}
+          </Typography>
+        </div>
+      </PendingCell>
+      <PendingCell last={!lastColumn} adding={adding}>
+        <div className="mx-auto">
+          <PendingTrackerActions device={device} />
+        </div>
+      </PendingCell>
+      <PendingCell {...cell('type')}>
+        <Typography color={fontColor} whitespace="whitespace-nowrap">
+          {pendingBoardLabel(device.boardType, l10n)}
+        </Typography>
+      </PendingCell>
+      <PendingCell {...cell('battery')}>{noData}</PendingCell>
+      <PendingCell {...cell('ping')}>{noData}</PendingCell>
+      <PendingCell {...cell('tps')}>{noData}</PendingCell>
+      <PendingCell {...cell('rotation')}>{noData}</PendingCell>
+      <PendingCell {...cell('temperature')}>{noData}</PendingCell>
+      <PendingCell {...cell('linearAcceleration')}>{noData}</PendingCell>
+      <PendingCell {...cell('position')}>{noData}</PendingCell>
+      <PendingCell {...cell('stayAligned')}>{noData}</PendingCell>
+      <PendingCell {...cell('url')}>
+        <Typography color={fontColor} whitespace="whitespace-nowrap">
+          udp://{IPv4.fromNumber(device.ipAddress).toString()}
+        </Typography>
+      </PendingCell>
+    </div>
+  );
+}
+
 export function TrackersTable({
   groups,
   clickedTracker,
@@ -444,12 +553,17 @@ export function TrackersTable({
     onSort,
   });
 
+  const pendingColumn = groups.some(
+    (group) => group.kind === 'wifi' && group.pending.length > 0
+  );
+
   const gridTemplateColumns = useMemo(() => {
     const cols = ['minmax(15rem, 1.5fr)']; // Name
+    if (pendingColumn) cols.push('8.5rem'); // Ignore + Add
 
     if (columns.type) cols.push('9rem');
     if (columns.battery) cols.push('9rem');
-    if (columns.ping) cols.push('9rem'); // (w-24)
+    if (columns.ping) cols.push('9rem');
     if (columns.tps) cols.push('5rem');
     if (columns.rotation)
       cols.push(config?.devSettings?.preciseRotation ? '11rem' : '9rem');
@@ -460,7 +574,7 @@ export function TrackersTable({
     if (columns.url) cols.push('11rem');
 
     return cols.join(' ');
-  }, [columns, config?.devSettings?.preciseRotation]);
+  }, [columns, config?.devSettings?.preciseRotation, pendingColumn]);
 
   return (
     <div className="w-full py-2 px-2">
@@ -475,9 +589,10 @@ export function TrackersTable({
             <Header
               name={'tracker-table-column-name'}
               first
-              last={!lastColumn}
+              last={!lastColumn && !pendingColumn}
               {...sortProps('name')}
             />
+            <div className={classNames({ hidden: !pendingColumn })} />
             <Header
               name={'tracker-table-column-type'}
               {...col('type')}
@@ -545,6 +660,7 @@ export function TrackersTable({
                     gridTemplateColumns={gridTemplateColumns}
                     columns={columns}
                     lastColumn={lastColumn}
+                    pendingColumn={pendingColumn}
                   />
                 ))}
                 {group.assigned.length > 0 && group.unassigned.length > 0 && (
@@ -562,8 +678,26 @@ export function TrackersTable({
                     gridTemplateColumns={gridTemplateColumns}
                     columns={columns}
                     lastColumn={lastColumn}
+                    pendingColumn={pendingColumn}
                   />
                 ))}
+                {group.kind === 'wifi' && group.pending.length > 0 && (
+                  <>
+                    <PendingTrackersDivider
+                      devices={group.pending}
+                      stickyLabel
+                    />
+                    {group.pending.map((device) => (
+                      <PendingRow
+                        key={device.macAddress as string}
+                        device={device}
+                        gridTemplateColumns={gridTemplateColumns}
+                        columns={columns}
+                        lastColumn={lastColumn}
+                      />
+                    ))}
+                  </>
+                )}
               </div>
             </TrackerConnectionGroupSection>
           ))}

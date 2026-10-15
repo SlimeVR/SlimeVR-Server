@@ -20,6 +20,7 @@ import {
   TimeoutSettingsResponseT,
   TrackerDataT,
   TrackerStatus,
+  UnknownDeviceT,
   VMCOSCSettingsResponseT,
   VRCOSCSettingsResponseT,
   VRMSettingsResponseT,
@@ -32,7 +33,7 @@ export interface FlatDeviceTracker {
   tracker: TrackerDataT;
 }
 
-export const ignoredTrackersAtom = atom(new Set<string>());
+export const unknownDevicesAtom = atom<UnknownDeviceT[]>([]);
 
 export const datafeedAtom = atom(new DataFeedUpdateT());
 
@@ -90,13 +91,14 @@ export type TrackerConnectionGroup = {
       dongleName: string | null;
       status: DongleStatus;
     }
-  | { kind: 'wifi' }
+  | { kind: 'wifi'; pending: UnknownDeviceT[] }
   | { kind: 'driver' }
 );
 
 export function groupTrackersByConnection(
   trackers: FlatDeviceTracker[],
-  dongles: DongleDataT[]
+  dongles: DongleDataT[],
+  pending: UnknownDeviceT[] = []
 ): TrackerConnectionGroup[] {
   const dongleByDeviceId = new Map<number, DongleDataT>(
     dongles.flatMap((dongle) => dongle.devicesIds.map((id) => [id, dongle]))
@@ -112,6 +114,7 @@ export function groupTrackersByConnection(
     kind: 'wifi',
     assigned: [],
     unassigned: [],
+    pending,
   };
 
   const driverGroup: Extract<TrackerConnectionGroup, { kind: 'driver' }> = {
@@ -168,7 +171,7 @@ export function groupTrackersByConnection(
 
   const activeGroups = [
     ...dongleGroups.values(),
-    ...(isNotEmpty(wifiGroup) ? [wifiGroup] : []),
+    ...(isNotEmpty(wifiGroup) || pending.length > 0 ? [wifiGroup] : []),
     ...(isNotEmpty(driverGroup) ? [driverGroup] : []),
   ];
 

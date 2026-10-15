@@ -234,6 +234,10 @@ const config = {
         DEFAULT: 'rgb(var(--default-color), <alpha-value>)',
       },
       keyframes: {
+        'pulse-ring': {
+          '0%': { transform: 'scale(1)', opacity: '0.9' },
+          '75%, 100%': { transform: 'scale(1.5)', opacity: '0' },
+        },
         bounce: {
           '0%, 100%': {
             transform: 'translateY(0)',
@@ -326,6 +330,7 @@ const config = {
         skiing: 'skiing 1s linear infinite',
         'indeterminate-bar': 'indeterminate-bar 1.2s ease-in-out infinite',
         wiggle: 'wiggle 0.4s ease-in-out 1',
+        'pulse-ring': 'pulse-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
     },
     data: {

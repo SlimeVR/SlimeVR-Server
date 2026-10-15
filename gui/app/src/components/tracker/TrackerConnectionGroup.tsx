@@ -30,21 +30,26 @@ export function ConnectionGroupIcon({
   kind,
   disconnected,
   size = 32,
+  pulse = false,
 }: {
   kind: TrackerConnectionGroupData['kind'];
   disconnected: boolean;
   size?: number;
+  pulse?: boolean;
 }) {
   const iconSize = Math.round(size * 0.56);
 
   return (
     <div
       className={classNames(
-        'shrink-0 rounded-full fill-background-10 flex items-center justify-center',
+        'relative shrink-0 rounded-full fill-background-10 flex items-center justify-center',
         disconnected ? 'bg-background-50' : 'bg-accent-background-30'
       )}
       style={{ width: size, height: size }}
     >
+      {pulse && (
+        <div className="absolute inset-0 rounded-full border-2 border-accent-background-20 animate-pulse-ring motion-reduce:animate-none" />
+      )}
       {kind === 'dongle' && <USBIcon size={iconSize} />}
       {kind === 'wifi' && (
         <WifiIcon variant="navbar" value={100} size={iconSize} />
@@ -216,6 +221,7 @@ export function TrackerConnectionGroupSection({
   const { collapsed } = useConnectionGroupCollapsed(group);
 
   const disconnected = isGroupDisconnected(group);
+  const pendingCount = group.kind === 'wifi' ? group.pending.length : 0;
   const lineColor = disconnected
     ? 'border-background-50'
     : 'border-accent-background-30';
@@ -255,12 +261,23 @@ export function TrackerConnectionGroupSection({
             <ConnectionGroupIcon
               kind={group.kind}
               disconnected={disconnected}
+              pulse={pendingCount > 0}
             />
             <Typography
               bold
               whitespace="whitespace-nowrap"
               id={`home-connection_group-${group.kind}`}
             />
+            {pendingCount > 0 && (
+              <div className="rounded-full px-2 bg-accent-background-30 text-background-10">
+                <Typography
+                  bold
+                  whitespace="whitespace-nowrap"
+                  id="home-new_trackers-pill"
+                  vars={{ count: pendingCount }}
+                />
+              </div>
+            )}
           </>
         )}
         <div

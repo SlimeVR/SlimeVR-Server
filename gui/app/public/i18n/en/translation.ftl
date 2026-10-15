@@ -365,8 +365,11 @@ tracker-settings-name_section-description = Give it a cute nickname :3
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
-tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting until the server is restarted. The configuration of the tracker won't be lost.
+tracker-settings-forget-description = Disconnects the tracker and removes it from SlimeVR, along with its saved settings (body part, mounting, name). If it's still on, it shows up under new trackers on the home page so you can add it back.
 tracker-settings-forget-label = Forget tracker
+tracker-settings-forget-modal-title = Forget this tracker?
+tracker-settings-forget-modal-cancel = Cancel
+tracker-settings-forget-modal-confirm = Forget tracker
 tracker-settings-imu_graphs-title = Live tracker data
 tracker-settings-imu_graphs-raw_accel = Raw acceleration
 tracker-settings-imu_graphs-linear_accel = Linear acceleration
@@ -1482,6 +1485,16 @@ home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
 home-connection_group-driver = VR Devices
+home-new_trackers-count = { $count ->
+    [one] { $count } new tracker
+    *[other] { $count } new trackers
+}
+home-new_trackers-pill = { $count } new
+home-new_trackers-add = Add
+home-new_trackers-add_all = Add all
+home-new_trackers-adding = Connecting…
+home-new_trackers-ignore = Ignore until SlimeVR restarts
+home-new_trackers-official_board = SlimeVR Tracker
 home-no_trackers-title = No trackers connected
 home-no_trackers-description = Connect a tracker or turn on your existing trackers to get started
 home-no_trackers-connect = Connect trackers
@@ -1643,11 +1656,6 @@ tray_or_exit_modal-submit = Save
 tray_or_exit_modal-cancel = Cancel
 
 ## Unknown device modal
-unknown_device-modal-title = A new tracker was found!
-unknown_device-modal-description = There is a new tracker with MAC address <b>{$deviceId}</b>.
-    Do you want to connect it to SlimeVR?
-unknown_device-modal-confirm = Sure!
-unknown_device-modal-forget = Ignore it
 
 
 # VRChat config warnings

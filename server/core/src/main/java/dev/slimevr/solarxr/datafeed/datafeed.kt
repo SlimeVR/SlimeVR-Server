@@ -16,7 +16,7 @@ import dev.slimevr.solarxr.toQuat
 import dev.slimevr.solarxr.toVec3f
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.util.stripIpAddressPort
+import dev.slimevr.util.ipv4AddressFromString
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -46,15 +46,6 @@ import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
-
-private fun ipv4AddressFromString(address: String): UInt {
-	val parts = stripIpAddressPort(address).split('.')
-	if (parts.size != 4) return 0u
-	return parts.fold(0u) { acc, part ->
-		val value = part.toUIntOrNull()?.takeIf { it <= 255u } ?: return 0u
-		(acc shl 8) or value
-	}
-}
 
 private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
 	deviceId = device.id.toUShort(),

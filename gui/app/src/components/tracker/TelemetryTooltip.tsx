@@ -1,11 +1,7 @@
 import { memo } from 'react';
 import { GapEvent } from '@/hooks/telemetry-history';
 import { ChartPopover } from '@/components/commons/charts/ChartPopover';
-import {
-  ChartRow,
-  nearestIndex,
-  rowsSource,
-} from '@/hooks/time-series';
+import { ChartRow, nearestIndex, rowsSource } from '@/hooks/time-series';
 import {
   getGapTextColor,
   isGapEventActive,

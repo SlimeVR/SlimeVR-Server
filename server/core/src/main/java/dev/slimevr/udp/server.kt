@@ -25,17 +25,28 @@ import kotlin.time.measureTime
 
 data class UdpServerState(
 	val connections: Map<String, UDPConnection>,
+	val unknownDevices: Map<String, UnknownDeviceState> = emptyMap(),
+	val ignoredMacs: Set<String> = emptySet(),
 )
 
 sealed interface UdpServerActions {
 	data class ConnectionAdded(val address: String, val conn: UDPConnection) : UdpServerActions
 	data class ConnectionRemoved(val address: String) : UdpServerActions
+	data class UnknownDeviceSeen(val device: UnknownDeviceState) : UdpServerActions
+	data class UnknownDeviceRemoved(val macAddress: String) : UdpServerActions
+	data class UnknownDevicesExpired(val cutoff: Long) : UdpServerActions
+	data class IgnoreUnknownDevice(val macAddress: String) : UdpServerActions
 }
 
 typealias UdpServerContext = Context<UdpServerState, UdpServerActions>
 typealias UdpServerBehaviour = Behaviour<UdpServer>
 
-class UdpServer(val context: UdpServerContext, private val addressResolver: (InetSocketAddress) -> String) {
+class UdpServer(
+	val context: UdpServerContext,
+	// Wall-clock ms, replaceable so tests can run on virtual time
+	val clock: () -> Long = System::currentTimeMillis,
+	private val addressResolver: (InetSocketAddress) -> String,
+) {
 	private var receiveJob: Job? = null
 
 	fun startObserving() = context.observeAll(this)
@@ -145,14 +156,19 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 	companion object {
 		val INITIAL_STATE = UdpServerState(connections = emptyMap())
 
-		fun create(scope: CoroutineScope, addressResolver: (InetSocketAddress) -> String): UdpServer {
+		fun create(
+			scope: CoroutineScope,
+			clock: () -> Long = System::currentTimeMillis,
+			addressResolver: (InetSocketAddress) -> String,
+		): UdpServer {
 			val context = Context.create(
 				initialState = INITIAL_STATE,
 				scope = scope,
 				reducer = ::reduce,
+				behaviours = listOf(UnknownDeviceExpiryBehaviour()),
 				name = "UdpServer",
 			)
-			val server = UdpServer(context, addressResolver)
+			val server = UdpServer(context, clock, addressResolver)
 			server.startObserving()
 			return server
 		}

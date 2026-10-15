@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   UpdateTrackerRequestT,
   BoardType,
@@ -25,6 +25,7 @@ import { rotationToQuatMap, similarQuaternions } from '@/maths/quaternion';
 import { ArrowLink } from '@/components/commons/ArrowLink';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
+import { ButtonConfirmModal } from '@/components/commons/ButtonConfirmModal';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
@@ -36,8 +37,6 @@ import { TrackerImuGraphs } from './TrackerImuGraphs';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
-import { useSetAtom } from 'jotai';
-import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { roundVector3, Vector3Object, Vector3ToVec3fT } from '@/maths/vector3';
@@ -84,7 +83,7 @@ export function TrackerSettingsPage() {
     },
     reValidateMode: 'onSubmit',
   });
-  const setIgnoredTracker = useSetAtom(ignoredTrackersAtom);
+  const navigate = useNavigate();
   const { trackerName, boneOffset } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
@@ -582,7 +581,7 @@ export function TrackerSettingsPage() {
                 label={l10n.getString('tracker-settings-name_section-label')}
               />
             </div>
-            {macAddress && (
+            {macAddress && tracker?.device?.origin === DeviceOrigin.UDP && (
               <div className="flex flex-col gap-2 w-full mt-3">
                 <Typography variant="section-title">
                   {l10n.getString('tracker-settings-forget')}
@@ -590,22 +589,27 @@ export function TrackerSettingsPage() {
                 <Typography>
                   {l10n.getString('tracker-settings-forget-description')}
                 </Typography>
-                <Button
+                <ButtonConfirmModal
                   variant="danger"
                   className="self-start"
-                  onClick={() => {
+                  id="tracker-settings-forget-label"
+                  cancelLabel="tracker-settings-forget-modal-cancel"
+                  confirmLabel="tracker-settings-forget-modal-confirm"
+                  onCancel={() => {}}
+                  onConfirm={() => {
                     sendRPCPacket(
                       RpcMessage.ForgetDeviceRequest,
                       new ForgetDeviceRequestT(macAddress)
                     );
-                    setIgnoredTracker((state) => {
-                      state.add(macAddress);
-                      return state;
-                    });
+                    navigate('/');
                   }}
                 >
-                  {l10n.getString('tracker-settings-forget-label')}
-                </Button>
+                  <Typography
+                    variant="main-title"
+                    id="tracker-settings-forget-modal-title"
+                  />
+                  <Typography id="tracker-settings-forget-description" />
+                </ButtonConfirmModal>
               </div>
             )}
           </div>

@@ -41,9 +41,9 @@ import { error, log } from './utils/logging';
 import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
-import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { useProvideSettingsDefaults } from './hooks/settings-defaults';
+import { useProvideUnknownDevices } from './hooks/unknown-devices';
 import { useControllerNav } from './hooks/controller-nav';
 import { useInternalLinkGuard } from './hooks/internal-links';
 import * as Sentry from '@sentry/react';
@@ -86,7 +86,6 @@ function ConnectedApp() {
       <OnboardingContextProvider>
         <TrackingChecklistProvider>
           <VersionUpdateModal />
-          <UnknownDeviceModal />
           <UdevRulesModal />
           <StepMountingStatusModal />
           <QuickSearchProvider>
@@ -103,6 +102,7 @@ function AppRoutes() {
   useProvideErrorReporting();
   useProvideProfiles();
   useProvideSettingsDefaults();
+  useProvideUnknownDevices();
   useDiscordPresence();
   useControllerNav();
   useInternalLinkGuard();

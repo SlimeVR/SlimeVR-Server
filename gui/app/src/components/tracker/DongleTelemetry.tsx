@@ -14,10 +14,7 @@ import { FlatDeviceTracker } from '@/store/app-store';
 import { RssiLossChart } from './RssiLossChart';
 import { GapEventsChart } from './GapEventsChart';
 import { defaultDongleTelemetryConfig, useConfig } from '@/hooks/config';
-import {
-  useTimeAxisTicks,
-  WINDOW_OPTIONS,
-} from '@/hooks/time-axis';
+import { useTimeAxisTicks, WINDOW_OPTIONS } from '@/hooks/time-axis';
 
 import { GapEvent } from '@/hooks/telemetry-history';
 

@@ -18,7 +18,6 @@ import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -188,14 +187,24 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 
 			if (mac != null) {
 				val settings = receiver.appContext.config.settings.context.state.value.data
+				val udpServer = receiver.appContext.udpServer
 				if (mac !in settings.allowedUdpDevices) {
-					AppLogger.udp.info("Unknown MAC $mac, notifying solarxr")
-					receiver.appContext.server.context.scope.launch {
-						receiver.appContext.server.sendSolarxrRpc(
-							UnknownDeviceHandshakeNotification(macAddress = mac),
-						)
-					}
+					udpServer.context.dispatch(
+						UdpServerActions.UnknownDeviceSeen(
+							UnknownDeviceState(
+								macAddress = mac,
+								address = state.address,
+								boardType = packet.data.boardType,
+								mcuType = packet.data.mcuType,
+								firmwareVersion = packet.data.firmware,
+								lastSeen = udpServer.clock(),
+							),
+						),
+					)
 					return@onPacket
+				}
+				if (mac in udpServer.context.state.value.unknownDevices) {
+					udpServer.context.dispatch(UdpServerActions.UnknownDeviceRemoved(mac))
 				}
 			}
 
