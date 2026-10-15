@@ -255,9 +255,9 @@ export function BehaviorSettings() {
                   variant="toggle"
                   name="errorReporting"
                   id="behavior-error-reporting"
-                  disabled={errorReporting.consent === null}
+                  disabled={errorReporting.setting === null}
                   checked={
-                    errorReporting.consent === ErrorReportingConsent.ALLOWED
+                    errorReporting.setting === ErrorReportingConsent.ALLOWED
                   }
                   onChange={(event) =>
                     errorReporting.answer(

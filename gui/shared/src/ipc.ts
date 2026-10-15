@@ -5,6 +5,7 @@ import {
   SaveDialogReturnValue,
 } from 'electron';
 import {
+  CrashReportKind,
   DiscordPresence,
   ErrorReportingState,
   GHGet,
@@ -30,6 +31,7 @@ export const IPC_CHANNELS = {
   IS_STEAM: 'is-steam',
   SET_KEYBIND_RECORDING: 'set-keybind-recording',
   SET_ERROR_REPORTING: 'set-error-reporting',
+  SEND_CRASH_REPORT: 'send-crash-report',
 } as const;
 
 export interface IpcInvokeMap {
@@ -61,4 +63,5 @@ export interface IpcInvokeMap {
   [IPC_CHANNELS.IS_STEAM]: () => boolean;
   [IPC_CHANNELS.SET_KEYBIND_RECORDING]: (recording: boolean) => void;
   [IPC_CHANNELS.SET_ERROR_REPORTING]: (state: ErrorReportingState) => void;
+  [IPC_CHANNELS.SEND_CRASH_REPORT]: (kind: CrashReportKind) => boolean;
 }

@@ -58,4 +58,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke(IPC_CHANNELS.SET_KEYBIND_RECORDING, recording),
   setErrorReporting: (state) =>
     ipcRenderer.invoke(IPC_CHANNELS.SET_ERROR_REPORTING, state),
+  sendCrashReport: (kind) => ipcRenderer.invoke(IPC_CHANNELS.SEND_CRASH_REPORT, kind),
 } satisfies IElectronAPI);

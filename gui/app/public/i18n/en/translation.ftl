@@ -10,6 +10,9 @@ websocket-connection_lost = The server crashed!
 websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program.
 websocket-timedout = Could not connect to the server
 websocket-timedout-desc = It looks like the SlimeVR server crashed or timed out. Check the logs and restart the program.
+websocket-report-question = Help us fix this by sending an error report.
+websocket-report-send = Send report
+websocket-report-sent = Report sent. Thank you!
 websocket-error-close = Exit SlimeVR
 websocket-error-logs = Open the logs Folder
 

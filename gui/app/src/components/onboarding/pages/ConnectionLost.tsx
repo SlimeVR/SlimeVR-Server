@@ -5,8 +5,34 @@ import { EmptyLayout } from '@/components/EmptyLayout';
 import { useConfig } from '@/hooks/config';
 import { useElectron } from '@/hooks/electron';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useCrashReport } from '@/hooks/error-reporting';
+import { CrashReportKind } from '@slimevr/gui-shared';
 import { error } from '@/utils/logging';
 import { Localized } from '@fluent/react';
+
+function CrashReportBanner({ kind }: { kind: CrashReportKind }) {
+  const { available, sent, send } = useCrashReport(kind);
+
+  if (!available) return null;
+
+  return (
+    <div className="flex flex-col xs:flex-row items-center gap-3 xs:gap-4 w-full max-w-2xl bg-background-70 rounded-lg px-4 py-3 min-h-[64px]">
+      <div className="flex-grow text-center xs:text-left">
+        <Typography
+          id={sent ? 'websocket-report-sent' : 'websocket-report-question'}
+        />
+      </div>
+      {!sent && (
+        <Button
+          variant="secondary"
+          className="flex-shrink-0"
+          onClick={send}
+          id="websocket-report-send"
+        />
+      )}
+    </div>
+  );
+}
 
 function Error({ title, desc }: { title: string; desc: string }) {
   const electron = useElectron();
@@ -30,7 +56,7 @@ function Error({ title, desc }: { title: string; desc: string }) {
   return (
     <>
       <LoaderIcon slimeState={SlimeState.SAD} size={200} />
-      <div>
+      <div className="flex flex-col items-center text-center">
         <Localized id={title}>
           <Typography variant="main-title" />
         </Localized>
@@ -62,28 +88,38 @@ export function ConnectionLost() {
 
   return (
     <EmptyLayout>
-      <div className="flex w-full h-full justify-center items-center p-4">
-        <div className="flex flex-col items-center gap-4 -mt-12">
-          {isLoading && (
-            <>
-              <LoaderIcon slimeState={SlimeState.JUMPY} size={200} />
-              <div>
-                <Localized id="websocket-connecting">
-                  <Typography variant="main-title" />
-                </Localized>
-              </div>
-            </>
-          )}
-          {isCrashed && (
-            <Error
-              title="websocket-connection_lost"
-              desc="websocket-connection_lost-desc"
-            />
-          )}
-          {isTimedOut && (
-            <Error title="websocket-timedout" desc="websocket-timedout-desc" />
-          )}
+      <div className="flex flex-col w-full h-full p-4">
+        <div className="flex flex-grow justify-center items-center">
+          <div className="flex flex-col items-center gap-4 -mt-12">
+            {isLoading && (
+              <>
+                <LoaderIcon slimeState={SlimeState.JUMPY} size={200} />
+                <div>
+                  <Localized id="websocket-connecting">
+                    <Typography variant="main-title" />
+                  </Localized>
+                </div>
+              </>
+            )}
+            {isCrashed && (
+              <Error
+                title="websocket-connection_lost"
+                desc="websocket-connection_lost-desc"
+              />
+            )}
+            {isTimedOut && (
+              <Error
+                title="websocket-timedout"
+                desc="websocket-timedout-desc"
+              />
+            )}
+          </div>
         </div>
+        {(isCrashed || isTimedOut) && (
+          <div className="flex justify-center">
+            <CrashReportBanner kind={isTimedOut ? 'timeout' : 'connection_lost'} />
+          </div>
+        )}
       </div>
     </EmptyLayout>
   );

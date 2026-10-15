@@ -39,6 +39,9 @@ export type DiscordPresence =
   | { enable: false }
   | { enable: true; activity: string; iconText: string | undefined };
 
+/** Which crash screen the user sent a report from */
+export type CrashReportKind = 'timeout' | 'connection_lost';
+
 export interface ErrorReportingState {
   consent: ErrorReportingConsent;
   userId: string;
@@ -70,6 +73,7 @@ export interface IElectronAPI {
   isSteam: () => Promise<boolean>;
   setKeybindRecording: (recording: boolean) => void;
   setErrorReporting: (state: ErrorReportingState) => void;
+  sendCrashReport: (kind: CrashReportKind) => Promise<boolean>;
 }
 
 declare global {

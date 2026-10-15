@@ -42,7 +42,10 @@ import {
   captureJavaNotFound,
   captureServerExit,
   captureServerLaunchError,
+  flushErrorReports,
   initSentry,
+  sendCrashReport,
+  trackServerOutput,
 } from './sentry';
 
 type Stores = Awaited<ReturnType<typeof initStores>>;
@@ -216,6 +219,8 @@ handleIpc(IPC_CHANNELS.IS_STEAM, () => {
 handleIpc(IPC_CHANNELS.SET_ERROR_REPORTING, (e, state) => {
   applyErrorReporting(state);
 });
+
+handleIpc(IPC_CHANNELS.SEND_CRASH_REPORT, (e, kind) => sendCrashReport(kind));
 
 const defaultWindowState: {
   width: number;
@@ -513,6 +518,7 @@ const spawnServer = async () => {
     outputTail.push(...message.split('\n').filter((line) => line.length > 0));
     outputTail.splice(0, Math.max(0, outputTail.length - SERVER_OUTPUT_TAIL_LINES));
   };
+  trackServerOutput(() => outputTail.join('\n'));
 
   serverProcess.stdout?.on('data', (message) => {
     keepOutput(message.toString());
@@ -615,6 +621,7 @@ app.whenReady().then(async () => {
     await stores.cache.save();
     discordPresence.destroy();
     await saveWindowState();
+    await flushErrorReports();
     await closeLogger();
     app.exit(0);
   });
