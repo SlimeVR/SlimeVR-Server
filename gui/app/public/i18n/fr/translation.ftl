@@ -311,7 +311,6 @@ tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 tracker-settings-name_section-placeholder = Patte gauche d'Erimel
 tracker-settings-name_section-label = Nom personalisé
 tracker-settings-forget = Oublier capteur
-tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l'empêche de s'y connecter jusqu'à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
 tracker-settings-forget-label = Oublier capteur
 tracker-settings-update-unavailable-v2 = Aucune publication trouvée
 tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatible
@@ -1056,12 +1055,6 @@ tray_or_exit_modal-cancel = Annuler
 
 ## Unknown device modal
 
-unknown_device-modal-title = Un nouveau capteur a été trouvé !
-unknown_device-modal-description =
-    Il y a un nouveau capteur avec l'adresse MAC <b>{ $deviceId }</b>.
-    Voulez-vous le connecter à SlimeVR ?
-unknown_device-modal-confirm = Oui!
-unknown_device-modal-forget = Ignorer
 # VRChat config warnings
 vrc_config-page-title = Avertissements de configuration VRChat
 vrc_config-page-desc = Cette page montre l’état de vos paramètres VRChat et montre quels paramètres sont incompatibles avec SlimeVR. Il est fortement recommandé de corriger tous les avertissements qui s’affichent ici pour la meilleure expérience utilisateur avec SlimeVR.
