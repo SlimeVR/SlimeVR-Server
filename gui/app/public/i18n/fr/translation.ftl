@@ -659,12 +659,6 @@ onboarding-quiz-mocap_preferences-head_tracker-yes = Oui
 
 onboarding-wifi_creds-back-v2 = Retour
 onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description-v2 =
-    La plupart des capteurs (comme les capteurs officiels SlimeVR) utilisent le Wi-Fi pour se connecter au serveur.
-    Veuillez utiliser les identifiants du réseau Wi-Fi auquel votre appareil est actuellement connecté.
-    
-    Assurez-vous d’utiliser une connexion Wi-Fi 2,4 GHz pour vos capteurs !
 onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-retry = Réessayer
 onboarding-wifi_creds-ssid-label = Nom du Wi-Fi
