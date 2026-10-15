@@ -223,7 +223,6 @@ tracker-settings-name_section-description = Třeba nějakou roztomilou přezdív
 tracker-settings-name_section-placeholder = Erimelova levá tlapka
 tracker-settings-name_section-label = Název trackeru
 tracker-settings-forget = Zapomenout tracker
-tracker-settings-forget-description = Odebere tracker z SlimeVR Serveru a zabrání jeho opětovnému připojení do té doby, dokud nebude server restarován. Konfigurace trackeru nebude ztracena.
 tracker-settings-forget-label = Zapomenout tracker
 tracker-settings-update-unavailable-v2 = Žádné vydání nebyla nalezena
 tracker-settings-update-incompatible = Nelze aktualizovat. Nekompatibilní deska nebo verze firmwaru
@@ -946,12 +945,6 @@ tray_or_exit_modal-cancel = Zrušit
 
 ## Unknown device modal
 
-unknown_device-modal-title = Byl nalezen nový tracker!
-unknown_device-modal-description =
-    Byl objeven nový tracker s MAC adresou <b>{ $deviceId }</b>.
-    Chcete jej připojit k SlimeVR?
-unknown_device-modal-confirm = Jasně!
-unknown_device-modal-forget = Ignoruj
 # VRChat config warnings
 vrc_config-page-title = Varování VRChat konfigurace
 vrc_config-page-desc = Tato stránka slouží k zobrazení vašeho aktuálního stavu nastavení ve VRChat. přesněji, nástavní které jsou nekompatibilní s SlimeVR. Je silně doporučeno poupravit všechny chybné nastavení které jsou zde zobrazeny pro nejlepší zážitek s SlimeVR.
