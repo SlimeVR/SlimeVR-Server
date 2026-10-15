@@ -278,7 +278,6 @@ tracker-settings-name_section-description = Geben Sie ihm einen süßen Spitznam
 tracker-settings-name_section-placeholder = NightyBeast's linkes Bein
 tracker-settings-name_section-label = Trackername
 tracker-settings-forget = Tracker Vergessen
-tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
 tracker-settings-update-unavailable-v2 = Keine Veröffentlichungen gefunden
 tracker-settings-update-incompatible = Update nicht möglich. Board inkompatibel
@@ -1036,12 +1035,6 @@ tray_or_exit_modal-cancel = Abbruch
 
 ## Unknown device modal
 
-unknown_device-modal-title = Ein neuer Tracker wurde gefunden!
-unknown_device-modal-description =
-    Es gibt einen neuen Tracker mit der MAC-Adresse <b>{ $deviceId }</b>.
-    Möchten Sie diesen mit SlimeVR verbinden?
-unknown_device-modal-confirm = Sicher!
-unknown_device-modal-forget = Ignorieren
 # VRChat config warnings
 vrc_config-page-title = VRChat Konfigurations-Warnungen
 vrc_config-page-desc = Diese Seite zeigt den Zustand deiner VRChat-Einstellungen und zeigt, welche Einstellungen mit SlimeVR inkompatibel sind. Es wird dringend empfohlen, alle hier angezeigten Warnungen zu beheben, um das beste Nutzererlebnis mit SlimeVR zu gewährleisten.
