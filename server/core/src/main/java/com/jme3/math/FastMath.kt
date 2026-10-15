@@ -677,5 +677,5 @@ object FastMath {
 	/**
 	 * Remaps a number from a minimum and maximum to another minimum and maximum but clamped to prevent extrapolation.
 	 */
-	fun clampedRemap(from: Float, fromMin: Float, fromMax: Float, toMin: Float, toMax: Float) = toMin + ((from - fromMin) / (fromMax - fromMin)).coerceIn(0f, 1f) * (toMax - toMin)
+	fun remapClamped(from: Float, fromMin: Float, fromMax: Float, toMin: Float, toMax: Float) = toMin + ((from - fromMin) / (fromMax - fromMin)).coerceIn(0f, 1f) * (toMax - toMin)
 }

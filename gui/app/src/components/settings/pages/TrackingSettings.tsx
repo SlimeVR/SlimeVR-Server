@@ -377,7 +377,7 @@ export function TrackingSettings() {
           >
             <SettingRow
               setting={groups.legFk.rows.skatingCorrectionAmount}
-              {...stepper('ratios.skatingCorrectionStrength', 0.1)}
+              {...stepper('ratios.skatingCorrectionStrength', 0.05)}
             />
           </SettingRow>
           <SettingRow
