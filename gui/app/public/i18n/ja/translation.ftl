@@ -212,7 +212,6 @@ tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-label = トラッカー名称
 tracker-settings-forget = フォーゲット・トラッカー
-tracker-settings-forget-description = スライムVRサーバーからトラッカーを削除し、サーバーが再起動するまで接続できないようにします。トラッカーの設定は失われません。
 tracker-settings-forget-label = フォーゲット・トラッカー
 
 ## Dongle settings
@@ -606,8 +605,6 @@ tray_or_exit_modal-cancel = キャンセル
 
 ## Unknown device modal
 
-unknown_device-modal-confirm = もちろん!
-unknown_device-modal-forget = 無視する
 vrc_config-tracker_model-UNKNOWN = 不明
 vrc_config-avatar_measurement_type-UNKNOWN = 不明
 
