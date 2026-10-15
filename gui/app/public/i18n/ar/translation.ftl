@@ -241,7 +241,6 @@ tracker-settings-name_section-description = أعطها لقب لطيف :)
 tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
 tracker-settings-name_section-label = اسم جهاز التعقب
 tracker-settings-forget = انسي جهاز التعقب
-tracker-settings-forget-description = يزيل جهاز التعقب من خادم SlimeVR ويمنعه من الاتصال به حتى يتم إعادة تشغيل الخادم. لن تضيع تكوين جهاز التعقب.
 tracker-settings-forget-label = ننسى جهاز التعقب
 tracker-settings-update-up_to_date = حديث
 tracker-settings-update = التحديث الآن
@@ -821,12 +820,6 @@ tray_or_exit_modal-cancel = إلغاء
 
 ## Unknown device modal
 
-unknown_device-modal-title = تم العثور على جهاز تعقب جديد!
-unknown_device-modal-description =
-    هناك جهاز تعقب جديد مع عنوان MAC <b>{ $deviceId }</b>.
-    هل تريد توصيله ب SlimeVR؟
-unknown_device-modal-confirm = أكيد
-unknown_device-modal-forget = تجاهلها
 vrc_config-tracker_model-UNKNOWN = مجهول
 vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 
