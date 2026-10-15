@@ -1110,8 +1110,8 @@ onboarding-wifi_creds-back-v2 = Go back
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
-    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
-    Please use the credentials of the Wi-Fi network your device is currently connected to.
+    Most trackers (such as the official SlimeVR 1.0 and 1.2 trackers) use Wi-Fi to connect to the server.
+    Use the credentials of the Wi-Fi network your device is currently connected to.
 onboarding-wifi_creds-continue = Continue with Wi-Fi
 onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-retry = Retry
