@@ -12,6 +12,9 @@ websocket-connection_lost = crwdns7040:0crwdne7040:0
 websocket-connection_lost-desc = crwdns7042:0crwdne7042:0
 websocket-timedout = crwdns7044:0crwdne7044:0
 websocket-timedout-desc = crwdns7046:0crwdne7046:0
+websocket-report-question = crwdns9978:0crwdne9978:0
+websocket-report-send = crwdns9980:0crwdne9980:0
+websocket-report-sent = crwdns9982:0crwdne9982:0
 websocket-error-close = crwdns7048:0crwdne7048:0
 websocket-error-logs = crwdns7050:0crwdne7050:0
 
