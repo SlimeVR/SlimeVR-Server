@@ -147,7 +147,7 @@ private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<B
 /**
  * Interpolates between 2 rotations with a different ratio for forward and the rest/side.
  */
-private fun interpolateForwardSide(fromRotation: Quaternion, toRotation: Quaternion, forwardRatio: Float, sideRatio: Float?): Quaternion {
+fun interpolateForwardSide(fromRotation: Quaternion, toRotation: Quaternion, forwardRatio: Float, sideRatio: Float?): Quaternion {
 	if (sideRatio == null) return fromRotation.interpQ(toRotation, forwardRatio)
 
 	// Work with the rotation delta to avoid axes being ambiguous
