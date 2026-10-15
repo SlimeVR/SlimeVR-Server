@@ -678,12 +678,6 @@ onboarding-quiz-mocap_preferences-head_tracker-yes = Sim
 
 onboarding-wifi_creds-back-v2 = Voltar
 onboarding-wifi_creds-v2 = Trackers conectados via Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description-v2 =
-    A maioria dos trackers (como os trackers oficiais do SlimeVR) utiliza Wi-Fi para se conectar ao servidor.
-    Use as credenciais da rede Wi-Fi à qual seu dispositivo está conectado no momento.
-    
-    Certifique-se de usar uma conexão Wi-Fi de 2,4 GHz para os seus trackers!
 onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-retry = Tentar novamente
 onboarding-wifi_creds-ssid-label = Nome da rede Wi-Fi
