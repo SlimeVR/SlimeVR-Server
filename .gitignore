@@ -59,3 +59,7 @@ vrconfig.yml.tmp
 .bin/
 
 .env.local
+
+
+# Fuck claude
+.claude
