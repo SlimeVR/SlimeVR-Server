@@ -189,7 +189,6 @@ tracker-settings-name_section-description = Đặt cho nó một cái tên đẹ
 tracker-settings-name_section-placeholder = Chân trái của JINODK
 tracker-settings-name_section-label = Tên tracker
 tracker-settings-forget = Quên thiết bị
-tracker-settings-forget-description = Xóa thiết bị khỏi phần mềm SlimeVR và ngăn nó kết nối với nó cho đến khi máy chủ được khởi động lại. Cấu hình của trình theo dõi sẽ không bị mất.
 tracker-settings-forget-label = Quên thiết bị
 
 ## Dongle settings
@@ -683,12 +682,6 @@ tray_or_exit_modal-cancel = Hủy
 
 ## Unknown device modal
 
-unknown_device-modal-title = Thiết bị mới đã được tìm thấy!
-unknown_device-modal-description =
-    Có thiết bị mới với địa chỉ MAC <b>{ $deviceId }</b>.
-    Bạn có muốn kết nối nó với SlimeVR không?
-unknown_device-modal-confirm = Chắc!
-unknown_device-modal-forget = Bỏ qua
 vrc_config-tracker_model-UNKNOWN = Không rõ
 vrc_config-avatar_measurement_type-UNKNOWN = Không rõ
 
