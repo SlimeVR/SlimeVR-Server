@@ -181,7 +181,6 @@ tracker-settings-name_section-description = Дайте йому миле прі�
 tracker-settings-name_section-placeholder = Ліва нога NightyBeast
 tracker-settings-name_section-label = Ім'я трекера
 tracker-settings-forget = Забути трекери
-tracker-settings-forget-description = Прибирає трекер із SlimeVR і забороняє йому підключатися до сервера до того, як він буде перезапущений. Конфігурацію трекера не буде втрачено.
 tracker-settings-forget-label = Забути трекери
 
 ## Dongle settings
@@ -609,12 +608,6 @@ tray_or_exit_modal-cancel = Скасувати
 
 ## Unknown device modal
 
-unknown_device-modal-title = Знайдено новий трекер!
-unknown_device-modal-description =
-    З'явився новий трекер із MAC-адресою <b>{ $deviceId }</b>.
-    Бажаєте підключити його до SlimeVR?
-unknown_device-modal-confirm = Звісно!
-unknown_device-modal-forget = Ігнорувати
 
 ## Error collection consent modal
 
