@@ -493,6 +493,9 @@ settings-serial-save_logs = Spara till fil
 settings-serial-send_command-warning-ok = Jag vet vad jag gör
 settings-serial-send_command-warning-cancel = Avbryt
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Aktivera
