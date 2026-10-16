@@ -109,6 +109,7 @@ function LogRowView({
 
 export function LogList({ rows, query }: { rows: LogRow[]; query: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const lastScrollTop = useRef(0);
   const [atBottom, setAtBottom] = useState(true);
   const [lastSeenId, setLastSeenId] = useState(-1);
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
@@ -136,8 +137,15 @@ export function LogList({ rows, query }: { rows: LogRow[]; query: string }) {
   const onScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
+    const movedUp = el.scrollTop < lastScrollTop.current;
+    lastScrollTop.current = el.scrollTop;
     const bottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 24;
-    if (bottom !== atBottom) setAtBottom(bottom);
+    // The virtualizer's own corrections only move down, only the user scrolls up
+    if (bottom) {
+      setAtBottom(true);
+      return;
+    }
+    if (movedUp) setAtBottom(false);
   };
 
   const toggle = (id: number) =>

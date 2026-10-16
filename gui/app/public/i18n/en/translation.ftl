@@ -887,7 +887,7 @@ settings-logs-export_all = Export all logs (.zip)
 settings-logs-export-title = Export logs
 settings-logs-export-all = All log files (.zip)
 settings-logs-export-all-description = Every log file, for bug reports
-settings-logs-export-origin = { $source } files only (.zip)
+settings-logs-export-source = { $source } files only (.zip)
 settings-logs-export-selected =
     { $count ->
         [one] Export 1 selected file (.zip)
