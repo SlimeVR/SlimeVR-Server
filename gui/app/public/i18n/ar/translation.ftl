@@ -464,6 +464,9 @@ settings-serial-save_logs = حفظ في ملف
 settings-serial-send_command-warning-ok = أنا أعرف ماذا أفعل
 settings-serial-send_command-warning-cancel = إلغاء
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
