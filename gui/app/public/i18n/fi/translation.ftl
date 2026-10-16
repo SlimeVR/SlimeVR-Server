@@ -348,6 +348,9 @@ settings-serial-save_logs = Tallenna tiedostoon
 settings-serial-send_command-warning-ok = Tiedän mitä teen
 settings-serial-send_command-warning-cancel = Peruuta
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Käytä
