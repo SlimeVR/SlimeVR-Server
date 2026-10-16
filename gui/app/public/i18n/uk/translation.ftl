@@ -363,6 +363,9 @@ settings-serial-save_logs = Зберегти у файл
 settings-serial-send_command-warning-ok = Я знаю, що роблю
 settings-serial-send_command-warning-cancel = Скасувати
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Увімкнути
