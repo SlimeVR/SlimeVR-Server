@@ -184,7 +184,7 @@ class OutputEncoderTest {
 	}
 
 	@Test
-	fun testFreeAnchorWithoutVrmPlacesHipsFromNeckMinusFloor() {
+	fun testFreeAnchorWithoutVrmPlacesHipsFromHeadMinusFloor() {
 		val hipHead = Vector3(0f, 0.9f, 0f)
 		val bones = BodyPartMap(
 			mapOf(
@@ -192,6 +192,7 @@ class OutputEncoderTest {
 				BodyPart.UPPER_WAIST to bone(BodyPart.UPPER_WAIST, headPosition = Vector3(0f, 1.1f, 0f)),
 				BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, headPosition = Vector3(0f, 1.3f, 0f)),
 				BodyPart.NECK to bone(BodyPart.NECK, headPosition = Vector3(0f, 1.5f, 0f)),
+				BodyPart.HEAD to bone(BodyPart.HEAD, headPosition = Vector3(0f, 1.5f, 0f)),
 			),
 		)
 		val config = defaultConfig.copy(anchorAtHips = false)
@@ -213,6 +214,7 @@ class OutputEncoderTest {
 				BodyPart.UPPER_WAIST to bone(BodyPart.UPPER_WAIST, headPosition = Vector3(0f, 1.1f, 0f) + shift),
 				BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, headPosition = Vector3(0f, 1.3f, 0f) + shift),
 				BodyPart.NECK to bone(BodyPart.NECK, headPosition = Vector3(0f, 1.5f, 0f) + shift),
+				BodyPart.HEAD to bone(BodyPart.HEAD, headPosition = Vector3(0f, 1.5f, 0f) + shift),
 			),
 		)
 		val config = defaultConfig.copy(anchorAtHips = false)

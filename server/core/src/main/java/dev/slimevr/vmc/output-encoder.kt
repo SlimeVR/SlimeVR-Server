@@ -150,7 +150,7 @@ private fun emittedLocalPosition(
 	vmcLocalPosition(bonePosition, parentRotation, parentPosition, parentUnityBone, mirror)
 }
 
-private fun hipToNeckOffset(
+private fun hipToHeadOffset(
 	unityBoneGlobalRotations: MutableMap<UnityBone, Quaternion>,
 	unityBoneGlobalPositions: MutableMap<UnityBone, Vector3>,
 	vrm: VrmGeometry?,
@@ -188,15 +188,15 @@ private fun vmcHipPosition(
 	val anchoredHipPosition = vrm?.hipPosition ?: Vector3(0f, restHipHeight(bones, skeletonHeight), 0f)
 	if (config.anchorAtHips) return anchoredHipPosition
 
-	val neckPosition = unityBoneGlobalPositions[UnityBone.NECK] ?: return anchoredHipPosition
-	val adjustedNeckPosition = if (config.mirrorTracking) vmcMirrorPosition(neckPosition) else neckPosition
+	val headPosition = unityBoneGlobalPositions[UnityBone.HEAD] ?: return anchoredHipPosition
+	val adjustedHeadPosition = if (config.mirrorTracking) vmcMirrorPosition(headPosition) else headPosition
 	val restHeight = vrm?.outputRestHeight ?: skeletonHeight
 	val scale = if (skeletonHeight != 0f) restHeight / skeletonHeight else 1f
-	val floorRelativeNeck = (adjustedNeckPosition - Vector3(0f, floorLevel, 0f)) * scale
+	val floorRelativeHead = (adjustedHeadPosition - Vector3(0f, floorLevel, 0f)) * scale
 
-	val neckOffset = hipToNeckOffset(unityBoneGlobalRotations, unityBoneGlobalPositions, vrm, config.mirrorTracking)
+	val headOffset = hipToHeadOffset(unityBoneGlobalRotations, unityBoneGlobalPositions, vrm, config.mirrorTracking)
 
-	return floorRelativeNeck - neckOffset
+	return floorRelativeHead - headOffset
 }
 
 private fun transformMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
