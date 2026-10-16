@@ -291,6 +291,9 @@ settings-serial-serial_select = Vælg en seriel port
 settings-serial-send_command-warning-ok = Jeg ved hvad jeg laver
 settings-serial-send_command-warning-cancel = Annuller
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Aktiver
