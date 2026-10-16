@@ -473,6 +473,9 @@ settings-serial-send_command-placeholder = Příkaz...
 settings-serial-send_command-warning-ok = Vím, co dělám!
 settings-serial-send_command-warning-cancel = Zrušit
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
