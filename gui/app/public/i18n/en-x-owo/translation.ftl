@@ -434,6 +434,9 @@ settings-serial-save_logs = saeve to file
 settings-serial-send_command-warning-ok = i know what I'm doing :3
 settings-serial-send_command-warning-cancel = cancew
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = enaybwe
