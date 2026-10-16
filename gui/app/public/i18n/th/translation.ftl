@@ -543,6 +543,9 @@ settings-serial-send_command-warning = <b>คำเตือน:</b> การ�
 settings-serial-send_command-warning-ok = ฉันรู้ว่ากำลังทำอะไร
 settings-serial-send_command-warning-cancel = ยกเลิก
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
