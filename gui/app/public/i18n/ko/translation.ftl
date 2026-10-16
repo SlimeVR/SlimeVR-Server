@@ -403,6 +403,9 @@ settings-serial-save_logs = 파일에 저장
 settings-serial-send_command-warning-ok = 네! 알고 있어요.
 settings-serial-send_command-warning-cancel = 취소
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
