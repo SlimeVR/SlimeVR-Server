@@ -530,6 +530,9 @@ settings-serial-send_command-warning = <b>Peligro:</b> Ejecutar comandos seriale
 settings-serial-send_command-warning-ok = Sé lo que estoy haciendo
 settings-serial-send_command-warning-cancel = Cancelar
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat = Sensores OSC de VRChat
