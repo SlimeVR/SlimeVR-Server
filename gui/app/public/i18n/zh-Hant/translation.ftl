@@ -1142,7 +1142,6 @@ onboarding-assign_trackers-finger-index = 食指
 onboarding-assign_trackers-finger-middle = 中指
 onboarding-assign_trackers-finger-ring = 無名指
 onboarding-assign_trackers-finger-little = 小指
-onboarding-assign_trackers-toes-middle = 第三腳趾
 onboarding-assign_trackers-toe-big = 大腳趾
 onboarding-assign_trackers-toe-index = 第二腳趾
 onboarding-assign_trackers-toe-middle = 第三腳趾
