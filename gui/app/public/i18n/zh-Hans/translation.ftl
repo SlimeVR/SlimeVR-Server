@@ -553,6 +553,9 @@ settings-serial-send_command-warning = <b>警告:</b>运行串口命令可能导
 settings-serial-send_command-warning-ok = 我已知晓
 settings-serial-send_command-warning-cancel = 取消
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
