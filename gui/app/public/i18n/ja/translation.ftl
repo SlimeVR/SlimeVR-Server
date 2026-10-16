@@ -369,6 +369,9 @@ settings-serial-serial_select = シリアルポートを選択
 settings-serial-send_command-warning-ok = 自分が何しているかを知っています。
 settings-serial-send_command-warning-cancel = キャンセル
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = 有効
