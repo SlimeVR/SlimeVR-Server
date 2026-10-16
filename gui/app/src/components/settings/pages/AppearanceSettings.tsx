@@ -145,6 +145,7 @@ export function AppearanceSettings() {
     { value: 'trans', colors: '!bg-trans-flag' },
     { value: 'asexual', colors: '!bg-asexual-flag' },
     { value: 'snep', colors: '!bg-snep' },
+    { value: 'fox', colors: '!bg-fox' },
   ];
 
   return (

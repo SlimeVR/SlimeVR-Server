@@ -17,7 +17,6 @@ import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
-import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { settingReset } from '@/components/settings/SettingReset';
 import {
