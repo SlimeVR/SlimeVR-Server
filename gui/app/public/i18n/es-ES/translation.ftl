@@ -528,6 +528,9 @@ settings-serial-send_command = Enviar
 settings-serial-send_command-warning-ok = Sé lo que estoy haciendo
 settings-serial-send_command-warning-cancel = Cancelar
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
