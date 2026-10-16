@@ -117,6 +117,9 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 ## Serial settings
 
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 
