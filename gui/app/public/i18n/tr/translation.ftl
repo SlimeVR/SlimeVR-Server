@@ -316,6 +316,9 @@ settings-serial-factory_reset-warning-cancel = İptal et
 settings-serial-send_command-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-send_command-warning-cancel = İptal
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Etkinleştir
