@@ -550,6 +550,9 @@ settings-serial-send_command-warning = <b>Aviso:</b> executar comandos seriais p
 settings-serial-send_command-warning-ok = Eu sei o que estou fazendo
 settings-serial-send_command-warning-cancel = Cancelar
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
