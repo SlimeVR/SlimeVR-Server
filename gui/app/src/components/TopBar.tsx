@@ -166,7 +166,9 @@ export function TopBar({
                   className={classNames('flex justify-around flex-col')}
                   data-electron-drag-region
                 >
-                  <Typography>SlimeVR</Typography>
+                  <Typography>
+                    {config?.theme == 'fox' ? 'FoxVR' : 'SlimeVR'}
+                  </Typography>
                 </div>
               )}
               {(!doesMatchSettings || !isMobile) && <VersionTag />}
