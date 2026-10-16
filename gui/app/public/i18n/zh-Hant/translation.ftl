@@ -801,6 +801,9 @@ settings-serial-send_command-warning = <b>警告：</b>執行序列埠指令可�
 settings-serial-send_command-warning-ok = 我已瞭解以上風險
 settings-serial-send_command-warning-cancel = 取消
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC
