@@ -552,6 +552,9 @@ settings-serial-send_command-warning = <b>Avertissement:</b> Exécuter des comma
 settings-serial-send_command-warning-ok = Je sais ce que je fais
 settings-serial-send_command-warning-cancel = Annuler
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 # This cares about multilines
