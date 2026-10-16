@@ -419,6 +419,9 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 settings-serial-factory_reset-warning-cancel = Atšaukti
 settings-serial-send_command-warning-cancel = Atšaukti
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 
