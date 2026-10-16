@@ -67,7 +67,7 @@ export function Serial() {
   const { l10n } = useLocalization();
   const { state } = useLocation();
 
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const consoleRef = useRef<HTMLDivElement>(null);
   const [consoleContent, setConsole] = useState('');
 
@@ -97,7 +97,7 @@ export function Serial() {
 
   // The server holds every port this page opened and takes them back if the keepalive stops, so a
   // tab that dies without unmounting doesn't leave them locked
-  useEffect(() => {
+  useConnectedEffect(() => {
     const keepalive = setInterval(() => {
       sendRPCPacket(
         RpcMessage.SerialKeepaliveRequest,
@@ -117,7 +117,7 @@ export function Serial() {
     }
   }, [serialDevices]);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     if (!port) return;
     setConsole('');
     setOpenedSerialDevice(null);

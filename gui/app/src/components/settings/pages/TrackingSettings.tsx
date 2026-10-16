@@ -200,7 +200,7 @@ export function TrackingSettings() {
   const settings = useAtomValue(skeletonSettingsValueAtom);
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const defaults = useSettingsDefaults().skeleton;
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
@@ -252,7 +252,7 @@ export function TrackingSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.SkeletonSettingsRequest,
       new SkeletonSettingsRequestT()

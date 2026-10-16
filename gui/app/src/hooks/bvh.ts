@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { RecordBVHRequestT, RecordBVHStatusT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useConfig } from './config';
@@ -8,11 +8,11 @@ import { useElectron } from './electron';
 export function useBHV() {
   const electron = useElectron();
   const { config } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [state, setState] = useState<'idle' | 'recording' | 'saving'>('idle');
   const { l10n } = useLocalization();
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.RecordBVHStatusRequest, new RecordBVHRequestT());
   }, []);
 

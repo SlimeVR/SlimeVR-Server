@@ -52,7 +52,7 @@ export function useWifiCredsForm() {
 }
 
 export function useWifiScan() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
 
   const [networks, setNetworks] = useState<WifiNetworkT[]>([]);
   const [scanStatus, setScanStatus] = useState<WifiScanStatus>(
@@ -63,7 +63,7 @@ export function useWifiScan() {
     sendRPCPacket(RpcMessage.StartWifiScanRequest, new StartWifiScanRequestT());
   };
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     retryScan();
     return () => {
       sendRPCPacket(RpcMessage.StopWifiScanRequest, new StopWifiScanRequestT());

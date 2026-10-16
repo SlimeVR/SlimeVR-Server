@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  DependencyList,
+  EffectCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   DataFeedMessage,
@@ -21,6 +29,8 @@ export interface WebSocketApi {
   reconnect: () => void;
   useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void;
   useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void;
+  // Runs only while connected and again on every new connection
+  useConnectedEffect: (effect: EffectCallback, deps: DependencyList) => void;
   sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void;
   sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void;
 }
@@ -198,6 +208,12 @@ export function useProvideWebsocketApi(): WebSocketApi {
           rpclistenerRef.current.removeEventListener(RpcMessage[type], onEvent);
         };
       }, [callback, type]);
+    },
+    useConnectedEffect: (effect: EffectCallback, deps: DependencyList) => {
+      useEffect(() => {
+        if (!isConnected) return;
+        return effect();
+      }, [isConnected, ...deps]);
     },
     sendRPCPacket,
     sendDataFeedPacket,

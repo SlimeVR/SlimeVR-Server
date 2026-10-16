@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
@@ -36,10 +36,10 @@ export const avatarMeasurementTypeTranslationMap: Record<
 };
 
 export function useVRCConfig() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [state, setState] = useState<VRCConfigState | null>(null);
 
-  useLayoutEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.VRCConfigStateRequest, new VRCConfigStateRequestT());
   }, []);
 

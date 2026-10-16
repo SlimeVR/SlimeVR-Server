@@ -72,7 +72,7 @@ function toForm(
 }
 
 export function VRMFileUpload() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { l10n } = useLocalization();
   const [modelName, setModelName] = useState<string | null>(null);
 
@@ -111,7 +111,7 @@ export function VRMFileUpload() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.VMCOSCSettingsRequest,
       new VMCOSCSettingsRequestT()
@@ -370,7 +370,7 @@ const { groups } = vmcSettingsPage;
 
 export function VMCSettings() {
   const { l10n } = useLocalization();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { oscValidator } = useOscPortsAddressValidator();
   const defaults = useSettingsDefaults().vmcosc;
   const factoryForm = toForm(defaults);
@@ -440,7 +440,7 @@ export function VMCSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.VMCOSCStatusRequest, new VMCOSCStatusRequestT());
   }, []);
 

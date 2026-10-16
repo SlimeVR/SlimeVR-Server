@@ -30,7 +30,7 @@ export function MagnetometerToggleSetting({
   setting,
 }: MagnetometerToggleSettingProps) {
   const { l10n } = useLocalization();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const originalValue = useRef<boolean | null>(null);
   // used to disable the tracker specific toggle if false
   const [globalToggle, setGlobalToggle] = useState(false);
@@ -62,7 +62,7 @@ export function MagnetometerToggleSetting({
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     const req = new MagToggleRequestT();
     if (trackerId !== undefined) {
       req.trackerId = trackerId;

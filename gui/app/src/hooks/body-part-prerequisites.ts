@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import {
   BodyPart,
@@ -31,15 +30,14 @@ export function useProvideBodyPartPrerequisites() {
 }
 
 export function useBodyPartPrerequisites() {
-  const { sendRPCPacket, isConnected } = useWebsocketAPI();
+  const { sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
 
-  useEffect(() => {
-    if (!isConnected) return;
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.BodyPartPrerequisitesRequest,
       new BodyPartPrerequisitesRequestT()
     );
-  }, [isConnected]);
+  }, []);
 
   return useAtomValue(bodyPartPrerequisitesAtom);
 }

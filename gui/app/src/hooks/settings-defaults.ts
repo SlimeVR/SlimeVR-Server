@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import {
   RpcMessage,
@@ -9,7 +8,7 @@ import { SettingsDefaults, settingsDefaultsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from './websocket-api';
 
 export function useProvideSettingsDefaults() {
-  const { useRPCPacket, sendRPCPacket, isConnected } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const setSettingsDefaults = useSetAtom(settingsDefaultsAtom);
 
   useRPCPacket(
@@ -19,10 +18,9 @@ export function useProvideSettingsDefaults() {
     }
   );
 
-  useEffect(() => {
-    if (!isConnected) return;
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.SettingsDefaultsRequest, new SettingsDefaultsRequestT());
-  }, [isConnected]);
+  }, []);
 }
 
 export function useSettingsDefaults(): SettingsDefaults {

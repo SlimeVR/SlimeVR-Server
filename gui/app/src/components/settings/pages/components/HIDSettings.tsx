@@ -36,7 +36,7 @@ const hidSettingsValueAtom = selectAtom(
 export function HIDSettings({ setting }: { setting: SettingDef }) {
   const setSettings = useSetAtom(hidSettingsAtom);
   const settings = useAtomValue(hidSettingsValueAtom);
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const defaults = useSettingsDefaults().hid;
 
   const { control, watch, handleSubmit, reset, setValue } = useForm<HIDForm>({
@@ -58,7 +58,7 @@ export function HIDSettings({ setting }: { setting: SettingDef }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.HIDSettingsRequest, new HIDSettingsRequestT());
   }, []);
 

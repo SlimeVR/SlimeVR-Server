@@ -1,10 +1,4 @@
-import {
-  ComponentProps,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { ComponentProps, ReactNode, useContext, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
   RpcMessage,
@@ -93,7 +87,7 @@ export function TopBar({
   const electron = useElectron();
   const quickSearch = useQuickSearch();
   const { isMobile } = useBreakpoint('mobile');
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
@@ -136,7 +130,7 @@ export function TopBar({
     }
   };
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
   }, []);
 

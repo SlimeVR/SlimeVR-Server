@@ -6,7 +6,7 @@ import {
   SkeletonProportionsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useConfig } from './config';
 
 type LabelBase = {
@@ -57,7 +57,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
   bodyPartsGrouped: Label[];
   changeBoneValue: (params: UpdateBoneParams) => void;
 } {
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { setConfig } = useConfig();
   const [skeleton, setSkeleton] = useState<Omit<
     SkeletonProportionsResponseT,
@@ -132,7 +132,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.SkeletonProportionsRequest,
       new SkeletonProportionsRequestT()

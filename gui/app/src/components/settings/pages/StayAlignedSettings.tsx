@@ -184,7 +184,7 @@ const { groups } = stayAlignedSettingsPage;
 export function StayAlignedSettings() {
   const setSettings = useSetAtom(stayAlignedSettingsAtom);
   const settings = useAtomValue(stayAlignedSettingsValueAtom);
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const defaults = useSettingsDefaults().stayAligned;
 
   const { control, watch, handleSubmit, reset, setValue } =
@@ -225,7 +225,7 @@ export function StayAlignedSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.StayAlignedSettingsRequest,
       new StayAlignedSettingsRequestT()

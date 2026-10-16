@@ -122,7 +122,7 @@ export function TapDetectionSettings({
   const settings = useAtomValue(tapDetectionSettingsValueAtom);
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const defaults = useSettingsDefaults().tapDetection;
 
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
@@ -174,7 +174,7 @@ export function TapDetectionSettings({
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TapDetectionSettingsRequest,
       new TapDetectionSettingsRequestT()

@@ -122,7 +122,7 @@ export function DriverSettings() {
   const [status, setStatus] = useState<DriverStatusChangeResponseT | null>(
     null
   );
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const defaults = useSettingsDefaults().driver;
 
   const { control, watch, handleSubmit, reset, setValue } = useForm<DriverForm>(
@@ -159,7 +159,7 @@ export function DriverSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.DriverSettingsRequest,
       new DriverSettingsRequestT()

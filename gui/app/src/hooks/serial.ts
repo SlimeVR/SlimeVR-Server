@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   RpcMessage,
   SerialDevicesRequestT,
@@ -8,10 +8,10 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 
 export function useSerialDevices() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [devices, setDevices] = useState<SerialDeviceT[] | null>(null);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
   }, []);
 

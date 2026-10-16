@@ -33,7 +33,7 @@ export function useProvideAppContext(): AppContext {
     sendRPCPacket,
     sendDataFeedPacket,
     useDataFeedPacket,
-    isConnected,
+    useConnectedEffect,
   } = useWebsocketAPI();
   const { changeLocales } = useContext(LangContext);
   const { config } = useConfig();
@@ -47,13 +47,11 @@ export function useProvideAppContext(): AppContext {
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
 
-  useEffect(() => {
-    if (isConnected) {
-      const startDataFeed = new StartDataFeedT();
-      startDataFeed.dataFeeds = [dataFeedConfig, bonesDataFeedConfig];
-      sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
-    }
-  }, [isConnected, config?.debug, config?.devSettings?.fastDataFeed]);
+  useConnectedEffect(() => {
+    const startDataFeed = new StartDataFeedT();
+    startDataFeed.dataFeeds = [dataFeedConfig, bonesDataFeedConfig];
+    sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
+  }, [config?.debug, config?.devSettings?.fastDataFeed]);
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
     if (packet.index === 0) {
@@ -76,10 +74,9 @@ export function useProvideAppContext(): AppContext {
     }
   );
 
-  useEffect(() => {
-    if (!isConnected) return;
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
-  }, [isConnected]);
+  }, []);
 
   useProvideBodyPartPrerequisites();
 

@@ -25,18 +25,17 @@ export const sessionConsentAtom = atom(
 );
 
 export function useProvideErrorReporting() {
-  const { useRPCPacket, sendRPCPacket, isConnected } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [server, setServer] = useAtom(serverErrorReportingAtom);
   const [pending, setPending] = useAtom(pendingAnswerAtom);
   const consent = useAtomValue(sessionConsentAtom);
 
-  useEffect(() => {
-    if (!isConnected) return;
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.ErrorReportingSettingsRequest,
       new ErrorReportingSettingsRequestT()
     );
-  }, [isConnected]);
+  }, []);
 
   useRPCPacket(
     RpcMessage.ErrorReportingSettingsResponse,
@@ -48,8 +47,8 @@ export function useProvideErrorReporting() {
       })
   );
 
-  useEffect(() => {
-    if (!isConnected || !server || pending === null) return;
+  useConnectedEffect(() => {
+    if (!server || pending === null) return;
     if (server.consent === pending) {
       setPending(null);
       return;
@@ -58,7 +57,7 @@ export function useProvideErrorReporting() {
       RpcMessage.ChangeErrorReportingSettingsRequest,
       new ChangeErrorReportingSettingsRequestT(pending)
     );
-  }, [isConnected, server, pending]);
+  }, [server, pending]);
 
   useEffect(() => {
     const identity = server

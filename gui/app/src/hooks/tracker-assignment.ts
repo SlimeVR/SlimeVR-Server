@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import {
   UpdateTrackerRequestT,
   BodyPart,
@@ -42,7 +42,7 @@ export function useAssignTracker() {
 
 export function useTrackerAssignment(mode: AssignmentMode) {
   const { config } = useConfig();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const sendAssign = useAssignTracker();
   const shell = providePicker();
   const { trackerByPart, flatTrackers } = shell;
@@ -57,7 +57,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const pendingTrackerId = pending?.kind === 'tracker' ? pending.id : null;
   const activePart = mode === 'drag' ? (dragTarget ?? BodyPart.NONE) : armedPart;
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TapDetectionSetupModeRequest,
       new TapDetectionSetupModeRequestT(true)

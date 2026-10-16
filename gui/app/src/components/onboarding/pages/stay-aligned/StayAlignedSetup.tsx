@@ -38,7 +38,7 @@ export function enableStayAligned(
 export function StayAlignedSetup() {
   const { l10n } = useLocalization();
   const { isMobile } = useBreakpoint('mobile');
-  const { sendRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { resetsSettings } = useResetsSettings();
 
   const viewsRef = useRef<{
@@ -46,7 +46,7 @@ export function StayAlignedSetup() {
     cam2?: SkeletonPreviewView;
   }>({});
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     // Disable Stay Aligned as soon as we enter the setup flow so that we don't
     // adjust the trackers while trying to set up the feature
     enableStayAligned(false, sendRPCPacket);

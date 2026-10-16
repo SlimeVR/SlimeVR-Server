@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import {
   CreateProfileRequestT,
@@ -35,13 +35,12 @@ function toProfileNames(list: ProfileListT | null): ProfileNames {
 }
 
 export function useProvideProfiles() {
-  const { useRPCPacket, sendRPCPacket, isConnected } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const setProfiles = useSetAtom(profilesAtom);
 
-  useEffect(() => {
-    if (!isConnected) return;
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.ProfilesRequest, new ProfilesRequestT());
-  }, [isConnected]);
+  }, []);
 
   useRPCPacket(RpcMessage.ProfilesResponse, (res: ProfilesResponseT) =>
     setProfiles({

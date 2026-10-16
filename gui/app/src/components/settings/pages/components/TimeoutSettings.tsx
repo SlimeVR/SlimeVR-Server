@@ -28,7 +28,7 @@ export function TimeoutSettings({ setting }: { setting: SettingDef }) {
   const [settings, setSettings] = useState<TimeoutSettingsResponseT | null>(
     null
   );
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
   const defaults = useSettingsDefaults().timeout;
 
@@ -59,7 +59,7 @@ export function TimeoutSettings({ setting }: { setting: SettingDef }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TimeoutSettingsRequest,
       new TimeoutSettingsRequestT()

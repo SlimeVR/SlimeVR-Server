@@ -146,7 +146,7 @@ const filterActive =
     !ignoredSteps.includes(step.id) && step.enabled;
 
 export function provideTrackingChecklist() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [sessionIgnoredSteps, setSessionIgnoredSteps] = useState<
     TrackingChecklistStepId[]
   >([]);
@@ -174,7 +174,7 @@ export function provideTrackingChecklist() {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.TrackingChecklistRequest, new TrackingChecklistRequestT());
   }, []);
 

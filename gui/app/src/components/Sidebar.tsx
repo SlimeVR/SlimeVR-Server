@@ -7,7 +7,7 @@ import {
   SkeletonVisualizerWidget,
 } from './widgets/SkeletonVisualizerWidget';
 import { SkeletonPreviewControls } from './widgets/SkeletonPreviewControls';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from './commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
@@ -30,7 +30,7 @@ import { PlayIcon } from './commons/icon/PlayIcon';
 export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
   const { currentLocales } = useLocaleConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
 
   const {
     state: bvhState,
@@ -55,7 +55,7 @@ export function PreviewControls({ open }: { open: boolean }) {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.SkeletonProportionsRequest,
       new SkeletonProportionsRequestT()

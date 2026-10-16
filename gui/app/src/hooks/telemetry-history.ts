@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import {
   RpcMessage,
   StartTelemetryRequestT,
@@ -25,7 +25,7 @@ export interface GapEvent {
 const MAX_HISTORY_SEC = 5 * 60;
 
 export function useTelemetryHistory(deviceIds: number[]) {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const historyRowsRef = useRef<ChartRow[]>([]);
   const gapsRef = useRef<Map<number, GapEvent[]>>(new Map());
   const clockRef = useRef<SourceClock>(createSourceClock());
@@ -35,7 +35,7 @@ export function useTelemetryHistory(deviceIds: number[]) {
     .sort((a, b) => a - b)
     .join(',');
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     if (deviceIds.length === 0) {
       historyRowsRef.current = [];
       gapsRef.current.clear();

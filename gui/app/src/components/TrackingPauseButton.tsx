@@ -1,5 +1,5 @@
 import { Localized } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   SetPauseTrackingRequestT,
   RpcMessage,
@@ -15,7 +15,7 @@ import classNames from 'classnames';
 export function TrackingPauseButton(
   props: React.HTMLAttributes<HTMLButtonElement>
 ) {
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [trackingPause, setTrackingPause] = useState(false);
 
   const toggleTracking = () => {
@@ -30,7 +30,7 @@ export function TrackingPauseButton(
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TrackingPauseStateRequest,
       new TrackingPauseStateRequestT()

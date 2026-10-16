@@ -371,7 +371,7 @@ const { groups } = vrchatOscSettingsPage;
 
 export function VRCOSCSettings() {
   const { l10n } = useLocalization();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [status, setStatus] = useState<VRCOSCStatusChangeResponseT | null>(
     null
   );
@@ -441,7 +441,7 @@ export function VRCOSCSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.VRCOSCSettingsRequest,
       new VRCOSCSettingsRequestT()

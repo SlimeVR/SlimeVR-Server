@@ -61,7 +61,7 @@ export const keybindSettingsPage = defineSettingsPage({
 export function KeybindSettings() {
   const { l10n } = useLocalization();
   const electron = useElectron();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [defaultKeybindsState, setDefaultKeybindsState] = useState<KeybindForm>(
     { keybinds: [] }
@@ -168,7 +168,7 @@ export function KeybindSettings() {
   );
 
   const isFirstRender = useRef(true);
-  useEffect(() => {
+  useConnectedEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
@@ -262,7 +262,7 @@ export function KeybindSettings() {
     });
   };
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.KeybindRequest, new KeybindRequestT());
   }, []);
 

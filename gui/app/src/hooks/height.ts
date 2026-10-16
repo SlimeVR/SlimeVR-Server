@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
@@ -18,13 +18,11 @@ export interface HeightContext {
 export function useProvideHeightContext(): HeightContext {
   const [headHeight, setHeadHeight] = useState<number | null>(null);
   const [floorHeight, setFloorHeight] = useState<number | null>(null);
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
 
-  useEffect(
-    () =>
-      sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT()),
-    []
-  );
+  useConnectedEffect(() => {
+    sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT());
+  }, []);
   useRPCPacket(RpcMessage.UserHeightResponse, (res: UserHeightResponseT) => {
     const head = res.headHeight;
     const floor = res.floorHeight;

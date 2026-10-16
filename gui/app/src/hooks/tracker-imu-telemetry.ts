@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   RpcMessage,
   StartTrackerImuTelemetryRequestT,
@@ -62,7 +62,7 @@ export interface TrackerImuHistory {
 }
 
 export function useTrackerImuHistory(trackerId: number | undefined): TrackerImuHistory {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
 
   const [{ ring, history }] = useState(() => {
     const ring = createColumnRing(IMU_KEYS, IMU_HISTORY_SEC * IMU_MAX_RATE_HZ);
@@ -73,7 +73,7 @@ export function useTrackerImuHistory(trackerId: number | undefined): TrackerImuH
     return { ring, history };
   });
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     clearColumnRing(ring);
     if (trackerId == null) return;
 

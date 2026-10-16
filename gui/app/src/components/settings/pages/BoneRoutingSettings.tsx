@@ -396,7 +396,7 @@ export function BoneRoutingSettings() {
   const groups = boneRoutingSettingsPage.groups;
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [settings, setSettings] = useState(new BoneRoutingSettingsResponseT());
 
   const [automatic, setAutomatic] = useState(true);
@@ -506,7 +506,7 @@ export function BoneRoutingSettings() {
     };
   }, [duplicated, l10n, currentLocales]);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.BoneRoutingSettingsRequest,
       new BoneRoutingSettingsRequestT()

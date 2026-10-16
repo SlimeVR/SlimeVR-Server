@@ -155,12 +155,12 @@ function SteamVRDisconnected({
 }
 
 function SteamVRHandsEnabled() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [routing, setRouting] = useState<BoneRoutingSettingsResponseT | null>(
     null
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.BoneRoutingSettingsRequest,
       new BoneRoutingSettingsRequestT()

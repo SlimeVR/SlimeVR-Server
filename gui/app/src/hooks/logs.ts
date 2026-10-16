@@ -147,7 +147,7 @@ export function useLogsInfo() {
 }
 
 export function useLiveLogs(sources: LogSource[]) {
-  const { sendRPCPacket, useRPCPacket, isConnected } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const electron = useElectron();
   const [serverRows, setServerRows] = useState<LogRow[]>([]);
   const [guiRows, setGuiRows] = useState<LogRow[]>([]);
@@ -158,8 +158,8 @@ export function useLiveLogs(sources: LogSource[]) {
     .join(',');
   const withGui = sources.includes(LogSource.GUI);
 
-  useEffect(() => {
-    if (!isConnected || serverKey === '') return;
+  useConnectedEffect(() => {
+    if (serverKey === '') return;
     setServerRows([]);
     sendRPCPacket(
       RpcMessage.LogStreamRequest,
@@ -169,7 +169,7 @@ export function useLiveLogs(sources: LogSource[]) {
     return () => {
       sendRPCPacket(RpcMessage.LogStreamRequest, new LogStreamRequestT([]));
     };
-  }, [isConnected, serverKey]);
+  }, [serverKey]);
 
   useRPCPacket(RpcMessage.LogStreamResponse, (res: LogStreamResponseT) =>
     setServerRows((current) => appendRows(current, res.events.map(serverRow)))

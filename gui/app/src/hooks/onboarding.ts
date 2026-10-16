@@ -2,7 +2,6 @@ import {
   createContext,
   Reducer,
   useContext,
-  useEffect,
   useLayoutEffect,
   useReducer,
   useState,
@@ -74,7 +73,7 @@ export function useProvideOnboarding() {
     }
   );
 
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { setResetsSettings } = useResetsSettings();
 
   const { state: locatioState } = useLocation();
@@ -88,7 +87,7 @@ export function useProvideOnboarding() {
       dispatch({ type: 'alone-page', value: alonePage });
   }, [locatioState, state]);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT());
     sendRPCPacket(RpcMessage.VRCOSCSettingsRequest, new VRCOSCSettingsRequestT());
   }, []);
