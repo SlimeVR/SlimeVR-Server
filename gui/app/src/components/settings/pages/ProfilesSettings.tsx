@@ -13,6 +13,7 @@ import { TrashIcon } from '@/components/commons/icon/TrashIcon';
 import { IconButton } from '@/components/commons/IconButton';
 import { InputInside } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
+import { SegmentedControl } from '@/components/commons/SegmentedControl';
 import {
   ProfileNames,
   profileErrorId,
@@ -297,39 +298,6 @@ function freeProfileName(template: (n: number) => string, names: string[]) {
   return template(n);
 }
 
-function StartFromOption({
-  selected,
-  onClick,
-  children,
-}: {
-  selected: boolean;
-  onClick: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <Clickable
-      pressed={selected}
-      onClick={onClick}
-      className={classNames(
-        'flex items-center gap-2 px-3 py-1.5 rounded-md min-w-0 cursor-pointer transition-colors',
-        selected ? 'bg-accent-background-30' : 'hover:bg-background-60'
-      )}
-    >
-      <span
-        className={classNames(
-          'w-3.5 h-3.5 shrink-0 rounded-full border-2 flex items-center justify-center',
-          selected ? 'border-background-10' : 'border-background-40'
-        )}
-      >
-        {selected && (
-          <span className="w-1.5 h-1.5 rounded-full bg-background-10" />
-        )}
-      </span>
-      {children}
-    </Clickable>
-  );
-}
-
 function NewProfileRow({
   kind,
   setting,
@@ -397,25 +365,22 @@ function NewProfileRow({
             >
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <Typography bold id="settings-profiles-start_from" />
-                <div className="flex flex-wrap gap-1 p-1 rounded-lg border border-background-50 bg-background-70 min-w-0">
-                  <StartFromOption
-                    selected={!copyActive}
-                    onClick={() => setCopyActive(false)}
-                  >
-                    <Typography id="settings-profiles-start_from-defaults" />
-                  </StartFromOption>
-                  <StartFromOption
-                    selected={copyActive}
-                    onClick={() => setCopyActive(true)}
-                  >
-                    <Typography
-                      truncate
-                      whitespace="whitespace-nowrap"
-                      id="settings-profiles-start_from-copy"
-                      vars={{ name: profiles.active }}
-                    />
-                  </StartFromOption>
-                </div>
+                <SegmentedControl
+                  variant="tertiary"
+                  value={copyActive ? 'copy' : 'defaults'}
+                  onChange={(value) => setCopyActive(value === 'copy')}
+                  options={[
+                    {
+                      value: 'defaults',
+                      labelId: 'settings-profiles-start_from-defaults',
+                    },
+                    {
+                      value: 'copy',
+                      labelId: 'settings-profiles-start_from-copy',
+                      vars: { name: profiles.active },
+                    },
+                  ]}
+                />
               </div>
             </InlineNameEditor>
           </div>

@@ -14,6 +14,7 @@ interface Window {
     | {
         isThere: () => boolean;
         updateInsetBackground: (c: string) => void;
+        saveFile: (name: string, mimeType: string, base64: string) => void;
       }
     | undefined;
   _jipt?: [string, unknown][];

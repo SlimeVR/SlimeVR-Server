@@ -1,14 +1,23 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { IElectronAPI, ServerStatusEvent } from '@slimevr/gui-shared';
+import { GuiLogEvent, IElectronAPI } from '@slimevr/gui-shared';
 import { IPC_CHANNELS } from '@slimevr/gui-shared';
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  onServerStatus: (callback) => {
-    const subscription = (_event: IpcRendererEvent, value: ServerStatusEvent) =>
-      callback(value);
-    ipcRenderer.on(IPC_CHANNELS.SERVER_STATUS, subscription);
-    return () => ipcRenderer.removeListener(IPC_CHANNELS.SERVER_STATUS, subscription);
+  onGuiLogEvents: (callback) => {
+    const subscription = (
+      _event: IpcRendererEvent,
+      events: GuiLogEvent[],
+      backlog: boolean
+    ) => callback(events, backlog);
+    ipcRenderer.on(IPC_CHANNELS.GUI_LOG_EVENTS, subscription);
+    ipcRenderer.invoke(IPC_CHANNELS.GUI_LOG_SUBSCRIBE);
+    return () => {
+      ipcRenderer.removeListener(IPC_CHANNELS.GUI_LOG_EVENTS, subscription);
+      ipcRenderer.invoke(IPC_CHANNELS.GUI_LOG_UNSUBSCRIBE);
+    };
   },
+  guiLogFiles: () => ipcRenderer.invoke(IPC_CHANNELS.GUI_LOG_FILES),
+  readGuiLogFile: (name) => ipcRenderer.invoke(IPC_CHANNELS.READ_GUI_LOG_FILE, name),
   onCrowdinPopupClosed: (callback) => {
     const subscription = () => callback();
     ipcRenderer.on(IPC_CHANNELS.CROWDIN_POPUP_CLOSED, subscription);

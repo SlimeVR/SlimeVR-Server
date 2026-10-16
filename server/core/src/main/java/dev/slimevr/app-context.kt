@@ -5,6 +5,7 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.logging.LogSourceProvider
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -54,6 +55,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val resetsManager: ResetsManager
 	val tapDetectionManager: TapDetectionManager
 	val stepMountingManager: StepMountingManager
+	val logSources: List<LogSourceProvider>
 	fun startObserving()
 	suspend fun dispose()
 }
@@ -81,6 +83,7 @@ class AppContext(
 	override val resetsManager: ResetsManager,
 	override val tapDetectionManager: TapDetectionManager,
 	override val stepMountingManager: StepMountingManager,
+	override val logSources: List<LogSourceProvider>,
 ) : AppContextProvider {
 	override fun startObserving() {
 		keybindManager.startObserving(this)

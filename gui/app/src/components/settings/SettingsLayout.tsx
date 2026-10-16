@@ -77,6 +77,10 @@ export function SettingSelectorMobile() {
       url: '/settings/serial',
     },
     {
+      label: l10n.getString('settings-sidebar-logs'),
+      url: '/settings/logs',
+    },
+    {
       label: l10n.getString('settings-sidebar-firmware-tool'),
       url: '/settings/firmware-tool',
     },

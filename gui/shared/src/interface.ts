@@ -4,12 +4,24 @@ import {
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
-import { ErrorReportingConsent } from 'solarxr-protocol';
+import { ErrorReportingConsent, LogLevel, LogSource } from 'solarxr-protocol';
 
-export type ServerStatusEvent = {
-  type: 'stdout' | 'stderr' | 'error' | 'terminated' | 'other';
+export interface GuiLogEvent {
+  source: LogSource;
+  timeMs: number;
+  level: LogLevel;
+  logger: string;
   message: string;
-};
+  stackTrace: string | null;
+}
+
+export interface GuiLogFile {
+  source: LogSource;
+  name: string;
+  size: number;
+  modifiedMs: number;
+  current: boolean;
+}
 
 export type OSStats = {
   type: 'linux' | 'windows' | 'macos' | 'unknown';
@@ -49,7 +61,11 @@ export interface ErrorReportingState {
 }
 
 export interface IElectronAPI {
-  onServerStatus: (cb: (data: ServerStatusEvent) => void) => () => void;
+  onGuiLogEvents: (
+    cb: (events: GuiLogEvent[], backlog: boolean) => void
+  ) => () => void;
+  guiLogFiles: () => Promise<GuiLogFile[]>;
+  readGuiLogFile: (name: string) => Promise<Uint8Array | null>;
   onCrowdinPopupClosed: (cb: () => void) => () => void;
   openUrl: (url: string) => Promise<void>;
   osStats: () => Promise<OSStats>;

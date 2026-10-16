@@ -20,7 +20,7 @@ export default defineConfig({
       externalizeDeps: { exclude: ['@slimevr/gui-shared'] },
       rollupOptions: {
         input: resolve(__dirname, 'main/index.ts'),
-        external: ['pino', 'pino-pretty', 'pino-roll', 'commander', 'open'],
+        external: ['pino', 'pino-pretty', 'commander', 'open'],
       },
     },
   },

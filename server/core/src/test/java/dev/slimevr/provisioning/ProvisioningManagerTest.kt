@@ -3,8 +3,8 @@ package dev.slimevr.provisioning
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
-import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestDevicesConfig
+import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device

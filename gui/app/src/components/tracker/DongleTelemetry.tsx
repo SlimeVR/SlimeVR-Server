@@ -1,9 +1,10 @@
 import classNames from 'classnames';
-import { Clickable } from '@/components/commons/Clickable';
+import { SERIES_COLORS } from '@/components/commons/charts/series-colors';
 import { IconButton } from '@/components/commons/IconButton';
 import { useMemo, useRef, useState } from 'react';
 import { useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
+import { SegmentedControl } from '@/components/commons/SegmentedControl';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 import { DropdownInside } from '@/components/commons/Dropdown';
@@ -23,19 +24,6 @@ export interface TelemetryTracker {
   name: string;
   color: string;
 }
-
-export const SERIES_COLORS = [
-  '#3987e5',
-  '#d95926',
-  '#199e70',
-  '#c98500',
-  '#d55181',
-  '#008300',
-  '#9085e9',
-  '#e66767',
-  '#00a3e0',
-  '#e59400',
-];
 
 export function isGapEventActive(
   ev: GapEvent,
@@ -254,22 +242,14 @@ export function DongleTelemetry({
             />
           </div>
 
-          <div className="flex bg-background-80 rounded-md p-2 gap-0.5">
-            {WINDOW_OPTIONS.map((w) => (
-              <Clickable
-                key={w.sec}
-                onClick={() => handleSetWindowSec(w.sec)}
-                className={classNames(
-                  'text-standard-bold px-2.5 py-1.5 rounded',
-                  windowSec === w.sec
-                    ? 'bg-accent-background-30 text-background-10'
-                    : 'text-background-30 hover:text-background-10'
-                )}
-              >
-                {w.label}
-              </Clickable>
-            ))}
-          </div>
+          <SegmentedControl
+            value={windowSec}
+            onChange={handleSetWindowSec}
+            options={WINDOW_OPTIONS.map((w) => ({
+              value: w.sec,
+              label: w.label,
+            }))}
+          />
 
           <IconButton
             labelId={

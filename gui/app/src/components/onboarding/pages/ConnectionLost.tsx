@@ -117,7 +117,9 @@ export function ConnectionLost() {
         </div>
         {(isCrashed || isTimedOut) && (
           <div className="flex justify-center">
-            <CrashReportBanner kind={isTimedOut ? 'timeout' : 'connection_lost'} />
+            <CrashReportBanner
+              kind={isTimedOut ? 'timeout' : 'connection_lost'}
+            />
           </div>
         )}
       </div>

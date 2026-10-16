@@ -38,6 +38,7 @@ import { driverSettingsPage, DriverSettings } from './pages/DriverSettings';
 import { vrchatOscSettingsPage, VRCOSCSettings } from './pages/VRCOSCSettings';
 import { vmcSettingsPage, VMCSettings } from './pages/VMCSettings';
 import { serialSettingsPage, Serial } from './pages/Serial';
+import { logsSettingsPage, LogsSettings } from './pages/logs/LogsSettings';
 import {
   advancedSettingsPage,
   AdvancedSettings,
@@ -73,6 +74,7 @@ export const settingsPages: SettingsPageRoute[] = [
   { page: vrchatOscSettingsPage, element: <VRCOSCSettings /> },
   { page: vmcSettingsPage, element: <VMCSettings /> },
   { page: serialSettingsPage, element: <Serial /> },
+  { page: logsSettingsPage, element: <LogsSettings /> },
   { page: firmwareToolSettingsPage, element: <FirmwareToolSettings /> },
   { page: vrcWarningsSettingsPage, element: <VRCWarningsPage /> },
   { page: advancedSettingsPage, element: <AdvancedSettings /> },

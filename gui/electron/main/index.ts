@@ -1,3 +1,4 @@
+import { LogSource } from 'solarxr-protocol';
 import {
   app,
   BrowserWindow,
@@ -28,12 +29,12 @@ import {
   getWindowStateFile,
 } from './paths';
 import { initStores } from './store';
-import { closeLogger, logger, rendererLogger } from './logger';
+import { closeLogger, logger, rendererLogger, subscribeGuiLogs } from './logger';
+import { listLogFiles } from './log-files';
 
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
-import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 import { openCrowdinPopup } from './crowdin';
@@ -200,6 +201,47 @@ handleIpc(IPC_CHANNELS.OPEN_FILE, (e, folder) => {
     logger.error({ path: requestedPath }, 'Blocked unauthorized path');
   }
 });
+
+handleIpc(IPC_CHANNELS.GUI_LOG_FILES, () =>
+  // Newest first, so the first one is the file being written to
+  listLogFiles(getLogsFolder()).map(({ name, size, modifiedMs }, index) => ({
+    source: LogSource.GUI,
+    name,
+    size,
+    modifiedMs,
+    current: index === 0,
+  }))
+);
+
+handleIpc(IPC_CHANNELS.READ_GUI_LOG_FILE, async (e, name) => {
+  const file = listLogFiles(getLogsFolder()).find((f) => f.name === name);
+  if (!file) return null;
+  return new Uint8Array(await readFile(file.path));
+});
+
+const guiLogSubscriptions = new Map<number, () => void>();
+
+const stopGuiLogs = (windowId: number) => {
+  guiLogSubscriptions.get(windowId)?.();
+  guiLogSubscriptions.delete(windowId);
+};
+
+handleIpc(IPC_CHANNELS.GUI_LOG_SUBSCRIBE, (e) => {
+  const sender = e.sender;
+  stopGuiLogs(sender.id);
+  guiLogSubscriptions.set(
+    sender.id,
+    subscribeGuiLogs((events, backlog) => {
+      if (sender.isDestroyed()) {
+        stopGuiLogs(sender.id);
+        return;
+      }
+      sender.send(IPC_CHANNELS.GUI_LOG_EVENTS, events, backlog);
+    })
+  );
+});
+
+handleIpc(IPC_CHANNELS.GUI_LOG_UNSUBSCRIBE, (e) => stopGuiLogs(e.sender.id));
 
 handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
   switch (folder) {
@@ -507,12 +549,6 @@ const spawnServer = async () => {
         : undefined,
   });
 
-  const sendToWindow = (event: ServerStatusEvent) => {
-    if (mainWindow && !mainWindow.webContents.isDestroyed()) {
-      mainWindow.webContents.send(IPC_CHANNELS.SERVER_STATUS, event);
-    }
-  };
-
   const outputTail: string[] = [];
   const keepOutput = (message: string) => {
     outputTail.push(...message.split('\n').filter((line) => line.length > 0));
@@ -520,15 +556,8 @@ const spawnServer = async () => {
   };
   trackServerOutput(() => outputTail.join('\n'));
 
-  serverProcess.stdout?.on('data', (message) => {
-    keepOutput(message.toString());
-    sendToWindow({ message: message.toString(), type: 'stdout' });
-  });
-
-  serverProcess.stderr?.on('data', (message) => {
-    keepOutput(message.toString());
-    sendToWindow({ message: message.toString(), type: 'stderr' });
-  });
+  serverProcess.stdout?.on('data', (message) => keepOutput(message.toString()));
+  serverProcess.stderr?.on('data', (message) => keepOutput(message.toString()));
 
   serverProcess.on('error', (err) => {
     logger.info({ err }, 'Error launching the java server');

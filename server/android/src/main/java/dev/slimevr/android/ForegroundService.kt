@@ -35,6 +35,7 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.logging.ServerLogSource
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -88,11 +89,12 @@ class ForegroundService : Service() {
 	private var wakeLock: PowerManager.WakeLock? = null
 	private var multicastLock: WifiManager.MulticastLock? = null
 	private var wifiLock: WifiManager.WifiLock? = null
+	private lateinit var serverLogSource: ServerLogSource
 
 	override fun onCreate() {
 		super.onCreate()
 		// Blocking so logging is live before onStartCommand, which already reports errors.
-		runBlocking { setupAndroidLogging(filesDir) }
+		serverLogSource = runBlocking { setupAndroidLogging(filesDir) }
 		createNotificationChannel()
 	}
 
@@ -218,6 +220,7 @@ class ForegroundService : Service() {
 			resetsManager = resetsManager,
 			tapDetectionManager = tapDetectionManager,
 			stepMountingManager = stepMountingManager,
+			logSources = listOf(serverLogSource),
 		)
 
 		acquireLocks()

@@ -21,6 +21,7 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.logging.LogSourceProvider
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -312,6 +313,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
 	override val stepMountingManager: StepMountingManager get() = error("not used in test")
+	override val logSources: List<LogSourceProvider> = emptyList()
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

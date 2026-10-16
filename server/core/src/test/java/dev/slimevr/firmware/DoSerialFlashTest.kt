@@ -4,8 +4,8 @@ import dev.slimevr.FakeSerialPortWatcher
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
-import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestDevicesConfig
+import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions

@@ -499,6 +499,7 @@ settings-sidebar-vrchat_osc = VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = USB Serial Console
+settings-sidebar-logs = Logs
 settings-sidebar-appearance = Appearance
 settings-sidebar-home = Home Screen
 settings-sidebar-checklist = Tracking checklist
@@ -875,6 +876,70 @@ settings-serial-send_command-warning =
     <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
 settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
+
+## Logs settings
+settings-logs = Logs
+settings-logs-description = Follow the logs live. When you ask for help, export them and attach the .zip file to your message.
+settings-logs-tab-live = Live
+settings-logs-tab-files = Files ({ $count })
+settings-logs-copy = Copy shown lines
+settings-logs-export_all = Export all logs (.zip)
+settings-logs-export-title = Export logs
+settings-logs-export-all = All log files (.zip)
+settings-logs-export-all-description = Every log file, for bug reports
+settings-logs-export-origin = { $source } files only (.zip)
+settings-logs-export-selected =
+    { $count ->
+        [one] Export 1 selected file (.zip)
+       *[other] Export { $count } selected files (.zip)
+    }
+settings-logs-sources = Sources
+settings-logs-source-all = All
+settings-logs-source-slimevr_server = Server
+settings-logs-source-gui = GUI
+settings-logs-source-openvr_driver = OpenVR driver
+settings-logs-source-bindings_provider = Bindings provider
+settings-logs-level = Level
+settings-logs-level-debug = Debug
+settings-logs-level-info = Info
+settings-logs-level-warn = Warning
+settings-logs-level-error = Error
+settings-logs-logger = Logger
+settings-logs-logger-all = All
+settings-logs-search = Search messages
+settings-logs-filters = Filters
+settings-logs-details-show = Show details
+settings-logs-details-hide = Hide details
+settings-logs-new_lines =
+    { $count ->
+        [one] 1 new line
+       *[other] { $count } new lines
+    }
+settings-logs-status-live = Live
+settings-logs-status-paused = Paused
+settings-logs-status-file = File
+settings-logs-lines =
+    { $total ->
+        [one] 1 line
+       *[other] { $total } lines
+    }
+settings-logs-lines-filtered = { $shown } of { $total } lines
+settings-logs-pause = Pause
+settings-logs-resume = Resume
+settings-logs-clear = Clear view
+settings-logs-open_folder = Open logs folder
+settings-logs-back = Back to files
+settings-logs-viewing = Viewing { $name }
+settings-logs-files-empty = No log files yet.
+settings-logs-files-current = current
+settings-logs-files-part = Part { $part }
+settings-logs-files-count =
+    { $count ->
+        [one] 1 file
+       *[other] { $count } files
+    }
+settings-logs-files-view = View
+settings-logs-files-save = Save
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC

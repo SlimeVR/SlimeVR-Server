@@ -10,11 +10,16 @@ import {
   ErrorReportingState,
   GHGet,
   GHReturn,
+  GuiLogFile,
   OSStats,
 } from './interface';
 
 export const IPC_CHANNELS = {
-  SERVER_STATUS: 'server-status',
+  GUI_LOG_EVENTS: 'gui-log-events',
+  GUI_LOG_SUBSCRIBE: 'gui-log-subscribe',
+  GUI_LOG_UNSUBSCRIBE: 'gui-log-unsubscribe',
+  GUI_LOG_FILES: 'gui-log-files',
+  READ_GUI_LOG_FILE: 'read-gui-log-file',
   CROWDIN_POPUP_CLOSED: 'crowdin-popup-closed',
   OPEN_URL: 'open-url',
   OS_STATS: 'os-stats',
@@ -64,4 +69,9 @@ export interface IpcInvokeMap {
   [IPC_CHANNELS.SET_KEYBIND_RECORDING]: (recording: boolean) => void;
   [IPC_CHANNELS.SET_ERROR_REPORTING]: (state: ErrorReportingState) => void;
   [IPC_CHANNELS.SEND_CRASH_REPORT]: (kind: CrashReportKind) => boolean;
+  /** Starts sending this window GUI_LOG_EVENTS: the kept events, then new ones */
+  [IPC_CHANNELS.GUI_LOG_SUBSCRIBE]: () => void;
+  [IPC_CHANNELS.GUI_LOG_UNSUBSCRIBE]: () => void;
+  [IPC_CHANNELS.GUI_LOG_FILES]: () => GuiLogFile[];
+  [IPC_CHANNELS.READ_GUI_LOG_FILE]: (name: string) => Promise<Uint8Array | null>;
 }

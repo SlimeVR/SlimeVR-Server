@@ -47,6 +47,7 @@ import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
+import dev.slimevr.userLogDirectory
 import dev.slimevr.util.appCoroutineExceptionHandler
 import dev.slimevr.util.installUncaughtExceptionReporting
 import dev.slimevr.vmc.VMCManager
@@ -61,9 +62,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.rpc.KeybindSupport
+import solarxr_protocol.rpc.LogSource
 
 fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler + CoroutineName("Main")) {
-	setupDesktopLogging()
+	val serverLogSource = setupDesktopLogging()
 	installUncaughtExceptionReporting()
 
 	val version = GIT_VERSION_TAG.ifBlank { GIT_COMMIT_HASH } + if (!GIT_CLEAN) "-dirty" else ""
@@ -198,6 +200,13 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		resetsManager = resetsManager,
 		tapDetectionManager = tapDetectionManager,
 		stepMountingManager = stepMountingManager,
+		logSources = listOf(serverLogSource) +
+			userLogDirectory()?.let { dir ->
+				listOf(
+					LogFileSource(LogSource.OPENVR_DRIVER, dir.resolve("slimevr-openvr-driver.log")),
+					LogFileSource(LogSource.BINDINGS_PROVIDER, dir.resolve("slimevr-bindings-provider.log")),
+				)
+			}.orEmpty(),
 	)
 
 	try {

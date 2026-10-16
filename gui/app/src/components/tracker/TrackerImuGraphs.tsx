@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import { useState } from 'react';
-import { Clickable } from '@/components/commons/Clickable';
 import { IconButton } from '@/components/commons/IconButton';
 import { Typography } from '@/components/commons/Typography';
+import { SegmentedControl } from '@/components/commons/SegmentedControl';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 import {
@@ -241,22 +240,14 @@ export function TrackerImuGraphs({ trackerId }: { trackerId: number }) {
           id="tracker-settings-imu_graphs-title"
         />
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex bg-background-80 rounded-md p-2 gap-0.5">
-            {IMU_WINDOW_OPTIONS.map((w) => (
-              <Clickable
-                key={w.sec}
-                onClick={() => handleSetWindowSec(w.sec)}
-                className={classNames(
-                  'text-standard-bold px-2.5 py-1.5 rounded',
-                  windowSec === w.sec
-                    ? 'bg-accent-background-30 text-background-10'
-                    : 'text-background-30 hover:text-background-10'
-                )}
-              >
-                {w.label}
-              </Clickable>
-            ))}
-          </div>
+          <SegmentedControl
+            value={windowSec}
+            onChange={handleSetWindowSec}
+            options={IMU_WINDOW_OPTIONS.map((w) => ({
+              value: w.sec,
+              label: w.label,
+            }))}
+          />
           <IconButton
             labelId={
               live

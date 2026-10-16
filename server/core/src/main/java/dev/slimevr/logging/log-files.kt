@@ -4,6 +4,7 @@ import io.klogging.sending.SendString
 import java.io.BufferedOutputStream
 import java.io.Closeable
 import java.io.DataOutputStream
+import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Path
 import java.time.LocalDateTime
@@ -66,10 +67,13 @@ class LogFileSender(
 	}
 }
 
-private fun deleteLogsBeyond(directory: Path, keep: Int) = directory.toFile()
+/** Server log files in [directory], newest first, logs left by previous runs included. */
+fun listLogFiles(directory: Path): List<File> = directory.toFile()
 	.listFiles().orEmpty()
-	.filter { it.name.startsWith(LOG_TAG) && it.name.endsWith(LOG_SUFFIX) }
+	.filter { it.isFile && it.name.startsWith(LOG_TAG) && it.name.endsWith(LOG_SUFFIX) }
 	.sortedByDescending { it.lastModified() }
+
+private fun deleteLogsBeyond(directory: Path, keep: Int) = listLogFiles(directory)
 	.drop(keep)
 	// A file another process still holds open cannot be deleted on Windows; retry on exit.
 	.forEach { if (!it.delete()) it.deleteOnExit() }

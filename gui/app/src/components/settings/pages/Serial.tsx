@@ -25,7 +25,7 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { WarningBox } from '@/components/commons/TipBox';
-import { fileSave } from 'browser-fs-access';
+import { saveFile } from '@/utils/save-file';
 import { waitUntil } from '@/utils/a11y';
 import { Input } from '@/components/commons/Input';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
@@ -273,10 +273,7 @@ export function Serial() {
     const blob = new Blob([consoleContentRef.current], {
       type: 'text/plain',
     });
-    fileSave(blob, {
-      fileName: 'serial-logs.txt',
-      extensions: ['.txt'],
-    });
+    await saveFile(blob, 'serial-logs.txt', ['.txt']);
   };
 
   // Pairing, DFU and calibration are HID firmware commands, unrecognized devices get none of them

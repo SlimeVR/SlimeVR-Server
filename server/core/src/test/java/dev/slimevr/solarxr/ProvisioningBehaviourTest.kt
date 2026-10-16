@@ -3,8 +3,8 @@ package dev.slimevr.solarxr
 import dev.slimevr.TestAppContext
 import dev.slimevr.TestSerial
 import dev.slimevr.VRServer
-import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestDevicesConfig
+import dev.slimevr.buildTestSerial
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.context.Context
 import dev.slimevr.provisioning.ProvisioningManager

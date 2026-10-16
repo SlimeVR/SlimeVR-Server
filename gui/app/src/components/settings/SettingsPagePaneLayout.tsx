@@ -8,11 +8,15 @@ export function SettingsPagePaneLayout({
   contentClassName,
   icon,
   title,
+  actions,
+  hideTitleOnMobile = false,
   ...props
 }: {
   children: ReactNode;
   icon: ReactNode;
   title?: string;
+  actions?: ReactNode;
+  hideTitleOnMobile?: boolean;
   contentClassName?: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
@@ -23,11 +27,25 @@ export function SettingsPagePaneLayout({
       )}
       {...props}
     >
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 flex-none bg-accent-background-40 flex justify-center items-center rounded-full fill-background-10">
+      <div className="flex flex-wrap items-center gap-4">
+        <div
+          className={classNames(
+            'w-10 h-10 flex-none bg-accent-background-40 flex justify-center items-center rounded-full fill-background-10',
+            hideTitleOnMobile && 'mobile:hidden'
+          )}
+        >
           {icon}
         </div>
-        {title && <Typography variant="main-title" id={title} />}
+        {title && (
+          <div className={classNames(hideTitleOnMobile && 'mobile:hidden')}>
+            <Typography variant="main-title" id={title} />
+          </div>
+        )}
+        {actions && (
+          <div className="flex flex-grow flex-wrap items-center gap-2">
+            {actions}
+          </div>
+        )}
       </div>
       <div className={classNames('flex-col w-full min-w-0', contentClassName)}>
         {children}

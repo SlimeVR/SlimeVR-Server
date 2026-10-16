@@ -129,7 +129,10 @@ fun resolveLogDirectory(): Path? {
 	if (Path("logs/").exists()) {
 		return Path("logs/")
 	}
+	return userLogDirectory()
+}
 
+fun userLogDirectory(): Path? {
 	val home = System.getenv("HOME")
 	val appData = System.getenv("AppData")
 

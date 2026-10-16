@@ -1,20 +1,12 @@
 import classNames from 'classnames';
-import {
-  CSSProperties,
-  ReactNode,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { useLocalization } from '@fluent/react';
 import { ProfileKind } from 'solarxr-protocol';
 import { ArrowDownIcon } from './commons/icon/ArrowIcons';
 import { CheckIcon } from './commons/icon/CheckIcon';
 import { HumanIcon } from './commons/icon/HumanIcon';
 import { TuneIcon } from './commons/icon/TuneIcon';
-import { Clickable } from './commons/Clickable';
-import { Drawer } from './commons/Drawer';
+import { PopoverMenu, PopoverMenuItem } from './commons/PopoverMenu';
 import { Tooltip } from './commons/Tooltip';
 import { Typography } from './commons/Typography';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -64,14 +56,7 @@ function ProfileSection({
           const active = name === profiles.active;
           return (
             <li key={name}>
-              <Clickable
-                current={active || undefined}
-                onClick={() => onSelect(name)}
-                className={classNames(
-                  'flex w-full items-center gap-2 px-4 py-2 mobile:py-3 hover:bg-background-50',
-                  active && 'bg-background-50/50'
-                )}
-              >
+              <PopoverMenuItem current={active} onClick={() => onSelect(name)}>
                 <span className="w-3 flex justify-center fill-accent-background-10 shrink-0">
                   {active && <CheckIcon size={10} />}
                 </span>
@@ -84,7 +69,7 @@ function ProfileSection({
                     {name}
                   </Typography>
                 </span>
-              </Clickable>
+              </PopoverMenuItem>
             </li>
           );
         })}
@@ -129,13 +114,9 @@ function ProfileMenu({
           select(ProfileKind.USER, profiles.user.active, name)
         }
       />
-      <Clickable
-        to="/settings/profiles"
-        onClick={onClose}
-        className="flex items-center px-4 py-2 mobile:py-3 hover:bg-background-50"
-      >
+      <PopoverMenuItem to="/settings/profiles" onClick={onClose}>
         <Typography id="titlebar-profiles-manage" />
-      </Clickable>
+      </PopoverMenuItem>
     </div>
   );
 }
@@ -144,31 +125,16 @@ export function ProfileQuickSwitch() {
   const { l10n } = useLocalization();
   const { isMobile } = useBreakpoint('mobile');
   const profiles = useProfiles();
-  const [open, setOpen] = useState(false);
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const id = `profile-switch-${useId().replace(/:/g, '')}`;
-  const anchorName = `--${id}`;
-
-  useEffect(() => {
-    const el = popoverRef.current;
-    if (!el) return;
-    el.setAttribute('popover', 'auto');
-    const onToggle = (e: Event) =>
-      setOpen((e as ToggleEvent).newState === 'open');
-    el.addEventListener('toggle', onToggle);
-    return () => el.removeEventListener('toggle', onToggle);
-  }, [profiles !== null, isMobile]);
 
   if (!profiles) return null;
 
-  const close = () => {
-    popoverRef.current?.hidePopover();
-    setOpen(false);
-  };
-
   return (
-    <>
-      <div className="flex min-w-0" style={{ anchorName } as CSSProperties}>
+    <PopoverMenu
+      anchorClassName="min-w-0"
+      drawerTitle={
+        <Typography variant="section-title" id="titlebar-profiles" />
+      }
+      trigger={(triggerProps, open) => (
         <Tooltip
           preferedDirection="bottom"
           disabled={open}
@@ -176,11 +142,7 @@ export function ProfileQuickSwitch() {
         >
           <button
             type="button"
-            {...(isMobile
-              ? { onClick: () => setOpen(true) }
-              : { popovertarget: id })}
-            aria-expanded={open}
-            aria-controls={id}
+            {...triggerProps}
             aria-label={l10n.getString('titlebar-profiles')}
             className={classNames(
               'flex items-center gap-2 h-7 pl-2.5 pr-2 rounded-lg min-w-0 shrink',
@@ -217,33 +179,11 @@ export function ProfileQuickSwitch() {
             </span>
           </button>
         </Tooltip>
-      </div>
-      {isMobile ? (
-        <Drawer
-          isOpen={open}
-          onClose={close}
-          title={<Typography variant="section-title" id="titlebar-profiles" />}
-        >
-          <div id={id}>
-            <ProfileMenu profiles={profiles} open={open} onClose={close} />
-          </div>
-        </Drawer>
-      ) : (
-        <div
-          ref={popoverRef}
-          id={id}
-          className="dropdown-popover fixed inset-auto m-0 mt-2 p-0 w-[260px] overflow-hidden rounded-lg border border-background-50 bg-background-60 shadow-lg"
-          style={
-            {
-              positionAnchor: anchorName,
-              positionArea: 'bottom span-left',
-              positionTryFallbacks: 'flip-inline',
-            } as CSSProperties
-          }
-        >
-          <ProfileMenu profiles={profiles} open={open} onClose={close} />
-        </div>
       )}
-    </>
+    >
+      {({ open, close }) => (
+        <ProfileMenu profiles={profiles} open={open} onClose={close} />
+      )}
+    </PopoverMenu>
   );
 }

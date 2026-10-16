@@ -23,6 +23,7 @@ import dev.slimevr.solarxr.rpc.HeightCalibrationBehaviour
 import dev.slimevr.solarxr.rpc.InstalledInfoBehaviour
 import dev.slimevr.solarxr.rpc.KeybindsBehaviour
 import dev.slimevr.solarxr.rpc.KnownTrackersBehaviour
+import dev.slimevr.solarxr.rpc.LogsBehaviour
 import dev.slimevr.solarxr.rpc.MagBehaviour
 import dev.slimevr.solarxr.rpc.ProfilesBehaviour
 import dev.slimevr.solarxr.rpc.ProvisioningBehaviour
@@ -209,6 +210,7 @@ class SolarXRBridge(
 			add(DongleSettingsBehaviour(appContext.server))
 			add(TelemetryBehaviour(appContext.server))
 			add(TrackerImuTelemetryBehaviour(appContext.server))
+			add(LogsBehaviour(appContext.logSources))
 			add(DriverHandshakeBehaviour(appContext))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext))
