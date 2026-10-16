@@ -221,6 +221,9 @@ settings-serial = טרמינל סידרתי
 settings-serial-factory_reset-warning-cancel = ביטול
 settings-serial-send_command-warning-cancel = ביטול
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 
