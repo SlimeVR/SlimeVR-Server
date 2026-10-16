@@ -122,7 +122,10 @@ export function LogList({ rows, query }: { rows: LogRow[]; query: string }) {
     getItemKey: (index) => rows[index].id,
   });
 
-  const newestId = rows.length > 0 ? rows[rows.length - 1].id : -1;
+  const newestId = useMemo(
+    () => rows.reduce((newest, row) => Math.max(newest, row.id), -1),
+    [rows]
+  );
   const unseen = useMemo(
     () => (atBottom ? 0 : rows.filter((row) => row.id > lastSeenId).length),
     [rows, atBottom, lastSeenId]
