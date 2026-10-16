@@ -343,6 +343,9 @@ settings-serial-serial_select = Valige jadaport
 settings-serial-send_command-warning-ok = Ma tean mida ma teen
 settings-serial-send_command-warning-cancel = Tühista
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Luba
