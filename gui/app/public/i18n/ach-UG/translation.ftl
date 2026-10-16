@@ -453,6 +453,7 @@ settings-sidebar-vrchat_osc = crwdns9556:0crwdne9556:0
 settings-sidebar-osc_vmc = crwdns9558:0crwdne9558:0
 settings-sidebar-utils = crwdns7674:0crwdne7674:0
 settings-sidebar-serial = crwdns7676:0crwdne7676:0
+settings-sidebar-logs = crwdns9984:0crwdne9984:0
 settings-sidebar-appearance = crwdns7678:0crwdne7678:0
 settings-sidebar-home = crwdns7680:0crwdne7680:0
 settings-sidebar-checklist = crwdns7682:0crwdne7682:0
@@ -803,6 +804,55 @@ settings-serial-send_command-placeholder = crwdns8198:0crwdne8198:0
 settings-serial-send_command-warning = crwdns8200:0crwdne8200:0
 settings-serial-send_command-warning-ok = crwdns8202:0crwdne8202:0
 settings-serial-send_command-warning-cancel = crwdns8204:0crwdne8204:0
+
+## Logs settings
+
+settings-logs = crwdns9986:0crwdne9986:0
+settings-logs-description = crwdns9988:0crwdne9988:0
+settings-logs-tab-live = crwdns9990:0crwdne9990:0
+settings-logs-tab-files = crwdns9992:0$countcrwdne9992:0
+settings-logs-copy = crwdns9994:0crwdne9994:0
+settings-logs-export_all = crwdns9996:0crwdne9996:0
+settings-logs-export-title = crwdns9998:0crwdne9998:0
+settings-logs-export-all = crwdns10000:0crwdne10000:0
+settings-logs-export-all-description = crwdns10002:0crwdne10002:0
+settings-logs-export-source = crwdns10004:0$sourcecrwdne10004:0
+settings-logs-export-selected = crwdns10006:0$countcrwdnd10006:0$countcrwdne10006:0
+settings-logs-sources = crwdns10008:0crwdne10008:0
+settings-logs-source-all = crwdns10010:0crwdne10010:0
+settings-logs-source-slimevr_server = crwdns10012:0crwdne10012:0
+settings-logs-source-gui = crwdns10014:0crwdne10014:0
+settings-logs-source-openvr_driver = crwdns10016:0crwdne10016:0
+settings-logs-source-bindings_provider = crwdns10018:0crwdne10018:0
+settings-logs-level = crwdns10020:0crwdne10020:0
+settings-logs-level-debug = crwdns10022:0crwdne10022:0
+settings-logs-level-info = crwdns10024:0crwdne10024:0
+settings-logs-level-warn = crwdns10026:0crwdne10026:0
+settings-logs-level-error = crwdns10028:0crwdne10028:0
+settings-logs-logger = crwdns10030:0crwdne10030:0
+settings-logs-logger-all = crwdns10032:0crwdne10032:0
+settings-logs-search = crwdns10034:0crwdne10034:0
+settings-logs-filters = crwdns10036:0crwdne10036:0
+settings-logs-details-show = crwdns10038:0crwdne10038:0
+settings-logs-details-hide = crwdns10040:0crwdne10040:0
+settings-logs-new_lines = crwdns10042:0$countcrwdnd10042:0$countcrwdne10042:0
+settings-logs-status-live = crwdns10044:0crwdne10044:0
+settings-logs-status-paused = crwdns10046:0crwdne10046:0
+settings-logs-status-file = crwdns10048:0crwdne10048:0
+settings-logs-lines = crwdns10050:0$totalcrwdnd10050:0$totalcrwdne10050:0
+settings-logs-lines-filtered = crwdns10052:0$showncrwdnd10052:0$totalcrwdne10052:0
+settings-logs-pause = crwdns10054:0crwdne10054:0
+settings-logs-resume = crwdns10056:0crwdne10056:0
+settings-logs-clear = crwdns10058:0crwdne10058:0
+settings-logs-open_folder = crwdns10060:0crwdne10060:0
+settings-logs-back = crwdns10062:0crwdne10062:0
+settings-logs-viewing = crwdns10064:0$namecrwdne10064:0
+settings-logs-files-empty = crwdns10066:0crwdne10066:0
+settings-logs-files-current = crwdns10068:0crwdne10068:0
+settings-logs-files-part = crwdns10070:0$partcrwdne10070:0
+settings-logs-files-count = crwdns10072:0$countcrwdnd10072:0$countcrwdne10072:0
+settings-logs-files-view = crwdns10074:0crwdne10074:0
+settings-logs-files-save = crwdns10076:0crwdne10076:0
 
 ## OSC VRChat settings
 
