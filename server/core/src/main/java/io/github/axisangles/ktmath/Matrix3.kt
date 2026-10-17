@@ -5,9 +5,8 @@ package io.github.axisangles.ktmath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-@JvmInline
 @Serializable
-value class Matrix3
+class Matrix3
 @Suppress("ktlint") constructor(
 	val xx: Float, val yx: Float, val zx: Float,
 	val xy: Float, val yy: Float, val zy: Float,
@@ -462,6 +461,29 @@ value class Matrix3
 		orthonormalize().toEulerAnglesAssumingOrthonormal(order)
 
 	fun toObject() = ObjectMatrix3(xx, yx, zx, xy, yy, zy, xz, yz, zz)
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Matrix3) return false
+		return xx == other.xx && yx == other.yx && zx == other.zx &&
+			xy == other.xy && yy == other.yy && zy == other.zy &&
+			xz == other.xz && yz == other.yz && zz == other.zz
+	}
+
+	override fun hashCode(): Int {
+		var result = xx.hashCode()
+		result = 31 * result + yx.hashCode()
+		result = 31 * result + zx.hashCode()
+		result = 31 * result + xy.hashCode()
+		result = 31 * result + yy.hashCode()
+		result = 31 * result + zy.hashCode()
+		result = 31 * result + xz.hashCode()
+		result = 31 * result + yz.hashCode()
+		result = 31 * result + zz.hashCode()
+		return result
+	}
+
+	override fun toString(): String = "Matrix3([$xx, $yx, $zx], [$xy, $yy, $zy], [$xz, $yz, $zz])"
 }
 
 data class ObjectMatrix3(
