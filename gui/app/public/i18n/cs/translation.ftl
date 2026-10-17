@@ -74,15 +74,6 @@ body_part-LEFT_MIDDLE_DISTAL = Vzálená kůstka levého prostředníku
 body_part-LEFT_RING_DISTAL = Vzálená kůstka levého prsteníku
 body_part-RIGHT_THUMB_DISTAL = Vzálená falanga pravého pacle
 
-## BoardType
-
-board_type-UNKNOWN = Neznámý
-board_type-CUSTOM = Vlastní deska
-board_type-WRANGLER = Wrangler Joycony
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR vývojářská IMU rukavice
-board_type-GESTURES = Gesta
-board_type-GENERIC_NRF = Obecné nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Žádný
@@ -227,14 +218,11 @@ tracker-settings-use_mag-description =
     
     Nejprve musíte povolit používání magnetometru, <magSetting>Kliknutím zde přejdete k nastavená magnetometru</magSetting>.
 tracker-settings-use_mag-label = Povolit magnetometr
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Název trackeru
 tracker-settings-name_section-description = Třeba nějakou roztomilou přezdívku :)
 tracker-settings-name_section-placeholder = Erimelova levá tlapka
 tracker-settings-name_section-label = Název trackeru
 tracker-settings-forget = Zapomenout tracker
-tracker-settings-forget-description = Odebere tracker z SlimeVR Serveru a zabrání jeho opětovnému připojení do té doby, dokud nebude server restarován. Konfigurace trackeru nebude ztracena.
 tracker-settings-forget-label = Zapomenout tracker
 tracker-settings-update-unavailable-v2 = Žádné vydání nebyla nalezena
 tracker-settings-update-incompatible = Nelze aktualizovat. Nekompatibilní deska nebo verze firmwaru
@@ -289,18 +277,15 @@ mounting_selection_menu-close = Zavřít
 
 ## Sidebar settings
 
-settings-sidebar-title = Nastavení
 settings-sidebar-general = Obecné
 settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-sidebar-trackers = Trackery
 settings-sidebar-interface = Rozhraní
-settings-sidebar-vrchat_osc = Trackery VRChat OSC
 settings-sidebar-utils = Nástroje
 settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
 settings-sidebar-home = Domovská obrazovka
 settings-sidebar-checklist = Přehled trackování
-settings-sidebar-notifications = Notifikace
 settings-sidebar-behavior = Chování
 settings-sidebar-firmware-tool = Nástroj pro DIY firmware
 settings-sidebar-vrc_warnings = Varovaní VRChat konfigurace
@@ -308,7 +293,6 @@ settings-sidebar-advanced = Pokročilé
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = Trackery VRChat OSC
 settings-routing-output-badge-off = Vypnuto
 settings-routing-group-fingers = Prsty
 settings-routing-hands-warning-cancel = Zrušit
@@ -325,7 +309,6 @@ settings-general-tracker_mechanics-filtering = Filtrování
 settings-general-tracker_mechanics-filtering-description =
     Vyberte typ filtrování pro své trackery.
     Predikce předpovídá pohyb, zatímco vyhlazování pohyb vyhlazuje.
-settings-general-tracker_mechanics-filtering-type = Typ filtrování
 settings-general-tracker_mechanics-filtering-type-none = Žádné filtrování
 settings-general-tracker_mechanics-filtering-type-none-description = Použít rotace tak, jak jsou. Nebude provedeno žádné filtrování.
 settings-general-tracker_mechanics-filtering-type-smoothing = Vyhlazování
@@ -338,21 +321,14 @@ settings-general-tracker_mechanics-save_mounting_reset = Uložit automatickou ka
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Uloží automatické kalibrování resetování umístění pro trackery mezi restarty. Užitečné
     pokud máte oblek, na kterém se umístění trackeru nemění mezi relacemi. <b>Nedoporučováno pro uživatele s běžnou sestavou</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Uložit "Kalibraci nasazení"
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Použít magnetometr na všech IMU trackerech, které jej podporují
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Použití magnetometr na všech trackerech které pro to mají kompatibilní firmware, snížení drifutu v stailních magnetických prostředích.
     Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Použít magnetometru na trackerech
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
-settings-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
 settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
-settings-stay_aligned-setup-description = Musíte dokončit "Nastavení Zůstaň Srovnaný" pro zapnutí Zůstaň Srovnaný.
-settings-stay_aligned-enabled-label = Upravit trackery
-settings-stay_aligned-general-label = Obecné
 settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
-settings-stay_aligned-relaxed_poses-description = Zůstaň Srovnaný používá vaše uvolněné pózy k udržení srovnání trackerů. K aktualizaci těchto póz použijte "Nastavte Zůstaň Srovnaný".
 settings-stay_aligned-relaxed_poses-standing = Upravit trackery při stoje
 settings-stay_aligned-relaxed_poses-sitting = Upravit pozici trackerů při sezení na židli
 settings-stay_aligned-relaxed_poses-flat = Upravte pozici trackerů při sezení na zemi, nebo ležení na zádech
@@ -365,15 +341,12 @@ settings-stay_aligned-debug-copy-label = Zkopírovat nastavení do schránky
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Plný Reset
-settings-keybinds_yaw-reset = Rychlý reset
 settings-keybinds_reset-all-button = Obnovit vše
 settings-keybinds-recorder-modal-done-button = Hotovo
 settings-keybinds-recorder-modal-cancel-button = Zrušit
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Nastavení trackování
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -386,30 +359,14 @@ settings-general-fk_settings-leg_tweak-skating_correction = Korekce bruslení
 settings-general-fk_settings-leg_tweak-toe_snap = Přichycení špiček
 settings-general-fk_settings-leg_tweak-foot_plant = Narovnání chodidla
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Síla korekce "bruslení"
-settings-general-fk_settings-leg_tweak-skating_correction-description = Korekce bruslení snižuje effect "bruslení", ale může snížit přesnost u některých pohybů. Pokud tuto funkci povolíte, nezapomeňte provést úplný reset a zkalibrovat se ve hře.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Připnutí k podlaze může zlepšit nebo dokonce zabránit propadání trackerů podlahou. Při zapnutí této funkce nezapomeňte provést úplný reset a zkalibrovat se ve hře.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
-settings-general-fk_settings-enforce_joint_constraints = Limity kostry
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Prosazování omezení
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
 settings-general-fk_settings-ik = Data pozice
-settings-general-fk_settings-ik-use_position = Použít Data pozice
-settings-general-fk_settings-arm_fk-reset_mode-description = Nastavte pózu rukou použitá pro reset nasazení.
-settings-general-fk_settings-arm_fk-back = Paže dozadu
-settings-general-fk_settings-arm_fk-back-description = Výchozí režim: paže směřují dozadu, předloktí dopředu.
-settings-general-fk_settings-arm_fk-tpose_up = T-póza (ruce nahoru)
-settings-general-fk_settings-arm_fk-tpose_up-description = Před zahájením plného resetu, očekává že stojíte vzpřímeně a máte paže volně spuštěné podél těla. A pro reset umístění zaujměte uvolněný postoj a pomalu zvedněte paže do pozice Téčka (90 stupňů jako písmeno T).
-settings-general-fk_settings-arm_fk-tpose_down = T-póza (ruce dolů)
-settings-general-fk_settings-arm_fk-tpose_down-description = Před zahájením plného resetu, očekává že zaujmete uvolněný postoj a pomalu zvednete paže do pozice Téčka (90 stupňů jako písmeno T). A pro reset umístění, že stojíte vzpřímeně a máte paže volně spuštěné podél těla.
-settings-general-fk_settings-arm_fk-forward = Vpřed
-settings-general-fk_settings-arm_fk-forward-description = Ideální pozice pro Vtubing: zvedněte paže do 90 stupňového úhlu. (90 stupňů jako písmeno T).
 settings-general-fk_settings-skeleton_settings-ratios = Poměry kostry
-settings-general-fk_settings-skeleton_settings-ratios-description = Změňte hodnoty nastavení kostry, Po změně budete možná muset poupravit vaše proporce.
 settings-general-fk_settings-self_localization-title = Režim Mocap
-settings-general-fk_settings-self_localization-description = Režim Mocap je experimentální funkce, která dokáže přibližně určit polohu vašeho těla bez VR Headsetu a dalších trackerů. Pro správnou funkci je však nutné mít trackery pro nohy a hlavu.
 
 ## Gesture control settings (tracker tapping)
 
@@ -448,9 +405,7 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Zvyš
 ## Appearance settings
 
 settings-interface-appearance = Vzhled
-settings-general-interface-dev_mode = Vývojářský režim
 settings-general-interface-dev_mode-description = Tento režim může být užitečný, pokud potřebujete podrobné údaje nebo omunikovat s trackerama na pokročilejší úrovni.
-settings-general-interface-dev_mode-label = Vývojářský režim
 settings-general-interface-theme = Barva tématu
 settings-general-interface-lang = Zvolte jazyk
 settings-general-interface-lang-description = Změňte výchozí jazyk, který chcete používat.
@@ -466,26 +421,19 @@ settings-interface-appearance-font_size-description = Toto ovlivňuje velikost p
 
 ## Notification settings
 
-settings-interface-notifications = Notifikace
 settings-general-interface-feedback_sound = Zvuk zpětné vazby
 settings-general-interface-feedback_sound-description = Tato možnost spustí zvuk, když je aktivován reset.
-settings-general-interface-feedback_sound-label = Zvuk zpětné vazby
 settings-general-interface-feedback_sound-volume = Hlasitost zvuku zpětné vazby
 settings-general-interface-connected_trackers_warning = Upozornění o připojených trackerů
 settings-general-interface-connected_trackers_warning-description = Tato možnost zobrazí vyskakovací okno pokaždé, když se pokusíte opustit SlimeVR, když máte připojen jeden nebo více trackerů. Připomene vám, abyste vypnuli své trackery, až budete hotovi, abyste prodloužili životnost baterie.
-settings-general-interface-connected_trackers_warning-label = Upozornění o připojených trackerech při ukončení
 
 ## Behavior settings
 
 settings-interface-behavior = Chování
-settings-general-interface-dev_mode = Vývojářský režim
-settings-general-interface-dev_mode-label = Vývojářský režim
 settings-general-interface-use_tray = Minimalizovat do oznamovací oblasti
 settings-general-interface-use_tray-description = Umožňuje vám zavřít okno, aniž byste zavřeli SlimeVR Server, takže ho můžete nadále používat bez rozhraní.
-settings-general-interface-use_tray-label = Minimalizovat do oznamovací oblasti
 settings-general-interface-discord_presence = Sdílet aktivitu na Discordu
 settings-general-interface-discord_presence-description = Sdělí Discord klientu, že používáte SlimeVR společně s počtem trackerů IMU, které používáte.
-settings-general-interface-discord_presence-label = Sdílet aktivitu na Discordu
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Sliming around
@@ -495,12 +443,6 @@ settings-general-interface-discord_presence-message =
        *[other] Používá { $amount } trackerů
     }
 settings-interface-behavior-error_tracking = Sběr chyb prostřednictvím Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Souhlasíte se shromažďováním anonymizovaých údajů o chybých?</h1>
-    
-    <b>Neschrožďujeme osobní udaje!</b> pro příklad IP adresy nebo přihlašovací údaje k sítím Wi-Fi. SlimeVR respektuje vaše soukromí!
-    
-    Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
 settings-interface-behavior-bvh_directory = Cesta pro uložení BVH záznamů
 settings-interface-behavior-bvh_directory-description = Vyberte cestu k uložení záznamů BHV. namísto toho, abyste pokaždé vybírali, kam je uložit.
@@ -531,9 +473,11 @@ settings-serial-send_command-placeholder = Příkaz...
 settings-serial-send_command-warning-ok = Vím, co dělám!
 settings-serial-send_command-warning-cancel = Zrušit
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = Trackery VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Pro změnu nastavení specifických pro standart OSC pro odesílání
@@ -541,7 +485,6 @@ settings-osc-vrchat-description-v1 =
     Ujistěte se že jste povolili OSC ve VRChat přes nabídku v menu Akcí pod OSC > Povoleno.
 settings-osc-vrchat-enable = Zapnout
 settings-osc-vrchat-enable-description = Vypnutí a zapnutí odesílání a přijímání dat.
-settings-osc-vrchat-enable-label = Zapnout
 settings-osc-vrchat-network = Síťové porty
 settings-osc-vrchat-network-port_in =
     .label = Vstup portu
@@ -551,7 +494,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Výstup portu (výchozí: 9000)
 settings-osc-vrchat-network-address = Síťová adresa
 settings-osc-vrchat-network-address-description-v1 = Zvolte na jakou adresu zasílat data, Může zůstat nezměneno pro Vrchat.
-settings-osc-vrchat-network-address-placeholder = VRChat ip adresa
 
 ## VRChat OSC status
 
@@ -561,14 +503,12 @@ settings-osc-vrchat-status-badge-unknown = Neznýmý
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtuální snímání pohybu (Také známo jako Virtual Motion Capture)
 # This cares about multilines
 settings-osc-vmc-description =
     Změna nastavení specificky pro VCM (Virtual Motion Capture) protokol
         odesílat data o kostech SlimeVR a přijímat data o kostech z jiných aplikací.
 settings-osc-vmc-enable = Zapnout
 settings-osc-vmc-enable-description = Vypnutí a zapnutí odesílání a přijímání dat.
-settings-osc-vmc-enable-label = Zapnout
 settings-osc-vmc-network = Síťové porty
 settings-osc-vmc-network-description = Nastavte porty pro poslech a odesílání dat pomocí VMC.
 settings-osc-vmc-network-port_in =
@@ -579,16 +519,13 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port pro odesílání (výchozí: 39539)
 settings-osc-vmc-network-address = Síťová adresa
 settings-osc-vmc-network-address-description = Vyberte, na kterou adresu odesílat data pomocí VMC.
-settings-osc-vmc-network-address-placeholder = Adresa IPV4
 settings-osc-vmc-vrm-description = Načtěte VRM model, k umožnení lepšímu sledování hlavy a zlepšení kompatibility s dalšími aplikacemi.
 settings-osc-vmc-vrm-untitled_model = Nepojmenovaný model
 settings-osc-vmc-vrm-file_select = Přetáhněte zde model, který chcete použít, nebo <u>procházejte</u>
 settings-osc-vmc-anchor_hip = Zakotvit v bocích
 settings-osc-vmc-anchor_hip-description = Zakotvit sledování u boků, užitečné pro VTubing kde sedíte. Pokud je deaktivováno, načíst VRM model.
-settings-osc-vmc-anchor_hip-label = Zakotvit v bocích
 settings-osc-vmc-mirror_tracking = Zrcadlení sledování
 settings-osc-vmc-mirror_tracking-description = Zrcadlit trakování horizontálně.
-settings-osc-vmc-mirror_tracking-label = Zrcadlení trackování
 settings-osc-vmc-status-badge-error = Chyba
 
 ## Common OSC settings
@@ -602,23 +539,9 @@ settings-utils-advanced-reset-gui = Obnovení GUI nastavení
 settings-utils-advanced-reset-gui-description = Obnovení výchozího nastavení pro rozhraní.
 settings-utils-advanced-reset-gui-label = Obnovit GUI
 settings-utils-advanced-reset-server = Obnovení nastavení sledování
-settings-utils-advanced-reset-server-description = Obnovit výchozí nastavení pro sledovaní.
 settings-utils-advanced-reset-server-label = Obnovení sledování
 settings-utils-advanced-reset-all = Obnovit všechna nastavení
-settings-utils-advanced-reset-all-description = Obnoví výchozí nastavení pro rozhraní a sledování.
 settings-utils-advanced-reset-all-label = Obnovit vše
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Varování:</b> Tímhle se všechna vaše nastavení GUI obnoví na výchozí hodnoty.
-            Jste si jisti že to chcete udělat?
-        [server]
-            <b>Varování:</b> Tímhle se všechna vaše nastavení Sledování obnoví na výchozí hodnoty.
-            Jste si jisti že to chcete udělat?
-       *[all]
-            <b>Varování:</b> Tímhle se všechna vaše nastavení obnoví na výchozí hodnoty.
-            Jste si jisti že to chcete udělat?
-    }
 settings-utils-advanced-reset_warning-reset = Obnovit nastavení
 settings-utils-advanced-reset_warning-cancel = Zrušit
 settings-utils-advanced-open_data-v1 = Složka s konfigurací
@@ -637,7 +560,6 @@ settings-home-list-layout-table = Tabulka
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Aktivní kroky
 
 ## Setup/onboarding menu
 
@@ -735,37 +657,26 @@ onboarding-assign_trackers-mirror = Zrcadlit náhled
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník, levé stehno a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [1] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazeno levé stehno a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [2] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník a jedna z těchto oblastí: hrudník, bok nebo pas.
-        [3] Levá noha je přiřazena, ale pro správné fungování musí být přiřazena jedna z těchto oblastí: hrudník, bok nebo pas.
-        [4] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník a levé stehno.
-        [5] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazeno levé stehno.
-        [6] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen levý kotník.
-       *[unknown] Levá noha je přiřazena, ale pro správné fungování musí být také přiřazen Neznámá Nepřiřazena část těla.
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Jakou metodu nasazení trackerů chcete použít?
 # Multiline text
 onboarding-choose_mounting-description = Správná orientace nasazení zajistí přesné sledování trackerů na těle.
-onboarding-choose_mounting-auto_mounting = Automatická detekce nasazení
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Doporučeno
-onboarding-choose_mounting-auto_mounting-description = Orientace nasazení všech trackerů bude automaticky rozpoznána ze 2 pozic.
-onboarding-choose_mounting-manual_mounting = Manuální nastavení
-onboarding-choose_mounting-manual_mounting-description = Ručně zadejte orientaci nasazení každého trackeru.
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuální nasazení trackerů
 onboarding-manual_mounting-description = Klikněte na každý tracker a vyberte, jakým směrem jsou nasazeny
-onboarding-manual_mounting-auto_mounting = Automatická detekce nasazení
 onboarding-manual_mounting-next = Další krok
 
 ## Tracker automatic mounting setup
@@ -779,17 +690,13 @@ onboarding-automatic_mounting-done-title = Směr nasazení trackerů zkalibrová
 onboarding-automatic_mounting-done-description = Kalibrace nasazení trackerů je dokončena!
 onboarding-automatic_mounting-done-restart = Začít znovu
 onboarding-automatic_mounting-mounting_reset-title = Reset nasazení trackerů
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Dřepněte si, jako při lyžování: nohy pokrčte v kolenou, trup nakloňte mírně dopředu a paže pokrčte.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Stiskněte tlačítko "Resetovat nasazení trackerů" a  vyčkejte 3 sekundy. Orientace nasazení trackerů se nastaví na základní hodnoty.
 onboarding-automatic_mounting-preparation-title = Příprava
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Stiskněte tlačítko pro "Plný Reset"
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Zůstaňte v pozici, dokud 3s časovač neskončí.
-onboarding-automatic_mounting-put_trackers_on-title = Nasaďte si trackery
-onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci směru nasazení použijeme právě přiřazené trackery. Nasaďte si prosím všechny trackery. Můžete zkontrolovat jejich umístění na obrázku vpravo.
-onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-automatic_mounting-return-home = Hotovo
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Jít zpět na Škálování Proporcí
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
@@ -901,7 +808,6 @@ onboarding-stay_aligned-done-description-2 = Vaše nastavení je dokončeno! Pok
 onboarding-stay_aligned-previous_step = Předchozí
 onboarding-stay_aligned-next_step = Další
 onboarding-stay_aligned-done = Hotovo
-onboarding-stay_aligned-manual_mounting-done = Hotovo
 
 ## Home
 
@@ -1042,12 +948,6 @@ tray_or_exit_modal-cancel = Zrušit
 
 ## Unknown device modal
 
-unknown_device-modal-title = Byl nalezen nový tracker!
-unknown_device-modal-description =
-    Byl objeven nový tracker s MAC adresou <b>{ $deviceId }</b>.
-    Chcete jej připojit k SlimeVR?
-unknown_device-modal-confirm = Jasně!
-unknown_device-modal-forget = Ignoruj
 # VRChat config warnings
 vrc_config-page-title = Varování VRChat konfigurace
 vrc_config-page-desc = Tato stránka slouží k zobrazení vašeho aktuálního stavu nastavení ve VRChat. přesněji, nástavní které jsou nekompatibilní s SlimeVR. Je silně doporučeno poupravit všechny chybné nastavení které jsou zde zobrazeny pro nejlepší zážitek s SlimeVR.
@@ -1067,17 +967,10 @@ vrc_config-mute-btn = Ztlumení
 vrc_config-unmute-btn = Zrušit ztlumení
 vrc_config-legacy_mode = Použít starší řešení IK
 vrc_config-disable_shoulder_tracking = Vypnout sledování ramen
-vrc_config-shoulder_width_compensation = Kompenzace Šířky Ramen
-vrc_config-spine_mode = Režim páteře FTB
 vrc_config-tracker_model = Model FBT trackeru
 vrc_config-avatar_measurement_type = Meření avataru
-vrc_config-calibration_range = Kalibrační rozsah
 vrc_config-calibration_visuals = Zobrazit vizualizaci kalibrace
 vrc_config-user_height = Reálná výška uživatele
-vrc_config-spine_mode-UNKNOWN = Neznámý
-vrc_config-spine_mode-LOCK_BOTH = Uzamknout obojí
-vrc_config-spine_mode-LOCK_HEAD = Uzamknout hlavu
-vrc_config-spine_mode-LOCK_HIP = Uzamknout boky
 vrc_config-tracker_model-UNKNOWN = Neznýmý
 vrc_config-tracker_model-AXIS = Osy
 vrc_config-tracker_model-SPHERE = Sféra
@@ -1089,12 +982,11 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpětí paží
 ## Error collection consent modal
 
 error_collection_modal-title = Můžeme sbírat chyby?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím
+
+## Crash screen
+
 
 ## Tracking checklist section
 
@@ -1102,7 +994,6 @@ tracking_checklist-settings-close = Zavřít
 tracking_checklist-status-incomplete = Nejste připraveni používat SlimeVR!
 tracking_checklist-status-complete = Jste připravení k použití SlimeVR
 tracking_checklist-FULL_RESET = Proveďte plné obnovení
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR není zapnut
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery

@@ -59,9 +59,6 @@ body_part-LEFT_UPPER_LEG = Venstre lår
 body_part-LEFT_LOWER_LEG = Venstre ankel
 body_part-LEFT_FOOT = Venstre fod
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -157,8 +154,6 @@ tracker-settings-assignment_section-edit = Rediger opgave
 tracker-settings-mounting_section = Monteringsposition
 tracker-settings-mounting_section-description = Hvor er trackeren monteret?
 tracker-settings-mounting_section-edit = Rediger montering
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Giv den et sødt kælenavn :)
 tracker-settings-name_section-placeholder = NightyBeast's venstre ben
@@ -203,17 +198,14 @@ mounting_selection_menu-close = Luk
 
 ## Sidebar settings
 
-settings-sidebar-title = Indstillinger
 settings-sidebar-general = Generel
 settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Brugergrænseflade
-settings-sidebar-vrchat_osc = VRChat OSC trackere
 settings-sidebar-utils = Hjælpeprogrammer
 settings-sidebar-serial = Seriel konsol
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = VRChat OSC trackere
 settings-routing-hands-warning-cancel = Annuller
 
 ## SteamVR / Monado output settings
@@ -227,7 +219,6 @@ settings-general-tracker_mechanics-filtering = Filtrering
 settings-general-tracker_mechanics-filtering-description =
     Vælg filtreringstypen for dine trackere.
     Forudsigelse forudsiger bevægelse, mens udjævning udjævner bevægelse.
-settings-general-tracker_mechanics-filtering-type = Filtrerings type
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Brug rotationer, som de er. Vil ikke foretage nogen filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Udjævning
@@ -235,18 +226,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Udjæv
 settings-general-tracker_mechanics-filtering-type-prediction = Forudsigelse
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reducerer latens og gør bevægelser hutigere, men kan forårsage rystelser.
 settings-general-tracker_mechanics-filtering-amount = Mængde
-settings-stay_aligned-general-label = Generel
 settings-stay_aligned-relaxed_poses-close = Tæt
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Fuld nulstilling
-settings-keybinds_yaw-reset = Yaw Nulstil
 settings-keybinds-recorder-modal-cancel-button = Annuller
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Trackingsindstillinger
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
@@ -254,12 +241,9 @@ settings-general-fk_settings = Trackingsindstillinger
 settings-general-fk_settings-leg_tweak-skating_correction = Skate korrektion
 settings-general-fk_settings-leg_tweak-toe_snap = Tå snap
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skate korrektionsstyrke
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skate-korrektion korrigerer for skate, men kan reducere nøjagtigheden i visse bevægelsesmønstre. Når du aktiverer dette, skal du sørge for at nulstille og kalibrere i spillet.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan reducere eller endda eliminere klipning gennem gulvet. Når du aktiverer dette, skal du sørge for at nulstille og kalibrere i spillet.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Tå-snap forsøger at gætte rotationen af dine fødder, hvis fodtrackere ikke er i brug.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roterer dine fødder så de er parallelle med jorden, når de er i kontakt med jorden.
 settings-general-fk_settings-leg_fk = Bensporing
-settings-general-fk_settings-arm_fk-back = Tilbage
 
 ## Gesture control settings (tracker tapping)
 
@@ -275,9 +259,7 @@ settings-general-gesture_control-yawResetEnabled = Aktivér tryk for at yaw rese
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Udvikler-tilstand
 settings-general-interface-dev_mode-description = Denne tilstand kan være nyttig, hvis du har brug for dybdegående data eller for at interagere med tilsluttede trackere på et mere avanceret niveau.
-settings-general-interface-dev_mode-label = Udvikler-tilstand
 settings-general-interface-theme = Farvetema
 settings-general-interface-lang = Vælg sprog
 settings-general-interface-lang-description = Skift det standardsprog, du vil bruge.
@@ -287,13 +269,10 @@ settings-general-interface-lang-placeholder = Vælg det sprog, der skal bruges
 
 settings-general-interface-feedback_sound = Feedback lyd
 settings-general-interface-feedback_sound-description = Denne indstilling afspiller en lyd, når du nulstiller
-settings-general-interface-feedback_sound-label = Feedback lyd
 settings-general-interface-feedback_sound-volume = Feedback lydstyrke
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Udvikler-tilstand
-settings-general-interface-dev_mode-label = Udvikler-tilstand
 
 ## Serial settings
 
@@ -312,12 +291,13 @@ settings-serial-serial_select = Vælg en seriel port
 settings-serial-send_command-warning-ok = Jeg ved hvad jeg laver
 settings-serial-send_command-warning-cancel = Annuller
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC trackere
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skift afsendelse og modtagelse af data.
-settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Netværksporte
 settings-osc-vrchat-network-port_in =
     .label = Port ind
@@ -326,7 +306,6 @@ settings-osc-vrchat-network-port_out =
     .label = Port ud
     .placeholder = Port ud (standard: 9000)
 settings-osc-vrchat-network-address = Netværksadresse
-settings-osc-vrchat-network-address-placeholder = VRChat ip-adresse
 
 ## VRChat OSC status
 
@@ -341,7 +320,6 @@ settings-osc-vmc-description =
         for at sende SlimeVRs data og modtage data fra andre apps.
 settings-osc-vmc-enable = Aktiver
 settings-osc-vmc-enable-description = Skift afsendelse og modtagelse af data.
-settings-osc-vmc-enable-label = Aktiver
 settings-osc-vmc-network = Netværksporte
 settings-osc-vmc-network-description = Vælg portene til at lytte og sende data via VMC
 settings-osc-vmc-network-port_in =
@@ -352,7 +330,6 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port ud (standard: 39539)
 settings-osc-vmc-network-address = Netværksadresse
 settings-osc-vmc-network-address-description = Vælg hvilken adresse du vil sende data på via VMC
-settings-osc-vmc-network-address-placeholder = IPV4-adresse
 settings-osc-vmc-vrm = VRM-model
 settings-osc-vmc-vrm-description = Indlæs en VRM-model for at tillade hovedanker og muliggøre en højere kompatibilitet med andre applikationer
 settings-osc-vmc-vrm-file_select = Træk og slip en model, du vil bruge, eller <u>gennemse</u>
@@ -454,16 +431,20 @@ onboarding-assign_trackers-side-left = Venstre
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Hvilken monteringskalibreringsmetode vil du bruge?
-onboarding-choose_mounting-auto_mounting = Automatisk montering
-onboarding-choose_mounting-auto_mounting-description = Dette registrerer automatisk monteringsretningerne til alle dine trackere fra 2 stillinger
-onboarding-choose_mounting-manual_mounting = Manuel montering
-onboarding-choose_mounting-manual_mounting-description = Dette giver dig mulighed for manuelt at vælge monteringsretningen for hver tracker
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuel montering
 onboarding-manual_mounting-description = Klik på hver tracker og vælg hvilken vej de er monteret
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Næste trin
 
 ## Tracker automatic mounting setup
@@ -474,13 +455,9 @@ onboarding-automatic_mounting-next = Næste trin
 onboarding-automatic_mounting-prev_step = Forrige trin
 onboarding-automatic_mounting-done-restart = Prøv igen
 onboarding-automatic_mounting-mounting_reset-title = Montage Kalibrering
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Sæt dig på hug i en "skiløb" -stilling med bøjede ben, din overkrop vippet fremad og dine arme bøjet.
 onboarding-automatic_mounting-preparation-title = Forberedelse
-onboarding-automatic_mounting-put_trackers_on-title = Tag dine trackere på
-onboarding-automatic_mounting-put_trackers_on-description = For at kalibrere rotationer bruger vi de trackere, du lige har tildelt. Tag alle dine trackere på du kan se hvilke der er hvilke i figuren til højre.
-onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -551,6 +528,9 @@ tray_or_exit_modal-cancel = Annuller
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

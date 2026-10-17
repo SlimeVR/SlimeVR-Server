@@ -56,9 +56,6 @@ body_part-LEFT_UPPER_LEG = ירך שמאל
 body_part-LEFT_LOWER_LEG = קרסול שמאל
 body_part-LEFT_FOOT = רגל שמאל
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = לא נבחר
@@ -174,7 +171,6 @@ mounting_selection_menu-close = סגור
 
 ## Sidebar settings
 
-settings-sidebar-title = הגדרות
 settings-sidebar-general = כללי
 settings-sidebar-interface = ממשק
 settings-sidebar-utils = כלי שירות
@@ -190,7 +186,6 @@ settings-routing-hands-warning-cancel = ביטול
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = סינון
-settings-general-tracker_mechanics-filtering-type = סוג סינון
 settings-general-tracker_mechanics-filtering-type-none = ללא סינון
 settings-general-tracker_mechanics-filtering-type-none-description = השתמש בערכי סיבוב כפי שהם. לא יעשה שום סינון.
 settings-general-tracker_mechanics-filtering-type-smoothing = החלקה
@@ -198,40 +193,36 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = מחל
 settings-general-tracker_mechanics-filtering-type-prediction = חיזוי
 settings-general-tracker_mechanics-filtering-type-prediction-description = מפחית את ההשהיה ומפיק תנועות הדוקות , אך עלול להגביר את הריצוד.
 settings-general-tracker_mechanics-filtering-amount = כמות
-settings-stay_aligned-general-label = כללי
 settings-stay_aligned-relaxed_poses-close = סגור
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = איפוס
 settings-keybinds-recorder-modal-cancel-button = ביטול
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-arm_fk-back = אחורה
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = מצב מפתח
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = מצב מפתח
 
 ## Notification settings
 
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = מצב מפתח
-settings-general-interface-dev_mode-label = מצב מפתח
 
 ## Serial settings
 
 settings-serial = טרמינל סידרתי
 settings-serial-factory_reset-warning-cancel = ביטול
 settings-serial-send_command-warning-cancel = ביטול
+
+## Logs settings
+
 
 ## OSC VRChat settings
 
@@ -292,6 +283,15 @@ onboarding-assign_trackers-side-left = שמאל
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
@@ -300,7 +300,7 @@ onboarding-assign_trackers-side-left = שמאל
 onboarding-automatic_mounting-title = כיול ההרכבה
 onboarding-automatic_mounting-mounting_reset-title = כיול ההרכבה
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -356,6 +356,9 @@ tray_or_exit_modal-cancel = ביטול
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

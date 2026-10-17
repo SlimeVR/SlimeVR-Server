@@ -97,15 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = الجزء القريب الأيمن الصغ�
 body_part-RIGHT_LITTLE_INTERMEDIATE = المتوسط ​​الصغير الأيمن
 body_part-RIGHT_LITTLE_DISTAL = الجزء البعيد الصغير الأيمن
 
-## BoardType
-
-board_type-UNKNOWN = مجهول
-board_type-CUSTOM = لوحة مخصصة
-board_type-SLIMEVR = سلايم في آر
-board_type-WRANGLER = رانجلر جويكونز
-board_type-MOCOPI = سوني موكوبي (Mocopi)
-board_type-GLOVE_IMU_SLIMEVR_DEV = قفاز SlimeVR تطوير IMU
-
 ## Proportions
 
 skeleton_bone-NONE = غير محدد
@@ -245,14 +236,11 @@ tracker-settings-use_mag-description =
     
     تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
 tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = اسم جهاز التعقب
 tracker-settings-name_section-description = أعطها لقب لطيف :)
 tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
 tracker-settings-name_section-label = اسم جهاز التعقب
 tracker-settings-forget = انسي جهاز التعقب
-tracker-settings-forget-description = يزيل جهاز التعقب من خادم SlimeVR ويمنعه من الاتصال به حتى يتم إعادة تشغيل الخادم. لن تضيع تكوين جهاز التعقب.
 tracker-settings-forget-label = ننسى جهاز التعقب
 tracker-settings-update-up_to_date = حديث
 tracker-settings-update = التحديث الآن
@@ -300,22 +288,18 @@ mounting_selection_menu-close = أغلق
 
 ## Sidebar settings
 
-settings-sidebar-title = الإعدادات
 settings-sidebar-general = الاعدادات العامة
 settings-sidebar-trackers = أجهزة التعقب
 settings-sidebar-interface = واجهة المستخدم
-settings-sidebar-vrchat_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 settings-sidebar-appearance = مظهر
-settings-sidebar-notifications = إشعارات
 settings-sidebar-behavior = سلوك
 settings-sidebar-firmware-tool = أداة برامج الجهاز المصنوع بنفسك
 settings-sidebar-advanced = متقدم
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = أجهزة تعقب "في ار تشات أوه أس سي"
 settings-routing-hands-warning-cancel = إلغاء
 
 ## SteamVR / Monado output settings
@@ -329,7 +313,6 @@ settings-general-tracker_mechanics-filtering = تصفية
 settings-general-tracker_mechanics-filtering-description =
     اختر نوع التصفية لأجهزة التعقب الخاصة بك.
     يتنبأ التنبؤ بالحركة بينما يعمل على تنعيم الحركة.
-settings-general-tracker_mechanics-filtering-type = نوع التصفية
 settings-general-tracker_mechanics-filtering-type-none = بدون تصفية
 settings-general-tracker_mechanics-filtering-type-none-description = استخدم التدوير كما هو. لن تفعل أي تصفية
 settings-general-tracker_mechanics-filtering-type-smoothing = التنعيم
@@ -342,25 +325,19 @@ settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إ�
 settings-general-tracker_mechanics-save_mounting_reset-description =
     يحفظ معايرة إعادة تعيين التثبيت التلقائي لأجهزة التتبع بين عمليات إعادة التشغيل. مفيد
     عند ارتداء بدلة حيث لا تتحرك المتتبعات بين الجلسات. <b>لا ينصح به للمستخدمين العاديين!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = حفظ إعادة تعيين التركيب
 settings-general-tracker_mechanics-use_mag_on_all_trackers = استخدم المقياس المغناطيسي على جميع أجهزة تتبع IMU التي تدعمه
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     يستخدم المقياس المغناطيسي على جميع أجهزة التعقب التي تحتوي على برامج ثابتة متوافقة له ، مما يقلل من الانحراف في البيئات المغناطيسية المستقرة.
     يمكن تعطيله لكل جهاز تعقب في إعدادات التعقب. <b>من فضلك لا تغلق أيا من أجهزة التعقب أثناء تبديل هذا!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = استخدم المقياس المغناطيسي على أجهزة التعقب
-settings-stay_aligned-general-label = الاعدادات العامة
 settings-stay_aligned-relaxed_poses-close = أغلق
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = اعاده تعيين
-settings-keybinds_yaw-reset = إعادة تعيين الانعراج
 settings-keybinds_reset-all-button = إعادة تعيين الكل
 settings-keybinds-recorder-modal-cancel-button = إلغاء
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = إعدادات التعقب
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -373,27 +350,12 @@ settings-general-fk_settings-leg_tweak-skating_correction = تصحيح التز�
 settings-general-fk_settings-leg_tweak-toe_snap = انجذاب إلى أصابع القدم
 settings-general-fk_settings-leg_tweak-foot_plant = تثبيت اصبع القدم
 settings-general-fk_settings-leg_tweak-skating_correction-amount = قوة تصحيح التزحلق
-settings-general-fk_settings-leg_tweak-skating_correction-description = تصحيح التزحلق يصحح التزحلق على الجليد، ولكن يمكن أن يقلل الدقة في أنماط حركة معينة. عند تمكين هذا، تأكد من إعادة الضبط وإعادة المعايرة بالكامل في اللعبة.
-settings-general-fk_settings-leg_tweak-floor_clip-description = يمكن أن يقلل التثبيت الأرضية من الإجتياز الأرضية أو حتى يزيله. عند تمكين هذا، تأكد من إعادة الضبط وإعادة المعايرة بالكامل في اللعبة.
 settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
-settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = فرض القيود
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
-settings-general-fk_settings-arm_fk-reset_mode-description = قم بتغيير وضع الذراع المتوقع لإعادة ضبط المتصاعد.
-settings-general-fk_settings-arm_fk-back = العودة
-settings-general-fk_settings-arm_fk-back-description = الوضع الافتراضي، مع وضع الذراعين العلويين إلى الخلف والساعدين للأمام.
-settings-general-fk_settings-arm_fk-tpose_up = تي بوز (أعلى)
-settings-general-fk_settings-arm_fk-tpose_up-description = يتوقع أن تكون ذراعيك لأسفل على الجانبين أثناء إعادة الضبط الكامل ، و 90 درجة حتى الجانبين أثناء إعادة ضبط التركيب.
-settings-general-fk_settings-arm_fk-tpose_down = تي بوز (لأسفل)
-settings-general-fk_settings-arm_fk-tpose_down-description = يتوقع أن تكون ذراعيك 90 درجة لأعلى على الجانبين أثناء إعادة الضبط الكامل ، ولأسفل على الجانبين أثناء إعادة ضبط التركيب.
-settings-general-fk_settings-arm_fk-forward = أمامي
-settings-general-fk_settings-arm_fk-forward-description = يتوقع أن تكون ذراعيك 90 درجة للأمام. مفيد ل VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
-settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
 settings-general-fk_settings-self_localization-title = وضع Mocap
-settings-general-fk_settings-self_localization-description = يسمح وضع Mocap للهيكل العظمي بتعقب موضعه تقريبا بدون سماعة رأس أو أجهزة تعقب أخرى. لاحظ أن هذا يتطلب أجهزة تعقب القدمين والرأس للعمل ولا تزال تجريبية.
 
 ## Gesture control settings (tracker tapping)
 
@@ -437,9 +399,7 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = قم 
 ## Appearance settings
 
 settings-interface-appearance = مظهر
-settings-general-interface-dev_mode = وضع المطوّر
 settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
-settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-theme = موضوع اللون
 settings-general-interface-lang = اختر اللغة
 settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
@@ -455,26 +415,19 @@ settings-interface-appearance-font_size-description = يؤثر هذا على ح�
 
 ## Notification settings
 
-settings-interface-notifications = إشعارات
 settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
-settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
 settings-general-interface-connected_trackers_warning = تحذير عن أجهزة التعقب المتصلة
 settings-general-interface-connected_trackers_warning-description = سيعرض هذا الخيار نافذة كل مرة تحاول فيها الخروج من SlimeVR أثناء وجود جهاز أو أكثر من أجهزة التعقب المتصلة. سيذكرك بإيقاف تشغيل أجهزة التعقب عند الانتهاء للحفاظ على عمر البطارية.
-settings-general-interface-connected_trackers_warning-label = تحذير عن أجهزة التعقب المتصلة عند الخروج
 
 ## Behavior settings
 
 settings-interface-behavior = السلوك
-settings-general-interface-dev_mode = وضع المطوّر
-settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-use_tray = تصغير إلى علبة النظام
 settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
-settings-general-interface-use_tray-label = تصغير إلى علبة النظام
 settings-general-interface-discord_presence = مشاركة النشاط على Discord
 settings-general-interface-discord_presence-description = يخبر عميل Discord الخاص بك أنك تستخدم SlimeVR جنبا إلى جنب مع عدد أجهزة تعقب IMU التي تستخدمها.
-settings-general-interface-discord_presence-label = مشاركة النشاط على Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] صفر
@@ -486,12 +439,6 @@ settings-general-interface-discord_presence-message =
        *[other] أخرى
     }
 settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>هل توافق على جمع بيانات الخطأ مجهولة المصدر؟</h1>
-    
-    <b>نحن لا نجمع معلومات شخصية</b> مثل عنوان IP الخاص بك أو بيانات الاعتماد اللاسلكية. يقدر SlimeVR خصوصيتك!
-    
-    لتوفير أفضل تجربة للمستخدم، نقوم بجمع تقارير الأخطاء ومقاييس الأداء ومعلومات نظام التشغيل مجهولة المصدر. يساعدنا هذا في اكتشاف الأخطاء والمشكلات المتعلقة ب SlimeVR. يتم جمع هذه المقاييس عبر Sentry.io.
 settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
 
 ## Serial settings
@@ -517,9 +464,11 @@ settings-serial-save_logs = حفظ في ملف
 settings-serial-send_command-warning-ok = أنا أعرف ماذا أفعل
 settings-serial-send_command-warning-cancel = إلغاء
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     تغيير الإعدادات الخاصة بمعيار أجهزة تعقب OSC  المستخدم لإرسال
@@ -527,7 +476,6 @@ settings-osc-vrchat-description-v1 =
     تأكد من تمكين OSC في VRChat عبر قائمة الإجراءات ضمن OSC > ممكن.
 settings-osc-vrchat-enable = تمكين
 settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
-settings-osc-vrchat-enable-label = تمكين
 settings-osc-vrchat-network = منافذ الشبكة
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
@@ -537,7 +485,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = منفذ الخروج (الإفتراضي: 9000)
 settings-osc-vrchat-network-address = عنوان الشبكة
 settings-osc-vrchat-network-address-description-v1 = اختر العنوان الذي تريد إرسال البيانات إليه. يمكن تركها دون أن تمس ل VRChat.
-settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخاص بفي ار تشات
 
 ## VRChat OSC status
 
@@ -547,14 +494,12 @@ settings-osc-vrchat-status-badge-unknown = مجهول
 
 ## VMC OSC settings
 
-settings-osc-vmc = التقاط الحركة الافتراضية
 # This cares about multilines
 settings-osc-vmc-description =
     قم بتغيير الإعدادات الخاصة ببروتوكول التقاط الحركة الافتراضية
     لإرسال بيانات عظام سلايم في ار وتلقي بيانات العظام من تطبيقات أخرى.
 settings-osc-vmc-enable = تمكين
 settings-osc-vmc-enable-description = تبديل إرسال واستقبال البيانات.
-settings-osc-vmc-enable-label = تمكين
 settings-osc-vmc-network = منافذ الشبكة
 settings-osc-vmc-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى التقاط الحركة الافتراضية
 settings-osc-vmc-network-port_in =
@@ -565,17 +510,14 @@ settings-osc-vmc-network-port_out =
     .placeholder = منفذ الخروج (الافتراضي: 39539)
 settings-osc-vmc-network-address = عنوان الشبكة
 settings-osc-vmc-network-address-description = قم بتعيين العنوان لإرسال البيانات إلى التقاط الحركة الافتراضية.
-settings-osc-vmc-network-address-placeholder = عنوان آي بي في 4
 settings-osc-vmc-vrm = نموذج في ار إم
 settings-osc-vmc-vrm-description = قم بتحميل نموذج في ار إم للسماح بتركيز الرأس وتمكين توافق أعلى مع تطبيقات الأخرى
 settings-osc-vmc-vrm-untitled_model = نموذج بدون عنوان
 settings-osc-vmc-vrm-file_select = اسحب نموذج وأفلته لاستخدامه أو <u> تصفح </ u>
 settings-osc-vmc-anchor_hip = ثبت في الوركين
 settings-osc-vmc-anchor_hip-description = ثبت التعقب في الوركين، هو مفيد إن كنت تيوبنغ جالسًا. في حالة التعطيل، قم بتحميل نموذج في ار إم.
-settings-osc-vmc-anchor_hip-label = ثبت في الوركين
 settings-osc-vmc-mirror_tracking = اعكس التعقب
 settings-osc-vmc-mirror_tracking-description = اعكس التعقب أفقيا.
-settings-osc-vmc-mirror_tracking-label = اعكس التعقب
 settings-osc-vmc-status-badge-error = خطأ
 
 ## Common OSC settings
@@ -588,21 +530,9 @@ settings-utils-advanced-reset-gui = إعادة تعيين إعدادات واج�
 settings-utils-advanced-reset-gui-description = قم باستعادة الإعدادات الافتراضية للواجهة.
 settings-utils-advanced-reset-gui-label = إعادة تعيين واجهة المستخدم الرسومية
 settings-utils-advanced-reset-server = إعادة تعيين إعدادات التعقب
-settings-utils-advanced-reset-server-description = استعادة الإعدادات الافتراضية للتعقب.
 settings-utils-advanced-reset-server-label = إعادة تعيين التعقب
 settings-utils-advanced-reset-all = إعادة تعيين جميع الإعدادات
-settings-utils-advanced-reset-all-description = قم باستعادة الإعدادات الافتراضية لكل من الواجهة و التعقب.
 settings-utils-advanced-reset-all-label = إعادة تعيين الكل
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين جميع الإعدادات الخاصة بك إلى الإعدادات الافتراضية.
-            هل أنت متأكد من أنك تريد القيام بذلك؟
-        [server] <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين إعدادات التعقب إلى الإعدادات الافتراضية. هل أنت متأكد من أنك تريد القيام بذلك؟
-       *[all]
-            <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين جميع الإعدادات الخاصة بك إلى الإعدادات الافتراضية.
-            هل أنت متأكد من أنك تريد القيام بذلك؟
-    }
 settings-utils-advanced-reset_warning-reset = إعادة تعيين الإعدادات
 settings-utils-advanced-reset_warning-cancel = إلغاء
 settings-utils-advanced-open_data-v1 = مجلد التكوين
@@ -713,89 +643,26 @@ onboarding-assign_trackers-mirror = عرض المرآة
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر والفخذ الأيسر وإما الصدر أو الورك أو الخصر!
-        [1] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر وإما الصدر أو الورك أو الخصر!
-        [2] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر وإما الصدر أو الورك أو الخصر!
-        [3] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
-        [4] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر والفخذ الأيسر!
-        [5] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر!
-        [6] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر !
-       *[unknown] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن والفخذ الأيمن وإما الصدر أو الورك أو الخصر!
-        [1] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن وإما الصدر أو الورك أو الخصر!
-        [2] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن وإما الصدر أو الورك أو الخصر!
-        [3] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
-        [4] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن والفخذ الأيمن!
-        [5] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن!
-        [6] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن!
-       *[unknown] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر وإما الصدر أو الورك أو الخصر!
-        [1] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
-        [2] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر!
-       *[unknown] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن وتحديد إما الصدر أو الورك أو الخصر!
-        [1] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
-        [2] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن!
-       *[unknown] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] تم تحديد الفخذ الأيسر، ولكنك تحتاج أيضًا إلى تحديد الصدر أو الورك أو الخصر!
-       *[unknown] تم تحديد الفخذ الأيسر، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] تم تحديد الفخذ الأيمن ولكنك تحتاج أيضًا إلى تحديد الصدر أو الورك أو الخصر!
-       *[unknown] تم تحديد الفخذ الأيمن ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] تم تحديد الورك، ولكنك تحتاج إلى تحديد الصدر أيضًا!
-       *[unknown] تم تحديد الورك، ولكنك تحتاج إلى تحديد جزء جسم غير معروف غير مخصص أيضًا!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] تم تحديد الخصر، ولكنك تحتاج إلى تحديد الصدر أيضًا!
-       *[unknown] تم تحديد الخصر، ولكنك تحتاج إلى تحديد جزء جسم غير معروف غير مخصص أيضًا!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = ما طريقة معايرة التركيب المستخدمة؟
 # Multiline text
 onboarding-choose_mounting-description = اتجاه التركيب يصحح وضع أجهزة التعقب على جسمك.
-onboarding-choose_mounting-auto_mounting = التركيب التلقائي
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = الموصى به
-onboarding-choose_mounting-auto_mounting-description = سيكتشف هذا تلقائيًا اتجاهات التركيب لجميع أجهزة التعقب من وضعين
-onboarding-choose_mounting-manual_mounting = التركيب اليدوي
-onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = التركيب اليدوي
 onboarding-manual_mounting-description = انقر فوق كل جهاز تعقب وحدد طريقة تركيبها
-onboarding-manual_mounting-auto_mounting = التركيب التلقائي
 onboarding-manual_mounting-next = الخطوة التالية
 
 ## Tracker automatic mounting setup
@@ -809,14 +676,10 @@ onboarding-automatic_mounting-done-title = تم معايرة دوران التر
 onboarding-automatic_mounting-done-description = اكتملت معايرة التركيب!
 onboarding-automatic_mounting-done-restart = العودة إلى البداية
 onboarding-automatic_mounting-mounting_reset-title = إعادة تعيين التركيب
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. قرفص في وضع "التزلج" مع ثني ساقيك ، وإمالة الجزء العلوي من جسمك إلى الأمام ، وثني ذراعيك.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. اضغط على زر "إعادة تعيين التركيب" وانتظر لمدة 3 ثوان قبل إعادة تعيين دوران تركيب أجهزة التعقب.
 onboarding-automatic_mounting-preparation-title = التحضير
-onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة التعقب
-onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
-onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
@@ -960,17 +823,13 @@ tray_or_exit_modal-cancel = إلغاء
 
 ## Unknown device modal
 
-unknown_device-modal-title = تم العثور على جهاز تعقب جديد!
-unknown_device-modal-description =
-    هناك جهاز تعقب جديد مع عنوان MAC <b>{ $deviceId }</b>.
-    هل تريد توصيله ب SlimeVR؟
-unknown_device-modal-confirm = أكيد
-unknown_device-modal-forget = تجاهلها
-vrc_config-spine_mode-UNKNOWN = مجهول
 vrc_config-tracker_model-UNKNOWN = مجهول
 vrc_config-avatar_measurement_type-UNKNOWN = مجهول
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

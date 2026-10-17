@@ -97,11 +97,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Höger ringfinger proximal falang
 body_part-RIGHT_LITTLE_INTERMEDIATE = Höger lillfinger mellanfalang
 body_part-RIGHT_LITTLE_DISTAL = Höger lillfinger distal falang
 
-## BoardType
-
-board_type-UNKNOWN = Okänd
-board_type-CUSTOM = Anpassat kretskort
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
@@ -291,14 +286,11 @@ tracker-settings-use_mag-description =
     
     Du behöver tillåta magnetometer-användning först <magSetting> klicka här för att gå till inställningen </magSetting>.
 tracker-settings-use_mag-label = Tillåt magnetometer
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Sensorns namn
 tracker-settings-name_section-description = Ge den ett gulligt smeknamn :)
 tracker-settings-name_section-placeholder = Bokstensmannens vänstra ben
 tracker-settings-name_section-label = Sensorns namn
 tracker-settings-forget = Glöm spårning
-tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern och förhindrar den från att ansluta till den tills servern startas om. Konfigurationen av trackern kommer inte att gå förlorad.
 tracker-settings-forget-label = Glöm spårning
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
@@ -346,7 +338,6 @@ mounting_selection_menu-close = Stäng
 
 ## Sidebar settings
 
-settings-sidebar-title = Inställningar
 settings-sidebar-general = Allmänt
 settings-sidebar-stay_aligned = Behåll inriktning
 settings-sidebar-trackers = Spårare
@@ -354,7 +345,6 @@ settings-sidebar-interface = Gränssnitt
 settings-sidebar-utils = Verktyg
 settings-sidebar-serial = Seriell konsol
 settings-sidebar-appearance = Utseende
-settings-sidebar-notifications = Meddelanden
 settings-sidebar-behavior = Beteende
 settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
 settings-sidebar-vrc_warnings = VRChat Config varningar
@@ -377,7 +367,6 @@ settings-general-tracker_mechanics-filtering = Filtrering
 settings-general-tracker_mechanics-filtering-description =
     Välj filtreringstyp för dina trackers.
     Prediction förutspår rörelser medan smoothing jämnar ut rörelser.
-settings-general-tracker_mechanics-filtering-type = Typ av filtrering
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Använd rotationer som de är. Kommer inte att göra någon filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Utjämning
@@ -388,20 +377,13 @@ settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
 settings-general-tracker_mechanics-save_mounting_reset = Spara automatisk montering återställning kalibrering
 settings-general-tracker_mechanics-save_mounting_reset-description = Sparar de automatiska kalibreringarna för återställning av montering för trackers mellan omstarter. Användbart när du bär en dräkt där trackers inte flyttas mellan sessionerna. <b>Rekommenderas inte för normala användare!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Spara återställning av montering
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Använd magnetometern på alla IMU-sensorer som stödjer det
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = använd magnetometer på sensorer.
-settings-stay_aligned = Behåll inriktning
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
-settings-stay_aligned-setup-description = Du måste kompletera "Ställ in Behåll inriktnining" för att kunna aktivera Behåll inriktning.
-settings-stay_aligned-enabled-label = Justera sensorer
-settings-stay_aligned-general-label = Allmän
 settings-stay_aligned-relaxed_poses-label = Avslappnade positioner
-settings-stay_aligned-relaxed_poses-description = Behåll inriktning använder dina avslappnade positioner till att hålla dina sensorer inriktade. Använd "ställ in Behåll inriktning" för att uppdatera dessa positionerna.
 settings-stay_aligned-relaxed_poses-standing = Justera sensorer medans du står
 settings-stay_aligned-relaxed_poses-sitting = Justera sensorer medans du sitter i en stol
 settings-stay_aligned-relaxed_poses-flat = Justera sensorer medans du sitter på golvet, eller ligger på ryggen.
@@ -414,14 +396,11 @@ settings-stay_aligned-debug-copy-label = Kopiera inställningar till urklipp
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Fullständig återställning
-settings-keybinds_yaw-reset = Återställning av gir
 settings-keybinds_reset-all-button = Återställ allt
 settings-keybinds-recorder-modal-cancel-button = Avbryt
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Inställningar för spårning
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -434,27 +413,12 @@ settings-general-fk_settings-leg_tweak-skating_correction = Korrigering av skrid
 settings-general-fk_settings-leg_tweak-toe_snap = Snäppning av tå
 settings-general-fk_settings-leg_tweak-foot_plant = Fotväxt
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Styrka vid korrigering av skridskoåkning
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction korrigerar för skridskoåkning men kan försämra precisionen i vissa rörelsemönster. När du aktiverar detta, se till att återställa och kalibrera om i spelet.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan minska eller till och med eliminera klippning genom golvet. När du aktiverar detta, se till att återställa och kalibrera om i spelet.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
-settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
-settings-general-fk_settings-arm_fk-reset_mode-description = Ändra vilken armställning som förväntas för återställning av montering.
-settings-general-fk_settings-arm_fk-back = Tillbaka
-settings-general-fk_settings-arm_fk-back-description = Standardläget, där överarmarna går bakåt och underarmarna framåt.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (upp)
-settings-general-fk_settings-arm_fk-tpose_up-description = Förväntar sig att armarna ska vara nere på sidorna under Full Reset och 90 grader upp på sidorna under Mounting Reset.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (nedåt)
-settings-general-fk_settings-arm_fk-tpose_down-description = Förväntar sig att armarna ska vara 90 grader upp åt sidorna under Full Reset och nedåt på sidorna under Mounting Reset.
-settings-general-fk_settings-arm_fk-forward = Framåt
-settings-general-fk_settings-arm_fk-forward-description = Förväntar sig att dina armar är upp 90 grader framåt. Användbart för VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
-settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
 settings-general-fk_settings-self_localization-title = Mocap-läge
-settings-general-fk_settings-self_localization-description = Mocap Mode gör att skelettet i stort sett kan följa sin egen position utan headset eller andra spårare. Observera att detta kräver fot- och huvudspårare för att fungera och att det fortfarande är experimentellt.
 
 ## Gesture control settings (tracker tapping)
 
@@ -476,9 +440,7 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Öka 
 ## Appearance settings
 
 settings-interface-appearance = Utseende
-settings-general-interface-dev_mode = Utvecklarläge
 settings-general-interface-dev_mode-description = Det här läget kan vara användbart om du behöver djupgående data eller vill interagera med anslutna trackers på en mer avancerad nivå.
-settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-theme = Färg tema
 settings-general-interface-lang = Välj språk
 settings-general-interface-lang-description = Ändra det standardspråk som du vill använda.
@@ -494,33 +456,20 @@ settings-interface-appearance-font_size-description = Detta påverkar teckenstor
 
 ## Notification settings
 
-settings-interface-notifications = Meddelanden
 settings-general-interface-feedback_sound = Feedback-ljud
 settings-general-interface-feedback_sound-description = Detta alternativ spelar upp ett ljud när en återställning utlöses.
-settings-general-interface-feedback_sound-label = Feedback-ljud
 settings-general-interface-feedback_sound-volume = Volym för återkopplingsljud
 settings-general-interface-connected_trackers_warning = Varning för uppkopplade spårare
 settings-general-interface-connected_trackers_warning-description = Detta alternativ kommer att visa ett popup-fönster varje gång du försöker lämna SlimeVR medan du har en eller flera anslutna trackers. Det påminner dig om att stänga av dina trackers när du är klar för att spara batteritid.
-settings-general-interface-connected_trackers_warning-label = Varning för uppkopplade trackers vid utresa
 
 ## Behavior settings
 
 settings-interface-behavior = Beteende
-settings-general-interface-dev_mode = Utvecklarläge
-settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-use_tray = Minimera till systemfältet
 settings-general-interface-use_tray-description = Låter dig stänga fönstret utan att stänga SlimeVR-servern så att du kan fortsätta använda den utan att GUI stör dig.
-settings-general-interface-use_tray-label = Minimera till systemfältet
 settings-general-interface-discord_presence = Dela aktivitet på Discord
 settings-general-interface-discord_presence-description = Berättar för din Discord-klient att du använder SlimeVR tillsammans med antalet IMU-trackers du använder.
-settings-general-interface-discord_presence-label = Dela aktivitet på Discord
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Tillåter du samlingen av anonym error-data?</h1>
-    
-    <b>Vi samlar inte personlig information</b> så som din IP adress eller trådlösa referenser. Slimevr värdesätter din integritet!
-    
-    För att tillhandhålla den bästa användarupplevelsen, så samlar vi anonyma error-raporter, prestandamått och operativsystems-info. Detta hjälper oss upptäcka buggar och problem med Slimevr. Dessa rapporterna samlas via Sentry.io.
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
 
 ## Serial settings
@@ -544,12 +493,13 @@ settings-serial-save_logs = Spara till fil
 settings-serial-send_command-warning-ok = Jag vet vad jag gör
 settings-serial-send_command-warning-cancel = Avbryt
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC spårare
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
-settings-osc-vrchat-enable-label = Aktivera
 settings-osc-vrchat-network = Nätverksportar
 settings-osc-vrchat-network-port_in =
     .label = Port in
@@ -559,7 +509,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port ut (default: 9000)
 settings-osc-vrchat-network-address = Nätverksadress
 settings-osc-vrchat-network-address-description-v1 = Välj vilken adress du vill skicka data till. Kan lämnas orörd för VRChat.
-settings-osc-vrchat-network-address-placeholder = VRChat ip-adress
 
 ## VRChat OSC status
 
@@ -569,10 +518,8 @@ settings-osc-vrchat-status-badge-unknown = Okänd
 
 ## VMC OSC settings
 
-settings-osc-vmc = Virtuell rörelseinspelning
 settings-osc-vmc-enable = Aktivera
 settings-osc-vmc-enable-description = Växla mellan sändning och mottagning av data.
-settings-osc-vmc-enable-label = Aktivera
 settings-osc-vmc-network = Nätverksportar
 settings-osc-vmc-network-description = Ställ in portarna för att lyssna på och skicka data via VMC.
 settings-osc-vmc-network-port_in =
@@ -583,17 +530,14 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port ut (standard: 39539)
 settings-osc-vmc-network-address = Nätverksadress
 settings-osc-vmc-network-address-description = Välj vilken adress du vill skicka ut data till via VMC.
-settings-osc-vmc-network-address-placeholder = IPV4-adress
 settings-osc-vmc-vrm = VRM-modell
 settings-osc-vmc-vrm-description = Ladda en VRM-modell för att tillåta huvudförankring och möjliggöra högre kompatibilitet med andra applikationer.
 settings-osc-vmc-vrm-untitled_model = Namnlös modell
 settings-osc-vmc-vrm-file_select = Dra och släpp en modell att använda, eller <u>bläddra</u>
 settings-osc-vmc-anchor_hip = Förankring vid höfterna
 settings-osc-vmc-anchor_hip-description = Förankra följningen i höfterna, användbart för sittande VTubing. Om du inaktiverar, ladda en VRM-modell.
-settings-osc-vmc-anchor_hip-label = Förankring vid höfterna
 settings-osc-vmc-mirror_tracking = Spegla spårning
 settings-osc-vmc-mirror_tracking-description = Spegla spårning horisontellt.
-settings-osc-vmc-mirror_tracking-label = Spegla spårning
 settings-osc-vmc-status-badge-error = Fel
 
 ## Common OSC settings
@@ -606,23 +550,9 @@ settings-utils-advanced-reset-gui = Återställ GUI-inställningar
 settings-utils-advanced-reset-gui-description = Återställ standardinställningarna för gränssnittet
 settings-utils-advanced-reset-gui-label = Återställ GUI
 settings-utils-advanced-reset-server = Återställ spårnings-inställningarna
-settings-utils-advanced-reset-server-description = Återställ standardinställningarna för spårningen.
 settings-utils-advanced-reset-server-label = Återställ spårning
 settings-utils-advanced-reset-all = Återställ alla inställningar
-settings-utils-advanced-reset-all-description = Återställ standardinställningarna för både gränssnittet och spårningen.
 settings-utils-advanced-reset-all-label = Återställ allt
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Varning;</b> Detta kommer att återställa dina GUI-inställningar till Standard.
-            Är du säker på att du vill göra detta?
-        [server]
-            <b>Varning;</b> Detta kommer att återställa dina spårnings-inställningar till Standard.
-            Är du säker på att du vill göra detta?
-       *[all]
-            <b>Varning;</b> Detta kommer att återställa alla dina inställningar till Standard.
-            Är du säker på att du vill göra detta?
-    }
 settings-utils-advanced-reset_warning-reset = Återställ inställningar
 settings-utils-advanced-reset_warning-cancel = Avbryt
 settings-utils-advanced-open_data-v1 = Config mapp
@@ -718,89 +648,26 @@ onboarding-assign_trackers-mirror = Spegla vy
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Vänster fot är tilldelad men du behöver även tilldela vänster fotled, vänster lår och antingen bröstkorgen, höften eller midjan!
-        [1] Vänster fot är tilldelad men du behöver även tilldela vänster lår och antingen bröstkorgen, höften eller midjan!
-        [2] Vänster fot är tilldelad men du behöver även tilldela vänster fotled och antingen bröstkorgen, höften eller midjan!
-        [3] Vänster fot är tilldelad men du behöver även tilldela antingen bröstkorgen, höften eller midjan!
-        [4] Vänster fot är tilldelad men vänster fotled och vänster lår behövs även tilldelas!
-        [5] Vänster fot är tilldelad men vänster lår behövs även tilldelas!
-        [6] Vänster fot är tilldelad men vänster fotled behövs även tilldelas!
-       *[unknown] Vänster fot är tilldelad men du behöver även okänd icke tilldelad kroppsdel tilldelad!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [6] Höger fot är tilldelad men du behöver även tilldela höger fotled, höger och antingen bröstkorgen, höften eller midjan!
-        [5] Vänster fot är tilldelad men du behöver även tilldela vänster lår och antingen bröstkorgen, höften eller midjan!
-        [4] Vänster fot är tilldelad men du behöver även tilldela vänster fotled och antingen bröstkorgen, höften eller midjan!
-        [3] Vänster fot är tilldelad men du behöver även tilldela antingen bröstkorgen, höften eller midjan!
-        [2] Vänster fot är tilldelad men vänster fotled och vänster lår behövs även tilldelas!
-        [1] Vänster fot är tilldelad men vänster lår behövs även tilldelas!
-        [0] Vänster fot är tilldelad men vänster fotled behövs även tilldelas!
-       *[unknown] Höger fot är tilldelad men du behöver även tilldela okänd icke tilldelad kroppsdel!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] Vänster fotled är ej tilldelad men du behöver även tilldela vänster lår och antingen bröstkorgen, höfter eller midjan!
-        [1] Vänster fotled är tilldelad men du behöver även tilldela antingen bröstkorgen, höfter eller midjan!
-        [2] Vänster fotled är tilldelad men du behöver även tilldela vänster lår!
-       *[unknown] Vänster fotled är tilldelad men du behöver även tilldela okänd icke tilldelad kroppsdel!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [2] Höger fotled är tilldelad men du behöver även tilldela höger lår!
-        [1] Höger fotled är tilldelad men du behöver tilldela antingen bröstkorgen, höften eller midjan!
-        [0] Höger fotled är tilldelad men du behöver tilldela vänster lår och antingen bröstkorgen, höften eller midjan!
-       *[unknown] Höger fotled är tilldelad men du behöver även tilldela okänd icke tilldelad kroppsdel!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] Vänster lår är tilldelad men du behöver även tilldela antingen bröstkorgen, höften eller midjan!
-       *[unknown] Vänster lår är tilldelad men du behöver även tilldela okänd ej tilldelad kroppsdel!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] Höger lår är tilldelad, men du behöver även tilldela aningen bröstkorgen, höften eller midjan!
-       *[unknown] Höger lår är tilldelad men du behöver även tilldela okänd ej tilldelad kroppsdel!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] Höft är tilldelad men du behöver även tilldela bröstkorg!
-       *[unknown] Höft är tilldelad men du behöver även tilldela okänd ej tilldelad kroppsdel!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] Midja är tilldelad men du behöver även tilldela bröstkorg!
-       *[unknown] Midja är tilldelad men du behöver även tilldela okänd ej tilldelad kroppsdel!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Vilken kalibrerings-metod ska man använda?
 # Multiline text
 onboarding-choose_mounting-description = Monteringsriktningen korrigerar för placeringen av trackers på din kropp.
-onboarding-choose_mounting-auto_mounting = Automatisk montering.
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Rekomenderad
-onboarding-choose_mounting-auto_mounting-description = Detta kommer automatiskt känna av monteringsriktningen av alla dina trackers från 2 positioner
-onboarding-choose_mounting-manual_mounting = Manuell montering
-onboarding-choose_mounting-manual_mounting-description = Detta kommer låta dig välja monteringsriktningen manuellt för varje tracker
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Klicka på varje tracker och välj vilket håll de är monterade på
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Nästa steg
 
 ## Tracker automatic mounting setup
@@ -814,17 +681,13 @@ onboarding-automatic_mounting-done-title = Monterings orientering kalibrerad.
 onboarding-automatic_mounting-done-description = Din monterings kalibrering är klar!
 onboarding-automatic_mounting-done-restart = Försök igen
 onboarding-automatic_mounting-mounting_reset-title = Monterings-återställning
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Huka i en "Skidåknings" position med böjda ben, framåtlutad överkropp, och böjda armar.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Tryck på "Återställ montering" knappen och vänta 3 sekunder innan trackerns montering kommer att återställas.
 onboarding-automatic_mounting-preparation-title = Förberedning
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Tryck på "Full återställning" knappen.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stå rakt upp med dina armar vid sidan av dig. Kom ihåg att kolla framåt.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Håll positioner tills 3s timern går ut.
-onboarding-automatic_mounting-put_trackers_on-title = Sätt på dig dina trackers
-onboarding-automatic_mounting-put_trackers_on-description = För att kalibrera monterings-riktningen, så kommer i att använda trackersen du precis tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i figuren till höger.
-onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla trackers
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
@@ -934,9 +797,6 @@ tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
-unknown_device-modal-description =
-    Det finns en ny tracker med MAC-adress <b>{ $deviceId }</b>.
-    Vill du ansluta den till SlimeVR?
 vrc_config-page-help = Hittar inte inställningen?
 vrc_config-page-help-desc = Kolla vår <a>dokumentation på detta området!</a>
 vrc_config-page-big_menu = Tracking & IK (stora menyn)
@@ -953,17 +813,10 @@ vrc_config-mute-btn = Stäng av ljud
 vrc_config-unmute-btn = Sätt på ljud
 vrc_config-legacy_mode = Använd gammal IK Solving
 vrc_config-disable_shoulder_tracking = Avaktivera axel-spårning
-vrc_config-shoulder_width_compensation = Axelbredds-kompensering
-vrc_config-spine_mode = FBT ryggrads-läge
 vrc_config-tracker_model = FBT Spårnings-modell
 vrc_config-avatar_measurement_type = Avatar-mätning
-vrc_config-calibration_range = Kalibrerings-räckvidd
 vrc_config-calibration_visuals = Visa visuella kalibrerings-element
 vrc_config-user_height = Användarens riktiga längd
-vrc_config-spine_mode-UNKNOWN = Okänd
-vrc_config-spine_mode-LOCK_BOTH = Lås båda
-vrc_config-spine_mode-LOCK_HEAD = Lås huvud
-vrc_config-spine_mode-LOCK_HIP = Lås höft
 vrc_config-tracker_model-UNKNOWN = Okänd
 vrc_config-tracker_model-AXIS = Vridaxel
 vrc_config-tracker_model-BOX = Låda
@@ -975,12 +828,11 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Armspann
 ## Error collection consent modal
 
 error_collection_modal-title = Kan vi samla errors?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
 error_collection_modal-cancel = Jag vill inte
+
+## Crash screen
+
 
 ## Tracking checklist section
 

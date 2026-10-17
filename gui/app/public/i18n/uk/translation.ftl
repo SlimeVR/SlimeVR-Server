@@ -62,9 +62,6 @@ body_part-LEFT_UPPER_LEG = Ліве стегно
 body_part-LEFT_LOWER_LEG = Ліва щиколотка
 body_part-LEFT_FOOT = Ліва нога
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Нічого
@@ -179,14 +176,11 @@ tracker-settings-assignment_section-edit = Редагування признач
 tracker-settings-mounting_section = Позиція трекера
 tracker-settings-mounting_section-description = Де закріплено трекер?
 tracker-settings-mounting_section-edit = Змінити місце розташування
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Ім'я трекера
 tracker-settings-name_section-description = Дайте йому миле прізвисько °^°
 tracker-settings-name_section-placeholder = Ліва нога NightyBeast
 tracker-settings-name_section-label = Ім'я трекера
 tracker-settings-forget = Забути трекери
-tracker-settings-forget-description = Прибирає трекер із SlimeVR і забороняє йому підключатися до сервера до того, як він буде перезапущений. Конфігурацію трекера не буде втрачено.
 tracker-settings-forget-label = Забути трекери
 
 ## Dongle settings
@@ -228,14 +222,12 @@ mounting_selection_menu-close = Закрити
 
 ## Sidebar settings
 
-settings-sidebar-title = Параметри
 settings-sidebar-general = Загальні
 settings-sidebar-trackers = Трекери
 settings-sidebar-interface = Інтерфейс
 settings-sidebar-utils = Утиліти
 settings-sidebar-serial = Послідовна консоль
 settings-sidebar-appearance = Зовнішність
-settings-sidebar-notifications = Сповіщення
 
 ## Bone routing settings
 
@@ -252,7 +244,6 @@ settings-general-tracker_mechanics-filtering = Фільтрація
 settings-general-tracker_mechanics-filtering-description =
     Виберіть тип фільтрації для своїх трекерів.
     Передбачення передбачає рух, а згладжування згладжує рух.
-settings-general-tracker_mechanics-filtering-type = Тип фільтрації
 settings-general-tracker_mechanics-filtering-type-none = Без фільтрації
 settings-general-tracker_mechanics-filtering-type-none-description = Використовуйте обертання як є. Ніякої фільтрації не зробить.
 settings-general-tracker_mechanics-filtering-type-smoothing = Згладжування
@@ -265,19 +256,14 @@ settings-general-tracker_mechanics-save_mounting_reset = Зберегти авт
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Зберігає калібрування положення трекерів на тілі між перезавантаженнями. Корисний
     при носінні костюма, в якому трекери не переміщаються між сесіями. <b>Не рекомендується для звичайних користувачів!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Зберегти калібрування положення
-settings-stay_aligned-general-label = Загальні
 settings-stay_aligned-relaxed_poses-close = Закрити
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Повне скидання
-settings-keybinds_yaw-reset = Скинути нахил
 settings-keybinds-recorder-modal-cancel-button = Скасувати
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Налаштування відстеження
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -290,24 +276,11 @@ settings-general-fk_settings-leg_tweak-skating_correction = корекція к�
 settings-general-fk_settings-leg_tweak-toe_snap = корекція пальців ноги
 settings-general-fk_settings-leg_tweak-foot_plant = корекція ступні
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Сила корекції ковзання
-settings-general-fk_settings-leg_tweak-skating_correction-description = Корекція ковзання коригує катання на ковзанах, але може знизити точність певних моделей руху. Увімкнувши це, обов'язково повністю скиньте та відкалібруйте у грі.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Прив'язка до підлоги може зменшити або навіть прибрати проходження через підлогу. Коли вмикаєте, обов'язково зробіть повне скидання і перекалібровку у грі
 settings-general-fk_settings-leg_tweak-toe_snap-description = Корекція пальців ноги намагається вгадати обертання ваших ступень, якщо трекери для них не використовуються
 settings-general-fk_settings-leg_tweak-foot_plant-description = Корекція ступні повертає ваші ступні так, щоб вони були паралельні землі при контакті
 settings-general-fk_settings-leg_fk = Трекінг ноги
-settings-general-fk_settings-arm_fk-reset_mode-description = Змініть позу руки, яка очікується для скидання налаштувань положення.
-settings-general-fk_settings-arm_fk-back = Назад
-settings-general-fk_settings-arm_fk-back-description = Стандартний режим: плечі ззаду, а передпліччя спереду.
-settings-general-fk_settings-arm_fk-tpose_up = Т-поза (вгору)
-settings-general-fk_settings-arm_fk-tpose_up-description = Очікується, що ваші руки будуть опущені з боків під час повного скидання, та на 90 градусів у сторони під час скидання положення.
-settings-general-fk_settings-arm_fk-tpose_down = Т-поза (вниз)
-settings-general-fk_settings-arm_fk-tpose_down-description = Очікується, що ваші руки будуть піднятими в сторони на 90 градусів під час повного скидання, та опущені з боків під час скидання положення.
-settings-general-fk_settings-arm_fk-forward = Вперед
-settings-general-fk_settings-arm_fk-forward-description = Очікується, що ваші руки будуть підняті вперед на 90 градусів. Корисно для вітюбінга.
 settings-general-fk_settings-skeleton_settings-ratios = Співвідношення скелета
-settings-general-fk_settings-skeleton_settings-ratios-description = Змініть параметри скелета. Можливо, вам доведеться скоригувати пропорції після їхньої зміни.
 settings-general-fk_settings-self_localization-title = Режим Мокап
-settings-general-fk_settings-self_localization-description = Режим Мокап дозволяє скелету приблизно відстежувати власне положення без використання шолому або інших трекерів. Зверніть увагу, що для цього потрібні трекери ніг і голови, і це все ще експериментальний метод.
 
 ## Gesture control settings (tracker tapping)
 
@@ -338,9 +311,7 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Зб�
 ## Appearance settings
 
 settings-interface-appearance = Зовнішність
-settings-general-interface-dev_mode = Режим розробника
 settings-general-interface-dev_mode-description = Цей режим може бути корисним, якщо вам потрібні поглиблені дані або для взаємодії з підключеними трекерами на більш просунутому рівні.
-settings-general-interface-dev_mode-label = Режим розробника
 settings-general-interface-theme = Варіація оформлення
 settings-general-interface-lang = Виберіть мову
 settings-general-interface-lang-description = Змініть мову за замовчуванням, яку ви хочете використовувати.
@@ -356,25 +327,18 @@ settings-interface-appearance-font_size-description = Це впливає на �
 
 ## Notification settings
 
-settings-interface-notifications = Повідомлення
 settings-general-interface-feedback_sound = Звук зворотного зв'язку
 settings-general-interface-feedback_sound-description = Ця опція відтворюватиме звуковий сигнал при спрацьовуванні скидання
-settings-general-interface-feedback_sound-label = Звук зворотного зв'язку
 settings-general-interface-feedback_sound-volume = Гучність звуку зворотного зв'язку
 settings-general-interface-connected_trackers_warning = Попередження про підключені трекери
 settings-general-interface-connected_trackers_warning-description = Ця опція відображатиме спливаюче вікно кожного разу, коли ви намагатиметеся вийти зі SlimeVR, якщо підключено один або декілька трекерів. Він нагадує вам вимкнути ваші трекери, коли ви закінчите, щоб зберегти заряд батареї.
-settings-general-interface-connected_trackers_warning-label = Попередження про підключені трекери під час виходу
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Режим розробника
-settings-general-interface-dev_mode-label = Режим розробника
 settings-general-interface-use_tray = Згорнути в системний трей
 settings-general-interface-use_tray-description = Дозволяє закрити вікно, не закриваючи сервер SlimeVR, так що ви можете продовжувати використати його, не турбуючись про інтерфейс.
-settings-general-interface-use_tray-label = Згорнути в системний трей
 settings-general-interface-discord_presence = Ділитися активністю в Discord
 settings-general-interface-discord_presence-description = Повідомляє вашому клієнту Discord, що ви використовуєте SlimeVR, а також передає кількість трекерів IMU, які ви використовуєте.
-settings-general-interface-discord_presence-label = Ділитися активністю в Discord
 
 ## Serial settings
 
@@ -399,12 +363,13 @@ settings-serial-save_logs = Зберегти у файл
 settings-serial-send_command-warning-ok = Я знаю, що роблю
 settings-serial-send_command-warning-cancel = Скасувати
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC трекери
 settings-osc-vrchat-enable = Увімкнути
 settings-osc-vrchat-enable-description = Перемикайте відправку та отримання даних.
-settings-osc-vrchat-enable-label = Увімкнути
 settings-osc-vrchat-network = Мережеві порти
 settings-osc-vrchat-network-port_in =
     .label = Вхідний Порт
@@ -414,7 +379,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Вихідний Порт (зазвичай: 9000)
 settings-osc-vrchat-network-address = Мережева адреса
 settings-osc-vrchat-network-address-description-v1 = Виберіть, за якою адресою надсилати дані. Можна залишити без змін для VRChat.
-settings-osc-vrchat-network-address-placeholder = IP-адреса VRChat
 
 ## VRChat OSC status
 
@@ -423,14 +387,12 @@ settings-osc-vrchat-status-badge-error = Помилка
 
 ## VMC OSC settings
 
-settings-osc-vmc = Віртуальне захоплення руху
 # This cares about multilines
 settings-osc-vmc-description =
     Змінення настройок протоколу VMC (Virtual Motion Capture)
         щоб надсилати дані про кістки SlimeVR та отримувати дані про кістки з інших програм.
 settings-osc-vmc-enable = Увімкнути
 settings-osc-vmc-enable-description = Перемикайте відправку та отримання даних.
-settings-osc-vmc-enable-label = Увімкнути
 settings-osc-vmc-network = Мережеві порти
 settings-osc-vmc-network-description = Встановіть порти для прослуховування і відправки даних по VMC
 settings-osc-vmc-network-port_in =
@@ -441,16 +403,13 @@ settings-osc-vmc-network-port_out =
     .placeholder = Вихідний Порт (зазвичай: 39539)
 settings-osc-vmc-network-address = Мережева адреса
 settings-osc-vmc-network-address-description = Виберіть, за якою адресою надсилати дані через VMC
-settings-osc-vmc-network-address-placeholder = IPV4-адреса
 settings-osc-vmc-vrm = Модель VRM
 settings-osc-vmc-vrm-description = Завантажте модель VRM, щоб дозволити головний якір і забезпечити більш високу сумісність з іншими програмами
 settings-osc-vmc-vrm-file_select = Перетягніть модель для використання або <u>знайдіть</u>
 settings-osc-vmc-anchor_hip = Якір у стегон
 settings-osc-vmc-anchor_hip-description = Закріпіть стеження на стегнах, корисно для сидячих VTubing. Якщо вимкнено, завантажте модель VRM.
-settings-osc-vmc-anchor_hip-label = Якір у стегон
 settings-osc-vmc-mirror_tracking = Дзеркальний трекінг
 settings-osc-vmc-mirror_tracking-description = Віддзеркалити трекери горизонтально.
-settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
 settings-osc-vmc-status-badge-error = Помилка
 
 ## Common OSC settings
@@ -553,35 +512,26 @@ onboarding-assign_trackers-mirror = Дзеркальний вигляд
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Ліва нога призначенна, але треба ще ліва щиколотка, ліве стегно та на вибір груди, бедро або талія повинні бути призначенні
-        [1] Ліва ступня призначенна, але в тебе повинно бути ліве стегно і на вибір груди, бедро або талія теж призначенні
-        [2] Ліва ступня призначенна, але в тебе повинно бути ще ліва щиколотка та на вибір груди, бедро або талія теж призначенні
-        [3] Ліва ступня призначенна, але тобі ще треба на вибір груди, бедро або талія теж призначенні
-        [4] Ліва ступня призначенна, але тобі ще потрібно ліва щиколотка і ліве стегно теж призначенні
-        [5] Ліва ступня призначенна, але тобі ще потрібно ліве стегно теж призначити
-        [6] Ліва ступня призначенна, але тобі ще треба ліву щиколотку теж призначити
-       *[other] Ліва ступня призначенна, але тобі ще треба Невідома кількість непризначенних частин тіла теж призначенні
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Який спосіб калібрування положення використовувати?
 # Multiline text
 onboarding-choose_mounting-description = Орієнтація кріплення коригується для розміщення трекерів на вашому тілі.
-onboarding-choose_mounting-auto_mounting = Автоматична прив'язка положення
-onboarding-choose_mounting-auto_mounting-description = Це автоматично визначить орієнтацію всіх ваших трекерів з 2 поз
-onboarding-choose_mounting-manual_mounting = Самостійна прив'язка
-onboarding-choose_mounting-manual_mounting-description = Це дозволить обрати орієнтацію кожного трекера самостійно
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Самостійна прив'язка
 onboarding-manual_mounting-description = Натисніть на кожен трекер і виберіть, як вони розташовані
-onboarding-manual_mounting-auto_mounting = Автоматична прив'язка
 onboarding-manual_mounting-next = Наступний крок
 
 ## Tracker automatic mounting setup
@@ -593,7 +543,7 @@ onboarding-automatic_mounting-prev_step = Попередній крок
 onboarding-automatic_mounting-done-restart = Спробуйте знову
 onboarding-automatic_mounting-mounting_reset-title = Калібрування положення
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -661,14 +611,11 @@ tray_or_exit_modal-cancel = Скасувати
 
 ## Unknown device modal
 
-unknown_device-modal-title = Знайдено новий трекер!
-unknown_device-modal-description =
-    З'явився новий трекер із MAC-адресою <b>{ $deviceId }</b>.
-    Бажаєте підключити його до SlimeVR?
-unknown_device-modal-confirm = Звісно!
-unknown_device-modal-forget = Ігнорувати
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

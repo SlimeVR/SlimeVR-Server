@@ -102,35 +102,6 @@ body_part-RIGHT_LITTLE_INTERMEDIATE = Auriculaire droit intermédiaire
 body_part-RIGHT_LITTLE_DISTAL = Auriculaire droit distal
 body_part-RIGHT_TOES = Orteils droit
 
-## BoardType
-
-board_type-UNKNOWN = Inconnu
-board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = Carte personnalisée
-board_type-WROOM32 = WROOM32
-board_type-WEMOSD1MINI = Wemos D1 Mini
-board_type-TTGO_TBASE = TTGO T-Base
-board_type-ESP01 = ESP-01
-board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = Carte de développement SlimeVR
-board_type-SLIMEVR_V1_2 = SlimeVR v1.2
-board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
-board_type-OWOTRACK = owoTrack
-board_type-WRANGLER = Wrangler Joycons
-board_type-MOCOPI = Sony Mocopi
-board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
-board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
-board_type-HARITORA = Haritora
-board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
-board_type-GESTURES = Gestes
-board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
-board_type-GENERIC_NRF = nRF Générique
-board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
-board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
-
 ## Proportions
 
 skeleton_bone-NONE = Aucun
@@ -335,14 +306,11 @@ tracker-settings-use_mag-description =
     
     Vous devez d'abord autoriser l'utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
 tracker-settings-use_mag-label = Autoriser le magnétomètre
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 tracker-settings-name_section-placeholder = Patte gauche d'Erimel
 tracker-settings-name_section-label = Nom personalisé
 tracker-settings-forget = Oublier capteur
-tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l'empêche de s'y connecter jusqu'à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
 tracker-settings-forget-label = Oublier capteur
 tracker-settings-update-unavailable-v2 = Aucune publication trouvée
 tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatible
@@ -397,11 +365,9 @@ mounting_selection_menu-close = Fermer
 
 ## Sidebar settings
 
-settings-sidebar-title = Réglages
 settings-sidebar-general = Général
 settings-sidebar-stay_aligned = Garder Aligné
 settings-sidebar-trackers = Capteurs
-settings-sidebar-vrchat_osc = Capteurs OSC VRChat
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
@@ -414,7 +380,6 @@ settings-sidebar-advanced = Avancé
 
 ## Bone routing settings
 
-settings-routing-output-vrc_osc = Capteurs OSC VRChat
 settings-routing-output-badge-off = Désactivé
 settings-routing-group-fingers = Doigts
 settings-routing-hands-warning-cancel = Annuler
@@ -431,7 +396,6 @@ settings-general-tracker_mechanics-filtering = Filtrage
 settings-general-tracker_mechanics-filtering-description =
     Choisissez le type de filtrage pour vos capteurs.
     La prédiction prédit les mouvements tandis que la fluidification rend les mouvements plus fluides.
-settings-general-tracker_mechanics-filtering-type = Type de filtrage
 settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
 settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
 settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
@@ -444,23 +408,15 @@ settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibrat
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Enregistre les calibrations des réinitialisation automatiques d'alignement pour les capteurs entre les redémarrages.
     Utile lorsque vous portez une combinaison où les capteurs ne bougent pas entre les sessions. <b>Non recommandé pour les utilisateurs normaux !</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l'alignement
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Utiliser le magnétomètre sur tous les capteurs IMU qui le prennent en charge
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
 settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
-settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permettre aux capteurs HID de se connecter directement via USB
-settings-stay_aligned = Garder Aligné
 settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
 settings-stay_aligned-setup-label = Configurer Garder Aligné
-settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
-settings-stay_aligned-enabled-label = Ajuster les capteurs
-settings-stay_aligned-general-label = Général
 settings-stay_aligned-relaxed_poses-label = Postures détendues
-settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos postures détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
 settings-stay_aligned-relaxed_poses-standing = Ajuster les capteurs en position debout
 settings-stay_aligned-relaxed_poses-sitting = Ajuster les capteurs en position assise sur une chaise
 settings-stay_aligned-relaxed_poses-flat = Ajuster les capteurs en position assise sur le sol ou allongée sur le dos
@@ -473,15 +429,12 @@ settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-p
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Réinitialisation complète
-settings-keybinds_yaw-reset = Réinitialisation horizontale
 settings-keybinds_reset-all-button = Tout réinitialiser
 settings-keybinds-recorder-modal-done-button = Fait
 settings-keybinds-recorder-modal-cancel-button = Annuler
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Paramètres de la capture
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -494,32 +447,16 @@ settings-general-fk_settings-leg_tweak-skating_correction = Correction du glisse
 settings-general-fk_settings-leg_tweak-toe_snap = Correction des orteils
 settings-general-fk_settings-leg_tweak-foot_plant = Correction des pieds
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la correction du glissement
-settings-general-fk_settings-leg_tweak-skating_correction-description = La correction de patinage corrige le patinage des pieds mais peut diminuer la précision de certains mouvements. Lorsque vous activez cette option, assurez-vous d'effectuer une réinitialisation complète et de le recalibrer en jeu.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au sol tente de réduire ou même d'empêcher que vos pieds traversent le sol. Lorsque vous activez cette fonction, assurez-vous d'effectuer une réinitialisation complète et de recalibrer en jeu.
 settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
-settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-ik = Données de position
-settings-general-fk_settings-ik-use_position = Utiliser les données de position
 settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
-settings-general-fk_settings-arm_fk-reset_mode-description = Changer la pose des bras attendue pour la réinitialisation de l'alignement.
-settings-general-fk_settings-arm_fk-back = En arrière
-settings-general-fk_settings-arm_fk-back-description = Le mode par défaut, avec les bras vers l'arrière et les avant-bras vers l'avant.
-settings-general-fk_settings-arm_fk-tpose_up = T-pose (vers le haut)
-settings-general-fk_settings-arm_fk-tpose_up-description = S'attend à ce que vos bras soient  vers le bas sur les côtés pendant la réinitialisation complète et à 90 degrés vers l'extérieur pendant la réinitialisation de l'alignement.
-settings-general-fk_settings-arm_fk-tpose_down = T-pose (vers le bas)
-settings-general-fk_settings-arm_fk-tpose_down-description = S'attend à ce que vos bras soient à 90 degrés vers l'extérieur pendant la réinitialisation complète et vers le bas sur les côtés pendant la réinitialisation de l'alignement.
-settings-general-fk_settings-arm_fk-forward = En avant
-settings-general-fk_settings-arm_fk-forward-description = S'attend à ce que vos bras soient levés 90 degrés vers l'avant. Utile pour le VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Ratios du squelette
-settings-general-fk_settings-skeleton_settings-ratios-description = Modifiez les valeurs des paramètres du squelette. Vous devrez peut-être ajuster vos proportions après les avoir modifiées.
 settings-general-fk_settings-self_localization-title = Mode Mocap
-settings-general-fk_settings-self_localization-description = Le mode Mocap permet au squelette de suivre grossièrement sa propre position sans casque ou autres capteurs. Ce mode nécessite des capteurs de pieds et de tête afin de fonctionner et est encore expérimental.
 
 ## Gesture control settings (tracker tapping)
 
@@ -548,9 +485,7 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Augme
 ## Appearance settings
 
 settings-interface-appearance = Apparence
-settings-general-interface-dev_mode = Mode développeur
 settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-theme = Thème
 settings-general-interface-lang = Langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
@@ -568,23 +503,17 @@ settings-interface-appearance-font_size-description = Cela affecte la taille du 
 
 settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
-settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
 settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle à chaque fois que vous essaierez de quitter SlimeVR en ayant un ou plusieurs capteurs connectés. Il vous rappelle d'éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
-settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
 
 ## Behavior settings
 
 settings-interface-behavior = Comportement
-settings-general-interface-dev_mode = Mode développeur
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
-settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
 settings-general-interface-discord_presence = Partager l'activité sur Discord
 settings-general-interface-discord_presence-description = Indique à votre client Discord que vous utilisez SlimeVR avec le nombre de capteurs IMU que vous utilisez.
-settings-general-interface-discord_presence-label = Partager l'activité sur Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Aucun capteur
@@ -592,12 +521,6 @@ settings-general-interface-discord_presence-message =
        *[other] Utilise { $amount } capteurs
     }
 settings-interface-behavior-error_tracking = Collecte des erreurs via Sentry.io
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Consentez-vous à la collecte de données d'erreur anonymisée ?</h1>
-    
-    <b>Nous ne collectons pas d'informations personnelles</b> telles que votre adresse IP ou vos identifiants Wi-Fi. SlimeVR accorde une grande importance à votre vie privée !
-    
-    Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d'erreurs anonymisés, des mesures de performance et des informations sur le système d'exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
 settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
 settings-interface-behavior-bvh_directory = Répertoire pour sauvegarder les enregistrements BVH
 settings-interface-behavior-bvh_directory-description = Choisissez un répertoire où sauvegarder vos enregistrements BVH au lieu d’avoir à choisir où les sauvegarder à chaque fois.
@@ -629,9 +552,11 @@ settings-serial-send_command-warning = <b>Avertissement:</b> Exécuter des comma
 settings-serial-send_command-warning-ok = Je sais ce que je fais
 settings-serial-send_command-warning-cancel = Annuler
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = Capteurs OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l'envoi
@@ -639,7 +564,6 @@ settings-osc-vrchat-description-v1 =
     Assurez-vous d'activer le protocole OSC dans VRChat via le menu d'action (rond) sous OSC > Enabled.
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
-settings-osc-vrchat-enable-label = Activer
 settings-osc-vrchat-network = Ports réseau
 settings-osc-vrchat-network-port_in =
     .label = Port d'entrée
@@ -649,7 +573,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port de sortie (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
 settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
-settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 
 ## VRChat OSC status
 
@@ -665,7 +588,6 @@ settings-osc-vmc-description =
            pour envoyer les données de capture de SlimeVR et recevoir les données de capture d'autres applications.
 settings-osc-vmc-enable = Activer
 settings-osc-vmc-enable-description = Activer/désactiver l'envoi et la réception de données.
-settings-osc-vmc-enable-label = Activer
 settings-osc-vmc-network = Ports réseau
 settings-osc-vmc-network-description = Définissez les ports pour écouter et envoyer des données par VMC.
 settings-osc-vmc-network-port_in =
@@ -676,17 +598,14 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port de sortie (par défaut : 39539)
 settings-osc-vmc-network-address = Adresse réseau
 settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquelle envoyer des données VMC.
-settings-osc-vmc-network-address-placeholder = Adresse IPv4
 settings-osc-vmc-vrm = Modèle VRM
 settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l'ancrage à la tête et permettre une plus grande compatibilité avec d'autres applications
 settings-osc-vmc-vrm-untitled_model = Modèle sans nom
 settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, ou <u>parcourir</u>.
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
 settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
-settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
 settings-osc-vmc-mirror_tracking = Inverser les mouvements
 settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
-settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
 settings-osc-vmc-status-badge-error = Erreur
 
 ## Common OSC settings
@@ -700,23 +619,9 @@ settings-utils-advanced-reset-gui = Réinitialiser les paramètres de l'interfac
 settings-utils-advanced-reset-gui-description = Restaurez les paramètres par défaut de l'interface.
 settings-utils-advanced-reset-gui-label = Réinitialiser l'interface graphique
 settings-utils-advanced-reset-server = Réinitialiser les paramètres de la capture
-settings-utils-advanced-reset-server-description = Restaurez les paramètres par défaut de la capture
 settings-utils-advanced-reset-server-label = Réinitialiser la capture
 settings-utils-advanced-reset-all = Réinitialiser tous les paramètres
-settings-utils-advanced-reset-all-description = Restaurez les paramètres de l'interface et de la capture.
 settings-utils-advanced-reset-all-label = Tout réinitialiser
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>Avertissement:</b> Cela réinitialisera vos paramètres de l'interface.
-            Êtes-vous sûr de vouloir faire cela ?
-        [server]
-            <b>Avertissement:</b> Cela réinitialisera vos paramètres de la capture.
-            Êtes-vous sûr de vouloir faire cela ?
-       *[all]
-            <b>Avertissement:</b> Cela réinitialisera tous vos paramètres.
-            Êtes-vous sûr de vouloir faire cela ?
-    }
 settings-utils-advanced-reset_warning-reset = Réinitialiser les paramètres
 settings-utils-advanced-reset_warning-cancel = Annuler
 settings-utils-advanced-open_data-v1 = Dossier de configuration
@@ -735,8 +640,6 @@ settings-home-list-layout-table = Tableau
 
 ## Tracking Checklist
 
-settings-tracking_checklist-active_steps = Etapes actives
-settings-tracking_checklist-active_steps-desc = Liste de toutes les étapes de la checklist de suivi. Vous pouvez choisir de désactiver certaines étapes.
 
 ## Setup/onboarding menu
 
@@ -759,12 +662,6 @@ onboarding-quiz-mocap_preferences-head_tracker-yes = Oui
 
 onboarding-wifi_creds-back-v2 = Retour
 onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description-v2 =
-    La plupart des capteurs (comme les capteurs officiels SlimeVR) utilisent le Wi-Fi pour se connecter au serveur.
-    Veuillez utiliser les identifiants du réseau Wi-Fi auquel votre appareil est actuellement connecté.
-    
-    Assurez-vous d’utiliser une connexion Wi-Fi 2,4 GHz pour vos capteurs !
 onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-retry = Réessayer
 onboarding-wifi_creds-ssid-label = Nom du Wi-Fi
@@ -841,89 +738,26 @@ onboarding-assign_trackers-mirror = Vue miroir
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] Le pied gauche est attribué mais il faut que la cheville gauche, la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [1] Le pied gauche est attribué mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [2] Le pied gauche est attribué mais il faut que la cheville gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [3] Le pied gauche est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-        [4] Le pied gauche est attribué mais il faut que la cheville gauche et la cuisse gauche soient également attribuées !
-        [5] Le pied gauche est attribué mais il faut que la cuisse gauche le soit également !
-        [6] Le pied gauche est attribué mais il faut que la cheville gauche le soit également !
-       *[unknown] Le pied gauche est attribué mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] Le pied droit est attribué mais il faut que la cheville droite, la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [1] Le pied droit est assigné mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [2] Le pied droit est assigné mais il faut que la cheville droite et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [3] Le pied droit est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-        [4] Le pied droit est attribué mais il faut que la cheville droite et la cuisse droite soient également attribuées !
-        [5] Le pied droit est attribué mais il faut que la cuisse droite le soit également !
-        [6] Le pied droit est attribué mais il faut que la cheville droite le soit également !
-       *[unknown] Le pied droit est assigné mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] La cheville gauche est attribuée mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [1] La cheville gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-        [2] La cheville gauche est attribuée mais il faut que la cuisse gauche soit également attribuée !
-       *[unknown] La cheville gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] La cheville droite est attribuée mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
-        [1] La cheville droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-        [2] La cheville droite est attribuée mais il faut que la cuisse droite soit également attribuée !
-       *[unknown] La cheville droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] La cuisse gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-       *[unknown] La cuisse gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] La cuisse droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-       *[unknown] La cuisse droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] La hanche est attribuée mais il faut que la poitrine le soit aussi !
-       *[unknown] La hanche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] La taille est attribuée mais il faut que la poitrine le soit aussi !
-       *[unknown] La taille est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Quelle méthode de calibration de l'alignement utiliser ?
 # Multiline text
 onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
-onboarding-choose_mounting-auto_mounting = Alignement automatique
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = Recommendée
-onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
-onboarding-choose_mounting-manual_mounting = Alignement manuel
-onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Alignement manuel
 onboarding-manual_mounting-description = Cliquez sur chaque capteur et sélectionnez la manière dont ils sont orientés
-onboarding-manual_mounting-auto_mounting = Détection automatique
 onboarding-manual_mounting-next = Prochaine étape
 
 ## Tracker automatic mounting setup
@@ -937,7 +771,6 @@ onboarding-automatic_mounting-done-title = Alignements calibrés.
 onboarding-automatic_mounting-done-description = La calibration de l'alignement de vos capteurs est terminée !
 onboarding-automatic_mounting-done-restart = Retourner au début
 onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alignement
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Mettez-vous sur la pointe des pieds, les deux pieds pointés vers l’avant. Vous pouvez aussi le faire assis sur une chaise.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Appuyez sur le bouton « Calibration des pieds » et attendez 3 secondes avant que l’orientation de l'alignement des capteurs ne se réinitialise.
@@ -945,12 +778,9 @@ onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Appuyez sur le bouton « Réinitialisation complète ».
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Tenez-vous droit debout, les bras le long du corps. Assurez-vous de regarder vers l’avant.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position jusqu'à la fin du chronomètre de 3 secondes.
-onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
-onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
-onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 onboarding-automatic_mounting-return-home = Terminé
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-back-scaled = Retour aux proportions mises à l'échelle
 onboarding-manual_proportions-fine_tuning_button = Automatiquement ajuster les proportions
@@ -1074,7 +904,6 @@ onboarding-stay_aligned-previous_step = Précédent
 onboarding-stay_aligned-next_step = Prochain
 onboarding-stay_aligned-restart = Recommencer
 onboarding-stay_aligned-done = Fait
-onboarding-stay_aligned-manual_mounting-done = Terminé
 
 ## Home
 
@@ -1223,12 +1052,6 @@ tray_or_exit_modal-cancel = Annuler
 
 ## Unknown device modal
 
-unknown_device-modal-title = Un nouveau capteur a été trouvé !
-unknown_device-modal-description =
-    Il y a un nouveau capteur avec l'adresse MAC <b>{ $deviceId }</b>.
-    Voulez-vous le connecter à SlimeVR ?
-unknown_device-modal-confirm = Oui!
-unknown_device-modal-forget = Ignorer
 # VRChat config warnings
 vrc_config-page-title = Avertissements de configuration VRChat
 vrc_config-page-desc = Cette page montre l’état de vos paramètres VRChat et montre quels paramètres sont incompatibles avec SlimeVR. Il est fortement recommandé de corriger tous les avertissements qui s’affichent ici pour la meilleure expérience utilisateur avec SlimeVR.
@@ -1248,17 +1071,10 @@ vrc_config-mute-btn = Ignorer
 vrc_config-unmute-btn = Ne plus ignorer
 vrc_config-legacy_mode = Utiliser l'ancienne méthode de résolution de la CI
 vrc_config-disable_shoulder_tracking = Désactiver le suivi des épaules
-vrc_config-shoulder_width_compensation = Compensation de la largeur des épaules
-vrc_config-spine_mode = Mode colonne vertébrale du suivi du corps
 vrc_config-tracker_model = Apparence des traqueurs du suivi du corps
 vrc_config-avatar_measurement_type = Mesure de l'avatar
-vrc_config-calibration_range = Plage de calibration
 vrc_config-calibration_visuals = Afficher les visuels de calibration
 vrc_config-user_height = Taille réelle de l'utilisateur
-vrc_config-spine_mode-UNKNOWN = Inconnu
-vrc_config-spine_mode-LOCK_BOTH = Verrouiller les deux
-vrc_config-spine_mode-LOCK_HEAD = Verrouiller la tête
-vrc_config-spine_mode-LOCK_HIP = Verrouiller la hanche
 vrc_config-tracker_model-UNKNOWN = Inconnu
 vrc_config-tracker_model-AXIS = Axe
 vrc_config-tracker_model-BOX = Cube
@@ -1271,12 +1087,11 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Envergure des bras
 ## Error collection consent modal
 
 error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
-error_collection_modal-description_v2 =
-    { settings-interface-behavior-error_tracking-description_v2 }
-    
-    Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
 error_collection_modal-cancel = Je ne veux pas
+
+## Crash screen
+
 
 ## Tracking checklist section
 
@@ -1294,7 +1109,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l'alignem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement des pieds
 tracking_checklist-FULL_RESET = Faire une réinitialisation complète
 tracking_checklist-FULL_RESET-desc = Certains capteurs nécessitent une réinitialisation.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n'est pas lancé
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrer vos capteurs

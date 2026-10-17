@@ -100,13 +100,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Sağ küçük parmağın proksimal falanks kem
 body_part-RIGHT_LITTLE_INTERMEDIATE = Sağ küçük parmağın orta falanks kemiği
 body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
-## BoardType
-
-board_type-UNKNOWN = Bilinmeyen
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
-board_type-GESTURES = Hareketler
-board_type-GENERIC_NRF = Jenerik nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Yok
@@ -246,8 +239,6 @@ tracker-infos-board_type = Ana kart
 tracker-settings-back = Takipçi listesine geri dön
 tracker-settings-title = Takipçi ayarları
 tracker-settings-assignment_section-description = Tracker'in vücudun hangi kısmına atandığı.
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Takipçi adı
 tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
 tracker-settings-name_section-label = Takipçi adı
@@ -279,7 +270,6 @@ mounting_selection_menu-close = Kapat
 
 ## Sidebar settings
 
-settings-sidebar-title = Ayarlar
 settings-sidebar-general = Genel
 settings-sidebar-interface = Arayüz
 settings-sidebar-serial = Seri konsol
@@ -295,35 +285,28 @@ settings-driver-enable = Etkinleştir
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering-amount = Miktar
-settings-stay_aligned-general-label = Genel
 settings-stay_aligned-relaxed_poses-close = Kapat
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Sıfırlama
 settings-keybinds-recorder-modal-cancel-button = İptal
 
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_fk = Bacak takibi
-settings-general-fk_settings-arm_fk-back = Arka
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Geliştirici Modu
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Notification settings
 
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Geliştirici Modu
-settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Serial settings
 
@@ -333,10 +316,12 @@ settings-serial-factory_reset-warning-cancel = İptal et
 settings-serial-send_command-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-send_command-warning-cancel = İptal
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Etkinleştir
-settings-osc-vrchat-enable-label = Etkinleştir
 settings-osc-vrchat-network-address = Ağ adresi
 
 ## VRChat OSC status
@@ -348,7 +333,6 @@ settings-osc-vrchat-status-badge-unknown = Bilinmeyen
 ## VMC OSC settings
 
 settings-osc-vmc-enable = Etkinleştir
-settings-osc-vmc-enable-label = Etkinleştir
 settings-osc-vmc-network-address = Ağ adresi
 settings-osc-vmc-status-badge-error = Hata
 
@@ -399,13 +383,22 @@ onboarding-assign_trackers-side-left = Sol
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -452,11 +445,13 @@ tray_or_exit_modal-cancel = İptal
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Bilinmeyen
 vrc_config-tracker_model-UNKNOWN = Bilinmeyen
 vrc_config-avatar_measurement_type-UNKNOWN = Bilinmeyen
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

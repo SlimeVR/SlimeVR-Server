@@ -91,10 +91,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = 右小指近位部
 body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中間部
 body_part-RIGHT_LITTLE_DISTAL = 右小指遠位部
 
-## BoardType
-
-board_type-UNKNOWN = 不明
-
 ## Proportions
 
 skeleton_bone-NONE = 無し
@@ -212,13 +208,10 @@ tracker-settings-use_mag-description =
     このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
     
     まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-label = トラッカー名称
 tracker-settings-forget = フォーゲット・トラッカー
-tracker-settings-forget-description = スライムVRサーバーからトラッカーを削除し、サーバーが再起動するまで接続できないようにします。トラッカーの設定は失われません。
 tracker-settings-forget-label = フォーゲット・トラッカー
 
 ## Dongle settings
@@ -258,14 +251,12 @@ mounting_selection_menu-close = 閉じる
 
 ## Sidebar settings
 
-settings-sidebar-title = 設定
 settings-sidebar-general = 一般
 settings-sidebar-trackers = トラッカー
 settings-sidebar-interface = インターフェース
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 settings-sidebar-appearance = 外観
-settings-sidebar-notifications = 通知
 
 ## Bone routing settings
 
@@ -282,7 +273,6 @@ settings-general-tracker_mechanics-filtering = フィルター機能
 settings-general-tracker_mechanics-filtering-description =
     トラッカーのフィルタリングの種類を選択します。
     Predictionは動きを予測し、Smoothingは動きを滑らかにする。
-settings-general-tracker_mechanics-filtering-type = フィルタータイプ
 settings-general-tracker_mechanics-filtering-type-none = フィルター無し
 settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
 settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
@@ -290,18 +280,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 動き
 settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
-settings-stay_aligned-general-label = 一般
 settings-stay_aligned-relaxed_poses-close = 閉じる
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = リセット
-settings-keybinds_yaw-reset = ヨーリセット
 settings-keybinds-recorder-modal-cancel-button = キャンセル
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = FK設定
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -313,22 +299,10 @@ settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
 settings-general-fk_settings-leg_tweak-foot_plant = 足の着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーティング補正の強さ
-settings-general-fk_settings-leg_tweak-skating_correction-description = スケート補正はアイススケートを補正しますが、特定の動きでは精度が低下する場合があります。これを有効にする際は、フルリセットし、ゲーム内で再校正してください。
-settings-general-fk_settings-leg_tweak-floor_clip-description = フロアクリップを有効にすると、床を通り抜けることを減少させるか、完全に排除できます。これを有効にする際は、フルリセットし、ゲーム内で再校正してください。
 settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
-settings-general-fk_settings-arm_fk-reset_mode-description = マウンティングリセットのために期待される腕のポーズを変更します。
-settings-general-fk_settings-arm_fk-back = 後ろ
-settings-general-fk_settings-arm_fk-back-description = デフォルトモードで、上腕を後ろに、下腕を前にします。
-settings-general-fk_settings-arm_fk-tpose_up = Tポーズ(上げ)
-settings-general-fk_settings-arm_fk-tpose_up-description = 完全リセット時は腕を下げて立っている姿勢、マウンティングリセット時は腕を体の両側に90度上げる。
-settings-general-fk_settings-arm_fk-tpose_down = Tポーズ(下げ)
-settings-general-fk_settings-arm_fk-tpose_down-description = 完全リセット時は腕を体の両側に90度上げ、マウンティングリセット時は腕を下げて立っている姿勢。
-settings-general-fk_settings-arm_fk-forward = 前方ポーズ
-settings-general-fk_settings-arm_fk-forward-description = リセット時に腕を前方に90度上げる。Vチューバーとして座っている時に便利。
 settings-general-fk_settings-skeleton_settings-ratios = スケルトン比率
-settings-general-fk_settings-skeleton_settings-ratios-description = スケルトン設定の値を変更する。これらを変更した後、体の比率を調整する必要があるかもしれません。
 settings-general-fk_settings-self_localization-title = モーションキャプチャモード
 
 ## Gesture control settings (tracker tapping)
@@ -358,9 +332,7 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 ## Appearance settings
 
 settings-interface-appearance = 外観
-settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
@@ -373,18 +345,13 @@ settings-interface-appearance-font-slime_font = デフォルトフォント
 
 ## Notification settings
 
-settings-interface-notifications = 通知
 settings-general-interface-feedback_sound = フィードバック音
-settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
 settings-general-interface-connected_trackers_warning = 接続されたトラッカー警告
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = 開発者モード
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-use_tray = システムトレイに最小化する
-settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
 
@@ -402,12 +369,13 @@ settings-serial-serial_select = シリアルポートを選択
 settings-serial-send_command-warning-ok = 自分が何しているかを知っています。
 settings-serial-send_command-warning-cancel = キャンセル
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSCトラッカー
 settings-osc-vrchat-enable = 有効
 settings-osc-vrchat-enable-description = データの送受信を切り替える。
-settings-osc-vrchat-enable-label = 有効
 settings-osc-vrchat-network = ネットワークポート
 settings-osc-vrchat-network-port_in =
     .label = ポートイン
@@ -416,7 +384,6 @@ settings-osc-vrchat-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト (デフォルト: 9000)
 settings-osc-vrchat-network-address = ネットワークアドレス
-settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 
 ## VRChat OSC status
 
@@ -426,10 +393,8 @@ settings-osc-vrchat-status-badge-unknown = 不明
 
 ## VMC OSC settings
 
-settings-osc-vmc = バーチャルモーションキャプチャ
 settings-osc-vmc-enable = 有効
 settings-osc-vmc-enable-description = データの送受信を切り替える。
-settings-osc-vmc-enable-label = 有効
 settings-osc-vmc-network = ネットワークポート
 settings-osc-vmc-network-port_in =
     .label = ポートイン
@@ -438,7 +403,6 @@ settings-osc-vmc-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト（デフォルト：３９５３９）
 settings-osc-vmc-network-address = ネットワークアドレス
-settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
 settings-osc-vmc-status-badge-error = エラー
 
@@ -533,14 +497,20 @@ onboarding-assign_trackers-side-left = 左
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = 自動マウント
-onboarding-choose_mounting-manual_mounting = マニュアルマウント
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = マニュアルマウント
 onboarding-manual_mounting-description = すべてのトラッカーをクリックし、どの方向にマウントするかを選択
-onboarding-manual_mounting-auto_mounting = 自動マウント
 onboarding-manual_mounting-next = 次のステップ
 
 ## Tracker automatic mounting setup
@@ -554,14 +524,10 @@ onboarding-automatic_mounting-done-title = 取り付け方向の較正を行い�
 onboarding-automatic_mounting-done-description = マウントのキャリブレーションが完了しました！
 onboarding-automatic_mounting-done-restart = 最初に戻る
 onboarding-automatic_mounting-mounting_reset-title = マウントリセット
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着する
-onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
-onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -642,13 +608,13 @@ tray_or_exit_modal-cancel = キャンセル
 
 ## Unknown device modal
 
-unknown_device-modal-confirm = もちろん!
-unknown_device-modal-forget = 無視する
-vrc_config-spine_mode-UNKNOWN = 不明
 vrc_config-tracker_model-UNKNOWN = 不明
 vrc_config-avatar_measurement_type-UNKNOWN = 不明
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section
