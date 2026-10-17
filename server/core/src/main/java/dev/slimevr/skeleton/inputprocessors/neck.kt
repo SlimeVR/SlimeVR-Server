@@ -7,7 +7,6 @@ import solarxr_protocol.datatypes.BodyPart
 
 // Neck bends less when looking up
 private const val UP_RATIO = 0.75f
-
 // Neck bends slightly more when looking down.
 private const val DOWN_RATIO = 1.1f
 

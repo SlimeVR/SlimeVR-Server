@@ -79,6 +79,10 @@ export function SettingsSidebar() {
             id="settings-sidebar-vrchat_osc"
           />
           <SettingsLink to="/settings/osc/vmc" id="settings-sidebar-osc_vmc" />
+          <SettingsLink
+            to="/settings/osc/custom"
+            id="settings-sidebar-osc_custom"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-2">

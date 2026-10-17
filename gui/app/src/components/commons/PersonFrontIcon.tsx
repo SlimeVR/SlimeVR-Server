@@ -3,6 +3,7 @@ import { BodyPart } from 'solarxr-protocol';
 export const SIDES = [
   {
     shoulder: BodyPart.LEFT_SHOULDER,
+    bust: BodyPart.LEFT_BUST,
     upperArm: BodyPart.LEFT_UPPER_ARM,
     lowerArm: BodyPart.LEFT_LOWER_ARM,
     hand: BodyPart.LEFT_HAND,
@@ -12,9 +13,11 @@ export const SIDES = [
     bigToe: BodyPart.LEFT_BIG_TOE,
     indexToe: BodyPart.LEFT_INDEX_TOE,
     littleToe: BodyPart.LEFT_LITTLE_TOE,
+    posterior: BodyPart.LEFT_POSTERIOR,
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
+    bust: BodyPart.RIGHT_BUST,
     upperArm: BodyPart.RIGHT_UPPER_ARM,
     lowerArm: BodyPart.RIGHT_LOWER_ARM,
     hand: BodyPart.RIGHT_HAND,
@@ -24,6 +27,7 @@ export const SIDES = [
     bigToe: BodyPart.RIGHT_BIG_TOE,
     indexToe: BodyPart.RIGHT_INDEX_TOE,
     littleToe: BodyPart.RIGHT_LITTLE_TOE,
+    posterior: BodyPart.RIGHT_POSTERIOR,
   },
 ];
 
@@ -74,6 +78,27 @@ export function PersonFrontIcon({
       <circle
         className="body-part-circle"
         cx="82"
+        cy="205"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.TAIL]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="63"
+        cy="205"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].posterior]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="101"
+        cy="205"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[right].posterior]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="82"
         cy="140"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.UPPER_WAIST]}
@@ -119,6 +144,13 @@ export function PersonFrontIcon({
         cy="90"
         r={CIRCLE_RADIUS}
         id={BodyPart[SIDES[right].shoulder]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="99"
+        cy="105"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[right].bust]}
       />
       <circle
         className="body-part-circle"
@@ -178,6 +210,13 @@ export function PersonFrontIcon({
         cy="90"
         r={CIRCLE_RADIUS}
         id={BodyPart[SIDES[left].shoulder]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="65"
+        cy="105"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].bust]}
       />
       <circle
         className="body-part-circle"

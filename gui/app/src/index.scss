@@ -122,26 +122,26 @@ body {
 }
 
 :root[data-theme='trans'] {
-  --background-10: 89, 39, 50;
+  --background-10: 64, 28, 36;
   --background-20: 26, 102, 130;
   --background-30: 9, 84, 112;
   --background-40: 77, 155, 184;
   --background-50: 238, 238, 238;
   --background-60: 255, 255, 255;
-  --background-70: 240, 165, 180;
-  --background-80: 88, 200, 245;
-  --background-90: 0, 2, 4;
+  --background-70: 245, 169, 184;
+  --background-80: 91, 206, 250;
+  --background-90: 0, 5, 9;
 
-  --accent-background-10: 143, 46, 65;
-  --accent-background-20: 255, 209, 218;
-  --accent-background-30: 255, 148, 169;
-  --accent-background-40: 255, 189, 202;
-  --accent-background-50: 240, 165, 180;
+  --accent-background-10: 148, 47, 67;
+  --accent-background-20: 255, 199, 210;
+  --accent-background-30: 247, 183, 196;
+  --accent-background-40: 247, 183, 196;
+  --accent-background-50: 245, 169, 184;
 
-  --success: 0, 173, 72;
-  --warning: 240, 196, 50;
+  --success: 68, 194, 127;
+  --warning: 240, 221, 58;
   --critical: 223, 109, 140;
-  --special: 175, 57, 230;
+  --special: 164, 79, 237;
   --window-icon-stroke: 28, 154, 201;
 
   --default-color: 29, 29, 29;
@@ -358,23 +358,23 @@ body {
   --background-10: 255, 255, 255;
   --background-20: 230, 230, 230;
   --background-30: 200, 200, 200;
-  --background-40: 118, 118, 118;
-  --background-50: 62, 62, 62;
-  --background-60: 45, 45, 45;
-  --background-70: 28, 28, 28;
-  --background-80: 13, 13, 13;
+  --background-40: 120, 120, 120;
+  --background-50: 60, 60, 60;
+  --background-60: 41, 41, 41;
+  --background-70: 27, 27, 27;
+  --background-80: 12, 12, 12;
   --background-90: 4, 4, 4;
 
-  --accent-background-10: 237, 104, 21;
+  --accent-background-10: 255, 98, 0;
   --accent-background-20: 205, 79, 0;
-  --accent-background-30: 166, 64, 0;
-  --accent-background-40: 97, 40, 5;
-  --accent-background-50: 50, 23, 5;
+  --accent-background-30: 153, 59, 0;
+  --accent-background-40: 102, 39, 0;
+  --accent-background-50: 51, 20, 0;
 
   --success: 100, 230, 10;
   --warning: 240, 190, 50;
   --critical: 220, 40, 110;
-  --special: 230, 90, 34;
+  --special: 237, 65, 31;
   --window-icon-stroke: 205, 81, 0;
 
   --default-color: 255, 255, 255;
