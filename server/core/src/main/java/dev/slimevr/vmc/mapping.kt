@@ -12,10 +12,30 @@ val VMC_SUPPORTED_BONES: Set<BodyPart> = UnityBone.entries.flatMap { unityBone -
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
 val VMC_HIERARCHY: EnumMap<UnityBone, Array<UnityBone>> = EnumMap(
 	mapOf(
-		UnityBone.HIPS to arrayOf(UnityBone.LEFT_UPPER_LEG, UnityBone.RIGHT_UPPER_LEG, UnityBone.SPINE),
+		UnityBone.HIPS to arrayOf(
+			UnityBone.LEFT_UPPER_LEG,
+			UnityBone.RIGHT_UPPER_LEG,
+			UnityBone.SPINE,
+			UnityBone.LEFT_POSTERIOR,
+			UnityBone.RIGHT_POSTERIOR,
+			UnityBone.TAIL,
+			UnityBone.TAIL_1,
+		),
+		UnityBone.TAIL to arrayOf(UnityBone.TAIL_1),
+		UnityBone.TAIL_1 to arrayOf(UnityBone.TAIL_2),
+		UnityBone.TAIL_2 to arrayOf(UnityBone.TAIL_3),
+		UnityBone.TAIL_3 to arrayOf(UnityBone.TAIL_4),
+		UnityBone.TAIL_4 to arrayOf(UnityBone.TAIL_5),
+		UnityBone.TAIL_5 to arrayOf(UnityBone.TAIL_6),
 		UnityBone.SPINE to arrayOf(UnityBone.CHEST),
 		UnityBone.CHEST to arrayOf(UnityBone.UPPER_CHEST),
-		UnityBone.UPPER_CHEST to arrayOf(UnityBone.LEFT_SHOULDER, UnityBone.RIGHT_SHOULDER, UnityBone.NECK),
+		UnityBone.UPPER_CHEST to arrayOf(
+			UnityBone.LEFT_SHOULDER,
+			UnityBone.RIGHT_SHOULDER,
+			UnityBone.NECK,
+			UnityBone.LEFT_BUST,
+			UnityBone.RIGHT_BUST,
+		),
 		UnityBone.NECK to arrayOf(UnityBone.HEAD),
 		UnityBone.LEFT_UPPER_LEG to arrayOf(UnityBone.LEFT_LOWER_LEG),
 		UnityBone.RIGHT_UPPER_LEG to arrayOf(UnityBone.RIGHT_LOWER_LEG),

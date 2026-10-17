@@ -17,6 +17,7 @@ import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.config.launchAutosave
 import dev.slimevr.context.Context
+import dev.slimevr.customosc.CustomOscOutputManager
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
@@ -309,6 +310,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val bvhManager: BVHManager get() = error("not used in test")
 	override val vmcManager: VMCManager get() = error("not used in test")
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
+	override val customOscOutputManager: CustomOscOutputManager get() = error("not used in test")
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
