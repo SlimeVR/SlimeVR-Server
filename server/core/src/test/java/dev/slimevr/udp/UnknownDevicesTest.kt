@@ -1,5 +1,6 @@
 package dev.slimevr.udp
 
+import dev.slimevr.bindFakeUdp
 import dev.slimevr.solarxr.rpc.createUnknownDevice
 import dev.slimevr.util.macAddressToULong
 import dev.slimevr.util.udpHardwareId
@@ -66,7 +67,7 @@ class UnknownDevicesTest {
 class UnknownDeviceExpiryTest {
 	@Test
 	fun `an entry expires a timeout after its last handshake`() = runTest {
-		val server = UdpServer.create(backgroundScope, clock = { testScheduler.currentTime }) { "test" }
+		val server = UdpServer.create(backgroundScope, clock = { testScheduler.currentTime }, bind = ::bindFakeUdp)
 		server.context.dispatch(UdpServerActions.UnknownDeviceSeen(device(lastSeen = testScheduler.currentTime)))
 		runCurrent()
 

@@ -28,7 +28,7 @@ import dev.slimevr.android.ipc.createAndroidSolarXRWebsocketServer
 import dev.slimevr.android.serial.AndroidFirmwareFlasher
 import dev.slimevr.android.serial.createAndroidSerialServer
 import dev.slimevr.android.timing.createAndroidWaiter
-import dev.slimevr.android.udp.resolveAndroidUdpAddress
+import dev.slimevr.android.udp.bindAndroidUdp
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
@@ -176,7 +176,7 @@ class ForegroundService : Service() {
 		val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = scope)
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
 		val trackingChecklist = TrackingChecklist.create(scope = scope)
-		val udpServer = UdpServer.create(scope = scope, addressResolver = ::resolveAndroidUdpAddress)
+		val udpServer = UdpServer.create(scope = scope, bind = ::bindAndroidUdp)
 		val boneRouting = BoneRoutingManager.create(scope = scope)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
 		val vmcManager = VMCManager.create(scope = scope)

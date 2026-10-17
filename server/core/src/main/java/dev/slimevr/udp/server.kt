@@ -4,23 +4,17 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
-import io.ktor.network.selector.SelectorManager
-import io.ktor.network.sockets.BoundDatagramSocket
-import io.ktor.network.sockets.InetSocketAddress
-import io.ktor.network.sockets.aSocket
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.io.Source
 import kotlin.time.measureTime
 
 data class UdpServerState(
@@ -45,7 +39,7 @@ class UdpServer(
 	val context: UdpServerContext,
 	// Wall-clock ms, replaceable so tests can run on virtual time
 	val clock: () -> Long = System::currentTimeMillis,
-	private val addressResolver: (InetSocketAddress) -> String,
+	private val bind: UdpBind,
 ) {
 	private var receiveJob: Job? = null
 
@@ -86,66 +80,58 @@ class UdpServer(
 	private fun connections() = context.state.value.connections.keys.toList()
 
 	private suspend fun receiveOn(port: Int, appContext: AppContextProvider, scope: CoroutineScope) {
-		val selectorManager = SelectorManager(Dispatchers.IO)
 		val socket = try {
-			aSocket(selectorManager).udp().bind(port = port)
+			bind(port)
 		} catch (e: Exception) {
 			AppLogger.udp.error(e, "Failed to bind the tracker port $port")
-			release(null, selectorManager)
 			return
 		}
 		AppLogger.udp.info("Listening for trackers on port $port")
 		try {
-			while (currentCoroutineContext().isActive) {
-				try {
-					val recvPacket = socket.receive()
-					val took = measureTime {
-						val src = recvPacket.packet
-						val packetId = src.readInt()
-						val packetNumber = src.readLong()
-						val type = PacketType.fromId(packetId) ?: return@measureTime
-						val packetData = readPacket(type, src)
-
-						val remoteAddress = recvPacket.address as? InetSocketAddress ?: return@measureTime
-						val address = addressResolver(remoteAddress)
-						val conn = context.state.value.connections[address]
-
-						val event = PacketEvent(data = packetData, packetNumber = packetNumber)
-
-						if (conn != null) {
-							conn.packetChannel.trySend(event)
-						} else {
-							val newConn = UDPConnection.create(
-								address = address,
-								remoteAddress = remoteAddress,
-								socket = socket,
-								appContext = appContext,
-								scope = scope,
-							)
-							addConnection(address, newConn)
-							newConn.packetChannel.trySend(event)
-						}
-					}
-					if (took.inWholeMilliseconds > 2) {
-						AppLogger.udp.warn("Packet processing took too long (${took.inWholeMilliseconds}ms)")
-					}
-				} catch (e: CancellationException) {
-					throw e
-				} catch (e: UnsupportedOperationException) {
-					AppLogger.udp.warn("Unsupported operation when processing UDP packet: ${e.message}")
-				} catch (e: Exception) {
-					AppLogger.udp.error(e, "Error processing UDP packet")
-				}
-			}
+			socket.listen { from, payload -> handleDatagram(socket, from, payload, appContext, scope) }
 		} finally {
-			release(socket, selectorManager)
+			release(socket)
 		}
 	}
 
-	// Must also run when cancelled, and the close calls can block
-	private suspend fun release(socket: BoundDatagramSocket?, selectorManager: SelectorManager) = withContext(NonCancellable + Dispatchers.IO) {
-		socket?.close()
-		selectorManager.close()
+	private fun handleDatagram(socket: UdpSocket, from: UdpPeer, src: Source, appContext: AppContextProvider, scope: CoroutineScope) {
+		try {
+			val took = measureTime {
+				val packetId = src.readInt()
+				val packetNumber = src.readLong()
+				val type = PacketType.fromId(packetId) ?: return@measureTime
+				val packetData = readPacket(type, src)
+
+				val conn = context.state.value.connections[from.address]
+
+				val event = PacketEvent(data = packetData, packetNumber = packetNumber)
+
+				if (conn != null) {
+					conn.packetChannel.trySend(event)
+				} else {
+					val newConn = UDPConnection.create(
+						peer = from,
+						socket = socket,
+						appContext = appContext,
+						scope = scope,
+					)
+					addConnection(from.address, newConn)
+					newConn.packetChannel.trySend(event)
+				}
+			}
+			if (took.inWholeMilliseconds > 2) {
+				AppLogger.udpReceive.warn("Packet processing took too long (${took.inWholeMilliseconds}ms)")
+			}
+		} catch (e: UnsupportedOperationException) {
+			AppLogger.udpReceive.warn("Unsupported operation when processing UDP packet: ${e.message}")
+		} catch (e: Exception) {
+			AppLogger.udpReceive.error(e, "Error processing UDP packet")
+		}
+	}
+
+	// Must also run when cancelled, and the close call can block
+	private suspend fun release(socket: UdpSocket) = withContext(NonCancellable + Dispatchers.IO) {
+		socket.close()
 	}
 
 	suspend fun dispose() {
@@ -159,7 +145,7 @@ class UdpServer(
 		fun create(
 			scope: CoroutineScope,
 			clock: () -> Long = System::currentTimeMillis,
-			addressResolver: (InetSocketAddress) -> String,
+			bind: UdpBind,
 		): UdpServer {
 			val context = Context.create(
 				initialState = INITIAL_STATE,
@@ -168,7 +154,7 @@ class UdpServer(
 				behaviours = listOf(UnknownDeviceExpiryBehaviour()),
 				name = "UdpServer",
 			)
-			val server = UdpServer(context, clock, addressResolver)
+			val server = UdpServer(context, clock, bind)
 			server.startObserving()
 			return server
 		}

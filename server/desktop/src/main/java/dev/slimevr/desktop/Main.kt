@@ -26,7 +26,7 @@ import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.timing.createDesktopWaiter
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
-import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
+import dev.slimevr.desktop.udp.bindDesktopUdp
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
@@ -161,7 +161,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 			add(SteamVRCheckBehaviour(appContext.server, appContext.config.settings))
 		}
 	})
-	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
+	val udpServer = UdpServer.create(scope = this, bind = ::bindDesktopUdp)
 	val boneRouting = BoneRoutingManager.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(scope = this)

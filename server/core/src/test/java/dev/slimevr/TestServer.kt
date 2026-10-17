@@ -49,14 +49,19 @@ import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.udp.UdpPeer
+import dev.slimevr.udp.UdpServer
+import dev.slimevr.udp.UdpSocket
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.io.Source
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
@@ -277,18 +282,19 @@ private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
 		reducer = ::reduceUdpServer,
 		name = "TestUdpServer",
 	)
-	return dev.slimevr.udp.UdpServer(context) { "127.0.0.1" }.also { it.startObserving() }
+	return UdpServer(context, bind = ::bindFakeUdp).also { it.startObserving() }
 }
 
-class FakeDatagramSocket : io.ktor.network.sockets.BoundDatagramSocket {
-	override val localAddress: io.ktor.network.sockets.InetSocketAddress = io.ktor.network.sockets.InetSocketAddress("127.0.0.1", 6969)
-	override val socketContext: kotlinx.coroutines.Job = kotlinx.coroutines.Job()
-	override val incoming: kotlinx.coroutines.channels.ReceiveChannel<io.ktor.network.sockets.Datagram> = kotlinx.coroutines.channels.Channel()
-	override val outgoing: kotlinx.coroutines.channels.SendChannel<io.ktor.network.sockets.Datagram> = kotlinx.coroutines.channels.Channel()
-	override fun close() {}
-	override suspend fun receive(): io.ktor.network.sockets.Datagram = error("not used")
-	override suspend fun send(datagram: io.ktor.network.sockets.Datagram) {}
+/** A socket that never receives anything and drops what it sends */
+class FakeUdpSocket : UdpSocket {
+	override suspend fun listen(onDatagram: (from: UdpPeer, payload: Source) -> Unit) =
+		awaitCancellation()
+	override suspend fun send(to: UdpPeer, payload: ByteArray) {}
+	override suspend fun close() {}
 }
+
+@Suppress("RedundantSuspendModifier")
+suspend fun bindFakeUdp(port: Int): UdpSocket = FakeUdpSocket()
 
 abstract class TestAppContext : AppContextProvider {
 	open override val server: VRServer get() = error("not used in test")

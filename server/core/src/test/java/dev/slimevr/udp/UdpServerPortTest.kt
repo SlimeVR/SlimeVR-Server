@@ -72,7 +72,7 @@ private fun withUdpServer(storage: MemoryStorage, block: suspend (Harness) -> Un
 		val appContext = object : TestAppContext() {
 			override val config: AppConfig = config
 		}
-		val server = UdpServer.create(scope) { "test" }
+		val server = UdpServer.create(scope, bind = ::bindTestUdp)
 		server.startReceiving(appContext, scope)
 		block(Harness(scope, config, server, failures))
 		server.dispose()

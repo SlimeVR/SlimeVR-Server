@@ -233,7 +233,7 @@ class VRChatSettingsCheckBehaviour(
 
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
-			skeleton.context.state.map { state -> state.skeletonHeight },
+			skeleton.context.state.map { state -> state.skeletonHeight }.distinctUntilChanged(),
 			vrcConfigManager.context.state,
 		) { userHeight, vrc -> computeStep(vrc, userHeight) }
 			.distinctUntilChanged()

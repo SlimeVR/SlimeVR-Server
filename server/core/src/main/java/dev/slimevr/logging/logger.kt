@@ -42,6 +42,10 @@ object AppLogger {
 
 	val coroutines = noCoLogger("Coroutines")
 	val console = noCoLogger("Console")
+	// For the UDP receive thread, which blocks on the socket and handles each datagram inline. A
+	// suspend logger would need a coroutine there, and resuming one per packet costs more than the
+	// packet's own work. Same name as udp logger, so its lines read as the rest of the UDP logs
+	val udpReceive = noCoLogger("UDPConnection")
 
 	object ShouldDebug {
 		var skeletonTicks = false
