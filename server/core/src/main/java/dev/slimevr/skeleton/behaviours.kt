@@ -27,6 +27,7 @@ import java.util.concurrent.Executors
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -192,6 +193,15 @@ class ComputedSkeletonBehaviour(
 
 	private val intervalDuration = (1.0 / hz).seconds
 
+	/**
+	 * Interval while no bone has an active input. The pose is static then, so running at [hz] only
+	 * burns CPU.
+	 */
+	private val idleIntervalDuration = 100.milliseconds
+
+	private fun hasActiveInput(boneInputs: InputSkeleton): Boolean =
+		boneInputs.values.any { it.isRotationActive || it.isAccelerationActive || it.isPositionActive }
+
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
 	private val minimumGap = intervalDuration * 0.75
 
@@ -243,6 +253,7 @@ class ComputedSkeletonBehaviour(
 				try {
 					val tickStart = timeSource.markNow()
 					timings.started(tickStart)
+					val interval = if (hasActiveInput(receiver.context.state.value.boneInputs)) intervalDuration else idleIntervalDuration
 
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
@@ -337,7 +348,7 @@ class ComputedSkeletonBehaviour(
 
 					// Sleep to an absolute deadline, so timer granularity and dispatch latency come out
 					// of the interval rather than being added on top of it
-					nextTick += intervalDuration
+					nextTick += interval
 					// Skeleton took to long to compute this frame
 					if (nextTick.elapsedNow() >= Duration.ZERO) {
 						timings.missedDeadline()?.let { AppLogger.skeleton.warn(it) }
