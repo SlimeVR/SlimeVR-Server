@@ -23,7 +23,7 @@ import { selectAtom } from 'jotai/utils';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import { Typography } from '@/components/commons/Typography';
-import { CheckboxInternal } from '@/components/commons/Checkbox';
+import { CheckBox } from '@/components/commons/Checkbox';
 import {
   FullResetIcon,
   MountingResetIcon,
@@ -284,20 +284,11 @@ export function TapDetectionSettings({
                       <SettingResetButton {...kindReset(id)} />
                     </div>
                     <div className="col-start-3 row-start-1 justify-self-end flex">
-                      <CheckboxInternal
+                      <CheckBox
                         variant="toggle"
+                        control={control}
                         name={`${id}Enabled`}
                         id={`tap-${id}`}
-                        checked={enabled}
-                        onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
-                        ) =>
-                          setValue(
-                            `${id}Enabled` as keyof TapDetectionForm,
-                            event.currentTarget.checked,
-                            { shouldDirty: true }
-                          )
-                        }
                       />
                     </div>
                   </div>
