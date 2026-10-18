@@ -1093,7 +1093,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Tracker-Ausrichtung durchführen
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Führe eine Fußmontage-Kalibrierung durch
 tracking_checklist-FULL_RESET = Führe einen vollständigen Reset durch
 tracking_checklist-FULL_RESET-desc = Manche Tracker benötigen eine erneute Kalibrierung.
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibriere deine Tracker
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Sie haben keine Tracker-Kalibrierung durchgeführt. Bitte lassen Sie Ihre Tracker (gelb markiert) für einige Sekunden auf einer stabilen Oberfläche ruhen.
