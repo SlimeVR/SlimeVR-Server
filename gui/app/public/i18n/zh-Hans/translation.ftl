@@ -1118,7 +1118,6 @@ tracking_checklist-MOUNTING_CALIBRATION = 进行佩戴校准
 tracking_checklist-FEET_MOUNTING_CALIBRATION = 进行脚部佩戴校准
 tracking_checklist-FULL_RESET = 进行完整重置
 tracking_checklist-FULL_RESET-desc = 有些追踪器需要进行重置
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未在运行。你要将追踪器用于 VR 吗？
 tracking_checklist-STEAMVR_DISCONNECTED-open = 启动 SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = 你已经启用了SteamVR的虚拟手部追踪器。这会导致SteamVR和游戏中的按键输入无法使用。
 tracking_checklist-TRACKERS_REST_CALIBRATION = 校准追踪器
