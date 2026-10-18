@@ -32,6 +32,7 @@ import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { DongleSettingsPage } from './components/tracker/DongleSettings';
+
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import semver from 'semver';

@@ -104,6 +104,23 @@ enum class UnityBone(
 	RIGHT_MIDDLE_TOE("RightMiddleToe", arrayOf(BodyPart.RIGHT_MIDDLE_TOE)),
 	RIGHT_RING_TOE("RightRingToe", arrayOf(BodyPart.RIGHT_RING_TOE)),
 	RIGHT_LITTLE_TOE("RightLittleToe", arrayOf(BodyPart.RIGHT_LITTLE_TOE)),
+
+	// Bust
+	LEFT_BUST("LeftBust", arrayOf(BodyPart.LEFT_BUST)),
+	RIGHT_BUST("RightBust", arrayOf(BodyPart.RIGHT_BUST)),
+
+	// Posterior
+	LEFT_POSTERIOR("LeftPosterior", arrayOf(BodyPart.LEFT_POSTERIOR)),
+	RIGHT_POSTERIOR("RightPosterior", arrayOf(BodyPart.RIGHT_POSTERIOR)),
+
+	// Tail
+	TAIL("Tail", arrayOf(BodyPart.TAIL)),
+	TAIL_1("Tail1", arrayOf(BodyPart.TAIL_1)),
+	TAIL_2("Tail2", arrayOf(BodyPart.TAIL_2)),
+	TAIL_3("Tail3", arrayOf(BodyPart.TAIL_3)),
+	TAIL_4("Tail4", arrayOf(BodyPart.TAIL_4)),
+	TAIL_5("Tail5", arrayOf(BodyPart.TAIL_5)),
+	TAIL_6("Tail6", arrayOf(BodyPart.TAIL_6)),
 	;
 
 	val opposite: UnityBone
@@ -164,6 +181,10 @@ enum class UnityBone(
 			RIGHT_RING_TOE -> LEFT_RING_TOE
 			LEFT_LITTLE_TOE -> RIGHT_LITTLE_TOE
 			RIGHT_LITTLE_TOE -> LEFT_LITTLE_TOE
+			LEFT_BUST -> RIGHT_BUST
+			RIGHT_BUST -> LEFT_BUST
+			LEFT_POSTERIOR -> RIGHT_POSTERIOR
+			RIGHT_POSTERIOR -> LEFT_POSTERIOR
 			else -> this
 		}
 
