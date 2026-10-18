@@ -1131,7 +1131,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Realize uma calibração de montagem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Realize uma calibração de montagem dos pés
 tracking_checklist-FULL_RESET = Execute "Redefinir Tudo"
 tracking_checklist-FULL_RESET-desc = Alguns trackers precisam que uma redefinição seja realizada.
-tracking_checklist-STEAMVR_DISCONNECTED-desc = O SteamVR não está em execução. Você está usando ele para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Iniciar o SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Você ativou os Trackers de mãos virtuais do SteamVR. Isso fará com que os comandos feitos por meio de botões não funcionem no SteamVR e nos jogos.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibre seus trackers
