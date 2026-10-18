@@ -1109,7 +1109,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l'alignem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement des pieds
 tracking_checklist-FULL_RESET = Faire une réinitialisation complète
 tracking_checklist-FULL_RESET-desc = Certains capteurs nécessitent une réinitialisation.
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrer vos capteurs
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Vous n’avez pas fait de calibration de capteur. Veuillez laisser vos capteurs (surlignés en jaune) reposer sur une surface stable pendant quelques seconds.
