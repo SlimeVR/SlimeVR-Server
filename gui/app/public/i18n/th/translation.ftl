@@ -1085,7 +1085,6 @@ tracking_checklist-MOUNTING_CALIBRATION = ทำการตั้งศูน�
 tracking_checklist-FEET_MOUNTING_CALIBRATION = ตั้งศูนย์การติดตั้งแทร็กเกอร์เท้า
 tracking_checklist-FULL_RESET = ทำการรีเซ็ตทั้งหมด
 tracking_checklist-FULL_RESET-desc = แทร็กเกอร์บางส่วนจำเป็นต้องทำการรีเซ็ต
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR ไม่ได้ทำงานอยู่ คุณจะใช้เพื่อเล่น VR ใช่หรือไม่?
 tracking_checklist-STEAMVR_DISCONNECTED-open = เปิด SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = ตั้งศูนย์แทร็กเกอร์ของคุณ
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = คุณยังไม่ได้ทำการตั้งศูนย์แทร็กเกอร์ โปรดวางแทร็กเกอร์ของคุณ (ที่ไฮไลต์ด้วยสีเหลือง) ไว้บนพื้นที่ราบเวลาสองสามวินาที
