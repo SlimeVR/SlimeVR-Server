@@ -1610,7 +1610,6 @@ tracking_checklist-MOUNTING_CALIBRATION = 進行配戴校正
 tracking_checklist-FEET_MOUNTING_CALIBRATION = 進行腳部的配戴校正
 tracking_checklist-FULL_RESET = 進行完整重置
 tracking_checklist-FULL_RESET-desc = 有追蹤器需要進行重置
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未執行，你要把追蹤器用在 VR 上嗎？
 tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = 由於前次的 SteamVR 崩潰，SlimeVR 驅動程式已被 SteamVR 停用。
 tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = SteamVR 設定中已停用 SlimeVR 驅動程式。
 tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = 未安裝驅動程式。
