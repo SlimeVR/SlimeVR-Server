@@ -1108,7 +1108,6 @@ tracking_checklist-MOUNTING_CALIBRATION = Wykonaj kalibrację montażu
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Wykonaj kalibrację montażu stóp
 tracking_checklist-FULL_RESET = Wykonaj pełny reset
 tracking_checklist-FULL_RESET-desc = Niektóre urządzenia wymagają resetu.
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR nie jest uruchomiony. Czy twoje gogle są podłączone?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Uruchom SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Skalibruj swoje urządzenia
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Nie wykonałeś kalibracji urządzenia. Proszę, pozwól swoim urządzeniom (podświetlonym na żółto) odpocząć na stabilnej powierzchni przez kilka sekund.
