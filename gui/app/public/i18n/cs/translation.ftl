@@ -994,7 +994,6 @@ tracking_checklist-settings-close = Zavřít
 tracking_checklist-status-incomplete = Nejste připraveni používat SlimeVR!
 tracking_checklist-status-complete = Jste připravení k použití SlimeVR
 tracking_checklist-FULL_RESET = Proveďte plné obnovení
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
 tracking_checklist-TRACKER_ERROR = Trackery s chybami
