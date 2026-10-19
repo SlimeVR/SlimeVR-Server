@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Vypadá to že SlimeVR server spadl. Zkontroluj
 websocket-timedout = Nepodařilo se připojit k serveru
 websocket-timedout-desc = Vypadá to že buď vypršel časový limit SlimeVR serveru, a nebo došlo k zhroucení. Zkontrolujte záznamy protokolů a restartuje aplikaci
 websocket-error-close = Ukončit SlimeVR
-websocket-error-logs = Otevření složku s záznamy protokolů
 
 ## Update notification
 
@@ -78,11 +77,9 @@ body_part-RIGHT_THUMB_DISTAL = Vzálená falanga pravého pacle
 
 skeleton_bone-NONE = Žádný
 skeleton_bone-NECK = Délka krku
-skeleton_bone-torso_group = Délka trupu
 skeleton_bone-UPPER_CHEST = Horní délka hrudníku
 skeleton_bone-HIP = Délka kyčlí
 skeleton_bone-HIPS_WIDTH = Šířka kyčlí
-skeleton_bone-leg_group = Délka nohy
 skeleton_bone-UPPER_LEG = Délka horní části nohy
 skeleton_bone-LOWER_LEG = Délka dolní části nohy
 skeleton_bone-FOOT_LENGTH = Délka chodidla
@@ -92,7 +89,6 @@ skeleton_bone-FOOT_LENGTH-desc =
 skeleton_bone-FOOT_SHIFT = Odsazení chodidla
 skeleton_bone-SHOULDERS_DISTANCE = Vzdálenost ramen
 skeleton_bone-SHOULDERS_WIDTH = Šířka ramen
-skeleton_bone-arm_group = Délka paže
 skeleton_bone-UPPER_ARM = Délka nadloktí
 skeleton_bone-LOWER_ARM = Délka podloktí
 
@@ -212,11 +208,6 @@ tracker-settings-mounting_section = Poloha nasazení
 tracker-settings-mounting_section-description = Na jakou stranu je tracker nasazený?
 tracker-settings-mounting_section-edit = Upravit nasazení
 tracker-settings-use_mag = Povolit magnetometr na tomto trackeru
-# Multiline!
-tracker-settings-use_mag-description =
-    Měl by tento tracker používat magnetometer k redukci driftu když je použití magnetometru povoleno? <b> Prosím nevypínejte váš tracker při přepínání tohoto nastavení!</b>
-    
-    Nejprve musíte povolit používání magnetometru, <magSetting>Kliknutím zde přejdete k nastavená magnetometru</magSetting>.
 tracker-settings-use_mag-label = Povolit magnetometr
 tracker-settings-name_section = Název trackeru
 tracker-settings-name_section-description = Třeba nějakou roztomilou přezdívku :)
@@ -228,7 +219,6 @@ tracker-settings-update-unavailable-v2 = Žádné vydání nebyla nalezena
 tracker-settings-update-incompatible = Nelze aktualizovat. Nekompatibilní deska nebo verze firmwaru
 tracker-settings-update-low-battery = Nelze provést aktualizaci. Baterie má méně než 50%
 tracker-settings-update-up_to_date = Aktuální
-tracker-settings-update-blocked = Není dostupná aktualizace. Žádná jiná verze není k dispozici
 tracker-settings-update = Aktualizovat nyní
 tracker-settings-update-title = Verze Firmwareu
 tracker-settings-current-version = Současný
@@ -305,16 +295,11 @@ settings-driver-status-badge-disabled = Vypnuto
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrování
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Vyberte typ filtrování pro své trackery.
-    Predikce předpovídá pohyb, zatímco vyhlazování pohyb vyhlazuje.
 settings-general-tracker_mechanics-filtering-type-none = Žádné filtrování
 settings-general-tracker_mechanics-filtering-type-none-description = Použít rotace tak, jak jsou. Nebude provedeno žádné filtrování.
 settings-general-tracker_mechanics-filtering-type-smoothing = Vyhlazování
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Vyhlazuje pohyby, ale přidává mírné zpoždění.
 settings-general-tracker_mechanics-filtering-type-prediction = Predikce
-settings-general-tracker_mechanics-filtering-type-prediction-description = Zkracuje prodlevu a zrychluje pohyby, ale může způsobit třesení trackerů.
 settings-general-tracker_mechanics-filtering-amount = Množství
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Čas vyhlazení resetu svislé osy (0s pro vypnutí vyhlazení)
 settings-general-tracker_mechanics-save_mounting_reset = Uložit automatickou kalibraci obnovení připevnění
@@ -322,9 +307,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Uloží automatické kalibrování resetování umístění pro trackery mezi restarty. Užitečné
     pokud máte oblek, na kterém se umístění trackeru nemění mezi relacemi. <b>Nedoporučováno pro uživatele s běžnou sestavou</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Použít magnetometr na všech IMU trackerech, které jej podporují
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Použití magnetometr na všech trackerech které pro to mají kompatibilní firmware, snížení drifutu v stailních magnetických prostředích.
-    Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
 settings-stay_aligned-debug-label = Ladění
 settings-stay_aligned-debug-description = Při nahlašování problémů s Zůstaň Srovnaný, prosím zahrňte vaše nastavení.
@@ -342,19 +324,17 @@ settings-keybinds-recorder-modal-cancel-button = Zrušit
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Clip podlahy
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Korekce bruslení
 settings-general-fk_settings-leg_tweak-toe_snap = Přichycení špiček
 settings-general-fk_settings-leg_tweak-foot_plant = Narovnání chodidla
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Síla korekce "bruslení"
-settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
@@ -364,7 +344,6 @@ settings-general-fk_settings-self_localization-title = Režim Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Resetování na základě klepnutí
 settings-general-gesture_control-description = Umožňuje spouštět resetování klepnutím na tracker. Sledovací zařízení umístěné nejvýše na vašem hrudníku slouží k Rychlému-Resetování, tracker umístěný nejvýše na levé noze se používá pro Resetování, a tracker umístěný nejvýše na pravé noze se používá pro Resetování Montáže. Je třeba zmínit, že aby bylo klepnutí zaregistrováno, klepnutí musí být provedena do 0.6 vteřin.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -394,7 +373,6 @@ settings-general-gesture_control-mountingResetDelay = Zpoždění resetování m
 settings-general-gesture_control-mountingResetTaps = Klepnutí pro resetování montáže
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackery překročily práh
-settings-general-gesture_control-numberTrackersOverThreshold-description = Zvyšte tuto hodnotu, pokud detekce klepnutí nefunguje. Nepřekračujte ji nad hodnotu, která je potřebná k tomu, aby detekce klepnutí fungovala, protože by to mohlo způsobit více falešně pozitivních klepnutí.
 
 ## Appearance settings
 
@@ -449,7 +427,6 @@ settings-serial = Sériová Konzole
 settings-serial-description =
     Jedná se o přímý informační kanál pro sériovou komunikaci.
     Může být užitečné, pokud potřebujete zjistit, zda se firmware chová špatně.
-settings-serial-connection_lost = Ztráta připojení k seriálu, Připojení se obnovuje...
 settings-serial-reboot = Restartovat
 settings-serial-factory_reset = Obnovení do továrního nastavení
 # This cares about multilines
@@ -584,7 +561,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Je vyžadován název sítě Wi-Fi
 onboarding-wifi_creds-password =
     .label = Heslo
-    .placeholder = Zadejte heslo
+    .placeholder = Enter your Wi-Fi password
 onboarding-wifi_creds-dongle-title = Trackery používající dongle
 onboarding-wifi_creds-dongle-continue = Pokračovat s donglem
 
@@ -603,7 +580,6 @@ onboarding-connect_tracker-title = Připojení trackerů
 onboarding-connect_tracker-issue-serial = Mám potíže s připojením!
 onboarding-connect_tracker-close = Zavřít
 onboarding-connect_tracker-connection_status-serial_init = Připojuji se k sériovému zařízení
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Získávání MAC adresy trackeru
 onboarding-connect_tracker-connection_status-provisioning = Odesílám přihlašovací údaje WiFi
 onboarding-connect_tracker-connection_status-connecting = Pokouším se připojit k WiFi
 onboarding-connect_tracker-connection_status-looking_for_server = Hledám server
@@ -631,7 +607,6 @@ onboarding-connect_tracker-next = Připojil jsem všechny své trackery
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Přiřazení trackerů
-onboarding-assign_trackers-description = Vyberte, na jakou končetinu každý tracker patří. Klikněte na místo, kam chcete umístit tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -855,7 +830,6 @@ firmware_tool-flashing_step-exit = Odejít
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = Čekání na sestavení...
 firmware_tool-build-CREATING_BUILD_FOLDER = Vytváření složky pro sestavení
 firmware_tool-build-DOWNLOADING_SOURCE = Stahování zdrojového kódu
 firmware_tool-build-EXTRACTING_SOURCE = Extrahování zdrojového kódu
@@ -868,16 +842,13 @@ firmware_tool-build-ERROR = Nepodařilo se sestavit firmwere
 
 firmware_update-status-DOWNLOADING = Stahování firmwaru
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Vypněte a znovu zapněte tracker prosím
-firmware_update-status-AUTHENTICATING = Autentifikování s mcu
 firmware_update-status-UPLOADING = Nahrávání firmwaru
-firmware_update-status-SYNCING_WITH_MCU = Synchronizace s MCU
 firmware_update-status-REBOOTING = Restartování trackeru
 firmware_update-status-PROVISIONING = Nastavování přihlašovacích údajů pro síť Wi-Fi
 firmware_update-status-DONE = Aktualizace byla dokončena!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Zařízení se nepodařilo nalézt
 firmware_update-status-ERROR_TIMEOUT = Vypršel časový limit pro proces aktualizace
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Nepodařilo se stáhnout firmware
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Ověření MCU se nezdařilo
 firmware_update-status-ERROR_UPLOAD_FAILED = Nepodařilo se nahrát firmware
 firmware_update-status-ERROR_PROVISIONING_FAILED = Nepodařilo se nastavit přihlašovací údaje pro Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = Metoda aktualizace není podporována
