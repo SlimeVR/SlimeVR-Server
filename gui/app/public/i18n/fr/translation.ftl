@@ -414,18 +414,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
-settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
-settings-stay_aligned-setup-label = Configurer Garder Aligné
-settings-stay_aligned-relaxed_poses-label = Postures détendues
-settings-stay_aligned-relaxed_poses-standing = Ajuster les capteurs en position debout
-settings-stay_aligned-relaxed_poses-sitting = Ajuster les capteurs en position assise sur une chaise
-settings-stay_aligned-relaxed_poses-flat = Ajuster les capteurs en position assise sur le sol ou allongée sur le dos
-settings-stay_aligned-relaxed_poses-save_pose = Enregistrer la posture
-settings-stay_aligned-relaxed_poses-reset_pose = Réinitialiser la posture
-settings-stay_aligned-relaxed_poses-close = Fermer
 settings-stay_aligned-debug-label = Débogage
 settings-stay_aligned-debug-description = Veuillez inclure vos paramètres lorsque vous signalez des problèmes concernant Garder Aligné.
 settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-papiers
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -876,35 +870,6 @@ onboarding-user_height-reset-warning =
     <b>Attention :</b> Cette action réinitialisera vos proportions pour être basées sur votre taille. 
     Êtes-vous sûr de vouloir continuer ?
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Garder Aligné
-onboarding-stay_aligned-description = Configurer Garder Aligné pour garder vos capteurs alignés.
-onboarding-stay_aligned-put_trackers_on-title = Mettez vos capteurs
-onboarding-stay_aligned-put_trackers_on-description = Pour enregistrer vos postures de repos, nous utiliserons les capteurs que vous venez d’attribuer. Enfilez tous vos capteurs. Vous pouvez voir lesquels sont lesquels dans la figure de droite.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Vous avez actuellement moins de 5 capteurs connectés et attribués ! Il s’agit du nombre minimum de capteurs requis pour que Garder Aligné fonctionne correctement.
-onboarding-stay_aligned-put_trackers_on-next = J'ai tous mes capteurs sur moi
-onboarding-stay_aligned-verify_mounting-title = Vérifiez votre alignement
-onboarding-stay_aligned-preparation-title = Préparation
-onboarding-stay_aligned-preparation-tip = Assurez-vous de vous tenir droit. Vous devez regarder vers l'avant et vos bras doivent être le long de votre corps.
-onboarding-stay_aligned-relaxed_poses-standing-title = Posture debout détendu
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Tenez-vous dans une position confortable. Détendez-vous !
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
-onboarding-stay_aligned-relaxed_poses-sitting-title = Posture assis détendu dans une chaise
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Asseyez-vous dans une position confortable. Détendez-vous !
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
-onboarding-stay_aligned-relaxed_poses-flat-title = Posture assis détendu sur le sol
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Asseyez-vous sur le sol, les jambes devant. Détendez-vous !
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
-onboarding-stay_aligned-relaxed_poses-skip_step = Sauter
-onboarding-stay_aligned-done-title = Garder Aligné activé !
-onboarding-stay_aligned-done-description = La configuration de Garder Aligné est terminée !
-onboarding-stay_aligned-done-description-2 = La configuration est terminée ! Vous pouvez recommencer le processus si vous souhaitez recalibrer les postures.
-onboarding-stay_aligned-previous_step = Précédent
-onboarding-stay_aligned-next_step = Prochain
-onboarding-stay_aligned-restart = Recommencer
-onboarding-stay_aligned-done = Fait
-
 ## Home
 
 home-settings = Paramètres de la page d'accueil
@@ -1130,7 +1095,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Ouvrir le panneau de configuration
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurer Garder Aligné
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Enregistrez les poses Garder Aligné pour réduire la dérive
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Ouvrir l'assistant de Garder Aligné
 tracking_checklist-ignore = Ignorer
 preview-mocap_mode_soon = Mode Mocap (Bientôt™)
 preview-disable_render = Désactiver le rendu
