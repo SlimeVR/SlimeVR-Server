@@ -326,18 +326,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Použití magnetometr na všech trackerech které pro to mají kompatibilní firmware, snížení drifutu v stailních magnetických prostředích.
     Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
 settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
-settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
-settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
-settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
-settings-stay_aligned-relaxed_poses-standing = Upravit trackery při stoje
-settings-stay_aligned-relaxed_poses-sitting = Upravit pozici trackerů při sezení na židli
-settings-stay_aligned-relaxed_poses-flat = Upravte pozici trackerů při sezení na zemi, nebo ležení na zádech
-settings-stay_aligned-relaxed_poses-save_pose = Uložit pózu
-settings-stay_aligned-relaxed_poses-reset_pose = Obnovit pózu
-settings-stay_aligned-relaxed_poses-close = Zavřít
 settings-stay_aligned-debug-label = Ladění
 settings-stay_aligned-debug-description = Při nahlašování problémů s Zůstaň Srovnaný, prosím zahrňte vaše nastavení.
 settings-stay_aligned-debug-copy-label = Zkopírovat nastavení do schránky
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -782,32 +776,6 @@ onboarding-user_height-calibration-RECORDING_HEIGHT = Znovu se postavte a nehýb
 onboarding-user_height-calibration-DONE = Úspěch!
 onboarding-user_height-calibration-ERROR_TIMEOUT = Časový limit kalibrace vypršel, zkuste to znovu.
 onboarding-user_height-calibration-error = Kalibrace selhala
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Zůstaň Srovnaný!
-onboarding-stay_aligned-description = Nakonfigurujte Zůstaň Srovnaný, aby byly vaše trackery srovnány.
-onboarding-stay_aligned-put_trackers_on-title = Nasaďte si trackery
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Aktuálně máte méně než 5 připojených a přiřazených trackerů! Toto je minimální počet trackerů potřebné pro správné fungování funkce Zůstaň Srovnaný.
-onboarding-stay_aligned-put_trackers_on-next = Mám nasazené všechny trackery
-onboarding-stay_aligned-verify_mounting-title = Zkotrolujte nasazení
-onboarding-stay_aligned-preparation-title = Příprava
-onboarding-stay_aligned-preparation-tip = Ujistěte se, že stojíte vzpřímeně. koukáte vpřed a máte ruce podél těla.
-onboarding-stay_aligned-relaxed_poses-standing-title = Uvolněná pozice ve stoje
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stůjte v pohodlné pozici. Relaxujte!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
-onboarding-stay_aligned-relaxed_poses-sitting-title = Uvolněná póza při sezení v židli
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Posaďte se do pohodlné pozice, Relaxujte!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
-onboarding-stay_aligned-relaxed_poses-flat-title = Uvolněná pozice při sezení na zemi
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
-onboarding-stay_aligned-relaxed_poses-skip_step = Přeskočit
-onboarding-stay_aligned-done-title = Zůstaň Srovnaný zapnuto!
-onboarding-stay_aligned-done-description = Váš nastavení Zůstaň Srovnaný je dokončeno!
-onboarding-stay_aligned-done-description-2 = Vaše nastavení je dokončeno! Pokud chcete vaše pózy znovu zkalibrovat, můžete proces zopakovat.
-onboarding-stay_aligned-previous_step = Předchozí
-onboarding-stay_aligned-next_step = Další
-onboarding-stay_aligned-done = Hotovo
 
 ## Home
 
