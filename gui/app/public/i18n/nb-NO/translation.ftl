@@ -245,7 +245,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer p
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
     Kan deaktiveres per tracker i trackerens innstillinger. <b>Ikke slå av noen av trackerne mens du endrer denne innstillingen !</b>
-settings-stay_aligned-relaxed_poses-close = Lukk
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -499,13 +501,6 @@ onboarding-automatic_proportions-done-description = Din kropps-proposisjons kali
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Ta på deg alle dine trackere
-onboarding-stay_aligned-put_trackers_on-next = Jeg har alle mine trackere på
-onboarding-stay_aligned-verify_mounting-title = Monterings nullstilling
-onboarding-stay_aligned-preparation-title = Forberedning
 
 ## Home
 
