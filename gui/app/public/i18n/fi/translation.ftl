@@ -66,18 +66,15 @@ body_part-LEFT_FOOT = Vasen jalkaterä
 
 skeleton_bone-NONE = Ei mikään
 skeleton_bone-NECK = Kaulan pituus
-skeleton_bone-torso_group = Vartalon pituus
 skeleton_bone-UPPER_CHEST = Ylärinnan pituus
 skeleton_bone-HIP = Lonkan pituus
 skeleton_bone-HIPS_WIDTH = Lonkan leveys
-skeleton_bone-leg_group = Jalan pituus
 skeleton_bone-UPPER_LEG = Yläjalan pituus
 skeleton_bone-LOWER_LEG = Säären pituus
 skeleton_bone-FOOT_LENGTH = Jalkaterän pituus
 skeleton_bone-FOOT_SHIFT = Jalkaterän säätö
 skeleton_bone-SHOULDERS_DISTANCE = Olkapäiden etäisyys
 skeleton_bone-SHOULDERS_WIDTH = Olkapäiden leveys
-skeleton_bone-arm_group = Käsivarren pituus
 skeleton_bone-UPPER_ARM = Olkavarren pituus
 skeleton_bone-LOWER_ARM = Kyynärvarren pituus
 
@@ -237,16 +234,11 @@ settings-driver-enable = Käytä
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Suodatus
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Valitse suodatustyyppi jäljittimillesi.
-    Ennustus ennustaa liikettä, kun taas tasoitus tasoittaa liikettä.
 settings-general-tracker_mechanics-filtering-type-none = Ei suodatusta
 settings-general-tracker_mechanics-filtering-type-none-description = Käytä kiertoja sellaisenaan. Ei tee mitään suodatusta.
 settings-general-tracker_mechanics-filtering-type-smoothing = Tasoitus
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoittaa liikettä, mutta lisää hieman viivettä.
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
-settings-general-tracker_mechanics-filtering-type-prediction-description = Vähentää viivettä ja tekee liikeistä näppärämpiä, mutta voi lisätä värinää.
 settings-general-tracker_mechanics-filtering-amount = Määrä
 
 ## Stay Aligned pose recorder
@@ -259,15 +251,12 @@ settings-keybinds-recorder-modal-cancel-button = Peruuta
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction vahvuus
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
 settings-general-fk_settings-leg_fk = Jalkojen jäljitys
 settings-general-fk_settings-skeleton_settings-ratios = Luurankosuhteet
 settings-general-fk_settings-self_localization-title = Mocap-tila
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Napautuspohjaiset nollaukset
 settings-general-gesture_control-description = Mahdollistaa nollauksen napauttamalla jäljitintä. Ylävartalon korkeinta jäljitintä käytetään Pikanollaukseen. Vasemman jalan korkeinta jäljitintä käytetään Nollaukseen, vastaavaisesti oikean jalan korkeinta jäljitintä käytetään Asennusnollaukseen. On syytä mainita, että napautusten on tapahduttava 0.6 sekunnin sisällä, jotta ne rekisteröityvät.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -294,7 +283,6 @@ settings-general-gesture_control-mountingResetDelay = Asennusnollaus viive
 settings-general-gesture_control-mountingResetTaps = Napautuksia asennusnollaukseen
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Jäljittimet yli kynnysarvon
-settings-general-gesture_control-numberTrackersOverThreshold-description = Suurenna tätä arvoa jos napautustunnistus ei toimi. Älä suurenna yli sen, mikä on tarpeellista, koska se voi aiheuttaa enemmän virheitä.
 
 ## Appearance settings
 
@@ -335,7 +323,6 @@ settings-serial = Sarjakonsoli
 settings-serial-description =
     Tämä on reaaliaikainen tietosyöte sarjaviestintää varten.
     Voi olla hyödyllistä, jos sinun on tiedettävä, että laiteohjelmisto toimii.
-settings-serial-connection_lost = Yhteys sarjaan kadonnut, yhdistetään uudelleen...
 settings-serial-reboot = Käynnistä uudelleen
 settings-serial-factory_reset = Tehdasasetusten palautus
 # This cares about multilines
@@ -437,7 +424,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Syötä Wi-Fi nimi
 onboarding-wifi_creds-password =
     .label = Salasana
-    .placeholder = Syötä salasana
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -477,7 +464,6 @@ onboarding-connect_tracker-next = Yhdistin kaikki jäljittimeni
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Määritä jäljittimet
-onboarding-assign_trackers-description = Valitaan, mikä jäljitin menee minne. Napsauta paikkaa, johon haluat sijoittaa jäljittimen
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
