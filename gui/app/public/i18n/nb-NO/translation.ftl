@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Det ser ut som at SlimeVR serveren har krasjet.
 websocket-timedout = Klarte ikke å koble til serveren.
 websocket-timedout-desc = Det ser ut som at SlimeVR serveren har krasjet eller har brukt for lang til på å koble til. Sjekk loggene og restart programmet.
 websocket-error-close = Avslutt SlimeVR
-websocket-error-logs = Åpne opp "logs" mappen.
 
 ## Update notification
 
@@ -81,7 +80,6 @@ body_part-LEFT_RING_PROXIMAL = Venstre innerste ring
 
 skeleton_bone-NONE = Ingen
 skeleton_bone-NECK = Halslengde
-skeleton_bone-torso_group = Torsolengde
 skeleton_bone-HIP = Hofte-lengde
 skeleton_bone-HIPS_WIDTH = Hofte-bredde
 skeleton_bone-UPPER_LEG = Lår-lengde
@@ -230,21 +228,13 @@ settings-driver-enable = Aktiver
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Velg filtrerings-type for dine trackere.
-    Prediksjon forutser bevegelser mens Utjevning jevner ut bevegelser.
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Bruk rotasjoner som før. Altså ingen filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Utjevning
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Jevner ut bevegelser men øker forsinkelsen litt.
 settings-general-tracker_mechanics-filtering-type-prediction = Forutsigelse
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reduserer forsinkelsen og gjør bevegelser skarpere, men kan påvirke stabiliteten.
 settings-general-tracker_mechanics-filtering-amount = Mengde
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer på alle IMU-trackere som støtter det
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
-    Kan deaktiveres per tracker i trackerens innstillinger. <b>Ikke slå av noen av trackerne mens du endrer denne innstillingen !</b>
 
 ## Stay Aligned pose recorder
 
@@ -256,19 +246,18 @@ settings-keybinds-recorder-modal-cancel-button = Avslutt
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Gulv-clip
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Skating korreksjon
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korreksjon styrke
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Trykk baserte nullstillinger
 settings-general-gesture_control-description = Tillat at nullstillinger aktiveres ved å trykke på en sporer. Den høyeste sporeren på overkroppen blir da brukt til Rask Nullstilling, den høyeste sporeren på det venstre beinet blir brukt til Nullstilling og den høyeste sporeren på det høyre beinet blir brukt til Monterings Nullstilling. Vær obs på at trykking bør skje to ganger innen 0.6 sekunder for å bli registrert.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -302,7 +291,6 @@ settings-serial = Seriell konsoll
 settings-serial-description =
     Dette er en live informasjons-feed for seriell kommunikasjon.
     Kan være hjelpsomt hvis du lurer på om det er problemer med fastvaren.
-settings-serial-connection_lost = Tilkobling til serie tapt, gjenopptar tilkobling...
 settings-serial-reboot = Omstart
 settings-serial-factory_reset = Fabrikktilbakestilling
 # This cares about multilines
@@ -385,7 +373,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Tast inn navnet på ditt Wi-Fi nettverk
 onboarding-wifi_creds-password =
     .label = Passord
-    .placeholder = Tast inn passord
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -418,7 +406,6 @@ onboarding-connect_tracker-next = Jeg har tilkoblet alle mine trackere
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Tildel trackerne
-onboarding-assign_trackers-description = La oss velge hvilke trackere som skal hvor. Trykk på stedet der du vil plassere en tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
