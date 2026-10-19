@@ -65,17 +65,14 @@ body_part-LEFT_FOOT = Vasak jalg
 
 skeleton_bone-NONE = Mitte midagi
 skeleton_bone-NECK = Kaela Pikkus
-skeleton_bone-torso_group = Torso pikkus
 skeleton_bone-UPPER_CHEST = Rinna ülaosa pikkus
 skeleton_bone-HIP = Puusa pikkus
 skeleton_bone-HIPS_WIDTH = Puusa Laius
-skeleton_bone-leg_group = Jala pikkus
 skeleton_bone-UPPER_LEG = Jala ülaosa pikkus
 skeleton_bone-FOOT_LENGTH = Jala Pikkus
 skeleton_bone-FOOT_SHIFT = Jala Nihe
 skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
 skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
-skeleton_bone-arm_group = Käe pikkus
 skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
 
@@ -230,16 +227,11 @@ settings-driver-enable = Luba
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtreerimine
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Vali filtreerimis tüüp enda jälgijatele.
-    Ennustus ennustab liikumist, aga silestamine silestab liikumist.
 settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
 settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
 settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
-settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
 settings-general-tracker_mechanics-filtering-amount = Amount
 
 ## Stay Aligned pose recorder
@@ -252,26 +244,23 @@ settings-keybinds-recorder-modal-cancel-button = Tühista
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Põranda läbimine
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Libisemise korrigeerimine
 settings-general-fk_settings-leg_tweak-toe_snap = Varba klõpsatus maha
 settings-general-fk_settings-leg_tweak-foot_plant = Jalg maas
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Libisemise korrigeerimine jõud
-settings-general-fk_settings-leg_tweak-toe_snap-description = Varvaste klõpsatus maha üritab ära arvata jalgade pöörlemist, kui jalgade jälgijaid ei kasutata.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Jalg-maas pöörab jalad kokkupuutel maapinnaga paralleelseks.
 settings-general-fk_settings-leg_fk = Jalgade jälgimine
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
 settings-general-fk_settings-self_localization-title = Mocapi režiim
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Puudutusepõhised lähtestused
 settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.3 sekundi jooksul, et need registreeritaks.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -298,7 +287,6 @@ settings-general-gesture_control-mountingResetDelay = Paigaldusasendi lähtestam
 settings-general-gesture_control-mountingResetTaps = Paigaldusasendi lähtestamise vajutus
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Jälgijad üle läve
-settings-general-gesture_control-numberTrackersOverThreshold-description = Suurendage seda väärtust, kui puudutuse tuvastamine ei tööta. Ärge suurendage seda üle selle, mis on vajalik puudutuse tuvastuse toimimiseks, kuna see põhjustaks rohkem valepositiivseid tulemusi.
 
 ## Appearance settings
 
@@ -331,7 +319,6 @@ settings-serial = Jadakonsool
 settings-serial-description =
     See on reaalajas teabevoog jadaside jaoks.
     Võib olla kasulik, kui on vaja teada, kas püsivara töötab.
-settings-serial-connection_lost = Ühendus jadakonsooliga kaotatud. Ühenduse taastamine...
 settings-serial-reboot = Taaskäivitage
 settings-serial-factory_reset = Tehaseseadete taastamine
 # This cares about multilines
@@ -429,7 +416,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Sisesta SSID
 onboarding-wifi_creds-password =
     .label = Parool
-    .placeholder = Sisesta parool
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -469,7 +456,6 @@ onboarding-connect_tracker-next = Olen ühendanud kõik oma jälgijad
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Määrake jälgijad asukoht
-onboarding-assign_trackers-description = Valime mis jälgijad lähevad kuhu. Vajutage asukohale kuhu te tahate, et jälgija läheks.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
