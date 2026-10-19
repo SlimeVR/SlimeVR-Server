@@ -387,18 +387,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Использов�
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Использует магнитометр на всех трекерах, которые имеют совместимую с ним прошивку, уменьшая дрифт в стабильных магнитных средах.
     Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
-settings-stay_aligned-description = Функция "Оставаться выровненным" уменьшает дрифт, постепенно настраивая трекеры в соответствии с вашими расслабленными позами
-settings-stay_aligned-setup-label = Настройки "Оставаться выровненным"
-settings-stay_aligned-relaxed_poses-label = Расслабленные позы
-settings-stay_aligned-relaxed_poses-standing = Калибровка трекеров в положении стоя
-settings-stay_aligned-relaxed_poses-sitting = Калибровка трекеров в положении сидя (на стуле)
-settings-stay_aligned-relaxed_poses-flat = Калибровка трекеров в положении сидя (на полу) или лежа (на спине)
-settings-stay_aligned-relaxed_poses-save_pose = Сохранить позу
-settings-stay_aligned-relaxed_poses-reset_pose = Сбросить позу
-settings-stay_aligned-relaxed_poses-close = Закрыть
 settings-stay_aligned-debug-label = Отладка
 settings-stay_aligned-debug-description = Пожалуйста, укажите ваши настройки при отправке сообщения о проблемах с функцией "Оставаться выровненным".
 settings-stay_aligned-debug-copy-label = Копирование настроек в буфер обмена
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -820,32 +814,6 @@ onboarding-automatic_proportions-smol_warning-cancel = Вернуться
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Оставаться выровненным
-onboarding-stay_aligned-description = Настройте функцию "Оставаться выровненным", чтобы ваши трекеры продолжали оставаться выровненными.
-onboarding-stay_aligned-put_trackers_on-title = Наденьте ваши трекеры
-onboarding-stay_aligned-put_trackers_on-description = Чтобы сохранить ваши расслабленные позы, будут использованы трекеры, которые вы только что назначили. Наденьте все трекеры, вы можете увидеть, какие из них какие, на рисунке справа.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Вы подключили и назначили менее 5 трекеров! Это минимально требуемое количество трекеров для корректной работы функции "Оставаться выровненным".
-onboarding-stay_aligned-put_trackers_on-next = У меня включены все трекеры
-onboarding-stay_aligned-verify_mounting-title = Проверьте ваше крепление
-onboarding-stay_aligned-preparation-title = Подготовка
-onboarding-stay_aligned-preparation-tip = Убедитесь, что стоите прямо. Вам необходимо смотреть вперед, а ваши руки должны быть опущены по бокам.
-onboarding-stay_aligned-relaxed_poses-standing-title = Расслабленная поза (стоя)
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Встаньте в удобное положение. Расслабьтесь!
-onboarding-stay_aligned-relaxed_poses-sitting-title = Расслабленная поза (сидя на стуле)
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Сядьте в удобное положение. Расслабьтесь!
-onboarding-stay_aligned-relaxed_poses-flat-title = Расслабленная поза (сидя на полу)
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Сядьте на пол, расположив ноги перед собой. Расслабьтесь!
-onboarding-stay_aligned-relaxed_poses-skip_step = Пропустить
-onboarding-stay_aligned-done-title = Функция "Оставаться выровненным" включена!
-onboarding-stay_aligned-done-description = Настройка функции "Оставаться выровненным" завершена!
-onboarding-stay_aligned-done-description-2 = Настройка завершена! Вы можете провести настройку повторно, если хотите заново откалибровать позы.
-onboarding-stay_aligned-previous_step = Предыдущий
-onboarding-stay_aligned-next_step = Следующий
-onboarding-stay_aligned-restart = Перезапустить
-onboarding-stay_aligned-done = Выполнено
 
 ## Home
 
