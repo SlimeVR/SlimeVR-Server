@@ -280,7 +280,9 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 動き
 settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
-settings-stay_aligned-relaxed_poses-close = 閉じる
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -559,13 +561,6 @@ onboarding-automatic_proportions-error_modal-confirm = 了解!
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = トラッカーを装着する
-onboarding-stay_aligned-put_trackers_on-next = すべてのトラッカーを装着しました
-onboarding-stay_aligned-verify_mounting-title = マウントリセット
-onboarding-stay_aligned-preparation-title = 準備
 
 ## Home
 
