@@ -355,7 +355,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Naudoti magnetometr
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Naudoja magnetometrą visuose sekikliuose, kurių programinė įrangą jį palaiko. Tai sumažiną dreifą jeigu magnetinė aplinka stabili.
     Galima individualiai tai išjungti kiekvieno sekiklio nustatymuose. <b>Neišjunkite sekiklių keisdami šį nustatymą!</b>
-settings-stay_aligned-relaxed_poses-close = Uždaryti
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -509,10 +511,6 @@ onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-verify_mounting-title = Tvirtinimo kalibravimas
 
 ## Home
 
