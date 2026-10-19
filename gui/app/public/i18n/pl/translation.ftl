@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Wygląda na to, że serwer SlimeVR przestał dz
 websocket-timedout = Nie można połączyć się z serwerem
 websocket-timedout-desc = Wygląda na to, że serwer SlimeVR uległ awarii lub upłynął limit czasu. Sprawdź dzienniki i uruchom ponownie program
 websocket-error-close = Wyjdź ze SlimeVR
-websocket-error-logs = Otwórz folder dzienników
 
 ## Update notification
 
@@ -108,76 +107,28 @@ skeleton_bone-NECK-desc =
     To jest odległość od środka głowy do podstawy szyi.
     Aby go dostosować, przesuń głowę w górę i w dół, jakbyś kiwnął głową lub przechylić głowę
     po lewej i prawej stronie i zmodyfikuj go, aż jakikolwiek ruch w innych śledzących nie będzie znikomy.
-skeleton_bone-torso_group = Długość torsu
 skeleton_bone-torso_group-desc =
     To jest odległość od podstawy szyi do bioder.
     Aby go dostosować, zmodyfikuj go w stojąco prosto, aż do wirtualnej linii bioder
     Zwykle z twoimi prawdziwymi.
 skeleton_bone-UPPER_CHEST = Długość górnej części klatki piersiowej
-skeleton_bone-UPPER_CHEST-desc =
-    To jest odległość od podstawy szyi do środka klatki piersiowej.
-    Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
-    (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
-skeleton_bone-LOWER_CHEST-desc =
-    To jest odległość od środka klatki piersiowej do środka kręgosłupa.
-    Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
-    (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
 skeleton_bone-HIP = Długość bioder
-skeleton_bone-HIP-desc =
-    To jest odległość od przycisku brzucha do bioder
-    Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
-    (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
 skeleton_bone-HIPS_WIDTH = Szerokość bioder
 skeleton_bone-HIPS_WIDTH-desc =
     To jest odległość między początkiem nóg.
     Aby go dostosować, wykonaj pełny reset z nogami prosto i zmodyfikuj go aż do POW
     Twoje wirtualne nogi pasują do twoich prawdziwych w poziomie.
-skeleton_bone-leg_group = Długość nóg
-skeleton_bone-leg_group-desc =
-    To jest odległość od bioder do stóp.
-    Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją
-    Dopóki twoje wirtualne stopy nie znajdą się na tym samym poziomie co twoje prawdziwe.
 skeleton_bone-UPPER_LEG = Długość górnej części nogi
-skeleton_bone-UPPER_LEG-desc =
-    To jest odległość od bioder do kolan.
-    Aby go dostosować, odpowiednio wyregentuj długość nogi i zmodyfikuj ją
-    Dopóki wirtualne kolana nie znajdą się na tym samym poziomie co twoje prawdziwe.
 skeleton_bone-LOWER_LEG = Długość dolnej części nogi
-skeleton_bone-LOWER_LEG-desc =
-    To jest odległość od twoich kolan do kostek.
-    Aby go dostosować, odpowiednio wyregentuj długość nogi i zmodyfikuj ją
-    Dopóki wirtualne kolana nie znajdą się na tym samym poziomie co twoje prawdziwe.
 skeleton_bone-FOOT_LENGTH = Długość stopy
 skeleton_bone-FOOT_LENGTH-desc =
     To jest odległość od twoich kostek do twoich palców.
     Aby go dostosować, na palcach i zmodyfikuj, aż twoje wirtualne stopy pozostaną na miejscu.
 skeleton_bone-FOOT_SHIFT = Przesunięcie stopy
-skeleton_bone-FOOT_SHIFT-desc =
-    Ta wartość jest poziomą odległością od kolana do kostki.
-    Opowiada o dolnych nogach cofających się, gdy stoi prosto.
-    Aby go dostosować, ustaw długość stopy na 0, wykonaj pełny reset i zmodyfikuj ją, aż do wirtualnegow
-    Stopy ustawiają się w środku kostek.
 skeleton_bone-SHOULDERS_DISTANCE = Odległość ramion
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    To jest pionowa odległość od podstawy szyi do ramion.
-    Aby go dostosować, ustaw długość górnego ramienia na 0 i zmodyfikuj go, aż wirtualne śledzenie łokci
-    Ustaw pionowo z prawdziwymi ramionami.
 skeleton_bone-SHOULDERS_WIDTH = Szerokość ramion
-skeleton_bone-arm_group = Długość ramienia
-skeleton_bone-arm_group-desc =
-    To jest odległość od ramion do nadgarstków.
-    Aby go dostosować, odpowiednio dostosuj odległość ramion, ustaw odległość dłoni y¶
-    do 0 i zmodyfikuj go, aż śledzące rękę nie ustawiają się na nadgarstki.
 skeleton_bone-UPPER_ARM = Długość bicepsa
-skeleton_bone-UPPER_ARM-desc =
-    To jest odległość od ramion do łokci.
-    Aby go dostosować, odpowiednio wyregentuj długość ramienia i zmodyfikuj ją do ¶
-    Twoje tropiniki łokciowe ustawiają się z twoimi prawdziwymi łokciami.
 skeleton_bone-LOWER_ARM = Długość przedramienia
-skeleton_bone-LOWER_ARM-desc =
-    To jest odległość od twoich łokci do nadgarstków.
-    Aby go dostosować, odpowiednio wyregentuj długość ramienia i zmodyfikuj ją do ¶
-    Twoje tropiniki łokciowe ustawiają się z twoimi prawdziwymi łokciami.
 
 ## Tracker reset buttons
 
@@ -291,11 +242,6 @@ tracker-settings-mounting_section = Położenie Trackera
 tracker-settings-mounting_section-description = Gdzie zamontowany jest tracker?
 tracker-settings-mounting_section-edit = Edytuj
 tracker-settings-use_mag = Zezwól na magnetometr na tym trackerze
-# Multiline!
-tracker-settings-use_mag-description =
-    Czy ten tracker powinien używać magnetometru, aby zmniejszyć dryft, gdy użycie magnetometru jest dozwolone? <b>Proszę nie wyłączać trackera podczas przełączania tej opcji!</b> ¶
-    ¶
-    Najpierw musisz zezwolić na użycie magnetometru, <magSetting>kliknij tutaj, aby przejść do ustawienia</magSetting> .
 tracker-settings-use_mag-label = Pozwól na magnetometr
 tracker-settings-name_section = Nazwa Trackera
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
@@ -307,7 +253,6 @@ tracker-settings-update-unavailable-v2 = Nie znaleziono aktualizacji
 tracker-settings-update-incompatible = Nie można zaktualizować. Niekompatybilne urządzenie lub wersja oprogramowania.
 tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
 tracker-settings-update-up_to_date = Aktualny
-tracker-settings-update-blocked = Aktualizacja niedostępna. Brak innych wersji
 tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
 tracker-settings-current-version = Aktualny
@@ -381,16 +326,11 @@ settings-driver-status-badge-disabled = Od
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrowanie
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Wybierz Filtry dla twoich trackerów.
-    Przewidywanie przewiduje ruchy a Wygładzanie stara się wygładzić ruchy.
 settings-general-tracker_mechanics-filtering-type-none = Brak Filtrów
 settings-general-tracker_mechanics-filtering-type-none-description = Używa rotacji w niezmienionej formie. Wszystkie filtry są wyłączone.
 settings-general-tracker_mechanics-filtering-type-smoothing = Wygładzanie
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
 settings-general-tracker_mechanics-filtering-type-prediction = Przewidywanie
-settings-general-tracker_mechanics-filtering-type-prediction-description = Zmniejsza opóźnienie i zwiększa dynamikę ruchów, ale może dodać trochę drgań.
 settings-general-tracker_mechanics-filtering-amount = Ilość
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Czas wygładzania resetu odchylenia (0s wyłącza wygładzanie)
 settings-general-tracker_mechanics-save_mounting_reset = Zapisz pozycję trackerów na ciele
@@ -398,9 +338,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Zapisuje kalibrację pozycji trackerów na ciele pomiędzy ponownymi uruchomieniami. Użyteczne¶
     podczas noszenia stroju, w którym trackery przymocowane sa na stałe. <b>Niezalecane dla zwykłych użytkowników z odpinanymi trackerami!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Użyj magnetometru na wszystkich trackerach IMU, które go obsługują
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Wykorzystuje magnetometr we wszystkich trackerach, które mają kompatybilne oprogramowanie sprzętowe, redukując dryf w stabilnych środowiskach magnetycznych.¶
-    Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
 settings-stay_aligned-debug-label = Debugowanie
 settings-stay_aligned-debug-description = Proszę dołączać ustawienia, podczas zgłaszania problemów z opcją Wyrównywania.
 settings-stay_aligned-debug-copy-label = Skopiuj ustawienia do schowka
@@ -417,31 +354,27 @@ settings-keybinds-recorder-modal-cancel-button = Anuluj
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Klip podłogowy
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Korekta jazdy na łyżwach
 settings-general-fk_settings-leg_tweak-toe_snap = Pstryknięcie palcem
 settings-general-fk_settings-leg_tweak-foot_plant = Korekta stopy
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Siła korekcji efektu jazdy na łyżwach
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Wymuś kalibracje mocowania stóp
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Wymuś kalibracje montażu stóp podczas kalibracji pozycji.
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
 settings-general-fk_settings-ik = Dane pozycji
-settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
 settings-general-fk_settings-skeleton_settings-ratios = Proporcje szkieletu
 settings-general-fk_settings-self_localization-title = Tryb Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Resetowanie na podstawie stuknięć
 settings-general-gesture_control-description = Umożliwia wyzwalanie resetów przez stuknięcie modułu śledzącego. Układ śledzący znajdujący się najwyżej na tułowiu służy do resetowania odchylenia, układ śledzący znajdujący się najwyżej na lewej nodze służy do pełnego resetu, a układ śledzący znajdujący się najwyżej na prawej nodze służy do resetowania montażu. Należy wspomnieć, że stuknięcia muszą nastąpić w ciągu 0,6 sekundy, aby zostały zarejestrowane.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -472,7 +405,6 @@ settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania p
 settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackery ponad progiem
-settings-general-gesture_control-numberTrackersOverThreshold-description = Zwiększ tę wartość, jeśli wykrywanie stukniecia nie działa. Nie zwiększaj go ponad to, co konieczne, ponieważ wygeneruje to fałszywe stuknięcia.
 
 ## Appearance settings
 
@@ -526,7 +458,6 @@ settings-serial = Serial Console
 settings-serial-description =
     To jest źródło informacji na żywo dla komunikacji szeregowej.
     Może być przydatny, jeśli chcesz wiedzieć, czy oprogramowanie układowe działa.
-settings-serial-connection_lost = Utracono połączenie z portem szeregowym, ponowne łączenie...
 settings-serial-reboot = Ponowne uruchomienie
 settings-serial-factory_reset = Przywrócenie ustawień fabrycznych
 # This cares about multilines
@@ -662,9 +593,6 @@ onboarding-wifi_creds-ssid-label = SSID
 onboarding-wifi_creds-ssid =
     .placeholder = Enter SSID
 onboarding-wifi_creds-ssid-required = Nazwa Wi-Fi jest wymagana
-onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
 
 ## Install info
 
@@ -681,7 +609,6 @@ onboarding-connect_tracker-title = Połącz trackery
 onboarding-connect_tracker-issue-serial = Mam problemy z połączeniem!
 onboarding-connect_tracker-close = Zamknij
 onboarding-connect_tracker-connection_status-serial_init = Łączenie z urządzeniem szeregowym
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Uzyskiwanie adresu MAC modułu śledzącego
 onboarding-connect_tracker-connection_status-provisioning = Wysyłanie danych Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Wysyłanie danych Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Szukanie serwera
@@ -710,7 +637,6 @@ onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Przydziel Trackery
-onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -956,7 +882,6 @@ firmware_tool-flashing_step-exit = Wyjście
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = Budowanie....
 firmware_tool-build-CREATING_BUILD_FOLDER = Tworzenie folderu kompilacji
 firmware_tool-build-DOWNLOADING_SOURCE = Pobieranie kodu źródłowego
 firmware_tool-build-EXTRACTING_SOURCE = Ekstrakcja kodu źródłowego
@@ -969,16 +894,13 @@ firmware_tool-build-ERROR = Nie można zbudować oprogramowania sprzętowego
 
 firmware_update-status-DOWNLOADING = Pobieranie oprogramowania sprzętowego
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Wyłącz i ponownie włącz swój tracker
-firmware_update-status-AUTHENTICATING = Uwierzytelnianie za pomocą MCU
 firmware_update-status-UPLOADING = Przesyłanie oprogramowania sprzętowego
-firmware_update-status-SYNCING_WITH_MCU = Synchronizacja z MCU
 firmware_update-status-REBOOTING = Ponowne uruchomienie trackera
 firmware_update-status-PROVISIONING = Ustawianie danych uwierzytelniających Wi-Fi
 firmware_update-status-DONE = Aktualizacja zakończona!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Nie udało się znaleźć urządzenia
 firmware_update-status-ERROR_TIMEOUT = Upłynął limit czasu procesu aktualizacji
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Nie można pobrać oprogramowania sprzętowego
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Nie można uwierzytelnić za pomocą MCU
 firmware_update-status-ERROR_UPLOAD_FAILED = Nie można załadować oprogramowania sprzętowego
 firmware_update-status-ERROR_PROVISIONING_FAILED = Nie można ustawić danych uwierzytelniających Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = Metoda aktualizacji nie jest obsługiwana
