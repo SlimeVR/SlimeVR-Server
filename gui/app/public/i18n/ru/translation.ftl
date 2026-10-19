@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Похоже, что произошел сбо�
 websocket-timedout = Не удалось подключиться к серверу
 websocket-timedout-desc = Похоже, что произошел сбой сервера SlimeVR или превышено время ожидания. Проверьте логи и перезапустите программу
 websocket-error-close = Выйти из SlimeVR
-websocket-error-logs = Открыть папку логов
 
 ## Update notification
 
@@ -105,77 +104,29 @@ skeleton_bone-NECK-desc =
     Это расстояние от центра вашей головы до основания вашей шеи.
     Чтобы откалибровать его, двигайте головой вверх-вниз, будто вы киваете, или отклоняйте голову
     влево-вправо и изменяйте значение, пока движение других трекеров не станет незначительным.
-skeleton_bone-torso_group = Длина Туловища
 skeleton_bone-torso_group-desc =
     Это расстояние от основания вашей шеи до ваших бёдер.
     Чтобы откалибровать его, встаньте прямо и изменяйте значение, пока виртуальная линия бёдер
     не совпадёт с реальной.
 skeleton_bone-UPPER_CHEST = Длина верхней части груди
-skeleton_bone-UPPER_CHEST-desc =
-    Это расстояние от основания вашей шеи до середины вашей груди.
-    Чтобы откалибровать его,  убедитесь, что "Длина туловища" задана верно, и изменяйте её в различных
-    позициях (сидя, наклонившсь, лёжа и т.д.), пока ваш виртуальный позвоночник не совпадёт с реальным.
-skeleton_bone-LOWER_CHEST-desc =
-    Это расстояние от центра вашей груди до центра вашего позвоночника.
-    Чтобы откалибровать его,  убедитесь, что "Длина туловища" задана верно, и изменяйте значение в различных
-    позициях (сидя, наклонившись, лёжа и т.д.), пока ваш виртуальный позвоночник не совпадёт с реальным.
 skeleton_bone-HIP = Длина таза
-skeleton_bone-HIP-desc =
-    Это расстояние от вашего пупка до ваших бедер.
-    Чтобы откалибровать его,  убедитесь, что "Длина туловища" задана верно, и изменяйте значение в различных
-    позициях (сидя, наклонившись, лёжа и т.д.), пока ваш виртуальный позвоночник не совпадет с реальным.
 skeleton_bone-HIPS_WIDTH = Ширина бедер
 skeleton_bone-HIPS_WIDTH-desc =
     Это расстояние между начала ваших ног.
     Чтобы откалибровать его, выполните полный сброс, поставив ноги прямо, и изменяйте значение,
     пока ваши виртуальные ноги не совпадут с реальными.
-skeleton_bone-leg_group = Длина ноги
-skeleton_bone-leg_group-desc =
-    Это расстояние от ваших бёдер до ваших ступней.
-    Чтобы откалибровать его, убедитесь, что "Длина туловища" задана верно,
-    и изменяйте значение, пока ваши виртуальные ступни не совпадут с реальными.
 skeleton_bone-UPPER_LEG = Длина бедра
-skeleton_bone-UPPER_LEG-desc =
-    Это расстояние от ваших бёдер до ваших колен.
-    Чтобы откалибровать его, убедитесь, что "Длина ноги" задана верно,
-    и изменяйте значение, пока ваши виртуальные колени не совпадут с реальными.
 skeleton_bone-LOWER_LEG = Длина голени
-skeleton_bone-LOWER_LEG-desc =
-    Это расстояние от ваших колен до ваших лодыжек.
-    Чтобы откалибровать его, убедитесь, что "Длина ноги" задана верно,
-    и изменяйте значение, пока ваши виртуальные колени не совпадут с реальными.
 skeleton_bone-FOOT_LENGTH = Длинна стопы
 skeleton_bone-FOOT_LENGTH-desc =
     Это расстояние от ваших лодыжек до пальцев ног.
     Чтобы откалибровать его, поднимитесь на цыпочки и изменяйте
     значение, пока ваши виртуальные стопы не встанут на место.
 skeleton_bone-FOOT_SHIFT = Смещение стопы
-skeleton_bone-FOOT_SHIFT-desc =
-    Это горизонтальное расстояние от ваших колен до ваших лодыжек.
-    Оно отвечает за смещение голеней назад, когда вы стоите прямо.
-    Чтобы откалибровать его, установите "Длину ноги" равной 0, выполните полный сброс, и
-    изменяйте значение, пока ваши виртуальные ступни не сравняются с центром лодыжек.
 skeleton_bone-SHOULDERS_DISTANCE = Расстояние до Плеч
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    Это вертикальное расстояние от основания вашей шеи до ваших плеч.
-    Чтобы откалибровать его, установите "Длину предплечья" равной 0, и изменяйте значение, пока
-    ваши виртуальные трекеры локтей не сравняются вертикально с вашими реальными плечами.
 skeleton_bone-SHOULDERS_WIDTH = Ширина плеч
-skeleton_bone-arm_group = Длина руки
-skeleton_bone-arm_group-desc =
-    Это расстояние от ваших плеч до ваших запястий.
-    Чтобы откалибровать его, убедитесь, что "Расстояние до плеч" задано верно, установите "Расстояние
-    до руки Y" равным 0, и изменяйте значение, пока ваши трекеры рук не совпадут с вашими запястьями.
 skeleton_bone-UPPER_ARM = Длинна предплечья
-skeleton_bone-UPPER_ARM-desc =
-    Это расстояние от ваших плеч до ваших локтей.
-    Чтобы откалибровать его, убедитесь, что "Длина руки" задана верно, и изменяйте
-    значение, пока ваши трекеры локтей не совпадут с вашими реальными локтями.
 skeleton_bone-LOWER_ARM = Длинна нижнего предплечья
-skeleton_bone-LOWER_ARM-desc =
-    Это расстояние от ваших локтей до ваших запястий.
-    Чтобы откалибровать его, убедитесь, что "Длина руки" задана верно, и изменяйте
-    значение, пока ваши трекеры локтей не совпадут с вашими реальными локтями.
 
 ## Tracker reset buttons
 
@@ -287,8 +238,6 @@ tracker-settings-mounting_section = Положение крепления
 tracker-settings-mounting_section-description = Где прикреплен трекер?
 tracker-settings-mounting_section-edit = Изменить прикрепление
 tracker-settings-use_mag = Разрешить использование магнитометра для этого трекера
-# Multiline!
-tracker-settings-use_mag-description = Должен ли этот трекер использовать магнитометр для компенсации дрифта, когда использование магнитометра разрешено?<b>Пожалуйста, не выключайте трекер во время включения данной функции!</b> Вам сначала нужно разрешить использование магнитометра, <magSetting>нажмите здесь чтобы зайти в настройки</magSetting>.
 tracker-settings-use_mag-label = Разрешить магнитометр
 tracker-settings-name_section = Имя трекера
 tracker-settings-name_section-description = Дайте ему милое имя :)
@@ -367,16 +316,11 @@ settings-driver-status-badge-disabled = Отключено
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Фильтрация
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Выберите тип фильтрации для ваших трекеров.
-    Прогнозирование предсказывает движение, в то время как сглаживание сглаживает движение.
 settings-general-tracker_mechanics-filtering-type-none = Нет фильтрации
 settings-general-tracker_mechanics-filtering-type-none-description = Используется вращение как есть. Не применяет никакой фильтрации.
 settings-general-tracker_mechanics-filtering-type-smoothing = Сглаживание
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Сглаживает движения, но добавляет некоторую задержку.
 settings-general-tracker_mechanics-filtering-type-prediction = Предсказывание
-settings-general-tracker_mechanics-filtering-type-prediction-description = Уменьшает задержку и делает движения более быстрыми, но может увеличить дрожание.
 settings-general-tracker_mechanics-filtering-amount = Количество
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Время сглаживания сброса отклонения (0 сек. отключает сглаживание)
 settings-general-tracker_mechanics-save_mounting_reset = Сохранить калибровку автоматического сброса крепления
@@ -384,9 +328,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Сохраняет автоматические калибровки сброса крепления для трекеров между перезапусками. Полезно
     при ношении костюма, в котором трекеры не перемещаются между сессиями. <b>Не рекомендуется для обычных пользователей!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Использовать магнитометр на всех IMU трекерах, которые его поддерживают
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Использует магнитометр на всех трекерах, которые имеют совместимую с ним прошивку, уменьшая дрифт в стабильных магнитных средах.
-    Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
 settings-stay_aligned-debug-label = Отладка
 settings-stay_aligned-debug-description = Пожалуйста, укажите ваши настройки при отправке сообщения о проблемах с функцией "Оставаться выровненным".
 settings-stay_aligned-debug-copy-label = Копирование настроек в буфер обмена
@@ -403,19 +344,17 @@ settings-keybinds-recorder-modal-cancel-button = Отмена
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Привязка к полу
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Коррекция скольжения
 settings-general-fk_settings-leg_tweak-toe_snap = Коррекция пальцев ног
 settings-general-fk_settings-leg_tweak-foot_plant = Коррекция стоп
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Сила коррекции скольжения
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap пытается угадать вращение ваших ступней, если трекеры для них не используются.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-Plant поворачивает ваши ступни так, чтобы они были параллельны земле при контакте.
 settings-general-fk_settings-leg_fk = Отслеживание ног
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Предотвращает вращение суставов за пределы их возможностей
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
@@ -423,7 +362,6 @@ settings-general-fk_settings-self_localization-title = Режим Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Сброс после нажатия
 settings-general-gesture_control-description = Позволяет запускать сброс настроек нажатием на трекер. Трекер, расположенный выше всего на вашем торсе, используется для быстрого сброса, трекер, расположенный выше всего на вашей левой ноге, используется для сброса, а трекер, расположенный выше всего на вашей правой ноге, используется для сброса установок. Нажатия должны происходить в течение 0.3 секунд, умноженное на количество нажатий для регистрации нажатия.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -454,7 +392,6 @@ settings-general-gesture_control-mountingResetDelay = Задержка сбро�
 settings-general-gesture_control-mountingResetTaps = Нажатия для сброса крепления
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Трекеры, превышающие порог
-settings-general-gesture_control-numberTrackersOverThreshold-description = Увеличьте это значение, если обнаружение нажатий не работает. Не увеличивайте его выше того, чем необходимо для работы обнаружения касания, иначе это приведет к большему количеству ложных срабатываний.
 
 ## Appearance settings
 
@@ -505,7 +442,6 @@ settings-serial = Консоль
 settings-serial-description =
     Это информационный канал для серийной связи.
     Может быть полезным для отладки прошивки или оборудования.
-settings-serial-connection_lost = Соединение с серийным портом потеряно, повторное подключение...
 settings-serial-reboot = Перезагрузить
 settings-serial-factory_reset = Полный сброс
 # This cares about multilines
@@ -635,7 +571,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Необходимо указать имя сети Wi-Fi
 onboarding-wifi_creds-password =
     .label = Пароль
-    .placeholder = Введите пароль Wi-Fi
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -653,7 +589,6 @@ onboarding-connect_tracker-issue-serial = У меня проблемы с под
 onboarding-connect_tracker-usb = USB трекер
 onboarding-connect_tracker-close = Закрыть
 onboarding-connect_tracker-connection_status-serial_init = Подключение к устройству
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Получение MAC адреса трекера
 onboarding-connect_tracker-connection_status-provisioning = Отправка данных Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Попытка подключения к Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Поиск сервера
@@ -682,7 +617,6 @@ onboarding-connect_tracker-next = Я подключил все трекеры
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Привязать трекеры
-onboarding-assign_trackers-description = Давайте выберем расположение ваших трекеров. Нажмите на место, где вы хотите разместить трекер
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -880,16 +814,13 @@ firmware_tool-build-ERROR = Не удается собрать прошивку
 
 firmware_update-status-DOWNLOADING = Скачивание прошивки
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Пожалуйста, выключите и снова включите ваш трекер
-firmware_update-status-AUTHENTICATING = Аутентификация с микроконтроллером
 firmware_update-status-UPLOADING = Выгрузка прошивки
-firmware_update-status-SYNCING_WITH_MCU = Синхронизация с микроконтроллером
 firmware_update-status-REBOOTING = Применение обновления
 firmware_update-status-PROVISIONING = Настройка учетных данных Wi-Fi
 firmware_update-status-DONE = Обновление завершено!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Не удалось найти устройство
 firmware_update-status-ERROR_TIMEOUT = Время ожидания процесса обновления истекло
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Не удалось загрузить прошивку
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Не удалось пройти аутентификацию с микроконтроллером
 firmware_update-status-ERROR_UPLOAD_FAILED = Не удалось выгрузить прошивку
 firmware_update-status-ERROR_PROVISIONING_FAILED = Не удалось установить учетные данные Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = Метод обновления не поддерживается
