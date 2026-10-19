@@ -13,7 +13,6 @@ websocket-connection_lost-desc = uh ohs! it look like da swimevr serber cwashed.
 websocket-timedout = could nawt connec to da serwer
 websocket-timedout-desc = it look like da swimevr serwer cwashed ow time out, omg!! check da log and westawt da pwogwam.
 websocket-error-close = Exit SwimeVR
-websocket-error-logs = open da logs fowder
 
 ## Update notification
 
@@ -101,18 +100,15 @@ body_part-RIGHT_LITTLE_DISTAL = wight widdle distol
 
 skeleton_bone-NONE = none
 skeleton_bone-NECK = nyeck wength
-skeleton_bone-torso_group = towso wength
 skeleton_bone-UPPER_CHEST = uppew chest wength
 skeleton_bone-HIP = hip wength
 skeleton_bone-HIPS_WIDTH = hyips wiwdth
-skeleton_bone-leg_group = weg wength
 skeleton_bone-UPPER_LEG = uppew weg wength
 skeleton_bone-LOWER_LEG = wowwe weg wength
 skeleton_bone-FOOT_LENGTH = pawsies wength
 skeleton_bone-FOOT_SHIFT = pawsies shyft
 skeleton_bone-SHOULDERS_DISTANCE = shouwdews disyance
 skeleton_bone-SHOULDERS_WIDTH = shouwdews wiwdth
-skeleton_bone-arm_group = awm wength
 skeleton_bone-UPPER_ARM = uppew awm wength
 skeleton_bone-LOWER_ARM = wowwer awm wength
 
@@ -295,25 +291,17 @@ settings-driver-enable = enaybwe
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = fiwtewing~
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    chooce teh fiwwtewing type fow youw twackaws.
-    pwediction pwedicts movment while smowthing smowthens movment.
 settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
 settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
 settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
 settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
-settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
 settings-general-tracker_mechanics-filtering-amount = amownt
 settings-general-tracker_mechanics-yaw-reset-smooth-time = nyaw weset smootse taim (0s disaeblez smooting)
 settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
 settings-general-tracker_mechanics-save_mounting_reset-description =
     saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
     wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
-    can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
 
 ## Stay Aligned pose recorder
 
@@ -325,19 +313,17 @@ settings-keybinds-recorder-modal-cancel-button = cancew
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
 settings-general-fk_settings-leg_tweak-toe_snap = toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = pawb pwant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
-settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
-settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
 settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
@@ -345,7 +331,6 @@ settings-general-fk_settings-self_localization-title = mocap mowd
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = bap bwased wesets
 settings-general-gesture_control-description = awwows fow wesets to be twiggewed by bapping a twackew. teh twackew hyest up on youw towso is used fow yaw weset, the twackew hyest up on youw weft weg is use fow fuww reset, and da twackew hiest up on youw wight weg is used fow mounting weset. it shouwd be menshuned dat baps must bappen wifin 0.6 second to be wegistewed.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -372,7 +357,6 @@ settings-general-gesture_control-mountingResetDelay = mountwing weset deway
 settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = twackews over thweshowd
-settings-general-gesture_control-numberTrackersOverThreshold-description = incwease dis vawue if da bap detecshun is nawt wowking. dont incwease it above what is need to make bap detecshun wowk as it wowd cauwse mowe fawse pawsitives.
 
 ## Appearance settings
 
@@ -420,7 +404,6 @@ settings-serial = shewyaw console
 settings-serial-description =
     this is a wiwve infowmation feed fow shewyaw comyunicaytion
     may be usefuw if yuw need to know teh fiwmwawe is acting up
-settings-serial-connection_lost = connyection to shewyaw wost, weconnyecting... >~<
 settings-serial-reboot = weboot
 settings-serial-factory_reset = fawctowy reset
 # This cares about multilines
@@ -534,7 +517,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = wifi name is wequiwed!!
 onboarding-wifi_creds-password =
     .label = passwowod
-    .placeholder = entew passwowod
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -552,7 +535,6 @@ onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twackew
 onboarding-connect_tracker-close = cwose
 onboarding-connect_tracker-connection_status-serial_init = conectin too da sewiaw dewise
-onboarding-connect_tracker-connection_status-obtaining_mac_address = obtainin teh twacker mac addwess
 onboarding-connect_tracker-connection_status-provisioning = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-connecting = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-looking_for_server = wookin fow da sewvew
@@ -575,7 +557,6 @@ onboarding-connect_tracker-next = i cownyected awe my twackaws
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = assign twackaws
-onboarding-assign_trackers-description = wets choyse which twackaw goes whewe. cwick on a wocation whewe yowo want to payce a twackaw
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -756,16 +737,13 @@ firmware_tool-build-ERROR = unabwe to bild da fiwmwawe...
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = downwoadin da fiwmwawe
-firmware_update-status-AUTHENTICATING = awthenticatin wit da mcu
 firmware_update-status-UPLOADING = upwoadin da fiwmwawe
-firmware_update-status-SYNCING_WITH_MCU = syncin wit da mcu
 firmware_update-status-REBOOTING = appwyin da uwupdate
 firmware_update-status-PROVISIONING = settin da wifi cwedenshuls
 firmware_update-status-DONE = uwupdate compwete!!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = culd nawt find da dewice
 firmware_update-status-ERROR_TIMEOUT = da uwupdate pwocess timed owt
 firmware_update-status-ERROR_DOWNLOAD_FAILED = culd nawt downwoad da fiwmwawe
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = culd nawt awthenticate wit da mcu
 firmware_update-status-ERROR_UPLOAD_FAILED = culd nawt upwoad da fiwmwawe
 firmware_update-status-ERROR_PROVISIONING_FAILED = culd nawt set da wifi cwedenshuls
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = da uwupdate mefod is nawt suppowted
