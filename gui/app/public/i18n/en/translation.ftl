@@ -148,27 +148,27 @@ skeleton_bone-torso_group-desc =
 skeleton_bone-UPPER_CHEST = Upper Chest Length
 skeleton_bone-UPPER_CHEST-desc =
     This is the distance from the base of your neck to the middle of your chest.
-    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first, then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-LOWER_CHEST = Lower Chest Length
 skeleton_bone-LOWER_CHEST-desc =
     This is the distance from the middle of your chest to the middle of your spine.
-    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first, then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-UPPER_WAIST = Upper Waist Length
 skeleton_bone-UPPER_WAIST-desc =
     This is the distance from the middle of your spine to a bit above your belly button.
-    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first, then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-LOWER_WAIST = Lower Waist Length
 skeleton_bone-LOWER_WAIST-desc =
     This is the distance from a bit above your belly button to a bit below it.
-    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first, then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
     This is the distance from a bit below your belly button to your hips.
-    To adjust it, set "{ skeleton_bone-torso_group }" properly first then modify it in various positions
+    To adjust it, set "{ skeleton_bone-torso_group }" properly first, then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIPS_WIDTH = Hips Width
 skeleton_bone-HIPS_WIDTH-desc =
@@ -178,17 +178,17 @@ skeleton_bone-HIPS_WIDTH-desc =
 skeleton_bone-leg_group = Leg Length
 skeleton_bone-leg_group-desc =
     This is the distance from your hips to your feet.
-    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first, then modify it
     until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Upper Leg Length
 skeleton_bone-UPPER_LEG-desc =
     This is the distance from your hips to your knees.
-    To adjust it, adjust "{ skeleton_bone-leg_group }" properly first then modify it
+    To adjust it, adjust "{ skeleton_bone-leg_group }" properly first, then modify it
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-LOWER_LEG-desc =
     This is the distance from your knees to your ankles.
-    To adjust it, adjust "{ skeleton_bone-leg_group }" properly first then modify it
+    To adjust it, adjust "{ skeleton_bone-leg_group }" properly first, then modify it
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
 skeleton_bone-FOOT_LENGTH-desc =
@@ -218,17 +218,17 @@ skeleton_bone-arm_group-desc =
 skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-UPPER_ARM-desc =
     This is the distance from your shoulders to your elbows.
-    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first then modify it until
+    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first, then modify it until
     your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Lower Arm Length
 skeleton_bone-LOWER_ARM-desc =
     This is the distance from your elbows to your wrists.
-    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first then modify it until
+    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first, then modify it until
     your elbow trackers line up with your real elbows.
 skeleton_bone-HAND = Hand Length
 skeleton_bone-HAND-desc =
     This is the distance from your wrists to your knuckles.
-    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first then modify it until your
+    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first, then modify it until your
     hand trackers line up vertically with your knuckles.
 
 ## Tracker reset buttons
