@@ -256,7 +256,9 @@ settings-general-tracker_mechanics-save_mounting_reset = Зберегти авт
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Зберігає калібрування положення трекерів на тілі між перезавантаженнями. Корисний
     при носінні костюма, в якому трекери не переміщаються між сесіями. <b>Не рекомендується для звичайних користувачів!</b>
-settings-stay_aligned-relaxed_poses-close = Закрити
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -568,10 +570,6 @@ onboarding-automatic_proportions-verify_results-processing = Обробка ре
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-verify_mounting-title = Калібрування положення
 
 ## Home
 
