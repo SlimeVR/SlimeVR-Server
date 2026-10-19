@@ -385,18 +385,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar el magnetómet
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utiliza el magnetómetro en todos los trackers que tienen un firmware compatible con él, lo que reduce el drift en entornos magnéticos estables.
     Se puede desactivar por rastreador en la configuración de los trackers. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
-settings-stay_aligned-description = Mantener Alineado reduce el drift ajustando gradualmente tus trackers para que coincidan con tus poses relajadas
-settings-stay_aligned-setup-label = Configurar Mantener Alineado
-settings-stay_aligned-relaxed_poses-label = Posturas relajadas
-settings-stay_aligned-relaxed_poses-standing = Ajustar los trackers mientras estás de pie
-settings-stay_aligned-relaxed_poses-sitting = Ajustar los trackers mientras estás sentado en una silla
-settings-stay_aligned-relaxed_poses-flat = Ajuste los trackers mientras estás sentado en el suelo o acostado boca arriba
-settings-stay_aligned-relaxed_poses-save_pose = Guardar pose
-settings-stay_aligned-relaxed_poses-reset_pose = Restablecer pose
-settings-stay_aligned-relaxed_poses-close = Cierra
 settings-stay_aligned-debug-label = Depuración
 settings-stay_aligned-debug-description = Incluya su configuración cuando informe problemas sobre Mantener Alineado.
 settings-stay_aligned-debug-copy-label = Copiar ajustes al portapapeles
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -810,35 +804,6 @@ onboarding-automatic_proportions-smol_warning-cancel = Volver
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Mantener Alineado
-onboarding-stay_aligned-description = Configure Mantener Alineado para mantener sus trackers alineados.
-onboarding-stay_aligned-put_trackers_on-title = Ponte los trackers
-onboarding-stay_aligned-put_trackers_on-description = Para guardar tus posturas de descanso, vamos a utilizar los trackers que acabas de asignar. Ponte todos tus trackers, puedes ver cuál es cuál en la figura de la derecha.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = ¡Tiene menos de 5 trackers actualmente conectados y asignados! Esta es la cantidad mínima de trackers necesarios para que Mantener Alineado funcione correctamente.
-onboarding-stay_aligned-put_trackers_on-next = Tengo todos mis trackers puestos
-onboarding-stay_aligned-verify_mounting-title = Verifique su montaje
-onboarding-stay_aligned-preparation-title = Preparación
-onboarding-stay_aligned-preparation-tip = Asegúrate de estar de pie. Sigue mirando hacia adelante con los brazos hacia abajo a los lados.
-onboarding-stay_aligned-relaxed_poses-standing-title = Postura de pie relajada
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Párese en una posición cómoda. ¡Relájate!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Presione el botón "Guardar pose".
-onboarding-stay_aligned-relaxed_poses-sitting-title = Postura relajada sentado en silla
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Siéntese en una posición cómoda. ¡Relájate!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Presione el botón "Guardar pose".
-onboarding-stay_aligned-relaxed_poses-flat-title = Postura relajada sentado en el suelo
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Siéntate en el suelo con las piernas al frente. ¡Relájate!
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Presione el botón "Guardar pose".
-onboarding-stay_aligned-relaxed_poses-skip_step = Omitir
-onboarding-stay_aligned-done-title = ¡Mantener Alineado habilitado!
-onboarding-stay_aligned-done-description = ¡Su configuración de Mantener Alineado está completa!
-onboarding-stay_aligned-done-description-2 = ¡La configuración está completa! Puede reiniciar el proceso si desea recalibrar las poses.
-onboarding-stay_aligned-previous_step = Atrás
-onboarding-stay_aligned-next_step = Siguiente
-onboarding-stay_aligned-restart = Reiniciar
-onboarding-stay_aligned-done = Hecho
 
 ## Home
 
