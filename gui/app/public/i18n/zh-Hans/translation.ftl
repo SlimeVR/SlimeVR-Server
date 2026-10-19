@@ -414,18 +414,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     可以在个别追踪器上禁用本功能。<b>切换此选项时请勿关闭任何一个追踪器的电源！</b>
 settings-general-tracker_mechanics-trackers_over_usb = 通过USB连接的追踪器
 settings-general-tracker_mechanics-trackers_over_usb-description = 通过USB接收HID追踪器数据。清确保连接的追踪器启用了 <b>通过HID连接</b> 功能！
-settings-stay_aligned-description = 持续校准会逐渐将追踪器对齐到设置的放松姿势，减少追踪器漂移的影响
-settings-stay_aligned-setup-label = 配置持续校准
-settings-stay_aligned-relaxed_poses-label = 放松姿势
-settings-stay_aligned-relaxed_poses-standing = 站立放松姿势
-settings-stay_aligned-relaxed_poses-sitting = 椅子上放松姿势
-settings-stay_aligned-relaxed_poses-flat = 地面/平躺放松姿势
-settings-stay_aligned-relaxed_poses-save_pose = 保存姿势
-settings-stay_aligned-relaxed_poses-reset_pose = 重置姿势
-settings-stay_aligned-relaxed_poses-close = 关闭
 settings-stay_aligned-debug-label = 调试
 settings-stay_aligned-debug-description = 在报告持续校准相关问题时，请包含您的以下设置信息
 settings-stay_aligned-debug-copy-label = 复制设置信息到剪贴板
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -890,35 +884,6 @@ onboarding-user_height-reset-warning =
     <b>警告：</b> 这会将您的身体比例重置为仅基于身高的默认比例。
     您确定要执行此操作吗？
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = 持续校准
-onboarding-stay_aligned-description = 配置持续校准以保持追踪器校准
-onboarding-stay_aligned-put_trackers_on-title = 穿戴好追踪器
-onboarding-stay_aligned-put_trackers_on-description = 为了保存放松姿势，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
-onboarding-stay_aligned-put_trackers_on-trackers_warning = 您当前已经连接和分配的追踪器数量少于 5 个！这是持续校准正常运行所需的最小追踪器数量。
-onboarding-stay_aligned-put_trackers_on-next = 所有的追踪器都已开启！
-onboarding-stay_aligned-verify_mounting-title = 检查追踪器佩戴
-onboarding-stay_aligned-preparation-title = 准备
-onboarding-stay_aligned-preparation-tip = 站直并向前看，双臂放在身体两侧。
-onboarding-stay_aligned-relaxed_poses-standing-title = 站立放松姿势
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. 以舒适的姿势站立并放松。
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. 按下“保存姿势”按钮。
-onboarding-stay_aligned-relaxed_poses-sitting-title = 椅子上放松姿势
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. 以舒适的姿势坐下并放松。
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. 按下“保存姿势”按钮。
-onboarding-stay_aligned-relaxed_poses-flat-title = 地面/平躺放松姿势
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. 以舒适的姿势坐或躺在地面上，保持腿在前方并放松。
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. 按下“保存姿势”按钮。
-onboarding-stay_aligned-relaxed_poses-skip_step = 跳过
-onboarding-stay_aligned-done-title = 持续校准已开启！
-onboarding-stay_aligned-done-description = 持续校准已设定完成！
-onboarding-stay_aligned-done-description-2 = 设置完成！如果要重新校准放松姿势，可以重新进行该过程
-onboarding-stay_aligned-previous_step = 上一步
-onboarding-stay_aligned-next_step = 下一步
-onboarding-stay_aligned-restart = 重新开始
-onboarding-stay_aligned-done = 完成
-
 ## Home
 
 home-settings = 主界面设置
@@ -1131,7 +1096,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC = 更改网络配置文件类型
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 记录持续校准所使用的姿势以减缓漂移现象
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = 打开持续校准设置
 tracking_checklist-ignore = 忽略
 preview-mocap_mode_soon = 动作捕捉模式（即将推出™）
 preview-disable_render = 禁用预览
