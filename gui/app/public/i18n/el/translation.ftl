@@ -191,7 +191,9 @@ mounting_selection_menu-close = Κλείσιμο
 
 ## Tracker mechanics
 
-settings-stay_aligned-relaxed_poses-close = Κλείσιμο
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -300,10 +302,6 @@ onboarding-automatic_mounting-mounting_reset-title = Βαθμονόμηση το
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-verify_mounting-title = Βαθμονόμηση τοποθέτησης
 
 ## Home
 
