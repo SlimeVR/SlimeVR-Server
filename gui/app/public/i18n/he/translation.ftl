@@ -193,7 +193,9 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = מחל
 settings-general-tracker_mechanics-filtering-type-prediction = חיזוי
 settings-general-tracker_mechanics-filtering-type-prediction-description = מפחית את ההשהיה ומפיק תנועות הדוקות , אך עלול להגביר את הריצוד.
 settings-general-tracker_mechanics-filtering-amount = כמות
-settings-stay_aligned-relaxed_poses-close = סגור
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -317,10 +319,6 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-verify_mounting-title = כיול ההרכבה
 
 ## Home
 
