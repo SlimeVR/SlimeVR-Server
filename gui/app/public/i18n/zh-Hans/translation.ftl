@@ -13,7 +13,6 @@ websocket-connection_lost-desc = 看起来 SlimeVR 服务器崩溃了。检查�
 websocket-timedout = 无法连接到服务器
 websocket-timedout-desc = 看起来 SlimeVR 服务器崩溃或超时了。检查日志并重新启动程序
 websocket-error-close = 退出 SlimeVR
-websocket-error-logs = 打开日志文件夹
 
 ## Update notification
 
@@ -109,75 +108,28 @@ skeleton_bone-NECK-desc =
     从头部中心到脖子根部的距离。
     调节时，上下点头或左右倾斜头部，并修改此参数，
     使头部移动时其他追踪器位置保持不变。
-skeleton_bone-torso_group = 躯干长度
 skeleton_bone-torso_group-desc =
     从脖子根部到臀部的距离。
     调节时，直立并修改此参数，使虚拟臀部与真实的臀部对齐。
 skeleton_bone-UPPER_CHEST = 上胸长度
-skeleton_bone-UPPER_CHEST-desc =
-    从脖子根部到胸部中部的距离。
-    调节时，先完成躯干长度的设置，再修改此参数，
-    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
-skeleton_bone-LOWER_CHEST-desc =
-    从胸部中部到脊椎中部的距离。
-    调节时，先完成躯干长度的设置，再修改此参数，
-    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-HIP = 髋部长度
-skeleton_bone-HIP-desc =
-    从肚脐到臀部的距离。
-    调节时，先完成躯干长度的设置，再修改此参数，
-    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-HIPS_WIDTH = 髋部宽度
 skeleton_bone-HIPS_WIDTH-desc =
     两腿根部之间的距离。
     调节时，先在站直时进行一次完全重置，再修改此参数，
     使虚拟腿部与真实的腿部位置在水平方向上对齐。
-skeleton_bone-leg_group = 全腿长度
-skeleton_bone-leg_group-desc =
-    从臀部到脚踝的距离。
-    调节时，先完成躯干长度的设置，再修改此参数，
-    使虚拟脚部与真实的脚部位置对齐。
 skeleton_bone-UPPER_LEG = 大腿长度
-skeleton_bone-UPPER_LEG-desc =
-    从臀部到膝盖的距离。
-    调节时，先完成腿部长度的设置，再修改此参数，
-    使虚拟膝盖与真实的膝盖位置对齐。
 skeleton_bone-LOWER_LEG = 小腿长度
-skeleton_bone-LOWER_LEG-desc =
-    从膝盖到脚踝的距离。
-    调节时，先完成腿部长度的设置，再修改此参数，
-    使虚拟膝盖与真实的膝盖位置对齐。
 skeleton_bone-FOOT_LENGTH = 脚部长度
 skeleton_bone-FOOT_LENGTH-desc =
     从脚踝到脚趾的距离。
     调节时，踮起脚尖并修改此参数，
     使虚拟脚部位置与真实脚部位置对齐。
 skeleton_bone-FOOT_SHIFT = 脚部偏移
-skeleton_bone-FOOT_SHIFT-desc =
-    从膝盖到脚踝的水平距离。可用于修正直立式小腿向后弯曲的问题。
-    调节时，先将脚部长度设置为0，进行完全复位，
-    再修改此参数，使虚拟脚部对齐脚踝中心。
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距离
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    从脖子中心到肩膀的垂直距离。
-    调节时，先将上臂长度设置为0，再修改此参数，
-    使虚拟肘部追踪器与真实的肩膀位置在垂直方向上对齐。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
-skeleton_bone-arm_group = 手臂长度
-skeleton_bone-arm_group-desc =
-    从肩膀到手腕的距离。
-    调整时，先完成肩膀距离的配置，将手部距离Y设置为0，
-    再修改此参数，使手部追踪器与手腕对齐。
 skeleton_bone-UPPER_ARM = 上臂长度
-skeleton_bone-UPPER_ARM-desc =
-    从肩膀到手肘的距离。
-    调整时，先完成手臂长度的设置，再修改此参数，
-    使肘部追踪器与真实的手肘位置对齐。
 skeleton_bone-LOWER_ARM = 前臂距离
-skeleton_bone-LOWER_ARM-desc =
-    从手肘到手腕的距离。
-    调整时，先完成手臂长度的设置，再修改此参数，
-    使肘部追踪器与真实的手肘位置对齐。
 
 ## Tracker reset buttons
 
@@ -300,11 +252,6 @@ tracker-settings-mounting_section = 佩戴位置
 tracker-settings-mounting_section-description = 该追踪器被佩戴在哪里？
 tracker-settings-mounting_section-edit = 编辑佩戴
 tracker-settings-use_mag = 允许使用这个追踪器的磁力计
-# Multiline!
-tracker-settings-use_mag-description =
-    如果「在追踪器上启用磁力计」已启用，是否要在这个追踪器上启用它来减轻飘移？<b>切换本选项时请勿关闭追踪器的电源！</b>
-    
-    请先启用「在追踪器上启用磁力计」功能，<magSetting>点选此处以移动至该设定</magSetting>。
 tracker-settings-use_mag-label = 允许使用这个追踪器的磁力计
 tracker-settings-name_section = 追踪器名称
 tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=~
@@ -316,7 +263,6 @@ tracker-settings-update-unavailable-v2 = 未找到可用版本
 tracker-settings-update-incompatible = 电路板不兼容，无法升级。
 tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
-tracker-settings-update-blocked = 更新不可用。没有其他可用版本
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 固件版本
 tracker-settings-current-version = 当前版本
@@ -392,16 +338,11 @@ settings-driver-status-badge-disabled = 关
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = 滤波
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    选择追踪器的滤波类型。
-    预测型将会对你的运动加以预测，而平滑型将会让你的运动更加平滑。
 settings-general-tracker_mechanics-filtering-type-none = 无滤波
 settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不进行滤波。
 settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 让运动更加平滑，但会增加一些延迟。
 settings-general-tracker_mechanics-filtering-type-prediction = 预测型
-settings-general-tracker_mechanics-filtering-type-prediction-description = 减少延迟并使移动更敏捷，但可能会增加一些抖动。
 settings-general-tracker_mechanics-filtering-amount = 滤波强度
 settings-general-tracker_mechanics-yaw-reset-smooth-time = 重置航向轴平滑过渡时长（0s时关闭平滑瞬移到位）
 settings-general-tracker_mechanics-save_mounting_reset = 保存佩戴重置结果
@@ -409,9 +350,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     在SlimeVR服务器关闭时保留追踪器自动佩戴重置结果。适用于一体式动捕服等
     追踪器佩戴位置保持不变的场景。<b>不建议普通用户使用！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 在支持的 IMU 追踪器上启用磁力计
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    在所有有固件支持的追踪器上启用磁力计，在磁场稳定的环境中可以减轻飘移。
-    可以在个别追踪器上禁用本功能。<b>切换此选项时请勿关闭任何一个追踪器的电源！</b>
 settings-general-tracker_mechanics-trackers_over_usb = 通过USB连接的追踪器
 settings-general-tracker_mechanics-trackers_over_usb-description = 通过USB接收HID追踪器数据。清确保连接的追踪器启用了 <b>通过HID连接</b> 功能！
 settings-stay_aligned-debug-label = 调试
@@ -430,31 +368,27 @@ settings-keybinds-recorder-modal-cancel-button = 取消
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = 脚滑矫正
 settings-general-fk_settings-leg_tweak-toe_snap = 脚趾着地
 settings-general-fk_settings-leg_tweak-foot_plant = 脚掌着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正量
-settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
-settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 强制脚部佩戴重置
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
 settings-general-fk_settings-ik = 位置数据
-settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
 settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = 敲击重置
 settings-general-gesture_control-description = 启用敲击追踪器触发重置。敲击躯干配戴最高的追踪器会触发重置航向轴，敲击左腿配戴最高的追踪器会触发完整重置，敲击右腿配戴最高的追踪器会触发重置佩戴。请注意，需要在 0.6 秒内满足敲击次数才会触发。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -476,7 +410,6 @@ settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 可触发敲击重置的追踪器数量
-settings-general-gesture_control-numberTrackersOverThreshold-description = 如敲击重置不起作用请增加此值。请在保证敲击重置可用的情况下将此值设置的尽可能低，否则会导致误报。
 
 ## Appearance settings
 
@@ -528,7 +461,6 @@ settings-serial = 串口控制台
 settings-serial-description =
     这里用于显示串口的实时信息流。
     如果你需要了解固件是否出现问题，这将会很有用。
-settings-serial-connection_lost = 串口连接丢失，正在重新连接..
 settings-serial-reboot = 重新启动
 settings-serial-factory_reset = 恢复出厂设置
 # This cares about multilines
@@ -661,7 +593,6 @@ onboarding-quiz-slimeset-official-sets = 官方SlimeVR追踪器
 onboarding-quiz-slimeset-thirdparty-sets = 第三方或DIY追踪器
 onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 和 V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly (蝴蝶)
-onboarding-quiz-slimeset-answer-wifi = 通过ESP/WiFi连接的追踪器
 onboarding-quiz-slimeset-answer-dongle = 通过USB接收器连接的追踪器
 onboarding-quiz-usage-title = 将使用SlimeVR进行何种应用？
 onboarding-quiz-usage-description = 如果打算将SlimeVR用至不同用途，可之后在设置中进行修改。
@@ -686,7 +617,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Wi-Fi 名称为必填项
 onboarding-wifi_creds-password =
     .label = 密码
-    .placeholder = 输入密码
+    .placeholder = Enter your Wi-Fi password
 onboarding-wifi_creds-dongle-title = 通过接收器连接
 onboarding-wifi_creds-dongle-description = 如果你的追踪器附带接收器，将其插入电脑即可直接开始使用！
 onboarding-wifi_creds-dongle-wip = 此部分仍在开发中。将来会推出用于管理接收器连接追踪器的专属页面。
@@ -710,7 +641,6 @@ onboarding-connect_tracker-issue-serial = QAQ 我在连接时遇到问题！
 onboarding-connect_tracker-usb = USB 追踪器
 onboarding-connect_tracker-close = 关闭
 onboarding-connect_tracker-connection_status-serial_init = 正在连接到串口设备
-onboarding-connect_tracker-connection_status-obtaining_mac_address = 获取追踪器的mac地址
 onboarding-connect_tracker-connection_status-provisioning = 正在发送 Wi-Fi 凭据
 onboarding-connect_tracker-connection_status-connecting = 正在发送 Wi-Fi 凭据
 onboarding-connect_tracker-connection_status-looking_for_server = 正在寻找服务器
@@ -736,7 +666,6 @@ onboarding-connect_tracker-next = 所有的追踪器都连接好了
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = 分配追踪器
-onboarding-assign_trackers-description = 让我们选择追踪器的佩戴位置。点击对应部位即可分配。
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -970,7 +899,6 @@ firmware_tool-flashing_step-exit = 退出
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = 等待构建中....
 firmware_tool-build-CREATING_BUILD_FOLDER = 正在创建 build 文件夹
 firmware_tool-build-DOWNLOADING_SOURCE = 正在下载源代码
 firmware_tool-build-EXTRACTING_SOURCE = 正在解压源代码
@@ -983,16 +911,13 @@ firmware_tool-build-ERROR = 无法构建固件
 
 firmware_update-status-DOWNLOADING = 正在下载固件
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = 请关闭您的追踪器，然后再重新打开
-firmware_update-status-AUTHENTICATING = 正在确认追踪器连接
 firmware_update-status-UPLOADING = 正在传输固件
-firmware_update-status-SYNCING_WITH_MCU = 正在与追踪器同步
 firmware_update-status-REBOOTING = 正在重启追踪器
 firmware_update-status-PROVISIONING = 正在设置 Wi-Fi 凭据
 firmware_update-status-DONE = 更新完成！
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = 未找到设备
 firmware_update-status-ERROR_TIMEOUT = 更新过程超时
 firmware_update-status-ERROR_DOWNLOAD_FAILED = 无法下载固件
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = 无法确认追踪器连接
 firmware_update-status-ERROR_UPLOAD_FAILED = 无法传输固件
 firmware_update-status-ERROR_PROVISIONING_FAILED = 无法设置 Wi-Fi 凭据
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = 更新方式不被支持
