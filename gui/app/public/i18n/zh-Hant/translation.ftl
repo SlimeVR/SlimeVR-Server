@@ -584,22 +584,14 @@ settings-general-tracker_mechanics-trackers_over_usb = 透過 USB 連接的追�
 settings-general-tracker_mechanics-trackers_over_usb-description = 透過 USB 接收 HID 追蹤器的資料，請確保連接的追蹤器已啟用<b>「透過 HID 連接」</b>的功能。
 settings-general-tracker_mechanics-timeout_delay = 逾時延遲
 settings-general-tracker_mechanics-timeout_delay-description = 追蹤器離線時，標記成「{ tracker-status-disconnected }」的時間。
-settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
-settings-stay_aligned-setup_group = 設定
-settings-stay_aligned-setup-label = 設定持續校正
-settings-stay_aligned-setup-open = 開啟設定
 settings-stay_aligned-enabled-label = 開啟保持對齊
-settings-stay_aligned-relaxed_poses-label = 放鬆的姿態
-settings-stay_aligned-relaxed_poses-standing = 使用站立姿勢調整追蹤器
-settings-stay_aligned-relaxed_poses-sitting = 使用坐在椅子上的姿勢調整追蹤器
-settings-stay_aligned-relaxed_poses-flat = 使用坐在地板上或躺下的姿勢調整追蹤器
-settings-stay_aligned-relaxed_poses-save_pose = 儲存姿勢
-settings-stay_aligned-relaxed_poses-reset_pose = 重置姿勢
-settings-stay_aligned-relaxed_poses-close = 關閉
 settings-stay_aligned-debug-label = 除錯資訊
 settings-stay_aligned-debug-description = 在回報與持續校正相關的問題時，請附上以下設定參數。
 settings-stay_aligned-debug-copy-label = 複製設定參數進剪貼簿
 settings-stay_aligned-debug-copy-short = 複製
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -1356,35 +1348,6 @@ onboarding-user_height-reset-warning =
     <b>警告：</b> 這會將軀幹比例重置為僅基於身高的比例。
     你確定要執行此操作嗎？
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = 持續校正
-onboarding-stay_aligned-description = 設定持續校正功能讓追蹤器保持對齊狀態。
-onboarding-stay_aligned-put_trackers_on-title = 請戴好追蹤器
-onboarding-stay_aligned-put_trackers_on-description = 為了保存放鬆中的姿態，我們將使用你剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
-onboarding-stay_aligned-put_trackers_on-trackers_warning = 你目前已連接與分配的追蹤器少於 5 個，持續校正功能需要 5 個以上的追蹤器才能正常運作。
-onboarding-stay_aligned-put_trackers_on-next = 我所有的追蹤器都戴好了
-onboarding-stay_aligned-verify_mounting-title = 確認追蹤器的配戴狀態
-onboarding-stay_aligned-preparation-title = 準備
-onboarding-stay_aligned-preparation-tip = 請確保站直。你必須向前直視，並且兩臂垂到身體兩側。
-onboarding-stay_aligned-relaxed_poses-standing-title = 放鬆的站立姿勢
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. 請以舒適的姿態站著，保持放鬆。
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
-onboarding-stay_aligned-relaxed_poses-sitting-title = 放鬆的坐在椅子上的姿勢
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. 請以舒適的姿態坐著，保持放鬆。
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
-onboarding-stay_aligned-relaxed_poses-flat-title = 放鬆的坐在地板上的姿勢
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. 請以舒適的姿態坐在地板上，腿部朝前，保持放鬆。
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
-onboarding-stay_aligned-relaxed_poses-skip_step = 跳過
-onboarding-stay_aligned-done-title = 持續校正已啟用！
-onboarding-stay_aligned-done-description = 持續校正功能設定完成。
-onboarding-stay_aligned-done-description-2 = 設定完成。若需要重新校正姿勢，可以重新進行這個流程。
-onboarding-stay_aligned-previous_step = 上一步
-onboarding-stay_aligned-next_step = 下一步
-onboarding-stay_aligned-restart = 重新開始
-onboarding-stay_aligned-done = 完成
-
 ## Home
 
 home-settings = 主畫面設定
@@ -1646,7 +1609,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 開啟控制台
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 調整持續校正設定
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 記錄持續校正所使用的姿勢以減緩飄移現象
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = 開啟持續校正設定
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED = 啟用 VRChat OSC 追蹤資料
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-desc =
     已經連接 VRChat，但 VRChat 沒有傳送頭部與手部的追蹤資料進 SlimeVR。請在 VRChat 開啟 OSC 追蹤資料設定。
