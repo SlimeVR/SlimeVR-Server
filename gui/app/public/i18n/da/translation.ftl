@@ -63,17 +63,14 @@ body_part-LEFT_FOOT = Venstre fod
 
 skeleton_bone-NONE = Ingen
 skeleton_bone-NECK = Hals længde
-skeleton_bone-torso_group = Torso Længde
 skeleton_bone-HIP = Hoftelængde
 skeleton_bone-HIPS_WIDTH = Hoftebredde
-skeleton_bone-leg_group = Benlængde
 skeleton_bone-UPPER_LEG = Øvre benlængde
 skeleton_bone-LOWER_LEG = Underbenslængde
 skeleton_bone-FOOT_LENGTH = Fodlængde
 skeleton_bone-FOOT_SHIFT = Fodskift
 skeleton_bone-SHOULDERS_DISTANCE = Skulder Afstand
 skeleton_bone-SHOULDERS_WIDTH = Skulder Bredde
-skeleton_bone-arm_group = Armlængde
 skeleton_bone-UPPER_ARM = Overarmslængde
 skeleton_bone-LOWER_ARM = Nedre armlængde
 
@@ -215,16 +212,11 @@ settings-driver-enable = Aktiver
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Vælg filtreringstypen for dine trackere.
-    Forudsigelse forudsiger bevægelse, mens udjævning udjævner bevægelse.
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Brug rotationer, som de er. Vil ikke foretage nogen filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Udjævning
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Udjævner bevægelser, men tilføjer en smule latens.
 settings-general-tracker_mechanics-filtering-type-prediction = Forudsigelse
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reducerer latens og gør bevægelser hutigere, men kan forårsage rystelser.
 settings-general-tracker_mechanics-filtering-amount = Mængde
 
 ## Stay Aligned pose recorder
@@ -237,19 +229,16 @@ settings-keybinds-recorder-modal-cancel-button = Annuller
 ## FK/Tracking settings
 
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Skate korrektion
 settings-general-fk_settings-leg_tweak-toe_snap = Tå snap
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skate korrektionsstyrke
-settings-general-fk_settings-leg_tweak-toe_snap-description = Tå-snap forsøger at gætte rotationen af dine fødder, hvis fodtrackere ikke er i brug.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roterer dine fødder så de er parallelle med jorden, når de er i kontakt med jorden.
 settings-general-fk_settings-leg_fk = Bensporing
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Tryk baseret nulstilling
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -279,7 +268,6 @@ settings-general-interface-feedback_sound-volume = Feedback lydstyrke
 ## Serial settings
 
 settings-serial = Seriel konsol
-settings-serial-connection_lost = Forbindelse til seriel mistet, Genopretter forbindelse...
 settings-serial-reboot = Genstart
 settings-serial-factory_reset = Nulstil til fabriksindstillinger
 # This cares about multilines
@@ -374,7 +362,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Indtast Wi-Fi-navn
 onboarding-wifi_creds-password =
     .label = Kodeord
-    .placeholder = Indtast Wi-Fi-kodeord
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -414,7 +402,6 @@ onboarding-connect_tracker-next = Jeg har tilsluttet alle mine trackere
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Tildel trackere
-onboarding-assign_trackers-description = Lad os vælge, hvilken tracker der skal hvorhen. Klik på et sted, hvor du vil placere en tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
