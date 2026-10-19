@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Es sieht so aus, als wäre der SlimeVR-Server a
 websocket-timedout = Es konnte keine Verbindung zum Server hergestellt werden.
 websocket-timedout-desc = Es sieht so aus, als ob der SlimeVR-Server abgestürzt ist oder nicht rechtzeitig geantwortet hat. Überprüfen Sie die Protokolle und starten Sie das Programm neu.
 websocket-error-close = SlimeVR beenden
-websocket-error-logs = Öffne den Logs-Ordner
 
 ## Update notification
 
@@ -121,29 +120,20 @@ skeleton_bone-NECK = Halslänge
 skeleton_bone-NECK-desc =
     Dies ist der Abstand von der Mitte Ihres Kopfes bis zum Ansatz Ihres Nackens.
     Um diesen anzupassen, nicken Sie mit Ihren Kopf, als würden Sie "ja" sagen, oder neigen Sie Ihren Kopf nach links und rechts. und modifizieren Sie es, bis die Bewegung in anderen Trackern vernachlässigbar ist. Passen Sie den Wert so lange an, bis Bewegungen anderer Tracker kaum noch vorhanden sind.
-skeleton_bone-torso_group = Oberkörperhöhe
 skeleton_bone-torso_group-desc =
     Dies ist der Abstand vom Ansatz Ihres Nackens bis zu Ihren Hüften.
     Stehen Sie aufrecht und ändern Sie den Wert, bis Ihre virtuellen Hüften mit Ihren echten übereinstimmen.
 skeleton_bone-UPPER_CHEST = Obere Brustlänge
-skeleton_bone-UPPER_CHEST-desc =
-    Dies ist der Abstand vom Ansatz Ihres Nackens bis zur Mitte Ihrer Brust.
-    Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z. B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
-skeleton_bone-LOWER_CHEST-desc =
-    Dies ist der Abstand vom Ansatz der Brust bis zur Mitte Ihrer Wirbelsäule.
-    Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z.B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
 skeleton_bone-UPPER_WAIST = Obere Taillenlänge
 skeleton_bone-LOWER_WAIST = Obere Taillenlänge
 skeleton_bone-HIP = Hüftlänge
 skeleton_bone-HIPS_WIDTH = Hüftbreite
-skeleton_bone-leg_group = Beinlänge
 skeleton_bone-UPPER_LEG = Linker Oberschenkellänge
 skeleton_bone-LOWER_LEG = Unterschenkellänge
 skeleton_bone-FOOT_LENGTH = Fußlänge
 skeleton_bone-FOOT_SHIFT = Fußverschiebung
 skeleton_bone-SHOULDERS_DISTANCE = Schulterentfernung
 skeleton_bone-SHOULDERS_WIDTH = Schulterbreite
-skeleton_bone-arm_group = Armlänge
 skeleton_bone-UPPER_ARM = Oberarmlänge
 skeleton_bone-LOWER_ARM = Unterarmlänge
 
@@ -267,11 +257,6 @@ tracker-settings-mounting_section = Befestigungsposition
 tracker-settings-mounting_section-description = Wo ist der Tracker befestigt?
 tracker-settings-mounting_section-edit = Befestigung bearbeiten
 tracker-settings-use_mag = Magnetometer auf diesem Tracker zulassen
-# Multiline!
-tracker-settings-use_mag-description =
-    Soll dieser Tracker das Magnetometer verwenden um Drift zu reduzieren, wenn die Verwendung von Magnetometer erlaubt ist? <b> Bitten schalten Sie den Tracker nicht aus, während Sie diese Einstellung umschalten!</b>
-    
-    Sie müssen zuerst die Verwendung des Magnetometers zulassen, <magSetting>klicken Sie hier, um zu den Einstellungen zu gelangen</magSetting>.
 tracker-settings-use_mag-label = Magnetometer zulassen
 tracker-settings-name_section = Trackername
 tracker-settings-name_section-description = Geben Sie ihm einen süßen Spitznamen :)
@@ -283,7 +268,6 @@ tracker-settings-update-unavailable-v2 = Keine Veröffentlichungen gefunden
 tracker-settings-update-incompatible = Update nicht möglich. Board inkompatibel
 tracker-settings-update-low-battery = Aktualisierung nicht möglich. Akku unter 50 %
 tracker-settings-update-up_to_date = Auf dem neusten Stand
-tracker-settings-update-blocked = Update nicht verfügbar. Weitere Veröffentlichungen sind nicht verfügbar.
 tracker-settings-update = Jetzt aktualisieren
 tracker-settings-update-title = Firmware-Version
 tracker-settings-current-version = Aktuelle
@@ -381,16 +365,11 @@ settings-driver-status-connection-waiting = Warte auf die Verbindung von SteamVR
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtern
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Wählen Sie den Filter-Typ für Ihre Tracker aus.
-    Vorhersage: prognostiziert Bewegung. Glättung: Bewegung werden geglättet.
 settings-general-tracker_mechanics-filtering-type-none = Kein Filter
 settings-general-tracker_mechanics-filtering-type-none-description = Verwendet die unveränderten Rotationsdaten der Tracker.
 settings-general-tracker_mechanics-filtering-type-smoothing = Glättung
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Glättet Bewegungen, fügt aber etwas Verzögerung hinzu.
 settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
-settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen schneller, kann aber Zittern erhöhen.
 settings-general-tracker_mechanics-filtering-amount = Stärke
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontaler Reset Glättungszeit (0s deaktiviert die Glättung)
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Ausrichtung speichern
@@ -398,9 +377,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Speichert die automatische Tracker-Ausrichtung für die Tracker zwischen den Neustarts. Nützlich
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Verwende das Magnetometer auf allen IMU-Trackern, die dies unterstützen.
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
-    Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
 settings-stay_aligned-debug-label = Debuggen
 settings-stay_aligned-debug-description = Bitte geben Sie Ihre Einstellungen mit an, wenn Sie Probleme mit Stay Aligned melden.
@@ -418,19 +394,17 @@ settings-keybinds-recorder-modal-cancel-button = Abbruch
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Bodenclip
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Rutschkorrektur
 settings-general-fk_settings-leg_tweak-toe_snap = Zehenausrichtung
 settings-general-fk_settings-leg_tweak-foot_plant = Fußkorrektur
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Rutschkorrekturstärke
-settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation Ihrer Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet Ihre Füße parallel zum Boden aus, wenn sie den Boden berühren.
 settings-general-fk_settings-leg_fk = Beintracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Fuß-Ausrichtung kalibrieren
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Erzwinge Fußausrichtungs-Kalibrierung während der Körperausrichtungs-Kalibrierung.
@@ -441,7 +415,6 @@ settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Reset durch Antippen
 settings-general-gesture_control-description = Erlaubt Reset durch das Antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Reset der Tracker-Ausrichtung genutzt. Das Antippen muss innerhalb von 0.5 Sekunden erfolgen, um erkannt zu werden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -468,7 +441,6 @@ settings-general-gesture_control-mountingResetDelay = Verzögerung von Reset der
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
-settings-general-gesture_control-numberTrackersOverThreshold-description = Erhöhen Sie diesen Wert wenn Tipp-Erkennung nicht funktioniert. Setzen Sie den Wert nicht höher als benötigt, da dies Fehlauslöser verursachen kann.
 
 ## Appearance settings
 
@@ -524,7 +496,6 @@ settings-serial = Serielle Konsole
 settings-serial-description =
     Dies ist ein Live-Ansicht der seriellen Kommunikation.
     Diese ist zur Unterstützung bei der Problemsuche mit Trackern.
-settings-serial-connection_lost = Verbindung zur seriellen Schnittstelle verloren, Verbindung wird wiederhergestellt...
 settings-serial-reboot = Neustart
 settings-serial-factory_reset = Werkseinstellungen zurücksetzen
 # This cares about multilines
@@ -666,7 +637,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = WLAN-Name ist erforderlich
 onboarding-wifi_creds-password =
     .label = Passwort
-    .placeholder = Passwort eingeben
+    .placeholder = Enter your Wi-Fi password
 onboarding-wifi_creds-dongle-title = Tracker mit einem Dongle
 onboarding-wifi_creds-dongle-continue = Fahre mit einem Dongle fort
 
@@ -685,7 +656,6 @@ onboarding-connect_tracker-title = Verbinde Tracker
 onboarding-connect_tracker-issue-serial = Ich habe Schwierigkeiten die Tracker zu verbinden!
 onboarding-connect_tracker-close = Schließen
 onboarding-connect_tracker-connection_status-serial_init = Verbindung zum seriellen Gerät wird hergestellt
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Ermittle die MAC-Adresse des Trackers
 onboarding-connect_tracker-connection_status-provisioning = Sende WLAN-Zugangsdaten
 onboarding-connect_tracker-connection_status-connecting = Sende WLAN-Zugangsdaten
 onboarding-connect_tracker-connection_status-looking_for_server = Suche nach Server
@@ -712,7 +682,6 @@ onboarding-connect_tracker-next = Ich habe alle meine Tracker verbunden.
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Tracker zuweisen
-onboarding-assign_trackers-description = Wählen Sie nun aus, welcher Tracker wo befestigt ist. Klicken Sie auf einen Ort, an dem der Tracker platziert ist.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -945,7 +914,6 @@ firmware_tool-flashing_step-exit = Schließen
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = Warte darauf, zu bauen....
 firmware_tool-build-CREATING_BUILD_FOLDER = Erstelle den Build-Ordner
 firmware_tool-build-DOWNLOADING_SOURCE = Lade den Quellcode herunter
 firmware_tool-build-EXTRACTING_SOURCE = Entpacken des Quellcode
@@ -958,16 +926,13 @@ firmware_tool-build-ERROR = Die Firmware konnte nicht erstellt werden
 
 firmware_update-status-DOWNLOADING = Lade die Firmware herunter
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Bitte schalten Sie Ihren Tracker aus und wieder ein.
-firmware_update-status-AUTHENTICATING = Authentifizierung mit dem Mikrokontroller
 firmware_update-status-UPLOADING = Lade die Firmware hoch
-firmware_update-status-SYNCING_WITH_MCU = Synchronisieren mit dem Mikrokontroller
 firmware_update-status-REBOOTING = Wende das Update an
 firmware_update-status-PROVISIONING = WLAN-Zugangsdaten werden gesendet
 firmware_update-status-DONE = Update abgeschlossen!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Gerät konnte nicht gefunden werden
 firmware_update-status-ERROR_TIMEOUT = Während des Updates ist eine Zeitüberschreitung aufgetreten
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Die Firmware konnte nicht heruntergeladen werden
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Authentifizierung mit dem Mikrokontroller fehlgeschlagen
 firmware_update-status-ERROR_UPLOAD_FAILED = Die Firmware konnte nicht hochgeladen werden
 firmware_update-status-ERROR_PROVISIONING_FAILED = Die WLAN-Zugangsdaten konnten nicht festgelegt werden
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = Die Update-Methode wird nicht unterstützt
