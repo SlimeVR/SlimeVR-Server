@@ -265,7 +265,9 @@ settings-general-tracker_mechanics-save_mounting_reset = Lưu thiết bị đã 
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Lưu thiết bị đã giao tự động cho các thiết bị giữa các lần khởi động lại. Có ích
     khi mặc một bộ đồ SlimeVR mà trình theo dõi không di chuyển giữa các phiên. <b>Không được khuyến khích cho người dùng bình thường!</b>
-settings-stay_aligned-relaxed_poses-close = Đóng
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -625,13 +627,6 @@ onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Đeo tracker lên người
-onboarding-stay_aligned-put_trackers_on-next = Tiếp tục
-onboarding-stay_aligned-verify_mounting-title = Đặt lại hướng gắn
-onboarding-stay_aligned-preparation-title = Chuẩn bị tư thế
 
 ## Home
 
