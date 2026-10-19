@@ -95,6 +95,9 @@
 ## Tracker mechanics
 
 
+## Stay Aligned pose recorder
+
+
 ## Keybinds Page
 
 
@@ -190,9 +193,6 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 
 ## User height calibration
-
-
-## Stay Aligned setup
 
 
 ## Home
