@@ -13,7 +13,6 @@ websocket-connection_lost-desc = ดูเหมือนว่าเซิร�
 websocket-timedout = ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้
 websocket-timedout-desc = ดูเหมือนว่าเซิร์ฟเวอร์ SlimeVR ขัดข้องหรือหมดเวลาการเชื่อมต่อ กรุณาตรวจสอบไฟล์บันทึกและรีสตาร์ทโปรแกรม
 websocket-error-close = ออกจาก SlimeVR
-websocket-error-logs = เปิดโฟลเดอร์ไฟล์บันทึก
 
 ## Update notification
 
@@ -109,75 +108,27 @@ skeleton_bone-NECK-desc =
     นี่เป็นระยะห่างจากบริเวณกลางศีรษะไปยังโคนคอ
     ปรับด้วยการพยักหน้าหรือการเอียงคอไปทางซ้ายและขวา
     และปรับค่าจนกว่าการเคลื่อนไหวในแทร็กเกอร์อื่นๆ จะน้อยจนไม่สังเกตเห็น
-skeleton_bone-torso_group = ความยาวลำตัว
 skeleton_bone-torso_group-desc =
     นี่เป็นระยะห่างรวมจากฐานคอถึงสะโพก
     ปรับด้วยการยืนตรงและปรับค่านี้กระทั่งสะโพกเสมือนของคุณนั้นตรงกับสะโพกจริง
 skeleton_bone-UPPER_CHEST = ความยาวหน้าอกส่วนบน
-skeleton_bone-UPPER_CHEST-desc =
-    นี่เป็นระยะห่างจากฐานของคอถึงกลางหน้าอก
-    ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสมก่อน แล้วจึงปรับค่านี้ในท่าต่างๆ
-    (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
-skeleton_bone-LOWER_CHEST-desc =
-    นี่เป็นระยะห่างจากกลางหน้าอกถึงกลางกระดูกสันหลัง
-    ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสม แล้วปรับค่านี้ในท่าต่างๆ
-    (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
 skeleton_bone-HIP = ความยาวสะโพก
-skeleton_bone-HIP-desc =
-    นี่เป็นระยะห่างจากสะดือถึงสะโพก
-    ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสม แล้วปรับค่านี้ในท่าต่างๆ
-    (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
 skeleton_bone-HIPS_WIDTH = ความกว้างสะโพก
 skeleton_bone-HIPS_WIDTH-desc =
     นี่เป็นระยะห่างจากจุดเริ่มต้นของขาทั้งสอง
     ปรับด้วยการเริ่มจากการรีเซ็ตทั้งหมดในขณะที่ยืนตรง 
     ขาตรง และจึงปรับค่านี้จนกระทั่งขาเสมือนของคุณตรงกับขาจริงในแนวนอน
-skeleton_bone-leg_group = ความยาวขา
-skeleton_bone-leg_group-desc =
-    นี่เป็นระยะห่างจากสะโพกถึงเท้า
-    ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสมก่อน 
-    แล้วปรับค่านี้จนกว่าเท้าเสมือนอยู่ในระดับเดียวกับเท้าจริงของคุณ
 skeleton_bone-UPPER_LEG = ความยาวขาส่วนบน
-skeleton_bone-UPPER_LEG-desc =
-    นี่คือระยะห่างจากสะโพกถึงเข่า
-    ปรับด้วยการเริ่มจากการปรับความยาวของขาให้เหมาะสมก่อน แล้วปรับค่านี้
-    จนกระทั่งเข่าเสมือนจริงอยู่ในระดับเดียวกับเข่าจริงของคุณ
 skeleton_bone-LOWER_LEG = ความยาวขาส่วนล่าง
-skeleton_bone-LOWER_LEG-desc =
-    นี่คือระยะห่างจากเข่าถึงข้อเท้า
-    ปรับด้วยการเริ่มจากการปรับความยาวของขาให้เหมาะสมก่อน 
-    แล้วปรับค่านี้จนกระทั่งเข่าเสมือนจริงอยู่ในระดับเดียวกับเข่าจริงของคุณ
 skeleton_bone-FOOT_LENGTH = ความยาวเท้า
 skeleton_bone-FOOT_LENGTH-desc =
     นี่คือระยะห่างจากข้อเท้าถึงนิ้วเท้า
     ปรับได้โดยเขย่งเท้าแล้วปรับจนกว่าเท้าเสมือนของคุณอยู่กับที่
 skeleton_bone-FOOT_SHIFT = การปรับชดเชยการวางเท้า
-skeleton_bone-FOOT_SHIFT-desc =
-    นี่เป็นระยะห่างในแนวนอนจากหัวเข่าถึงข้อเท้า
-    ค่านี้ช่วยในการคำนวณการเอียงของขาส่วนล่างเมื่อยืนตัวตรง
-    โดยเริ่มจากการตั้งความยาวเท้าเป็น 0, จากนั้นรีเซ็ตทั้งหมด
-    แล้วจึงปรับค่าจนกระทั่งเท้าเสมือนตรงกับกลางข้อเท้าจริงของคุณ
 skeleton_bone-SHOULDERS_DISTANCE = ระยะความกว้างไหล่
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    นี่คือระยะทางในแนวตั้งจากฐานคอถึงไหล่ของคุณ
-    ปรับโดยเริ่มจากการตั้งความยาวแขนส่วนบนเป็น 0, แล้วปรับค่านี้จนกว่า
-    แทร็กเกอร์ข้อศอกเสมือนจะอยู่ในแนวตั้งตรงกับไหล่จริง
 skeleton_bone-SHOULDERS_WIDTH = ความกว้างไหล่
-skeleton_bone-arm_group = ความยาวแขน
-skeleton_bone-arm_group-desc =
-    นี่เป็นระยะห่างจากหัวไหล่ถึงข้อมือของคุณ
-    ปรับโดยเริ่มจากการปรับระยะห่างหัวไหล่ให้เหมาะสม แล้วตั้งค่าระยะมือแนวตั้ง (แกน Y)
-    เป็น 0 และปรับค่านี้จนแทร็กเกอร์ที่มือนั้นตรงกับข้อมือของคุณ
 skeleton_bone-UPPER_ARM = ความยาวแขนส่วนบน
-skeleton_bone-UPPER_ARM-desc =
-    นี่เป็นระยะห่างจากไหล่ถึงข้อศอกของคุณ
-    ปรับโดยเริ่มจากการปรับความยาวของแขนให้เหมาะสม และจึงปรับค่านี้จนกว่า
-    แทร็กเกอร์ที่ข้อศอกคุณตรงกับข้อศอกจริง
 skeleton_bone-LOWER_ARM = ความยาวแขนส่วนล่าง
-skeleton_bone-LOWER_ARM-desc =
-    นี่เป็นระยะห่างจากข้อศอกถึงข้อมือของคุณ
-    ปรับโดยเริ่มจากการปรับความยาวของแขนให้เหมาะสมก่อน แล้วปรับค่านี้จนกว่า
-    แทร็กเกอร์ที่ข้อศอกคุณตรงกับข้อศอกจริง
 
 ## Tracker reset buttons
 
@@ -295,10 +246,6 @@ tracker-settings-mounting_section = ทิศทางการติดตั�
 tracker-settings-mounting_section-description = แทร็กเกอร์นี้อยู่ด้านไหนของคุณ?
 tracker-settings-mounting_section-edit = แก้ไขการติดตั้ง
 tracker-settings-use_mag = เปิดใช้งานเซ็นเซอร์สนามแม่เหล็กสำหรับแทร็กเกอร์ตัวนี้
-# Multiline!
-tracker-settings-use_mag-description =
-    ให้แทร็กเกอร์ตัวนี้เปิดใช้งานเซ็นเซอร์สนามแม่เหล็กเพื่อลดการดริฟท์หรือไม่? <b>โปรดอย่าปิดแทร็กเกอร์ของคุณในขณะที่กำลังสลับการตั้งค่านี้!</b>
-    คุณต้องอนุญาตการใช้เซ็นเซอร์สนามแม่เหล็กก่อน <magSetting>คลิกที่นี่เพื่อไปที่การตั้งค่า</magSetting>
 tracker-settings-use_mag-label = เปิดใช้เซ็นเซอร์สนามแม่เหล็ก
 tracker-settings-name_section = ชื่อแทร็กเกอร์
 tracker-settings-name_section-description = ตั้งชื่อน่ารักๆ ให้มันสิ :)
@@ -310,7 +257,6 @@ tracker-settings-update-unavailable-v2 = ไม่พบเวอร์ชัน
 tracker-settings-update-incompatible = ไม่สามารถอัปเดตได้ บอร์ดไม่รองรับ
 tracker-settings-update-low-battery = ไม่สามารถอัปเดตได้ แบตเตอรี่ต่ำกว่า 50%
 tracker-settings-update-up_to_date = เป็นเวอร์ชันล่าสุดแล้ว
-tracker-settings-update-blocked = ไม่มีอัปเดต ไม่มีเวอร์ชันอื่นให้ใช้งาน
 tracker-settings-update = อัปเดตทันที
 tracker-settings-update-title = เวอร์ชันเฟิร์มแวร์
 tracker-settings-current-version = ปัจจุบัน
@@ -385,16 +331,11 @@ settings-driver-status-badge-disabled = ปิด
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = การกรองข้อมูล
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    เลือกประเภทการกรองสัญญาณรบกวนสำหรับแทร็กเกอร์
-    หากใช้การคาดการณ์จะคาดการณ์การเคลื่อนไหว ในขณะที่การทำให้ราบรื่นจะทำให้การเคลื่อนไหวราบรื่นขึ้น
 settings-general-tracker_mechanics-filtering-type-none = ไม่มีการกรอง
 settings-general-tracker_mechanics-filtering-type-none-description = ใช้ค่าการหมุนตามจริง จะไม่มีการกรองข้อมูลใดๆ
 settings-general-tracker_mechanics-filtering-type-smoothing = ทำให้ราบรื่น
 settings-general-tracker_mechanics-filtering-type-smoothing-description = ทำให้การเคลื่อนไหวราบรื่นขึ้น แต่จะเพิ่มความหน่วง
 settings-general-tracker_mechanics-filtering-type-prediction = คาดการณ์
-settings-general-tracker_mechanics-filtering-type-prediction-description = ลดความหน่วง และทำให้การเคลื่อนไหวฉับไวขึ้น แต่อาจเพิ่มการกระตุก
 settings-general-tracker_mechanics-filtering-amount = ปริมาณ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = เวลาหน่วงการรีเซ็ตแกนตั้ง(ตั้งที่ 0 วินาทีเพื่อปิดการใช้)
 settings-general-tracker_mechanics-save_mounting_reset = บันทึกค่าการตั้งศูนย์การติดตั้งโดยอัตโนมัติ
@@ -402,9 +343,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     บันทึกการตั้งศูนย์การติดตั้งแทร็กเกอร์อัตโนมัติ เพื่อใช้ซ้ำเมื่อรีสตาร์ท
     มีประโยชน์เมื่อสวมชุดที่ตำแหน่งแทร็กเกอร์ไม่เปลี่ยนแปลงระหว่างการใช้งาน <b>ไม่แนะนำสำหรับผู้ใช้ทั่วไป!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = ใช้เซ็นเซอร์สนามแม่เหล็กบนแทร็กเกอร์ที่ IMU รองรับ
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    ใช้เซ็นเซอร์สนามแม่เหล็กบนแทร็กเกอร์ทั้งหมดที่มีเฟิร์มแวร์ที่เข้ากันได้ ซึ่งช่วยลดดริฟท์ในสภาพแวดล้อมที่มีสนามแม่เหล็กคงที่
-    สามารถปิดการใช้งานสำหรับแทร็กเกอร์แต่ละตัวได้ในการตั้งค่าของแทร็กเกอร์ <b>โปรดอย่าปิดแทร็กเกอร์ ในขณะที่กำลังสลับการตั้งค่านี้!</b>
 settings-general-tracker_mechanics-trackers_over_usb = ต่อแทร็กเกอร์ผ่าน USB
 settings-general-tracker_mechanics-trackers_over_usb-description = เปิดใช้งานการรับข้อมูลแทร็กเกอร์แบบ HID ผ่านสาย USB ตรวจสอบว่าแทร็กเกอร์ของคุณได้เปิด <b>การเชื่อมต่อผ่าน HID</b> เอาไว้!
 settings-stay_aligned-debug-label = การดีบัก
@@ -423,31 +361,27 @@ settings-keybinds-recorder-modal-cancel-button = ยกเลิก
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = ล็อคระดับพื้น
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = การแก้ไขการไถล
 settings-general-fk_settings-leg_tweak-toe_snap = เดาการหมุนเท้า
 settings-general-fk_settings-leg_tweak-foot_plant = ปรับสมดุลเท้า
 settings-general-fk_settings-leg_tweak-skating_correction-amount = ปริมาณการแก้ไขการไถล
-settings-general-fk_settings-leg_tweak-toe_snap-description = การเดาการหมุนของเท้า จะพยายามคาดเดาการหมุนของเท้า หากไม่ได้ใช้แทร็กเกอร์เท้า
-settings-general-fk_settings-leg_tweak-foot_plant-description = การปรับสมดุลเท้า จะหมุนเท้าให้ขนานกับพื้นเมื่อมีการสัมผัสพื้น
 settings-general-fk_settings-leg_fk = การจับตำแหน่งขา
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = บังคับรีเซ็ตการติดตั้งเท้า
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = บังคับรีเซ็ตการติดตั้งเท้าในระหว่างการรีเซ็ตการติดตั้งทั่วไป
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = ป้องกันไม่ให้ข้อต่อหมุนเกินขีดจำกัด
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
-settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
 settings-general-fk_settings-self_localization-title = โหมด Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = การรีเซ็ตด้วยการแตะ
 settings-general-gesture_control-description = เปิดใช้การรีเซ็ตด้วยการแตะแทร็กเกอร์ แทร็กเกอร์ที่อยู่สูงที่สุดบนลำตัวจะใช้สำหรับการรีเซ็ตแกนตั้ง แทร็กเกอร์ที่อยู่สูงที่สุดบนขาซ้ายใช้สำหรับรีเซ็ตทั้งหมด และแทร็กเกอร์ที่อยู่สูงที่สุดบนขาขวาใช้สำหรับรีเซ็ตตั้งศูนย์การติดตั้ง โดยการแตะจะต้องเกิดขึ้นภายในเวลา 0.3 วินาทีคูณด้วยจำนวนครั้งของการแตะเพื่อให้ระบบรับรู้
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -466,7 +400,6 @@ settings-general-gesture_control-mountingResetDelay = เวลาหน่ว�
 settings-general-gesture_control-mountingResetTaps = แตะเพื่อรีเซ็ตการติดตั้ง
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = จำนวนแทร็กเกอร์ที่เกินเกณฑ์
-settings-general-gesture_control-numberTrackersOverThreshold-description = ให้เพิ่มค่านี้หากแทร็กเกอร์ไม่ตอบสนองกับการแตะ ไม่ควรเพิ่มค่าเกินความจำเป็น เพราะอาจทำให้เกิดการตรวจจับที่ผิดพลาดได้มากขึ้น
 
 ## Appearance settings
 
@@ -518,7 +451,6 @@ settings-serial = คอนโซล Serial
 settings-serial-description =
     นี่คือฟีดข้อมูลสดสำหรับการสื่อสารแบบ Serial
     อาจมีประโยชน์สำหรับการดีบักเฟิร์มแวร์หรือปัญหาฮาร์ดแวร์
-settings-serial-connection_lost = การเชื่อมต่อ Serial ขาดหาย กำลังเชื่อมต่อใหม่...
 settings-serial-reboot = เริ่มการทำงานใหม่
 settings-serial-factory_reset = รีเซ็ตเป็นค่าโรงงาน
 # This cares about multilines
@@ -655,7 +587,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = ต้องระบุชื่อ Wi-Fi
 onboarding-wifi_creds-password =
     .label = รหัสผ่าน
-    .placeholder = ป้อนรหัสผ่าน
+    .placeholder = Enter your Wi-Fi password
 onboarding-wifi_creds-dongle-title = แทร็กเกอร์ที่ใช้ดองเกิล
 onboarding-wifi_creds-dongle-description = หากแทร็กเกอร์ของคุณมาพร้อมกับดองเกิล ให้เสียบมันเข้ากับอุปกรณ์ของคุณ แล้วก็สามารถเริ่มต้นใช้งานได้เลย!
 onboarding-wifi_creds-dongle-wip = ส่วนนี้กำลังอยู่ระหว่างการพัฒนา เป็นหน้าสำหรับจัดการแทร็กเกอรืที่เชื่อมต่อผ่านดองเกิลที่กำลังจะถูกทำขึ้นมาเร็วๆ นี้
@@ -677,7 +609,6 @@ onboarding-connect_tracker-issue-serial = ฉันมีปัญหาใน�
 onboarding-connect_tracker-usb = USB แทร็กเกอร์
 onboarding-connect_tracker-close = ปิด
 onboarding-connect_tracker-connection_status-serial_init = กำลังเชื่อมต่อกับอุปกรณ์ Serial
-onboarding-connect_tracker-connection_status-obtaining_mac_address = กำลังรับ MAC address ของแทร็กเกอร์
 onboarding-connect_tracker-connection_status-provisioning = กำลังส่งข้อมูลเครือข่าย Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = กำลังพยายามเชื่อมต่อ Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = กำลังหาเซิร์ฟเวอร์
@@ -703,7 +634,6 @@ onboarding-connect_tracker-next = ฉันเชื่อมต่อแทร�
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = กำหนดตำแหน่งแทร็กเกอร์
-onboarding-assign_trackers-description = มาเลือกกันเลยว่าแทร็กเกอร์ไหนจะไปอยู่ตรงไหน คลิกที่ตำแหน่งที่คุณต้องการกำหนดแทร็กเกอร์ได้เลย
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -937,7 +867,6 @@ firmware_tool-flashing_step-exit = ออก
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = กำลังรอการสร้าง...
 firmware_tool-build-CREATING_BUILD_FOLDER = กำลังสร้างโฟลเดอร์บิลด์
 firmware_tool-build-DOWNLOADING_SOURCE = กำลังดาวน์โหลดซอร์สโค้ด
 firmware_tool-build-EXTRACTING_SOURCE = กำลังแตกไฟล์ซอร์สโค้ด
@@ -950,16 +879,13 @@ firmware_tool-build-ERROR = ไม่สามารถสร้างเฟิ�
 
 firmware_update-status-DOWNLOADING = กำลังดาวน์โหลดเฟิร์มแวร์
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = โปรดปิดและเปิดแทร็กเกอร์ของคุณอีกครั้ง
-firmware_update-status-AUTHENTICATING = กำลังยืนยันตัวตนกับ MCU
 firmware_update-status-UPLOADING = กำลังอัปโหลดเฟิร์มแวร์
-firmware_update-status-SYNCING_WITH_MCU = กำลังซิงค์กับ MCU
 firmware_update-status-REBOOTING = กำลังใช้การอัปเดต
 firmware_update-status-PROVISIONING = ตั้งค่าข้อมูลเครือข่าย Wi-Fi
 firmware_update-status-DONE = อัปเดตสำเร็จ!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = ไม่พบอุปกรณ์
 firmware_update-status-ERROR_TIMEOUT = กระบวนการอัปเดตหมดเวลา
 firmware_update-status-ERROR_DOWNLOAD_FAILED = ไม่สามารถดาวน์โหลดเฟิร์มแวร์
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = ไม่สามารถยืนยันตัวตนกับ MCU
 firmware_update-status-ERROR_UPLOAD_FAILED = ไม่สามารถอัปโหลดเฟิร์มแวร์
 firmware_update-status-ERROR_PROVISIONING_FAILED = ไม่สามารถตั้งค่าข้อมูลเครือข่าย Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = ยังไม่รองรับวิธีการอัปเดตนี้
