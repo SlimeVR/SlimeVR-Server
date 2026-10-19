@@ -13,7 +13,6 @@ websocket-connection_lost-desc = يبدو أن خادم SlimeVR تعطل. تحق
 websocket-timedout = تعذر الاتصال بالخادم
 websocket-timedout-desc = يبدو أن خادم SlimeVR قد تعطل أو انتهت مهلته. تحقق من السجلات وأعد تشغيل البرنامج
 websocket-error-close = الخروج من SlimeVR
-websocket-error-logs = افتح مجلد السجلات
 
 ## Update notification
 
@@ -105,18 +104,15 @@ skeleton_bone-NECK-desc =
     هذه هي المسافة من منتصف رأسك إلى قاعدة رقبتك.
     لضبطها ، حرك رأسك لأعلى ولأسفل كما لو كنت تومئ رأسك أو تميل رأسك
     إلى اليسار واليمين وقم بتعديله حتى تصبح أي حركة في أجهزة التتبع الأخرى ضئيلة.
-skeleton_bone-torso_group = طول الجذع
 skeleton_bone-UPPER_CHEST = طول أعلى الصدر
 skeleton_bone-HIP = طول الورك
 skeleton_bone-HIPS_WIDTH = عرض الورك
-skeleton_bone-leg_group = طول الساق
 skeleton_bone-UPPER_LEG = طول الفخذ
 skeleton_bone-LOWER_LEG = طول الساق السفلي
 skeleton_bone-FOOT_LENGTH = طول القدم
 skeleton_bone-FOOT_SHIFT = إمالة القدم
 skeleton_bone-SHOULDERS_DISTANCE = مسافة الكتفين
 skeleton_bone-SHOULDERS_WIDTH = عرض الكتفين
-skeleton_bone-arm_group = طول الذراع
 skeleton_bone-UPPER_ARM = طول العضد
 skeleton_bone-LOWER_ARM = طول الساعد
 
@@ -230,11 +226,6 @@ tracker-settings-mounting_section = مكان التركيب
 tracker-settings-mounting_section-description = أين تم تركيب جهاز التعقب؟
 tracker-settings-mounting_section-edit = تعديل التركيب
 tracker-settings-use_mag = اسمح بالمقياس المغناطيسي على هذا المتتبع
-# Multiline!
-tracker-settings-use_mag-description =
-    هل يجب أن يستخدم هذا المتتبع مقياس المغناطيسية لتقليل الانجراف عند السماح باستخدام المقياس المغناطيسي؟ <b>من فضلا لا تغلق جهاز التتبع الخاص بك أثناء تبديل هذا!</b>
-    
-    تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
 tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
 tracker-settings-name_section = اسم جهاز التعقب
 tracker-settings-name_section-description = أعطها لقب لطيف :)
@@ -309,16 +300,11 @@ settings-driver-enable = تمكين
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = تصفية
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    اختر نوع التصفية لأجهزة التعقب الخاصة بك.
-    يتنبأ التنبؤ بالحركة بينما يعمل على تنعيم الحركة.
 settings-general-tracker_mechanics-filtering-type-none = بدون تصفية
 settings-general-tracker_mechanics-filtering-type-none-description = استخدم التدوير كما هو. لن تفعل أي تصفية
 settings-general-tracker_mechanics-filtering-type-smoothing = التنعيم
 settings-general-tracker_mechanics-filtering-type-smoothing-description = ينعم الحركات لكنه يزيد من وقت الاستجابة.
 settings-general-tracker_mechanics-filtering-type-prediction = التنبؤ
-settings-general-tracker_mechanics-filtering-type-prediction-description = يقلل من وقت الإستجابة ويجعل الحركات أكثر سرعة ، ولكنه قد يزيد من التوتر.
 settings-general-tracker_mechanics-filtering-amount = المبلغ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = إعادة ضبط الانعراج على نحو سلس (يتعطل التنعيم 0 ثوان)
 settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إعادة ضبط التركيب التلقائي
@@ -326,9 +312,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     يحفظ معايرة إعادة تعيين التثبيت التلقائي لأجهزة التتبع بين عمليات إعادة التشغيل. مفيد
     عند ارتداء بدلة حيث لا تتحرك المتتبعات بين الجلسات. <b>لا ينصح به للمستخدمين العاديين!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = استخدم المقياس المغناطيسي على جميع أجهزة تتبع IMU التي تدعمه
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    يستخدم المقياس المغناطيسي على جميع أجهزة التعقب التي تحتوي على برامج ثابتة متوافقة له ، مما يقلل من الانحراف في البيئات المغناطيسية المستقرة.
-    يمكن تعطيله لكل جهاز تعقب في إعدادات التعقب. <b>من فضلك لا تغلق أيا من أجهزة التعقب أثناء تبديل هذا!</b>
 
 ## Stay Aligned pose recorder
 
@@ -341,19 +324,17 @@ settings-keybinds-recorder-modal-cancel-button = إلغاء
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = فلور كليب
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = تصحيح التزحلق
 settings-general-fk_settings-leg_tweak-toe_snap = انجذاب إلى أصابع القدم
 settings-general-fk_settings-leg_tweak-foot_plant = تثبيت اصبع القدم
 settings-general-fk_settings-leg_tweak-skating_correction-amount = قوة تصحيح التزحلق
-settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
-settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
 settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
@@ -361,7 +342,6 @@ settings-general-fk_settings-self_localization-title = وضع Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = عمليات إعادة التعيين المستندة على النقر
 settings-general-gesture_control-description = يسمح بتشغيل عملية إعادة التعيين من خلال النقر على جهاز التعقب. يتم استخدام جهاز التعقب الأعلى على جذعك لإعادة ضبط سريع ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليسرى لإعادة ضبط ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليمنى إعادة ضبط التركيب . تجدر الإشارة إلى أن النقرات يجب أن تتم خلال 0.6 ثانية لكي يتم تسجيلها.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -396,7 +376,6 @@ settings-general-gesture_control-mountingResetDelay = تأخير إعادة تع
 settings-general-gesture_control-mountingResetTaps = نقرات لإعادة تعيين التركيب
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = أجهزة تعقب فوق قيمة القطع
-settings-general-gesture_control-numberTrackersOverThreshold-description = قم بزيادة هذه القيمة إذا كان اكتشاف النقر لا يعمل. لا تقم بزيادته فوق ما هو مطلوب لجعل اكتشاف النقر يعمل لأنه قد يتسبب في المزيد من الإيجابيات الخاطئة.
 
 ## Appearance settings
 
@@ -450,7 +429,6 @@ settings-serial = وحدة التحكم التسلسلية
 settings-serial-description =
     هذا هو موجز معلومات مباشر للاتصال التسلسلي.
     قد يكون مفيدًا إذا كنت بحاجة إلى معرفة إن كان البرنامج الثابت به خلل.
-settings-serial-connection_lost = تم فقد الاتصال بالمسلسل ، جاري إعادة الاتصال...
 settings-serial-reboot = إعادة التشغيل
 settings-serial-factory_reset = إعادة التعيين إلى إعدادات المصنع
 # This cares about multilines
@@ -579,7 +557,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = مطلوب اسم Wi-Fi
 onboarding-wifi_creds-password =
     .label = كلمة السر
-    .placeholder = أدخل كلمة السر
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -597,7 +575,6 @@ onboarding-connect_tracker-issue-serial = أواجه مشكلة في الاتص�
 onboarding-connect_tracker-usb = جهاز تعقب يو أس بي
 onboarding-connect_tracker-close = أغلق
 onboarding-connect_tracker-connection_status-serial_init = نتواصل بجهاز التسلسلي
-onboarding-connect_tracker-connection_status-obtaining_mac_address = الحصول على عنوان mac الخاص بجهاز التعقب
 onboarding-connect_tracker-connection_status-provisioning = نرسل بيانات اعتماد واي فاي
 onboarding-connect_tracker-connection_status-connecting = جارٍ إرسال بيانات اعتماد الواي فاي
 onboarding-connect_tracker-connection_status-looking_for_server = نبحث عن السرفر
@@ -624,7 +601,6 @@ onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = تعيين أجهزة التعقب
-onboarding-assign_trackers-description = دعنا نختار موقع أجهزة التعقب. انقر فوق المكان الذي تريد وضع جهاز تعقب فيه
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
