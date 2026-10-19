@@ -13,7 +13,6 @@ websocket-connection_lost-desc = SlimeVR 서버에 오류가 발생한 것 같�
 websocket-timedout = 서버에 연결할 수 없습니다
 websocket-timedout-desc = SlimeVR 서버에 오류가 발생했거나 연결 시간이 초과된 것 같습니다. 로그를 확인하고 프로그램을 재시작해 주세요
 websocket-error-close = SlimeVR 종료
-websocket-error-logs = 로그 폴더 열기
 
 ## Update notification
 
@@ -71,18 +70,15 @@ body_part-LEFT_FOOT = 왼발
 
 skeleton_bone-NONE = 없음
 skeleton_bone-NECK = 목 길이
-skeleton_bone-torso_group = 몸통 길이
 skeleton_bone-UPPER_CHEST = 가슴 위쪽 길이
 skeleton_bone-HIP = 골반 길이
 skeleton_bone-HIPS_WIDTH = 골반 너비
-skeleton_bone-leg_group = 다리 길이
 skeleton_bone-UPPER_LEG = 위쪽 다리 길이
 skeleton_bone-LOWER_LEG = 아래쪽 다리 길이
 skeleton_bone-FOOT_LENGTH = 발 크기
 skeleton_bone-FOOT_SHIFT = 발 밀림
 skeleton_bone-SHOULDERS_DISTANCE = 어깨 거리
 skeleton_bone-SHOULDERS_WIDTH = 어깨 너비
-skeleton_bone-arm_group = 팔 길이
 skeleton_bone-UPPER_ARM = 위쪽 팔 거리
 skeleton_bone-LOWER_ARM = 아래쪽 팔 길이
 
@@ -193,11 +189,6 @@ tracker-settings-mounting_section = 착용 방향
 tracker-settings-mounting_section-description = 트래커는 어디에 착용하나요?
 tracker-settings-mounting_section-edit = 방향 수정
 tracker-settings-use_mag = 이 트래커에서 자력계 활성화하기
-# Multiline!
-tracker-settings-use_mag-description =
-    이 트래커는 자력계 사용이 허용될 때 드리프트를 줄이기 위해 자력계를 사용해야 합니까? <b>이것을 토글하는 동안 트래커를 종료하지 마십시오!</b>
-    
-    먼저 자력계를 사용하도록 설정한 다음, <magSetting>여기를 클릭하여 설정으로 이동하세요</magSetting>.
 tracker-settings-use_mag-label = 자력계 활성화
 tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
@@ -269,14 +260,9 @@ settings-driver-enable = 활성화
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = 필터링
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    트래커의 필터링 유형을 선택하세요.
-    Prediction은 움직임을 예측하고 Smoothing은 움직임을 부드럽게 해요.
 settings-general-tracker_mechanics-filtering-type-none = 필터링 없음
 settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
-settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
 settings-general-tracker_mechanics-filtering-amount = 강도
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw 정렬할 때 부드럽게 움직이는 시간 (비활성화: 0초)
 settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 정렬 보정값 저장
@@ -284,9 +270,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     트래커의 착용 방향 정렬 보정값을 저장합니다. 트래커들의 위치가 고정된
     모션 캡처 슈트 같은 것을 사용할 때 유용해요. <b>일반 사용자들에게는 권장되지 않아요!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 자력계를 지원하는 모든 IMU 트래커에서 자력계 활성화
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    호환 가능한 펌웨어가 있는 모든 트래커에서 자력계를 사용하여 안정적인 자기 환경에서 틀어짐을 줄일 수 있어요.
-    트래커의 설정에서 트래커별로 비활성화할 수 있어요. <b>이 기능을 토글하는 동안 트래커를 종료하지 마세요!</b>
 
 ## Stay Aligned pose recorder
 
@@ -299,19 +282,17 @@ settings-keybinds-recorder-modal-cancel-button = 취소
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = 플로어 클립
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = 스케이팅 보정
 settings-general-fk_settings-leg_tweak-toe_snap = 토 스냅
 settings-general-fk_settings-leg_tweak-foot_plant = 풋 플랜트
 settings-general-fk_settings-leg_tweak-skating_correction-amount = 스케이팅 보정 강도
-settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 트래커가 없을 때, 발 트래커가 있는 것처럼 예측해서 움직여주는 기능이에요.
-settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
@@ -319,7 +300,6 @@ settings-general-fk_settings-self_localization-title = Mocap 모드
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = 탭해서 정렬하기
 settings-general-gesture_control-description = 트래커를 탭하면 쉽게 트래커를 정렬할 수 있어요. 몸통에서 가장 높은 트래커는 Yaw 정렬에 사용되고 왼쪽 다리에서 가장 높은 트래커는 전체 정렬에 사용되며, 오른쪽 다리에서 가장 높은 트래커는 착용 방향 정렬에 사용돼요. 탭할 때의 간격은 0.6초 이내여야 해요.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -341,7 +321,6 @@ settings-general-gesture_control-mountingResetDelay = 착용 방향 정렬 딜�
 settings-general-gesture_control-mountingResetTaps = 탭해서 착용 방향 정렬
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 트래커 감지 한계
-settings-general-gesture_control-numberTrackersOverThreshold-description = 몸을 움직이면서 제스처 제어를 하고 싶은데 잘 작동하지 않는다면 이 값을 늘리세요. 탭 탐지가 작동하는 데 필요한 값 이상으로 늘리지 마세요. 더 많은 오작동이 발생할 수 있어요.
 
 ## Appearance settings
 
@@ -389,7 +368,6 @@ settings-serial = 시리얼 콘솔
 settings-serial-description =
     이 라이브 피드에서 시리얼 디바이스와 통신할 수 있어요.
     펌웨어가 제대로 작동하는지 알아야 할 때 유용할 거예요.
-settings-serial-connection_lost = 시리얼 연결 끊김, 다시 연결 중...
 settings-serial-reboot = 재부팅
 settings-serial-factory_reset = 공장 초기화
 # This cares about multilines
@@ -515,7 +493,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Wi-Fi 이름을 입력하세요
 onboarding-wifi_creds-password =
     .label = 암호
-    .placeholder = 암호를 입력하세요
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -533,7 +511,6 @@ onboarding-connect_tracker-issue-serial = 연결하는 데 문제가 생겼어�
 onboarding-connect_tracker-usb = USB 트래커
 onboarding-connect_tracker-close = 닫기
 onboarding-connect_tracker-connection_status-serial_init = 시리얼 디바이스에 연결 중
-onboarding-connect_tracker-connection_status-obtaining_mac_address = 트래커 MAC 주소를 가져오는 중
 onboarding-connect_tracker-connection_status-provisioning = Wi-Fi 자격 증명 전송 중
 onboarding-connect_tracker-connection_status-connecting = Wi-Fi 연결 시도 중
 onboarding-connect_tracker-connection_status-looking_for_server = 서버 찾는 중
@@ -555,7 +532,6 @@ onboarding-connect_tracker-next = 트래커를 모두 연결했어요
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = 트래커 위치 지정
-onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 있는지 선택할 시간이에요. 트래커를 배치할 위치를 클릭해보세요
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -730,16 +706,13 @@ firmware_tool-build-ERROR = 펌웨어를 빌드할 수 없음
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 펌웨어 다운로드 중
-firmware_update-status-AUTHENTICATING = MCU와 연결 시도 중
 firmware_update-status-UPLOADING = 펌웨어 업로드 중
-firmware_update-status-SYNCING_WITH_MCU = MCU와 동기화 중
 firmware_update-status-REBOOTING = 업데이트 적용 중
 firmware_update-status-PROVISIONING = Wi-Fi 자격 증명 설정 중
 firmware_update-status-DONE = 업데이트 완료!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = 장치를 찾을 수 없음
 firmware_update-status-ERROR_TIMEOUT = 업데이트 시간 초과
 firmware_update-status-ERROR_DOWNLOAD_FAILED = 펌웨어를 다운로드할 수 없음
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = MCU와 연결할 수 없음
 firmware_update-status-ERROR_UPLOAD_FAILED = 펌웨어를 업로드할 수 없음
 firmware_update-status-ERROR_PROVISIONING_FAILED = Wi-Fi 자격 증명을 설정할 수 없음
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = 업데이트 방법이 지원되지 않음
