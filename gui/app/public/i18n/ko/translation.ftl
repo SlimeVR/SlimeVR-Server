@@ -287,7 +287,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = 자력계를 지원
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     호환 가능한 펌웨어가 있는 모든 트래커에서 자력계를 사용하여 안정적인 자기 환경에서 틀어짐을 줄일 수 있어요.
     트래커의 설정에서 트래커별로 비활성화할 수 있어요. <b>이 기능을 토글하는 동안 트래커를 종료하지 마세요!</b>
-settings-stay_aligned-relaxed_poses-close = 닫기
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -666,13 +668,6 @@ onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = 트래커를 착용하세요
-onboarding-stay_aligned-put_trackers_on-next = 트래커를 모두 착용했어요
-onboarding-stay_aligned-verify_mounting-title = 착용 방향 정렬
-onboarding-stay_aligned-preparation-title = 준비
 
 ## Home
 
