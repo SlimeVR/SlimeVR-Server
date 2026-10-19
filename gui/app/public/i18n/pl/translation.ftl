@@ -401,18 +401,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Użyj magnetometru 
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Wykorzystuje magnetometr we wszystkich trackerach, które mają kompatybilne oprogramowanie sprzętowe, redukując dryf w stabilnych środowiskach magnetycznych.¶
     Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
-settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
-settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
-settings-stay_aligned-relaxed_poses-label = Zrelaksowane pozy
-settings-stay_aligned-relaxed_poses-standing = Dostosuj trackery w pozycji stojącej
-settings-stay_aligned-relaxed_poses-sitting = Dostosuj trackery, siedząc na krześle
-settings-stay_aligned-relaxed_poses-flat = Dostosuj trackery, siedząc na podłodze lub leżąc na plecach
-settings-stay_aligned-relaxed_poses-save_pose = Zapisz pozę
-settings-stay_aligned-relaxed_poses-reset_pose = Zresetuj Pozycję
-settings-stay_aligned-relaxed_poses-close = Zamknij
 settings-stay_aligned-debug-label = Debugowanie
 settings-stay_aligned-debug-description = Proszę dołączać ustawienia, podczas zgłaszania problemów z opcją Wyrównywania.
 settings-stay_aligned-debug-copy-label = Skopiuj ustawienia do schowka
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -876,34 +870,6 @@ onboarding-user_height-reset-warning =
     <b>Ostrzeżenie:</b> Spowoduje to zresetowanie wszystkich ustawień proporcji do wartości domyślnych.
     Czy na pewno chcesz to zrobić?
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Wyrównywanie
-onboarding-stay_aligned-description = Skonfiguruj opcję Wyrównywania, aby Twoje trackery były wyrównane.
-onboarding-stay_aligned-put_trackers_on-title = Załóż trackery
-onboarding-stay_aligned-put_trackers_on-description = Aby skalibrować proporcje, użyjemy trackerów które przed chwilą przypisałeś. Załóż wszystkie trackery, będziesz widział który to który na postaci po prawej.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Masz mniej niż 5 trackerów aktualnie podłączonych i przypisanych! Jest to minimalna liczba elementów śledzących wymaganych do prawidłowego działania opcji Wyrównywania.
-onboarding-stay_aligned-put_trackers_on-next = Mam wszystkie trackery założone
-onboarding-stay_aligned-verify_mounting-title = Sprawdź swój montaż
-onboarding-stay_aligned-preparation-title = Przygotowania
-onboarding-stay_aligned-preparation-tip = Upewnij się, że stoisz prosto. Patrz przed siebie z rękami opuszczonymi po bokach.
-onboarding-stay_aligned-relaxed_poses-standing-title = Zrelaksowana pozycja stojąca
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stań w wygodnej pozycji. Zrelaksuj się!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Naciśnij przycisk "Zapisz pozę".
-onboarding-stay_aligned-relaxed_poses-sitting-title = Zrelaksowana pozycja siedząca na krześle
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Usiądź w wygodnej pozycji. Zrelaksuj się!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Naciśnij przycisk "Zapisz pozę".
-onboarding-stay_aligned-relaxed_poses-flat-title = Zrelaksowana pozycja siedząca na podłodze
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Usiądź na podłodze z nogami wysuniętymi do przodu. Zrelaksuj się!
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Naciśnij przycisk "Zapisz pozę".
-onboarding-stay_aligned-relaxed_poses-skip_step = Pomiń
-onboarding-stay_aligned-done-title = Wyrównywanie Włączone!
-onboarding-stay_aligned-done-description = Konfiguracja Wyrównywania jest zakończona!
-onboarding-stay_aligned-done-description-2 = Konfiguracja została zakończona! Możesz ponownie uruchomić proces, jeśli chcesz ponownie skalibrować pozy.
-onboarding-stay_aligned-previous_step = Poprzednie
-onboarding-stay_aligned-next_step = Następne
-onboarding-stay_aligned-done = Gotowy
-
 ## Home
 
 home-settings = Ustawienia strony głównej
@@ -1138,7 +1104,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otwórz panel sterowania
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfiguruj Opcje Wyrównywania
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zapisz pozycje wyrównywania, aby zmniejszyć poślizg
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Otwórz Konfiguracje Wyrównywania
 tracking_checklist-ignore = Ignoruj
 preview-mocap_mode_soon = Tryb mocap (wkrótce™)
 preview-disable_render = Wyłącz renderowanie
