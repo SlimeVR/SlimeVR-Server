@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.routing.Routes
 import dev.slimevr.routing.solarXRDriverConnectedFlow
@@ -302,24 +303,32 @@ private fun isImuAssigned(tracker: ChecklistTracker): Boolean = (tracker.origin 
 
 class FullResetCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
+	private val resetsManager: ResetsManager,
 ) : TrackingChecklistBehaviourType {
 	override fun observe(receiver: TrackingChecklist) {
-		trackerStates
-			.map { trackers ->
-				val assigned = trackers.filter { isImuAssigned(it) }
-				val pending = assigned.filter { it.needsFullReset }
-				TrackingChecklistStep(
-					valid = pending.isEmpty(),
-					enabled = assigned.isNotEmpty(),
-					ignorable = false,
-					visibility = TrackingChecklistStepVisibility.ALWAYS,
-					extraData = if (pending.isNotEmpty()) {
-						TrackingChecklistTrackerReset(trackersId = pending.map { it.id.toUShort() })
-					} else {
-						null
-					},
-				)
+		val mountingPending = receiver.context.state
+			.map { state ->
+				listOf(TrackingChecklistStepId.MOUNTING_CALIBRATION, TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION)
+					.any { id -> state.steps[id]?.let { it.enabled && !it.valid } == true }
 			}
+			.distinctUntilChanged()
+		val mountingResetAllowed = resetsManager.context.state.map { it.canDoMountingReset }.distinctUntilChanged()
+
+		combine(trackerStates, mountingResetAllowed, mountingPending) { trackers, allowed, pendingMounting ->
+			val assigned = trackers.filter { isImuAssigned(it) }
+			val pending = assigned.filter { it.needsFullReset }
+			TrackingChecklistStep(
+				valid = pending.isEmpty() && (allowed || !pendingMounting),
+				enabled = assigned.isNotEmpty(),
+				ignorable = false,
+				visibility = TrackingChecklistStepVisibility.ALWAYS,
+				extraData = if (pending.isNotEmpty()) {
+					TrackingChecklistTrackerReset(trackersId = pending.map { it.id.toUShort() })
+				} else {
+					null
+				},
+			)
+		}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.FULL_RESET, step)) }
 			.launchIn(receiver.context.scope)

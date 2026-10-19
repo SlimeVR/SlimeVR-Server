@@ -162,31 +162,10 @@ data class VMCConfig(
 	val vrmJson: String? = null,
 )
 
-// Used in StayAlignedConfig
-@Serializable
-data class StayAlignedRelaxedPoseConfig(
-	/** Whether Stay Aligned should adjust the tracker yaws when the player is in this pose. */
-	var enabled: Boolean = false,
-	/** Angle between the upper leg yaw and the centre yaw. */
-	var upperLegAngleInDeg: Float = 0.0f,
-	/** Angle between the lower leg yaw and the centre yaw. */
-	var lowerLegAngleInDeg: Float = 0.0f,
-	/** Angle between the foot and the centre yaw. */
-	var footAngleInDeg: Float = 0.0f,
-)
-
 @Serializable
 data class StayAlignedConfig(
-	/** Global enable toggle for all poses */
-	var enabled: Boolean = false,
-	/** Standing relaxed pose */
-	val standingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Sitting relaxed pose */
-	val sittingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Flat relaxed pose */
-	val flatRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Whether setup has been completed */
-	var setupComplete: Boolean = false,
+	/** Whether Stay Aligned runs. The relaxed poses it uses are in the user config. */
+	val enabled: Boolean = false,
 )
 
 @Serializable

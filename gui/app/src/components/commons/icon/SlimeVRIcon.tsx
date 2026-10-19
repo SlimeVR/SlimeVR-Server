@@ -59,11 +59,7 @@ export function SlimeVRIcon({ width = 28 }: { width?: number }) {
           stroke="#FFFFFF"
         />
         <path d="M24 18H36" strokeWidth="1" stroke="#FFFFFF" />
-        <path
-          d="M24 18L36 19M24 18.5L36 21"
-          strokeWidth="1"
-          stroke="#FFFFFF"
-        />
+        <path d="M24 18L36 19M24 18.5L36 21" strokeWidth="1" stroke="#FFFFFF" />
         <path d="M21 18L9 17" strokeWidth="1" stroke="#FFFFFF" />
         <path d="M21 18L9 19M21 18.5L9 21" strokeWidth="1" stroke="#FFFFFF" />
       </svg>

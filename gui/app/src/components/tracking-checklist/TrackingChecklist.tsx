@@ -454,8 +454,7 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-STAY_ALIGNED_CONFIGURED-open"
               variant="primary"
-              to="/onboarding/stay-aligned"
-              state={{ alonePage: true }}
+              to="/settings/stay-aligned"
             />
             {step.ignorable && (
               <Button

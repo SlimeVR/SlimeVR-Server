@@ -20,7 +20,7 @@ const mew = createAudio('/sounds/mew.ogg');
 export const scaledProportionsClick = createAudio(
   '/sounds/full-reset/full-click-1.ogg'
 );
-const resetSounds: Record<
+export const resetSounds: Record<
   ResetType,
   {
     initial: HTMLAudioElement | null;
@@ -116,6 +116,21 @@ export function restartAndPlay(audio: HTMLAudioElement | null, volume: number) {
   }
 }
 
+export function playCountdownTick(
+  ticks: HTMLAudioElement[] | null,
+  second: number,
+  volume: number
+) {
+  if (!ticks || second < 1) return;
+
+  const cycleLength = ticks.length * 2 - 2;
+  const positionInCycle = second % cycleLength;
+  const tickIndex =
+    positionInCycle < ticks.length ? positionInCycle : cycleLength - positionInCycle;
+
+  restartAndPlay(ticks[tickIndex], volume);
+}
+
 export function handleResetSounds(
   volume: number,
   { lifecycle, resetType, detailType, detail }: Omit<ResetStatusResponseT, 'pack'>
@@ -133,24 +148,7 @@ export function handleResetSounds(
       restartAndPlay(sounds.initial, volume);
     }
 
-    if (sounds.tick) {
-      const arrayLength = sounds.tick.length;
-
-      const cycleLength = arrayLength * 2 - 2;
-      const positionInCycle = Math.floor(progress / 1000) % cycleLength;
-
-      let tickIndex;
-
-      if (positionInCycle < arrayLength) {
-        tickIndex = positionInCycle;
-      } else {
-        tickIndex = cycleLength - positionInCycle;
-      }
-
-      if (progress >= 1000 && sounds.tick[tickIndex]) {
-        restartAndPlay(sounds.tick[tickIndex], volume);
-      }
-    }
+    playCountdownTick(sounds.tick, Math.floor(progress / 1000), volume);
   }
 
   if (lifecycle === ResetLifecycle.DONE) {

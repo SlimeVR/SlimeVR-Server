@@ -287,8 +287,7 @@ private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
 
 /** A socket that never receives anything and drops what it sends */
 class FakeUdpSocket : UdpSocket {
-	override suspend fun listen(onDatagram: (from: UdpPeer, payload: Source) -> Unit) =
-		awaitCancellation()
+	override suspend fun listen(onDatagram: (from: UdpPeer, payload: Source) -> Unit) = awaitCancellation()
 	override suspend fun send(to: UdpPeer, payload: ByteArray) {}
 	override suspend fun close() {}
 }

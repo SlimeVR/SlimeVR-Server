@@ -199,8 +199,7 @@ class ComputedSkeletonBehaviour(
 	 */
 	private val idleIntervalDuration = 100.milliseconds
 
-	private fun hasActiveInput(boneInputs: InputSkeleton): Boolean =
-		boneInputs.values.any { it.isRotationActive || it.isAccelerationActive || it.isPositionActive }
+	private fun hasActiveInput(boneInputs: InputSkeleton): Boolean = boneInputs.values.any { it.isRotationActive || it.isAccelerationActive || it.isPositionActive }
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
 	private val minimumGap = intervalDuration * 0.75

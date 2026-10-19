@@ -2,6 +2,7 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.GlobalConfigState
 import dev.slimevr.config.SettingsConfigState
+import dev.slimevr.config.UserConfigData
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.BoneRoutingSettingsResponse
@@ -14,11 +15,12 @@ import solarxr_protocol.rpc.SettingsDefaultsResponse
 // answers every domain at once.
 private fun buildSettingsDefaultsResponse(): SettingsDefaultsResponse {
 	val settings = SettingsConfigState()
+	val user = UserConfigData()
 	val global = GlobalConfigState()
 	return SettingsDefaultsResponse(
 		skeleton = buildSkeletonSettingsResponse(settings.skeletonConfig),
 		resets = buildResetsSettingsResponse(settings.resetsConfig),
-		stayAligned = buildStayAlignedSettingsResponse(settings.stayAlignedConfig),
+		stayAligned = buildStayAlignedSettingsResponse(settings.stayAlignedConfig, user),
 		tapDetection = buildTapDetectionSettingsResponse(settings.tapDetectionConfig),
 		timeout = buildTimeoutSettingsResponse(settings.trackersConfig),
 		hid = buildHidSettingsResponse(settings.hidConfig),

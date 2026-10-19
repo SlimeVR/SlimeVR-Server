@@ -185,7 +185,7 @@ class Tracker(
 				TrackerConfigBehaviour(devices, hardwareId),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
-				TrackerStayAlignedBehaviour(settings),
+				TrackerStayAlignedBehaviour(settings, appContext.config.userConfig),
 			)
 			val context = Context.create(
 				initialState = trackerState,

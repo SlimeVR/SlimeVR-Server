@@ -43,11 +43,5 @@ export const searchDestinations: SearchDestination[] = [
     title: 'navbar-connect_trackers',
     state: { alonePage: true },
   },
-  {
-    section: 'page',
-    path: '/onboarding/stay-aligned',
-    title: 'onboarding-stay_aligned-title',
-    state: { alonePage: true },
-  },
   { section: 'page', path: '/onboarding/home', title: 'navbar-onboarding' },
 ];

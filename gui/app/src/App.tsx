@@ -51,7 +51,6 @@ import { CrashScreen } from './components/CrashScreen';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
-import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
 import { QuizSlimeSetQuestion } from './components/onboarding/pages/quiz/SlimeSetQuestion';
@@ -211,7 +210,6 @@ function AppRoutes() {
               path="body-proportions/scaled"
               element={<ScaledProportionsPage />}
             />
-            <Route path="stay-aligned" element={<StayAlignedSetup />} />
           </Route>
           <Route path="*" element={<TopBar />} />
         </Route>

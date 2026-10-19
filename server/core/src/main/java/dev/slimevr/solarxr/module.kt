@@ -222,7 +222,7 @@ class SolarXRBridge(
 			add(ServerInfosBehaviour(appContext.serverInfos))
 			add(KeybindsBehaviour(appContext.config.settings, appContext.keybindManager))
 			add(SessionCalibrationBehaviour(appContext.resetsManager))
-			add(StayAlignedBehaviour(appContext.config.settings, appContext.server))
+			add(StayAlignedBehaviour(appContext.config.settings, appContext.config.userConfig, appContext.server, appContext.trackingChecklist))
 		}
 
 		fun create(

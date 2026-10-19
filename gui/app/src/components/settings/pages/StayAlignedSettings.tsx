@@ -1,84 +1,44 @@
-import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useLocalization } from '@fluent/react';
+import { useState } from 'react';
+import { FieldValues } from 'react-hook-form';
 import {
-  ChangeStayAlignedSettingsRequestT,
-  RpcMessage,
-  StayAlignedSettingsRequestT,
+  StayAlignedPoseState,
+  StayAlignedRelaxedPose,
   StayAlignedSettingsResponseT,
 } from 'solarxr-protocol';
+import { useAtomValue } from 'jotai';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
+import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
+import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIcon';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import {
   SettingRow,
   SettingsAdvanced,
   SettingsGroup,
 } from '@/components/settings/SettingRow';
-import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIcon';
-import { useAtomValue, atom, useSetAtom } from 'jotai';
-import { selectAtom } from 'jotai/utils';
-import { isEqual } from '@react-hookz/deep-equal';
+import { settingReset } from '@/components/settings/SettingReset';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
+import { PoseRecorderModal } from '@/components/stay-aligned/PoseRecorderModal';
+import { PoseRow } from '@/components/stay-aligned/PoseRow';
+import { StayAlignedStatusRow } from '@/components/stay-aligned/StayAlignedStatusRow';
+import {
+  POSE_KEY,
+  POSE_ORDER,
+  RecordablePose,
+  useStayAlignedSettings,
+  useStayAlignedStatus,
+} from '@/hooks/stay-aligned';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { useLocaleConfig } from '@/i18n/config';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { bodypartToString } from '@/utils/formatting';
-import { useLocaleConfig } from '@/i18n/config';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useSettingsDefaults } from '@/hooks/settings-defaults';
-import { settingReset } from '@/components/settings/SettingReset';
-import {
-  FlatRelaxedPoseModal,
-  SittingRelaxedPoseModal,
-  StandingRelaxedPoseModal,
-} from './components/StayAlignedPoseModal';
-import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
-export type StayAlignedSettingsForm = {
-  setupComplete: boolean;
-  enabled: boolean;
-  standingEnabled: boolean;
-  standingUpperLegAngle: number;
-  standingLowerLegAngle: number;
-  standingFootAngle: number;
-  sittingEnabled: boolean;
-  sittingUpperLegAngle: number;
-  sittingLowerLegAngle: number;
-  sittingFootAngle: number;
-  flatEnabled: boolean;
-  flatUpperLegAngle: number;
-  flatLowerLegAngle: number;
-  flatFootAngle: number;
-};
-
-function toForm(
-  settings: StayAlignedSettingsResponseT
-): StayAlignedSettingsForm {
-  return {
-    setupComplete: settings.setupComplete,
-    enabled: settings.enabled,
-    standingEnabled: settings.standingEnabled,
-    standingUpperLegAngle: settings.standingUpperLegAngle,
-    standingLowerLegAngle: settings.standingLowerLegAngle,
-    standingFootAngle: settings.standingFootAngle,
-    sittingEnabled: settings.sittingEnabled,
-    sittingUpperLegAngle: settings.sittingUpperLegAngle,
-    sittingLowerLegAngle: settings.sittingLowerLegAngle,
-    sittingFootAngle: settings.sittingFootAngle,
-    flatEnabled: settings.flatEnabled,
-    flatUpperLegAngle: settings.flatUpperLegAngle,
-    flatLowerLegAngle: settings.flatLowerLegAngle,
-    flatFootAngle: settings.flatFootAngle,
-  };
-}
-
-const stayAlignedSettingsAtom = atom<StayAlignedSettingsResponseT | null>(null);
-const stayAlignedSettingsValueAtom = selectAtom(
-  stayAlignedSettingsAtom,
-  (settings) => settings,
-  isEqual
-);
-
-function CopySettingsButton({ values }: { values: StayAlignedSettingsForm }) {
+function CopySettingsButton({
+  settings,
+}: {
+  settings: StayAlignedSettingsResponseT;
+}) {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const numberFormat = new Intl.NumberFormat(currentLocales, {
@@ -89,21 +49,28 @@ function CopySettingsButton({ values }: { values: StayAlignedSettingsForm }) {
   const trackers = useAtomValue(connectedIMUTrackersAtom);
 
   const copySettings = () => {
-    const config = values;
+    const poses = settings.poses
+      .map((pose) => {
+        const source = pose.recorded
+          ? 'recorded'
+          : pose.hasDefault
+            ? 'default'
+            : 'not recorded';
+        const angles = `upper_leg=${numberFormat.format(pose.upperLegAngle)}, lower_leg=${numberFormat.format(pose.lowerLegAngle)}, foot=${numberFormat.format(pose.footAngle)}`;
+        return `${StayAlignedRelaxedPose[pose.pose]}: ${pose.enabled ? 'enabled' : 'not enabled'}, ${source} (${angles})`;
+      })
+      .join('\n');
 
     const debug = `
 Stay Aligned debug info:
 
 GENERAL
 =======
-Enabled: ${config.enabled}
-Setup complete: ${config.setupComplete}
+Enabled: ${settings.enabled}
 
 RELAXED POSES
 =============
-Standing: ${config.standingEnabled ? `Enabled (upper_leg=${numberFormat.format(config.standingUpperLegAngle)}, lower_leg=${numberFormat.format(config.standingLowerLegAngle)}, foot=${numberFormat.format(config.standingFootAngle)})` : 'Not enabled'}
-Sitting: ${config.sittingEnabled ? `Enabled (upper_leg=${numberFormat.format(config.sittingUpperLegAngle)}, lower_leg=${numberFormat.format(config.sittingLowerLegAngle)}, foot=${numberFormat.format(config.sittingFootAngle)})` : 'Not enabled'}
-Flat: ${config.flatEnabled ? `Enabled (upper_leg=${numberFormat.format(config.flatUpperLegAngle)}, lower_leg=${numberFormat.format(config.flatLowerLegAngle)}, foot=${numberFormat.format(config.flatFootAngle)})` : 'Not enabled'}
+${poses}
 
 TRACKERS
 ========
@@ -136,34 +103,33 @@ export const stayAlignedSettingsPage = defineSettingsPage({
   path: 'stay-aligned',
   title: 'settings-sidebar-stay_aligned',
   groups: {
-    setup: {
-      title: 'settings-stay_aligned-setup_group',
+    general: {
       rows: {
-        setup: {
-          title: 'settings-stay_aligned-setup-label',
-          description: 'settings-stay_aligned-setup-label-description',
-        },
         enabled: {
           title: 'settings-stay_aligned-enabled-label',
           description: 'settings-stay_aligned-enabled-label-description',
         },
       },
     },
-    relaxedPoses: {
-      title: 'settings-stay_aligned-relaxed_poses-label',
-      description: 'settings-stay_aligned-relaxed_poses-description',
+    status: {
+      title: 'settings-stay_aligned-status_group',
+      rows: {},
+    },
+    poses: {
+      title: 'settings-stay_aligned-poses_group',
+      description: 'settings-stay_aligned-poses_group-description',
       rows: {
         standing: {
-          title: 'settings-stay_aligned-relaxed_poses-standing',
-          description: 'settings-stay_aligned-relaxed_poses-pose-description',
+          title: 'settings-stay_aligned-pose-standing',
+          description: 'settings-stay_aligned-pose-standing-description',
         },
         sitting: {
-          title: 'settings-stay_aligned-relaxed_poses-sitting',
-          description: 'settings-stay_aligned-relaxed_poses-pose-description',
+          title: 'settings-stay_aligned-pose-sitting',
+          description: 'settings-stay_aligned-pose-sitting-description',
         },
         flat: {
-          title: 'settings-stay_aligned-relaxed_poses-flat',
-          description: 'settings-stay_aligned-relaxed_poses-pose-description',
+          title: 'settings-stay_aligned-pose-flat',
+          description: 'settings-stay_aligned-pose-flat-description',
         },
       },
     },
@@ -182,115 +148,17 @@ export const stayAlignedSettingsPage = defineSettingsPage({
 const { groups } = stayAlignedSettingsPage;
 
 export function StayAlignedSettings() {
-  const setSettings = useSetAtom(stayAlignedSettingsAtom);
-  const settings = useAtomValue(stayAlignedSettingsValueAtom);
-  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
+  const { settings, setEnabled, setPoseEnabled, resetPose } =
+    useStayAlignedSettings();
+  const status = useStayAlignedStatus();
   const defaults = useSettingsDefaults().stayAligned;
-
-  const { control, watch, handleSubmit, reset, setValue } =
-    useForm<StayAlignedSettingsForm>({
-      defaultValues: toForm(defaults),
-      mode: 'onChange',
-      reValidateMode: 'onChange',
-    });
-
-  const values = watch();
-
-  const onSubmit = (values: StayAlignedSettingsForm) => {
-    const settingsReq = new ChangeStayAlignedSettingsRequestT();
-    settingsReq.enabled = values.enabled;
-    settingsReq.standingEnabled = values.standingEnabled;
-    settingsReq.sittingEnabled = values.sittingEnabled;
-    settingsReq.flatEnabled = values.flatEnabled;
-
-    sendRPCPacket(RpcMessage.ChangeStayAlignedSettingsRequest, settingsReq);
-  };
-
-  const resetTo = (
-    name: 'enabled' | 'standingEnabled' | 'sittingEnabled' | 'flatEnabled'
-  ) =>
-    settingReset<StayAlignedSettingsForm, typeof name>(
-      defaults[name],
-      watch(name),
-      (next) => {
-        setValue(name, next);
-        handleSubmit(onSubmit)();
-      }
-    );
-
-  useEffect(() => {
-    const subscription = watch((_, { type }) => {
-      if (type === 'change') handleSubmit(onSubmit)();
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useConnectedEffect(() => {
-    sendRPCPacket(
-      RpcMessage.StayAlignedSettingsRequest,
-      new StayAlignedSettingsRequestT()
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!settings) return;
-    reset(toForm(settings));
-  }, [settings]);
-
-  useRPCPacket(
-    RpcMessage.StayAlignedSettingsResponse,
-    (settings: StayAlignedSettingsResponseT) => {
-      setSettings(settings);
-    }
+  const [recordingPose, setRecordingPose] = useState<RecordablePose | null>(
+    null
   );
 
-  const config = values;
-  const hasStandingPose =
-    config.standingEnabled ||
-    config.standingUpperLegAngle !== 0.0 ||
-    config.standingLowerLegAngle !== 0.0 ||
-    config.standingFootAngle !== 0.0;
-  const hasSittingPose =
-    config.sittingEnabled ||
-    config.sittingUpperLegAngle !== 0.0 ||
-    config.sittingLowerLegAngle !== 0.0 ||
-    config.sittingFootAngle !== 0.0;
-  const hasFlatPose =
-    config.flatEnabled ||
-    config.flatUpperLegAngle !== 0.0 ||
-    config.flatLowerLegAngle !== 0.0 ||
-    config.flatFootAngle !== 0.0;
-
-  const openStanding = useState(false);
-  const openSitting = useState(false);
-  const openFlat = useState(false);
-
-  const poses = [
-    {
-      id: 'standing',
-      setting: groups.relaxedPoses.rows.standing,
-      name: 'standingEnabled' as const,
-      hasPose: hasStandingPose,
-      open: openStanding,
-      modal: <StandingRelaxedPoseModal open={openStanding} />,
-    },
-    {
-      id: 'sitting',
-      setting: groups.relaxedPoses.rows.sitting,
-      name: 'sittingEnabled' as const,
-      hasPose: hasSittingPose,
-      open: openSitting,
-      modal: <SittingRelaxedPoseModal open={openSitting} />,
-    },
-    {
-      id: 'flat',
-      setting: groups.relaxedPoses.rows.flat,
-      name: 'flatEnabled' as const,
-      hasPose: hasFlatPose,
-      open: openFlat,
-      modal: <FlatRelaxedPoseModal open={openFlat} />,
-    },
-  ];
+  // The defaults fill the page until the real settings arrive, the controls wait with a loading state
+  const loaded = settings !== null;
+  const shown = settings ?? defaults;
 
   return (
     <SettingsPagePaneLayout
@@ -300,79 +168,78 @@ export function StayAlignedSettings() {
       <div className="flex flex-col">
         <div className="flex flex-col gap-1 pb-4 max-w-[75ch]">
           <Typography id="settings-stay_aligned-description" />
-          <Typography id="settings-stay_aligned-setup-description" />
         </div>
 
-        <SettingsGroup group={groups.setup}>
+        <SettingsGroup>
           <SettingRow
-            setting={groups.setup.rows.setup}
-            control={
-              <Button
-                variant="primary"
-                to="/onboarding/stay-aligned"
-                state={{ alonePage: true }}
-                id="settings-stay_aligned-setup-open"
-              />
-            }
-          />
-          <SettingRow
-            setting={groups.setup.rows.enabled}
-            disabled={!config.setupComplete}
-            disabledReason="settings-stay_aligned-setup-description"
+            setting={groups.general.rows.enabled}
             controlId="stay-aligned-enabled"
-            {...resetTo('enabled')}
+            {...settingReset<FieldValues, string>(
+              defaults.enabled,
+              shown.enabled,
+              setEnabled
+            )}
             control={
-              <CheckBox
+              <CheckboxInternal
                 variant="toggle"
-                control={control}
-                name="enabled"
+                name="stay-aligned-enabled"
                 id="stay-aligned-enabled"
+                checked={shown.enabled}
+                loading={!loaded}
+                onChange={(event) => setEnabled(event.currentTarget.checked)}
               />
             }
           />
         </SettingsGroup>
 
-        <SettingsGroup group={groups.relaxedPoses}>
-          {poses.map(({ id, setting, name, hasPose, open, modal }) => (
-            <SettingRow
-              key={id}
-              setting={setting}
-              disabled={!config.setupComplete}
-              disabledReason="settings-stay_aligned-setup-description"
-              controlId={`stay-aligned-${id}`}
-              {...resetTo(name)}
-              control={
-                <div className="flex gap-2 items-center">
-                  {modal}
-                  <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                    <Button
-                      variant="secondary"
-                      className="whitespace-nowrap"
-                      onClick={() => open[1](true)}
-                    />
-                  </Localized>
-                  <CheckBox
-                    variant="toggle"
-                    control={control}
-                    name={name}
-                    id={`stay-aligned-${id}`}
-                    disabled={!config.setupComplete || !hasPose}
-                  />
-                </div>
-              }
-            />
-          ))}
+        <SettingsGroup group={groups.status}>
+          <div className="px-3 py-1 xs:px-4">
+            <StayAlignedStatusRow status={status} />
+          </div>
+        </SettingsGroup>
+
+        <SettingsGroup group={groups.poses}>
+          {POSE_ORDER.map((poseId) => {
+            const pose = shown.poses.find(
+              (candidate) => candidate.pose === poseId
+            );
+            if (!pose) return null;
+            return (
+              <PoseRow
+                key={poseId}
+                setting={groups.poses.rows[POSE_KEY[poseId]]}
+                poseId={poseId}
+                pose={pose}
+                loading={!loaded}
+                reset={pose.recorded}
+                suggested={
+                  status?.detectedPose?.pose === poseId &&
+                  status.detectedPose.state ===
+                    StayAlignedPoseState.NOT_RECORDED
+                }
+                onRecord={() => setRecordingPose(poseId)}
+                onToggle={(enabled) => setPoseEnabled(poseId, enabled)}
+                onReset={() => resetPose(poseId)}
+              />
+            );
+          })}
         </SettingsGroup>
 
         <SettingsAdvanced>
           <SettingsGroup group={groups.debug}>
             <SettingRow
               setting={groups.debug.rows.copy}
-              control={<CopySettingsButton values={values} />}
+              control={<CopySettingsButton settings={shown} />}
             />
           </SettingsGroup>
         </SettingsAdvanced>
       </div>
+
+      <PoseRecorderModal
+        pose={recordingPose}
+        status={status}
+        onClose={() => setRecordingPose(null)}
+      />
     </SettingsPagePaneLayout>
   );
 }

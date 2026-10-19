@@ -50,7 +50,8 @@ export function BaseModal({
         classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col justify-center',
           'items-center w-full h-full bg-background-90 bg-opacity-60',
-          important ? 'z-50' : 'z-40'
+          // Above the app chrome (top bar, settings page picker, floating buttons) at z-50
+          important ? 'z-[70]' : 'z-[60]'
         )
       }
       className={

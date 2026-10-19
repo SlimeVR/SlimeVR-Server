@@ -45,7 +45,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const sendAssign = useAssignTracker();
   const shell = providePicker();
-  const { trackerByPart, flatTrackers } = shell;
+  const { trackerByPart } = shell;
 
   const [pending, setPending] = useState<Pending>(null);
   const [panelOpen, setPanelOpen] = useState(false);

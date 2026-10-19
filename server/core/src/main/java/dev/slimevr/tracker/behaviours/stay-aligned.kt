@@ -1,6 +1,7 @@
 package dev.slimevr.tracker.behaviours
 
 import dev.slimevr.config.Settings
+import dev.slimevr.config.UserConfig
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
@@ -24,6 +25,7 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 
 class TrackerStayAlignedBehaviour(
 	private val settings: Settings,
+	private val userConfig: UserConfig,
 ) : TrackerBehaviour {
 
 	override fun observe(receiver: Tracker) {
@@ -65,12 +67,12 @@ class TrackerStayAlignedBehaviour(
 
 		val serverFlow = receiver.appContext.server.context.state
 
-		val stayAlignedConfigFlow = settings.context.state.map { it.data.stayAlignedConfig }.distinctUntilChanged()
+		val enabledFlow = settings.context.state.map { it.data.stayAlignedConfig.enabled }.distinctUntilChanged()
 		val imuTypeFlow = receiver.context.state.map { it.imuType }.distinctUntilChanged()
 		val magStatusFlow = receiver.context.state.map { it.magStatus }.distinctUntilChanged()
-		combine(stayAlignedConfigFlow, imuTypeFlow, magStatusFlow, ::Triple)
-			.flatMapLatest { (stayAlignedConfig, imuType, magStatus) ->
-				if (magStatus == MagnetometerStatus.ENABLED || imuType == null || !stayAlignedConfig.enabled) return@flatMapLatest emptyFlow()
+		combine(enabledFlow, imuTypeFlow, magStatusFlow, ::Triple)
+			.flatMapLatest { (enabled, imuType, magStatus) ->
+				if (magStatus == MagnetometerStatus.ENABLED || imuType == null || !enabled) return@flatMapLatest emptyFlow()
 
 				// Ignore every other emission for performance (50FPS instead of 100FPS when at 100TPS)
 				var index = 0
@@ -90,7 +92,7 @@ class TrackerStayAlignedBehaviour(
 							state,
 							serverFlow.value.trackers.values.map { it.context.state.value },
 							applyYawCorrection,
-							stayAlignedConfig,
+							userConfig.context.state.value.data,
 						)
 						if (yawCorrectionResult != null) {
 							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionResult))

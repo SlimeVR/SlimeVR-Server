@@ -9,8 +9,8 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.stripIpAddressPort
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.InetSocketAddress
-import io.ktor.network.sockets.toJavaAddress
 import io.ktor.network.sockets.aSocket
+import io.ktor.network.sockets.toJavaAddress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
