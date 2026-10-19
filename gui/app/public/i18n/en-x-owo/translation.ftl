@@ -314,7 +314,9 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
     can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
-settings-stay_aligned-relaxed_poses-close = cwose
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -690,13 +692,6 @@ onboarding-automatic_proportions-smol_warning-cancel = go bak
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = put on yowuw twackaws
-onboarding-stay_aligned-put_trackers_on-next = i have awl my twackaws on
-onboarding-stay_aligned-verify_mounting-title = meownting weset
-onboarding-stay_aligned-preparation-title = pwepaiwation
 
 ## Home
 
