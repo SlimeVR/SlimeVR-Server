@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Det verkar som att SlimeVR servern kraschade. K
 websocket-timedout = Kunde ej koppla till servern.
 websocket-timedout-desc = Det verkar som att SlimeVR servern kraschade eller löpte ur tidsgränsen. Kolla loggen och starta om programmet.
 websocket-error-close = Stäng SlimeVR
-websocket-error-logs = Öppna logg-mappen
 
 ## Update notification
 
@@ -105,76 +104,28 @@ skeleton_bone-NECK-desc =
     Detta är distansen från mittpunkten av ditt huvud till din nackes bas.
     För att justera det, skaka ditt huvud upp och ner, som om att du säger ja eller luta ditt
     huvud höger eller vänster och modifiera det tills någon rörelse i andra rörelsesensorer är obetydlig.
-skeleton_bone-torso_group = Halsens längd
 skeleton_bone-torso_group-desc =
     Detta är distansen från din nackes bas till dina höfter.
     För att justera det, modifiera det stående rakt upp tills dina virtuella höfter
     matchar dina riktiga.
 skeleton_bone-UPPER_CHEST = Övre bröstkorgens längd
-skeleton_bone-UPPER_CHEST-desc =
-    Detta är distansen från din nackes bas till mitten av din bröstkorg.
-    För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
-    (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
-skeleton_bone-LOWER_CHEST-desc =
-    Detta är distansen från mitten av din bröstkorg till mitten av din ryggrad.
-    För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
-    (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
 skeleton_bone-HIP = Höftlängd
-skeleton_bone-HIP-desc =
-    Detta är distansen från din navel till dina höfter.
-    För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
-    (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
 skeleton_bone-HIPS_WIDTH = Höftbredd
 skeleton_bone-HIPS_WIDTH-desc =
     Detta är distansen mellan början på dina ben.
     För att justera det, utför en full återställning med dina ben raka och modifiera den
     tills dina virtuella ben matchar med dina riktiga horisontellt.
-skeleton_bone-leg_group = Benlängd
-skeleton_bone-leg_group-desc =
-    Detta är distansen från dina höfter till dina fötter.
-    För att justera det, justera din Torso-längd ordentligt och modifiera
-    den tills dina virtuella fötter är på samma nivå som dina riktiga.
 skeleton_bone-UPPER_LEG = Längd på övre delen av benet
-skeleton_bone-UPPER_LEG-desc =
-    Detta är distansen från dina fötter till dina knän.
-    För att justera det, justera din ben-längd ordentligt och modifiera
-    den tills dina virtuella knän är på samma nivå som dina riktiga.
 skeleton_bone-LOWER_LEG = Längd på underben
-skeleton_bone-LOWER_LEG-desc =
-    Detta är avståndet från dina knän till dina fotleder.
-    För att justera det, justera din ben-längd ordentligt och modifiera
-    den tills dina virtuella knän är på samma nivå som dina riktiga.
 skeleton_bone-FOOT_LENGTH = Fot Längd
 skeleton_bone-FOOT_LENGTH-desc =
     Detta är distansen från dina höftleder till dina tår.
     För att justera det, gå på tå och modifiera det tills dina virtuella fötter stannar på plats.
 skeleton_bone-FOOT_SHIFT = Fotförskjutning
-skeleton_bone-FOOT_SHIFT-desc =
-    Detta värde är den horisontella distansen från dina ditt knä till din fotled.
-    den tar hänsyn till att dina underben går baklänges när du står rakt upp.
-    För att justera det, ställ fotens längd till 0, utför en full återställning och modifiera den tills
-    dina virtuella fötter matchar mitten av dina fotleder.
 skeleton_bone-SHOULDERS_DISTANCE = Avstånd mellan axlar
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    Detta är den vertikala distansen från din nackes bas till dina axlar.
-    För att justera det, Längd på överarm till 0 och modifiera det tills dina virituella
-    axel-sensorer är i linje med dina riktiga axlar.
 skeleton_bone-SHOULDERS_WIDTH = Axlarnas bredd
-skeleton_bone-arm_group = Armlängd
-skeleton_bone-arm_group-desc =
-    Detta är avståndet från dina axlar till dina handleder.
-    För att justera det, justera Avståndet mellan axlar ordentligt, ändra Handavstånd Y
-    till 0 och modifiera tills dina hand-sensorer är i linje med dina handleder.
 skeleton_bone-UPPER_ARM = Längd på överarm
-skeleton_bone-UPPER_ARM-desc =
-    Detta är distansen från dina axlar till dina armbågar.
-    För att justera det, justera Armlängd ordentligt och modifiera det
-    tills dina armbågs-sensorer är i linje med dina riktiga armbågar.
 skeleton_bone-LOWER_ARM = Längd på underarm
-skeleton_bone-LOWER_ARM-desc =
-    Detta är avståndet från dina armbågar till dina handleder.
-    För att justera det, justera Armlängd ordentligt och modifiera det
-    tills dina armbågs-spårare matchar med dina riktiga armbågar.
 
 ## Tracker reset buttons
 
@@ -280,11 +231,6 @@ tracker-settings-mounting_section = Monteringsriktning
 tracker-settings-mounting_section-description = Var är spårningsenheten monterad?
 tracker-settings-mounting_section-edit = Redigera montering
 tracker-settings-use_mag = Aktivera magnetometer på denna sensorn.
-# Multiline!
-tracker-settings-use_mag-description =
-    Ska denna sensorn använda magnetometern för att minska drift när magnetometer-användning är tillåten? <b> Var vänlig och stäng inte av sensorn när du växlar av och på denna inställningen! <b>
-    
-    Du behöver tillåta magnetometer-användning först <magSetting> klicka här för att gå till inställningen </magSetting>.
 tracker-settings-use_mag-label = Tillåt magnetometer
 tracker-settings-name_section = Sensorns namn
 tracker-settings-name_section-description = Ge den ett gulligt smeknamn :)
@@ -363,24 +309,16 @@ settings-driver-status-badge-disabled = Av
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Välj filtreringstyp för dina trackers.
-    Prediction förutspår rörelser medan smoothing jämnar ut rörelser.
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Använd rotationer som de är. Kommer inte att göra någon filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Utjämning
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Utjämnar rörelser men ger viss fördröjning.
 settings-general-tracker_mechanics-filtering-type-prediction = Förutsägelse
-settings-general-tracker_mechanics-filtering-type-prediction-description = Minskar latensen och gör rörelserna mer snabba, men kan öka jittern.
 settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
 settings-general-tracker_mechanics-save_mounting_reset = Spara automatisk montering återställning kalibrering
 settings-general-tracker_mechanics-save_mounting_reset-description = Sparar de automatiska kalibreringarna för återställning av montering för trackers mellan omstarter. Användbart när du bär en dräkt där trackers inte flyttas mellan sessionerna. <b>Rekommenderas inte för normala användare!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Använd magnetometern på alla IMU-sensorer som stödjer det
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
-    Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
 settings-stay_aligned-debug-label = Avbuggning
 settings-stay_aligned-debug-description = Var vänlig inkludera dina inställningar när du rapporterar problem om Behåll inriktning.
 settings-stay_aligned-debug-copy-label = Kopiera inställningar till urklipp
@@ -396,19 +334,17 @@ settings-keybinds-recorder-modal-cancel-button = Avbryt
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Golvklämma
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Korrigering av skridskoåkning
 settings-general-fk_settings-leg_tweak-toe_snap = Snäppning av tå
 settings-general-fk_settings-leg_tweak-foot_plant = Fotväxt
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Styrka vid korrigering av skridskoåkning
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
@@ -416,7 +352,6 @@ settings-general-fk_settings-self_localization-title = Mocap-läge
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Tap-baserade återställningar
 settings-general-gesture_control-description = Gör att återställningar kan utlösas genom att trycka på en tracker. Den tracker som sitter högst upp på din bål används för Yaw Reset, den tracker som sitter högst upp på ditt vänstra ben används för Full Reset och den tracker som sitter högst upp på ditt högra ben används för Mounting Reset. Taps måste ske inom tidsgränsen 0,3 sekunder gånger antalet taps som ska erkännas.
 settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
 settings-general-gesture_control-yawResetDelay = Fördröjning av återställning av yaw
@@ -429,7 +364,6 @@ settings-general-gesture_control-mountingResetDelay = Fördröjning av återstä
 settings-general-gesture_control-mountingResetTaps = Gängtappar för montering av återställning
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers över tröskelvärdet
-settings-general-gesture_control-numberTrackersOverThreshold-description = Öka detta värde om avkänningen inte fungerar. Öka inte värdet mer än vad som krävs för att detekteringen ska fungera, eftersom det kan leda till fler falska positiva resultat.
 
 ## Appearance settings
 
@@ -471,7 +405,6 @@ settings-interface-behavior-error_tracking-label = Skicka errors till utväcklar
 settings-serial = Seriell konsol
 # This cares about multilines
 settings-serial-description = Detta är en live informationsflöde för seriell kommunikation. Kan vara användbart för att felsöka problem med firmware eller maskinvara.
-settings-serial-connection_lost = Anslutning till seriell enhet förlorad, återanslutning...
 settings-serial-reboot = Omstart
 settings-serial-factory_reset = Fabriksåterställning
 # This cares about multilines
@@ -588,7 +521,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Wi-Fi namn är nödvändigt
 onboarding-wifi_creds-password =
     .label = Lösenord
-    .placeholder = Ange lösenord
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -606,7 +539,6 @@ onboarding-connect_tracker-issue-serial = Jag har problem med att ansluta!
 onboarding-connect_tracker-usb = USB spårare
 onboarding-connect_tracker-close = Stäng
 onboarding-connect_tracker-connection_status-serial_init = Anslutning till seriell enhet
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Får sensorns mac adress
 onboarding-connect_tracker-connection_status-provisioning = Skicka Wi-Fi-autentiseringsuppgifter
 onboarding-connect_tracker-connection_status-connecting = Försöker ansluta till Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Söker server
@@ -633,7 +565,6 @@ onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Utse trackers
-onboarding-assign_trackers-description = Låt oss välja vilken tracker som ska sitta var. Klicka på en plats där du vill placera en tracker
 onboarding-assign_trackers-tap_modal-cancel = Avbryt
 onboarding-assign_trackers-side-right = Höger
 onboarding-assign_trackers-side-left = Vänster
@@ -749,16 +680,13 @@ firmware_tool-build-ERROR = Kunde ej bygga mjukvaran
 
 firmware_update-status-DOWNLOADING = Laddar ner mjukvaran
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Var vänlig och stäng av och på trackern
-firmware_update-status-AUTHENTICATING = Autentiserar med MCUn
 firmware_update-status-UPLOADING = Laddar upp mjukvaran
-firmware_update-status-SYNCING_WITH_MCU = Synkar med MCUn
 firmware_update-status-REBOOTING = Tillämpar uppdateringen
 firmware_update-status-PROVISIONING = Ställer in Wi-Fi informationen
 firmware_update-status-DONE = Uppdatering klar!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Kunde inte hitta enheten
 firmware_update-status-ERROR_TIMEOUT = Uppdateringsprocessen är i timeout
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Kunde inte ladda ner mjukvaran
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Kunde inte autentisera med MCUn
 firmware_update-status-ERROR_UPLOAD_FAILED = Kunde inte ladda upp mjukvaran
 firmware_update-status-ERROR_PROVISIONING_FAILED = Kunde inte ställa in Wi-Fi informationen
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = Uppdaterings-metoden är inte stödd
