@@ -241,7 +241,9 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb l
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
 settings-general-tracker_mechanics-filtering-amount = Amount
-settings-stay_aligned-relaxed_poses-close = Sulge
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -561,13 +563,6 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Pange kõik jälgijad peale
-onboarding-stay_aligned-put_trackers_on-next = Mul on kõik jälgijad küljes
-onboarding-stay_aligned-verify_mounting-title = Paigalduse lähtestamine
-onboarding-stay_aligned-preparation-title = Ettevalmistus
 
 ## Home
 
