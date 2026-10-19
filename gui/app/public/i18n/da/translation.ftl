@@ -226,7 +226,9 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Udjæv
 settings-general-tracker_mechanics-filtering-type-prediction = Forudsigelse
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reducerer latens og gør bevægelser hutigere, men kan forårsage rystelser.
 settings-general-tracker_mechanics-filtering-amount = Mængde
-settings-stay_aligned-relaxed_poses-close = Tæt
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -485,13 +487,6 @@ onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsp
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Tag dine trackere på
-onboarding-stay_aligned-put_trackers_on-next = Jeg har alle mine trackere på
-onboarding-stay_aligned-verify_mounting-title = Montage Kalibrering
-onboarding-stay_aligned-preparation-title = Forberedelse
 
 ## Home
 
