@@ -407,18 +407,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     สามารถปิดการใช้งานสำหรับแทร็กเกอร์แต่ละตัวได้ในการตั้งค่าของแทร็กเกอร์ <b>โปรดอย่าปิดแทร็กเกอร์ ในขณะที่กำลังสลับการตั้งค่านี้!</b>
 settings-general-tracker_mechanics-trackers_over_usb = ต่อแทร็กเกอร์ผ่าน USB
 settings-general-tracker_mechanics-trackers_over_usb-description = เปิดใช้งานการรับข้อมูลแทร็กเกอร์แบบ HID ผ่านสาย USB ตรวจสอบว่าแทร็กเกอร์ของคุณได้เปิด <b>การเชื่อมต่อผ่าน HID</b> เอาไว้!
-settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
-settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
-settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
-settings-stay_aligned-relaxed_poses-standing = ปรับแทร็กเกอร์ขณะยืน
-settings-stay_aligned-relaxed_poses-sitting = ปรับแทร็กเกอร์ขณะนั่งเก้าอี้
-settings-stay_aligned-relaxed_poses-flat = ปรับแทร็กเกอร์ขณะนั่งบนพื้น หรือนอนหงาย
-settings-stay_aligned-relaxed_poses-save_pose = บันทึกท่าทาง
-settings-stay_aligned-relaxed_poses-reset_pose = รีเซ็ตท่าทาง
-settings-stay_aligned-relaxed_poses-close = ปิด
 settings-stay_aligned-debug-label = การดีบัก
 settings-stay_aligned-debug-description = กรุณาระบุการตั้งค่าของคุณเมื่อรายงานปัญหาเกี่ยวกับ Stay Aligned ด้วย
 settings-stay_aligned-debug-copy-label = คัดลอกการตั้งค่าไปยังคลิปบอร์ด
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -855,34 +849,6 @@ onboarding-user_height-calibration-error = ตั้งศูนย์ไม่�
 onboarding-user_height-manual-tip = ขณะปรับความสูงของคุณ ให้ลองทำท่าทางต่างๆ และดูว่าการเคลื่อนไหวของโครงกระดูกตรงกับร่างกายของคุณหรือไม่
 onboarding-user_height-reset-warning = คุณได้ตั้งค่าสัดส่วนไว้แล้วโดยใช้หน้าสัดส่วนแบบปรับเอง การดำเนินการต่อจะเป็นการรีเซ็ตสัดส่วนเหล่านี้เพื่อใช้เฉพาะความสูงของคุณเท่านั้น คุณต้องการดำเนินการต่อหรือไม่?
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-description = ตั้งค่า Stay Aligned เพื่อรักษาตำแหน่งแทร็กเกอร์ให้ตรงอยู่เสมอ
-onboarding-stay_aligned-put_trackers_on-title = ใส่แทร็กเกอร์ของคุณ
-onboarding-stay_aligned-put_trackers_on-description = เพื่อบันทึกท่าทางผ่อนคลายของคุณ เราจะใช้ข้อมูลจากแทร็กเกอร์ที่คุณเพิ่งระบุตำแหน่งไปเมื่อสักครู่ ให้คุณสวมใส่แทร็กเกอร์ทั้งหมด โดยคุณสามารถดูได้ว่าตัวไหนเป็นตัวไหนจากรูปภาพทางด้านขวา
-onboarding-stay_aligned-put_trackers_on-trackers_warning = คุณเชื่อมต่อและระบุตำแหน่งแทร็กเกอร์ไว้น้อยกว่า 5 ตัว! ซึ่งนี่คือจำนวนขั้นต่ำที่จำเป็นเพื่อให้ระบบ Stay Aligned ทำงานได้อย่างถูกต้อง
-onboarding-stay_aligned-put_trackers_on-next = ฉันสวมแทร็กเกอร์ครบทุกตัวแล้ว
-onboarding-stay_aligned-verify_mounting-title = ตั้งศูนย์การติดตั้ง
-onboarding-stay_aligned-preparation-title = การเตรียมตัว
-onboarding-stay_aligned-preparation-tip = ให้ยืนตัวตรง มองตรงไปข้างหน้า และปล่อยแขนแนบลำตัว
-onboarding-stay_aligned-relaxed_poses-standing-title = ทำท่ายืนแบบผ่อนคลาย
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. ยืนในท่าที่สบาย ทำตัวตามสบาย!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. กดปุ่ม "บันทึกท่าทาง"
-onboarding-stay_aligned-relaxed_poses-sitting-title = ทำท่านั่งเก้าอี้แบบผ่อนคลาย
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. นั่งลงบนเก้าอี้ในท่าที่สบาย ทำตัวตามสบาย!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. กดปุ่ม "บันทึกท่าทาง"
-onboarding-stay_aligned-relaxed_poses-flat-title = ทำท่านั่งพื้นแบบผ่อนคลาย
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. นั่งลงกับพื้นโดยเหยียดขาไปด้านหน้า ทำตัวตามสบาย!
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. กดปุ่ม "บันทึกท่าทาง"
-onboarding-stay_aligned-relaxed_poses-skip_step = ข้าม
-onboarding-stay_aligned-done-title = เปิดใช้งาน Stay Aligned สำเร็จแล้ว!
-onboarding-stay_aligned-done-description = การตั้งค่า Stay Aligned ของคุณเสร็จสมบูรณ์!
-onboarding-stay_aligned-done-description-2 = การตั้งค่าเสร็จสิ้น! คุณสามารถเริ่มกระบวนการนี้ใหม่ได้หากต้องการตั้งศูนย์ท่าทางต่างๆ อีกครั้ง
-onboarding-stay_aligned-previous_step = ก่อนหน้า
-onboarding-stay_aligned-next_step = ต่อไป
-onboarding-stay_aligned-restart = เริ่มใหม่
-onboarding-stay_aligned-done = เสร็จแล้ว
-
 ## Home
 
 home-settings = การตั้งค่าหน้าหลัก
@@ -1097,7 +1063,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC = แก้ไขโปรไฟล์
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = เปิด Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = ตั้งค่า Stay Aligned
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = บันทึกท่าท่างใน Stay Aligned เพื่อลดการดริฟท์
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = เปิดตัวช่วยการตั้งค่า Stay Aligned
 tracking_checklist-ignore = ละเว้น
 preview-mocap_mode_soon = โหมด Mocap (เร็ว ๆ นี้™)
 preview-disable_render = ปิดการแสดงตัวอย่าง
