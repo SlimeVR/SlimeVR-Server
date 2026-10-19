@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Il semble que le serveur SlimeVR ait planté. V
 websocket-timedout = Impossible de se connecter au serveur
 websocket-timedout-desc = Il semble que le serveur SlimeVR ait planté ou que le délai d'attente ait expiré. Vérifiez les logs et redémarrez le programme.
 websocket-error-close = Quitter SlimeVR
-websocket-error-logs = Ouvrir le dossier des logs
 
 ## Update notification
 
@@ -110,82 +109,30 @@ skeleton_bone-NECK-desc =
     Ceci est la distance entre le milieu de votre tête et la base de votre cou.
     Pour l’ajuster, hochez votre tête de haut en bas ou inclinez votre tête de gauche à droite et modifiez-la
     jusqu’à ce que vos capteurs bougent le moins possible.
-skeleton_bone-torso_group = Longueur du torse
 skeleton_bone-torso_group-desc =
     Ceci est la distance entre la base de votre cou et vos hanches.
     Pour l’ajuster, tenez-vous debout et modifiez-la jusqu’à ce que
     vos hanches virtuelles soient alignées avec vos vraies hanches.
 skeleton_bone-UPPER_CHEST = Longueur de la poitrine supérieure
-skeleton_bone-UPPER_CHEST-desc =
-    Ceci la distance entre la base de votre cou et le milieu de votre poitrine.
-    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
-    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
-skeleton_bone-LOWER_CHEST-desc =
-    Ceci est la distance entre le milieu de votre poitrine et le milieu de votre colonne vertébrale.
-    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
-    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-UPPER_WAIST = Longueur de la taille supérieure
-skeleton_bone-UPPER_WAIST-desc =
-    Ceci est la distance entre le milieu de votre colonne vertébrale et votre nombril.
-    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
-    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-LOWER_WAIST = Longueur de la taille inférieure
 skeleton_bone-HIP = Longueur des hanches
-skeleton_bone-HIP-desc =
-    Ceci est la distance entre votre nombril et vos hanches
-    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
-    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-HIPS_WIDTH = Largeur des hanches
 skeleton_bone-HIPS_WIDTH-desc =
     Ceci est la distance entre vos deux jambes.
     Pour l’ajuster, effectuez une réinitialisation complète avec vos jambes droites et modifiez-la jusqu’à ce que
     Vos jambes virtuelles soient au même niveau horizontalement que vos vraies jambes.
-skeleton_bone-leg_group = Longueur des jambes
-skeleton_bone-leg_group-desc =
-    Ceci est la distance entre vos hanches et vos pieds.
-    Pour l’ajuster, ajustez correctement la longueur du torse et modifiez-la
-    jusqu’à ce que vos pieds virtuels soient au même niveau que vos pieds réels.
 skeleton_bone-UPPER_LEG = Longueur des jambes supérieures
-skeleton_bone-UPPER_LEG-desc =
-    Ceci est la distance entre vos hanches et vos genoux.
-    Pour l’ajuster, ajustez correctement la longueur des jambes et modifiez-la
-    jusqu’à ce que vos genoux virtuels soient au même niveau que vos genoux réels.
 skeleton_bone-LOWER_LEG = Longueur des jambes inférieures
-skeleton_bone-LOWER_LEG-desc =
-    Ceci est la distance entre vos genoux et vos chevilles.
-    Pour l’ajuster, ajustez correctement la longueur des jambes et modifiez-la
-    jusqu’à ce que vos genoux virtuels soient au même niveau que vos genoux réels.
 skeleton_bone-FOOT_LENGTH = Longueur des pieds
 skeleton_bone-FOOT_LENGTH-desc =
     Ceci est la distance entre vos chevilles et vos orteils.
     Pour l’ajuster, allez sur la pointe des pieds et modifiez-la jusqu’à ce que vos pieds virtuels restent en place.
 skeleton_bone-FOOT_SHIFT = Décalage des pieds
-skeleton_bone-FOOT_SHIFT-desc =
-    Ceci est la distance horizontale entre votre genou et votre cheville.
-    Il tient compte du fait que le bas de vos jambes recule lorsque vous vous tenez droit.
-    Pour l’ajuster, réglez la longueur des pieds à 0, effectuez une réinitialisation complète et modifiez-la jusqu’à ce que vos
-    pieds virtuels s’alignent avec le milieu de vos chevilles.
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    Ceci est la distance verticale entre la base de votre cou et vos épaules.
-    Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
-    soient alignés verticalement avec vos vraies épaules.
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
-skeleton_bone-arm_group = Longueur des bras
-skeleton_bone-arm_group-desc =
-    Ceci est la distance entre vos épaules et vos poignets.
-    Pour l’ajuster, ajustez correctement la distance des épaules, réglez la distance Y des mains
-    à 0 et modifiez-la jusqu’à ce que vos capteurs de main soient alignés avec vos poignets.
 skeleton_bone-UPPER_ARM = Longueur des bras supérieurs
-skeleton_bone-UPPER_ARM-desc =
-    Ceci est la distance entre vos épaules et vos coudes.
-    Pour l’ajuster, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que
-    vos capteurs de coude soient alignés avec vos vrais coudes.
 skeleton_bone-LOWER_ARM = Longueur des avant-bras
-skeleton_bone-LOWER_ARM-desc =
-    Ceci est la distance entre vos coudes et vos poignets.
-    Pour l’ajuster, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que
-    vos capteurs de coude soient alignés avec vos vrais coudes.
 
 ## Tracker reset buttons
 
@@ -300,11 +247,6 @@ tracker-settings-mounting_section = Orientation du capteur
 tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur ?
 tracker-settings-mounting_section-edit = Changer l'orientation
 tracker-settings-use_mag = Autoriser l'utilisation du magnétomètre sur ce capteur
-# Multiline!
-tracker-settings-use_mag-description =
-    Est-ce que ce capteur devrait utiliser son magnétomètre pour réduire la dérive lorsque l'utilisation du magnétomètre est autorisée ? <b>N'éteignez pas votre capteur pendant que vous changez cette option !</b>
-    
-    Vous devez d'abord autoriser l'utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
 tracker-settings-use_mag-label = Autoriser le magnétomètre
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
@@ -316,7 +258,6 @@ tracker-settings-update-unavailable-v2 = Aucune publication trouvée
 tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatible
 tracker-settings-update-low-battery = Mise à jour impossible. Batterie inférieure à 50 %
 tracker-settings-update-up_to_date = À jour
-tracker-settings-update-blocked = Mise à jour non disponible. Aucune autre version disponible
 tracker-settings-update = Mettre à jour maintenant
 tracker-settings-update-title = Version du micrologiciel
 tracker-settings-current-version = Actuel
@@ -392,16 +333,11 @@ settings-driver-status-badge-disabled = Désactivé
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrage
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Choisissez le type de filtrage pour vos capteurs.
-    La prédiction prédit les mouvements tandis que la fluidification rend les mouvements plus fluides.
 settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
 settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
 settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
 settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
-settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
 settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Temps de fluidification de la réinitialisation horizontale (0s désactive la fluidification)
 settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
@@ -409,9 +345,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Enregistre les calibrations des réinitialisation automatiques d'alignement pour les capteurs entre les redémarrages.
     Utile lorsque vous portez une combinaison où les capteurs ne bougent pas entre les sessions. <b>Non recommandé pour les utilisateurs normaux !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Utiliser le magnétomètre sur tous les capteurs IMU qui le prennent en charge
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
-    Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
 settings-stay_aligned-debug-label = Débogage
@@ -430,31 +363,27 @@ settings-keybinds-recorder-modal-cancel-button = Annuler
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Limitage au sol
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Correction du glissement
 settings-general-fk_settings-leg_tweak-toe_snap = Correction des orteils
 settings-general-fk_settings-leg_tweak-foot_plant = Correction des pieds
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la correction du glissement
-settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
-settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-ik = Données de position
-settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
 settings-general-fk_settings-skeleton_settings-ratios = Ratios du squelette
 settings-general-fk_settings-self_localization-title = Mode Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Double tape pour réinitialisation rapide
 settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
@@ -474,7 +403,6 @@ settings-general-gesture_control-mountingResetDelay = Délai de réinitialisatio
 settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
-settings-general-gesture_control-numberTrackersOverThreshold-description = Augmentez cette valeur si la détection des tapotements ne fonctionne pas. N'augmentez pas cette valeur au-delà de ce qui est nécessaire pour que la détection des tapotements fonctionne, car cela pourrait entraîner des faux positifs.
 
 ## Appearance settings
 
@@ -527,7 +455,6 @@ settings-serial = Console série
 settings-serial-description =
     Il s'agit d'un flux d'informations en direct pour la communication en série.
     Peut être utile pour savoir si un capteur fonctionne correctement.
-settings-serial-connection_lost = Connexion à l'appareil perdue, reconnexion...
 settings-serial-reboot = Redémarrer
 settings-serial-factory_reset = Remise à zéro
 # This cares about multilines
@@ -664,7 +591,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Le nom du Wi-Fi est requis
 onboarding-wifi_creds-password =
     .label = Mot de passe du Wi-Fi
-    .placeholder = Mot de passe
+    .placeholder = Enter your Wi-Fi password
 onboarding-wifi_creds-dongle-title = Capteurs utilisant un dongle
 onboarding-wifi_creds-dongle-description = Si vos capteurs ont été livrés avec un dongle, branchez-le à votre appareil et vous devriez être prêt !
 onboarding-wifi_creds-dongle-wip = Cette section est en cours de développement. Une page dédiée à la gestion des capteurs connectés via un dongle sera bientôt créée.
@@ -686,7 +613,6 @@ onboarding-connect_tracker-issue-serial = J'ai des problèmes de connexion !
 onboarding-connect_tracker-usb = Capteur USB
 onboarding-connect_tracker-close = Fermer
 onboarding-connect_tracker-connection_status-serial_init = Connexion au périphérique en série
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtention de l'adresse mac du capteur
 onboarding-connect_tracker-connection_status-provisioning = Envoi des identifiants Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Envoi d'identifiants Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Recherche du serveur
@@ -713,7 +639,6 @@ onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Attribuer des capteurs
-onboarding-assign_trackers-description = Choisissons où mettre chaque capteur.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -957,7 +882,6 @@ firmware_tool-flashing_step-exit = Quitter
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = En attente de la création...
 firmware_tool-build-CREATING_BUILD_FOLDER = Création du dossier de création
 firmware_tool-build-DOWNLOADING_SOURCE = Téléchargement du code source
 firmware_tool-build-EXTRACTING_SOURCE = Extraction du code source
@@ -970,16 +894,13 @@ firmware_tool-build-ERROR = Impossible de créer le micrologiciel
 
 firmware_update-status-DOWNLOADING = Téléchargement du micrologiciel
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Veuillez éteindre et rallumer votre capteur
-firmware_update-status-AUTHENTICATING = Authentification avec le MCU
 firmware_update-status-UPLOADING = Envoi du micrologiciel
-firmware_update-status-SYNCING_WITH_MCU = Synchronisation avec le MCU
 firmware_update-status-REBOOTING = Application de la mise à jour
 firmware_update-status-PROVISIONING = Envoi des identifiants Wi-Fi
 firmware_update-status-DONE = Mise à jour terminée !
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Impossible de trouver l'appareil
 firmware_update-status-ERROR_TIMEOUT = Le processus de mise à jour a dépassé le délai alloué
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Échec du téléchargement du micrologiciel
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Échec de l'authentification avec le MCU
 firmware_update-status-ERROR_UPLOAD_FAILED = Échec de l'envoi du micrologiciel
 firmware_update-status-ERROR_PROVISIONING_FAILED = Impossible de définir les informations d'identification Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = La méthode de mise à jour n'est pas prise en charge
