@@ -66,18 +66,15 @@ body_part-LEFT_FOOT = Ліва нога
 
 skeleton_bone-NONE = Нічого
 skeleton_bone-NECK = Довжина шиї
-skeleton_bone-torso_group = Довжина тулуба
 skeleton_bone-UPPER_CHEST = Довжина верхньої частини грудей
 skeleton_bone-HIP = Довжина стегна
 skeleton_bone-HIPS_WIDTH = Ширина стегон
-skeleton_bone-leg_group = Довжина ніг
 skeleton_bone-UPPER_LEG = Довжина верхньої частини ноги
 skeleton_bone-LOWER_LEG = Довжина гомілки
 skeleton_bone-FOOT_LENGTH = Довжина стопи
 skeleton_bone-FOOT_SHIFT = Зміщення стопи
 skeleton_bone-SHOULDERS_DISTANCE = Відстань між плечима
 skeleton_bone-SHOULDERS_WIDTH = Ширина плечей
-skeleton_bone-arm_group = Довжина руки
 skeleton_bone-UPPER_ARM = Довжина верхньої частини руки
 skeleton_bone-LOWER_ARM = Довжина нижньої частини руки
 
@@ -240,16 +237,11 @@ settings-driver-enable = Увімкнути
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Фільтрація
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Виберіть тип фільтрації для своїх трекерів.
-    Передбачення передбачає рух, а згладжування згладжує рух.
 settings-general-tracker_mechanics-filtering-type-none = Без фільтрації
 settings-general-tracker_mechanics-filtering-type-none-description = Використовуйте обертання як є. Ніякої фільтрації не зробить.
 settings-general-tracker_mechanics-filtering-type-smoothing = Згладжування
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Згладжує рухи, але додає деяку затримку.
 settings-general-tracker_mechanics-filtering-type-prediction = Передбачення
-settings-general-tracker_mechanics-filtering-type-prediction-description = Зменшує затримку і робить рухи більш швидкими, але може посилити тремтіння.
 settings-general-tracker_mechanics-filtering-amount = Кількість
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Час згладжування скидання рискання (0 сек. відключає згладжування)
 settings-general-tracker_mechanics-save_mounting_reset = Зберегти автоматичне калібрування положення трекерів
@@ -267,26 +259,23 @@ settings-keybinds-recorder-modal-cancel-button = Скасувати
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Прив'язка до підлоги
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = корекція ковзання
 settings-general-fk_settings-leg_tweak-toe_snap = корекція пальців ноги
 settings-general-fk_settings-leg_tweak-foot_plant = корекція ступні
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Сила корекції ковзання
-settings-general-fk_settings-leg_tweak-toe_snap-description = Корекція пальців ноги намагається вгадати обертання ваших ступень, якщо трекери для них не використовуються
-settings-general-fk_settings-leg_tweak-foot_plant-description = Корекція ступні повертає ваші ступні так, щоб вони були паралельні землі при контакті
 settings-general-fk_settings-leg_fk = Трекінг ноги
 settings-general-fk_settings-skeleton_settings-ratios = Співвідношення скелета
 settings-general-fk_settings-self_localization-title = Режим Мокап
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Скидання на основі дотику
 settings-general-gesture_control-description = Дозволяє запускати скидання, торкнувшись трекера. Трекер найвищий на вашому тулубі використовується для скидання рискання, трекер найвищий на лівій нозі використовується для повного скидання, а трекер найвищий на правій нозі використовується для скидання положення. Слід зазначити, що для реєстрації дотики мають тривати протягом 0,3 секунди.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -308,7 +297,6 @@ settings-general-gesture_control-mountingResetDelay = Затримка скид�
 settings-general-gesture_control-mountingResetTaps = Дотики для скидання положення
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Трекери перевищують поріг
-settings-general-gesture_control-numberTrackersOverThreshold-description = Збільште це значення, якщо не працює виявлення дотика. Не збільшуйте його вище ніж необхідно для виявлення дотика, оскільки це призведе до більшої кількості помилкових спрацьовувань.
 
 ## Appearance settings
 
@@ -349,7 +337,6 @@ settings-serial = Послідовна консоль
 settings-serial-description =
     Це інформаційна стрічка для послідовного зв'язку.
     Може бути корисним, якщо вам потрібно знати, що прошивка не працює.
-settings-serial-connection_lost = Підключення до послідовного пристрою втрачене, повторне підключення...
 settings-serial-reboot = Перезавантажити
 settings-serial-factory_reset = Скидання до заводських налаштувань
 # This cares about multilines
@@ -453,7 +440,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Введіть назву Wi-Fi
 onboarding-wifi_creds-password =
     .label = Пароль
-    .placeholder = Введіть Пароль
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -495,7 +482,6 @@ onboarding-connect_tracker-next = Я підключив усі свої трек
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Призначити трекери
-onboarding-assign_trackers-description = Давайте виберемо, який трекер куди йде. Натисніть на місце, де ви хочете розмістити трекер
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
