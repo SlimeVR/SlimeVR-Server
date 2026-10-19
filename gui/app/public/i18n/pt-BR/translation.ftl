@@ -404,18 +404,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Essa opção pode ser desativada individualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
 settings-general-tracker_mechanics-trackers_over_usb = Trackers via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Ativa o recebimento de dados de trackers HID via USB. Certifique-se de que os trackers conectados tenham a opção <b>conexão via HID</b> ativada!
-settings-stay_aligned-description = O Manter Alinhado reduz o drift ao ajustar gradualmente seus trackers para corresponder às suas poses relaxadas
-settings-stay_aligned-setup-label = Configurar o Manter Alinhado
-settings-stay_aligned-relaxed_poses-label = Poses Relaxadas
-settings-stay_aligned-relaxed_poses-standing = Ajustar trackers enquanto estiver em pé
-settings-stay_aligned-relaxed_poses-sitting = Ajustar trackers enquanto estiver sentado em uma cadeira
-settings-stay_aligned-relaxed_poses-flat = Ajustar trackers sentado no chão ou deitado de costas
-settings-stay_aligned-relaxed_poses-save_pose = Salvar Pose
-settings-stay_aligned-relaxed_poses-reset_pose = Redefinir Pose
-settings-stay_aligned-relaxed_poses-close = Fechar
 settings-stay_aligned-debug-label = Depuração
 settings-stay_aligned-debug-description = Inclua suas configurações ao relatar problemas relacionados ao Manter Alinhado.
 settings-stay_aligned-debug-copy-label = Copiar configurações para a área de transferência
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -897,35 +891,6 @@ onboarding-user_height-reset-warning =
     <b>Aviso:</b> Isso redefinirá suas proporções com base na sua altura.
     Tem certeza de que deseja fazer isso?
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Manter Alinhado
-onboarding-stay_aligned-description = Configure o Manter Alinhado para manter seus trackers alinhados.
-onboarding-stay_aligned-put_trackers_on-title = Coloque seus trackers
-onboarding-stay_aligned-put_trackers_on-description = Para salvar suas poses de descanso, usaremos os trackers que você acabou de atribuir. Coloque todos os seus trackers, você pode ver qual é qual na figura à direita.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Você tem menos de 5 trackers conectados e atribuídos no momento! Essa é a quantidade mínima de trackers necessária para que o Manter Alinhado funcione corretamente.
-onboarding-stay_aligned-put_trackers_on-next = Todos meus trackers estão ligados
-onboarding-stay_aligned-verify_mounting-title = Calibração de Montagem
-onboarding-stay_aligned-preparation-title = Preparação
-onboarding-stay_aligned-preparation-tip = Certifique-se de ficar em pé, com o corpo ereto. Mantenha o olhar para a frente, com os braços abaixados junto ao corpo.
-onboarding-stay_aligned-relaxed_poses-standing-title = Postura em Pé Relaxada
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Fique em uma posição confortável. Relaxe!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Pressione o botão "Salvar Pose".
-onboarding-stay_aligned-relaxed_poses-sitting-title = Pose Sentada e Relaxada na Cadeira
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sente-se em uma posição confortável. Relaxe!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = Pressione o botão "Salvar Pose".
-onboarding-stay_aligned-relaxed_poses-flat-title = Pose Sentada e Relaxada no Chão
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sente-se no chão com as pernas à frente. Relaxe!
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Pressione o botão "Salvar Pose".
-onboarding-stay_aligned-relaxed_poses-skip_step = Pular
-onboarding-stay_aligned-done-title = Manter Alinhado ativado!
-onboarding-stay_aligned-done-description = A configuração do Manter Alinhado foi concluída!
-onboarding-stay_aligned-done-description-2 = A configuração foi concluída! Você pode reiniciar o processo se quiser recalibrar as poses.
-onboarding-stay_aligned-previous_step = Anterior
-onboarding-stay_aligned-next_step = Próximo
-onboarding-stay_aligned-restart = Reiniciar
-onboarding-stay_aligned-done = Concluído
-
 ## Home
 
 home-settings = Configurações da Página Inicial
@@ -1152,7 +1117,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Abrir o Painel de Controle
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurar o Manter Alinhado
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Grave as poses da função Manter Alinhado para reduzir o drift
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Abrir o Assistente do Manter Alinhado
 tracking_checklist-ignore = Ignorar
 preview-mocap_mode_soon = Modo Mocap (Em Breve™)
 preview-disable_render = Desativar renderização
