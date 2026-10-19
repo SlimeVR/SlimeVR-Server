@@ -95,18 +95,15 @@ body_part-RIGHT_LITTLE_DISTAL = 右小指遠位部
 
 skeleton_bone-NONE = 無し
 skeleton_bone-NECK = 首長さ
-skeleton_bone-torso_group = 胴体の長さ
 skeleton_bone-UPPER_CHEST = 上胸の長さ
 skeleton_bone-HIP = ヒップ長さ
 skeleton_bone-HIPS_WIDTH = ヒップ幅
-skeleton_bone-leg_group = 股下の長さ
 skeleton_bone-UPPER_LEG = 膝長さ
 skeleton_bone-LOWER_LEG = 足長さ
 skeleton_bone-FOOT_LENGTH = 足先長さ
 skeleton_bone-FOOT_SHIFT = 足先シフト
 skeleton_bone-SHOULDERS_DISTANCE = 肩の距離
 skeleton_bone-SHOULDERS_WIDTH = 肩幅
-skeleton_bone-arm_group = 腕の長さ
 skeleton_bone-UPPER_ARM = 上腕長さ
 skeleton_bone-LOWER_ARM = 前腕長さ
 
@@ -203,11 +200,6 @@ tracker-settings-assignment_section-edit = 割り当ての編集
 tracker-settings-mounting_section = 装着方向
 tracker-settings-mounting_section-description = トラッカーをどの方向に装着していますか?
 tracker-settings-mounting_section-edit = 装着向きの編集
-# Multiline!
-tracker-settings-use_mag-description =
-    このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
-    
-    まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-label = トラッカー名称
@@ -269,16 +261,11 @@ settings-driver-enable = 有効
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = フィルター機能
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    トラッカーのフィルタリングの種類を選択します。
-    Predictionは動きを予測し、Smoothingは動きを滑らかにする。
 settings-general-tracker_mechanics-filtering-type-none = フィルター無し
 settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
 settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
 settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
-settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
 
 ## Stay Aligned pose recorder
@@ -291,25 +278,22 @@ settings-keybinds-recorder-modal-cancel-button = キャンセル
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
 settings-general-fk_settings-leg_tweak-foot_plant = 足の着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーティング補正の強さ
-settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
-settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
 settings-general-fk_settings-skeleton_settings-ratios = スケルトン比率
 settings-general-fk_settings-self_localization-title = モーションキャプチャモード
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = ダブルタップクイックリセット
 settings-general-gesture_control-description = ダブルタップクイックリセットの有効・無効を設定します。有効にすると、最も高い胴体トラッカー上の任意の場所をダブルタップすると、クイックリセットが起動します。ディレイは、タップされてからリセットされるまでの時間です。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -362,7 +346,6 @@ settings-serial = シリアルコンソール
 settings-serial-description =
     シリアル通信のライブ情報フィードです。
     ファームウェアの動作を知る必要がある場合に有用かもしれません。
-settings-serial-connection_lost = シリアルへの接続が失われました、再接続中...
 settings-serial-reboot = リブート
 settings-serial-factory_reset = ファクトリーリセット
 settings-serial-factory_reset-warning-ok = 自分が何しているかを知っています。
@@ -441,9 +424,6 @@ onboarding-wifi_creds-submit = 実行！
 onboarding-wifi_creds-ssid-label = Wi-Fi名
 onboarding-wifi_creds-ssid =
     .placeholder = Enter Wi-Fi名
-onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
 
 ## Install info
 
@@ -481,7 +461,6 @@ onboarding-connect_tracker-next = すべてのトラッカーを接続しまし�
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = トラッカーを割り当てる
-onboarding-assign_trackers-description = どのトラッカーをどこに置くか選んでみましょう。トラッカーを配置したい場所をクリックしてください。
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
