@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Parece que el servidor de SlimeVR ha dejado de 
 websocket-timedout = No se ha podido conectar al servidor
 websocket-timedout-desc = Parece que el servidor de SlimeVR ha dejado de funcionar o se agotó el tiempo de espera de la conexión. Revise los registros y reinicie el programa
 websocket-error-close = Salir de SlimeVR
-websocket-error-logs = Abrir la carpeta de registros
 
 ## Update notification
 
@@ -107,76 +106,28 @@ skeleton_bone-NECK-desc =
     Esta es la distancia entre el medio de tu cabeza hacia la base de tu nuca.
     Para ajustarlo, mueve tu cabeza de arriba a abajo como su estuvieras asintiendo o ladea tu cabeza
     hacia la izquierda y derecha y modifícalo hasta que cualquier movimiento con otros trackers sea insignificante.
-skeleton_bone-torso_group = Largo del torso
 skeleton_bone-torso_group-desc =
     Esta es la distancia entre la base de tu nuca con tus caderas.
     Para ajustarlo, modifícalo parándote recto hasta que tus caderas virtuales se alineen
     con las reales.
 skeleton_bone-UPPER_CHEST = Largo del pecho superior
-skeleton_bone-UPPER_CHEST-desc =
-    Esta es la distancia entre la base de tu nuca hacia el medio de tu pecho.
-    Para ajustarlo, ajusta el largo de tu torso apropiadamente y modifícalo en varias posiciones
-    (Sentándote, agachándote, acostándote, etc.) hasta que tu columna virtual se alinee con la real.
 skeleton_bone-HIP = Largo de la cadera
-skeleton_bone-HIP-desc =
-    Esta es la distancia entre tu ombligo hacia tus caderas
-    Para ajustarla, ajusta el largo de tu torso apropiadamente y modifícala en varias posiciones
-    (sentándote, agachándote, acostándote, etc.) hasta que tu columna virtual se alinee con la real.
 skeleton_bone-HIPS_WIDTH = Ancho de la cadera
 skeleton_bone-HIPS_WIDTH-desc =
     Esta es la distancia entre el comienzo de tus piernas.
     Para ajustarlo, inicia un reinicio completo con tus piernas rectas y modifícalo hasta que
     tus piernas virtuales se alineen con las reales horizontalmente.
-skeleton_bone-leg_group = Largo de la pierna
-skeleton_bone-leg_group-desc =
-    Esta es la distancia entre tus caderas hacia tus pies.
-    Para ajustarlo, ajusta el largo de tu torso apropiadamente y modifícalo
-    hasta que tus pies virtuales estén al mismo nivel que los tuyos.
 skeleton_bone-UPPER_LEG = Largo del muslo
-skeleton_bone-UPPER_LEG-desc =
-    Esta es la distancia entre tus caderas hacia tus rodillas.
-    Para ajustarlo, ajusta el largo de tus piernas apropiadamente y modifícalo
-    hasta que tus rodillas virtuales estén al mismo nivel que las tuyas.
 skeleton_bone-LOWER_LEG = Largo de la tibia
-skeleton_bone-LOWER_LEG-desc =
-    Esta es la distancia entre tus rodillas hacia tus tobillos.
-    Para ajustarlo, ajusta el largo de tus piernas apropiadamente y modifícalo
-    hasta que tus rodillas virtuales estén al mismo nivel que las tuyas.
 skeleton_bone-FOOT_LENGTH = Largo del pie
 skeleton_bone-FOOT_LENGTH-desc =
     Esta es la distancia entre tus tobillos hacia tus dedos del pie.
     Para ajustarla, párate de puntillas y modifícalo hasta que tus pies virtuales se mantengan en su lugar.
 skeleton_bone-FOOT_SHIFT = Desplazamiento de pies
-skeleton_bone-FOOT_SHIFT-desc =
-    Este valor es la distancia horizontal entre tu rodilla hacia tu tobillo.
-    Toma en cuenta las piernas bajas yendo hacia atrás cuando te paras recto.
-    Para ajustarlo, pon el largo de los pies en 0, inicia un reinicio completo y modifícalo hasta que tus pies
-    virtuales se alineen con el medio de tus tobillos.
 skeleton_bone-SHOULDERS_DISTANCE = Distancia de los hombros
-skeleton_bone-SHOULDERS_DISTANCE-desc =
-    Esta es la distancia vertical desde la base de tu nuca hasta tus hombros.
-    Para ajustarlo, pon el largo del brazo superior en 0 y modifícalo hasta que tus trackers de codo virtuales
-    se alineen verticalmente con tus hombros reales.
 skeleton_bone-SHOULDERS_WIDTH = Ancho de los hombros
-skeleton_bone-SHOULDERS_WIDTH-desc =
-    Esta es la distancia horizontal desde la base de tu nuca hasta tus hombros.
-    Para ajustarlo, pon el largo del brazo superior en 0 y modifícalo hasta que tus trackers de codo virtuales
-    se alineen horizontalmente con tus hombros reales.
-skeleton_bone-arm_group = Largo del brazo
-skeleton_bone-arm_group-desc =
-    Esta es la distancia desde tus hombros hasta tus muñecas.
-    Para ajustarlo, ajusta la distancia de los hombros apropiadamente, pon la distancia de las manos Y
-    en 0 y modifícalo hasta que tus trackers de mano se alineen con tus muñecas.
 skeleton_bone-UPPER_ARM = Largo del brazo superior
-skeleton_bone-UPPER_ARM-desc =
-    Esta es la distancia desde tus hombros hasta tus codos.
-    Para ajustarlo, ajusta el largo de los brazos apropiadamente y modifícalo hasta que
-    tus trackers de codos se alineen con tus codos reales.
 skeleton_bone-LOWER_ARM = Distancia del antebrazo
-skeleton_bone-LOWER_ARM-desc =
-    Esta es la distancia desde tus codos hasta tus muñecas.
-    Para ajustarlo, ajusta el largo de los brazos apropiadamente y modifícalo hasta que
-    tus trackers de codos se alineen con tus codos reales.
 
 ## Tracker reset buttons
 
@@ -291,11 +242,6 @@ tracker-settings-mounting_section = Posición de montura
 tracker-settings-mounting_section-description = ¿Dónde está montado el tracker?
 tracker-settings-mounting_section-edit = Editar montura
 tracker-settings-use_mag = Permitir el uso del magnetómetro en este tracker
-# Multiline!
-tracker-settings-use_mag-description =
-    ¿Debería este tracker usar el magnetómetro para reducir la desviacion cuando se permite el uso del magnetómetro? <b>¡Por favor, no apagues tu tracker mientras alternas esto!</b>
-    
-    Primero debes permitir el uso del magnetómetro, <magSetting>haga clic aquí para ir al ajuste</magSetting>.
 tracker-settings-use_mag-label = Permitir el uso del magnetómetro
 tracker-settings-name_section = Nombre del tracker
 tracker-settings-name_section-description = Dale un apodo bonito :)
@@ -307,7 +253,6 @@ tracker-settings-update-unavailable-v2 = No se encontraron lanzamientos
 tracker-settings-update-incompatible = No se puede actualizar. Placa incompatible
 tracker-settings-update-low-battery = No se puede actualizar. Batería por debajo del 50%
 tracker-settings-update-up_to_date = Actualizado
-tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
 tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
 tracker-settings-current-version = Actual
@@ -371,16 +316,11 @@ settings-sidebar-advanced = Avanzado
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrado
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Selecciona un tipo de filtro para tus sensores.
-    Predicción predice el movimiento mientras que el suavizado suaviza el movimiento.
 settings-general-tracker_mechanics-filtering-type-none = Sin filtro
 settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones como son. No se realizará ningún filtrado.
 settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
 settings-general-tracker_mechanics-filtering-type-prediction = Predicción
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reduce la latencia y los movimientos serán más inmediatos, pero puede incrementar la inestabilidad.
 settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tiempo de interpolación para el reinicio horizontal (0s desactiva el suavizado)
 settings-general-tracker_mechanics-save_mounting_reset = Guardar calibración automática de reinicio de montura
@@ -388,9 +328,6 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Guarda las calibraciones automáticas del reinicio de montura para los trackers entre reinicios. Útil
     para cuando se usa un traje donde los trackers no se mueven entre sesiones. <b>¡No se recomienda para usuarios típicos!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar el magnetómetro en todos los trackers IMU que lo admitan
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Usa el magnetómetro en todos los trackers que tienen un firmware compatible, lo que reduce la desviación en entornos magnéticos estables.
-    Se puede desactivar por sensor en la configuración del sensor. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
 settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Permite recibir datos de trackers HID por USB. ¡Asegúrate de que los trackers conectados tengan <b>conexión por HID</b> activados!
 settings-stay_aligned-debug-label = Depuración
@@ -406,32 +343,27 @@ settings-stay_aligned-debug-copy-label = Copiar ajustes al portapapeles
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Clip del suelo
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
 settings-general-fk_settings-leg_tweak-toe_snap = Encajado de dedos
 settings-general-fk_settings-leg_tweak-foot_plant = Plantado del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Agresividad de la corrección del patinaje
-settings-general-fk_settings-leg_tweak-toe_snap-description = El encajado de dedos intenta adivinar la rotación de los pies si sus respectivos trackers no están en uso.
-settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del pie rota los pies para que sean paralelos con el suelo al entrar en contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forzar reinicio de montura de pies
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forzar el reinicio de la montura de los pies durante los reinicios generales del montaje.
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-ik = Datos de posición
-settings-general-fk_settings-ik-use_position-description = Permite el uso de los datos de posición de los trackers que lo proveen. Cuando actives esto asegúrate de hacer un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-skeleton_settings-ratios = Radios del esqueleto
 settings-general-fk_settings-self_localization-title = Modo mocap
-settings-general-fk_settings-self_localization-description = El modo mocap permite al esqueleto rastrear de forma aproximada su propia posición sin un casco o otros sensores. Nota que esto requiere que los trackers en el pie y cabeza estén y sigue siendo experimental.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Reinicio basado en toques
 settings-general-gesture_control-description = Permite la ejecución de un reinicio al tocar un sensor. El sensor más alto en el torso es utilizado para el reinicio rápido, el sensor más alto en tu pierna izquierda es utilizado para el reinicio, y el sensor más alto en tu pierna derecha es utilizado para reiniciar la montura. Cabe destacar que los toques deben suceder dentro de 0.6 segundos para ser registrados.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -451,7 +383,6 @@ settings-general-gesture_control-mountingResetDelay = Retraso del reinicio de mo
 settings-general-gesture_control-mountingResetTaps = Toques para reinicio de montura
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers sobre el límite
-settings-general-gesture_control-numberTrackersOverThreshold-description = Aumente este valor si la detección de toques no funciona. No lo aumente mas de lo necesario para que funciona ya que puede causar que la detección tenga más falsas positivas.
 
 ## Appearance settings
 
@@ -505,7 +436,6 @@ settings-serial = Consola serial
 settings-serial-description =
     Esta es la comunicación serial actualizada en vivo.
     Puede ser util para saber si el firmware tiene problemas.
-settings-serial-connection_lost = Conexión serial perdida, reconectando...
 settings-serial-reboot = Reinciar
 settings-serial-factory_reset = Restauración de fábrica
 # This cares about multilines
@@ -667,7 +597,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = Se requiere el nombre del Wi-Fi
 onboarding-wifi_creds-password =
     .label = Contraseña
-    .placeholder = Ingresa la contraseña
+    .placeholder = Enter your Wi-Fi password
 onboarding-wifi_creds-dongle-title = Trackers utilizando un dongle
 onboarding-wifi_creds-dongle-description = ¡Si tus trackers llegaron con un dongle, conéctalo a tu dispositivo y deberías estar listo para usar!
 onboarding-wifi_creds-dongle-wip = Esta sección es un trabajo en progreso. Una página dedicada para administrar trackers que se conectan via dongle sera hecha pronto.
@@ -689,7 +619,6 @@ onboarding-connect_tracker-title = Conecta tus sensores
 onboarding-connect_tracker-issue-serial = ¡Tengo problemas conectándolos!
 onboarding-connect_tracker-usb = Sensor USB
 onboarding-connect_tracker-connection_status-serial_init = Conectando al dispositivo serial
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Obteniendo la dirección MAC del sensor
 onboarding-connect_tracker-connection_status-provisioning = Enviando credenciales Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Enviando credenciales Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Buscando servidor
@@ -716,7 +645,6 @@ onboarding-connect_tracker-next = He conectado todos mis sensores
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Asignación de sensores
-onboarding-assign_trackers-description = Debes escoger dónde van los sensores. Has clic en la ubicación donde quieras colocar un sensor
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -950,7 +878,6 @@ firmware_tool-flashing_step-exit = Salir
 
 ## firmware tool build status
 
-firmware_tool-build-QUEUED = Esperando a construir....
 firmware_tool-build-CREATING_BUILD_FOLDER = Creando la carpeta de compilación
 firmware_tool-build-DOWNLOADING_SOURCE = Descargando el código fuente
 firmware_tool-build-EXTRACTING_SOURCE = Extrayendo el código fuente
@@ -963,16 +890,13 @@ firmware_tool-build-ERROR = No se pudo compilar el firmware
 
 firmware_update-status-DOWNLOADING = Descargando el firmware
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Por favor apaga tu tracker y enciéndelo de nuevo
-firmware_update-status-AUTHENTICATING = Autenticando con el microcontrolador
 firmware_update-status-UPLOADING = Cargando el firmware
-firmware_update-status-SYNCING_WITH_MCU = Sincronizando con el microcontrolador
 firmware_update-status-REBOOTING = Aplicando la actualización
 firmware_update-status-PROVISIONING = Configurando las credenciales del Wi-Fi
 firmware_update-status-DONE = ¡Actualización completa!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = No se pudo encontrar el dispositivo
 firmware_update-status-ERROR_TIMEOUT = Se agotó el tiempo de espera del proceso de actualización
 firmware_update-status-ERROR_DOWNLOAD_FAILED = No se pudo descargar el firmware
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = No se pudo autenticar con el microcontrolador
 firmware_update-status-ERROR_UPLOAD_FAILED = No se pudo cargar el firmware
 firmware_update-status-ERROR_PROVISIONING_FAILED = No se pudieron configurar las credenciales del Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = El método de actualización no es compatible
