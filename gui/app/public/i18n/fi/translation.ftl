@@ -248,7 +248,9 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoit
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähentää viivettä ja tekee liikeistä näppärämpiä, mutta voi lisätä värinää.
 settings-general-tracker_mechanics-filtering-amount = Määrä
-settings-stay_aligned-relaxed_poses-close = Sulje
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -561,13 +563,6 @@ onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Laita jäljittimet päällesi
-onboarding-stay_aligned-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
-onboarding-stay_aligned-verify_mounting-title = Asennuksen Nollaus
-onboarding-stay_aligned-preparation-title = Valmistelu
 
 ## Home
 
