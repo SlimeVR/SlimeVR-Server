@@ -285,7 +285,9 @@ settings-driver-enable = Etkinleştir
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering-amount = Miktar
-settings-stay_aligned-relaxed_poses-close = Kapat
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -405,9 +407,6 @@ onboarding-assign_trackers-side-left = Sol
 
 
 ## User height calibration
-
-
-## Stay Aligned setup
 
 
 ## Home
