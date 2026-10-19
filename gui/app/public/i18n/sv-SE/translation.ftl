@@ -381,18 +381,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Använd magnetomete
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
-settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
-settings-stay_aligned-setup-label = Ställ in Behåll inriktning
-settings-stay_aligned-relaxed_poses-label = Avslappnade positioner
-settings-stay_aligned-relaxed_poses-standing = Justera sensorer medans du står
-settings-stay_aligned-relaxed_poses-sitting = Justera sensorer medans du sitter i en stol
-settings-stay_aligned-relaxed_poses-flat = Justera sensorer medans du sitter på golvet, eller ligger på ryggen.
-settings-stay_aligned-relaxed_poses-save_pose = Spara position
-settings-stay_aligned-relaxed_poses-reset_pose = Återställ position
-settings-stay_aligned-relaxed_poses-close = Stäng
 settings-stay_aligned-debug-label = Avbuggning
 settings-stay_aligned-debug-description = Var vänlig inkludera dina inställningar när du rapporterar problem om Behåll inriktning.
 settings-stay_aligned-debug-copy-label = Kopiera inställningar till urklipp
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -712,14 +706,6 @@ onboarding-automatic_proportions-start_recording-description = Vi kommer nu att 
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Behåll inriktning
-onboarding-stay_aligned-put_trackers_on-title = Sätt på alla dina trackers
-onboarding-stay_aligned-put_trackers_on-next = Jag har på mig alla trackers
-onboarding-stay_aligned-verify_mounting-title = Monterings-återställning
-onboarding-stay_aligned-preparation-title = Förberedning
 
 ## Home
 
