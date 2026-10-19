@@ -383,18 +383,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = Utilizza il magneto
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilizza il magnetometro su tutti i tracker che dispongono di un firmware compatibile, riducendo il drift in ambienti magnetici stabili.
     Può essere disabilitato per ogni tracker nelle impostazioni del tracker. <b>Per favore non spegnere nessuno dei tracker durante l'attivazione!</b>
-settings-stay_aligned-description = Rimani Allineato riduce la deriva regolando gradualmente i tracker per allinearsi alle tue pose rilassate.
-settings-stay_aligned-setup-label = Configura Rimani Allineato
-settings-stay_aligned-relaxed_poses-label = Pose Rilassate
-settings-stay_aligned-relaxed_poses-standing = Regola i tracker stando in piedi
-settings-stay_aligned-relaxed_poses-sitting = Regola i tracker mentre sei seduto su una sedia
-settings-stay_aligned-relaxed_poses-flat = Regola i tracker mentre sei seduto a terra o sdraiato sulla schiena
-settings-stay_aligned-relaxed_poses-save_pose = Salva posa
-settings-stay_aligned-relaxed_poses-reset_pose = Ripristina posa
-settings-stay_aligned-relaxed_poses-close = Chiudi
 settings-stay_aligned-debug-label = Debug
 settings-stay_aligned-debug-description = Includi le tue impostazioni quando segnali problemi relativi a Rimani Allineato.
 settings-stay_aligned-debug-copy-label = Copia le impostazioni negli appunti
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -806,35 +800,6 @@ onboarding-automatic_proportions-smol_warning-cancel = Indietro
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-title = Rimani Allineato
-onboarding-stay_aligned-description = Configura Rimani Allineato per mantenere allineati i tuoi tracker.
-onboarding-stay_aligned-put_trackers_on-title = Indossa i tuoi tracker
-onboarding-stay_aligned-put_trackers_on-description = Per salvare la tua posa useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Hai meno di 5 tracker attualmente collegati e assegnati! Questa è la quantità minima di tracker necessaria per il corretto funzionamento di Stay Aligned.
-onboarding-stay_aligned-put_trackers_on-next = Sto indossando tutti i miei tracker
-onboarding-stay_aligned-verify_mounting-title = Controlla il posizionamento dei tuoi tracker
-onboarding-stay_aligned-preparation-title = Preparazione
-onboarding-stay_aligned-preparation-tip = Assicurati di stare in piedi. Devi guardare in avanti e le tue braccia devono essere abbassate lungo i fianchi.
-onboarding-stay_aligned-relaxed_poses-standing-title = Posa Rilassata in piedi
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stai in una posizione comoda. Rilassati!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Premi il pulsante "Salva posa".
-onboarding-stay_aligned-relaxed_poses-sitting-title = Seduto rilassato nella posa della sedia
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Siediti in una posizione comoda. Rilassati!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Premi il pulsante "Salva posa".
-onboarding-stay_aligned-relaxed_poses-flat-title = Posa rilassata seduta a terra
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Siediti a terra con le gambe in avanti. Rilassati!
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Premi il pulsante "Salva posa".
-onboarding-stay_aligned-relaxed_poses-skip_step = Salta
-onboarding-stay_aligned-done-title = Rimani Allineato è abilitato!
-onboarding-stay_aligned-done-description = La configurazione di Rimani Allineato è completa!
-onboarding-stay_aligned-done-description-2 = L'installazione è completa! È possibile riavviare il processo se si desidera ricalibrare le pose
-onboarding-stay_aligned-previous_step = Precedente
-onboarding-stay_aligned-next_step = Successivo
-onboarding-stay_aligned-restart = Riavvia
-onboarding-stay_aligned-done = Fatto
 
 ## Home
 
