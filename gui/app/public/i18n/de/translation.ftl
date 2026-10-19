@@ -402,17 +402,12 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
     Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
-settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
-settings-stay_aligned-setup-label = Stay Aligned einrichten
-settings-stay_aligned-relaxed_poses-label = Entspannte Posen
-settings-stay_aligned-relaxed_poses-standing = Tracker im Stehen anpassen
-settings-stay_aligned-relaxed_poses-sitting = Tracker anpassen, während du auf einem Stuhl sitzt
-settings-stay_aligned-relaxed_poses-save_pose = Pose speichern
-settings-stay_aligned-relaxed_poses-reset_pose = Pose zurücksetzen
-settings-stay_aligned-relaxed_poses-close = Schließen
 settings-stay_aligned-debug-label = Debuggen
 settings-stay_aligned-debug-description = Bitte geben Sie Ihre Einstellungen mit an, wenn Sie Probleme mit Stay Aligned melden.
 settings-stay_aligned-debug-copy-label = Einstellungen in die Zwischenablage kopieren
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -867,33 +862,6 @@ onboarding-user_height-reset-warning =
     <b>Achtung:</b> Die Proportionen werden zurückgesetzt und auf Basis deiner Körpergröße neu berechnet.
     Bist du dir sicher?
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-description = Konfigurieren Sie Stay Aligned, um Ihre Tracker ausgerichtet zu halten.
-onboarding-stay_aligned-put_trackers_on-title = Legen Sie Ihre Tracker an
-onboarding-stay_aligned-put_trackers_on-description = Um Ihre Ruheposen zu speichern, verwenden wir die Tracker, die Sie gerade zugewiesenen haben. Legen Sie all Ihre Tracker an. In der Abbildung rechts können Sie sehen, welcher welcher ist.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = Sie haben derzeit weniger als 5 Tracker verbunden und zugewiesen! Dies ist die Mindestanzahl an Trackern, die erforderlich sind, damit Stay Aligned richtig funktioniert.
-onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
-onboarding-stay_aligned-verify_mounting-title = Tracker-Ausrichtung
-onboarding-stay_aligned-preparation-title = Vorbereitung
-onboarding-stay_aligned-preparation-tip = Achten Sie darauf, aufrecht zu stehen. Schauen Sie nach vorne und lassen Sie die Arme an den Seiten hängen.
-onboarding-stay_aligned-relaxed_poses-standing-title = Entspannte Stehpose
-onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Nehmen Sie eine bequeme Haltung ein. Entspannen Sie sich!
-onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Drücken Sie die Taste „Pose speichern“.
-onboarding-stay_aligned-relaxed_poses-sitting-title = Entspannte Im-Stuhl-sitzen-Pose
-onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Nehme eine bequeme Haltung ein. Entspanne dich!
-onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Drücke die Taste „Pose speichern“.
-onboarding-stay_aligned-relaxed_poses-flat-title = Entspannte Sitzposition auf dem Boden
-onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Setz dich mit den Beinen nach vorne auf den Boden. Entspann dich!
-onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Drücke die Taste „Pose speichern“.
-onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
-onboarding-stay_aligned-done-title = Stay aligned aktiviert!
-onboarding-stay_aligned-done-description = Dein Stay Aligned-Setup ist komplett!
-onboarding-stay_aligned-previous_step = Zurück
-onboarding-stay_aligned-next_step = Weiter
-onboarding-stay_aligned-restart = Neu starten
-onboarding-stay_aligned-done = Fertig
-
 ## Home
 
 home-settings = Startseiten-Einstellungen
@@ -1110,7 +1078,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Kontrollpanel öffnen
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Stay Aligned konfigurieren
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zeichne die Stay Aligned-Posen auf, um Drift zu reduzieren
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öffne den Stay Aligned Assistent
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = Gehe zu VRChat OSC Einstellungen
 tracking_checklist-ignore = Ignorieren
 preview-mocap_mode_soon = Mocap-Modus (Bald™)
