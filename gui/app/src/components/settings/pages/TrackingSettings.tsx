@@ -169,17 +169,17 @@ export const trackingSettingsPage = defineSettingsPage({
       description:
         'settings-general-fk_settings-skeleton_settings-ratios-description',
       rows: {
-        spineCurvature: {
-          title:
-            'settings-general-fk_settings-skeleton_settings-spine_curvature',
-          description:
-            'settings-general-fk_settings-skeleton_settings-spine_curvature-description',
-        },
         imputeSpineFromUpperToLower: {
           title:
             'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower',
           description:
             'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-description',
+        },
+        spineCurvature: {
+          title:
+            'settings-general-fk_settings-skeleton_settings-spine_curvature',
+          description:
+            'settings-general-fk_settings-skeleton_settings-spine_curvature-description',
         },
         interpolateUpperLegsTwistWithLowerLegs: {
           title:
@@ -414,12 +414,12 @@ export function TrackingSettings() {
 
           <SettingsGroup group={groups.ratios}>
             <SettingRow
-              setting={groups.ratios.rows.spineCurvature}
-              {...stepper('ratios.spineCurvature')}
-            />
-            <SettingRow
               setting={groups.ratios.rows.imputeSpineFromUpperToLower}
               {...stepper('ratios.imputeSpineFromUpperToLower')}
+            />
+            <SettingRow
+              setting={groups.ratios.rows.spineCurvature}
+              {...stepper('ratios.spineCurvature')}
             />
             <SettingRow
               setting={

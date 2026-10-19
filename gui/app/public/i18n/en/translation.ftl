@@ -14,7 +14,7 @@ websocket-report-question = Help us fix this by sending an error report.
 websocket-report-send = Send report
 websocket-report-sent = Report sent. Thank you!
 websocket-error-close = Exit SlimeVR
-websocket-error-logs = Open the logs Folder
+websocket-error-logs = Open the logs folder
 
 ## Update notification
 version_update-title = New version available: { $version }
@@ -140,7 +140,7 @@ skeleton_bone-NECK-desc =
     This is the distance from the middle of your head to the base of your neck.
     To adjust it, move your head up and down as if you're nodding or tilt your head
     to the left and right and modify it until any movement in other trackers is negligible.
-skeleton_bone-torso_group = Torso length
+skeleton_bone-torso_group = Torso Length
 skeleton_bone-torso_group-desc =
     This is the distance from the base of your neck to your hips.
     To adjust it, modify it standing up straight until your virtual hips line
@@ -148,47 +148,47 @@ skeleton_bone-torso_group-desc =
 skeleton_bone-UPPER_CHEST = Upper Chest Length
 skeleton_bone-UPPER_CHEST-desc =
     This is the distance from the base of your neck to the middle of your chest.
-    To adjust it, adjust your Torso Length properly and modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-LOWER_CHEST = Lower Chest Length
 skeleton_bone-LOWER_CHEST-desc =
     This is the distance from the middle of your chest to the middle of your spine.
-    To adjust it, adjust your Torso Length properly and modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-UPPER_WAIST = Upper Waist Length
 skeleton_bone-UPPER_WAIST-desc =
     This is the distance from the middle of your spine to a bit above your belly button.
-    To adjust it, adjust your Torso Length properly and modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-LOWER_WAIST = Lower Waist Length
 skeleton_bone-LOWER_WAIST-desc =
     This is the distance from a bit above your belly button to a bit below it.
-    To adjust it, adjust your Torso Length properly and modify it in various positions
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
-    This is the distance from a bit bellow your belly button to your hips.
-    To adjust it, set your Torso Length properly and modify it in various positions
+    This is the distance from a bit below your belly button to your hips.
+    To adjust it, set "{ skeleton_bone-torso_group }" properly first then modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIPS_WIDTH = Hips Width
 skeleton_bone-HIPS_WIDTH-desc =
     This is the distance between the start of your legs.
     To adjust it, perform a full reset with your legs straight and modify it until
     your virtual legs match up with your real ones horizontally.
-skeleton_bone-leg_group = Leg length
+skeleton_bone-leg_group = Leg Length
 skeleton_bone-leg_group-desc =
     This is the distance from your hips to your feet.
-    To adjust it, adjust your Torso Length properly and modify it
+    To adjust it, adjust "{ skeleton_bone-torso_group }" properly first then modify it
     until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Upper Leg Length
 skeleton_bone-UPPER_LEG-desc =
     This is the distance from your hips to your knees.
-    To adjust it, adjust your Leg Length properly and modify it
+    To adjust it, adjust "{ skeleton_bone-leg_group }" properly first then modify it
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-LOWER_LEG-desc =
     This is the distance from your knees to your ankles.
-    To adjust it, adjust your Leg Length properly and modify it
+    To adjust it, adjust "{ skeleton_bone-leg_group }" properly first then modify it
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
 skeleton_bone-FOOT_LENGTH-desc =
@@ -197,38 +197,38 @@ skeleton_bone-FOOT_LENGTH-desc =
 skeleton_bone-FOOT_SHIFT = Foot Shift
 skeleton_bone-FOOT_SHIFT-desc =
     This value is the horizontal distance from your knee to your ankle.
-    It accounts for your lower legs going backwards when standing up straight.
-    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
-    feet line up with the middle of your ankles.
+    It moves the anchor of your feet to account for different armatures.
+    To adjust it, tilt a foot down after calibrating in-game. If your leg goes down when you do,
+    increase it; if your leg goes up, decrease it. Make sure to re-calibrate after changing it.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     This is the vertical distance from the base of your neck to your shoulders.
-    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    To adjust it, set "{ skeleton_bone-UPPER_ARM }" to 0 and modify it until your virtual elbow trackers
     line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-SHOULDERS_WIDTH-desc =
     This is the horizontal distance between your shoulders.
-    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    To adjust it, set "{ skeleton_bone-UPPER_ARM }" to 0 and modify it until your virtual elbow trackers
     line up horizontally with your real shoulders.
-skeleton_bone-arm_group = Arm length
+skeleton_bone-arm_group = Arm Length
 skeleton_bone-arm_group-desc =
     This is the distance from your shoulders to your wrists.
-    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y
-    to 0 and modify it until your hand trackers line up with your wrists.
+    To adjust it, adjust "{ skeleton_bone-SHOULDERS_DISTANCE }" properly first, set "{ skeleton_bone-HAND }"
+    to 0 then modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-UPPER_ARM-desc =
     This is the distance from your shoulders to your elbows.
-    To adjust it, adjust Arm Length properly and modify it until
+    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first then modify it until
     your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Lower Arm Length
 skeleton_bone-LOWER_ARM-desc =
     This is the distance from your elbows to your wrists.
-    To adjust it, adjust Arm Length properly and modify it until
+    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first then modify it until
     your elbow trackers line up with your real elbows.
 skeleton_bone-HAND = Hand Length
 skeleton_bone-HAND-desc =
     This is the distance from your wrists to your knuckles.
-    To adjust it, adjust Arm Length properly and modify it until your
+    To adjust it, adjust "{ skeleton_bone-arm_group }" properly first then modify it until your
     hand trackers line up vertically with your knuckles.
 
 ## Tracker reset buttons
@@ -353,7 +353,7 @@ tracker-settings-mounting_section-edit = Edit mounting
 tracker-settings-use_mag = Allow magnetometer on this tracker
 # Multiline!
 tracker-settings-use_mag-description =
-    Should this tracker use magnetometer to reduce drift when magnetometer usage is allowed? <b>Please don't shutdown your tracker while toggling this!</b>
+    Should this tracker use its magnetometer to reduce drift when magnetometer usage is allowed? <b>Do not shut down your tracker while toggling this!</b>
 
     You need to allow magnetometer usage first, <magSetting>click here to go to the setting</magSetting>.
 tracker-settings-use_mag-label = Allow magnetometer
@@ -385,7 +385,7 @@ tracker-settings-update-unavailable-v2 = No releases found
 tracker-settings-update-incompatible = Cannot update. Incompatible board or firmware version
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
-tracker-settings-update-blocked = Update not available. No other releases available
+tracker-settings-update-blocked = Update not available; no other release available.
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
 tracker-settings-current-version = Current
@@ -597,15 +597,15 @@ settings-general-tracker_mechanics-filtering-type = Filtering type
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
-    Prediction predicts movement while smoothing smooths movement.
+    "{ settings-general-tracker_mechanics-filtering-type-smoothing }" makes movement smoother while "{ settings-general-tracker_mechanics-filtering-type-prediction }" minimizes latency.
 settings-general-tracker_mechanics-filtering-type-none = No filtering
 settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooths movements but adds some latency.
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements snappier, but increases jitter.
 settings-general-tracker_mechanics-filtering-amount = Filter strength
-settings-general-tracker_mechanics-filtering-amount-description = How strong the selected filter is. A stronger filter smooths or predicts more.
+settings-general-tracker_mechanics-filtering-amount-description = How strong the selected filter is. Higher values increase smoothing or prediction while lower ones make the effect more subtle.
 settings-general-tracker_mechanics-filtering-amount-no_filtering = Pick a filtering type to set its strength.
 settings-general-fk_settings-reset_behaviour_group = Reset behaviour
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
@@ -618,21 +618,21 @@ settings-general-tracker_mechanics-magnetometer_group = Magnetometer
 settings-general-tracker_mechanics-connection_group = Connection
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
-    Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
+    Uses the magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
+    Can be disabled per tracker in the tracker's settings. <b>Please don't shut down any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
 settings-general-tracker_mechanics-trackers_over_usb-description =
     Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
 settings-general-tracker_mechanics-timeout_delay = Timeout delay
 settings-general-tracker_mechanics-timeout_delay-description = How long until a tracker is marked as '{ tracker-status-disconnected }' when the connection is lost.
 
-settings-stay_aligned-description = Stay Aligned reduces yaw drift while you play. Trackers that stay still are held where they are, with no setup. To also correct trackers while you move, turn it on and record the poses you play in.
+settings-stay_aligned-description = Stay Aligned reduces trackers' IMU drift. Trackers that stay still are locked in place, with no setup. To also correct trackers while you move, record the poses you use with them.
 settings-stay_aligned-enabled-label = Enable Stay Aligned
 settings-stay_aligned-enabled-label-description = Turn Stay Aligned on or off for all your trackers.
 settings-stay_aligned-status_group = Status
 settings-stay_aligned-status-correction = Correction
 settings-stay_aligned-status-position = Current detected position
-settings-stay_aligned-position-unknown = Not recognised
+settings-stay_aligned-position-unknown = Not recognized
 settings-stay_aligned-position-standing = Standing
 settings-stay_aligned-position-sitting = Sitting
 settings-stay_aligned-position-flat = On the floor
@@ -641,30 +641,30 @@ settings-stay_aligned-trackers-missing = No tracker for: { $parts }.
 settings-stay_aligned-status-badge-disabled = Off
 settings-stay_aligned-status-badge-correcting = Correcting
 settings-stay_aligned-status-badge-not_correcting = Not correcting
-settings-stay_aligned-status-text-disabled = Turn it on above to hold and correct your trackers.
+settings-stay_aligned-status-text-disabled = Enable Stay Aligned to correct your trackers.
 settings-stay_aligned-status-text-correcting = Moving trackers are corrected using the pose you are in.
-settings-stay_aligned-status-text-pose_unusable = Moving trackers are not corrected in this position.
+settings-stay_aligned-status-text-pose_unusable = Moving trackers are not corrected in this pose.
 settings-stay_aligned-status-pose-name = { $pose }.
 settings-stay_aligned-status-badge-pose-ready = Ready
 settings-stay_aligned-status-badge-pose-not_recorded = Not recorded
 settings-stay_aligned-status-badge-pose-disabled = Turned off
-settings-stay_aligned-status-badge-pose-unknown = Unrecognised
+settings-stay_aligned-status-badge-pose-unknown = Unrecognized
 settings-stay_aligned-status-pose-ready = Moving trackers can be corrected with this pose.
 settings-stay_aligned-status-pose-not_recorded = Record this pose so moving trackers can be corrected in it.
 settings-stay_aligned-status-pose-disabled = This pose is turned off, so moving trackers are not corrected in it.
 settings-stay_aligned-status-pose-unknown = Your position does not match any pose, so moving trackers are not corrected.
 settings-stay_aligned-status-largest_correction = Largest correction
 settings-stay_aligned-status-largest_correction-part = { $part }, since your last reset.
-settings-stay_aligned-status-largest_correction-none = No tracker was turned since your last reset.
+settings-stay_aligned-status-largest_correction-none = No tracker was corrected since your last reset.
 settings-stay_aligned-status-largest_correction-off = Nothing is corrected while Stay Aligned is off.
 settings-stay_aligned-poses_group = Relaxed poses
-settings-stay_aligned-poses_group-description = Stay Aligned needs to know how your legs sit when you are relaxed, for each position you play in. Record the ones you use. Only your legs and torso count, arms and hands can be anywhere.
+settings-stay_aligned-poses_group-description = Stay Aligned needs to know how your legs rest in each pose you play in. Record the ones you use. Only your legs and torso are used; your arms and hands can be anywhere.
 settings-stay_aligned-pose-standing = Standing
-settings-stay_aligned-pose-standing-description = Stand relaxed with your legs in your natural stance.
+settings-stay_aligned-pose-standing-description = Stand relaxed with your legs in their natural stance.
 settings-stay_aligned-pose-sitting = Sitting in a chair
-settings-stay_aligned-pose-sitting-description = Sit relaxed in a chair, feet on the floor.
+settings-stay_aligned-pose-sitting-description = Sit relaxed in a chair, feet touching the floor.
 settings-stay_aligned-pose-flat = Sitting on the floor or lying on your back
-settings-stay_aligned-pose-flat-description = Sit on the floor with your legs in front of you, relaxed.
+settings-stay_aligned-pose-flat-description = Sit relaxed on the floor with your legs in front of you.
 settings-stay_aligned-badge-recorded = Recorded
 settings-stay_aligned-badge-not_recorded = Not recorded
 settings-stay_aligned-badge-default = Default
@@ -741,22 +741,22 @@ settings-keybinds-error-add-modifier = Hold Ctrl, Alt, or Super with that key
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
-settings-general-fk_settings-leg_tweak-skating_correction-amount-description = Higher values correct skating more, at the cost of accuracy in some movements.
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
+settings-general-fk_settings-leg_tweak-skating_correction-amount-description = A higher value will result in more aggressive correction at the cost of accuracy during certain movements.
+settings-general-fk_settings-leg_tweak-skating_correction-description = Corrects for foot sliding, but can decrease accuracy during certain movements.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Prevents feet clipping through the floor by shifting them up when they do.
+settings-general-fk_settings-leg_tweak-toe_snap-description = When not using feet trackers, guesses the rotation of your feet when going on your tippy toes.
+settings-general-fk_settings-leg_tweak-foot_plant-description = When not using feet trackers, keeps your feet parallel to the ground when they touch it.
 settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
@@ -765,7 +765,7 @@ settings-general-fk_settings-enforce_joint_constraints = Skeletal limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
 settings-general-fk_settings-position_group = Position tracking
 settings-general-fk_settings-ik = Position data
-settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-ik-use_position-description = Uses position data from trackers that provide it for IK. When enabling this, make sure to full reset and recalibrate in game.
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude = Reset HMD attitude
 settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude-description = Reset a VR headset's vertical rotation upon doing a full reset. Useful when wearing one on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-arms_mounting_reset_mode = Arms mounting reset mode
@@ -785,10 +785,10 @@ settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower-
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs-description = How much the twist of your upper legs follows your lower legs. Use a lower value for motion capture or a higher one for VR.
 settings-general-fk_settings-self_localization-title = Mocap mode
-settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its position in space without any positional tracker.
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without any positional tracker.
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control-subtitle = Tap based resets
+settings-general-gesture_control-subtitle = Tap-based resets
 settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -823,7 +823,7 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting calibrati
 settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
-settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work as it would cause more false positives.
+settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make it work in order to prevent false positives.
 
 ## Appearance settings
 settings-interface-appearance = Appearance
@@ -904,7 +904,7 @@ settings-serial = USB Serial Console
 settings-serial-description =
     This is a live information feed for serial communication via USB.
     May be useful to debug firmware or hardware issues.
-settings-serial-connection_lost = Connection to serial lost, Reconnecting...
+settings-serial-connection_lost = Connection to serial lost. Reconnecting...
 settings-serial-busy = The port is in use by a firmware update, the console will resume afterwards
 settings-serial-opening = Opening the serial port...
 settings-serial-open_failed = Could not open the serial port. Check that no other program is using it and that you have permission to access it.
@@ -1200,7 +1200,7 @@ onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
 onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
 onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
-onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-wifi = Wi-Fi-based Slime
 onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
 
 onboarding-quiz-usage-title = What are you using your trackers for?
@@ -1255,7 +1255,7 @@ onboarding-wifi_creds-enter_manually = Don't see your network? Enter it manually
 onboarding-wifi_creds-use_scanned = Choose from scanned networks instead
 onboarding-wifi_creds-password =
     .label = Password
-    .placeholder = Enter your WI-FI password
+    .placeholder = Enter your Wi-Fi password
 
 onboarding-wifi_creds-dongle-title = Trackers using a dongle
 onboarding-wifi_creds-dongle-description =
@@ -1275,7 +1275,7 @@ onboarding-home-start = Let's get set up!
 
 ## Tracker connection setup
 onboarding-connect_tracker-title = Let's connect your trackers
-onboarding-connect_tracker-description = Enter your Wi-Fi network below and submit once. every tracker you connect via USB, now or later, will automatically use those credentials.
+onboarding-connect_tracker-description = Enter your Wi-Fi network below and submit once. Every tracker you connect via USB, now or later, will automatically use those credentials.
 onboarding-connect_tracker-learn_more = Learn more
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
@@ -1290,7 +1290,7 @@ onboarding-connect_tracker-all_caught_up = All caught up. Plug in more any time
 onboarding-connect_tracker-shake_tip = Not sure which tracker is which? Shake a tracker to see it light up in the list.
 onboarding-connect_tracker-close = Close
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's mac address
+onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's MAC address
 onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
 onboarding-connect_tracker-connection_status-connecting = Trying to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Looking for server
@@ -1318,7 +1318,7 @@ onboarding-connect_tracker-next = I connected all my trackers
 
 ## Tracker assignment setup
 onboarding-assign_trackers-title = Assign trackers
-onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
+onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker.
 onboarding-assign_trackers-reset_assignments = Reset all assignments
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
@@ -1556,7 +1556,7 @@ onboarding-user_height-title = What is your height?
 onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Calculate my height automatically
 onboarding-user_height-error_bounds = Input too high or too low
-onboarding-user_height-error_format = Input wrong format
+onboarding-user_height-error_format = Wrong input format
 onboarding-user_height-next_step = Continue and save
 onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-title = Calibration Progress
@@ -1698,7 +1698,7 @@ firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
 
 ## firmware tool build status
-firmware_tool-build-QUEUED = Waiting to build....
+firmware_tool-build-QUEUED = Waiting to build...
 firmware_tool-build-CREATING_BUILD_FOLDER = Creating the build folder
 firmware_tool-build-DOWNLOADING_SOURCE = Downloading the source code
 firmware_tool-build-EXTRACTING_SOURCE = Extracting the source code
@@ -1710,16 +1710,16 @@ firmware_tool-build-ERROR = Unable to build the firmware
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
 firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
-firmware_update-status-AUTHENTICATING = Authenticating with the mcu
+firmware_update-status-AUTHENTICATING = Authenticating with the MCU
 firmware_update-status-UPLOADING = Uploading the firmware
-firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
+firmware_update-status-SYNCING_WITH_MCU = Syncing with the MCU
 firmware_update-status-REBOOTING = Applying the update
 firmware_update-status-PROVISIONING = Setting Wi-Fi credentials
 firmware_update-status-DONE = Update complete!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Could not find the device
 firmware_update-status-ERROR_TIMEOUT = The update process timed out
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Could not download the firmware
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Could not authenticate with the mcu
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = Could not authenticate with the MCU
 firmware_update-status-ERROR_UPLOAD_FAILED = Could not upload the firmware
 firmware_update-status-ERROR_PROVISIONING_FAILED = Could not set the Wi-Fi credentials
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = The update method is not supported
