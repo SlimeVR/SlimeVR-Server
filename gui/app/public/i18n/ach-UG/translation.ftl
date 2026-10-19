@@ -146,39 +146,39 @@ skeleton_bone-NECK-desc = crwdns7286:0crwdne7286:0
 skeleton_bone-torso_group = crwdns7288:0crwdne7288:0
 skeleton_bone-torso_group-desc = crwdns7290:0crwdne7290:0
 skeleton_bone-UPPER_CHEST = crwdns7292:0crwdne7292:0
-skeleton_bone-UPPER_CHEST-desc = crwdns7294:0crwdne7294:0
+skeleton_bone-UPPER_CHEST-desc = crwdns7294:0{ skeleton_bone-torso_group }crwdne7294:0
 skeleton_bone-LOWER_CHEST = crwdns7296:0crwdne7296:0
-skeleton_bone-LOWER_CHEST-desc = crwdns7298:0crwdne7298:0
+skeleton_bone-LOWER_CHEST-desc = crwdns7298:0{ skeleton_bone-torso_group }crwdne7298:0
 skeleton_bone-UPPER_WAIST = crwdns7300:0crwdne7300:0
-skeleton_bone-UPPER_WAIST-desc = crwdns7302:0crwdne7302:0
+skeleton_bone-UPPER_WAIST-desc = crwdns7302:0{ skeleton_bone-torso_group }crwdne7302:0
 skeleton_bone-LOWER_WAIST = crwdns7304:0crwdne7304:0
-skeleton_bone-LOWER_WAIST-desc = crwdns7306:0crwdne7306:0
+skeleton_bone-LOWER_WAIST-desc = crwdns7306:0{ skeleton_bone-torso_group }crwdne7306:0
 skeleton_bone-HIP = crwdns7308:0crwdne7308:0
-skeleton_bone-HIP-desc = crwdns7310:0crwdne7310:0
+skeleton_bone-HIP-desc = crwdns7310:0{ skeleton_bone-torso_group }crwdne7310:0
 skeleton_bone-HIPS_WIDTH = crwdns7312:0crwdne7312:0
 skeleton_bone-HIPS_WIDTH-desc = crwdns7314:0crwdne7314:0
 skeleton_bone-leg_group = crwdns7316:0crwdne7316:0
-skeleton_bone-leg_group-desc = crwdns7318:0crwdne7318:0
+skeleton_bone-leg_group-desc = crwdns7318:0{ skeleton_bone-torso_group }crwdne7318:0
 skeleton_bone-UPPER_LEG = crwdns7320:0crwdne7320:0
-skeleton_bone-UPPER_LEG-desc = crwdns7322:0crwdne7322:0
+skeleton_bone-UPPER_LEG-desc = crwdns7322:0{ skeleton_bone-leg_group }crwdne7322:0
 skeleton_bone-LOWER_LEG = crwdns7324:0crwdne7324:0
-skeleton_bone-LOWER_LEG-desc = crwdns7326:0crwdne7326:0
+skeleton_bone-LOWER_LEG-desc = crwdns7326:0{ skeleton_bone-leg_group }crwdne7326:0
 skeleton_bone-FOOT_LENGTH = crwdns7328:0crwdne7328:0
 skeleton_bone-FOOT_LENGTH-desc = crwdns7330:0crwdne7330:0
 skeleton_bone-FOOT_SHIFT = crwdns7332:0crwdne7332:0
 skeleton_bone-FOOT_SHIFT-desc = crwdns7334:0crwdne7334:0
 skeleton_bone-SHOULDERS_DISTANCE = crwdns7336:0crwdne7336:0
-skeleton_bone-SHOULDERS_DISTANCE-desc = crwdns7338:0crwdne7338:0
+skeleton_bone-SHOULDERS_DISTANCE-desc = crwdns7338:0{ skeleton_bone-UPPER_ARM }crwdne7338:0
 skeleton_bone-SHOULDERS_WIDTH = crwdns7340:0crwdne7340:0
-skeleton_bone-SHOULDERS_WIDTH-desc = crwdns7342:0crwdne7342:0
+skeleton_bone-SHOULDERS_WIDTH-desc = crwdns7342:0{ skeleton_bone-UPPER_ARM }crwdne7342:0
 skeleton_bone-arm_group = crwdns7344:0crwdne7344:0
-skeleton_bone-arm_group-desc = crwdns7346:0crwdne7346:0
+skeleton_bone-arm_group-desc = crwdns7346:0{ skeleton_bone-SHOULDERS_DISTANCE }crwdnd7346:0{ skeleton_bone-HAND }crwdne7346:0
 skeleton_bone-UPPER_ARM = crwdns7348:0crwdne7348:0
-skeleton_bone-UPPER_ARM-desc = crwdns7350:0crwdne7350:0
+skeleton_bone-UPPER_ARM-desc = crwdns7350:0{ skeleton_bone-arm_group }crwdne7350:0
 skeleton_bone-LOWER_ARM = crwdns7352:0crwdne7352:0
-skeleton_bone-LOWER_ARM-desc = crwdns7354:0crwdne7354:0
+skeleton_bone-LOWER_ARM-desc = crwdns7354:0{ skeleton_bone-arm_group }crwdne7354:0
 skeleton_bone-HAND = crwdns9482:0crwdne9482:0
-skeleton_bone-HAND-desc = crwdns9484:0crwdne9484:0
+skeleton_bone-HAND-desc = crwdns9484:0{ skeleton_bone-arm_group }crwdne9484:0
 
 ## Tracker reset buttons
 
@@ -542,7 +542,7 @@ settings-general-mounting_method-description = crwdns9570:0crwdne9570:0
 settings-general-tracker_mechanics-filtering = crwdns7812:0crwdne7812:0
 settings-general-tracker_mechanics-filtering-type = crwdns9794:0crwdne9794:0
 # This also cares about multilines
-settings-general-tracker_mechanics-filtering-description = crwdns7814:0crwdne7814:0
+settings-general-tracker_mechanics-filtering-description = crwdns7814:0{ settings-general-tracker_mechanics-filtering-type-smoothing }crwdnd7814:0{ settings-general-tracker_mechanics-filtering-type-prediction }crwdne7814:0
 settings-general-tracker_mechanics-filtering-type-none = crwdns7818:0crwdne7818:0
 settings-general-tracker_mechanics-filtering-type-none-description = crwdns7820:0crwdne7820:0
 settings-general-tracker_mechanics-filtering-type-smoothing = crwdns7822:0crwdne7822:0
@@ -681,13 +681,13 @@ settings-keybinds-error-add-modifier = crwdns7950:0crwdne7950:0
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = crwdns7954:0crwdne7954:0
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = crwdns7956:0crwdne7956:0
 settings-general-fk_settings-leg_tweak-toe_snap = crwdns7958:0crwdne7958:0
 settings-general-fk_settings-leg_tweak-foot_plant = crwdns7960:0crwdne7960:0
