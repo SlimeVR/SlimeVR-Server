@@ -329,7 +329,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers = استخدم الم
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     يستخدم المقياس المغناطيسي على جميع أجهزة التعقب التي تحتوي على برامج ثابتة متوافقة له ، مما يقلل من الانحراف في البيئات المغناطيسية المستقرة.
     يمكن تعطيله لكل جهاز تعقب في إعدادات التعقب. <b>من فضلك لا تغلق أيا من أجهزة التعقب أثناء تبديل هذا!</b>
-settings-stay_aligned-relaxed_poses-close = أغلق
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
@@ -749,13 +751,6 @@ onboarding-automatic_proportions-smol_warning-cancel = الرجوع
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = ارتدي أجهزة التعقب
-onboarding-stay_aligned-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
-onboarding-stay_aligned-verify_mounting-title = معايرة التركيب
-onboarding-stay_aligned-preparation-title = التحضير
 
 ## Home
 
