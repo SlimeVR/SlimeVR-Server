@@ -23,13 +23,15 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-/**
- * Change between IMU axes and OpenGL/SteamVR axes
- */
+/** Convert from IMU axes to OpenGL/SteamVR axes */
 internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
+
+// TODO: Only apply this to firmwares <=0.7.3
+private val ACCEL_SENSOR_OFFSET_CORRECTION = Quaternion.rotationAroundZAxis(-FastMath.PI)
+
 internal const val CONNECTION_TIMEOUT_MS = 5000L
 
-internal suspend fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
+internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
 	val deviceState = device.context.state.value
 	val deviceHardwareId = deviceState.hardwareId ?: udpHardwareId(deviceState.macAddress, deviceState.address)
 	val hardwareId = "$deviceHardwareId:${info.sensorId}"
@@ -393,12 +395,12 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = ACCEL_SENSOR_OFFSET_CORRECTION.sandwich(event.data.acceleration)))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
+			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = ACCEL_SENSOR_OFFSET_CORRECTION.sandwich(event.data.acceleration)))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
