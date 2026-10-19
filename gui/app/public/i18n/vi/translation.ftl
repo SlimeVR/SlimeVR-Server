@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Máy chủ SlimeVR bị dừng. Hãy kiểm tra
 websocket-timedout = Không thể tìm thấy máy chủ
 websocket-timedout-desc = Có vẻ như máy chủ SlimeVR đã bị sập hoặc hết thời gian chờ. Vui lòng kiểm tra nhật ký logs và khởi động lại chương trình.
 websocket-error-close = Thoát SlimeVR
-websocket-error-logs = Mở thư mục nhật ký logs
 
 ## Update notification
 
@@ -70,18 +69,15 @@ body_part-LEFT_FOOT = Bàn chân trái
 
 skeleton_bone-NONE = Chưa được gán
 skeleton_bone-NECK = Chiều dài cổ
-skeleton_bone-torso_group = Độ dài thân
 skeleton_bone-UPPER_CHEST = Độ dài ngực trên
 skeleton_bone-HIP = Khoảng cách hông
 skeleton_bone-HIPS_WIDTH = Chiều rộng hông
-skeleton_bone-leg_group = Chiều dài chân
 skeleton_bone-UPPER_LEG = Chiều dài bắp chân
 skeleton_bone-LOWER_LEG = Chiều dài cẳng chân
 skeleton_bone-FOOT_LENGTH = Chiều dài bàn chân
 skeleton_bone-FOOT_SHIFT = Sai số bàn chân
 skeleton_bone-SHOULDERS_DISTANCE = Khoảng cách vai
 skeleton_bone-SHOULDERS_WIDTH = Chiều rộng vai
-skeleton_bone-arm_group = Chiều dài cánh tay
 skeleton_bone-UPPER_ARM = Chiều dài bắp tay
 skeleton_bone-LOWER_ARM = Chiều dài cẳng tay
 
@@ -249,16 +245,11 @@ settings-driver-enable = Bật
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Lọc nhiễu
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Chọn kiểu lọc nhiễu cho tracker
-    "Dự đoán" sẽ dự đoán chuyển động trong khi "Khử nhiễu" sẽ làm chuyển động mềm mại hơn
 settings-general-tracker_mechanics-filtering-type-none = Không lọc
 settings-general-tracker_mechanics-filtering-type-none-description = Sử dụng giá trị thực, không áp dụng bất kì bộ lọc nào
 settings-general-tracker_mechanics-filtering-type-smoothing = Khử nhiễu
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Làm chuyển động mềm mại hơn nhưng có thể tăng độ trễ
 settings-general-tracker_mechanics-filtering-type-prediction = Dự đoán
-settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm độ trễ và làm chuyển động chân thật hơn, có thể khiến chuyển động không mượt mà
 settings-general-tracker_mechanics-filtering-amount = Mức độ lọc
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Thời gian thiết lập lại chiều quay lệch (0s tắt làm mượt)
 settings-general-tracker_mechanics-save_mounting_reset = Lưu thiết bị đã giao tự động
@@ -277,26 +268,23 @@ settings-keybinds-recorder-modal-cancel-button = Hủy
 ## FK/Tracking settings
 
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Ngăn xuyên sàn
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Sửa trượt
 settings-general-fk_settings-leg_tweak-toe_snap = Đoán hướng xoay chân
 settings-general-fk_settings-leg_tweak-foot_plant = Cân bằng chân
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Mức độ sửa
-settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
 settings-general-fk_settings-skeleton_settings-ratios = Tỷ lệ khung xương
 settings-general-fk_settings-self_localization-title = Chế độ Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Chạm để đặt lại
 settings-general-gesture_control-description = Cho phép chạm vào tracker để đặt lại vị trí, chạm hai lần vào tracker cao nhất ở thân để đặt lại nhanh, chạm hai lần vào tracker cao nhất ở chân trái để đặt lại, chạm hai lần vào tracker cao nhất ở chân phải để đặt lại vị trí gắn tracker. Cử chỉ chỉ được tiếp nhận khi thời gian giữa hai lần chạm ngắn hơn 0.6 giây.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -319,7 +307,6 @@ settings-general-gesture_control-mountingResetDelay = Thời gian delay trước
 settings-general-gesture_control-mountingResetTaps = Số lần chạm cho đặt lại hướng gắn tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Số thiết bị có thể vượt phát hiện
-settings-general-gesture_control-numberTrackersOverThreshold-description = Tăng số này nếu tính năng chạm thiết bị không hoạt động. Không tăng nó quá trên mức cần thiết để làm cho phát hiện chạm hoạt động vì nó sẽ gây ra nhiều kết quả sai hơn.
 
 ## Appearance settings
 
@@ -365,7 +352,6 @@ settings-serial = Cổng Serial
 settings-serial-description =
     Đây là cổng giao tiếp Serial trực tiếp với tracker
     Hữu dụng nếu cần kiểm tra tracker có hoạt động như mong muốn hay không
-settings-serial-connection_lost = Kết nối đến Serial đã mất, đang kết nối lại...
 settings-serial-reboot = Khởi động lại
 settings-serial-factory_reset = Khôi phục cài đặt gốc
 # This cares about multilines
@@ -482,7 +468,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Nhập tên Wi-Fi
 onboarding-wifi_creds-password =
     .label = Mật khẩu
-    .placeholder = và mật khẩu
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -521,7 +507,6 @@ onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Gán tracker
-onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán tracker bằng cách nhấn vào tên bộ phận muốn gán và chọn tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
