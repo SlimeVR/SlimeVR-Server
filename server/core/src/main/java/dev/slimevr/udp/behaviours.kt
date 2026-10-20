@@ -9,6 +9,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.udpHardwareId
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -24,12 +25,20 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /** Convert from IMU axes to OpenGL/SteamVR axes */
-internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
-
-// TODO: Only apply this to firmwares <=0.7.3
-private val ACCEL_SENSOR_OFFSET_CORRECTION = Quaternion.rotationAroundZAxis(-FastMath.PI)
+internal val AXES_OFFSET = Quaternion.rotationAroundXAxis(-FastMath.HALF_PI)
 
 internal const val CONNECTION_TIMEOUT_MS = 5000L
+
+// Old protocol versions before 23 had messed up accel offsets in firmware
+private val ACCEL_OFFSET_CORRECTION_22 = Quaternion.rotationAroundZAxis(FastMath.PI)
+private val ACCEL_OFFSET_CORRECTION_21 = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
+fun getCorrectedAcceleration(acceleration: Vector3, protocolVersion: Int) = if (protocolVersion <= 21) {
+		ACCEL_OFFSET_CORRECTION_21.sandwich(acceleration)
+	} else if (protocolVersion == 22) {
+		ACCEL_OFFSET_CORRECTION_22.sandwich(acceleration)
+	} else {
+		acceleration
+	}
 
 internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
 	val deviceState = device.context.state.value
@@ -395,12 +404,14 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = ACCEL_SENSOR_OFFSET_CORRECTION.sandwich(event.data.acceleration)))
+			val protocolVersion = receiver.getDevice()?.context?.state?.value?.protocolVersion ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = getCorrectedAcceleration(event.data.acceleration, protocolVersion)))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = ACCEL_SENSOR_OFFSET_CORRECTION.sandwich(event.data.acceleration)))
+			val protocolVersion = receiver.getDevice()?.context?.state?.value?.protocolVersion ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = getCorrectedAcceleration(event.data.acceleration, protocolVersion)))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->

@@ -56,7 +56,7 @@ class TrackerConfigBehaviour(
 			bodyPart = state.bodyPart,
 			customName = state.customName,
 			mountingOrientation = state.mountingOrientation,
-			mountingResetOrientation = if (saveMountingReset) state.sessionCalibration.headingAlignment else null,
+			mountingResetOrientation = if (saveMountingReset && state.lastMountingMethod != MountingMethod.MANUAL) state.sessionCalibration.headingAlignment else null,
 			magEnabled = when (state.magStatus) {
 				MagnetometerStatus.ENABLED -> true
 				MagnetometerStatus.DISABLED -> false
