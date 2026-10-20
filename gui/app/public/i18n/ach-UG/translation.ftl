@@ -1484,6 +1484,7 @@ firmware_tool-select_source-version = crwdns9102:0crwdne9102:0
 firmware_tool-select_source-official = crwdns9104:0crwdne9104:0
 firmware_tool-select_source-dev = crwdns9106:0crwdne9106:0
 firmware_tool-select_source-latest = crwdns9108:0crwdne9108:0
+firmware_tool-select_source-prerelease = crwdns10216:0crwdne10216:0
 firmware_tool-select_source-not_selected = crwdns9110:0crwdne9110:0
 firmware_tool-select_source-no_boards = crwdns9112:0crwdne9112:0
 firmware_tool-select_source-no_versions = crwdns9114:0crwdne9114:0
