@@ -33,12 +33,12 @@ internal const val CONNECTION_TIMEOUT_MS = 5000L
 private val ACCEL_OFFSET_CORRECTION_22 = Quaternion.rotationAroundZAxis(FastMath.PI)
 private val ACCEL_OFFSET_CORRECTION_21 = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 fun getCorrectedAcceleration(acceleration: Vector3, protocolVersion: Int) = if (protocolVersion <= 21) {
-		ACCEL_OFFSET_CORRECTION_21.sandwich(acceleration)
-	} else if (protocolVersion == 22) {
-		ACCEL_OFFSET_CORRECTION_22.sandwich(acceleration)
-	} else {
-		acceleration
-	}
+	ACCEL_OFFSET_CORRECTION_21.sandwich(acceleration)
+} else if (protocolVersion == 22) {
+	ACCEL_OFFSET_CORRECTION_22.sandwich(acceleration)
+} else {
+	acceleration
+}
 
 internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
 	val deviceState = device.context.state.value
