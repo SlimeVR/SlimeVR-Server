@@ -92,9 +92,9 @@ data class TrackerState(
 	val needsFullReset: Boolean = false,
 	val needsMountingReset: Boolean = false,
 ) {
-	private val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
-	private val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
-	private val isVmc = origin == DeviceOrigin.VMC
+	val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
+	val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
+	val isVmc = origin == DeviceOrigin.VMC
 
 	/** Indicates if the tracker is a reliable reference for aligning other trackers. */
 	val isReliableReference = isHmd || isController || isVmc
@@ -112,7 +112,7 @@ sealed interface TrackerActions {
 	data class SetDriverName(val driverName: String?) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion?, val resetReliableReferenceAttitude: Boolean = false) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion?, val resetHmdAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion?, val yawOffset: Float) : TrackerActions

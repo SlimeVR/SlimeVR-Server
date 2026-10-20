@@ -64,7 +64,7 @@ class TrackingChecklistTest {
 			checklist.context.behaviours.addAll(
 				listOf(
 					MountingMethodCheckBehaviour(settings),
-					ReliableReferenceCheckBehaviour(trackerStates),
+					HMDCheckBehaviour(trackerStates),
 					TrackerRestCheckBehaviour(trackerStates),
 					TrackerErrorCheckBehaviour(trackerStates),
 					FullResetCheckBehaviour(trackerStates, resetsManager),
@@ -318,26 +318,27 @@ class TrackingChecklistTest {
 	}
 
 	@Test
-	fun `UNASSIGNED_RELIABLE_REFERENCE is invalid until the reliable reference is assigned its intended body part`() = runTest {
+	fun `UNASSIGNED_HMD is invalid until the HMD is assigned to the head`() = runTest {
 		val h = Harness(this)
-		val reliableReference = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.ZERO)
+		// An HMD is a DRIVER-origin tracker with a computed position
+		val hmd = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.ZERO)
 		runCurrent()
 
-		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).enabled)
-		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).valid)
+		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).valid)
 
-		reliableReference.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HEAD) })
+		hmd.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HEAD) })
 		runCurrent()
-		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).valid)
+		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).valid)
 	}
 
 	@Test
-	fun `UNASSIGNED_RELIABLE_REFERENCE is disabled without a driver tracker`() = runTest {
+	fun `UNASSIGNED_HMD is disabled without a driver tracker`() = runTest {
 		val h = Harness(this)
 		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
-		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
 	}
 
 	@Test

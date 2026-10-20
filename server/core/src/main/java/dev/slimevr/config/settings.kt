@@ -78,8 +78,8 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset a reliable reference's (HMD) attitude on full reset */
-	val resetReliableReferenceAttitude: Boolean = false,
+	/** Reset a VR headset's pitch and roll on full reset */
+	val resetHmdAttitude: Boolean = false,
 	/** How a mounting reset calibrates the trackers, UNKNOWN until the user has picked one */
 	val mountingMethod: MountingMethod = MountingMethod.UNKNOWN,
 )

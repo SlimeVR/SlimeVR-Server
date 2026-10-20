@@ -18,7 +18,7 @@ internal fun buildResetsSettingsResponse(config: ResetsConfig) = ResetsSettingsR
 	armsMountingResetMode = config.armsMountingResetMode,
 	yawResetSmoothTime = config.yawResetSmoothTime,
 	saveMountingReset = config.saveMountingReset,
-	resetReliableReferenceAttitude = config.resetReliableReferenceAttitude,
+	resetHmdAttitude = config.resetHmdAttitude,
 	mountingMethod = config.mountingMethod,
 )
 
@@ -47,7 +47,7 @@ class ResetsBehaviour(
 							armsMountingResetMode = req.armsMountingResetMode,
 							yawResetSmoothTime = req.yawResetSmoothTime,
 							saveMountingReset = req.saveMountingReset,
-							resetReliableReferenceAttitude = req.resetReliableReferenceAttitude,
+							resetHmdAttitude = req.resetHmdAttitude,
 							mountingMethod = req.mountingMethod,
 						),
 					)

@@ -243,7 +243,7 @@ class ResetsManager(
 
 	private fun getResetAction(referenceRotation: Quaternion?, resetType: ResetType, bodyPart: BodyPart?, resetsConfig: ResetsConfig) = when (resetType) {
 		ResetType.YAW -> TrackerActions.YawReset(referenceRotation, resetsConfig.yawResetSmoothTime.toDouble().seconds)
-		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetReliableReferenceAttitude)
+		ResetType.FULL -> TrackerActions.FullReset(referenceRotation, resetsConfig.resetHmdAttitude)
 		ResetType.MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(bodyPart, resetsConfig.armsMountingResetMode))
 	}
 
