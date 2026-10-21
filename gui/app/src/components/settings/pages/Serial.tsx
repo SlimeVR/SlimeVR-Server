@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
@@ -24,11 +25,13 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { WarningBox } from '@/components/commons/TipBox';
-import { fileSave } from 'browser-fs-access';
+import { saveFile } from '@/utils/save-file';
 import { waitUntil } from '@/utils/a11y';
 import { Input } from '@/components/commons/Input';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
+import { USBIcon } from '@/components/commons/icon/UsbIcon';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 
 export interface SerialForm {
   port: string;
@@ -54,11 +57,17 @@ function appendLog(content: string, log: string) {
   return cut === -1 ? next : next.slice(cut + 1);
 }
 
+export const serialSettingsPage = defineSettingsPage({
+  path: 'serial',
+  title: 'settings-serial',
+  groups: {},
+});
+
 export function Serial() {
   const { l10n } = useLocalization();
   const { state } = useLocation();
 
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const consoleRef = useRef<HTMLDivElement>(null);
   const [consoleContent, setConsole] = useState('');
 
@@ -88,7 +97,7 @@ export function Serial() {
 
   // The server holds every port this page opened and takes them back if the keepalive stops, so a
   // tab that dies without unmounting doesn't leave them locked
-  useEffect(() => {
+  useConnectedEffect(() => {
     const keepalive = setInterval(() => {
       sendRPCPacket(
         RpcMessage.SerialKeepaliveRequest,
@@ -108,7 +117,7 @@ export function Serial() {
     }
   }, [serialDevices]);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     if (!port) return;
     setConsole('');
     setOpenedSerialDevice(null);
@@ -264,10 +273,7 @@ export function Serial() {
     const blob = new Blob([consoleContentRef.current], {
       type: 'text/plain',
     });
-    fileSave(blob, {
-      fileName: 'serial-logs.txt',
-      extensions: ['.txt'],
-    });
+    await saveFile(blob, 'serial-logs.txt', ['.txt']);
   };
 
   // Pairing, DFU and calibration are HID firmware commands, unrecognized devices get none of them
@@ -338,11 +344,13 @@ export function Serial() {
           </Button>
         </div>
       </BaseModal>
-      <div className="flex flex-col bg-background-70 h-full p-4 mobile:p-2 rounded-md">
-        <div className="flex flex-col pb-2 mobile:pt-4">
-          <Typography variant="main-title">
-            {l10n.getString('settings-serial')}
-          </Typography>
+      <SettingsPagePaneLayout
+        icon={<USBIcon size={24} />}
+        title={serialSettingsPage.title}
+        className="h-full"
+        contentClassName="flex flex-col flex-grow"
+      >
+        <div className="flex flex-col pb-2">
           <>
             {l10n
               .getString('settings-serial-description')
@@ -494,7 +502,7 @@ export function Serial() {
             </div>
           </div>
         </div>
-      </div>
+      </SettingsPagePaneLayout>
     </>
   );
 }

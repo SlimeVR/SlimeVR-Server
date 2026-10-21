@@ -1,10 +1,4 @@
-import {
-  ComponentProps,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { ComponentProps, ReactNode, useContext, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
   RpcMessage,
@@ -27,6 +21,8 @@ import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { IconButton } from './commons/IconButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
+import { SearchIcon } from './commons/icon/SearchIcon';
+import { useQuickSearch } from './settings/QuickSearch';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { TrayOrExitModal } from './TrayOrExitModal';
@@ -34,6 +30,7 @@ import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { useElectron } from '@/hooks/electron';
 import { openUrl } from '@/hooks/crossplatform';
+import { ProfileQuickSwitch } from './ProfileQuickSwitch';
 
 // Title bar buttons share one round hit target.
 const TITLE_BAR_BUTTON_CLASS =
@@ -80,14 +77,17 @@ export function VersionTag() {
 export function TopBar({
   progress,
   actions,
+  profiles = true,
 }: {
   children?: ReactNode;
   progress?: number;
   actions?: ReactNode;
+  profiles?: boolean;
 }) {
   const electron = useElectron();
+  const quickSearch = useQuickSearch();
   const { isMobile } = useBreakpoint('mobile');
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
@@ -130,38 +130,7 @@ export function TopBar({
     }
   };
 
-  // useEffect(() => {
-  //   if (!electron.isElectron) return;
-
-  //   const unlistenTrayClose = listen('try-close', async () => {
-  //     const window = getCurrentWindow();
-  //     await window.show();
-  //     await window.requestUserAttention(UserAttentionType.Critical);
-  //     await window.setFocus();
-  //     if (isTrayAvailable) await invoke('update_tray_text');
-  //     await tryCloseApp(true);
-  //   });
-
-  //   const unlistenCloseRequested = getCurrentWindow().listen(
-  //     TauriEvent.WINDOW_CLOSE_REQUESTED,
-  //     async (data) => {
-  //       const ev = new CloseRequestedEvent(data);
-  //       ev.preventDefault();
-  //       await tryCloseApp();
-  //     }
-  //   );
-
-  //   return () => {
-  //     unlistenTrayClose.then((fn) => fn());
-  //     unlistenCloseRequested.then((fn) => fn());
-  //   };
-  // }, [
-  //   config?.useTray,
-  //   config?.connectedTrackersWarning,
-  //   JSON.stringify(connectedIMUTrackers.map((t) => t.tracker.status)),
-  // ]);
-
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
   }, []);
 
@@ -197,7 +166,9 @@ export function TopBar({
                   className={classNames('flex justify-around flex-col')}
                   data-electron-drag-region
                 >
-                  <Typography>SlimeVR</Typography>
+                  <Typography>
+                    {config?.theme == 'fox' ? 'FoxVR' : 'SlimeVR'}
+                  </Typography>
                 </div>
               )}
               {(!doesMatchSettings || !isMobile) && <VersionTag />}
@@ -247,11 +218,20 @@ export function TopBar({
           </div>
           <div className="flex justify-end items-center px-2 gap-2 z-50">
             {actions}
+            {profiles && <ProfileQuickSwitch />}
+            {quickSearch && (
+              <TitleBarButton
+                labelId="titlebar-search"
+                onClick={quickSearch.open}
+                className="fill-window-icon hover:fill-background-10"
+              >
+                <SearchIcon />
+              </TitleBarButton>
+            )}
             <TitleBarButton
               labelId="titlebar-settings"
-              to="/settings/trackers"
-              className="fill-background-50 hover:fill-background-10"
-              state={{ scrollTo: 'output' }}
+              to="/settings"
+              className="fill-window-icon hover:fill-background-10"
             >
               <GearIcon />
             </TitleBarButton>

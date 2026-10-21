@@ -3,6 +3,9 @@ package dev.slimevr
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.config.DEVICES_CONFIG_PATH
+import dev.slimevr.config.DevicesConfig
+import dev.slimevr.config.DevicesConfigState
 import dev.slimevr.config.GlobalConfig
 import dev.slimevr.config.GlobalConfigState
 import dev.slimevr.config.Settings
@@ -12,11 +15,13 @@ import dev.slimevr.config.TextFileHandle
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
+import dev.slimevr.config.launchAutosave
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.logging.LogSourceProvider
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -34,7 +39,6 @@ import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.stepmounting.StepMountingState
-import dev.slimevr.stepmounting.StepMountingStatus
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -45,18 +49,24 @@ import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.udp.UdpPeer
+import dev.slimevr.udp.UdpServer
+import dev.slimevr.udp.UdpSocket
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.io.Source
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.rpc.StepMountingStatus
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
@@ -86,12 +96,12 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	return userConfig
 }
 
-fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
+fun buildTestSkeleton(scope: CoroutineScope, userConfig: UserConfig = buildTestUserConfig(scope)): Skeleton {
 	val context = Context.create(
 		initialState = DEFAULT_SKELETON_STATE,
 		scope = scope,
 		reducer = ::reduceSkeleton,
-		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
+		behaviours = listOf(ProportionsBehaviour(userConfig)),
 		name = "TestSkeleton",
 	)
 	val computed = MutableSharedFlow<ComputedSkeleton>(
@@ -205,6 +215,17 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	return Settings(context, scope, NoopConfigStorage, "settings")
 }
 
+fun buildTestDevicesConfig(scope: CoroutineScope): DevicesConfig {
+	val context = Context.create(
+		initialState = DevicesConfigState(),
+		scope = scope,
+		reducer = ::reduceConfig,
+		name = "DevicesConfig[test]",
+	)
+	val autosave = launchAutosave(scope, context.state, NoopConfigStorage, toPath = { DEVICES_CONFIG_PATH }, serialize = { "" })
+	return DevicesConfig(context, autosave)
+}
+
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
 	val initialState = HeightCalibrationState(status = UserHeightCalibrationStatus.NONE, currentHeight = 1.6f, canDoUserHeightCalibration = true)
 	val context = Context.create(
@@ -219,9 +240,12 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 
 private object NoopConfigStorage : ConfigStorage {
 	override suspend fun read(path: String): String? = null
-	override suspend fun write(path: String, content: String) = Unit
+	override suspend fun write(path: String, content: String, overwrite: Boolean): Boolean = true
 	override suspend fun backup(path: String) = Unit
 	override suspend fun exists(path: String): Boolean = false
+	override suspend fun list(dir: String): List<String> = emptyList()
+	override suspend fun delete(path: String) = Unit
+	override suspend fun move(from: String, to: String) = Unit
 	override suspend fun ensureDirectory(path: String): Boolean = true
 	override suspend fun openTextFile(path: String): TextFileHandle = error("Not used in tests")
 }
@@ -241,6 +265,8 @@ fun buildTestAppConfig(scope: CoroutineScope): AppConfig {
 		globalConfig = GlobalConfig(globalContext).also { it.startObserving() },
 		userConfig = buildTestUserConfig(scope),
 		settings = buildTestSettings(scope),
+		devices = buildTestDevicesConfig(scope),
+		storage = NoopConfigStorage,
 	)
 }
 
@@ -256,18 +282,18 @@ private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
 		reducer = ::reduceUdpServer,
 		name = "TestUdpServer",
 	)
-	return dev.slimevr.udp.UdpServer(context) { "127.0.0.1" }.also { it.startObserving() }
+	return UdpServer(context, bind = ::bindFakeUdp).also { it.startObserving() }
 }
 
-class FakeDatagramSocket : io.ktor.network.sockets.BoundDatagramSocket {
-	override val localAddress: io.ktor.network.sockets.InetSocketAddress = io.ktor.network.sockets.InetSocketAddress("127.0.0.1", 6969)
-	override val socketContext: kotlinx.coroutines.Job = kotlinx.coroutines.Job()
-	override val incoming: kotlinx.coroutines.channels.ReceiveChannel<io.ktor.network.sockets.Datagram> = kotlinx.coroutines.channels.Channel()
-	override val outgoing: kotlinx.coroutines.channels.SendChannel<io.ktor.network.sockets.Datagram> = kotlinx.coroutines.channels.Channel()
-	override fun close() {}
-	override suspend fun receive(): io.ktor.network.sockets.Datagram = error("not used")
-	override suspend fun send(datagram: io.ktor.network.sockets.Datagram) {}
+/** A socket that never receives anything and drops what it sends */
+class FakeUdpSocket : UdpSocket {
+	override suspend fun listen(onDatagram: (from: UdpPeer, payload: Source) -> Unit) = awaitCancellation()
+	override suspend fun send(to: UdpPeer, payload: ByteArray) {}
+	override suspend fun close() {}
 }
+
+@Suppress("RedundantSuspendModifier")
+suspend fun bindFakeUdp(port: Int): UdpSocket = FakeUdpSocket()
 
 abstract class TestAppContext : AppContextProvider {
 	open override val server: VRServer get() = error("not used in test")
@@ -292,6 +318,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
 	override val stepMountingManager: StepMountingManager get() = error("not used in test")
+	override val logSources: List<LogSourceProvider> = emptyList()
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

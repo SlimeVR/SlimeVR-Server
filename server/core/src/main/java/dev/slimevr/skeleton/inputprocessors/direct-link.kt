@@ -11,7 +11,6 @@ import solarxr_protocol.datatypes.BodyPart
  */
 val BONE_DIRECT_LINK_SOURCES = arrayOf(
 	BodyPart.HEAD to BodyPart.NECK,
-	BodyPart.NECK to BodyPart.HEAD,
 
 	BodyPart.LEFT_FOOT to BodyPart.LEFT_LOWER_LEG,
 	BodyPart.RIGHT_FOOT to BodyPart.RIGHT_LOWER_LEG,

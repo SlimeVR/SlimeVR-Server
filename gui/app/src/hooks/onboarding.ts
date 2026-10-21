@@ -2,7 +2,6 @@ import {
   createContext,
   Reducer,
   useContext,
-  useEffect,
   useLayoutEffect,
   useReducer,
   useState,
@@ -12,6 +11,7 @@ import { useConfig } from './config';
 import { useResetsSettings } from './resets-settings';
 import { useWebsocketAPI } from './websocket-api';
 import {
+  ArmsMountingResetMode,
   ChangeSkeletonSettingsRequestT,
   RpcMessage,
   SkeletonSettingsRequestT,
@@ -73,7 +73,7 @@ export function useProvideOnboarding() {
     }
   );
 
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { setResetsSettings } = useResetsSettings();
 
   const { state: locatioState } = useLocation();
@@ -87,7 +87,7 @@ export function useProvideOnboarding() {
       dispatch({ type: 'alone-page', value: alonePage });
   }, [locatioState, state]);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT());
     sendRPCPacket(RpcMessage.VRCOSCSettingsRequest, new VRCOSCSettingsRequestT());
   }, []);
@@ -120,7 +120,13 @@ export function useProvideOnboarding() {
     skeletonReq.filtering = skeletonSettings.filtering;
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
-    setResetsSettings({ resetReliableReferenceAttitude: mocapPos === 'forehead' });
+    setResetsSettings({
+      resetHmdAttitude: mocapPos === 'forehead',
+      // Mocap has no controllers to hold, so the arms rest forward
+      armsMountingResetMode: mocap
+        ? ArmsMountingResetMode.FORWARD
+        : ArmsMountingResetMode.BACK,
+    });
 
     const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;

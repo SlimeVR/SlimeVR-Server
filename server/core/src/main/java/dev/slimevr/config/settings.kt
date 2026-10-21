@@ -3,11 +3,7 @@ package dev.slimevr.config
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_UPPER_LOWER
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -22,24 +18,6 @@ import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
 
 private const val SETTINGS_CONFIG_VERSION = 2
-
-@Serializable
-data class TrackerConfig(
-	@Serializable(with = BodyPartSerializer::class)
-	val bodyPart: BodyPart? = null,
-	val customName: String? = null,
-	@Serializable(with = QuaternionSerializer::class)
-	val mountingOrientation: Quaternion = Quaternion.IDENTITY,
-	@Serializable(with = QuaternionSerializer::class)
-	val mountingResetOrientation: Quaternion? = null,
-	val magEnabled: Boolean? = null,
-	val boneOffsets: Map<BodyPart, Vector3> = emptyMap(),
-)
-
-@Serializable
-data class DongleConfig(
-	val customName: String? = null,
-)
 
 @Serializable
 data class TrackersConfig(
@@ -67,14 +45,14 @@ data class BoneRoutingConfig(
 @Serializable
 data class DriverConfig(
 	val enabled: Boolean = true,
-	val sendVelocity: Boolean = true,
+	val sendVelocity: Boolean = false,
 )
 
 @Serializable
 data class TapDetectionConfig(
 	var yawResetDelay: Float = 0.2f,
-	var fullResetDelay: Float = 1.0f,
-	var mountingResetDelay: Float = 1.0f,
+	var fullResetDelay: Float = 1.4f,
+	var mountingResetDelay: Float = 1.4f,
 	var yawResetEnabled: Boolean = true,
 	var fullResetEnabled: Boolean = true,
 	var mountingResetEnabled: Boolean = true,
@@ -100,8 +78,8 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset a reliable reference's (HMD) attitude on full reset */
-	val resetReliableReferenceAttitude: Boolean = false,
+	/** Reset a VR headset's pitch and roll on full reset */
+	val resetHmdAttitude: Boolean = false,
 	/** How a mounting reset calibrates the trackers, UNKNOWN until the user has picked one */
 	val mountingMethod: MountingMethod = MountingMethod.UNKNOWN,
 )
@@ -139,9 +117,8 @@ data class SkeletonTogglesConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonRatiosConfig(
+	val spineCurvature: Float = 0.75f,
 	val imputeSpineFromUpperToLower: Float = DEFAULT_SPINE_UPPER_LOWER,
-	val imputeSpineCurvature: Float = 0.75f,
-	val interpolateHipWithUpperLegs: Float = 0.25f,
 	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.5f,
 )
@@ -185,31 +162,10 @@ data class VMCConfig(
 	val vrmJson: String? = null,
 )
 
-// Used in StayAlignedConfig
-@Serializable
-data class StayAlignedRelaxedPoseConfig(
-	/** Whether Stay Aligned should adjust the tracker yaws when the player is in this pose. */
-	var enabled: Boolean = false,
-	/** Angle between the upper leg yaw and the centre yaw. */
-	var upperLegAngleInDeg: Float = 0.0f,
-	/** Angle between the lower leg yaw and the centre yaw. */
-	var lowerLegAngleInDeg: Float = 0.0f,
-	/** Angle between the foot and the centre yaw. */
-	var footAngleInDeg: Float = 0.0f,
-)
-
 @Serializable
 data class StayAlignedConfig(
-	/** Global enable toggle for all poses */
-	var enabled: Boolean = false,
-	/** Standing relaxed pose */
-	val standingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Sitting relaxed pose */
-	val sittingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Flat relaxed pose */
-	val flatRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Whether setup has been completed */
-	var setupComplete: Boolean = false,
+	/** Whether Stay Aligned runs. The relaxed poses it uses are in the user config. */
+	val enabled: Boolean = false,
 )
 
 @Serializable
@@ -217,9 +173,6 @@ data class SettingsConfigState(
 	val version: Int = SETTINGS_CONFIG_VERSION,
 	val mutedVRCWarnings: List<String> = listOf(),
 	val mutedChecklistSteps: Set<String> = emptySet(),
-	val allowedUdpDevices: Set<String> = emptySet(),
-	val trackers: Map<String, TrackerConfig> = emptyMap(),
-	val dongles: Map<String, DongleConfig> = emptyMap(),
 	val trackersConfig: TrackersConfig = TrackersConfig(),
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
@@ -253,10 +206,7 @@ data class SettingsState(
 sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
-	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
-	data class UpdateDongle(val serialNumber: String, val transform: DongleConfig.() -> DongleConfig) : SettingsActions
-	data class AddAllowedUdpDevice(val mac: String) : SettingsActions
-	data class RemoveAllowedUdpDevice(val mac: String) : SettingsActions
+	data class Rename(val name: String) : SettingsActions
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>
@@ -270,7 +220,7 @@ class Settings(
 ) {
 	fun startObserving() = context.observeAll(this)
 
-	private var autosaveJob: Job = startAutosave()
+	private var autosave: Autosave = startAutosave()
 
 	private fun startAutosave() = launchAutosave(
 		scope = scope,
@@ -280,8 +230,20 @@ class Settings(
 		serialize = { state -> jsonConfig.encodeToString(state.data) },
 	)
 
+	suspend fun flush() = autosave.flush()
+
+	suspend fun rename(newName: String) {
+		autosave.stop()
+		try {
+			storage.move(configPath(settingsDir, profileFileName(context.state.value.name)), configPath(settingsDir, profileFileName(newName)))
+			context.dispatch(SettingsActions.Rename(newName))
+		} finally {
+			autosave = startAutosave()
+		}
+	}
+
 	suspend fun swap(newName: String) {
-		autosaveJob.cancelAndJoin()
+		autosave.stop()
 
 		val newData = loadFileWithBackup(storage, configPath(settingsDir, "$newName.json"), SettingsConfigState()) {
 			parseAndMigrateSettingsConfig(it)
@@ -289,7 +251,7 @@ class Settings(
 		val newState = SettingsState(name = newName, data = newData)
 		context.dispatch(SettingsActions.LoadProfile(newState))
 
-		autosaveJob = startAutosave()
+		autosave = startAutosave()
 	}
 
 	companion object {

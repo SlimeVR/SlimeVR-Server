@@ -1,9 +1,8 @@
 package dev.slimevr.tracker.behaviours
 
-import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.DevicesConfig
+import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.config.TrackerConfig
-import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
@@ -11,12 +10,11 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.MountingMethod
 
 class TrackerConfigBehaviour(
-	private val settings: Settings,
+	private val devices: DevicesConfig,
 	private val hardwareId: String,
 ) : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
@@ -28,7 +26,7 @@ class TrackerConfigBehaviour(
 			}
 			.drop(1)
 			.onEach { state ->
-				settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { applyStateToConfig(this, state, receiver.settings.context.state.value.data.resetsConfig.saveMountingReset) })
+				devices.context.dispatch(DevicesConfigActions.UpdateTracker(hardwareId) { applyStateToConfig(this, state, receiver.settings.context.state.value.data.resetsConfig.saveMountingReset) })
 			}
 			.launchIn(receiver.context.scope)
 	}
@@ -58,7 +56,7 @@ class TrackerConfigBehaviour(
 			bodyPart = state.bodyPart,
 			customName = state.customName,
 			mountingOrientation = state.mountingOrientation,
-			mountingResetOrientation = if (saveMountingReset) state.sessionCalibration.headingAlignment else null,
+			mountingResetOrientation = if (saveMountingReset && state.lastMountingMethod != MountingMethod.MANUAL) state.sessionCalibration.headingAlignment else null,
 			magEnabled = when (state.magStatus) {
 				MagnetometerStatus.ENABLED -> true
 				MagnetometerStatus.DISABLED -> false

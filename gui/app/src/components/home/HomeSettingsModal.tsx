@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import { HomeLayoutSettings } from '@/components/settings/pages/HomeScreenSettings';
+import { HomeLayoutSettings } from '@/components/settings/pages/components/HomeLayoutSettings';
 
 export function HomeSettingsModal({
   open,

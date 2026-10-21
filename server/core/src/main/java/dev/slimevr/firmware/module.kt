@@ -2,16 +2,18 @@ package dev.slimevr.firmware
 
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
+import dev.slimevr.config.DevicesConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
+import dev.slimevr.firmware.behaviours.OtaCallbackBehaviour
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.FirmwareDeviceIdTable
 import solarxr_protocol.rpc.FirmwarePart
@@ -46,13 +48,15 @@ typealias FirmwareManagerBehaviour = Behaviour<FirmwareManager>
 class FirmwareManager(
 	val context: FirmwareManagerContext,
 	private val serialServer: SerialServer,
-	private val settings: Settings,
+	private val devices: DevicesConfig,
 	private val flasher: FirmwareFlasher,
 	private val scope: CoroutineScope,
 ) {
 	fun startObserving() = context.observeAll(this)
 
 	private val runningJobs = mutableMapOf<String, Job>()
+
+	val otaConnections = MutableSharedFlow<OtaConnection>()
 
 	suspend fun flash(
 		portLocation: String,
@@ -72,7 +76,7 @@ class FirmwareManager(
 					ssid = ssid,
 					password = password,
 					serialServer = serialServer,
-					settings = settings,
+					devices = devices,
 					server = server,
 					flasher = flasher,
 					onStatus = { status, progress ->
@@ -109,6 +113,7 @@ class FirmwareManager(
 				deviceId = (firmwareDeviceId as? FirmwareDeviceIdTable)?.id ?: error("device id should exist"),
 				part = part,
 				server = server,
+				otaConnections = otaConnections,
 				onStatus = { status, progress ->
 					AppLogger.firmware.debug("OTA status changed to $status, progress=$progress")
 					context.dispatch(
@@ -139,6 +144,7 @@ class FirmwareManager(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,
 				reducer = ::reduce,
+				behaviours = listOf(OtaCallbackBehaviour()),
 				debugMiddleware = LoggingMiddleware(
 					diffStyle = DiffStyle.INLINE,
 					logNoOps = true,
@@ -148,7 +154,7 @@ class FirmwareManager(
 			return FirmwareManager(
 				context = context,
 				serialServer = ctx.serialServer,
-				settings = ctx.config.settings,
+				devices = ctx.config.devices,
 				flasher = flasher,
 				scope = scope,
 			)

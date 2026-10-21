@@ -3,8 +3,8 @@ package dev.slimevr.solarxr
 import dev.slimevr.TestAppContext
 import dev.slimevr.TestSerial
 import dev.slimevr.VRServer
+import dev.slimevr.buildTestDevicesConfig
 import dev.slimevr.buildTestSerial
-import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.context.Context
 import dev.slimevr.provisioning.ProvisioningManager
@@ -33,7 +33,7 @@ private fun buildManager(serial: TestSerial, scope: CoroutineScope): Provisionin
 	return ProvisioningManager(
 		context = context,
 		serialServer = serial.server,
-		settings = buildTestSettings(scope),
+		devices = buildTestDevicesConfig(scope),
 		scope = scope,
 	).also { it.startObserving() }
 }

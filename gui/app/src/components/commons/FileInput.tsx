@@ -32,15 +32,18 @@ export const FileInputContentBlank = ({
   isDragging,
   label,
   directory = false,
+  compact = false,
 }: {
   isDragging: boolean;
   label: string;
   directory?: boolean;
+  compact?: boolean;
 }) => {
   return (
     <div
       className={classNames(
-        'flex justify-center w-full h-32 px-4 transition border-2',
+        'flex justify-center w-full px-4 transition border-2',
+        compact ? 'h-12' : 'h-32',
         'border-background-20 rounded-md appearance-none cursor-pointer',
         'hover:border-accent-background-20 focus:outline-none',
         'border-dashed'

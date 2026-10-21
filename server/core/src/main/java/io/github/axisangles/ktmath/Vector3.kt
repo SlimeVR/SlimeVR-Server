@@ -75,6 +75,8 @@ class Vector3(val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun len() = sqrt(x * x + y * y + z * z)
 
+	fun isZero() = x == 0f && y == 0f && z == 0f
+
 	/**
 	 * @return the normalized vector
 	 **/

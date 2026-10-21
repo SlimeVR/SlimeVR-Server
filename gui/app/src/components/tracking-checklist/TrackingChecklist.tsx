@@ -155,12 +155,12 @@ function SteamVRDisconnected({
 }
 
 function SteamVRHandsEnabled() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [routing, setRouting] = useState<BoneRoutingSettingsResponseT | null>(
     null
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.BoneRoutingSettingsRequest,
       new BoneRoutingSettingsRequestT()
@@ -324,7 +324,7 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.TRACKER_ERROR]: () => {
     return <Typography id="tracking_checklist-TRACKER_ERROR-desc" />;
   },
-  [TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE]: () => {
+  [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
     return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (
@@ -454,8 +454,7 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-STAY_ALIGNED_CONFIGURED-open"
               variant="primary"
-              to="/onboarding/stay-aligned"
-              state={{ alonePage: true }}
+              to="/settings/stay-aligned"
             />
             {step.ignorable && (
               <Button
@@ -626,7 +625,7 @@ export function TrackingChecklist({
             </Timeline>
           </div>
         </div>
-        <div className="flex flex-col flex-grow justify-end pl-[11px] pr-2 transition-all duration-500 delay-100">
+        <div className="flex flex-col flex-grow justify-end pl-[11px] pr-0 transition-all duration-500 delay-100">
           <div className="min-h-3 flex-1 pl-[11.5px]">
             <div
               className={classNames('h-full w-0 border-l-2', {
@@ -648,8 +647,10 @@ export function TrackingChecklist({
                 'bg-status-warning animate-pulse animate-low-priority':
                   completion === 'partial',
               })}
+              className="z-10"
               disabled={!closed}
               expanded={false}
+              expandableArrow={false}
               onToggle={() => toggleClosed()}
               title={
                 <>

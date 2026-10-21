@@ -8,6 +8,7 @@ import kotlin.math.*
 @Serializable
 class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
+		val ZERO = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)

@@ -7,7 +7,6 @@ import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
-import dev.slimevr.util.side
 import io.github.axisangles.ktmath.EulerOrder
 import solarxr_protocol.datatypes.BodyPart
 

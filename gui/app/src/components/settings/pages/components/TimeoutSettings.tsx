@@ -1,6 +1,7 @@
-import { useLocalization, Localized } from '@fluent/react';
+import { SettingDef } from '@/components/settings/settings-definitions';
+import { Localized } from '@fluent/react';
 import { useEffect, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ChangeTimeoutSettingsRequestT,
   TimeoutSettingsRequestT,
@@ -8,23 +9,28 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { Typography } from '@/components/commons/Typography';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
+import { SettingRow } from '@/components/settings/SettingRow';
 
 type TimeoutForm = {
   delay: number;
 };
 
-const defaultValues: TimeoutForm = {
-  delay: 0.0,
-};
+function toForm(settings: TimeoutSettingsResponseT): TimeoutForm {
+  return { delay: settings.delay };
+}
 
-export function TimeoutSettings() {
-  const [settings, setSettings] = useState(new TimeoutSettingsResponseT());
-  const { l10n } = useLocalization();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+export function TimeoutSettings({ setting }: { setting: SettingDef }) {
+  const [settings, setSettings] = useState<TimeoutSettingsResponseT | null>(
+    null
+  );
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
+  const defaults = useSettingsDefaults().timeout;
 
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -33,9 +39,9 @@ export function TimeoutSettings() {
     maximumFractionDigits: 2,
   });
 
-  const { control, watch, handleSubmit, getValues, reset } =
+  const { control, watch, handleSubmit, reset, setValue } =
     useForm<TimeoutForm>({
-      defaultValues,
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
     });
@@ -53,7 +59,7 @@ export function TimeoutSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TimeoutSettingsRequest,
       new TimeoutSettingsRequestT()
@@ -61,10 +67,8 @@ export function TimeoutSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<TimeoutForm> = {
-      delay: settings.delay,
-    };
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
@@ -74,27 +78,39 @@ export function TimeoutSettings() {
     }
   );
 
+  const resetDelay = settingReset<TimeoutForm, 'delay'>(
+    defaults.delay,
+    watch('delay'),
+    (next) => {
+      setValue('delay', next);
+      handleSubmit(onSubmit)();
+    }
+  );
+
   return (
-    <>
-      <div className="flex flex-col pb-2 pt-5">
-        <Typography variant="section-title">
-          {l10n.getString('settings-general-tracker_mechanics-timeout_delay')}
-        </Typography>
+    <SettingRow
+      setting={setting}
+      description={null}
+      details={
         <Localized
           id="settings-general-tracker_mechanics-timeout_delay-description"
           elems={{ b: <b /> }}
         >
           <Typography />
         </Localized>
-      </div>
-      <NumberSelector
-        control={control}
-        name="delay"
-        valueLabelFormat={(value) => secondsFormat.format(value)}
-        min={0.0}
-        max={3600}
-        step={1.0}
-      />
-    </>
+      }
+      controlWidth="wide"
+      {...resetDelay}
+      control={
+        <NumberSelector
+          control={control}
+          name="delay"
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.0}
+          max={3600}
+          step={1.0}
+        />
+      }
+    />
   );
 }

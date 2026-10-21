@@ -2,11 +2,13 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.VMCConfig
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vmc.VMCStatus
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -23,6 +25,19 @@ import solarxr_protocol.rpc.VRMSettingsResponse
 
 private const val VMC_STATUS_SAMPLE_MS = 300L
 
+internal fun buildVmcOscSettingsResponse(config: VMCConfig) = VMCOSCSettingsResponse(
+	enabled = config.enabled,
+	portIn = config.portIn.toUShort(),
+	portOut = config.portOut.toUShort(),
+	address = config.address,
+	anchorHip = config.anchorAtHips,
+	mirrorTracking = config.mirrorTracking,
+)
+
+internal fun buildVrmSettingsResponse(config: VMCConfig) = VRMSettingsResponse(
+	vrmJson = config.vrmJson,
+)
+
 class VmcBehaviour(
 	private val settings: Settings,
 	private val vmcManager: VMCManager,
@@ -38,18 +53,16 @@ class VmcBehaviour(
 
 		// Send VMC config
 		receiver.rpcDispatcher.on<VMCOSCSettingsRequest> {
-			val config = settings.context.state.value.data.vmcConfig
-			receiver.sendRpc(
-				VMCOSCSettingsResponse(
-					enabled = config.enabled,
-					portIn = config.portIn.toUShort(),
-					portOut = config.portOut.toUShort(),
-					address = config.address,
-					anchorHip = config.anchorAtHips,
-					mirrorTracking = config.mirrorTracking,
-				),
-			)
+			receiver.sendRpc(buildVmcOscSettingsResponse(settings.context.state.value.data.vmcConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildVmcOscSettingsResponse(it.data.vmcConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VMCOSCStatusRequest> {
 			receiver.sendRpc(buildStatusResponse(vmcManager.context.state.value.status))
@@ -57,13 +70,16 @@ class VmcBehaviour(
 
 		// Send VRM json
 		receiver.rpcDispatcher.on<VRMSettingsRequest> {
-			val config = settings.context.state.value.data.vmcConfig
-			receiver.sendRpc(
-				VRMSettingsResponse(
-					vrmJson = config.vrmJson,
-				),
-			)
+			receiver.sendRpc(buildVrmSettingsResponse(settings.context.state.value.data.vmcConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildVrmSettingsResponse(it.data.vmcConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		// Receive VMC config
 		receiver.rpcDispatcher.on<ChangeVMCOSCSettingsRequest> { req ->

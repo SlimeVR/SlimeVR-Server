@@ -12,9 +12,9 @@ const val ROTATION_CORRECTION_VERTICAL = 0.1f
 
 fun computeFootPlantRatio(
 	ankleHeight: Float,
-	floorHeight: Float,
+	floorLevel: Float,
 ): Float {
-	val ankleHeightAboveFloor = ankleHeight - floorHeight
+	val ankleHeightAboveFloor = ankleHeight - floorLevel
 	val ratioOfRangeFromFloor = (ankleHeightAboveFloor / ROTATION_CORRECTION_VERTICAL).coerceIn(0f, 1f)
 	// Ratio of range *to* floor
 	return 1f - ratioOfRangeFromFloor

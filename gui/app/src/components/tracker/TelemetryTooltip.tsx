@@ -1,5 +1,7 @@
-import { memo, useEffect, useRef } from 'react';
-import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
+import { memo } from 'react';
+import { GapEvent } from '@/hooks/telemetry-history';
+import { ChartPopover } from '@/components/commons/charts/ChartPopover';
+import { ChartRow, nearestIndex, rowsSource } from '@/hooks/time-series';
 import {
   getGapTextColor,
   isGapEventActive,
@@ -7,7 +9,6 @@ import {
 } from './DongleTelemetry';
 
 export const TOOLTIP_WIDTH = 380;
-export const TOOLTIP_OFFSET = 10;
 export const TOOLTIP_ROW_HEIGHT = 21;
 export const TOOLTIP_HEADER_HEIGHT = 32;
 
@@ -16,19 +17,8 @@ export function estimatedTooltipHeight(trackerCount: number): number {
 }
 
 export function nearestRow(chartData: ChartRow[], t: number): ChartRow | null {
-  if (chartData.length === 0) return null;
-  let lo = 0;
-  let hi = chartData.length;
-  while (lo < hi) {
-    const mid = (lo + hi) >> 1;
-    if (chartData[mid].t < t) lo = mid + 1;
-    else hi = mid;
-  }
-  if (lo === 0) return chartData[0];
-  if (lo >= chartData.length) return chartData[chartData.length - 1];
-  const d1 = Math.abs(chartData[lo - 1].t - t);
-  const d2 = Math.abs(chartData[lo].t - t);
-  return d1 < d2 ? chartData[lo - 1] : chartData[lo];
+  const i = nearestIndex(rowsSource(chartData), t);
+  return i < 0 ? null : chartData[i];
 }
 
 function TelemetryTooltipTableComponent({
@@ -113,87 +103,32 @@ function TelemetryTooltipTableComponent({
 export const TelemetryTooltipTable = memo(TelemetryTooltipTableComponent);
 
 export function TelemetryPopoverTooltip({
-  isOpen,
   clientPos,
   trackers,
   chartData,
   hoveredTime,
   eventsByTracker,
 }: {
-  isOpen: boolean;
   clientPos: { x: number; y: number } | null;
   trackers: TelemetryTracker[];
   chartData: ChartRow[];
   hoveredTime: number | null;
   eventsByTracker: Record<number, GapEvent[]>;
 }) {
-  const popoverRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const el = popoverRef.current as
-      | (HTMLDivElement & {
-          showPopover?: () => void;
-          hidePopover?: () => void;
-        })
-      | null;
-    if (!el?.showPopover) return;
-
-    try {
-      const shouldBeOpen = Boolean(isOpen && clientPos && hoveredTime != null);
-      const isOpenNow = el.matches(':popover-open');
-
-      if (shouldBeOpen && !isOpenNow) {
-        el.showPopover();
-      } else if (!shouldBeOpen && isOpenNow) {
-        el.hidePopover?.();
-      }
-    } catch {
-      // Safe fallback if popover API fails or is unsupported
-    }
-  }, [isOpen, clientPos, hoveredTime]);
-
-  const active = isOpen && clientPos != null && hoveredTime != null;
-  const estimatedHeight = Math.min(
-    360,
-    estimatedTooltipHeight(trackers.length)
-  );
-
-  const clampedX = clientPos
-    ? Math.max(
-        10,
-        Math.min(clientPos.x, window.innerWidth - TOOLTIP_WIDTH - 10)
-      )
-    : -9999;
-  const clampedY = clientPos
-    ? Math.max(
-        10,
-        Math.min(clientPos.y, window.innerHeight - estimatedHeight - 10)
-      )
-    : -9999;
-
   return (
-    <div
-      ref={popoverRef}
-      {...({ popover: 'manual' } as any)}
-      style={{
-        position: 'fixed',
-        left: `${clampedX}px`,
-        top: `${clampedY}px`,
-        margin: 0,
-        inset: 'unset',
-      }}
-      className="border-0 bg-transparent p-0 outline-none backdrop:bg-transparent pointer-events-none"
+    <ChartPopover
+      clientPos={hoveredTime != null ? clientPos : null}
+      width={TOOLTIP_WIDTH}
+      estimatedHeight={estimatedTooltipHeight(trackers.length)}
     >
-      {active && (
-        <div className="bg-background-90/95 border border-background-10/10 rounded-lg px-3 py-2 shadow-2xl max-h-[360px] overflow-y-auto w-[380px] text-background-10">
-          <TelemetryTooltipTable
-            trackers={trackers}
-            chartData={chartData}
-            hoveredTime={hoveredTime}
-            eventsByTracker={eventsByTracker}
-          />
-        </div>
+      {hoveredTime != null && (
+        <TelemetryTooltipTable
+          trackers={trackers}
+          chartData={chartData}
+          hoveredTime={hoveredTime}
+          eventsByTracker={eventsByTracker}
+        />
       )}
-    </div>
+    </ChartPopover>
   );
 }

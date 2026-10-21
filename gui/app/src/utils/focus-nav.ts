@@ -26,6 +26,13 @@ export const ARROW_KEY: Record<Direction, string> = {
   right: 'ArrowRight',
 };
 
+export const CONTROLLER_ACTIVE_CLASS = 'controller-active';
+
+export function focusVisible(el: HTMLElement): boolean {
+  if (document.documentElement.classList.contains(CONTROLLER_ACTIVE_CLASS)) return true;
+  return el.matches(':focus-visible');
+}
+
 export function isFocusable(el: HTMLElement): boolean {
   // Natively disabled elements cannot take focus at all, so there is nothing to
   // aim at. `aria-disabled` ones can, and should: a control that is off for a

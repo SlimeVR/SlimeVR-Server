@@ -1,6 +1,5 @@
-import { useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/commons/Button';
 import {
   ChangeDriverSettingsRequestT,
@@ -12,6 +11,8 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { CheckBox } from '@/components/commons/Checkbox';
 import {
   StatusBadge,
@@ -19,21 +20,27 @@ import {
   type StatusVariant,
 } from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import {
-  SettingsPageLayout,
-  SettingsPagePaneLayout,
-} from '@/components/settings/SettingsPageLayout';
+  SettingRow,
+  SettingsAdvanced,
+  SettingsGroup,
+  SettingsGroupLabel,
+} from '@/components/settings/SettingRow';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 type DriverForm = {
   enabled: boolean;
   sendVelocity: boolean;
 };
 
-const defaultValues: DriverForm = {
-  enabled: true,
-  sendVelocity: false,
-};
+function toForm(settings: DriverSettingsResponseT): DriverForm {
+  return {
+    enabled: settings.enabled,
+    sendVelocity: settings.sendVelocity,
+  };
+}
 
 type Badge = 'connected' | 'waiting' | 'disabled' | 'unavailable';
 
@@ -56,7 +63,7 @@ function StatusCard({ status }: { status: DriverStatusChangeResponseT }) {
   const badge = CONNECTION_BADGES[state];
 
   return (
-    <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-md divide-y divide-background-60">
+    <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-lg divide-y divide-background-60">
       <StatusRow
         label={
           <Typography
@@ -71,14 +78,42 @@ function StatusCard({ status }: { status: DriverStatusChangeResponseT }) {
           />
         }
       >
-        <Typography
-          color="secondary"
-          id={`settings-driver-status-connection-${badge}`}
-        />
+        <Typography id={`settings-driver-status-connection-${badge}`} />
       </StatusRow>
     </div>
   );
 }
+
+export const driverSettingsPage = defineSettingsPage({
+  path: 'driver',
+  title: 'settings-sidebar-driver',
+  groups: {
+    output: {
+      title: 'settings-driver-output_group',
+      rows: {
+        enable: {
+          title: 'settings-driver-enable',
+          description: 'settings-driver-enable-description',
+        },
+        bones: {
+          title: 'settings-driver-bones',
+          description: 'settings-driver-bones-description',
+        },
+      },
+    },
+    data: {
+      title: 'settings-driver-data_group',
+      rows: {
+        velocity: {
+          title: 'settings-driver-velocity',
+          description: 'settings-driver-velocity-description',
+        },
+      },
+    },
+  },
+});
+
+const { groups } = driverSettingsPage;
 
 export function DriverSettings() {
   const [settings, setSettings] = useState<DriverSettingsResponseT | null>(
@@ -87,15 +122,16 @@ export function DriverSettings() {
   const [status, setStatus] = useState<DriverStatusChangeResponseT | null>(
     null
   );
-  const { l10n } = useLocalization();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().driver;
 
-  const { control, watch, handleSubmit, getValues, reset } =
-    useForm<DriverForm>({
-      defaultValues,
+  const { control, watch, handleSubmit, reset, setValue } = useForm<DriverForm>(
+    {
+      defaultValues: toForm(defaults),
       mode: 'onChange',
       reValidateMode: 'onChange',
-    });
+    }
+  );
 
   const onSubmit = (values: DriverForm) => {
     const settingsReq = new ChangeDriverSettingsRequestT();
@@ -106,6 +142,16 @@ export function DriverSettings() {
 
   const enabled = watch('enabled');
 
+  const resetTo = (name: keyof DriverForm) =>
+    settingReset<DriverForm, typeof name>(
+      defaults?.[name],
+      watch(name),
+      (next) => {
+        setValue(name, next);
+        handleSubmit(onSubmit)();
+      }
+    );
+
   useEffect(() => {
     const subscription = watch((_, { type }) => {
       if (type === 'change') handleSubmit(onSubmit)();
@@ -113,7 +159,7 @@ export function DriverSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.DriverSettingsRequest,
       new DriverSettingsRequestT()
@@ -123,11 +169,7 @@ export function DriverSettings() {
 
   useEffect(() => {
     if (!settings) return;
-    const formData: DefaultValues<DriverForm> = {
-      enabled: settings.enabled,
-      sendVelocity: settings.sendVelocity,
-    };
-    reset({ ...getValues(), ...formData });
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
@@ -141,63 +183,69 @@ export function DriverSettings() {
   );
 
   return (
-    <SettingsPageLayout>
-      <SettingsPagePaneLayout icon={<SteamIcon size={24} />} id="driver">
-        <>
-          <Typography variant="main-title">SteamVR / Monado</Typography>
-          <div className="flex flex-col pt-1 pb-4">
-            <Typography id="settings-driver-description" />
-          </div>
+    <SettingsPagePaneLayout
+      icon={<SteamIcon size={24} />}
+      title={driverSettingsPage.title}
+    >
+      <div className="flex flex-col">
+        <div className="pb-4 max-w-[75ch]">
+          <Typography id="settings-driver-description" />
+        </div>
 
-          <Typography variant="section-title" id="settings-driver-enable" />
-          <div className="flex flex-col pt-1 pb-2">
-            <Typography id="settings-driver-enable-description" />
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="enabled"
-              label={l10n.getString('settings-driver-enable-label')}
-            />
-          </div>
-
-          {enabled && status && (
-            <>
-              <Typography
-                variant="section-title"
-                id="settings-driver-status-title"
+        <SettingsGroup group={groups.output}>
+          <SettingRow
+            setting={groups.output.rows.enable}
+            controlId="driver-enabled"
+            {...resetTo('enabled')}
+            control={
+              <CheckBox
+                variant="toggle"
+                control={control}
+                name="enabled"
+                id="driver-enabled"
               />
-              <StatusCard status={status} />
-            </>
-          )}
-
-          <Typography variant="section-title" id="settings-driver-bones" />
-          <div className="flex flex-col gap-2 pt-1 pb-4">
-            <Typography id="settings-driver-bones-description" />
-            <div className="w-fit">
+            }
+          />
+          <SettingRow
+            setting={groups.output.rows.bones}
+            control={
               <Button
                 variant="secondary"
+                className="whitespace-nowrap"
                 to="/settings/routing"
                 id="settings-driver-bones-link"
               />
-            </div>
-          </div>
-
-          <Typography variant="section-title" id="settings-driver-velocity" />
-          <div className="pt-1 pb-2">
-            <Typography id="settings-driver-velocity-description" />
-          </div>
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="sendVelocity"
-            label={l10n.getString('settings-driver-velocity')}
+            }
           />
-        </>
-      </SettingsPagePaneLayout>
-    </SettingsPageLayout>
+        </SettingsGroup>
+
+        {enabled && status && (
+          <div className="flex flex-col gap-2 mt-8 min-w-0">
+            <div className="px-3 xs:px-4">
+              <SettingsGroupLabel id="settings-driver-status-title" />
+            </div>
+            <StatusCard status={status} />
+          </div>
+        )}
+
+        <SettingsAdvanced>
+          <SettingsGroup group={groups.data}>
+            <SettingRow
+              setting={groups.data.rows.velocity}
+              controlId="driver-velocity"
+              {...resetTo('sendVelocity')}
+              control={
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  name="sendVelocity"
+                  id="driver-velocity"
+                />
+              }
+            />
+          </SettingsGroup>
+        </SettingsAdvanced>
+      </div>
+    </SettingsPagePaneLayout>
   );
 }

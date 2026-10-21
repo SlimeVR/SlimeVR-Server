@@ -1,6 +1,6 @@
 package dev.slimevr.tracker.stayaligned
 
-import dev.slimevr.config.StayAlignedConfig
+import dev.slimevr.config.UserConfigData
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.tracker.Motion
@@ -37,9 +37,9 @@ object TrackerYawCorrection {
 		trackerState: TrackerState,
 		trackerStates: List<TrackerState>,
 		applyYawCorrection: Angle,
-		config: StayAlignedConfig,
+		userConfig: UserConfigData,
 	): Angle? = when (trackerState.motion) {
-		Motion.ROTATING -> adjustMovingTracker(trackerState, trackerStates, applyYawCorrection, config)
+		Motion.ROTATING -> adjustMovingTracker(trackerState, trackerStates, applyYawCorrection, userConfig)
 
 		Motion.RESTING -> adjustLockedTracker(trackerState, applyYawCorrection)
 
@@ -97,10 +97,10 @@ object TrackerYawCorrection {
 		trackerState: TrackerState,
 		trackerStates: List<TrackerState>,
 		applyYawCorrection: Angle,
-		config: StayAlignedConfig,
+		userConfig: UserConfigData,
 	): Angle? {
 		val centreYaw = YawUtils.centreYawOfTrackers(trackerStates) ?: return null
-		val relaxedPose = RelaxedPose.forPose(PlayerPose.of(trackerStates), config) ?: return null
+		val relaxedPose = RelaxedPose.forPose(PlayerPose.of(trackerStates), userConfig) ?: return null
 
 		return adjustByError(trackerState, applyYawCorrection) { yawCorrection ->
 			YawErrors().also {

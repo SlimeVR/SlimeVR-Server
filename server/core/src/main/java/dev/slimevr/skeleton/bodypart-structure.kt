@@ -101,11 +101,17 @@ inline fun BodyPart.findFirstParent(predicate: (BodyPart) -> Boolean): BodyPart?
 val headPartSet = setOf(BodyPart.HEAD)
 fun highestBodyParts(bodyParts: Set<BodyPart>): Set<BodyPart> {
 	if (BodyPart.HEAD in bodyParts) return headPartSet
+
+	// Construct boolean array once
+	val bodyPartsPresent = BooleanArray(BodyPart.entries.size)
+	for (bodyPart in bodyParts) bodyPartsPresent[bodyPart.ordinal] = true
+
 	val result = bodyParts.toMutableSet()
 	for (bodyPart in bodyParts) {
 		var parent = parentOf(bodyPart)
 		while (parent != null) {
-			if (parent in bodyParts) {
+			// Use the array here for performance
+			if (bodyPartsPresent[parent.ordinal]) {
 				result.remove(bodyPart)
 				break
 			}
@@ -128,7 +134,7 @@ private fun buildHierarchy(root: BodyPart, onlyChildren: Boolean): Array<Pair<Bo
 
 // The hierarchy is constant, so every traversal of it is too. Derived once for the same reason
 // BODY_PART_PARENTS is: walking it lazily per call cost a continuation and a Pair per bone, and
-// BoneYawFallbackProcessor asks for one per active bone per frame.
+// FallbackProcessor asks for one per active bone per frame.
 private val BODY_PART_HIERARCHIES: Array<Array<Pair<BodyPart?, BodyPart>>> =
 	Array(ALL_BODY_PARTS.size * 2) { index -> buildHierarchy(ALL_BODY_PARTS[index / 2], index % 2 == 1) }
 

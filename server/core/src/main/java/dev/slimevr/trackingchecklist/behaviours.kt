@@ -2,8 +2,10 @@ package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
+import dev.slimevr.device.DeviceState
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.routing.Routes
 import dev.slimevr.routing.solarXRDriverConnectedFlow
@@ -36,7 +38,7 @@ import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistStepVisibility
 import solarxr_protocol.rpc.TrackingChecklistTrackerError
 import solarxr_protocol.rpc.TrackingChecklistTrackerReset
-import solarxr_protocol.rpc.TrackingChecklistUnassignedReliableReference
+import solarxr_protocol.rpc.TrackingChecklistUnassignedHMD
 import solarxr_protocol.rpc.VRCOSCTrackingDataState
 
 /**
@@ -56,8 +58,7 @@ data class ChecklistTracker(
 	val origin: DeviceOrigin,
 	val status: TrackerStatus,
 	val bodyPart: BodyPart?,
-	val intendedBodyPart: BodyPart?,
-	val isReliableReference: Boolean,
+	val isHmd: Boolean,
 	val imuType: ImuType?,
 	val completedRestCalibration: Boolean?,
 	// Deliberately not the position itself: the checks only ask whether there is one, and carrying the
@@ -72,8 +73,7 @@ fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	origin = tracker.origin,
 	status = tracker.status,
 	bodyPart = tracker.bodyPart,
-	intendedBodyPart = tracker.intendedBodyPart,
-	isReliableReference = tracker.isReliableReference,
+	isHmd = tracker.isHmd,
 	imuType = tracker.imuType,
 	completedRestCalibration = tracker.completedRestCalibration,
 	hasPosition = tracker.position != null,
@@ -85,19 +85,18 @@ internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> =
 	tracker.context.state.map { state -> checklistTracker(state) }.distinctUntilChanged()
 }
 
-class ReliableReferenceCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
+class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
-		val reliableReference = trackers.firstOrNull { tracker -> tracker.isReliableReference }
-		val isAssigned = reliableReference?.bodyPart == reliableReference?.intendedBodyPart
+		val hmdTracker = trackers.firstOrNull { tracker -> tracker.isHmd }
+		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
 		return TrackingChecklistStep(
 			valid = isAssigned,
-			enabled = reliableReference != null,
+			enabled = hmdTracker != null,
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
-			extraData = if (reliableReference != null && !isAssigned) {
-				TrackingChecklistUnassignedReliableReference(
-					trackerId = reliableReference.id.toUShort(),
-					intendedBodyPart = reliableReference.intendedBodyPart ?: BodyPart.NONE,
+			extraData = if (hmdTracker != null && !isAssigned) {
+				TrackingChecklistUnassignedHMD(
+					trackerId = hmdTracker.id.toUShort(),
 				)
 			} else {
 				null
@@ -109,7 +108,7 @@ class ReliableReferenceCheckBehaviour(private val trackerStates: StateFlow<List<
 		trackerStates
 			.map { trackers -> computeStep(trackers) }
 			.distinctUntilChanged()
-			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE, step)) }
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.UNASSIGNED_HMD, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }
@@ -124,6 +123,7 @@ class TrackerRestCheckBehaviour(private val trackerStates: StateFlow<List<Checkl
 		return TrackingChecklistStep(
 			valid = uncalibratedTrackers.isEmpty(),
 			enabled = trackers.isNotEmpty(),
+			ignorable = true,
 			extraData = if (uncalibratedTrackers.isNotEmpty()) {
 				TrackingChecklistNeedCalibration(
 					trackersId = uncalibratedTrackers.map { tracker -> tracker.id.toUShort() },
@@ -232,7 +232,7 @@ class VRChatSettingsCheckBehaviour(
 
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
-			skeleton.context.state.map { state -> state.skeletonHeight },
+			skeleton.context.state.map { state -> state.skeletonHeight }.distinctUntilChanged(),
 			vrcConfigManager.context.state,
 		) { userHeight, vrc -> computeStep(vrc, userHeight) }
 			.distinctUntilChanged()
@@ -301,24 +301,32 @@ private fun isImuAssigned(tracker: ChecklistTracker): Boolean = (tracker.origin 
 
 class FullResetCheckBehaviour(
 	private val trackerStates: StateFlow<List<ChecklistTracker>>,
+	private val resetsManager: ResetsManager,
 ) : TrackingChecklistBehaviourType {
 	override fun observe(receiver: TrackingChecklist) {
-		trackerStates
-			.map { trackers ->
-				val assigned = trackers.filter { isImuAssigned(it) }
-				val pending = assigned.filter { it.needsFullReset }
-				TrackingChecklistStep(
-					valid = pending.isEmpty(),
-					enabled = assigned.isNotEmpty(),
-					ignorable = false,
-					visibility = TrackingChecklistStepVisibility.ALWAYS,
-					extraData = if (pending.isNotEmpty()) {
-						TrackingChecklistTrackerReset(trackersId = pending.map { it.id.toUShort() })
-					} else {
-						null
-					},
-				)
+		val mountingPending = receiver.context.state
+			.map { state ->
+				listOf(TrackingChecklistStepId.MOUNTING_CALIBRATION, TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION)
+					.any { id -> state.steps[id]?.let { it.enabled && !it.valid } == true }
 			}
+			.distinctUntilChanged()
+		val mountingResetAllowed = resetsManager.context.state.map { it.canDoMountingReset }.distinctUntilChanged()
+
+		combine(trackerStates, mountingResetAllowed, mountingPending) { trackers, allowed, pendingMounting ->
+			val assigned = trackers.filter { isImuAssigned(it) }
+			val pending = assigned.filter { it.needsFullReset }
+			TrackingChecklistStep(
+				valid = pending.isEmpty() && (allowed || !pendingMounting),
+				enabled = assigned.isNotEmpty(),
+				ignorable = false,
+				visibility = TrackingChecklistStepVisibility.ALWAYS,
+				extraData = if (pending.isNotEmpty()) {
+					TrackingChecklistTrackerReset(trackersId = pending.map { it.id.toUShort() })
+				} else {
+					null
+				},
+			)
+		}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.FULL_RESET, step)) }
 			.launchIn(receiver.context.scope)

@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.config.DriverConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.routing.driverStateFlow
@@ -20,6 +21,11 @@ import solarxr_protocol.rpc.DriverStatusChangeResponse
 import solarxr_protocol.rpc.DriverStatusRequest
 import solarxr_protocol.rpc.RoutingOutputState
 
+internal fun buildDriverSettingsResponse(config: DriverConfig) = DriverSettingsResponse(
+	enabled = config.enabled,
+	sendVelocity = config.sendVelocity,
+)
+
 class DriverSettingsBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
@@ -27,22 +33,11 @@ class DriverSettingsBehaviour(
 
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<DriverSettingsRequest> {
-			val config = settings.context.state.value.data.driverConfig
-			receiver.sendRpc(
-				DriverSettingsResponse(
-					enabled = config.enabled,
-					sendVelocity = config.sendVelocity,
-				),
-			)
+			receiver.sendRpc(buildDriverSettingsResponse(settings.context.state.value.data.driverConfig))
 		}.launchIn(receiver.context.scope)
 
 		settings.context.state
-			.map {
-				DriverSettingsResponse(
-					enabled = it.data.driverConfig.enabled,
-					sendVelocity = it.data.driverConfig.sendVelocity,
-				)
-			}
+			.map { buildDriverSettingsResponse(it.data.driverConfig) }
 			.distinctUntilChanged()
 			.drop(1)
 			.onEach(receiver::sendRpc)

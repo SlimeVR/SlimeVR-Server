@@ -11,7 +11,7 @@ import { useLocalization } from '@fluent/react';
 
 export function UdevRulesModal() {
   const { config, setConfig } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const electron = useElectron();
   const [udevContent, setUdevContent] = useState('');
   const [isUdevInstalledResponse, setIsUdevInstalledResponse] = useState(true);
@@ -47,7 +47,7 @@ export function UdevRulesModal() {
     }
   }, [config, isUdevInstalledResponse, dontShowThisSession]);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.InstalledInfoRequest,
       new InstalledInfoResponseT()

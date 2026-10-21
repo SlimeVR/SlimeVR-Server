@@ -225,7 +225,7 @@ export function AssignmentEmptyState({
         state.alonePage && (
           <Button
             variant="primary"
-            to="/onboarding/connect-trackers"
+            to="/onboarding/add-trackers"
             state={{ alonePage: true }}
             id="onboarding-assign_trackers-no_trackers-connect"
           />

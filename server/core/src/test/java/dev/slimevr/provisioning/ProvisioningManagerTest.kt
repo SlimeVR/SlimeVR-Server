@@ -1,15 +1,17 @@
 package dev.slimevr.provisioning
 
+import dev.slimevr.FakeUdpSocket
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
+import dev.slimevr.buildTestDevicesConfig
 import dev.slimevr.buildTestSerial
-import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.serial.SerialPortInfo
+import dev.slimevr.udp.UdpPeer
 import dev.slimevr.udp.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +41,7 @@ private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: C
 		reducer = ::reduceProvisioning,
 		name = "ProvisioningManagerTest",
 	)
-	return ProvisioningManager(context = context, serialServer = serialServer, settings = buildTestSettings(scope), scope = scope).also { it.startObserving() }
+	return ProvisioningManager(context = context, serialServer = serialServer, devices = buildTestDevicesConfig(scope), scope = scope).also { it.startObserving() }
 }
 
 private fun ProvisioningManager.trackerStatus(port: String = "COM1") = context.state.value.trackers[port]?.status
@@ -82,8 +84,8 @@ private fun connectDevice(vrServer: VRServer, mac: String, scope: CoroutineScope
 		appContext = appContext,
 		packetEvents = dev.slimevr.EventDispatcher(name = "TestEvents", scope = scope),
 		packetChannel = kotlinx.coroutines.channels.Channel(),
-		socket = dev.slimevr.FakeDatagramSocket(),
-		remoteAddress = io.ktor.network.sockets.InetSocketAddress("192.168.1.100", 6969),
+		socket = FakeUdpSocket(),
+		peer = UdpPeer(address = "192.168.1.100", host = "192.168.1.100", port = 6969),
 		scope = scope,
 	)
 	appContext.udpServer.addConnection("192.168.1.100", conn)

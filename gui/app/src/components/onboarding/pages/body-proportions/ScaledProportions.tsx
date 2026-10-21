@@ -365,7 +365,7 @@ export function ScaledProportionsPage() {
 
   const [status, setState] = useState<UserHeightRecordingStatusResponseT>();
   const [auto, setAuto] = useState(false);
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [resetModal, setResetModal] = useState<null | 'manual' | 'auto'>(null);
   const [heightUnit, setHeightUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
@@ -443,7 +443,7 @@ export function ScaledProportionsPage() {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.SkeletonProportionsRequest,
       new SkeletonProportionsRequestT()

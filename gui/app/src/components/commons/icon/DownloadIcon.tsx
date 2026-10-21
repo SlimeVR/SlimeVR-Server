@@ -1,10 +1,16 @@
-export function DownloadIcon({ width = 22 }: { width?: number }) {
+export function DownloadIcon({
+  width = 22,
+  className = 'fill-status-success stroke-status-success',
+}: {
+  width?: number;
+  className?: string;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       width={width}
-      className="fill-status-success stroke-status-success"
+      className={className}
     >
       <path
         fillRule="evenodd"

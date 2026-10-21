@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr.driver
 
+import com.jme3.math.FastMath
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
@@ -40,18 +41,18 @@ data class Offset(
 
 private val leftIndexControllerOffset = Offset(
 	Vector3(-0.02f, 0.07f, 0.13f),
-	Quaternion.rotationAroundXAxis(0.42f),
-	Quaternion.rotationAroundZAxis(0.28f),
+	Quaternion.rotationAroundXAxis(26f * FastMath.DEG_TO_RAD),
+	Quaternion.rotationAroundZAxis(16f * FastMath.DEG_TO_RAD),
 )
 private val leftQuest3ControllerOffset = Offset(
 	Vector3(-0.02f, 0.07f, 0.13f),
-	Quaternion.rotationAroundXAxis(0.42f),
-	Quaternion.rotationAroundZAxis(0.28f),
+	Quaternion.rotationAroundXAxis(24.5f * FastMath.DEG_TO_RAD),
+	Quaternion.rotationAroundZAxis(16f * FastMath.DEG_TO_RAD),
 )
 private val leftPicoControllerOffset = Offset(
 	Vector3(0.01f, 0.11f, 0.11f),
-	Quaternion.rotationAroundXAxis(0.42f),
-	Quaternion.rotationAroundZAxis(0.15f),
+	Quaternion.rotationAroundXAxis(24.5f * FastMath.DEG_TO_RAD),
+	Quaternion.rotationAroundZAxis(8.6f * FastMath.DEG_TO_RAD),
 )
 private val DISPLAY_NAME_TO_OFFSET = mapOf(
 	// Erimel, through SteamVR
@@ -82,7 +83,7 @@ private val BODY_PART_TO_OFFSET = mapOf(
 )
 
 // I don't know why linear velocity seems to be in a different coordinate system. -Erimel
-private fun remapVelocity(velocity: Vector3) = Vector3(velocity.z, -velocity.y, velocity.x)
+private fun remapVelocity(velocity: Vector3) = Vector3(velocity.z, velocity.y, velocity.x)
 
 class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,

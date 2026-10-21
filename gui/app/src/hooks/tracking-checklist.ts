@@ -26,8 +26,7 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
   [TrackingChecklistStepId.VRCHAT_SETTINGS]: 'tracking_checklist-VRCHAT_SETTINGS',
   [TrackingChecklistStepId.STEAMVR_DISCONNECTED]:
     'tracking_checklist-STEAMVR_DISCONNECTED',
-  [TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE]:
-    'tracking_checklist-UNASSIGNED_HMD',
+  [TrackingChecklistStepId.UNASSIGNED_HMD]: 'tracking_checklist-UNASSIGNED_HMD',
   [TrackingChecklistStepId.TRACKER_ERROR]: 'tracking_checklist-TRACKER_ERROR',
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]:
     'tracking_checklist-NETWORK_PROFILE_PUBLIC',
@@ -44,6 +43,40 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
     'tracking_checklist-STANDABLE_INSTALLED',
   [TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED]:
     'tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED',
+};
+
+export const trackingchecklistIdtoSettingsDescription: Record<
+  TrackingChecklistStepId,
+  string
+> = {
+  [TrackingChecklistStepId.UNKNOWN]: '',
+  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]:
+    'tracking_checklist-TRACKERS_REST_CALIBRATION-settings_desc',
+  [TrackingChecklistStepId.FULL_RESET]: 'tracking_checklist-FULL_RESET-settings_desc',
+  [TrackingChecklistStepId.VRCHAT_SETTINGS]:
+    'tracking_checklist-VRCHAT_SETTINGS-settings_desc',
+  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]:
+    'tracking_checklist-STEAMVR_DISCONNECTED-settings_desc',
+  [TrackingChecklistStepId.UNASSIGNED_HMD]:
+    'tracking_checklist-UNASSIGNED_HMD-settings_desc',
+  [TrackingChecklistStepId.TRACKER_ERROR]:
+    'tracking_checklist-TRACKER_ERROR-settings_desc',
+  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]:
+    'tracking_checklist-NETWORK_PROFILE_PUBLIC-settings_desc',
+  [TrackingChecklistStepId.MOUNTING_METHOD]:
+    'tracking_checklist-MOUNTING_METHOD-settings_desc',
+  [TrackingChecklistStepId.MOUNTING_CALIBRATION]:
+    'tracking_checklist-MOUNTING_CALIBRATION-settings_desc',
+  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]:
+    'tracking_checklist-FEET_MOUNTING_CALIBRATION-settings_desc',
+  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]:
+    'tracking_checklist-STAY_ALIGNED_CONFIGURED-settings_desc',
+  [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]:
+    'tracking_checklist-STEAMVR_HANDS_ENABLED-settings_desc',
+  [TrackingChecklistStepId.STANDABLE_INSTALLED]:
+    'tracking_checklist-STANDABLE_INSTALLED-settings_desc',
+  [TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED]:
+    'tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-settings_desc',
 };
 
 export type TrackingChecklistStepStatus =
@@ -112,7 +145,7 @@ const filterActive =
     !ignoredSteps.includes(step.id) && step.enabled;
 
 export function provideTrackingChecklist() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [sessionIgnoredSteps, setSessionIgnoredSteps] = useState<
     TrackingChecklistStepId[]
   >([]);
@@ -140,7 +173,7 @@ export function provideTrackingChecklist() {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.TrackingChecklistRequest, new TrackingChecklistRequestT());
   }, []);
 

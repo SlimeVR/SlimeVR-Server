@@ -8,7 +8,6 @@ import {
   useNavigationType,
 } from 'react-router-dom';
 import { ErrorReportingConsent } from 'solarxr-protocol';
-import { ErrorReportingState } from '@slimevr/gui-shared';
 
 const OFFLINE_DB_NAME = 'sentry-offline';
 const OFFLINE_STORE_NAME = 'queue';
@@ -49,7 +48,6 @@ export function initSentry(isSteam: boolean, getConsent: () => ErrorReportingCon
       if (sessionId) log.attributes = { ...log.attributes, ['session_id']: sessionId };
       return log;
     },
-    // The offline queue caches everything until the user answered
     transport: (options) =>
       Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport)({
         ...options,
@@ -71,6 +69,24 @@ export function initSentry(isSteam: boolean, getConsent: () => ErrorReportingCon
   Sentry.setTag('distribution', isSteam ? 'steam' : 'standalone');
 
   log('Initialized the Sentry client, reports are held until consent');
+}
+
+export interface ReportingIdentity {
+  userId: string;
+  sessionId: string;
+}
+
+let appliedConsent = ErrorReportingConsent.UNDECIDED;
+
+function applyGate(consent: ErrorReportingConsent) {
+  log(`Error reporting consent: ${ErrorReportingConsent[consent]}`);
+  if (consent === ErrorReportingConsent.ALLOWED) {
+    startReplay();
+    Sentry.getClient()?.getTransport()?.flush();
+  } else {
+    Sentry.getReplay()?.stop();
+    if (consent === ErrorReportingConsent.DENIED) clearOfflineQueue();
+  }
 }
 
 function clearOfflineQueue() {
@@ -103,30 +119,30 @@ function startReplay() {
   );
 }
 
-export function applyErrorReporting(server: ErrorReportingState) {
-  window.electronAPI?.setErrorReporting(server);
-
-  if (!isEnabled) return;
-  Sentry.setUser({ id: server.userId });
-  Sentry.setTag('session_id', server.sessionId);
+function applyIdentity(identity: ReportingIdentity) {
+  Sentry.setUser({ id: identity.userId });
+  Sentry.setTag('session_id', identity.sessionId);
   if (!Sentry.getIsolationScope().getSession()) {
-    Sentry.startSession({ ignoreDuration: true, user: { id: server.userId } });
+    Sentry.startSession({ ignoreDuration: true, user: { id: identity.userId } });
     Sentry.captureSession();
   }
 }
 
-/** Call when the consent changes */
-export function applyErrorReportingConsent(consent: ErrorReportingConsent) {
-  if (!isEnabled) return;
-  log(`Error reporting consent: ${ErrorReportingConsent[consent]}`);
+export function applyErrorReporting(
+  consent: ErrorReportingConsent,
+  identity: ReportingIdentity | null
+) {
+  window.electronAPI?.setErrorReporting({
+    consent,
+    userId: identity?.userId ?? '',
+    sessionId: identity?.sessionId ?? '',
+  });
 
-  if (consent === ErrorReportingConsent.ALLOWED) {
-    startReplay();
-    // No timeout: sends what the offline queue held
-    Sentry.getClient()?.getTransport()?.flush();
-  } else {
-    Sentry.getReplay()?.stop();
-    if (consent === ErrorReportingConsent.DENIED) clearOfflineQueue();
+  if (!isEnabled) return;
+  if (identity) applyIdentity(identity);
+  if (consent !== appliedConsent) {
+    appliedConsent = consent;
+    applyGate(consent);
   }
 }
 

@@ -1,9 +1,10 @@
 import classNames from 'classnames';
-import { Clickable } from '@/components/commons/Clickable';
+import { SERIES_COLORS } from '@/components/commons/charts/series-colors';
 import { IconButton } from '@/components/commons/IconButton';
 import { useMemo, useRef, useState } from 'react';
 import { useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
+import { SegmentedControl } from '@/components/commons/SegmentedControl';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 import { DropdownInside } from '@/components/commons/Dropdown';
@@ -14,6 +15,7 @@ import { FlatDeviceTracker } from '@/store/app-store';
 import { RssiLossChart } from './RssiLossChart';
 import { GapEventsChart } from './GapEventsChart';
 import { defaultDongleTelemetryConfig, useConfig } from '@/hooks/config';
+import { useTimeAxisTicks, WINDOW_OPTIONS } from '@/hooks/time-axis';
 
 import { GapEvent } from '@/hooks/telemetry-history';
 
@@ -21,76 +23,6 @@ export interface TelemetryTracker {
   deviceId: number;
   name: string;
   color: string;
-}
-
-export type HoveredChart = 'rssi' | 'gap' | null;
-
-export const SERIES_COLORS = [
-  '#3987e5',
-  '#d95926',
-  '#199e70',
-  '#c98500',
-  '#d55181',
-  '#008300',
-  '#9085e9',
-  '#e66767',
-  '#00a3e0',
-  '#e59400',
-];
-
-export const WINDOW_OPTIONS = [
-  { sec: 10, label: '10s', step: 5 },
-  { sec: 30, label: '30s', step: 10 },
-  { sec: 60, label: '1m', step: 15 },
-  { sec: 120, label: '2m', step: 30 },
-  { sec: 300, label: '5m', step: 60 },
-];
-
-export const CHART_MARGIN = { top: 8, right: 12, bottom: 4, left: 0 };
-export const Y_AXIS_WIDTH = 64;
-export const RIGHT_AXIS_WIDTH = 48;
-
-export function relativeTimeTick(v: number, endSec: number) {
-  const diff = Math.round(v - endSec);
-  if (diff === 0) return '0s';
-  if (Math.abs(diff) >= 60 && Math.abs(diff) % 60 === 0) {
-    return `${diff / 60}m`;
-  }
-  return `${diff}s`;
-}
-
-export function screenXToTimeSec(
-  clientX: number,
-  plotLeftScreen: number,
-  plotWidth: number,
-  startSec: number,
-  endSec: number
-): number {
-  if (plotWidth <= 0) return startSec;
-  const pct = Math.max(0, Math.min(1, (clientX - plotLeftScreen) / plotWidth));
-  return startSec + pct * (endSec - startSec);
-}
-
-export function timeSecToScreenX(
-  t: number,
-  plotLeftScreen: number,
-  plotWidth: number,
-  startSec: number,
-  endSec: number
-): number {
-  if (endSec <= startSec) return plotLeftScreen;
-  const pct = Math.max(0, Math.min(1, (t - startSec) / (endSec - startSec)));
-  return plotLeftScreen + pct * plotWidth;
-}
-
-export function flipTooltipLeft(
-  clientX: number,
-  screenWidth: number,
-  tooltipWidth: number,
-  offset: number
-): number {
-  const wouldOverflow = clientX + offset + tooltipWidth > screenWidth;
-  return wouldOverflow ? clientX - offset - tooltipWidth : clientX + offset;
 }
 
 export function isGapEventActive(
@@ -218,7 +150,6 @@ export function DongleTelemetry({
 
   const [live, setLive] = useState(true);
   const [hoveredTime, setHoveredTime] = useState<number | null>(null);
-  const [hoveredChart, setHoveredChart] = useState<HoveredChart>(null);
 
   const trackerIds = useMemo(() => list.map((t) => t.deviceId), [trackerKey]);
   const { chartData, gapEvents, displayStats, nowSec } = useDongleTelemetryFeed(
@@ -232,18 +163,7 @@ export function DongleTelemetry({
   const endSec = nowSec;
   const startSec = endSec - windowSec;
 
-  const fixedEndTick = Math.floor(endSec / stepSec) * stepSec;
-  const xAxisTicks = useMemo(() => {
-    const ticks: number[] = [];
-    for (
-      let t = fixedEndTick - windowSec;
-      t <= fixedEndTick + stepSec;
-      t += stepSec
-    ) {
-      ticks.push(t);
-    }
-    return ticks;
-  }, [fixedEndTick, windowSec, stepSec]);
+  const xAxisTicks = useTimeAxisTicks(endSec, windowSec, stepSec);
 
   if (list.length === 0) return null;
 
@@ -322,22 +242,14 @@ export function DongleTelemetry({
             />
           </div>
 
-          <div className="flex bg-background-80 rounded-md p-2 gap-0.5">
-            {WINDOW_OPTIONS.map((w) => (
-              <Clickable
-                key={w.sec}
-                onClick={() => handleSetWindowSec(w.sec)}
-                className={classNames(
-                  'text-standard-bold px-2.5 py-1.5 rounded',
-                  windowSec === w.sec
-                    ? 'bg-accent-background-30 text-background-10'
-                    : 'text-background-30 hover:text-background-10'
-                )}
-              >
-                {w.label}
-              </Clickable>
-            ))}
-          </div>
+          <SegmentedControl
+            value={windowSec}
+            onChange={handleSetWindowSec}
+            options={WINDOW_OPTIONS.map((w) => ({
+              value: w.sec,
+              label: w.label,
+            }))}
+          />
 
           <IconButton
             labelId={
@@ -418,8 +330,6 @@ export function DongleTelemetry({
               xAxisTicks={xAxisTicks}
               hoveredTime={hoveredTime}
               onHoveredTimeChange={setHoveredTime}
-              isActive={hoveredChart === 'rssi'}
-              onActiveChange={setHoveredChart}
               showMinMax={showMinMax}
             />
           </div>
@@ -435,8 +345,6 @@ export function DongleTelemetry({
           xAxisTicks={xAxisTicks}
           hoveredTime={hoveredTime}
           onHoveredTimeChange={setHoveredTime}
-          isActive={hoveredChart === 'gap'}
-          onActiveChange={setHoveredChart}
           variant={variant}
         />
       </div>

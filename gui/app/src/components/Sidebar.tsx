@@ -7,7 +7,7 @@ import {
   SkeletonVisualizerWidget,
 } from './widgets/SkeletonVisualizerWidget';
 import { SkeletonPreviewControls } from './widgets/SkeletonPreviewControls';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from './commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
@@ -30,7 +30,7 @@ import { PlayIcon } from './commons/icon/PlayIcon';
 export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
   const { currentLocales } = useLocaleConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
 
   const {
     state: bvhState,
@@ -55,7 +55,7 @@ export function PreviewControls({ open }: { open: boolean }) {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.SkeletonProportionsRequest,
       new SkeletonProportionsRequestT()
@@ -217,15 +217,13 @@ function PreviewSection({ open }: { open: boolean }) {
 export function Sidebar() {
   const { closed, closing, toggleClosed } = useTrackingChecklist();
 
-  const closedHight = '90px';
-  const checklistSize = closed ? closedHight : 'calc(100% - 16px)';
-  const previewSize = closed ? `calc(100% - ${closedHight} - 24px)` : '0%';
-
   return (
-    <>
+    <div className="flex flex-col h-full">
       <div
-        className="transition-[height] duration-500 rounded-lg my-2 bg-background-70 overflow-clip"
-        style={{ height: checklistSize }}
+        className={classNames(
+          'basis-auto min-h-0 transition-[flex-grow] duration-500 rounded-lg my-2 bg-background-70 overflow-clip',
+          closed ? 'grow-0 shrink-0' : 'grow shrink'
+        )}
       >
         <TrackingChecklist
           closed={closed}
@@ -234,11 +232,13 @@ export function Sidebar() {
         />
       </div>
       <div
-        className="transition-[height] duration-500 rounded-lg my-2 bg-background-70 overflow-clip"
-        style={{ height: previewSize }}
+        className={classNames(
+          'basis-0 min-h-0 transition-[flex-grow,margin] duration-500 rounded-lg bg-background-70 overflow-clip',
+          closed ? 'grow mb-2' : 'grow-0 mb-0'
+        )}
       >
         <PreviewSection open={closed} />
       </div>
-    </>
+    </div>
   );
 }

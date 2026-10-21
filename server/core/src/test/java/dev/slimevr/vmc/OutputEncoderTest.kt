@@ -93,7 +93,7 @@ class OutputEncoderTest {
 	fun testSkipsRoutedBonesMissingFromTheSkeleton() {
 		val bundle = buildOutgoingBundle(
 			bones = BodyPartMap(mapOf(BodyPart.HIP to bone(BodyPart.HIP))),
-			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST),
+			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST),
 			config = defaultConfig,
 			vrm = null,
 			skeletonHeight = 1.7f,
@@ -162,7 +162,7 @@ class OutputEncoderTest {
 		val bundle = buildOutgoingBundle(bones, setOf(BodyPart.HIP), config, vrm, 1.7f, 0.3f, 0.seconds)
 
 		val hips = assertNotNull(boneMessage(bundle, "Hips"))
-		vectorAssertEquals(vrm.hipLocalPosition, messagePosition(hips))
+		vectorAssertEquals(vrm.hipPosition, messagePosition(hips))
 	}
 
 	@Test
@@ -184,7 +184,7 @@ class OutputEncoderTest {
 	}
 
 	@Test
-	fun testFreeAnchorWithoutVrmPlacesHipsFromNeckMinusFloor() {
+	fun testFreeAnchorWithoutVrmPlacesHipsFromHeadMinusFloor() {
 		val hipHead = Vector3(0f, 0.9f, 0f)
 		val bones = BodyPartMap(
 			mapOf(
@@ -192,6 +192,7 @@ class OutputEncoderTest {
 				BodyPart.UPPER_WAIST to bone(BodyPart.UPPER_WAIST, headPosition = Vector3(0f, 1.1f, 0f)),
 				BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, headPosition = Vector3(0f, 1.3f, 0f)),
 				BodyPart.NECK to bone(BodyPart.NECK, headPosition = Vector3(0f, 1.5f, 0f)),
+				BodyPart.HEAD to bone(BodyPart.HEAD, headPosition = Vector3(0f, 1.5f, 0f)),
 			),
 		)
 		val config = defaultConfig.copy(anchorAtHips = false)
@@ -213,6 +214,7 @@ class OutputEncoderTest {
 				BodyPart.UPPER_WAIST to bone(BodyPart.UPPER_WAIST, headPosition = Vector3(0f, 1.1f, 0f) + shift),
 				BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, headPosition = Vector3(0f, 1.3f, 0f) + shift),
 				BodyPart.NECK to bone(BodyPart.NECK, headPosition = Vector3(0f, 1.5f, 0f) + shift),
+				BodyPart.HEAD to bone(BodyPart.HEAD, headPosition = Vector3(0f, 1.5f, 0f) + shift),
 			),
 		)
 		val config = defaultConfig.copy(anchorAtHips = false)
@@ -243,7 +245,7 @@ class OutputEncoderTest {
 		val bundle = buildOutgoingBundle(bones, setOf(BodyPart.HIP), config, vrm, vrm.outputRestHeight, 0f, 0.seconds)
 
 		val hips = assertNotNull(boneMessage(bundle, "Hips"))
-		vectorAssertEquals(vrm.hipLocalPosition, messagePosition(hips))
+		vectorAssertEquals(vrm.hipPosition, messagePosition(hips))
 	}
 }
 

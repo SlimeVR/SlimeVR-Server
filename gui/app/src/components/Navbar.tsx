@@ -118,12 +118,7 @@ export function Navbar() {
       <div className="flex flex-col flex-grow gap-2">
         <MainLinks />
       </div>
-      <NavButton
-        to="/settings/trackers"
-        match="/settings/*"
-        state={{ scrollTo: 'stayAligned' }}
-        icon={<GearIcon />}
-      >
+      <NavButton to="/settings" match="/settings/*" icon={<GearIcon />}>
         {l10n.getString('navbar-settings')}
       </NavButton>
     </div>

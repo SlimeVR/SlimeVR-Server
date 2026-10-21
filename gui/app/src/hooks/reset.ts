@@ -22,6 +22,10 @@ import {
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS, TOE_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
 import { useResetsSettings } from './resets-settings';
+import { useNavigate } from 'react-router-dom';
+
+export const STEP_MOUNTING_PATH = '/onboarding/mounting/step';
+export const MANUAL_MOUNTING_PATH = '/onboarding/mounting/manual';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
@@ -79,6 +83,10 @@ export function useReset(
   const finishedTimeoutRef = useRef<NodeJS.Timeout>();
   const handledStatusRef = useRef<ResetStatusResponseT | null>(resetStatus);
   const [finished, setFinished] = useState(false);
+  const navigate = useNavigate();
+
+  const openManualMounting = () =>
+    navigate(MANUAL_MOUNTING_PATH, { state: { alonePage: true } });
 
   const parts = BODY_PARTS_GROUPS['group' in options ? options.group : 'default'];
 
@@ -100,6 +108,10 @@ export function useReset(
         req.delay = 3;
         break;
       case ResetType.MOUNTING:
+        if (method == MountingMethod.MANUAL) {
+          openManualMounting();
+        }
+
         req.delay = method === MountingMethod.STEP ? 0 : 3;
         break;
     }

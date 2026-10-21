@@ -43,10 +43,7 @@ fun conflictingOutputs(output: RoutingOutput): Set<RoutingOutput> = when (output
 /** Bones an output needs to work at all, so the user cannot turn them off. */
 fun requiredBones(output: RoutingOutput): Set<BodyPart> = when (output) {
 	RoutingOutput.DRIVER -> emptySet()
-
-	// TODO make VRC_OSC toes toggleable?
 	RoutingOutput.VRC_OSC -> ResetBodyParts.TOES
-
 	RoutingOutput.VMC -> VMC_SUPPORTED_BONES
 }
 

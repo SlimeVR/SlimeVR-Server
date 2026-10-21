@@ -215,7 +215,7 @@ class HeightCalibrationSessionTest {
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(Vector3(0f, 0f, 0f), POINTING_DOWN))
-		completeHeightPhase(headFlow, TrackerSnapshot(Vector3(0f, 1.3f, 0f), HEAD_LEVEL))
+		completeHeightPhase(headFlow, TrackerSnapshot(Vector3(0f, 1.2f, 0f), HEAD_LEVEL))
 
 		assertEquals(UserHeightCalibrationStatus.ERROR_TOO_SMALL, context.state.value.status)
 		job.cancel()
@@ -230,7 +230,7 @@ class HeightCalibrationSessionTest {
 		advanceTimeBy(SAMPLE_INTERVAL_MS)
 
 		completeFloorPhase(controllerFlow, TrackerSnapshot(Vector3(0f, 0f, 0f), POINTING_DOWN))
-		completeHeightPhase(headFlow, TrackerSnapshot(Vector3(0f, 2.0f, 0f), HEAD_LEVEL))
+		completeHeightPhase(headFlow, TrackerSnapshot(Vector3(0f, 2.2f, 0f), HEAD_LEVEL))
 
 		assertEquals(UserHeightCalibrationStatus.ERROR_TOO_HIGH, context.state.value.status)
 		job.cancel()

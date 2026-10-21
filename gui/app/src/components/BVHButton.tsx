@@ -1,5 +1,5 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   RecordBVHRequestT,
   RecordBVHStatusT,
@@ -15,12 +15,12 @@ import { useElectron } from '@/hooks/electron';
 export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   const electron = useElectron();
   const { config } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
   const [saving, setSaving] = useState(false);
   const { l10n } = useLocalization();
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.RecordBVHStatusRequest, new RecordBVHRequestT());
   }, []);
 

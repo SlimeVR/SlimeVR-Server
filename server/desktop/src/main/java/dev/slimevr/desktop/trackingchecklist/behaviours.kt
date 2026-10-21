@@ -101,7 +101,12 @@ private fun buildSteamVRDriverStep(driverEnabled: Boolean = true, connected: Boo
 		null
 	},
 )
-private fun buildStandableStep(supported: Boolean = true, installed: Boolean = false) = TrackingChecklistStep(valid = !installed, enabled = supported, visibility = TrackingChecklistStepVisibility.WHEN_INVALID)
+private fun buildStandableStep(supported: Boolean = true, installed: Boolean = false) = TrackingChecklistStep(
+	valid = !installed,
+	enabled = supported,
+	ignorable = true,
+	visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+)
 
 class SteamVRCheckBehaviour(private val server: VRServer, private val settings: Settings) : TrackingChecklistBehaviourType {
 	private val client = HttpClient(CIO)

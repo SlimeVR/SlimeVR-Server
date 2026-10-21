@@ -163,6 +163,11 @@ const colors = {
     200: '#5B1B3A',
     300: '#FFCCE5',
   },
+  fox: {
+    100: '#F3F3F3',
+    200: '#CD5000',
+    300: '#141212',
+  },
 };
 
 const config = {
@@ -234,6 +239,10 @@ const config = {
         DEFAULT: 'rgb(var(--default-color), <alpha-value>)',
       },
       keyframes: {
+        'pulse-ring': {
+          '0%': { transform: 'scale(1)', opacity: '0.9' },
+          '75%, 100%': { transform: 'scale(1.5)', opacity: '0' },
+        },
         bounce: {
           '0%, 100%': {
             transform: 'translateY(0)',
@@ -315,10 +324,11 @@ const config = {
         'slime-orange': `linear-gradient(135deg, ${colors['orange-accent'][100]} 50%, ${colors['orange-background'][700]} 50% 100%)`,
         'slime-red': `linear-gradient(135deg, ${colors['red-accent'][100]} 50%, ${colors['red-background'][700]} 50% 100%)`,
         dark: `linear-gradient(135deg, ${colors['dark-accent'][100]} 50%, ${colors['dark-background'][700]} 50% 100%)`,
-        light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
+        light: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
         snep: `linear-gradient(135deg, ${colors['snep'][100]} 40%, ${colors['snep'][200]} 40% 70%, ${colors['snep'][300]} 70% 100%)`,
+        fox: `linear-gradient(135deg, ${colors['fox'][100]} 40%, ${colors['fox'][200]} 40% 70%, ${colors['fox'][300]} 70% 100%)`,
       },
       animation: {
         'spin-ccw': 'spin-ccw 1s linear infinite',
@@ -326,6 +336,7 @@ const config = {
         skiing: 'skiing 1s linear infinite',
         'indeterminate-bar': 'indeterminate-bar 1.2s ease-in-out infinite',
         wiggle: 'wiggle 0.4s ease-in-out 1',
+        'pulse-ring': 'pulse-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
     },
     data: {

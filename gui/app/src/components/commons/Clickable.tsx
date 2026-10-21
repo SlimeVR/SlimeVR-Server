@@ -20,6 +20,7 @@ type CommonProps = {
   label?: string;
   /** Fluent id. Opts this surface into a tooltip (hover *and* focus). */
   tooltipId?: string;
+  tooltipVars?: ComponentProps<typeof Typography>['vars'];
   tooltipDirection?: Direction;
 };
 
@@ -62,6 +63,7 @@ export function Clickable({
   current,
   label,
   tooltipId,
+  tooltipVars,
   tooltipDirection = 'bottom',
   ...props
 }: ButtonProps | LinkProps) {
@@ -90,7 +92,7 @@ export function Clickable({
   return (
     <Tooltip
       preferedDirection={tooltipDirection}
-      content={<Typography id={tooltipId} />}
+      content={<Typography id={tooltipId} vars={tooltipVars} />}
       spacing={5}
     >
       {surface}

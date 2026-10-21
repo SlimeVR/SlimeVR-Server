@@ -32,6 +32,7 @@ export function TipBox({
       </div>
       <div className="flex flex-col">
         <Typography
+          tag="div"
           color="text-accent-background-10"
           whitespace={whitespace ? 'whitespace-pre' : undefined}
         >
@@ -66,6 +67,7 @@ export function WarningBox({
       </div>
       <div className="flex flex-col justify-center w-full">
         <Typography
+          tag="div"
           color="text-background-60"
           whitespace={whitespace ? 'whitespace-pre-line' : undefined}
         >

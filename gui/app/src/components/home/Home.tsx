@@ -17,6 +17,7 @@ import {
   flatTrackersAtom,
   groupTrackersByConnection,
   TrackerConnectionGroup,
+  unknownDevicesAtom,
 } from '@/store/app-store';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 import { Checklist } from '@/components/commons/icon/ChecklistIcon';
@@ -30,18 +31,23 @@ import { EmptyState } from '@/components/commons/EmptyState';
 import { Button } from '@/components/commons/Button';
 import { ArrowLink } from '@/components/commons/ArrowLink';
 import { DOCS_SITE } from '@/App';
+import {
+  PendingTrackerCard,
+  PendingTrackersDivider,
+} from '@/components/tracker/PendingTrackers';
 
 export function Home() {
   const { config } = useConfig();
   const trackers = useAtomValue(assignedTrackersAtom);
   const allTrackers = useAtomValue(flatTrackersAtom);
   const dongles = useAtomValue(donglesAtom);
+  const unknownDevices = useAtomValue(unknownDevicesAtom);
   const { highlightedTrackers } = useTrackingChecklist();
   const navigate = useNavigate();
 
   const groups = useMemo(
-    () => groupTrackersByConnection(allTrackers, dongles),
-    [allTrackers, dongles]
+    () => groupTrackersByConnection(allTrackers, dongles, unknownDevices),
+    [allTrackers, dongles, unknownDevices]
   );
 
   const sendToSettings = (tracker: TrackerDataT) => {
@@ -90,7 +96,7 @@ export function Home() {
         </div>
         <div className="w-full overflow-x-auto h-full">
           {config?.homeLayout == 'default' && groups.length > 0 && (
-            <div className="pl-2 pr-2 flex flex-col gap-4 pb-4">
+            <div className="px-4 pt-2 pb-4 flex flex-col gap-4">
               {groups.map((group) => (
                 <TrackerConnectionGroupSection
                   key={group.key}
@@ -153,6 +159,19 @@ export function Home() {
                         </div>
                       </>
                     )}
+                    {group.kind === 'wifi' && group.pending.length > 0 && (
+                      <>
+                        <PendingTrackersDivider devices={group.pending} />
+                        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
+                          {group.pending.map((device) => (
+                            <PendingTrackerCard
+                              key={device.hardwareId as string}
+                              device={device}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </TrackerConnectionGroupSection>
               ))}
@@ -183,7 +202,7 @@ export function Home() {
                 <>
                   <Button
                     variant="primary"
-                    to="/onboarding/connect-trackers"
+                    to="/onboarding/add-trackers"
                     state={{ alonePage: true }}
                     id="home-no_trackers-connect"
                   />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
@@ -11,7 +11,7 @@ import { useConfig } from './config';
 
 export function usePauseTracking() {
   const { config } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [paused, setPaused] = useState(false);
 
   const toggle = () => {
@@ -33,7 +33,7 @@ export function usePauseTracking() {
     }
   );
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TrackingPauseStateRequest,
       new TrackingPauseStateRequestT()

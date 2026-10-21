@@ -9,23 +9,34 @@ import { app } from 'electron';
 import { join } from 'node:path';
 import { mkdir, readdir, readFile, rm, unlink, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
-import { ErrorReportingState } from '@slimevr/gui-shared';
+import { CrashReportKind, ErrorReportingState } from '@slimevr/gui-shared';
 import { ErrorReportingConsent } from 'solarxr-protocol';
 import { getGuiDataFolder } from './paths';
 import { logger, setLogForwarder } from './logger';
 
 const HELD_LIMIT = 500;
 const SERVER_ROUTE_TAG = 'route';
+const USER_REQUESTED_TAG = 'user_requested';
 
 type OfflineTransportOptions = Parameters<
   ReturnType<typeof Sentry.makeElectronOfflineTransport>
 >[0];
+
+function isUserRequested(envelope: Envelope) {
+  return envelope[1].some(
+    ([header, payload]) =>
+      header.type === 'event' &&
+      (payload as { tags?: Record<string, unknown> })?.tags?.[USER_REQUESTED_TAG] ===
+        'true'
+  );
+}
 
 /** Caches everything on disk until the user answered */
 function createConsentGate() {
   const folder = join(getGuiDataFolder(), 'sentry-held');
   let consent = ErrorReportingConsent.UNDECIDED;
   let inner: Transport | null = null;
+  let sending: Promise<void> = Promise.resolve();
 
   async function hold(envelope: Envelope) {
     await mkdir(folder, { recursive: true });
@@ -59,7 +70,7 @@ function createConsentGate() {
       inner = transport;
       return {
         send: async (envelope) => {
-          if (consent === ErrorReportingConsent.ALLOWED)
+          if (consent === ErrorReportingConsent.ALLOWED || isUserRequested(envelope))
             return transport.send(envelope);
           if (consent === ErrorReportingConsent.UNDECIDED) await hold(envelope);
           return {};
@@ -71,13 +82,14 @@ function createConsentGate() {
       if (consent === next) return;
       consent = next;
       if (next === ErrorReportingConsent.ALLOWED && inner) {
-        sendHeld(inner).catch((e) =>
+        sending = sendHeld(inner).catch((e) =>
           logger.warn({ err: e }, 'Failed to send held error reports')
         );
       } else if (next === ErrorReportingConsent.DENIED) {
         rm(folder, { recursive: true, force: true }).catch(() => undefined);
       }
     },
+    settled: () => sending,
   };
 }
 
@@ -131,22 +143,62 @@ export function initSentry(isSteam: boolean) {
 export function applyErrorReporting(state: ErrorReportingState) {
   consentGate.apply(state.consent);
   if (!Sentry.isInitialized()) return;
-  Sentry.setUser({ id: state.userId });
-  Sentry.setTag('session_id', state.sessionId);
+  // Empty until the server answered
+  if (state.userId) Sentry.setUser({ id: state.userId });
+  if (state.sessionId) Sentry.setTag('session_id', state.sessionId);
+}
+
+export async function flushErrorReports() {
+  await consentGate.settled();
+  if (Sentry.isInitialized()) await Sentry.flush(2000);
 }
 
 const serverScope = { tags: { [SERVER_ROUTE_TAG]: 'server' } };
+
+interface ServerFailure {
+  eventId: string;
+  code: number | null;
+  signal: string | null;
+  outputTail: string;
+}
+
+let lastServerFailure: ServerFailure | null = null;
+let serverOutputTail = () => '';
+
+/** Lets a user requested report include the live server output */
+export function trackServerOutput(getOutputTail: () => string) {
+  serverOutputTail = getOutputTail;
+}
 
 export function captureServerExit(
   code: number | null,
   signal: string | null,
   outputTail: string
 ) {
-  Sentry.captureMessage('server_exit_nonzero', {
+  const eventId = Sentry.captureMessage('server_exit_nonzero', {
     ...serverScope,
     level: 'error',
     extra: { code, signal, outputTail },
   });
+  lastServerFailure = { eventId, code, signal, outputTail };
+}
+
+export function sendCrashReport(kind: CrashReportKind) {
+  if (!Sentry.isInitialized()) return false;
+  const failure = lastServerFailure;
+  Sentry.withScope((scope) => {
+    scope.setTag(USER_REQUESTED_TAG, 'true');
+    Sentry.captureEvent({
+      event_id: failure?.eventId,
+      message: failure ? 'server_exit_nonzero' : `server_${kind}`,
+      level: 'error',
+      tags: serverScope.tags,
+      extra: failure
+        ? { code: failure.code, signal: failure.signal, outputTail: failure.outputTail }
+        : { outputTail: serverOutputTail() },
+    });
+  });
+  return true;
 }
 
 export function captureServerLaunchError(err: Error) {

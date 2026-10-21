@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.WindowInsetsController
 import android.webkit.JavascriptInterface
@@ -24,13 +25,21 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.io.IOException
 import java.net.URLConnection
+import kotlin.concurrent.thread
 
-class AndroidJsObject(val updateBackground: (String) -> Unit) {
+class AndroidJsObject(
+	val updateBackground: (String) -> Unit,
+	val saveBytes: (name: String, mimeType: String, data: ByteArray) -> Unit,
+) {
 	@JavascriptInterface
 	fun isThere(): Boolean = true
 
 	@JavascriptInterface
 	fun updateInsetBackground(color: String) = updateBackground(color)
+
+	/** The WebView has no downloads, so files the GUI saves go through the system save dialog. */
+	@JavascriptInterface
+	fun saveFile(name: String, mimeType: String, base64: String) = saveBytes(name, mimeType, Base64.decode(base64, Base64.DEFAULT))
 }
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +49,35 @@ class MainActivity : AppCompatActivity() {
 
 	private val finishReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) = finishAndRemoveTask()
+	}
+
+	/** Bytes waiting for the user to pick where the save dialog writes them. */
+	private var pendingSave: ByteArray? = null
+
+	private val createDocument = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+		val data = pendingSave
+		pendingSave = null
+		val uri = result.data?.data
+		if (data == null || uri == null) return@registerForActivityResult
+		thread {
+			try {
+				contentResolver.openOutputStream(uri)?.use { it.write(data) }
+			} catch (e: IOException) {
+				Log.e(TAG, "Failed to save file to $uri", e)
+			}
+		}
+	}
+
+	// The picker never overwrites: a name already in the folder gets a " (1)" suffix
+	private fun saveFile(name: String, mimeType: String, data: ByteArray) {
+		pendingSave = data
+		createDocument.launch(
+			Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+				addCategory(Intent.CATEGORY_OPENABLE)
+				type = mimeType
+				putExtra(Intent.EXTRA_TITLE, name)
+			},
+		)
 	}
 
 	private fun updateBackground(newColor: String) {
@@ -135,11 +173,18 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		guiWebView.addJavascriptInterface(
-			AndroidJsObject(updateBackground = { newColor ->
-				parentView.post {
-					updateBackground(newColor)
-				}
-			}),
+			AndroidJsObject(
+				updateBackground = { newColor ->
+					parentView.post {
+						updateBackground(newColor)
+					}
+				},
+				saveBytes = { name, mimeType, data ->
+					parentView.post {
+						saveFile(name, mimeType, data)
+					}
+				},
+			),
 			"__ANDROID__",
 		)
 

@@ -23,12 +23,15 @@ import dev.slimevr.solarxr.rpc.HeightCalibrationBehaviour
 import dev.slimevr.solarxr.rpc.InstalledInfoBehaviour
 import dev.slimevr.solarxr.rpc.KeybindsBehaviour
 import dev.slimevr.solarxr.rpc.KnownTrackersBehaviour
+import dev.slimevr.solarxr.rpc.LogsBehaviour
 import dev.slimevr.solarxr.rpc.MagBehaviour
+import dev.slimevr.solarxr.rpc.ProfilesBehaviour
 import dev.slimevr.solarxr.rpc.ProvisioningBehaviour
 import dev.slimevr.solarxr.rpc.ResetsBehaviour
 import dev.slimevr.solarxr.rpc.SerialBehaviour
 import dev.slimevr.solarxr.rpc.ServerInfosBehaviour
 import dev.slimevr.solarxr.rpc.SessionCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.SettingsDefaultsBehaviour
 import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
@@ -36,6 +39,7 @@ import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
 import dev.slimevr.solarxr.rpc.TapDetectionBehaviour
 import dev.slimevr.solarxr.rpc.TelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
+import dev.slimevr.solarxr.rpc.TrackerImuTelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
 import dev.slimevr.solarxr.rpc.UpdateTrackerBehaviour
 import dev.slimevr.solarxr.rpc.VmcBehaviour
@@ -196,25 +200,29 @@ class SolarXRBridge(
 			add(DriverSettingsBehaviour(appContext))
 			add(HIDSettingsBehaviour(appContext.config.settings))
 			add(ErrorReportingSettingsBehaviour(appContext.config.globalConfig, appContext.errorReporting))
-			add(SettingsResetBehaviour(appContext.config))
+			add(ProfilesBehaviour(appContext.config))
+			add(SettingsResetBehaviour(appContext))
+			add(SettingsDefaultsBehaviour())
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton, appContext.errorReporting))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings, appContext.errorReporting))
 			add(UpdateTrackerBehaviour(appContext.server, appContext.errorReporting))
 			add(DongleSettingsBehaviour(appContext.server))
 			add(TelemetryBehaviour(appContext.server))
+			add(TrackerImuTelemetryBehaviour(appContext.server))
+			add(LogsBehaviour(appContext.logSources))
 			add(DriverHandshakeBehaviour(appContext))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext))
 			add(MagBehaviour(appContext))
 			add(TimeoutSettingsBehaviour(appContext.config.settings))
-			add(KnownTrackersBehaviour(appContext.config.settings))
+			add(KnownTrackersBehaviour(appContext))
 			add(BvhBehaviour(appContext.bvhManager))
 			add(InstalledInfoBehaviour())
 			add(ServerInfosBehaviour(appContext.serverInfos))
 			add(KeybindsBehaviour(appContext.config.settings, appContext.keybindManager))
 			add(SessionCalibrationBehaviour(appContext.resetsManager))
-			add(StayAlignedBehaviour(appContext.config.settings, appContext.server))
+			add(StayAlignedBehaviour(appContext.config.settings, appContext.config.userConfig, appContext.server, appContext.trackingChecklist))
 		}
 
 		fun create(

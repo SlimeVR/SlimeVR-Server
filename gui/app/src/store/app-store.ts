@@ -1,16 +1,29 @@
 import { atom } from 'jotai';
 import {
   BodyPart,
+  BoneRoutingSettingsResponseT,
   BoneT,
   DataFeedUpdateT,
   DeviceDataT,
   DeviceOrigin,
   DongleDataT,
   DongleStatus,
+  DriverSettingsResponseT,
+  ErrorReportingSettingsResponseT,
+  HIDSettingsResponseT,
+  MagToggleResponseT,
   ResetStatusResponseT,
   ResetsSettingsResponseT,
+  SkeletonSettingsResponseT,
+  StayAlignedSettingsResponseT,
+  TapDetectionSettingsResponseT,
+  TimeoutSettingsResponseT,
   TrackerDataT,
   TrackerStatus,
+  UnknownDeviceT,
+  VMCOSCSettingsResponseT,
+  VRCOSCSettingsResponseT,
+  VRMSettingsResponseT,
 } from 'solarxr-protocol';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
@@ -20,7 +33,7 @@ export interface FlatDeviceTracker {
   tracker: TrackerDataT;
 }
 
-export const ignoredTrackersAtom = atom(new Set<string>());
+export const unknownDevicesAtom = atom<UnknownDeviceT[]>([]);
 
 export const datafeedAtom = atom(new DataFeedUpdateT());
 
@@ -30,6 +43,24 @@ export const bonesAtom = atom<BoneT[]>([]);
 export const resetStatusAtom = atom<ResetStatusResponseT | null>(null);
 
 export const resetsSettingsAtom = atom<ResetsSettingsResponseT | null>(null);
+
+export type SettingsDefaults = {
+  skeleton: SkeletonSettingsResponseT;
+  resets: ResetsSettingsResponseT;
+  stayAligned: StayAlignedSettingsResponseT;
+  tapDetection: TapDetectionSettingsResponseT;
+  timeout: TimeoutSettingsResponseT;
+  hid: HIDSettingsResponseT;
+  driver: DriverSettingsResponseT;
+  vrcosc: VRCOSCSettingsResponseT;
+  vmcosc: VMCOSCSettingsResponseT;
+  vrm: VRMSettingsResponseT;
+  boneRouting: BoneRoutingSettingsResponseT;
+  errorReporting: ErrorReportingSettingsResponseT;
+  mag: MagToggleResponseT;
+};
+
+export const settingsDefaultsAtom = atom<SettingsDefaults | null>(null);
 
 export const devicesAtom = selectAtom(
   datafeedAtom,
@@ -60,13 +91,14 @@ export type TrackerConnectionGroup = {
       dongleName: string | null;
       status: DongleStatus;
     }
-  | { kind: 'wifi' }
+  | { kind: 'wifi'; pending: UnknownDeviceT[] }
   | { kind: 'driver' }
 );
 
 export function groupTrackersByConnection(
   trackers: FlatDeviceTracker[],
-  dongles: DongleDataT[]
+  dongles: DongleDataT[],
+  pending: UnknownDeviceT[] = []
 ): TrackerConnectionGroup[] {
   const dongleByDeviceId = new Map<number, DongleDataT>(
     dongles.flatMap((dongle) => dongle.devicesIds.map((id) => [id, dongle]))
@@ -82,6 +114,7 @@ export function groupTrackersByConnection(
     kind: 'wifi',
     assigned: [],
     unassigned: [],
+    pending,
   };
 
   const driverGroup: Extract<TrackerConnectionGroup, { kind: 'driver' }> = {
@@ -138,7 +171,7 @@ export function groupTrackersByConnection(
 
   const activeGroups = [
     ...dongleGroups.values(),
-    ...(isNotEmpty(wifiGroup) ? [wifiGroup] : []),
+    ...(isNotEmpty(wifiGroup) || pending.length > 0 ? [wifiGroup] : []),
     ...(isNotEmpty(driverGroup) ? [driverGroup] : []),
   ];
 

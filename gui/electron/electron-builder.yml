@@ -51,6 +51,8 @@ linux:
       to: "."
     - from: "./resources/69-slimevr-devices.rules"
       to: "."
+    - from: "./resources/firewall"
+      to: "firewall"
   icon: "./resources/icons"
 
 deb:

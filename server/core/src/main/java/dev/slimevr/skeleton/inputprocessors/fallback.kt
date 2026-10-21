@@ -61,8 +61,8 @@ val CHILD_FALLBACKS = mapOf(
  */
 class FallbackInputProcessor : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		mutableInputSkeleton.forEachBone { bodyPart, bone ->
-			if (bone.isRotationActive && bone.isAccelerationActive) return@forEachBone
+		mutableInputSkeleton.forEach { (bodyPart, bone) ->
+			if (bone.isRotationActive && bone.isAccelerationActive) return@forEach
 			val newRotation = if (!bone.isRotationActive) {
 				val fallbackPart = bodyPart.findFirstParent { mutableInputSkeleton[it]?.isRotationActive == true }
 					?: CHILD_FALLBACKS[bodyPart]?.firstOrNull { mutableInputSkeleton[it]?.isRotationActive == true }

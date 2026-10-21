@@ -26,7 +26,7 @@ private val CHECKLIST_STEP_ORDER: List<TrackingChecklistStepId> = listOf(
 	TrackingChecklistStepId.MOUNTING_METHOD,
 	TrackingChecklistStepId.MOUNTING_CALIBRATION,
 	TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION,
-	TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE,
+	TrackingChecklistStepId.UNASSIGNED_HMD,
 	TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED,
 	TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED,
 	TrackingChecklistStepId.VRCHAT_SETTINGS,

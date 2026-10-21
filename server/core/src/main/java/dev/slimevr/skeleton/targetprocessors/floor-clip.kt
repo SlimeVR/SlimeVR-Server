@@ -32,9 +32,11 @@ class FloorClipTargetProcessor(
 				if (target.y < lowestTargetY) lowestTargetY = target.y
 			}
 
-			// Snap the parent up
-			val offsetY = (floorLevel - lowestTargetY).coerceAtLeast(0f)
-			mutableIkTargets[parentPart] = Vector3(parentTarget.x, parentTarget.y + offsetY, parentTarget.z)
+			val offsetY = floorLevel - lowestTargetY
+			if (offsetY > 0f) {
+				// Snap the parent up
+				mutableIkTargets[parentPart] = Vector3(parentTarget.x, parentTarget.y + offsetY, parentTarget.z)
+			}
 		}
 	}
 }

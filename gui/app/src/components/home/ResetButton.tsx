@@ -7,7 +7,7 @@ import {
   FullResetIcon,
   YawResetIcon,
 } from '@/components/commons/icon/ResetIcon';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { SkiIcon } from '@/components/commons/icon/SkiIcon';
 import { StepIcon } from '@/components/commons/icon/StepIcon';
 import { TuneIcon } from '@/components/commons/icon/TuneIcon';
@@ -18,7 +18,7 @@ import { ToesIcon } from '@/components/commons/icon/ToesIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 import { MountingMethodModal } from '@/components/mounting/MountingMethodModal';
-import { useMountingMethod } from '@/hooks/mounting-method';
+import { QuestionMarkIcon } from '@/components/commons/icon/QuestionMarkIcon';
 
 export function ResetButtonIcon(options: UseResetOptions) {
   const { resetsSettings } = useResetsSettings();
@@ -34,6 +34,8 @@ export function ResetButtonIcon(options: UseResetOptions) {
           return <StepIcon />;
         case MountingMethod.MANUAL:
           return <TuneIcon />;
+        case MountingMethod.UNKNOWN:
+          return <QuestionMarkIcon />;
         default:
           return <SkiIcon />;
       }
@@ -63,10 +65,8 @@ export function ResetButton({
     onReseted,
     onFailed
   );
-  const { onClick: onResetClick, ...picker } = useMountingMethod(
-    options,
-    triggerReset
-  );
+  const { resetsSettings } = useResetsSettings();
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   return (
     <>
@@ -89,7 +89,7 @@ export function ResetButton({
           icon={<ResetButtonIcon {...options} />}
           onClick={() => {
             if (onClick) onClick();
-            onResetClick();
+            triggerReset(resetsSettings?.mountingMethod);
           }}
           className={classNames(
             'border-2 py-[5px]',
@@ -111,11 +111,13 @@ export function ResetButton({
           </div>
         </Button>
       </Tooltip>
-      <MountingMethodModal
-        isOpen={picker.pickerOpen}
-        onClose={picker.closePicker}
-        onSelect={picker.onPick}
-      />
+      {options.type == ResetType.MOUNTING && (
+        <MountingMethodModal
+          isOpen={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          triggerReset={triggerReset}
+        />
+      )}
     </>
   );
 }

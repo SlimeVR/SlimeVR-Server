@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useAtomValue } from 'jotai';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useErrorReporting } from '@/hooks/error-reporting';
+import { settingsDefaultsAtom } from '@/store/app-store';
 import { ConnectionLost } from './onboarding/pages/ConnectionLost';
 import { ErrorReportingConsentPage } from './ErrorReportingConsent';
 
@@ -26,12 +28,13 @@ function StatusPage({ path }: { path: string }) {
 export function AppStatusGate() {
   const { isConnected } = useWebsocketAPI();
   const { needsAnswer } = useErrorReporting();
+  const settingsDefaults = useAtomValue(settingsDefaultsAtom);
   const location = useLocation();
   const [appShown, setAppShown] = useState(false);
 
   const statusPath = needsAnswer
     ? ERROR_REPORTING_CONSENT_PATH
-    : !isConnected
+    : !isConnected || !settingsDefaults
       ? CONNECTING_PATH
       : null;
   const onStatusPath = STATUS_PATHS.includes(location.pathname);

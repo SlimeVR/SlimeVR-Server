@@ -14,6 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -26,6 +27,7 @@ import java.util.concurrent.Executors
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -33,13 +35,11 @@ import kotlin.time.measureTime
 class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
-			.distinctUntilChangedBy { it.data.proportions }
 			.map { it.data.proportions }
+			.distinctUntilChanged()
 			.onEach { proportions ->
-				if (proportions.isNotEmpty()) {
-					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
-					receiver.context.dispatch(SkeletonActions.RequestProcessorReset(ResetType.FULL))
-				}
+				receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
+				receiver.context.dispatch(SkeletonActions.RequestProcessorReset(ResetType.FULL))
 			}
 			.launchIn(receiver.context.scope)
 	}
@@ -174,7 +174,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 	companion object {
 		private val OVERRUN_WINDOW = 2.minutes
-		private const val MINIMUM_OVERRUNS_TO_LOG = 100
+		private const val MINIMUM_OVERRUNS_TO_LOG = 600 // 1% of skeleton ticks
 	}
 }
 
@@ -188,8 +188,18 @@ class ComputedSkeletonBehaviour(
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
+	private val IK_THRESHOLD = 0.005f // 0.002 would be ideal for accuracy, but we want performance
+	private val IK_MAX_ITERATIONS = 100
 
 	private val intervalDuration = (1.0 / hz).seconds
+
+	/**
+	 * Interval while no bone has an active input. The pose is static then, so running at [hz] only
+	 * burns CPU.
+	 */
+	private val idleIntervalDuration = 100.milliseconds
+
+	private fun hasActiveInput(boneInputs: InputSkeleton): Boolean = boneInputs.values.any { it.isRotationActive || it.isAccelerationActive || it.isPositionActive }
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
 	private val minimumGap = intervalDuration * 0.75
@@ -242,6 +252,7 @@ class ComputedSkeletonBehaviour(
 				try {
 					val tickStart = timeSource.markNow()
 					timings.started(tickStart)
+					val interval = if (hasActiveInput(receiver.context.state.value.boneInputs)) intervalDuration else idleIntervalDuration
 
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
@@ -320,8 +331,8 @@ class ComputedSkeletonBehaviour(
 								)
 							},
 							BODY_PART_CONSTRAINT_MAP,
-							0.01f,
-							100,
+							IK_THRESHOLD,
+							IK_MAX_ITERATIONS,
 						)
 
 						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
@@ -336,7 +347,7 @@ class ComputedSkeletonBehaviour(
 
 					// Sleep to an absolute deadline, so timer granularity and dispatch latency come out
 					// of the interval rather than being added on top of it
-					nextTick += intervalDuration
+					nextTick += interval
 					// Skeleton took to long to compute this frame
 					if (nextTick.elapsedNow() >= Duration.ZERO) {
 						timings.missedDeadline()?.let { AppLogger.skeleton.warn(it) }

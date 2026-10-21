@@ -90,6 +90,14 @@ export const defaultDongleTelemetryConfig: DongleTelemetryConfig = {
   showMinMax: true,
 };
 
+export interface TrackerGraphsConfig {
+  windowSec: number;
+}
+
+export const defaultTrackerGraphsConfig: TrackerGraphsConfig = {
+  windowSec: 10,
+};
+
 export interface Config {
   uuid: string;
   debug: boolean;
@@ -97,6 +105,7 @@ export interface Config {
   doneOnboarding: boolean;
   devSettings: DeveloperModeConfig;
   dongleTelemetry: DongleTelemetryConfig;
+  trackerGraphs: TrackerGraphsConfig;
   trackersTableColumns: TrackersTableColumnsConfig;
   trackerDisplay: TrackerDisplayConfig;
   feedbackSound: boolean;
@@ -144,6 +153,7 @@ export const defaultConfig: Config = {
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   dongleTelemetry: defaultDongleTelemetryConfig,
+  trackerGraphs: defaultTrackerGraphsConfig,
   trackersTableColumns: defaultTrackersTableColumns,
   trackerDisplay: defaultTrackerDisplay,
   bvhDirectory: null,
@@ -181,6 +191,10 @@ function fallbackToDefaults(loadedConfig: any): Config {
     dongleTelemetry: {
       ...defaultDongleTelemetryConfig,
       ...(loadedConfig?.dongleTelemetry ?? loadedConfig?.telemetry ?? {}),
+    },
+    trackerGraphs: {
+      ...defaultTrackerGraphsConfig,
+      ...(loadedConfig?.trackerGraphs ?? {}),
     },
     trackersTableColumns: {
       ...defaultTrackersTableColumns,

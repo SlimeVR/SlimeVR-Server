@@ -23,7 +23,7 @@ function Selector({
   text: string;
   active: boolean;
   official?: boolean;
-  tag?: 'official' | 'dev' | 'latest';
+  tag?: 'official' | 'dev' | 'latest' | 'prerelease';
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -77,6 +77,18 @@ function Selector({
           </Localized>
         </div>
       )}
+      {tag === 'prerelease' && (
+        <div
+          className={classNames(
+            'absolute px-2 py-0.5 rounded-md bg-status-warning -top-2 -right-2',
+            { 'brightness-20': disabled, 'brightness-50': !active }
+          )}
+        >
+          <Localized id="firmware_tool-select_source-prerelease">
+            <Typography color="text-background-90" />
+          </Localized>
+        </div>
+      )}
       {text}
     </Clickable>
   );
@@ -106,9 +118,10 @@ export function SelectSourceStep({
     refetch,
   } = useGetFirmwareSources({});
 
-  const { possibleBoards, possibleVersions, sourcesGroupped } = useMemo(() => {
+  let foundLatest = false;
+  const { possibleBoards, possibleVersions, sourcesGrouped } = useMemo(() => {
     return {
-      sourcesGroupped: sources
+      sourcesGrouped: sources
         ?.reduce(
           (curr, source) => {
             if (!curr.find(({ name }) => source.source === name))
@@ -156,11 +169,19 @@ export function SelectSourceStep({
                   !source.availableBoards.includes(partialBoard.board) ||
                   source.source !== partialBoard.source,
                 name: source.version,
+                latest: !source.prerelease && !foundLatest,
+                prerelease: source.prerelease,
               });
+            foundLatest = foundLatest || !source.prerelease;
 
             return curr;
           },
-          [] as { name: string; disabled: boolean }[]
+          [] as {
+            name: string;
+            disabled: boolean;
+            latest: boolean;
+            prerelease: boolean;
+          }[]
         )
         .sort((a, b) => {
           // safeguard against inf loop
@@ -228,7 +249,7 @@ export function SelectSourceStep({
                     <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
-                    {sourcesGroupped?.map(({ name, official }) => (
+                    {sourcesGrouped?.map(({ name, official }) => (
                       <Selector
                         active={partialBoard?.source === name}
                         key={`${name}`}
@@ -278,28 +299,32 @@ export function SelectSourceStep({
                     <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
-                    {possibleVersions?.map(({ name, disabled }, i) => (
-                      <Selector
-                        active={partialBoard?.version === name}
-                        disabled={disabled}
-                        key={`${name}`}
-                        tag={
-                          partialBoard?.source?.startsWith('SlimeVR/') &&
-                          name === 'llelievr/board-defaults'
-                            ? 'dev'
-                            : i == 0
-                              ? 'latest'
-                              : undefined
-                        }
-                        onClick={() => {
-                          setPartialBoard((curr) => ({
-                            ...curr,
-                            version: name,
-                          }));
-                        }}
-                        text={name}
-                      />
-                    ))}
+                    {possibleVersions?.map(
+                      ({ name, disabled, latest, prerelease }, i) => (
+                        <Selector
+                          active={partialBoard?.version === name}
+                          disabled={disabled}
+                          key={`${name}`}
+                          tag={
+                            partialBoard?.source?.startsWith('SlimeVR/') &&
+                            name === 'llelievr/board-defaults'
+                              ? 'dev'
+                              : prerelease
+                                ? 'prerelease'
+                                : latest
+                                  ? 'latest'
+                                  : undefined
+                          }
+                          onClick={() => {
+                            setPartialBoard((curr) => ({
+                              ...curr,
+                              version: name,
+                            }));
+                          }}
+                          text={name}
+                        />
+                      )
+                    )}
                     {partialBoard?.source && possibleVersions?.length === 0 && (
                       <Typography id="firmware_tool-select_source-no_versions" />
                     )}

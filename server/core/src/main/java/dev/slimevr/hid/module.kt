@@ -161,11 +161,11 @@ class HIDReceiver(
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): HIDReceiver {
-			val settings = appContext.config.settings
-			val savedConfig = settings.context.state.value.data.dongles[serialNumber]
+			val devices = appContext.config.devices
+			val savedConfig = devices.context.state.value.dongles[serialNumber]
 
 			val behaviours = listOf(
-				HIDReceiverConfigBehaviour(settings, serialNumber),
+				HIDReceiverConfigBehaviour(devices, serialNumber),
 			)
 
 			val context = Context.create(

@@ -115,7 +115,7 @@ fun ccdIk(
 	threshold: Float,
 	maxIterations: Int,
 ): IKOutput {
-	// No goals leaves every bone as the FK pass built it, so nothing below needs to run
+	// No goal leaves every bone as the FK pass built it, so nothing below needs to run
 	if (goals.isEmpty()) return IKOutput(bones, emptyMap())
 
 	val workingBoneInputs = EnumMap(boneInputs)

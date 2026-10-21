@@ -28,13 +28,14 @@ import dev.slimevr.android.ipc.createAndroidSolarXRWebsocketServer
 import dev.slimevr.android.serial.AndroidFirmwareFlasher
 import dev.slimevr.android.serial.createAndroidSerialServer
 import dev.slimevr.android.timing.createAndroidWaiter
-import dev.slimevr.android.udp.resolveAndroidUdpAddress
+import dev.slimevr.android.udp.bindAndroidUdp
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.logging.ServerLogSource
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -88,11 +89,12 @@ class ForegroundService : Service() {
 	private var wakeLock: PowerManager.WakeLock? = null
 	private var multicastLock: WifiManager.MulticastLock? = null
 	private var wifiLock: WifiManager.WifiLock? = null
+	private lateinit var serverLogSource: ServerLogSource
 
 	override fun onCreate() {
 		super.onCreate()
 		// Blocking so logging is live before onStartCommand, which already reports errors.
-		runBlocking { setupAndroidLogging(filesDir) }
+		serverLogSource = runBlocking { setupAndroidLogging(filesDir) }
 		createNotificationChannel()
 	}
 
@@ -174,7 +176,7 @@ class ForegroundService : Service() {
 		val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = scope)
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
 		val trackingChecklist = TrackingChecklist.create(scope = scope)
-		val udpServer = UdpServer.create(scope = scope, addressResolver = ::resolveAndroidUdpAddress)
+		val udpServer = UdpServer.create(scope = scope, bind = ::bindAndroidUdp)
 		val boneRouting = BoneRoutingManager.create(scope = scope)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
 		val vmcManager = VMCManager.create(scope = scope)
@@ -218,6 +220,7 @@ class ForegroundService : Service() {
 			resetsManager = resetsManager,
 			tapDetectionManager = tapDetectionManager,
 			stepMountingManager = stepMountingManager,
+			logSources = listOf(serverLogSource),
 		)
 
 		acquireLocks()

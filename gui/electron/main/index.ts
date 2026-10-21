@@ -1,3 +1,4 @@
+import { LogSource } from 'solarxr-protocol';
 import {
   app,
   BrowserWindow,
@@ -28,12 +29,12 @@ import {
   getWindowStateFile,
 } from './paths';
 import { initStores } from './store';
-import { closeLogger, logger, rendererLogger } from './logger';
+import { closeLogger, logger, rendererLogger, subscribeGuiLogs } from './logger';
+import { listLogFiles } from './log-files';
 
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
-import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 import { openCrowdinPopup } from './crowdin';
@@ -42,7 +43,10 @@ import {
   captureJavaNotFound,
   captureServerExit,
   captureServerLaunchError,
+  flushErrorReports,
   initSentry,
+  sendCrashReport,
+  trackServerOutput,
 } from './sentry';
 
 type Stores = Awaited<ReturnType<typeof initStores>>;
@@ -198,6 +202,47 @@ handleIpc(IPC_CHANNELS.OPEN_FILE, (e, folder) => {
   }
 });
 
+handleIpc(IPC_CHANNELS.GUI_LOG_FILES, () =>
+  // Newest first, so the first one is the file being written to
+  listLogFiles(getLogsFolder()).map(({ name, size, modifiedMs }, index) => ({
+    source: LogSource.GUI,
+    name,
+    size,
+    modifiedMs,
+    current: index === 0,
+  }))
+);
+
+handleIpc(IPC_CHANNELS.READ_GUI_LOG_FILE, async (e, name) => {
+  const file = listLogFiles(getLogsFolder()).find((f) => f.name === name);
+  if (!file) return null;
+  return new Uint8Array(await readFile(file.path));
+});
+
+const guiLogSubscriptions = new Map<number, () => void>();
+
+const stopGuiLogs = (windowId: number) => {
+  guiLogSubscriptions.get(windowId)?.();
+  guiLogSubscriptions.delete(windowId);
+};
+
+handleIpc(IPC_CHANNELS.GUI_LOG_SUBSCRIBE, (e) => {
+  const sender = e.sender;
+  stopGuiLogs(sender.id);
+  guiLogSubscriptions.set(
+    sender.id,
+    subscribeGuiLogs((events, backlog) => {
+      if (sender.isDestroyed()) {
+        stopGuiLogs(sender.id);
+        return;
+      }
+      sender.send(IPC_CHANNELS.GUI_LOG_EVENTS, events, backlog);
+    })
+  );
+});
+
+handleIpc(IPC_CHANNELS.GUI_LOG_UNSUBSCRIBE, (e) => stopGuiLogs(e.sender.id));
+
 handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
   switch (folder) {
     case 'config':
@@ -216,6 +261,8 @@ handleIpc(IPC_CHANNELS.IS_STEAM, () => {
 handleIpc(IPC_CHANNELS.SET_ERROR_REPORTING, (e, state) => {
   applyErrorReporting(state);
 });
+
+handleIpc(IPC_CHANNELS.SEND_CRASH_REPORT, (e, kind) => sendCrashReport(kind));
 
 const defaultWindowState: {
   width: number;
@@ -502,27 +549,15 @@ const spawnServer = async () => {
         : undefined,
   });
 
-  const sendToWindow = (event: ServerStatusEvent) => {
-    if (mainWindow && !mainWindow.webContents.isDestroyed()) {
-      mainWindow.webContents.send(IPC_CHANNELS.SERVER_STATUS, event);
-    }
-  };
-
   const outputTail: string[] = [];
   const keepOutput = (message: string) => {
     outputTail.push(...message.split('\n').filter((line) => line.length > 0));
     outputTail.splice(0, Math.max(0, outputTail.length - SERVER_OUTPUT_TAIL_LINES));
   };
+  trackServerOutput(() => outputTail.join('\n'));
 
-  serverProcess.stdout?.on('data', (message) => {
-    keepOutput(message.toString());
-    sendToWindow({ message: message.toString(), type: 'stdout' });
-  });
-
-  serverProcess.stderr?.on('data', (message) => {
-    keepOutput(message.toString());
-    sendToWindow({ message: message.toString(), type: 'stderr' });
-  });
+  serverProcess.stdout?.on('data', (message) => keepOutput(message.toString()));
+  serverProcess.stderr?.on('data', (message) => keepOutput(message.toString()));
 
   serverProcess.on('error', (err) => {
     logger.info({ err }, 'Error launching the java server');
@@ -615,6 +650,7 @@ app.whenReady().then(async () => {
     await stores.cache.save();
     discordPresence.destroy();
     await saveWindowState();
+    await flushErrorReports();
     await closeLogger();
     app.exit(0);
   });

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import {
   RpcMessage,
   StartTelemetryRequestT,
@@ -9,11 +9,12 @@ import {
   TelemetryUpdateResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
-
-export interface ChartRow {
-  t: number;
-  [key: string]: number | null;
-}
+import {
+  ChartRow,
+  createSourceClock,
+  observeSourceTime,
+  SourceClock,
+} from './time-series';
 
 export interface GapEvent {
   t: number;
@@ -24,17 +25,17 @@ export interface GapEvent {
 const MAX_HISTORY_SEC = 5 * 60;
 
 export function useTelemetryHistory(deviceIds: number[]) {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const historyRowsRef = useRef<ChartRow[]>([]);
   const gapsRef = useRef<Map<number, GapEvent[]>>(new Map());
-  const [lastUpdateTick, setLastUpdateTick] = useState(0);
+  const clockRef = useRef<SourceClock>(createSourceClock());
 
   const deviceIdsKey = deviceIds
     .slice()
     .sort((a, b) => a - b)
     .join(',');
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     if (deviceIds.length === 0) {
       historyRowsRef.current = [];
       gapsRef.current.clear();
@@ -53,6 +54,7 @@ export function useTelemetryHistory(deviceIds: number[]) {
     ({ samples }: TelemetryUpdateResponseT) => {
       if (!samples || samples.length === 0) return;
       const timeSec = Number(samples[0].time) / 1000;
+      observeSourceTime(clockRef.current, timeSec);
       const row: ChartRow = { t: timeSec };
 
       samples.forEach((s: TelemetrySampleT) => {
@@ -71,8 +73,6 @@ export function useTelemetryHistory(deviceIds: number[]) {
       let cut = 0;
       while (cut < rows.length && rows[cut].t < cutoff) cut++;
       if (cut > 0) rows.splice(0, cut);
-
-      setLastUpdateTick((v) => v + 1);
     }
   );
 
@@ -96,8 +96,6 @@ export function useTelemetryHistory(deviceIds: number[]) {
       while (cut < list.length && list[cut].t < cutoffMs) cut++;
       if (cut > 0) list.splice(0, cut);
     });
-
-    setLastUpdateTick((v) => v + 1);
   });
 
   const getChartRows = useCallback((): ChartRow[] => historyRowsRef.current, []);
@@ -111,5 +109,5 @@ export function useTelemetryHistory(deviceIds: number[]) {
     []
   );
 
-  return { getChartRows, getGapEvents, lastUpdateTick };
+  return { getChartRows, getGapEvents, clock: clockRef.current };
 }

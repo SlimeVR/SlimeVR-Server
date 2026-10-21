@@ -1,9 +1,7 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { KeybindRecorderModal } from '@/components/commons/KeybindRecorderModal';
-import {
-  SettingsPageLayout,
-  SettingsPagePaneLayout,
-} from '@/components/settings/SettingsPageLayout';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { KeyboardIcon } from '@/components/commons/icon/KeyboardIcon';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
@@ -54,10 +52,16 @@ function areBindingsEqual(a?: string[], b?: string[]): boolean {
   return a.every((key) => setB.has(key));
 }
 
+export const keybindSettingsPage = defineSettingsPage({
+  path: 'keybinds',
+  title: 'settings-sidebar-keybinds',
+  groups: {},
+});
+
 export function KeybindSettings() {
   const { l10n } = useLocalization();
   const electron = useElectron();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [defaultKeybindsState, setDefaultKeybindsState] = useState<KeybindForm>(
     { keybinds: [] }
@@ -164,7 +168,7 @@ export function KeybindSettings() {
   );
 
   const isFirstRender = useRef(true);
-  useEffect(() => {
+  useConnectedEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
@@ -258,7 +262,7 @@ export function KeybindSettings() {
     });
   };
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.KeybindRequest, new KeybindRequestT());
   }, []);
 
@@ -272,108 +276,107 @@ export function KeybindSettings() {
   }, [watch]);
 
   return (
-    <SettingsPageLayout>
-      <SettingsPagePaneLayout icon={<WrenchIcon />} id="keybinds">
-        <div className="flex flex-col gap-4">
-          <div>
-            <Typography variant="main-title" id="settings-keybinds" />
-            <div className="flex flex-col pt-2 text-background-30">
-              {l10n
-                .getString('settings-keybinds-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </div>
+    <SettingsPagePaneLayout
+      icon={<KeyboardIcon size={20} />}
+      title={keybindSettingsPage.title}
+    >
+      <div className="flex flex-col gap-4">
+        <div>
+          <div className="flex flex-col pt-2 text-background-30">
+            {l10n
+              .getString('settings-keybinds-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography key={i}>{line}</Typography>
+              ))}
           </div>
-
-          {support === KeybindSupport.UNSUPPORTED && (
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-status-critical/10 border border-status-critical/30 text-status-critical">
-              <WarningIcon className="w-5 h-5 flex-shrink-0" />
-              <Typography id="settings-keybinds-unsupported-description" />
-            </div>
-          )}
-
-          {(support === KeybindSupport.SYSTEM_MANAGED ||
-            support === KeybindSupport.APP_MANAGED) && (
-            <FormProvider {...methods}>
-              {support === KeybindSupport.SYSTEM_MANAGED && (
-                <div className="flex flex-col gap-4 p-4 rounded-2xl bg-background-80">
-                  <Typography id="settings-keybinds-system-managed-description" />
-                  <div>
-                    <Button
-                      id="settings-keybinds-open-system-settings-button"
-                      onClick={handleOpenSystemSettingsButton}
-                      variant="primary"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="rounded-2xl bg-background-80 shadow-sm my-1 overflow-hidden">
-                <table className="w-full text-left border-collapse block md:table">
-                  <thead className="hidden md:table-header-group">
-                    <tr className="bg-background-80 border-b border-background-60 uppercase tracking-wider">
-                      <th className="py-4 pl-6 pr-4 w-0 whitespace-nowrap">
-                        <Typography
-                          id="keybind_config-keybind_name"
-                          variant="section-title"
-                        />
-                      </th>
-                      <th className="py-4 px-4 w-full text-center">
-                        <Typography
-                          id="keybind_config-keybind_value"
-                          variant="section-title"
-                        />
-                      </th>
-                      <th className="py-4 px-6 text-right w-0 whitespace-nowrap">
-                        <Typography
-                          id="keybind_config-keybind_delay"
-                          variant="section-title"
-                          whitespace="whitespace-nowrap"
-                        />
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-background-60 block md:table-row-group">
-                    {createKeybindRows(support === KeybindSupport.APP_MANAGED)}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="flex justify-end pt-2">
-                <Button
-                  id="settings-keybinds_reset-all-button"
-                  onClick={() => {
-                    reset(defaultKeybindsState);
-                    handleSubmit(onSubmit)();
-                  }}
-                  variant="secondary"
-                />
-              </div>
-
-              {support === KeybindSupport.APP_MANAGED &&
-                editedIndex != null && (
-                  <KeybindRecorderModal
-                    id={fields[editedIndex].name}
-                    control={control}
-                    name={`keybinds.${editedIndex}.binding`}
-                    isVisisble={isOpen}
-                    onClose={onClose}
-                    onUnbind={() => {
-                      setValue(`keybinds.${editedIndex}.binding`, []);
-                      onSubmitIndex(editedIndex);
-                    }}
-                    onSubmit={() => onSubmitIndex(editedIndex)}
-                    onReset={() => handleResetSingle(editedIndex)}
-                    takenBindings={takenBindings}
-                    activatedError={collisionError}
-                  />
-                )}
-            </FormProvider>
-          )}
         </div>
-      </SettingsPagePaneLayout>
-    </SettingsPageLayout>
+
+        {support === KeybindSupport.UNSUPPORTED && (
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-status-critical/10 border border-status-critical/30 text-status-critical">
+            <WarningIcon className="w-5 h-5 flex-shrink-0" />
+            <Typography id="settings-keybinds-unsupported-description" />
+          </div>
+        )}
+
+        {(support === KeybindSupport.SYSTEM_MANAGED ||
+          support === KeybindSupport.APP_MANAGED) && (
+          <FormProvider {...methods}>
+            {support === KeybindSupport.SYSTEM_MANAGED && (
+              <div className="flex flex-col gap-4 p-4 rounded-2xl bg-background-80">
+                <Typography id="settings-keybinds-system-managed-description" />
+                <div>
+                  <Button
+                    id="settings-keybinds-open-system-settings-button"
+                    onClick={handleOpenSystemSettingsButton}
+                    variant="primary"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-2xl bg-background-80 shadow-sm my-1 overflow-hidden">
+              <table className="w-full text-left border-collapse block md:table">
+                <thead className="hidden md:table-header-group">
+                  <tr className="bg-background-80 border-b border-background-60 uppercase tracking-wider">
+                    <th className="py-4 pl-6 pr-4 w-0 whitespace-nowrap">
+                      <Typography
+                        id="keybind_config-keybind_name"
+                        variant="section-title"
+                      />
+                    </th>
+                    <th className="py-4 px-4 w-full text-center">
+                      <Typography
+                        id="keybind_config-keybind_value"
+                        variant="section-title"
+                      />
+                    </th>
+                    <th className="py-4 px-6 text-right w-0 whitespace-nowrap">
+                      <Typography
+                        id="keybind_config-keybind_delay"
+                        variant="section-title"
+                        whitespace="whitespace-nowrap"
+                      />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-background-60 block md:table-row-group">
+                  {createKeybindRows(support === KeybindSupport.APP_MANAGED)}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <Button
+                id="settings-keybinds_reset-all-button"
+                onClick={() => {
+                  reset(defaultKeybindsState);
+                  handleSubmit(onSubmit)();
+                }}
+                variant="secondary"
+              />
+            </div>
+
+            {support === KeybindSupport.APP_MANAGED && editedIndex != null && (
+              <KeybindRecorderModal
+                id={fields[editedIndex].name}
+                control={control}
+                name={`keybinds.${editedIndex}.binding`}
+                isVisisble={isOpen}
+                onClose={onClose}
+                onUnbind={() => {
+                  setValue(`keybinds.${editedIndex}.binding`, []);
+                  onSubmitIndex(editedIndex);
+                }}
+                onSubmit={() => onSubmitIndex(editedIndex)}
+                onReset={() => handleResetSingle(editedIndex)}
+                takenBindings={takenBindings}
+                activatedError={collisionError}
+              />
+            )}
+          </FormProvider>
+        )}
+      </div>
+    </SettingsPagePaneLayout>
   );
 }

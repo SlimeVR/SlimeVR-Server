@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   ARROW_KEY,
+  CONTROLLER_ACTIVE_CLASS,
   firstFocusable,
   pickBest,
   scrollableToward,
@@ -18,7 +19,7 @@ import {
 } from '@/utils/gamepad';
 import { useConfig } from './config';
 
-const ACTIVE_CLASS = 'controller-active';
+const ACTIVE_CLASS = CONTROLLER_ACTIVE_CLASS;
 const EDIT_CLASS = 'nav-editing';
 
 const ARROW_OWNER = '[aria-expanded="true"],[data-nav-arrows]';

@@ -8,6 +8,7 @@ import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vrcosc.VRCOSCManager
 import dev.slimevr.vrcosc.VRCOSCStatus
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -21,6 +22,14 @@ import solarxr_protocol.rpc.VRCOSCStatusRequest
 import solarxr_protocol.rpc.VRCOSCDiscoveredTarget as RpcVRCOSCDiscoveredTarget
 
 private const val VRC_STATUS_SAMPLE_MS = 300L
+
+internal fun buildVrcOscSettingsResponse(config: VRCOSCConfig) = VRCOSCSettingsResponse(
+	enabled = config.enabled,
+	useManualNetwork = config.useManualNetwork,
+	portIn = config.portIn.toUShort(),
+	portOut = config.portOut.toUShort(),
+	address = config.address,
+)
 
 internal class VrcOscBehaviour(
 	private val settings: Settings,
@@ -40,17 +49,16 @@ internal class VrcOscBehaviour(
 			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
-			val config = settings.context.state.value.data.vrcOscConfig
-			receiver.sendRpc(
-				VRCOSCSettingsResponse(
-					enabled = config.enabled,
-					useManualNetwork = config.useManualNetwork,
-					portIn = config.portIn.toUShort(),
-					portOut = config.portOut.toUShort(),
-					address = config.address,
-				),
-			)
+			receiver.sendRpc(buildVrcOscSettingsResponse(settings.context.state.value.data.vrcOscConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildVrcOscSettingsResponse(it.data.vrcOscConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
 			receiver.sendRpc(buildStatusResponse(vrcOscManager.context.state.value.status))

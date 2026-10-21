@@ -9,6 +9,11 @@ import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
 import solarxr_protocol.rpc.LegTweaksTmpChange
 import solarxr_protocol.rpc.LegTweaksTmpClear
@@ -21,38 +26,44 @@ import solarxr_protocol.rpc.SkeletonToggles
 import solarxr_protocol.rpc.TrackingPauseStateRequest
 import solarxr_protocol.rpc.TrackingPauseStateResponse
 
+internal fun buildSkeletonSettingsResponse(config: SkeletonConfig) = SkeletonSettingsResponse(
+	toggles = SkeletonToggles(
+		floorClip = config.toggles.floorClip,
+		skatingCorrection = config.toggles.skatingCorrection,
+		toeSnap = config.toggles.toeSnap,
+		footPlant = config.toggles.footPlant,
+		mocapMode = config.toggles.mocapMode,
+		useTrackerPositions = config.toggles.useTrackerPositions,
+		enforceConstraints = config.toggles.enforceConstraints,
+	),
+	ratios = SkeletonRatios(
+		spineCurvature = config.ratios.spineCurvature,
+		imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
+		interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
+		skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
+	),
+	filtering = SkeletonFiltering(
+		type = config.filtering.type,
+		amount = config.filtering.amount,
+	),
+)
+
 class SkeletonSettingsBehaviour(
 	private val settings: Settings,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
 		receiver.rpcDispatcher.on<SkeletonSettingsRequest> {
-			val config = settings.context.state.value.data.skeletonConfig
-			receiver.sendRpc(
-				SkeletonSettingsResponse(
-					toggles = SkeletonToggles(
-						floorClip = config.toggles.floorClip,
-						skatingCorrection = config.toggles.skatingCorrection,
-						toeSnap = config.toggles.toeSnap,
-						footPlant = config.toggles.footPlant,
-						mocapMode = config.toggles.mocapMode,
-						useTrackerPositions = config.toggles.useTrackerPositions,
-						enforceConstraints = config.toggles.enforceConstraints,
-					),
-					ratios = SkeletonRatios(
-						imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
-						imputeSpineCurvature = config.ratios.imputeSpineCurvature,
-						interpolateHipWithUpperLegs = config.ratios.interpolateHipWithUpperLegs,
-						interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
-						skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
-					),
-					filtering = SkeletonFiltering(
-						type = config.filtering.type,
-						amount = config.filtering.amount,
-					),
-				),
-			)
+			receiver.sendRpc(buildSkeletonSettingsResponse(settings.context.state.value.data.skeletonConfig))
 		}.launchIn(receiver.context.scope)
+
+		// Push config changes, including profile switches
+		settings.context.state
+			.map { buildSkeletonSettingsResponse(it.data.skeletonConfig) }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach(receiver::sendRpc)
+			.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeSkeletonSettingsRequest> { req ->
@@ -73,9 +84,8 @@ class SkeletonSettingsBehaviour(
 							} ?: skeletonConfig.toggles,
 							ratios = req.ratios?.let {
 								SkeletonRatiosConfig(
+									spineCurvature = it.spineCurvature ?: 0f,
 									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
-									imputeSpineCurvature = it.imputeSpineCurvature ?: 0f,
-									interpolateHipWithUpperLegs = it.interpolateHipWithUpperLegs ?: 0f,
 									interpolateUpperLegsTwistWithLowerLegs = it.interpolateUpperLegsTwistWithLowerLegs ?: 0f,
 									skatingCorrectionStrength = it.skatingCorrectionStrength ?: 0f,
 								)

@@ -71,6 +71,7 @@ export function TimelineItem({
   last = false,
   dotClassName,
   expanded,
+  expandableArrow = true,
   onToggle,
   disabled,
   className,
@@ -84,6 +85,7 @@ export function TimelineItem({
   last?: boolean;
   dotClassName?: string;
   expanded?: boolean;
+  expandableArrow?: boolean;
   onToggle?: () => void;
   disabled?: boolean;
   className?: string;
@@ -137,7 +139,7 @@ export function TimelineItem({
             onClick={onToggle}
           >
             {title}
-            {!disabled && (
+            {expandableArrow && !disabled && (
               <div className="fill-background-30 group-hover:scale-125 group-hover:fill-background-20 transition-transform">
                 <ArrowDownIcon size={20} />
               </div>

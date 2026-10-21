@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import {
   ChangeErrorReportingSettingsRequestT,
@@ -7,35 +7,35 @@ import {
   ErrorReportingSettingsResponseT,
   RpcMessage,
 } from 'solarxr-protocol';
-import { ErrorReportingState } from '@slimevr/gui-shared';
+import { CrashReportKind, ErrorReportingState } from '@slimevr/gui-shared';
 import { useWebsocketAPI } from './websocket-api';
-import { applyErrorReporting, applyErrorReportingConsent } from '@/utils/sentry';
+import { applyErrorReporting } from '@/utils/sentry';
 
 export type ErrorReportingAnswer =
   | ErrorReportingConsent.ALLOWED
   | ErrorReportingConsent.DENIED;
 
-interface PendingAnswer {
-  consent: ErrorReportingAnswer;
-  /** Only used if the server has no answer yet */
-  offline: boolean;
-}
-
+/** What the server said */
 export const serverErrorReportingAtom = atom<ErrorReportingState | null>(null);
-const pendingAnswerAtom = atom<PendingAnswer | null>(null);
+/** What the user chose, until the server confirms it */
+const pendingAnswerAtom = atom<ErrorReportingAnswer | null>(null);
+
+export const sessionConsentAtom = atom(
+  (get) => get(serverErrorReportingAtom)?.consent ?? ErrorReportingConsent.UNDECIDED
+);
 
 export function useProvideErrorReporting() {
-  const { useRPCPacket, sendRPCPacket, isConnected } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const [server, setServer] = useAtom(serverErrorReportingAtom);
   const [pending, setPending] = useAtom(pendingAnswerAtom);
+  const consent = useAtomValue(sessionConsentAtom);
 
-  useEffect(() => {
-    if (!isConnected) return;
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.ErrorReportingSettingsRequest,
       new ErrorReportingSettingsRequestT()
     );
-  }, [isConnected]);
+  }, []);
 
   useRPCPacket(
     RpcMessage.ErrorReportingSettingsResponse,
@@ -47,46 +47,53 @@ export function useProvideErrorReporting() {
       })
   );
 
-  useEffect(() => {
-    if (!isConnected || !server || !pending) return;
-    if (server.consent === pending.consent) {
+  useConnectedEffect(() => {
+    if (!server || pending === null) return;
+    if (server.consent === pending) {
       setPending(null);
-    } else if (!pending.offline || server.consent === ErrorReportingConsent.UNDECIDED) {
-      sendRPCPacket(
-        RpcMessage.ChangeErrorReportingSettingsRequest,
-        new ChangeErrorReportingSettingsRequestT(pending.consent)
-      );
-    } else {
-      // Offline answer, the earlier answer wins
-      setPending(null);
+      return;
     }
-  }, [isConnected, server, pending]);
+    sendRPCPacket(
+      RpcMessage.ChangeErrorReportingSettingsRequest,
+      new ChangeErrorReportingSettingsRequestT(pending)
+    );
+  }, [server, pending]);
 
   useEffect(() => {
-    if (server) applyErrorReporting(server);
-  }, [server]);
-
-  const consent = server?.consent;
-  useEffect(() => {
-    if (consent !== undefined) applyErrorReportingConsent(consent);
-  }, [consent]);
+    const identity = server
+      ? { userId: server.userId, sessionId: server.sessionId }
+      : null;
+    applyErrorReporting(consent, identity);
+  }, [consent, server?.userId, server?.sessionId]);
 }
 
 export function useErrorReporting() {
-  const { isConnected, isFirstConnection, timedOut } = useWebsocketAPI();
+  const { isConnected } = useWebsocketAPI();
   const server = useAtomValue(serverErrorReportingAtom);
   const [pending, setPending] = useAtom(pendingAnswerAtom);
 
-  const unanswered =
-    pending === null &&
-    (server === null || server.consent === ErrorReportingConsent.UNDECIDED);
-  // The server can't ask when it crashed or never started
-  const serverUnreachable = !isConnected && (!isFirstConnection || timedOut);
+  return {
+    setting: pending ?? server?.consent ?? null,
+    needsAnswer:
+      isConnected &&
+      server?.consent === ErrorReportingConsent.UNDECIDED &&
+      pending === null,
+    answer: (consent: ErrorReportingAnswer) => setPending(consent),
+  };
+}
+
+export function useCrashReport(kind: CrashReportKind) {
+  const consent = useAtomValue(sessionConsentAtom);
+  const [sent, setSent] = useState(false);
+  // Only Electron main has the server crash data
+  const isElectron = !!window.electronAPI;
+  const alreadyReported = consent === ErrorReportingConsent.ALLOWED;
 
   return {
-    consent: pending?.consent ?? server?.consent ?? null,
-    needsAnswer: unanswered && (isConnected ? server !== null : serverUnreachable),
-    answer: (consent: ErrorReportingAnswer) =>
-      setPending({ consent, offline: !isConnected }),
+    available: isElectron && !alreadyReported,
+    sent,
+    send: async () => {
+      if (await window.electronAPI.sendCrashReport(kind)) setSent(true);
+    },
   };
 }

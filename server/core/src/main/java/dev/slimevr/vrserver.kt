@@ -25,6 +25,7 @@ sealed interface VRServerActions {
 	data class SolarXRConnected(val connection: SolarXRBridge) : VRServerActions
 	data class SolarXRDisconnected(val connectionId: Int) : VRServerActions
 	data class NewDongle(val dongleId: Int, val context: HIDReceiver) : VRServerActions
+	data class DeviceRemoved(val deviceId: Int, val trackerIds: List<Int>) : VRServerActions
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>

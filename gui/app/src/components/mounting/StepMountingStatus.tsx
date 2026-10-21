@@ -19,6 +19,7 @@ const videoSteps = [
 
 const errorSteps = [
   StepMountingStatus.ERROR_NO_DATA,
+  StepMountingStatus.ERROR_THRESHOLD_EXCEEDED,
   StepMountingStatus.ERROR_TIMEOUT,
 ];
 

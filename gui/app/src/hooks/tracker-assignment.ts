@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import {
   UpdateTrackerRequestT,
   BodyPart,
@@ -42,10 +42,10 @@ export function useAssignTracker() {
 
 export function useTrackerAssignment(mode: AssignmentMode) {
   const { config } = useConfig();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const sendAssign = useAssignTracker();
   const shell = providePicker();
-  const { trackerByPart, flatTrackers } = shell;
+  const { trackerByPart } = shell;
 
   const [pending, setPending] = useState<Pending>(null);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -57,7 +57,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const pendingTrackerId = pending?.kind === 'tracker' ? pending.id : null;
   const activePart = mode === 'drag' ? (dragTarget ?? BodyPart.NONE) : armedPart;
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(
       RpcMessage.TapDetectionSetupModeRequest,
       new TapDetectionSetupModeRequestT(true)
@@ -83,15 +83,10 @@ export function useTrackerAssignment(mode: AssignmentMode) {
       occupant &&
       occupant.tracker.trackerId !== trackerId
     ) {
-      sendAssign(
-        occupant.tracker.trackerId,
-        BodyPart.NONE,
-        occupant.tracker.info?.mountingOrientation ?? null
-      );
+      sendAssign(occupant.tracker.trackerId, BodyPart.NONE);
     }
 
-    const moved = flatTrackers.find((td) => td.tracker.trackerId === trackerId);
-    sendAssign(trackerId, bodyPart, moved?.tracker.info?.mountingOrientation ?? null);
+    sendAssign(trackerId, bodyPart);
   };
 
   const { tryOpenChokerWarning, closeChokerWarning, shouldShowChokerWarn } =
@@ -123,11 +118,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const unassignPart = (part: BodyPart) => {
     const td = trackerByPart[part];
     if (td) {
-      sendAssign(
-        td.tracker.trackerId,
-        BodyPart.NONE,
-        td.tracker.info?.mountingOrientation ?? null
-      );
+      sendAssign(td.tracker.trackerId, BodyPart.NONE);
     }
     if (armedPart === part) clearPending();
   };

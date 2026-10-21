@@ -25,7 +25,7 @@ export const BUTTERFLY_BOARDS = new Set([
   BoardType.SLIMEVR_BUTTERFLY_DEV,
 ]);
 
-const SLIME_BOARDS = new Set([
+export const SLIME_BOARDS = new Set([
   BoardType.SLIMEVR,
   BoardType.SLIMEVR_V1_2,
   BoardType.SLIMEVR_DEV,

@@ -1,6 +1,7 @@
-import { useLocalization, Localized } from '@fluent/react';
+import { SettingDef } from '@/components/settings/settings-definitions';
+import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ChangeHIDSettingsRequestT,
   HIDSettingsRequestT,
@@ -8,35 +9,38 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useSettingsDefaults } from '@/hooks/settings-defaults';
+import { settingReset } from '@/components/settings/SettingReset';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
+import { SettingRow } from '@/components/settings/SettingRow';
 
 type HIDForm = {
   trackersOverHID: boolean;
 };
 
-const defaultValues: HIDForm = {
-  trackersOverHID: false,
-};
+function toForm(settings: HIDSettingsResponseT): HIDForm {
+  return { trackersOverHID: settings.trackersOverHid };
+}
 
-const hidSettingsAtom = atom(new HIDSettingsResponseT());
+const hidSettingsAtom = atom<HIDSettingsResponseT | null>(null);
 const hidSettingsValueAtom = selectAtom(
   hidSettingsAtom,
   (settings) => settings,
   isEqual
 );
 
-export function HIDSettings() {
+export function HIDSettings({ setting }: { setting: SettingDef }) {
   const setSettings = useSetAtom(hidSettingsAtom);
   const settings = useAtomValue(hidSettingsValueAtom);
-  const { l10n } = useLocalization();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
+  const defaults = useSettingsDefaults().hid;
 
-  const { control, watch, handleSubmit, getValues, reset } = useForm<HIDForm>({
-    defaultValues,
+  const { control, watch, handleSubmit, reset, setValue } = useForm<HIDForm>({
+    defaultValues: toForm(defaults),
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
@@ -54,15 +58,13 @@ export function HIDSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useConnectedEffect(() => {
     sendRPCPacket(RpcMessage.HIDSettingsRequest, new HIDSettingsRequestT());
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<HIDForm> = {
-      trackersOverHID: settings.trackersOverHid,
-    };
-    reset({ ...getValues(), ...formData });
+    if (!settings) return;
+    reset(toForm(settings));
   }, [settings]);
 
   useRPCPacket(
@@ -72,30 +74,37 @@ export function HIDSettings() {
     }
   );
 
+  const resetTrackersOverHid = settingReset<HIDForm, 'trackersOverHID'>(
+    defaults.trackersOverHid,
+    watch('trackersOverHID'),
+    (next) => {
+      setValue('trackersOverHID', next);
+      handleSubmit(onSubmit)();
+    }
+  );
+
   return (
-    <>
-      <div className="flex flex-col pt-5 pb-2">
-        <Typography variant="section-title">
-          {l10n.getString(
-            'settings-general-tracker_mechanics-trackers_over_usb'
-          )}
-        </Typography>
+    <SettingRow
+      setting={setting}
+      description={null}
+      details={
         <Localized
           id="settings-general-tracker_mechanics-trackers_over_usb-description"
           elems={{ b: <b /> }}
         >
           <Typography />
         </Localized>
-      </div>
-      <CheckBox
-        variant="toggle"
-        outlined
-        control={control}
-        name="trackersOverHID"
-        label={l10n.getString(
-          'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
-        )}
-      />
-    </>
+      }
+      controlId="trackers-over-usb"
+      {...resetTrackersOverHid}
+      control={
+        <CheckBox
+          variant="toggle"
+          control={control}
+          name="trackersOverHID"
+          id="trackers-over-usb"
+        />
+      }
+    />
   );
 }

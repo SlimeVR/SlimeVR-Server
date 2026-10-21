@@ -1,7 +1,7 @@
 package dev.slimevr.stayaligned
 
-import dev.slimevr.config.StayAlignedConfig
-import dev.slimevr.config.StayAlignedRelaxedPoseConfig
+import dev.slimevr.config.StayAlignedPoseConfig
+import dev.slimevr.config.UserConfigData
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.Tracker
@@ -11,6 +11,7 @@ import io.github.axisangles.ktmath.EulerOrder
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.StayAlignedRelaxedPose
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -22,12 +23,14 @@ import kotlin.test.assertNull
  */
 class ComputeYawCorrectionTest {
 
-	val enabledStayAlignedConfig = StayAlignedConfig(
-		enabled = true,
-		standingRelaxedPose = StayAlignedRelaxedPoseConfig(true),
-		sittingRelaxedPose = StayAlignedRelaxedPoseConfig(true),
-		flatRelaxedPose = StayAlignedRelaxedPoseConfig(true),
-		setupComplete = true,
+	val recordedPose = StayAlignedPoseConfig(recorded = true, enabled = true)
+
+	val userConfigWithPoses = UserConfigData(
+		stayAlignedPoses = mapOf(
+			StayAlignedRelaxedPose.STANDING to recordedPose,
+			StayAlignedRelaxedPose.SITTING to recordedPose,
+			StayAlignedRelaxedPose.FLAT to recordedPose,
+		),
 	)
 
 	val pointFiveYaw = EulerAngles(
@@ -63,7 +66,7 @@ class ComputeYawCorrectionTest {
 			lockedTrackerState,
 			listOf(lockedTrackerState),
 			Angle(0.002f),
-			enabledStayAlignedConfig,
+			userConfigWithPoses,
 		)
 
 		assertNotNull(result)
@@ -76,7 +79,7 @@ class ComputeYawCorrectionTest {
 			lockedTrackerState,
 			listOf(lockedTrackerState),
 			Angle(0f),
-			enabledStayAlignedConfig,
+			userConfigWithPoses,
 		)
 
 		assertNotNull(result)
@@ -89,7 +92,7 @@ class ComputeYawCorrectionTest {
 			primarilyAtRestTrackerState,
 			listOf(primarilyAtRestTrackerState),
 			Angle(0.002f),
-			enabledStayAlignedConfig,
+			userConfigWithPoses,
 		)
 
 		assertNull(result)
@@ -107,7 +110,7 @@ class ComputeYawCorrectionTest {
 				movingTrackerState.copy(bodyPart = BodyPart.RIGHT_LOWER_LEG, rotation = fiveYaw),
 			),
 			Angle(0.002f),
-			enabledStayAlignedConfig,
+			userConfigWithPoses,
 		)
 
 		assertNotNull(result)

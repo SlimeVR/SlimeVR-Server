@@ -7,7 +7,9 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.udpHardwareId
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -17,16 +19,61 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
-import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-/**
- * Change between IMU axes and OpenGL/SteamVR axes
- */
-internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
+/** Convert from IMU axes to OpenGL/SteamVR axes */
+internal val AXES_OFFSET = Quaternion.rotationAroundXAxis(-FastMath.HALF_PI)
+
 internal const val CONNECTION_TIMEOUT_MS = 5000L
+
+// Old protocol versions before 23 had messed up accel offsets in firmware
+private val ACCEL_OFFSET_CORRECTION_22 = Quaternion.rotationAroundZAxis(FastMath.PI)
+private val ACCEL_OFFSET_CORRECTION_21 = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
+fun getCorrectedAcceleration(acceleration: Vector3, protocolVersion: Int) = if (protocolVersion <= 21) {
+	ACCEL_OFFSET_CORRECTION_21.sandwich(acceleration)
+} else if (protocolVersion == 22) {
+	ACCEL_OFFSET_CORRECTION_22.sandwich(acceleration)
+} else {
+	acceleration
+}
+
+internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
+	val deviceState = device.context.state.value
+	val deviceHardwareId = deviceState.hardwareId ?: udpHardwareId(deviceState.macAddress, deviceState.address)
+	val hardwareId = "$deviceHardwareId:${info.sensorId}"
+
+	val existingTracker = receiver.appContext.server.context.state.value.trackers.values
+		.find { t -> t.context.state.value.deviceId == deviceState.id && t.context.state.value.hardwareId == hardwareId }
+
+	if (existingTracker != null) {
+		receiver.context.dispatch(
+			UDPConnectionActions.AssignTracker(
+				trackerId = TrackerSensorIds(trackerId = existingTracker.context.state.value.id, sensorId = info.sensorId),
+			),
+		)
+		return existingTracker to false
+	}
+
+	val trackerId = receiver.appContext.server.nextHandle()
+	val newTracker = Tracker.create(
+		id = trackerId,
+		hardwareId = hardwareId,
+		imuType = info.imuType,
+		deviceId = deviceState.id,
+		origin = DeviceOrigin.UDP,
+		scope = receiver.appContext.server.context.scope,
+		appContext = receiver.appContext,
+		expectedTps = 100u,
+	)
+	receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
+	receiver.context.dispatch(
+		UDPConnectionActions.AssignTracker(trackerId = TrackerSensorIds(trackerId = trackerId, sensorId = info.sensorId)),
+	)
+	return newTracker to true
+}
 
 class PacketBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
@@ -109,13 +156,11 @@ class PingBehaviour : UDPConnectionBehaviour {
 }
 
 class HandshakeBehaviour : UDPConnectionBehaviour {
-	private fun findOrCreateDevice(receiver: UDPConnection, state: UDPConnectionState, data: Handshake): Device {
+	private fun findOrCreateDevice(receiver: UDPConnection, state: UDPConnectionState, data: Handshake, hardwareId: String): Device {
 		val devices = receiver.appContext.server.context.state.value.devices.values
-		val existing = data.macString?.let { mac ->
-			devices.find { device ->
-				val ds = device.context.state.value
-				ds.macAddress == mac && ds.origin == DeviceOrigin.UDP
-			}
+		val existing = devices.find { device ->
+			val ds = device.context.state.value
+			ds.hardwareId == hardwareId && ds.origin == DeviceOrigin.UDP
 		}
 		if (existing != null) {
 			val existingId = existing.context.state.value.id
@@ -134,6 +179,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			id = deviceId,
 			address = state.address,
 			macAddress = data.macString,
+			hardwareId = hardwareId,
 			origin = DeviceOrigin.UDP,
 			protocolVersion = data.protocolVersion,
 		)
@@ -145,23 +191,31 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<Handshake> { packet ->
 			val state = receiver.context.state.value
-			val mac = packet.data.macString
+			val hardwareId = udpHardwareId(packet.data.macString, state.address)
 
-			if (mac != null) {
-				val settings = receiver.appContext.config.settings.context.state.value.data
-				if (mac !in settings.allowedUdpDevices) {
-					AppLogger.udp.info("Unknown MAC $mac, notifying solarxr")
-					receiver.appContext.server.context.scope.launch {
-						receiver.appContext.server.sendSolarxrRpc(
-							UnknownDeviceHandshakeNotification(macAddress = mac),
-						)
-					}
-					return@onPacket
-				}
+			val allowed = receiver.appContext.config.devices.context.state.value.allowedUdpDevices
+			val udpServer = receiver.appContext.udpServer
+			if (hardwareId !in allowed) {
+				udpServer.context.dispatch(
+					UdpServerActions.UnknownDeviceSeen(
+						UnknownDeviceState(
+							hardwareId = hardwareId,
+							address = state.address,
+							boardType = packet.data.boardType,
+							mcuType = packet.data.mcuType,
+							firmwareVersion = packet.data.firmware,
+							lastSeen = udpServer.clock(),
+						),
+					),
+				)
+				return@onPacket
+			}
+			if (hardwareId in udpServer.context.state.value.unknownDevices) {
+				udpServer.context.dispatch(UdpServerActions.UnknownDeviceRemoved(hardwareId))
 			}
 
 			val device = if (state.deviceId == null) {
-				findOrCreateDevice(receiver, state, packet.data)
+				findOrCreateDevice(receiver, state, packet.data, hardwareId)
 			} else {
 				receiver.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
 				receiver.getDevice() ?: run {
@@ -173,7 +227,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 
 			val previousStatus = device.context.state.value.status
 			if (previousStatus != TrackerStatus.OK) {
-				AppLogger.udp.info("Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
+				AppLogger.udp.info("Handshake from $hardwareId, was $previousStatus")
 			}
 
 			// Apply handshake fields to device, always, for both first connect and reconnect
@@ -189,6 +243,11 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 					)
 				},
 			)
+
+			if (packet.data.protocolVersion < 9) {
+				val (tracker, _) = assignTracker(receiver, device, SensorInfo(status = TrackerStatus.OK, imuType = ImuType.fromValue(packet.data.imuType.toUShort()) ?: ImuType.UNKNOWN))
+				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+			}
 
 			receiver.send(Handshake())
 		}.launchIn(receiver.context.scope)
@@ -279,44 +338,6 @@ class DeviceStatsBehaviour : UDPConnectionBehaviour {
 }
 
 class SensorInfoBehaviour : UDPConnectionBehaviour {
-	private suspend fun assignTracker(receiver: UDPConnection, device: Device, event: PacketEvent<SensorInfo>): Pair<Tracker, Boolean> {
-		val deviceState = device.context.state.value
-		val mac = deviceState.macAddress ?: run {
-			AppLogger.udp.warn("No MAC address available, falling back to IP for hardware ID")
-			deviceState.address
-		}
-		val hardwareId = "$mac:${event.data.sensorId}"
-
-		val existingTracker = receiver.appContext.server.context.state.value.trackers.values
-			.find { t -> t.context.state.value.deviceId == deviceState.id && t.context.state.value.hardwareId == hardwareId }
-
-		if (existingTracker != null) {
-			receiver.context.dispatch(
-				UDPConnectionActions.AssignTracker(
-					trackerId = TrackerSensorIds(trackerId = existingTracker.context.state.value.id, sensorId = event.data.sensorId),
-				),
-			)
-			return existingTracker to false
-		}
-
-		val trackerId = receiver.appContext.server.nextHandle()
-		val newTracker = Tracker.create(
-			id = trackerId,
-			hardwareId = hardwareId,
-			imuType = event.data.imuType,
-			deviceId = deviceState.id,
-			origin = DeviceOrigin.UDP,
-			scope = receiver.appContext.server.context.scope,
-			appContext = receiver.appContext,
-			expectedTps = 100u,
-		)
-		receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
-		receiver.context.dispatch(
-			UDPConnectionActions.AssignTracker(trackerId = TrackerSensorIds(trackerId = trackerId, sensorId = event.data.sensorId)),
-		)
-		return newTracker to true
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<SensorInfo> { event ->
 			val device = receiver.getDevice() ?: error("invalid state - a device should exist at this point")
@@ -332,7 +353,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 				return@onPacket
 			}
 
-			val (tracker, isNew) = assignTracker(receiver, device, event)
+			val (tracker, isNew) = assignTracker(receiver, device, event.data)
 			tracker.context.dispatchAll(
 				listOf(
 					TrackerActions.Update { copy(imuType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
@@ -371,6 +392,11 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 
 class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<Rotation> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
+		}.launchIn(receiver.context.scope)
+
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
@@ -378,12 +404,14 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
+			val protocolVersion = receiver.getDevice()?.context?.state?.value?.protocolVersion ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = getCorrectedAcceleration(event.data.acceleration, protocolVersion)))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
+			val protocolVersion = receiver.getDevice()?.context?.state?.value?.protocolVersion ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = getCorrectedAcceleration(event.data.acceleration, protocolVersion)))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->

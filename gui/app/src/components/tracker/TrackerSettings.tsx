@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   UpdateTrackerRequestT,
   BoardType,
@@ -25,6 +25,7 @@ import { rotationToQuatMap, similarQuaternions } from '@/maths/quaternion';
 import { ArrowLink } from '@/components/commons/ArrowLink';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
+import { ButtonConfirmModal } from '@/components/commons/ButtonConfirmModal';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
@@ -32,11 +33,10 @@ import { MountingSelectionMenu } from '@/components/onboarding/pages/mounting/Mo
 import { IMUVisualizerWidget } from '@/components/widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { TrackerImuGraphs } from './TrackerImuGraphs';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
-import { useSetAtom } from 'jotai';
-import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { roundVector3, Vector3Object, Vector3ToVec3fT } from '@/maths/vector3';
@@ -83,7 +83,7 @@ export function TrackerSettingsPage() {
     },
     reValidateMode: 'onSubmit',
   });
-  const setIgnoredTracker = useSetAtom(ignoredTrackersAtom);
+  const navigate = useNavigate();
   const { trackerName, boneOffset } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
@@ -178,17 +178,20 @@ export function TrackerSettingsPage() {
     l10n,
   ]);
 
-  const macAddress = useMemo(() => {
-    if (
-      /(?:[a-zA-Z\d]{2}:){5}[a-zA-Z\d]{2}/.test(
-        (tracker?.device?.hardwareInfo?.hardwareIdentifier as string | null) ??
-          ''
-      )
-    ) {
-      return tracker?.device?.hardwareInfo?.hardwareIdentifier as string;
-    }
-    return null;
-  }, [tracker?.device?.hardwareInfo?.hardwareIdentifier]);
+  // MAC address, or IP for firmware that sends no MAC
+  const hardwareId =
+    (tracker?.device?.hardwareInfo?.hardwareIdentifier as string | null) ??
+    null;
+  const macAddressNumber = tracker?.device?.hardwareInfo?.hardwareAddress?.addr;
+  const macAddress =
+    macAddressNumber != null
+      ? macAddressNumber
+          .toString(16)
+          .padStart(12, '0')
+          .toUpperCase()
+          .match(/.{2}/g)
+          ?.join(':')
+      : null;
 
   const { currentFirmwareRelease } = useAppContext();
 
@@ -356,12 +359,8 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography>
-                {l10n.getString('tracker-infos-hardware_identifier')}
-              </Typography>
-              <Typography>
-                {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
-              </Typography>
+              <Typography id="tracker-infos-mac_address" />
+              <Typography>{macAddress || '--'}</Typography>
             </div>
             <div className="flex justify-between">
               <Typography>
@@ -437,172 +436,184 @@ export function TrackerSettingsPage() {
           </div>
           {tracker && <IMUVisualizerWidget td={tracker} />}
         </div>
-        <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
-          <ArrowLink to="/">
-            {l10n.getString('tracker-settings-back')}
-          </ArrowLink>
-          <Typography variant="main-title">
-            {l10n.getString('tracker-settings-title')}
-          </Typography>
-          <div className="flex flex-col gap-2 w-full mt-3">
-            <Typography variant="section-title">
-              {l10n.getString('tracker-settings-assignment_section')}
+        <div className="flex flex-col flex-grow gap-2 min-w-0">
+          <div className="flex flex-col bg-background-70 rounded-lg p-5 gap-3">
+            <ArrowLink to="/">
+              {l10n.getString('tracker-settings-back')}
+            </ArrowLink>
+            <Typography variant="main-title">
+              {l10n.getString('tracker-settings-title')}
             </Typography>
-            <Typography>
-              {l10n.getString(
-                'tracker-settings-assignment_section-description'
-              )}
-            </Typography>
-            <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-              <div className="flex gap-3 items-center fill-background-10">
-                {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
-                  <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
-                )}
-                {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
-                  <WarningIcon className="fill-status-warning" />
-                )}
-                <Typography
-                  color={classNames({
-                    'text-status-warning':
-                      tracker?.tracker.info?.bodyPart === BodyPart.NONE,
-                  })}
-                >
-                  {l10n.getString(
-                    'body_part-' +
-                      BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
-                  )}
-                </Typography>
-              </div>
-              <div className="flex">
-                <Button
-                  variant="secondary"
-                  onClick={() => setSelectBodyPart(true)}
-                >
-                  {l10n.getString('tracker-settings-assignment_section-edit')}
-                </Button>
-              </div>
-            </div>
-          </div>
-          {(tracker?.tracker.info?.isImu ||
-            (tracker?.tracker.origin == DeviceOrigin.DRIVER &&
-              tracker?.tracker.info?.intendedBodyPart !=
-                tracker?.tracker.info?.bodyPart)) && (
             <div className="flex flex-col gap-2 w-full mt-3">
               <Typography variant="section-title">
-                {l10n.getString('tracker-settings-mounting_section')}
+                {l10n.getString('tracker-settings-assignment_section')}
               </Typography>
               <Typography>
                 {l10n.getString(
-                  'tracker-settings-mounting_section-description'
+                  'tracker-settings-assignment_section-description'
                 )}
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-                <div className="flex gap-3 items-center">
-                  <BodyPartIcon bodyPart={BodyPart.NONE} />
-                  <Typography>
+                <div className="flex gap-3 items-center fill-background-10">
+                  {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
+                    <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
+                  )}
+                  {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
+                    <WarningIcon className="fill-status-warning" />
+                  )}
+                  <Typography
+                    color={classNames({
+                      'text-status-warning':
+                        tracker?.tracker.info?.bodyPart === BodyPart.NONE,
+                    })}
+                  >
                     {l10n.getString(
-                      tracker.tracker.info?.lastMountingMethod !=
-                        MountingMethod.MANUAL
-                        ? `${l10n.getString('tracker-rotation-custom')} ${l10n.getString('tracker-rotation-mounting_reset')}`
-                        : (rotationsLabels.find(
-                            (q) =>
-                              currRotation &&
-                              similarQuaternions(q[0], currRotation)
-                          ) || [])[1] || 'tracker-rotation-custom'
+                      'body_part-' +
+                        BodyPart[
+                          tracker?.tracker.info?.bodyPart || BodyPart.NONE
+                        ]
                     )}
                   </Typography>
                 </div>
                 <div className="flex">
                   <Button
                     variant="secondary"
-                    onClick={() => setSelectRotation(true)}
+                    onClick={() => setSelectBodyPart(true)}
                   >
-                    {l10n.getString('tracker-settings-mounting_section-edit')}
+                    {l10n.getString('tracker-settings-assignment_section-edit')}
                   </Button>
                 </div>
               </div>
             </div>
-          )}
-          {tracker?.tracker.info?.isImu &&
-            tracker?.tracker.info?.magnetometer !==
-              MagnetometerStatus.NOT_SUPPORTED && (
-              <MagnetometerToggleSetting
-                settingType="tracker"
-                trackerId={tracker.tracker.trackerId}
-              />
-            )}
-          {!!tracker?.tracker.position && (
-            <div className="flex flex-col gap-2 w-full mt-3">
-              <Typography
-                variant="section-title"
-                id="tracker-settings-bone_offset_section"
-              />
-              <Typography id="tracker-settings-bone_offset_section-description" />
-              <div className="grid grid-cols-3 gap-2">
-                {(['x', 'y', 'z'] as const).map((axis) => (
-                  <Input
-                    key={axis}
-                    type="number"
-                    step="any"
-                    name={`boneOffset.${axis}`}
-                    control={control}
-                    autocomplete="off"
-                    disabled={
-                      (tracker.tracker.info?.bodyPart ?? BodyPart.NONE) ===
-                      BodyPart.NONE
-                    }
-                    placeholder={l10n.getString(
-                      `tracker-settings-bone_offset_section-${axis}`
-                    )}
-                  />
-                ))}
+            {(tracker?.tracker.info?.isImu ||
+              (tracker?.tracker.origin == DeviceOrigin.DRIVER &&
+                tracker?.tracker.info?.intendedBodyPart !=
+                  tracker?.tracker.info?.bodyPart)) && (
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography variant="section-title">
+                  {l10n.getString('tracker-settings-mounting_section')}
+                </Typography>
+                <Typography>
+                  {l10n.getString(
+                    'tracker-settings-mounting_section-description'
+                  )}
+                </Typography>
+                <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
+                  <div className="flex gap-3 items-center">
+                    <BodyPartIcon bodyPart={BodyPart.NONE} />
+                    <Typography>
+                      {l10n.getString(
+                        tracker.tracker.info?.lastMountingMethod !=
+                          MountingMethod.MANUAL
+                          ? `${l10n.getString('tracker-rotation-custom')} ${l10n.getString('tracker-rotation-mounting_reset')}`
+                          : (rotationsLabels.find(
+                              (q) =>
+                                currRotation &&
+                                similarQuaternions(q[0], currRotation)
+                            ) || [])[1] || 'tracker-rotation-custom'
+                      )}
+                    </Typography>
+                  </div>
+                  <div className="flex">
+                    <Button
+                      variant="secondary"
+                      onClick={() => setSelectRotation(true)}
+                    >
+                      {l10n.getString('tracker-settings-mounting_section-edit')}
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
-          <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
-            <Typography variant="section-title">
-              {l10n.getString('tracker-settings-name_section')}
-            </Typography>
-            <Typography>
-              {l10n.getString('tracker-settings-name_section-description')}
-            </Typography>
-            <Input
-              placeholder={l10n.getString(
-                'tracker-settings-name_section-placeholder'
+            )}
+            {tracker?.tracker.info?.isImu &&
+              tracker?.tracker.info?.magnetometer !==
+                MagnetometerStatus.NOT_SUPPORTED && (
+                <MagnetometerToggleSetting
+                  settingType="tracker"
+                  trackerId={tracker.tracker.trackerId}
+                />
               )}
-              type="text"
-              name="trackerName"
-              control={control}
-              autocomplete="off"
-              rules={undefined}
-              label={l10n.getString('tracker-settings-name_section-label')}
-            />
-          </div>
-          {macAddress && (
-            <div className="flex flex-col gap-2 w-full mt-3">
+            {!!tracker?.tracker.position && (
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography
+                  variant="section-title"
+                  id="tracker-settings-bone_offset_section"
+                />
+                <Typography id="tracker-settings-bone_offset_section-description" />
+                <div className="grid grid-cols-3 gap-2">
+                  {(['x', 'y', 'z'] as const).map((axis) => (
+                    <Input
+                      key={axis}
+                      type="number"
+                      step="any"
+                      name={`boneOffset.${axis}`}
+                      control={control}
+                      autocomplete="off"
+                      disabled={
+                        (tracker.tracker.info?.bodyPart ?? BodyPart.NONE) ===
+                        BodyPart.NONE
+                      }
+                      placeholder={l10n.getString(
+                        `tracker-settings-bone_offset_section-${axis}`
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
               <Typography variant="section-title">
-                {l10n.getString('tracker-settings-forget')}
+                {l10n.getString('tracker-settings-name_section')}
               </Typography>
               <Typography>
-                {l10n.getString('tracker-settings-forget-description')}
+                {l10n.getString('tracker-settings-name_section-description')}
               </Typography>
-              <Button
-                variant="secondary"
-                className="!bg-status-critical self-start"
-                onClick={() => {
-                  sendRPCPacket(
-                    RpcMessage.ForgetDeviceRequest,
-                    new ForgetDeviceRequestT(macAddress)
-                  );
-                  setIgnoredTracker((state) => {
-                    state.add(macAddress);
-                    return state;
-                  });
-                }}
-              >
-                {l10n.getString('tracker-settings-forget-label')}
-              </Button>
+              <Input
+                placeholder={l10n.getString(
+                  'tracker-settings-name_section-placeholder'
+                )}
+                type="text"
+                name="trackerName"
+                control={control}
+                autocomplete="off"
+                rules={undefined}
+                label={l10n.getString('tracker-settings-name_section-label')}
+              />
             </div>
+            {hardwareId && tracker?.device?.origin === DeviceOrigin.UDP && (
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography variant="section-title">
+                  {l10n.getString('tracker-settings-forget')}
+                </Typography>
+                <Typography>
+                  {l10n.getString('tracker-settings-forget-description')}
+                </Typography>
+                <ButtonConfirmModal
+                  variant="danger"
+                  className="self-start"
+                  id="tracker-settings-forget-label"
+                  cancelLabel="tracker-settings-forget-modal-cancel"
+                  confirmLabel="tracker-settings-forget-modal-confirm"
+                  onCancel={() => {}}
+                  onConfirm={() => {
+                    sendRPCPacket(
+                      RpcMessage.ForgetDeviceRequest,
+                      new ForgetDeviceRequestT(hardwareId)
+                    );
+                    navigate('/');
+                  }}
+                >
+                  <Typography
+                    variant="main-title"
+                    id="tracker-settings-forget-modal-title"
+                  />
+                  <Typography id="tracker-settings-forget-description" />
+                </ButtonConfirmModal>
+              </div>
+            )}
+          </div>
+          {tracker && (
+            <TrackerImuGraphs trackerId={tracker.tracker.trackerId} />
           )}
         </div>
       </div>

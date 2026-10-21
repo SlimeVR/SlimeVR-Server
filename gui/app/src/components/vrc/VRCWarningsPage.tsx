@@ -1,3 +1,4 @@
+import { defineSettingsPage } from '@/components/settings/settings-definitions';
 import { Typography } from '@/components/commons/Typography';
 import { ReactNode } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
@@ -8,15 +9,12 @@ import {
   useVRCConfig,
   VRCConfigStateSupported,
 } from '@/hooks/vrc-config';
-import { Localized, useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import classNames from 'classnames';
 import { useLocaleConfig } from '@/i18n/config';
 import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
-import {
-  SettingsPageLayout,
-  SettingsPagePaneLayout,
-} from '@/components/settings/SettingsPageLayout';
+import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 
 function SettingRow({
   name,
@@ -110,6 +108,13 @@ function Table({ children }: { children: ReactNode }) {
 const onOffKey = (value: boolean) =>
   value ? 'vrc_config-on' : 'vrc_config-off';
 
+export const vrcWarningsSettingsPage = defineSettingsPage({
+  path: 'vrc-warnings',
+  title: 'settings-sidebar-vrc_warnings',
+  available: ({ isVrcSupported }) => isVrcSupported,
+  groups: {},
+});
+
 export function VRCWarningsPage() {
   const { state, toggleMutedSettings } = useVRCConfig();
   const { currentLocales } = useLocaleConfig();
@@ -131,138 +136,119 @@ export function VRCWarningsPage() {
   });
 
   return (
-    <SettingsPageLayout>
-      <SettingsPagePaneLayout
-        icon={<WarningIcon />}
-        id="vrc-warnings"
-        className="w-full min-w-fit"
-      >
-        <div className="flex flex-col gap-3">
-          <Typography variant="main-title" id={'vrc_config-page-title'} />
-          <Typography variant="standard" id={'vrc_config-page-desc'} />
-        </div>
-        <div className="w-full mt-4 gap-2 flex flex-col">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Typography
-                variant="section-title"
-                id="vrc_config-page-big_menu"
+    <SettingsPagePaneLayout
+      icon={<WarningIcon />}
+      title={vrcWarningsSettingsPage.title}
+      className="w-full min-w-fit"
+    >
+      <div className="flex flex-col gap-3">
+        <Typography variant="standard" id={'vrc_config-page-desc'} />
+      </div>
+      <div className="w-full mt-4 gap-2 flex flex-col">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Typography variant="section-title" />
+            <Typography id="vrc_config-page-big_menu-desc" />
+            <Table>
+              <SettingRow
+                {...settingRowProps('userHeightOk')}
+                name="vrc_config-user_height"
+                recommendedValue={meterFormat.format(
+                  state.recommended.userHeight
+                )}
+                value={meterFormat.format(state.state.userHeight)}
               />
-              <Typography id="vrc_config-page-big_menu-desc" />
-              <Table>
-                <SettingRow
-                  {...settingRowProps('userHeightOk')}
-                  name="vrc_config-user_height"
-                  recommendedValue={meterFormat.format(
-                    state.recommended.userHeight
-                  )}
-                  value={meterFormat.format(state.state.userHeight)}
-                />
-                <SettingRow
-                  {...settingRowProps('legacyModeOk')}
-                  name="vrc_config-legacy_mode"
-                  recommendedValue={
-                    <Localized id={onOffKey(state.recommended.legacyMode)} />
-                  }
-                  value={<Localized id={onOffKey(state.state.legacyMode)} />}
-                />
-                <SettingRow
-                  {...settingRowProps('shoulderTrackingOk')}
-                  name="vrc_config-disable_shoulder_tracking"
-                  recommendedValue={
-                    <Localized
-                      id={onOffKey(state.recommended.shoulderTrackingDisabled)}
-                    />
-                  }
-                  value={
-                    <Localized
-                      id={onOffKey(state.state.shoulderTrackingDisabled)}
-                    />
-                  }
-                />
-                <SettingRow
-                  {...settingRowProps('calibrationVisualsOk')}
-                  name="vrc_config-calibration_visuals"
-                  recommendedValue={
-                    <Localized
-                      id={onOffKey(state.recommended.calibrationVisuals)}
-                    />
-                  }
-                  value={
-                    <Localized id={onOffKey(state.state.calibrationVisuals)} />
-                  }
-                />
-                <SettingRow
-                  {...settingRowProps('calibrationRangeOk')}
-                  name="vrc_config-calibration_range"
-                  recommendedValue={meterFormat.format(
-                    state.recommended.calibrationRange
-                  )}
-                  value={meterFormat.format(state.state.calibrationRange)}
-                />
-                <SettingRow
-                  {...settingRowProps('trackerModelOk')}
-                  name="vrc_config-tracker_model"
-                  recommendedValue={
-                    <Localized
-                      id={
-                        trackerModelTranslationMap[
-                          state.recommended.trackerModel
-                        ]
-                      }
-                    />
-                  }
-                  value={
-                    <Localized
-                      id={trackerModelTranslationMap[state.state.trackerModel]}
-                    />
-                  }
-                />
-              </Table>
-            </div>
-            <div className="flex flex-col gap-2">
-              <Typography
-                id="vrc_config-page-wrist_menu"
-                variant="section-title"
+              <SettingRow
+                {...settingRowProps('legacyModeOk')}
+                name="vrc_config-legacy_mode"
+                recommendedValue={
+                  <Localized id={onOffKey(state.recommended.legacyMode)} />
+                }
+                value={<Localized id={onOffKey(state.state.legacyMode)} />}
               />
-              <Typography id="vrc_config-page-wrist_menu-desc" />
-              <Table>
-                <SettingRow
-                  {...settingRowProps('avatarMeasurementTypeOk')}
-                  name="vrc_config-avatar_measurement_type"
-                  recommendedValue={
-                    <Localized
-                      id={
-                        avatarMeasurementTypeTranslationMap[
-                          state.recommended.avatarMeasurementType
-                        ]
-                      }
-                    />
-                  }
-                  value={
-                    <Localized
-                      id={
-                        avatarMeasurementTypeTranslationMap[
-                          state.state.avatarMeasurementType
-                        ]
-                      }
-                    />
-                  }
-                />
-              </Table>
-            </div>
+              <SettingRow
+                {...settingRowProps('shoulderTrackingOk')}
+                name="vrc_config-disable_shoulder_tracking"
+                recommendedValue={
+                  <Localized
+                    id={onOffKey(state.recommended.shoulderTrackingDisabled)}
+                  />
+                }
+                value={
+                  <Localized
+                    id={onOffKey(state.state.shoulderTrackingDisabled)}
+                  />
+                }
+              />
+              <SettingRow
+                {...settingRowProps('calibrationVisualsOk')}
+                name="vrc_config-calibration_visuals"
+                recommendedValue={
+                  <Localized
+                    id={onOffKey(state.recommended.calibrationVisuals)}
+                  />
+                }
+                value={
+                  <Localized id={onOffKey(state.state.calibrationVisuals)} />
+                }
+              />
+              <SettingRow
+                {...settingRowProps('trackerModelOk')}
+                name="vrc_config-tracker_model"
+                recommendedValue={
+                  <Localized
+                    id={
+                      trackerModelTranslationMap[state.recommended.trackerModel]
+                    }
+                  />
+                }
+                value={
+                  <Localized
+                    id={trackerModelTranslationMap[state.state.trackerModel]}
+                  />
+                }
+              />
+            </Table>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Typography variant="section-title" />
+            <Typography id="vrc_config-page-wrist_menu-desc" />
+            <Table>
+              <SettingRow
+                {...settingRowProps('avatarMeasurementTypeOk')}
+                name="vrc_config-avatar_measurement_type"
+                recommendedValue={
+                  <Localized
+                    id={
+                      avatarMeasurementTypeTranslationMap[
+                        state.recommended.avatarMeasurementType
+                      ]
+                    }
+                  />
+                }
+                value={
+                  <Localized
+                    id={
+                      avatarMeasurementTypeTranslationMap[
+                        state.state.avatarMeasurementType
+                      ]
+                    }
+                  />
+                }
+              />
+            </Table>
           </div>
         </div>
-        <div className="flex flex-col gap-2 mt-4">
-          <Typography variant="section-title" id={'vrc_config-page-help'} />
-          <Typography
-            id={'vrc_config-page-help-desc'}
-            elems={{
-              a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html" />,
-            }}
-          />
-        </div>
-      </SettingsPagePaneLayout>
-    </SettingsPageLayout>
+      </div>
+      <div className="flex flex-col gap-2 mt-4">
+        <Typography variant="section-title" id={'vrc_config-page-help'} />
+        <Typography
+          id={'vrc_config-page-help-desc'}
+          elems={{
+            a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html" />,
+          }}
+        />
+      </div>
+    </SettingsPagePaneLayout>
   );
 }

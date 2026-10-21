@@ -49,8 +49,8 @@ export function AddTrackersPage() {
   return (
     <div className="flex flex-col w-full h-full justify-center items-center p-6 overflow-y-auto">
       <div className="grid gap-6 max-w-5xl w-full md:grid-cols-2 items-stretch">
-        <DongleSectionContent />
         <WifiSectionCard />
+        <DongleSectionContent />
       </div>
     </div>
   );

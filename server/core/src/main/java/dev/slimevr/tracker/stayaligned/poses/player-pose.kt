@@ -4,17 +4,19 @@ import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getAllActiveFor
 import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts
+import solarxr_protocol.rpc.StayAlignedRelaxedPose
 
 /**
- * The pose of the player.
+ * The pose of the player, with the relaxed pose the user records for it. Sitting on the ground and
+ * lying on the back share one.
  */
-enum class PlayerPose {
-	UNKNOWN,
-	STANDING,
-	SITTING_IN_CHAIR,
-	SITTING_ON_GROUND,
-	LYING_ON_BACK,
-	KNEELING,
+enum class PlayerPose(val relaxedPose: StayAlignedRelaxedPose) {
+	UNKNOWN(StayAlignedRelaxedPose.UNKNOWN),
+	STANDING(StayAlignedRelaxedPose.STANDING),
+	SITTING_IN_CHAIR(StayAlignedRelaxedPose.SITTING),
+	SITTING_ON_GROUND(StayAlignedRelaxedPose.FLAT),
+	LYING_ON_BACK(StayAlignedRelaxedPose.FLAT),
+	KNEELING(StayAlignedRelaxedPose.KNEELING),
 	;
 
 	companion object {

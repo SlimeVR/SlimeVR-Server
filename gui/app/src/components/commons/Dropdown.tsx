@@ -67,6 +67,7 @@ type DropdownProps = {
   error?: FieldError;
   loading?: boolean;
   renderValue?: () => ReactNode;
+  menuWidth?: string;
 };
 
 type DropdownSingleSelection = {
@@ -181,6 +182,7 @@ type DropdownListProps = {
   innerFocusValue: string | null;
   focusedAction: DropdownAction | null;
   anchorName: string;
+  menuWidth?: string;
 } & Pick<
   Required<DropdownProps>,
   | 'display'
@@ -210,6 +212,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
     maxHeight,
     name,
     anchorName,
+    menuWidth,
   },
   ref
 ) {
@@ -221,7 +224,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   };
 
   const columnArea =
-    display === 'block'
+    display === 'block' && !menuWidth
       ? 'center'
       : alignment === 'left'
         ? 'span-right'
@@ -245,7 +248,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
         'dropdown-popover fixed inset-auto m-0 border-0 p-0 rounded overflow-hidden flex-col',
         direction === 'up' ? 'mb-3' : 'mt-3',
         variantStyles[variant],
-        display === 'block' ? 'w-full' : 'w-fit'
+        menuWidth ?? (display === 'block' ? 'w-full' : 'w-fit')
       )}
       style={
         {
@@ -333,6 +336,7 @@ export function DropdownInside(
     error,
     loading,
     renderValue,
+    menuWidth,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -559,11 +563,7 @@ export function DropdownInside(
             {getShownValue()}
           </span>
           <div className="fill-background-10 pointer-events-none absolute inset-y-0 right-5 flex items-center">
-            {direction === 'up' ? (
-              <ArrowUpIcon size={16} />
-            ) : (
-              <ArrowDownIcon size={16} />
-            )}
+            {isOpen ? <ArrowUpIcon size={16} /> : <ArrowDownIcon size={16} />}
           </div>
           {loading && (
             <div className="absolute left-0 right-0 bottom-0">
@@ -578,6 +578,7 @@ export function DropdownInside(
           alignment={alignment}
           direction={direction}
           display={display}
+          menuWidth={menuWidth}
           isOpen={isOpen}
           items={items}
           multiple={props.multiple}

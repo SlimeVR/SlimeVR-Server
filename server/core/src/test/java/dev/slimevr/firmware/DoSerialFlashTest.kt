@@ -1,16 +1,18 @@
 package dev.slimevr.firmware
 
 import dev.slimevr.FakeSerialPortWatcher
+import dev.slimevr.FakeUdpSocket
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestAppContext
+import dev.slimevr.buildTestDevicesConfig
 import dev.slimevr.buildTestSerial
-import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortInfo
+import dev.slimevr.udp.UdpPeer
 import dev.slimevr.udp.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,7 +74,7 @@ class DoSerialFlashTest {
 			ssid = null,
 			password = null,
 			serialServer = serial.server,
-			settings = buildTestSettings(backgroundScope),
+			devices = buildTestDevicesConfig(backgroundScope),
 			server = vrServer,
 			flasher = failingFirmwareFlasher,
 			onStatus = { s, _ -> statuses += s },
@@ -96,7 +98,7 @@ class DoSerialFlashTest {
 			ssid = null,
 			password = null,
 			serialServer = serial.server,
-			settings = buildTestSettings(backgroundScope),
+			devices = buildTestDevicesConfig(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
 			flasher = failingFirmwareFlasher,
 			onStatus = { s, _ -> statuses += s },
@@ -120,7 +122,7 @@ class DoSerialFlashTest {
 			ssid = null,
 			password = null,
 			serialServer = serial.server,
-			settings = buildTestSettings(backgroundScope),
+			devices = buildTestDevicesConfig(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
 			flasher = failingFirmwareFlasher,
 			onStatus = { s, _ -> statuses += s },
@@ -144,7 +146,7 @@ class DoSerialFlashTest {
 			ssid = "wifi",
 			password = "pass",
 			serialServer = serial.server,
-			settings = buildTestSettings(backgroundScope),
+			devices = buildTestDevicesConfig(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
 			onStatus = { s, _ -> statuses += s },
 		)
@@ -167,7 +169,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = serial.server,
-				settings = buildTestSettings(backgroundScope),
+				devices = buildTestDevicesConfig(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
@@ -194,7 +196,7 @@ class DoSerialFlashTest {
 				ssid = null,
 				password = null,
 				serialServer = serial.server,
-				settings = buildTestSettings(backgroundScope),
+				devices = buildTestDevicesConfig(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
@@ -225,7 +227,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = serial.server,
-				settings = buildTestSettings(backgroundScope),
+				devices = buildTestDevicesConfig(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
@@ -258,7 +260,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = serial.server,
-				settings = buildTestSettings(backgroundScope),
+				devices = buildTestDevicesConfig(backgroundScope),
 				server = buildTestVrServerStub(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
@@ -294,7 +296,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = serial.server,
-				settings = buildTestSettings(backgroundScope),
+				devices = buildTestDevicesConfig(backgroundScope),
 				server = vrServer,
 				onStatus = { s, _ -> statuses += s },
 			)
@@ -341,8 +343,8 @@ class DoSerialFlashTest {
 				appContext = appContext,
 				packetEvents = dev.slimevr.EventDispatcher(name = "TestEvents", scope = backgroundScope),
 				packetChannel = kotlinx.coroutines.channels.Channel(),
-				socket = dev.slimevr.FakeDatagramSocket(),
-				remoteAddress = io.ktor.network.sockets.InetSocketAddress("192.168.1.100", 6969),
+				socket = FakeUdpSocket(),
+				peer = UdpPeer(address = "192.168.1.100", host = "192.168.1.100", port = 6969),
 				scope = backgroundScope,
 			)
 			appContext.udpServer.addConnection("192.168.1.100", conn)

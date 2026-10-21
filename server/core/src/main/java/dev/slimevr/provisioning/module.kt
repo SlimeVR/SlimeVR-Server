@@ -2,7 +2,7 @@ package dev.slimevr.provisioning
 
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
+import dev.slimevr.config.DevicesConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialServer
@@ -60,7 +60,7 @@ typealias ProvisioningManagerBehaviour = Behaviour<ProvisioningManager>
 data class ProvisioningManager(
 	val context: ProvisioningManagerContext,
 	private val serialServer: SerialServer,
-	private val settings: Settings,
+	private val devices: DevicesConfig,
 	private val scope: CoroutineScope,
 ) {
 	fun startObserving() = context.observeAll(this)
@@ -100,7 +100,7 @@ data class ProvisioningManager(
 							startedPorts += portLocation
 							trackerJobs[portLocation] = launch {
 								try {
-									runProvisioningForPort(context, server, settings, serialServer, portLocation, ssid, password)
+									runProvisioningForPort(context, server, devices, serialServer, portLocation, ssid, password)
 								} catch (e: CancellationException) {
 									throw e
 								} catch (e: Exception) {
@@ -188,7 +188,7 @@ data class ProvisioningManager(
 			return ProvisioningManager(
 				context = context,
 				serialServer = ctx.serialServer,
-				settings = ctx.config.settings,
+				devices = ctx.config.devices,
 				scope = scope,
 			)
 		}
