@@ -38,43 +38,43 @@ private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
 // Order matters! Missing elements of the inner arrays will be skipped gracefully.
 private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to arrayOf(
-		SpineSource.UPPER_CHEST to Reliability(-7f, -20f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-11.5f, -20f), // Itself
 		// To
-		SpineSource.LOWER_CHEST to Reliability(-6f, -15f),
-		SpineSource.UPPER_WAIST to Reliability(1.5f, 4f,),
-		SpineSource.LOWER_WAIST to Reliability(2f, 5f),
-		SpineSource.HIP to Reliability(4f, 6f, 0.25f),
+		SpineSource.LOWER_CHEST to Reliability(-6f, -15f, 0f),
+		SpineSource.UPPER_WAIST to Reliability(1.5f, 4f, 0.4f),
+		SpineSource.LOWER_WAIST to Reliability(2f, 5f, 0.4f),
+		SpineSource.HIP to Reliability(4f, 6.25f, 0.3f),
 		SpineSource.UPPER_LEGS to Reliability(4f, 5f),
 	),
 	SpineSource.LOWER_CHEST to arrayOf(
 		// From
-		SpineSource.UPPER_CHEST to Reliability(-10f, 40f),
-		SpineSource.LOWER_CHEST to Reliability(-11f, 42f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-18f, 40f),
+		SpineSource.LOWER_CHEST to Reliability(30f), // Itself
 		// To
-		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f),
-		SpineSource.LOWER_WAIST to Reliability(2f, 8f),
-		SpineSource.HIP to Reliability(4f, 7f, 0.33f),
+		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f,0.4f),
+		SpineSource.LOWER_WAIST to Reliability(2f, 8f, 0.4f),
+		SpineSource.HIP to Reliability(4f, 7.25f, 0.3f),
 		SpineSource.UPPER_LEGS to Reliability(4f, 6f),
 	),
 	SpineSource.UPPER_WAIST to arrayOf(
 		// From
-		SpineSource.UPPER_CHEST to Reliability(11f),
+		SpineSource.UPPER_CHEST to Reliability(10.5f),
 		SpineSource.LOWER_CHEST to Reliability(11.5f),
-		SpineSource.UPPER_WAIST to Reliability(50f), // Itself
+		SpineSource.UPPER_WAIST to Reliability(40f), // Itself
 		// To
-		SpineSource.LOWER_WAIST to Reliability(17f, 20f),
-		SpineSource.HIP to Reliability(5.5f, 13f, 0.85f),
-		SpineSource.UPPER_LEGS to Reliability(0.25f, 11f),
+		SpineSource.LOWER_WAIST to Reliability(16f, 18f, 0.85f),
+		SpineSource.HIP to Reliability(4.5f, 13.5f, 0.85f),
+		SpineSource.UPPER_LEGS to Reliability(0.25f, 12f),
 	),
 	SpineSource.LOWER_WAIST to arrayOf(
 		// From
 		SpineSource.UPPER_CHEST to Reliability(6f),
-		SpineSource.LOWER_CHEST to Reliability(6.5f),
-		SpineSource.UPPER_WAIST to Reliability(15f),
-		SpineSource.LOWER_WAIST to Reliability(44f), // Itself
+		SpineSource.LOWER_CHEST to Reliability(6.75f),
+		SpineSource.UPPER_WAIST to Reliability(25f),
+		SpineSource.LOWER_WAIST to Reliability(38f), // Itself
 		// To
-		SpineSource.HIP to Reliability(10f, 14f, 0.9f),
-		SpineSource.UPPER_LEGS to Reliability(1.75f, 12f),
+		SpineSource.HIP to Reliability(5.25f, 13f, 0.85f),
+		SpineSource.UPPER_LEGS to Reliability(1.75f, 11f),
 	),
 	SpineSource.HIP to arrayOf(
 		// From
@@ -82,9 +82,9 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.LOWER_CHEST to Reliability(9.75f, 9.25f),
 		SpineSource.UPPER_WAIST to Reliability(13f, 20f),
 		SpineSource.LOWER_WAIST to Reliability(14f, 30f),
-		SpineSource.HIP to Reliability(38f, 60f), // Itself
+		SpineSource.HIP to Reliability(38f, 60f, 0.9f), // Itself
 		// To
-		SpineSource.UPPER_LEGS to Reliability(7f, 22f),
+		SpineSource.UPPER_LEGS to Reliability(7f, 17f),
 	),
 )
 private val SPINE_SOURCE_RELIABILITY_INDEXED = SPINE_SOURCE_RELIABILITY.withIndex()
