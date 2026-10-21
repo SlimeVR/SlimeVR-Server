@@ -20,7 +20,7 @@ export function SettingResetButton({ modified, onReset }: SettingResetProps) {
         'w-7 h-7 rounded-xl flex items-center justify-center transition-colors',
         modified
           ? 'text-accent hover:bg-background-60 cursor-pointer'
-          : 'text-background-40 cursor-not-allowed'
+          : 'text-background-50 cursor-not-allowed'
       )}
     >
       <ResetIcon size={16} />

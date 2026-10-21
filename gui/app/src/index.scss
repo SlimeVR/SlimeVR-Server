@@ -122,17 +122,17 @@ body {
 }
 
 :root[data-theme='trans'] {
-  --background-10: 89, 39, 50;
+  --background-10: 73, 36, 48;
   --background-20: 26, 102, 130;
   --background-30: 9, 84, 112;
   --background-40: 77, 155, 184;
-  --background-50: 238, 238, 238;
-  --background-60: 255, 255, 255;
+  --background-50: 238, 233, 238;
+  --background-60: 253, 249, 253;
   --background-70: 240, 165, 180;
   --background-80: 88, 200, 245;
   --background-90: 0, 2, 4;
 
-  --accent-background-10: 143, 46, 65;
+  --accent-background-10: 98, 46, 68;
   --accent-background-20: 255, 209, 218;
   --accent-background-30: 255, 148, 169;
   --accent-background-40: 255, 189, 202;
@@ -258,34 +258,34 @@ body {
   --background-40: 93, 93, 93;
   --background-50: 57, 57, 57;
   --background-60: 41, 41, 41;
-  --background-70: 27, 27, 27;
-  --background-80: 12, 12, 12;
+  --background-70: 26, 26, 26;
+  --background-80: 11, 11, 11;
   --background-90: 4, 4, 4;
 
   --accent-background-10: 158, 158, 158;
   --accent-background-20: 121, 121, 121;
   --accent-background-30: 85, 85, 85;
   --accent-background-40: 76, 76, 76;
-  --accent-background-50: 38, 38, 38;
+  --accent-background-50: 37, 37, 37;
 
-  --success: 80, 232, 151;
+  --success: 77, 227, 147;
   --warning: 255, 225, 53;
   --critical: 223, 109, 140;
-  --special: 121, 121, 121;
+  --special: 122, 122, 122;
   --window-icon-stroke: 172, 172, 172;
 
   --default-color: 255, 255, 255;
 }
 
 :root[data-theme='light'] {
-  --background-10: 0, 0, 0;
+  --background-10: 10, 10, 10;
   --background-20: 70, 70, 70;
   --background-30: 80, 80, 80;
   --background-40: 140, 140, 140;
   --background-50: 197, 197, 197;
   --background-60: 213, 213, 213;
-  --background-70: 227, 227, 227;
-  --background-80: 242, 242, 242;
+  --background-70: 226, 226, 226;
+  --background-80: 240, 240, 240;
   --background-90: 251, 251, 251;
 
   --accent-background-10: 67, 46, 77;
@@ -356,25 +356,25 @@ body {
 
 :root[data-theme='fox'] {
   --background-10: 255, 255, 255;
-  --background-20: 230, 230, 230;
-  --background-30: 200, 200, 200;
-  --background-40: 118, 118, 118;
-  --background-50: 62, 62, 62;
-  --background-60: 45, 45, 45;
-  --background-70: 28, 28, 28;
-  --background-80: 13, 13, 13;
+  --background-20: 230, 228, 228;
+  --background-30: 199, 197, 197;
+  --background-40: 115, 111, 111;
+  --background-50: 61, 59, 59;
+  --background-60: 46, 44, 44;
+  --background-70: 28, 27, 27;
+  --background-80: 13, 12, 12;
   --background-90: 4, 4, 4;
 
   --accent-background-10: 237, 104, 21;
   --accent-background-20: 205, 79, 0;
   --accent-background-30: 166, 64, 0;
-  --accent-background-40: 97, 40, 5;
-  --accent-background-50: 50, 23, 5;
+  --accent-background-40: 97, 36, 6;
+  --accent-background-50: 51, 24, 6;
 
   --success: 100, 230, 10;
   --warning: 240, 190, 50;
   --critical: 220, 40, 110;
-  --special: 230, 90, 34;
+  --special: 227, 89, 34;
   --window-icon-stroke: 205, 81, 0;
 
   --default-color: 255, 255, 255;
