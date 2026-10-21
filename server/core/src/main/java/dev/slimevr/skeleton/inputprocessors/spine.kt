@@ -51,7 +51,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_CHEST to Reliability(-18f, 40f),
 		SpineSource.LOWER_CHEST to Reliability(30f), // Itself
 		// To
-		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f,0.4f),
+		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f, 0.4f),
 		SpineSource.LOWER_WAIST to Reliability(2f, 8f, 0.4f),
 		SpineSource.HIP to Reliability(4f, 7.25f, 0.3f),
 		SpineSource.UPPER_LEGS to Reliability(4f, 6f),
