@@ -1,6 +1,6 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { CHECKBOX_CLASSES } from '../commons/Checkbox';
+import { CHECKBOX_CLASSES } from '@/components/commons/Checkbox';
 import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
