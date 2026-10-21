@@ -36,36 +36,35 @@ private val SPINE_SOURCES = enumEntries<SpineSource>().toTypedArray()
 // A negative value will go towards the opposite rotation.
 // A From and To may be taken from different roots.
 // Order matters! Missing elements of the inner arrays will be skipped gracefully.
-// TODO mess with proportion!
 private val SPINE_SOURCE_RELIABILITY = arrayOf(
 	SpineSource.UPPER_CHEST to arrayOf(
-		SpineSource.UPPER_CHEST to Reliability(-6.5f, -24f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-7f, -20f), // Itself
 		// To
-		SpineSource.LOWER_CHEST to Reliability(1f),
-		SpineSource.UPPER_WAIST to Reliability(1.5f),
-		SpineSource.LOWER_WAIST to Reliability(2f),
-		SpineSource.HIP to Reliability(4f, null, 1f),
-		SpineSource.UPPER_LEGS to Reliability(3.25f, 3.75f),
+		SpineSource.LOWER_CHEST to Reliability(-6f, -15f),
+		SpineSource.UPPER_WAIST to Reliability(1.5f, 4f,),
+		SpineSource.LOWER_WAIST to Reliability(2f, 5f),
+		SpineSource.HIP to Reliability(4f, 6f, 0.25f),
+		SpineSource.UPPER_LEGS to Reliability(4f, 5f),
 	),
 	SpineSource.LOWER_CHEST to arrayOf(
 		// From
-		SpineSource.UPPER_CHEST to Reliability(-10f, -42f),
-		SpineSource.LOWER_CHEST to Reliability(-11f, -45f), // Itself
+		SpineSource.UPPER_CHEST to Reliability(-10f, 40f),
+		SpineSource.LOWER_CHEST to Reliability(-11f, 42f), // Itself
 		// To
 		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f),
-		SpineSource.LOWER_WAIST to Reliability(2f, 7f),
-		SpineSource.HIP to Reliability(4f, null, 1f),
-		SpineSource.UPPER_LEGS to Reliability(3.25f, 3.75f),
+		SpineSource.LOWER_WAIST to Reliability(2f, 8f),
+		SpineSource.HIP to Reliability(4f, 7f, 0.33f),
+		SpineSource.UPPER_LEGS to Reliability(4f, 6f),
 	),
 	SpineSource.UPPER_WAIST to arrayOf(
 		// From
 		SpineSource.UPPER_CHEST to Reliability(11f),
 		SpineSource.LOWER_CHEST to Reliability(11.5f),
-		SpineSource.UPPER_WAIST to Reliability(60f), // Itself
+		SpineSource.UPPER_WAIST to Reliability(50f), // Itself
 		// To
 		SpineSource.LOWER_WAIST to Reliability(17f, 20f),
-		SpineSource.HIP to Reliability(5.5f, 8f, 1f),
-		SpineSource.UPPER_LEGS to Reliability(0.25f, 4.25f),
+		SpineSource.HIP to Reliability(5.5f, 13f, 0.85f),
+		SpineSource.UPPER_LEGS to Reliability(0.25f, 11f),
 	),
 	SpineSource.LOWER_WAIST to arrayOf(
 		// From
@@ -74,8 +73,8 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_WAIST to Reliability(15f),
 		SpineSource.LOWER_WAIST to Reliability(44f), // Itself
 		// To
-		SpineSource.HIP to Reliability(10f, 12f, 1f),
-		SpineSource.UPPER_LEGS to Reliability(1.75f, 10f),
+		SpineSource.HIP to Reliability(10f, 14f, 0.9f),
+		SpineSource.UPPER_LEGS to Reliability(1.75f, 12f),
 	),
 	SpineSource.HIP to arrayOf(
 		// From
@@ -83,7 +82,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.LOWER_CHEST to Reliability(9.75f, 9.25f),
 		SpineSource.UPPER_WAIST to Reliability(13f, 20f),
 		SpineSource.LOWER_WAIST to Reliability(14f, 30f),
-		SpineSource.HIP to Reliability(32f, 56f), // Itself
+		SpineSource.HIP to Reliability(38f, 60f), // Itself
 		// To
 		SpineSource.UPPER_LEGS to Reliability(7f, 22f),
 	),
@@ -144,7 +143,7 @@ private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<B
 
 private fun weightedAverageRotation(sources: List<SpineSource>, reliabilities: Map<SpineSource, Reliability>, boneInputs: InputSkeleton): Quaternion {
 	var accProportion = 0f
-	return sources.foldIndexed(Quaternion.IDENTITY) { i, acc, fromSource ->
+	return sources.foldIndexed(Quaternion.ZERO) { i, acc, fromSource ->
 		val rotation = averageRotation(boneInputs, fromSource.parts)
 		if (rotation != null) {
 			val proportion = if (i + 1 == sources.count()) {
@@ -155,11 +154,11 @@ private fun weightedAverageRotation(sources: List<SpineSource>, reliabilities: M
 			}
 			accProportion += proportion
 
-			acc * rotation.pow(proportion)
+			acc + (rotation * proportion)
 		} else {
 			acc
 		}
-	}
+	}.unit()
 }
 
 private fun weightedAverageReliability(sources: List<SpineSource>, reliabilities: Map<SpineSource, Reliability>): Pair<Float, Float?> {
@@ -209,7 +208,7 @@ private fun interpolateRatio(fromUpperToLower: Float, curvature: Float, fromReli
 /**
  * Interpolates between 2 rotations with a different ratio for forward and the rest/side.
  */
-fun interpolateForwardSide(fromRotation: Quaternion, toRotation: Quaternion, forwardRatio: Float, sideRatio: Float?): Quaternion {
+private fun interpolateForwardSide(fromRotation: Quaternion, toRotation: Quaternion, forwardRatio: Float, sideRatio: Float?): Quaternion {
 	if (sideRatio == null) return fromRotation.interpQ(toRotation, forwardRatio)
 
 	// Work with the rotation delta to avoid axes being ambiguous
