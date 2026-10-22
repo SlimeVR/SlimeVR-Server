@@ -136,12 +136,11 @@ export function AppearanceSettings() {
 
   const themes = [
     { value: 'slime', colors: '!bg-slime' },
-    { value: 'slime-green', colors: '!bg-slime-green' },
-    { value: 'slime-yellow', colors: '!bg-slime-yellow' },
-    { value: 'slime-orange', colors: '!bg-slime-orange' },
-    { value: 'slime-red', colors: '!bg-slime-red' },
-    { value: 'dark', colors: '!bg-dark' },
+    { value: 'space', colors: '!bg-space' },
+    { value: 'midnight', colors: '!bg-midnight' },
     { value: 'light', colors: '!bg-light' },
+    { value: 'fire', colors: '!bg-fire' },
+    { value: 'citrus', colors: '!bg-citrus' },
     { value: 'trans', colors: '!bg-trans-flag' },
     { value: 'asexual', colors: '!bg-asexual-flag' },
     { value: 'snep', colors: '!bg-snep' },

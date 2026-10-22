@@ -121,6 +121,135 @@ body {
   --font-name: 'poppins';
 }
 
+:root[data-theme='space'] {
+  --background-10: 255, 255, 255;
+  --background-20: 154, 149, 158;
+  --background-30: 129, 125, 133;
+  --background-40: 89, 86, 92;
+  --background-50: 54, 52, 56;
+  --background-60: 40, 38, 41;
+  --background-70: 25, 24, 26;
+  --background-80: 10, 10, 10;
+  --background-90: 4, 4, 4;
+
+  --accent-background-10: 187, 138, 229;
+  --accent-background-20: 157, 92, 212;
+  --accent-background-30: 101, 69, 154;
+  --accent-background-40: 98, 59, 131;
+  --accent-background-50: 46, 33, 69;
+
+  --success: 80, 232, 151;
+  --warning: 255, 225, 53;
+  --critical: 223, 109, 140;
+  --special: 164, 79, 237;
+  --window-icon-stroke: 192, 161, 216;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='midnight'] {
+  --background-10: 255, 255, 255;
+  --background-20: 153, 153, 153;
+  --background-30: 128, 128, 128;
+  --background-40: 90, 90, 90;
+  --background-50: 55, 55, 55;
+  --background-60: 38, 38, 38;
+  --background-70: 21, 21, 21;
+  --background-80: 7, 7, 7;
+  --background-90: 0, 0, 0;
+
+  --accent-background-10: 155, 155, 155;
+  --accent-background-20: 118, 118, 118;
+  --accent-background-30: 78, 78, 78;
+  --accent-background-40: 74, 74, 74;
+  --accent-background-50: 36, 36, 36;
+
+  --success: 77, 227, 147;
+  --warning: 255, 225, 53;
+  --critical: 223, 109, 140;
+  --special: 125, 125, 125;
+  --window-icon-stroke: 172, 172, 172;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='light'] {
+  --background-10: 13, 13, 13;
+  --background-20: 71, 71, 71;
+  --background-30: 82, 82, 82;
+  --background-40: 155, 155, 155;
+  --background-50: 208, 208, 208;
+  --background-60: 255, 255, 255;
+  --background-70: 244, 244, 244;
+  --background-80: 233, 233, 233;
+  --background-90: 1, 251, 251;
+
+  --accent-background-10: 67, 46, 77;
+  --accent-background-20: 144, 86, 191;
+  --accent-background-30: 176, 117, 235;
+  --accent-background-40: 191, 114, 242;
+  --accent-background-50: 213, 166, 255;
+
+  --success: 0, 128, 55;
+  --warning: 140, 110, 0;
+  --critical: 100, 4, 33;
+  --special: 164, 79, 237;
+  --window-icon-stroke: 83, 83, 83;
+  --default-color: 0, 0, 0;
+}
+
+:root[data-theme='fire'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 107, 107;
+  --background-30: 193, 68, 68;
+  --background-40: 139, 46, 46;
+  --background-50: 82, 27, 27;
+  --background-60: 60, 20, 20;
+  --background-70: 39, 13, 13;
+  --background-80: 20, 7, 7;
+  --background-90: 6, 2, 2;
+
+  --accent-background-10: 205, 143, 104;
+  --accent-background-20: 171, 101, 57;
+  --accent-background-30: 122, 72, 41;
+  --accent-background-40: 108, 64, 36;
+  --accent-background-50: 57, 34, 19;
+
+  --success: 69, 204, 132;
+  --warning: 255, 225, 53;
+  --critical: 223, 109, 140;
+  --special: 224, 116, 49;
+  --window-icon-stroke: 213, 129, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='citrus'] {
+  --background-10: 255, 255, 255;
+  --background-20: 113, 217, 113;
+  --background-30: 71, 204, 71;
+  --background-40: 55, 166, 58;
+  --background-50: 34, 102, 35;
+  --background-60: 25, 77, 25;
+  --background-70: 16, 46, 16;
+  --background-80: 7, 20, 7;
+  --background-90: 2, 6, 2;
+
+  --accent-background-10: 204, 199, 102;
+  --accent-background-20: 179, 173, 62;
+  --accent-background-30: 128, 122, 45;
+  --accent-background-40: 117, 113, 41;
+  --accent-background-50: 59, 57, 21;
+
+  --success: 80, 232, 151;
+  --warning: 255, 225, 53;
+  --critical: 223, 109, 140;
+  --special: 222, 221, 155;
+  --window-icon-stroke: 129, 213, 130;
+
+  --default-color: 255, 255, 255;
+}
+
 :root[data-theme='trans'] {
   --background-10: 73, 36, 48;
   --background-20: 26, 102, 130;
@@ -141,165 +270,10 @@ body {
   --success: 0, 173, 72;
   --warning: 240, 196, 50;
   --critical: 223, 109, 140;
-  --special: 175, 57, 230;
+  --special: 167, 61, 217;
   --window-icon-stroke: 28, 154, 201;
 
   --default-color: 29, 29, 29;
-}
-
-:root[data-theme='slime-green'] {
-  --background-10: 255, 255, 255;
-  --background-20: 107, 206, 107;
-  --background-30: 68, 193, 69;
-  --background-40: 46, 139, 49;
-  --background-50: 27, 82, 28;
-  --background-60: 20, 60, 20;
-  --background-70: 13, 39, 13;
-  --background-80: 7, 20, 7;
-  --background-90: 2, 6, 2;
-
-  --accent-background-10: 104, 205, 105;
-  --accent-background-20: 57, 171, 58;
-  --accent-background-30: 41, 122, 41;
-  --accent-background-40: 36, 108, 36;
-  --accent-background-50: 19, 57, 19;
-
-  --success: 80, 232, 151;
-  --warning: 255, 225, 53;
-  --critical: 223, 109, 140;
-  --special: 54, 161, 54;
-  --window-icon-stroke: 129, 213, 130;
-
-  --default-color: 255, 255, 255;
-}
-
-:root[data-theme='slime-yellow'] {
-  --background-10: 255, 255, 255;
-  --background-20: 206, 204, 107;
-  --background-30: 193, 191, 68;
-  --background-40: 139, 137, 46;
-  --background-50: 82, 82, 27;
-  --background-60: 60, 60, 20;
-  --background-70: 39, 39, 13;
-  --background-80: 20, 20, 7;
-  --background-90: 6, 6, 2;
-
-  --accent-background-10: 205, 203, 104;
-  --accent-background-20: 171, 169, 57;
-  --accent-background-30: 122, 121, 41;
-  --accent-background-40: 108, 107, 36;
-  --accent-background-50: 57, 57, 19;
-
-  --success: 80, 232, 151;
-  --warning: 255, 225, 53;
-  --critical: 223, 109, 140;
-  --special: 161, 160, 54;
-  --window-icon-stroke: 213, 212, 129;
-
-  --default-color: 255, 255, 255;
-}
-
-:root[data-theme='slime-orange'] {
-  --background-10: 255, 255, 255;
-  --background-20: 206, 145, 107;
-  --background-30: 193, 116, 68;
-  --background-40: 139, 82, 46;
-  --background-50: 82, 49, 27;
-  --background-60: 60, 35, 20;
-  --background-70: 39, 23, 13;
-  --background-80: 20, 12, 7;
-  --background-90: 6, 4, 2;
-
-  --accent-background-10: 205, 143, 104;
-  --accent-background-20: 171, 101, 57;
-  --accent-background-30: 122, 72, 41;
-  --accent-background-40: 108, 64, 36;
-  --accent-background-50: 57, 34, 19;
-
-  --success: 80, 232, 151;
-  --warning: 255, 225, 53;
-  --critical: 223, 109, 140;
-  --special: 161, 95, 54;
-  --window-icon-stroke: 213, 162, 129;
-
-  --default-color: 255, 255, 255;
-}
-
-:root[data-theme='slime-red'] {
-  --background-10: 255, 255, 255;
-  --background-20: 206, 107, 107;
-  --background-30: 193, 68, 68;
-  --background-40: 139, 46, 46;
-  --background-50: 82, 27, 27;
-  --background-60: 60, 20, 20;
-  --background-70: 39, 13, 13;
-  --background-80: 20, 7, 7;
-  --background-90: 6, 2, 2;
-
-  --accent-background-10: 205, 104, 104;
-  --accent-background-20: 171, 57, 57;
-  --accent-background-30: 122, 41, 41;
-  --accent-background-40: 108, 36, 36;
-  --accent-background-50: 57, 19, 19;
-
-  --success: 80, 232, 151;
-  --warning: 255, 225, 53;
-  --critical: 223, 109, 140;
-  --special: 161, 54, 54;
-  --window-icon-stroke: 213, 129, 129;
-
-  --default-color: 255, 255, 255;
-}
-
-:root[data-theme='dark'] {
-  --background-10: 255, 255, 255;
-  --background-20: 157, 157, 157;
-  --background-30: 132, 132, 132;
-  --background-40: 93, 93, 93;
-  --background-50: 57, 57, 57;
-  --background-60: 41, 41, 41;
-  --background-70: 26, 26, 26;
-  --background-80: 11, 11, 11;
-  --background-90: 4, 4, 4;
-
-  --accent-background-10: 158, 158, 158;
-  --accent-background-20: 121, 121, 121;
-  --accent-background-30: 85, 85, 85;
-  --accent-background-40: 76, 76, 76;
-  --accent-background-50: 37, 37, 37;
-
-  --success: 77, 227, 147;
-  --warning: 255, 225, 53;
-  --critical: 223, 109, 140;
-  --special: 122, 122, 122;
-  --window-icon-stroke: 172, 172, 172;
-
-  --default-color: 255, 255, 255;
-}
-
-:root[data-theme='light'] {
-  --background-10: 10, 10, 10;
-  --background-20: 70, 70, 70;
-  --background-30: 80, 80, 80;
-  --background-40: 140, 140, 140;
-  --background-50: 197, 197, 197;
-  --background-60: 213, 213, 213;
-  --background-70: 226, 226, 226;
-  --background-80: 240, 240, 240;
-  --background-90: 251, 251, 251;
-
-  --accent-background-10: 67, 46, 77;
-  --accent-background-20: 144, 86, 191;
-  --accent-background-30: 176, 117, 235;
-  --accent-background-40: 187, 109, 242;
-  --accent-background-50: 213, 166, 255;
-
-  --success: 0, 128, 55;
-  --warning: 140, 110, 0;
-  --critical: 100, 4, 33;
-  --special: 164, 79, 237;
-  --window-icon-stroke: 83, 83, 83;
-  --default-color: 0, 0, 0;
 }
 
 :root[data-theme='asexual'] {
@@ -322,7 +296,7 @@ body {
   --success: 100, 230, 10;
   --warning: 220, 200, 50;
   --critical: 220, 40, 110;
-  --special: 230, 0, 230;
+  --special: 217, 33, 217;
   --window-icon-stroke: 200, 130, 200;
 
   --default-color: 255, 255, 255;
@@ -348,7 +322,7 @@ body {
   --success: 139, 223, 35;
   --warning: 255, 187, 62;
   --critical: 223, 54, 84;
-  --special: 230, 0, 230;
+  --special: 255, 204, 229;
   --window-icon-stroke: 234, 134, 185;
 
   --default-color: 255, 255, 255;
