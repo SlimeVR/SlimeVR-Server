@@ -167,7 +167,7 @@ export function TopBar({
                   data-electron-drag-region
                 >
                   <Typography>
-                    {config?.theme == 'fox' ? 'FoxVR' : 'SlimeVR'}
+                    SlimeVR
                   </Typography>
                 </div>
               )}
