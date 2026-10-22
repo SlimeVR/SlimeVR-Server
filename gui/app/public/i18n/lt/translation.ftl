@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Panašu, kad įvyko techninė klaida SlimeVR se
 websocket-timedout = Nepavyko susisiekti su serveriu
 websocket-timedout-desc = Panašu, kad SlimeVR serveris užstrigo. Patikrinkite log'us ir bandykite jį perkrauti.
 websocket-error-close = Uždaryti SlimeVR
-websocket-error-logs = Atidaryti log'ų aplanką
 
 ## Update notification
 
@@ -97,12 +96,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Dešiniojo mažylio artimoji dalis
 body_part-RIGHT_LITTLE_INTERMEDIATE = Dešiniojo mažylio vidurinė dalis
 body_part-RIGHT_LITTLE_DISTAL = Dešiniojo mažylio tolimiausioji dalis
 
-## BoardType
-
-board_type-UNKNOWN = Nežinoma
-board_type-CUSTOM = Nestandartinė plokštė
-board_type-WRANGLER = „Wrangler“ Joycon'ai
-
 ## Proportions
 
 skeleton_bone-NONE = Nenurodyta
@@ -111,40 +104,18 @@ skeleton_bone-NECK-desc =
     Tai atstumas nuo galvos centro iki kaklo pagrindo.
     Norėdami tinkamai nustatyti, linktelėkite galvą aukštyn ir žemyn, arba palenkite
     galvą į kairę ir dešinę ir koreguokite, kol judesys kituose sekikliuose taps minimalus
-skeleton_bone-torso_group = Liemens ilgis
 skeleton_bone-torso_group-desc =
     Tai atstumas nuo kaklo pagrindo iki klubų.
     Norėdami tinkamai nustatyti, stovėkite tiesiai ir koreguokite, kol
     virtualūs klubai sutaps su jūsų realiaisiais.
 skeleton_bone-UPPER_CHEST = Viršutinės krūtinės ilgis
-skeleton_bone-UPPER_CHEST-desc =
-    Tai atstumas nuo kaklo pagrindo iki krūtinės vidurio.
-    Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
-    (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
-skeleton_bone-LOWER_CHEST-desc =
-    Tai atstumas nuo krūtinės vidurio iki stuburo centro.
-    Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
-    (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
 skeleton_bone-HIP = Klubų ilgis
-skeleton_bone-HIP-desc =
-    Tai atstumas nuo bambos iki klubų.
-    Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
-    (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
 skeleton_bone-HIPS_WIDTH = Klubų plotis
 skeleton_bone-HIPS_WIDTH-desc =
     Tai atstumas tarp jūsų kojų pradžios taškų.
     Norėdami tinkamai nustatyti, atlikite pilną atstatymą tiesiomis kojomis ir koreguokite,
     kol virtualios kojos horizontaliai sutaps su realiosiomis.
-skeleton_bone-leg_group = Kojų ilgis
-skeleton_bone-leg_group-desc =
-    Tai atstumas tarp klubų iki pėdų.
-    Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite,
-    kol virtualios pėdos bus tame pačiame aukštyje kaip jūsų realiosios.
 skeleton_bone-UPPER_LEG = Šlaunies ilgis
-skeleton_bone-UPPER_LEG-desc =
-    Tai atstumas tarp klubų iki kelių.
-    Pirmiausiai tinkamai nustatykite kojų ilgį, tada koreguokite,
-    kol virtualūs keliai bus tame pačiame aukštyje kaip jūsų realieji.
 skeleton_bone-LOWER_LEG = Blauzdos ilgis
 skeleton_bone-FOOT_LENGTH = Pėdos ilgis
 skeleton_bone-FOOT_LENGTH-desc =
@@ -154,7 +125,6 @@ skeleton_bone-FOOT_LENGTH-desc =
 skeleton_bone-FOOT_SHIFT = Pėdos poslinkis
 skeleton_bone-SHOULDERS_DISTANCE = Pečių atstumas
 skeleton_bone-SHOULDERS_WIDTH = Pečių plotis
-skeleton_bone-arm_group = Rankų ilgis
 skeleton_bone-UPPER_ARM = Žasto ilgis
 skeleton_bone-LOWER_ARM = Dilbio ilgis
 
@@ -264,20 +234,12 @@ tracker-settings-mounting_section = Tvirtinimo kryptis
 tracker-settings-mounting_section-description = Kur sekiklis yra tvirtinamas?
 tracker-settings-mounting_section-edit = Keisti tvirtinimą
 tracker-settings-use_mag = Leisti sekiklio magnetometro naudojimą
-# Multiline!
-tracker-settings-use_mag-description =
-    Ar šis sekiklis turėtų naudoti magnetometrą dreifui sumažinti, kai įjungtas jo naudojimas? <b>Neišjunkite sekiklio keisdami šį nustatymą!</b>
-    
-    Pirmiausia reikia įjungti magnetometro naudojimą, <magSetting>spustelėkite čia, kad pereiti prie nustatymo.</magSetting>
 tracker-settings-use_mag-label = Leisti magnetometro naudojimą
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Sekiklio pavadinimas
 tracker-settings-name_section-description = Sugalvokite jam mielą vardą :)
 tracker-settings-name_section-placeholder = NightyBeast kairė koja
 tracker-settings-name_section-label = Sekiklio pavadinimas
 tracker-settings-forget = Pamiršti sekiklį
-tracker-settings-forget-description = Tai pašalins sekiklį iš SlimeVR serverio ir nebeleis jam prisijungti, kol neperkrausite serverį. Sekiklio nustatymai nebus prarasti.
 tracker-settings-forget-label = Pamiršti sekiklį
 tracker-settings-update-low-battery = Negalima atnaujinti, baterijos lygis žemesnis nei 50%
 tracker-settings-update-up_to_date = Atnaujinta
@@ -325,13 +287,11 @@ mounting_selection_menu-close = Uždaryti
 
 ## Sidebar settings
 
-settings-sidebar-title = Nustatymai
 settings-sidebar-general = Bendrieji
 settings-sidebar-interface = Sąsaja
 settings-sidebar-utils = Įrankiai
 settings-sidebar-serial = Serijinė konsolė
 settings-sidebar-appearance = Išvaizda
-settings-sidebar-notifications = Pranešimai
 settings-sidebar-behavior = Elgsena
 settings-sidebar-firmware-tool = DIY sekiklių programinės įrangos įrankis
 settings-sidebar-advanced = Išplėstiniai
@@ -346,66 +306,45 @@ settings-routing-hands-warning-cancel = Atšaukti
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtravimas
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Pasirinkite filtravimo tipą.
-    Prognozavimas numato judesius, o švelninimas juos sušvelnina.
-settings-general-tracker_mechanics-filtering-type = Filtravimo tipas
 settings-general-tracker_mechanics-filtering-type-none = Be filtravimo
 settings-general-tracker_mechanics-filtering-type-none-description = Naudoja judesius be jokio filtravimo.
 settings-general-tracker_mechanics-filtering-type-smoothing = Švelninimas
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Sušvelnina judesius, bet prideda sekimo vėlavimą.
 settings-general-tracker_mechanics-filtering-type-prediction = Prognozavimas
-settings-general-tracker_mechanics-filtering-type-prediction-description = Sumažina sekimo vėlavimą, bet gali padidinti sekimo drebėjimą.
 settings-general-tracker_mechanics-filtering-amount = Filtravimo stiprumas
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontalaus atstatymo sušvelninimo laikas (0 s išjungs švelninimą)
 settings-general-tracker_mechanics-save_mounting_reset = Išsaugoti automatinio tvirtinimo pozicijų kalibravimą
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Išsaugo sekiklių automatinio tvirtinimo pozicijų kalibravimą tarp paleidimų iš naujo. Tai yra naudinga,
     jeigu naudojate sekimo aprangą, kuriame sekikliai nepajuda tarp sesijų. <b>Nerekomenduojama įprastiems naudotojams!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Išsaugoti tvirtinimo pozicijų atstatymą
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Naudoti magnetometrą visuose IMU jutikliuose, kurie jį turi
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Naudoja magnetometrą visuose sekikliuose, kurių programinė įrangą jį palaiko. Tai sumažiną dreifą jeigu magnetinė aplinka stabili.
-    Galima individualiai tai išjungti kiekvieno sekiklio nustatymuose. <b>Neišjunkite sekiklių keisdami šį nustatymą!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Naudoti magnetometrą sekikliuose
-settings-stay_aligned-general-label = Bendrieji
-settings-stay_aligned-relaxed_poses-close = Uždaryti
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Pilnas atstatymas
-settings-keybinds_yaw-reset = Horizontalus atstatymas
 settings-keybinds-recorder-modal-cancel-button = Atšaukti
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Sekimo nustatymai
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Rėmimas prie grindų
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Slydimo korekcija
 settings-general-fk_settings-leg_tweak-toe_snap = Pėdų pasukimo spėjimas
 settings-general-fk_settings-leg_tweak-foot_plant = Pėdos prispaudimas
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Slydimo korekcijos stiprumas
-settings-general-fk_settings-leg_tweak-skating_correction-description = Koreguoja pėdų čiuožimo efektą. Gali sumažinti tikslumą kai kurių judesių metru. Įjungus - atlikite pilną atstatymą, ir kalibraciją žaidime.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Neleidžia pėdoms prasiskverbti pro grindis. Įjungus - atlikite pilną atstatymą, ir kalibraciją žaidime.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Bando atspėti pėdų pasukimą, jei nenaudojate pėdų sekiklius.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Pasuka pėdas taip, kad jos būtų lygiagrečios grindims, kai stovite.
 settings-general-fk_settings-leg_fk = Kojų sekimas
-settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
-settings-general-fk_settings-arm_fk-back = Gale
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Atstatymas bakstelėjant sekiklius
 settings-general-gesture_control-description = Leidžia atstatyti bakstelėjant sekiklį: aukščiausias krūtinės sekiklis yra naudojamas horizontaliam atstatymui; aukščiausias kairės kojos sekiklis pilnam atstatymui; o aukščiausias dešinės kojos - tvirtinimo pozicijų atstatymui. Bakstelėjimas turi būti atliktas per 0.3 sekundžių padauginus bakstelėjimų skaičiumi.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -429,23 +368,21 @@ settings-general-gesture_control-trackers =
 ## Appearance settings
 
 settings-interface-appearance = Išvaizda
-settings-general-interface-dev_mode = Kūrėjo režimas
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Notification settings
 
-settings-interface-notifications = Pranešimai
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Kūrėjo režimas
-settings-general-interface-dev_mode-label = Kūrėjo režimas
 
 ## Serial settings
 
 settings-serial-factory_reset-warning-cancel = Atšaukti
 settings-serial-send_command-warning-cancel = Atšaukti
+
+## Logs settings
+
 
 ## OSC VRChat settings
 
@@ -509,6 +446,15 @@ onboarding-assign_trackers-side-left = Kairėje
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
@@ -517,7 +463,7 @@ onboarding-assign_trackers-side-left = Kairėje
 onboarding-automatic_mounting-title = Tvirtinimo kalibravimas
 onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -525,10 +471,6 @@ onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-verify_mounting-title = Tvirtinimo kalibravimas
 
 ## Home
 
@@ -565,7 +507,6 @@ tray_or_exit_modal-cancel = Atšaukti
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Nežinoma
 vrc_config-tracker_model-UNKNOWN = Nežinoma
 vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
 
@@ -573,6 +514,9 @@ vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
 
 error_collection_modal-confirm = Sutinku
 error_collection_modal-cancel = Nesutinku
+
+## Crash screen
+
 
 ## Tracking checklist section
 

@@ -61,25 +61,18 @@ body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
 
-## BoardType
-
-board_type-UNKNOWN = Tundmatu
-
 ## Proportions
 
 skeleton_bone-NONE = Mitte midagi
 skeleton_bone-NECK = Kaela Pikkus
-skeleton_bone-torso_group = Torso pikkus
 skeleton_bone-UPPER_CHEST = Rinna ülaosa pikkus
 skeleton_bone-HIP = Puusa pikkus
 skeleton_bone-HIPS_WIDTH = Puusa Laius
-skeleton_bone-leg_group = Jala pikkus
 skeleton_bone-UPPER_LEG = Jala ülaosa pikkus
 skeleton_bone-FOOT_LENGTH = Jala Pikkus
 skeleton_bone-FOOT_SHIFT = Jala Nihe
 skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
 skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
-skeleton_bone-arm_group = Käe pikkus
 skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
 
@@ -172,8 +165,6 @@ tracker-settings-assignment_section-edit = Muuda jälgija asukohta
 tracker-settings-mounting_section = Paigaldusasend
 tracker-settings-mounting_section-description = Kuhu on jälgija paigaldatud.
 tracker-settings-mounting_section-edit = Muuda paigaldusasendit
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
 tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
@@ -218,14 +209,12 @@ mounting_selection_menu-close = Sulge
 
 ## Sidebar settings
 
-settings-sidebar-title = Seaded
 settings-sidebar-general = Tavaline
 settings-sidebar-trackers = Jälgia
 settings-sidebar-interface = Liides
 settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
 settings-sidebar-appearance = Välimus
-settings-sidebar-notifications = Teavitused
 
 ## Bone routing settings
 
@@ -238,56 +227,40 @@ settings-driver-enable = Luba
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtreerimine
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Vali filtreerimis tüüp enda jälgijatele.
-    Ennustus ennustab liikumist, aga silestamine silestab liikumist.
-settings-general-tracker_mechanics-filtering-type = Filtreerimise tüüp
 settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
 settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
 settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
-settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
 settings-general-tracker_mechanics-filtering-amount = Amount
-settings-stay_aligned-general-label = Tavaline
-settings-stay_aligned-relaxed_poses-close = Sulge
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Lähtesta
-settings-keybinds_yaw-reset = Lähtesta lengerdus
 settings-keybinds-recorder-modal-cancel-button = Tühista
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Jälgija seaded
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Põranda läbimine
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Libisemise korrigeerimine
 settings-general-fk_settings-leg_tweak-toe_snap = Varba klõpsatus maha
 settings-general-fk_settings-leg_tweak-foot_plant = Jalg maas
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Libisemise korrigeerimine jõud
-settings-general-fk_settings-leg_tweak-skating_correction-description = Uisukorrektsioon korrigeerib uisutamist, kuid võib vähendada teatud liikumismustrite täpsust. Selle lubamisel veenduge, et mängus lähtestatakse jälgimine ja kalibreeritakse jälgimine uuesti.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Põrandaklõpsatus võib vähendada või isegi välistada jalgade läbi põranda minemise. Selle lubamisel veenduge, et mängus lähtestatakse jälgimine ja kalibreeritakse jälgimine uuesti.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Varvaste klõpsatus maha üritab ära arvata jalgade pöörlemist, kui jalgade jälgijaid ei kasutata.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Jalg-maas pöörab jalad kokkupuutel maapinnaga paralleelseks.
 settings-general-fk_settings-leg_fk = Jalgade jälgimine
-settings-general-fk_settings-arm_fk-back = Taga
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
-settings-general-fk_settings-skeleton_settings-ratios-description = Muutke skeleti seadete väärtusi. Võimalik, et peate pärast nende muutmist oma proportsioone kohandama.
 settings-general-fk_settings-self_localization-title = Mocapi režiim
-settings-general-fk_settings-self_localization-description = Mocap-režiim võimaldab skeletil ligikaudselt jälgida oma asukohta ilma peakomplekti või muude jälgijateta. Pange tähele, et see nõuab jalgade ja peajälgijate olemasolu ning on endiselt eksperimentaalne.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Puudutusepõhised lähtestused
 settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.3 sekundi jooksul, et need registreeritaks.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -314,14 +287,11 @@ settings-general-gesture_control-mountingResetDelay = Paigaldusasendi lähtestam
 settings-general-gesture_control-mountingResetTaps = Paigaldusasendi lähtestamise vajutus
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Jälgijad üle läve
-settings-general-gesture_control-numberTrackersOverThreshold-description = Suurendage seda väärtust, kui puudutuse tuvastamine ei tööta. Ärge suurendage seda üle selle, mis on vajalik puudutuse tuvastuse toimimiseks, kuna see põhjustaks rohkem valepositiivseid tulemusi.
 
 ## Appearance settings
 
 settings-interface-appearance = Välimus
-settings-general-interface-dev_mode = Arendaja režiim
 settings-general-interface-dev_mode-description = See režiim on kasulik, kui on vaja põhjalike andmeid või või suhelda ühendatud jälgijatega kõrgemal tasemel.
-settings-general-interface-dev_mode-label = Arendaja režiim
 settings-general-interface-theme = Värviteema
 settings-general-interface-lang = Vaikekeel
 settings-general-interface-lang-description = Muutke vaikekeelt, mida soovite kasutada.
@@ -335,16 +305,12 @@ settings-interface-appearance-font_size-description = See mõjutab kogu liidese 
 
 ## Notification settings
 
-settings-interface-notifications = Teavitused
 settings-general-interface-feedback_sound = Tagasiside heli
 settings-general-interface-feedback_sound-description = See suvand esitab lähtestamise käivitamisel heli.
-settings-general-interface-feedback_sound-label = Tagasiside heli
 settings-general-interface-feedback_sound-volume = Tagasiside helitugevus
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Arendaja režiim
-settings-general-interface-dev_mode-label = Arendaja režiim
 
 ## Serial settings
 
@@ -353,7 +319,6 @@ settings-serial = Jadakonsool
 settings-serial-description =
     See on reaalajas teabevoog jadaside jaoks.
     Võib olla kasulik, kui on vaja teada, kas püsivara töötab.
-settings-serial-connection_lost = Ühendus jadakonsooliga kaotatud. Ühenduse taastamine...
 settings-serial-reboot = Taaskäivitage
 settings-serial-factory_reset = Tehaseseadete taastamine
 # This cares about multilines
@@ -367,12 +332,13 @@ settings-serial-serial_select = Valige jadaport
 settings-serial-send_command-warning-ok = Ma tean mida ma teen
 settings-serial-send_command-warning-cancel = Tühista
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Jälgija
 settings-osc-vrchat-enable = Luba
 settings-osc-vrchat-enable-description = Lülitage andmete sisestamine sisse/välja.
-settings-osc-vrchat-enable-label = Luba
 settings-osc-vrchat-network = Võrgupordid
 settings-osc-vrchat-network-port_in =
     .label = Võrguport sisse
@@ -381,7 +347,6 @@ settings-osc-vrchat-network-port_out =
     .label = Võrguport välja
     .placeholder = Võrguport välja (vaikimisi: 9000)
 settings-osc-vrchat-network-address = Võrgu aadress
-settings-osc-vrchat-network-address-placeholder = VRChat ip aadress
 
 ## VRChat OSC status
 
@@ -397,7 +362,6 @@ settings-osc-vmc-description =
         SlimeVR-i luuandmete saatmiseks ja luuandmete vastuvõtmiseks teistest rakendustest.
 settings-osc-vmc-enable = Luba
 settings-osc-vmc-enable-description = Lülitage andmete sisestamine sisse/välja.
-settings-osc-vmc-enable-label = Luba
 settings-osc-vmc-network = Pordid
 settings-osc-vmc-network-description = Määrake pordid VMC kaudu andmete kuulamiseks ja saatmiseks.
 settings-osc-vmc-network-port_in =
@@ -408,13 +372,11 @@ settings-osc-vmc-network-port_out =
     .placeholder = Port välja (vaikimisi 39539)
 settings-osc-vmc-network-address = Võrgu aadress
 settings-osc-vmc-network-address-description = Valige, millisel aadressil soovite VMC kaudu andmeid saata.
-settings-osc-vmc-network-address-placeholder = IPV4 aadress
 settings-osc-vmc-vrm = VRM-mudel
 settings-osc-vmc-vrm-description = Laadige VRM-mudel, et võimaldada peaankurdamist ja suuremat ühilduvust teiste rakendustega.
 settings-osc-vmc-vrm-file_select = Kasutatava mudeli pukseerimine või <u>sirvimine</u>
 settings-osc-vmc-anchor_hip = Ankurda puusadel
 settings-osc-vmc-anchor_hip-description = Ankurdage jälgimine puusadele, mis on kasulik istuva VTubingu jaoks. Keelamise korral laadige VRM-mudel.
-settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 settings-osc-vmc-status-badge-error = Viga
 
 ## Common OSC settings
@@ -454,7 +416,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Sisesta SSID
 onboarding-wifi_creds-password =
     .label = Parool
-    .placeholder = Sisesta parool
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -494,7 +456,6 @@ onboarding-connect_tracker-next = Olen ühendanud kõik oma jälgijad
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Määrake jälgijad asukoht
-onboarding-assign_trackers-description = Valime mis jälgijad lähevad kuhu. Vajutage asukohale kuhu te tahate, et jälgija läheks.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -512,16 +473,20 @@ onboarding-assign_trackers-side-left = Vasak
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = Automaatne paigaldamine
-onboarding-choose_mounting-auto_mounting-description = See tuvastab automaatselt kõigi teie jälgijate paigaldussuuna 2 poosist
-onboarding-choose_mounting-manual_mounting = Käsitsi paigaldamine
-onboarding-choose_mounting-manual_mounting-description = See võimaldab teil valida iga jälgija paigaldussuuna käsitsi
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Käsitsi paigaldamine
 onboarding-manual_mounting-description = Vajutage iga jälgija peale ja valige, kuidas see on paigaldatud
-onboarding-manual_mounting-auto_mounting = Automaatne paigaldamine
 onboarding-manual_mounting-next = Järgmine Samm
 
 ## Tracker automatic mounting setup
@@ -535,14 +500,10 @@ onboarding-automatic_mounting-done-title = Paigalduse pööre kalibreeritud.
 onboarding-automatic_mounting-done-description = Teie paigalduse kalibreerimine on valmis!
 onboarding-automatic_mounting-done-restart = Minge algusese
 onboarding-automatic_mounting-mounting_reset-title = Paigalduse lähtestamine
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kükita suusaasendis, jalad kõverad, ülakeha kallutatud ettepoole ja käed kõverad.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Vajutage "Lähtesta Paigaldusasend" nuppu ja oodage 3 sekuntit ja jälgijate paigaldusasend lähtestatakse.
 onboarding-automatic_mounting-preparation-title = Ettevalmistus
-onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peale
-onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
-onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -589,13 +550,6 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 ## User height calibration
 
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Pange kõik jälgijad peale
-onboarding-stay_aligned-put_trackers_on-next = Mul on kõik jälgijad küljes
-onboarding-stay_aligned-verify_mounting-title = Paigalduse lähtestamine
-onboarding-stay_aligned-preparation-title = Ettevalmistus
-
 ## Home
 
 home-settings-close = Sulge
@@ -630,11 +584,13 @@ tray_or_exit_modal-cancel = Tühista
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Tundmatu
 vrc_config-tracker_model-UNKNOWN = Tundmatu
 vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

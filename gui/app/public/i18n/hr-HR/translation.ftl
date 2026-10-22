@@ -32,9 +32,6 @@
 ## Body parts
 
 
-## BoardType
-
-
 ## Proportions
 
 
@@ -98,6 +95,9 @@
 ## Tracker mechanics
 
 
+## Stay Aligned pose recorder
+
+
 ## Keybinds Page
 
 
@@ -118,6 +118,9 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 
 ## Serial settings
+
+
+## Logs settings
 
 
 ## OSC VRChat settings
@@ -168,22 +171,28 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
 
 
 ## User height calibration
-
-
-## Stay Aligned setup
 
 
 ## Home
@@ -217,6 +226,9 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section
