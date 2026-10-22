@@ -2,9 +2,22 @@ import classNames from 'classnames';
 import { Clickable } from './Clickable';
 import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LoaderIcon, SlimeState } from './icon/LoaderIcon';
 import { Typography } from './Typography';
 import { Localized, LocalizedProps, useLocalization } from '@fluent/react';
+
+function LoadingDots() {
+  return (
+    <div className="flex gap-1.5" aria-hidden>
+      {[0, 150, 300].map((delay) => (
+        <span
+          key={delay}
+          className="w-1.5 h-1.5 rounded-full bg-current animate-dot-pulse"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      ))}
+    </div>
+  );
+}
 
 function ButtonContent({
   loading,
@@ -31,8 +44,8 @@ function ButtonContent({
         {children}
       </div>
       {loading && (
-        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center fill-background-10">
-          <LoaderIcon slimeState={SlimeState.JUMPY} />
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+          <LoadingDots />
         </div>
       )}
     </>
