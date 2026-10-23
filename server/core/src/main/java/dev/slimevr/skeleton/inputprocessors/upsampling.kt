@@ -5,7 +5,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -42,8 +41,8 @@ class UpsamplingInputProcessor :
 		val deltaTime = lastProcessTime.elapsedNow().inFloatingSeconds
 		lastProcessTime = timeSource.markNow()
 
-		mutableInputSkeleton.forEachBone { bodyPart, bone ->
-			if (bone.expectedTps == null) return@forEachBone
+		for ((bodyPart, bone) in mutableInputSkeleton) {
+			if (bone.expectedTps == null) continue
 
 			// For a 100hz tracker on 500hz skeleton, this will be 0.2f (interpolating 1/5 every frame)
 			val interpolationRatio = (deltaTime * bone.expectedTps.toFloat()).coerceAtMost(1f)

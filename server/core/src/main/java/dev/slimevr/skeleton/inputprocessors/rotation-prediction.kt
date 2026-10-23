@@ -6,7 +6,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -56,13 +55,13 @@ class RotationPredictionInputProcessor(val settings: Settings) :
 		val now = timeSource.markNow()
 
 		val newVelocities = bodyPartMap<BoneDelta>()
-		mutableInputSkeleton.forEachBone { bodyPart, bone ->
-			if (!bone.isRotationActive) return@forEachBone
+		for ((bodyPart, bone) in mutableInputSkeleton) {
+			if (!bone.isRotationActive) continue
 
 			val prev = deltas[bodyPart]
 			if (prev == null) {
 				newVelocities[bodyPart] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
-				return@forEachBone
+				continue
 			}
 
 			val bonePredictionAmount = filteringAmount * getMultiplier(bodyPart)

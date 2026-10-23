@@ -6,7 +6,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -45,8 +44,8 @@ class RotationSmoothingInputProcessor(val settings: Settings) :
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
 		val newSmoothed = bodyPartMap<Quaternion>()
-		mutableInputSkeleton.forEachBone { bodyPart, bone ->
-			if (!bone.isRotationActive) return@forEachBone
+		for ((bodyPart, bone) in mutableInputSkeleton) {
+			if (!bone.isRotationActive) continue
 
 			val prev = smoothed[bodyPart] ?: bone.rotation
 			val rotation = prev.lerpQ(bone.rotation, alpha).unit()

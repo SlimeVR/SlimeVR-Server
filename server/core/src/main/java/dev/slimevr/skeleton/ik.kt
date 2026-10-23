@@ -113,12 +113,10 @@ fun ccdIk(
 	if (goals.isEmpty()) return
 
 	for (i in 0..maxIterations) {
-		// Iterate chains not meeting the threshold
-		goals.filter {
-			chainDistanceFromTarget(mutableComputedSkeleton, it.chain, it.target) > threshold
-		}.ifEmpty {
-			break
-		}.forEach { goal ->
+		for (goal in goals) {
+			// Only iterate chains not meeting the threshold
+			if (chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target) <= threshold) break
+
 			// The chain from the current bone to the end, iterating backwards
 			val iterationChain = goal.chain.takeLast((i % goal.chain.size) + 1)
 			ccdIkIteration(

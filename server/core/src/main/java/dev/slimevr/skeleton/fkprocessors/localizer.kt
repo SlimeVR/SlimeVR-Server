@@ -46,7 +46,7 @@ val alwaysActiveBodyParts = arrayOf(
 	BodyPart.NECK,
 	BodyPart.HEAD,
 )
-fun getActiveBodyParts(inputs: InputSkeleton) = inputs.filter { it.value.isRotationActive }.map { it.key } + alwaysActiveBodyParts
+fun getActiveBodyParts(inputs: InputSkeleton) = alwaysActiveBodyParts + inputs.filter { it.value.isRotationActive }.map { it.key }
 
 // Follows a bone touching that floor that is considered planted
 object FloorLocalizer {

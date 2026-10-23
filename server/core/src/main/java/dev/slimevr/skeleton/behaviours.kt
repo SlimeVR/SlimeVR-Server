@@ -257,13 +257,15 @@ class ComputedSkeletonBehaviour(
 						}
 
 						// Use single map for the inputs that we'll mutate for performance
-						val mutableBoneInputs: InputSkeleton = BodyPartMap(if (targetState.pausedProcessedBoneInputs != null) {
-							// If tracking is paused, we only run the skeleton loop for the always active bones (head and neck)
-							// and add the pausedProcessedBoneInputs later on.
-							targetState.boneInputs.filter { it.key in ALWAYS_ACTIVE_PARTS }
-						} else {
-							targetState.boneInputs
-						})
+						val mutableBoneInputs: InputSkeleton = BodyPartMap(
+							if (targetState.pausedProcessedBoneInputs != null) {
+								// If tracking is paused, we only run the skeleton loop for the always active bones (head and neck)
+								// and add the pausedProcessedBoneInputs later on.
+								targetState.boneInputs.filter { it.key in ALWAYS_ACTIVE_PARTS }
+							} else {
+								targetState.boneInputs
+							},
+						)
 
 						// Run pre-FK processors (input processors)
 						for (processor in inputProcessors) processor.process(mutableBoneInputs, targetState.skeletonHeight)
@@ -306,6 +308,7 @@ class ComputedSkeletonBehaviour(
 						for (processor in targetProcessors) processor.process(ikTargets, mutableBoneInputs, mutableComputedSkeleton, targetState.floorLevel)
 
 						// Run IK
+						// TODO to optimize we could pass previous post-IK mutableBoneInputs as starting point
 						ccdIk(
 							mutableBoneInputs,
 							mutableComputedSkeleton,
