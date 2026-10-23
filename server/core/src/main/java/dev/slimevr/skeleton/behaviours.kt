@@ -188,7 +188,7 @@ class ComputedSkeletonBehaviour(
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
-	private val IK_THRESHOLD = 0.005f // 0.002 would be ideal for accuracy, but we want performance
+	private val IK_THRESHOLD = 0.002f
 	private val IK_MAX_ITERATIONS = 100
 
 	private val intervalDuration = (1.0 / hz).seconds
@@ -308,7 +308,6 @@ class ComputedSkeletonBehaviour(
 						for (processor in targetProcessors) processor.process(ikTargets, mutableBoneInputs, mutableComputedSkeleton, targetState.floorLevel)
 
 						// Run IK
-						// TODO to optimize we could pass previous post-IK mutableBoneInputs as starting point
 						ccdIk(
 							mutableBoneInputs,
 							mutableComputedSkeleton,
