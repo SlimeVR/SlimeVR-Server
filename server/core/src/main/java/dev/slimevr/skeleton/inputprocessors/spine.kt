@@ -9,6 +9,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.enums.enumEntries
+import kotlin.math.abs
 
 // At this default value, the user's spine should behave as we meant it to.
 const val DEFAULT_SPINE_UPPER_LOWER = 0.5f
@@ -132,19 +133,33 @@ private fun buildFromTo(sourceActive: Map<SpineSource, Boolean>) = SPINE_SOURCE_
 	spineSource to (from to to)
 }
 
-private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<BodyPart> = arrayOf()): Quaternion? {
-	val bonesToAverage = inputSkeleton.values.filter { it.bodyPart in takeBodyParts }
-	return bonesToAverage.map { it.rotation }
-		.reduceIndexedOrNull { index, acc, rotation ->
-			// Very important that this is interpQ as lerpQ will break on axes/polarity
-			acc.interpQ(rotation, 1f / (index + 1))
-		}
+// Higher value makes it so attitude is less prioritized
+const val ATTITUDE_MIN = 0.3f
+/**
+ * Prioritize the rotation with the lowest attitude to prevent one thigh driving the whole spine by itself.
+ * TODO to improve this even more for cases like crossing legs while sitting down, we need to use the rotation delta
+ *  from the From. E.g: when using Upper Chest + Upper Legs, need to use delta from each Upper Leg to Upper Chest.
+ *  This would allow us to apply different weights to forward (x-axis) rotation and side (z-axis rotation).
+ */
+private fun attitudeWeightedAverageRotation(inputSkeleton: InputSkeleton, bodyParts: Array<BodyPart> = arrayOf()): Quaternion? {
+	val rotationsToAverage = inputSkeleton.values.filter { it.bodyPart in bodyParts }.map { it.rotation }
+	if (rotationsToAverage.count() <= 1) return rotationsToAverage.firstOrNull()
+	// TODO should SpineSource's parameter be a Pair with a nullable second argument?
+	if (rotationsToAverage.count() > 2) error("attitudeWeightedAverageRotation only works with 2 rotations max")
+
+	val attitudeLengthSum = rotationsToAverage.sumOf { ATTITUDE_MIN + (it.eulerHeading().inv() * it).angleQ().toDouble() }.toFloat()
+	return rotationsToAverage
+		.fold(Quaternion.ZERO) { acc, rotation ->
+			// This only works for 2 rotations, but we don't have any case with >2 anyways
+			val ratio = abs(1 - ((ATTITUDE_MIN + (rotation.eulerHeading().inv() * rotation).angleQ()) / attitudeLengthSum))
+			acc + (rotation * ratio)
+		}.unit()
 }
 
 private fun weightedAverageRotation(sources: List<SpineSource>, reliabilities: Map<SpineSource, Reliability>, boneInputs: InputSkeleton): Quaternion {
 	var accProportion = 0f
 	return sources.foldIndexed(Quaternion.ZERO) { i, acc, fromSource ->
-		val rotation = averageRotation(boneInputs, fromSource.parts)
+		val rotation = attitudeWeightedAverageRotation(boneInputs, fromSource.parts)
 		if (rotation != null) {
 			val proportion = if (i + 1 == sources.count()) {
 				// Use all the remaining

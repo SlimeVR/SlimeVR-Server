@@ -13,8 +13,8 @@ import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.ResetType
 
 private const val SMOOTHING_MULTIPLIER = 100f
-private const val SMOOTH_MIN = 0.5f
-private const val SMOOTH_MAX = 0.95f
+private const val SMOOTH_MIN = 0.46f
+private const val SMOOTH_MAX = 0.92f
 
 /**
  * Running average of bone rotations to smooth them out.
@@ -25,7 +25,6 @@ class RotationSmoothingInputProcessor(val settings: Settings) :
 	private var smoothed: BodyPartMap<Quaternion> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
-	// TODO this isn't linear. Do we want linear smoothing like in main?
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		val filteringAmount = config.amount
