@@ -67,33 +67,32 @@ fun rotateChain(
 }
 
 fun ccdIkIteration(
-	mutableBones: ComputedSkeleton,
-	boneInputs: InputSkeleton,
+	mutableBoneInputs: InputSkeleton,
+	mutableComputedSkeleton: ComputedSkeleton,
 	chain: IKChain,
 	target: Vector3,
 	constraints: BodyPartMap<Constraint>?,
-): ComputedSkeleton {
+) {
 	// TODO: Do we need annealing and/or dampening?
 	// The first bone in the chain is the one we are adjusting in this iteration
 	val bodyPart = chain.first()
-	val offset = fromChainToTarget(bodyPart, mutableBones, chain, target) ?: return mutableBones
+	val offset = fromChainToTarget(bodyPart, mutableComputedSkeleton, chain, target) ?: return
 
 	// We only need to constrain the bone that we are adjusting
 	val constrainedOffset = constraints?.let {
 		constrainOffsetWithSkeleton(
 			bodyPart,
 			offset,
-			mutableBones,
+			mutableComputedSkeleton,
 			it,
 		)
 	} ?: offset
 
 	// Mutate the input skeleton
-	rotateChain(boneInputs, chain, constrainedOffset)
+	rotateChain(mutableBoneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
-	buildBones(mutableBones, boneInputs, chain.toSet())
-	return mutableBones
+	buildBones(mutableComputedSkeleton, mutableBoneInputs, chain.toSet())
 }
 
 typealias IKChain = List<BodyPart>
@@ -102,49 +101,33 @@ data class IKChainGoal(
 	val target: Vector3,
 )
 
-data class IKOutput(
-	val bones: ComputedSkeleton,
-	val goalsReached: Map<IKChainGoal, Boolean>,
-)
-
 fun ccdIk(
-	boneInputs: InputSkeleton,
-	bones: ComputedSkeleton,
+	mutableBoneInputs: InputSkeleton,
+	mutableComputedSkeleton: ComputedSkeleton,
 	goals: List<IKChainGoal>,
 	constraints: BodyPartMap<Constraint>?,
 	threshold: Float,
 	maxIterations: Int,
-): IKOutput {
+) {
 	// No goal leaves every bone as the FK pass built it, so nothing below needs to run
-	if (goals.isEmpty()) return IKOutput(bones, emptyMap())
-
-	val workingBoneInputs = EnumMap(boneInputs)
-	var boneOutputs = bones
+	if (goals.isEmpty()) return
 
 	for (i in 0..maxIterations) {
 		// Iterate chains not meeting the threshold
-		boneOutputs = goals.filter {
-			chainDistanceFromTarget(bones, it.chain, it.target) > threshold
+		goals.filter {
+			chainDistanceFromTarget(mutableComputedSkeleton, it.chain, it.target) > threshold
 		}.ifEmpty {
 			break
-		}.fold(boneOutputs) { bones, goal ->
+		}.forEach { goal ->
 			// The chain from the current bone to the end, iterating backwards
 			val iterationChain = goal.chain.takeLast((i % goal.chain.size) + 1)
 			ccdIkIteration(
-				bones,
-				workingBoneInputs,
+				mutableBoneInputs,
+				mutableComputedSkeleton,
 				iterationChain,
 				goal.target,
 				constraints,
 			)
-			bones
 		}
 	}
-
-	return IKOutput(
-		boneOutputs,
-		goals.associateWith {
-			chainDistanceFromTarget(boneOutputs, it.chain, it.target) <= threshold
-		},
-	)
 }
