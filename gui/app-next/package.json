@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "test": "vitest run",
-    "lint": "eslint src && prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "lint": "pnpm typecheck && eslint src && prettier --check \"src/**/*.{ts,tsx,css,json}\"",
     "lint:fix": "eslint --fix src && prettier --write \"src/**/*.{ts,tsx,css,json}\""
   },
   "dependencies": {

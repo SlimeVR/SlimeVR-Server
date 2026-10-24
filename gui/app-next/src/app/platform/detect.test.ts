@@ -1,11 +1,7 @@
 import type { IElectronAPI } from '@slimevr/gui-shared';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { memoryCrossStorage } from '@/lib/platform-fake';
 import { createPlatform } from './detect';
-
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
 
 describe('createPlatform', () => {
   it('resolves the OS before returning on electron', async () => {

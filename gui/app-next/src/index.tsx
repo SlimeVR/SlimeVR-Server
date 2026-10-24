@@ -3,6 +3,7 @@ import { App } from '@/app/app';
 import { createPlatform } from '@/app/platform/detect';
 import { setPlatform } from '@/lib/platform';
 import { loadPrefs } from '@/lib/storage';
+import { createSocketClient, serverUrl, setClient } from '@/solarxr/client';
 import './styles.css';
 
 const root = document.getElementById('root');
@@ -10,5 +11,6 @@ if (!root) throw new Error('missing #root element');
 
 setPlatform(await createPlatform());
 await loadPrefs();
+setClient(createSocketClient({ url: serverUrl() }));
 
 render(() => <App />, root);
