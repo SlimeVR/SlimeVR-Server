@@ -114,7 +114,11 @@ function startReplay() {
     return;
   }
   Sentry.addIntegration(
-    Sentry.replayIntegration({ maskAllText: false, maskAllInputs: true, blockAllMedia: false })
+    Sentry.replayIntegration({
+      maskAllText: false,
+      maskAllInputs: true,
+      blockAllMedia: false,
+    })
   );
 }
 
@@ -140,7 +144,10 @@ function applyIdentity({ userId, sessionId }: ReportingIdentity) {
 
 let appliedConsent = ErrorReportingConsent.UNDECIDED;
 
-function applyErrorReporting(next: ErrorReportingConsent, id: ReportingIdentity | null) {
+function applyErrorReporting(
+  next: ErrorReportingConsent,
+  id: ReportingIdentity | null
+) {
   platform.errorReporting?.setState({
     consent: next,
     userId: id?.userId ?? '',
@@ -161,14 +168,18 @@ function watchLayers() {
         sink().breadcrumb({
           category: 'solarxr',
           message: `connection ${event.status}`,
-          data: event.closeCode === undefined ? undefined : { closeCode: event.closeCode },
+          data:
+            event.closeCode === undefined ? undefined : { closeCode: event.closeCode },
         });
         return;
       case 'handler-error':
         reportError(event.error, { tags: { rpc: event.name } });
         return;
       default:
-        sink().breadcrumb({ category: 'solarxr.rpc', message: `${event.kind} ${event.name}` });
+        sink().breadcrumb({
+          category: 'solarxr.rpc',
+          message: `${event.kind} ${event.name}`,
+        });
     }
   });
 

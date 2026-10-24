@@ -15,7 +15,8 @@ export const errorReportingSettings = defineSettings({
   change: ChangeErrorReportingSettingsRequestT,
 });
 
-export type ConsentAnswer = ErrorReportingConsent.ALLOWED | ErrorReportingConsent.DENIED;
+export type ConsentAnswer =
+  ErrorReportingConsent.ALLOWED | ErrorReportingConsent.DENIED;
 
 export interface ReportingIdentity {
   userId: string;

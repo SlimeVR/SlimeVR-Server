@@ -33,7 +33,9 @@ let sink: FakeSink;
 const setState = vi.fn();
 
 beforeAll(async () => {
-  setPlatform(fakePlatform({ errorReporting: { setState, sendCrash: async () => true } }));
+  setPlatform(
+    fakePlatform({ errorReporting: { setState, sendCrash: async () => true } })
+  );
   fake = createFakeClient();
   setClient(fake);
   await initErrorReporting();
@@ -178,7 +180,9 @@ describe('reportError', () => {
 
 describe('defineMetric', () => {
   it('counts once per distinct attrs per session', () => {
-    const used = defineMetric<{ method: string }>('test_method_used', { once: 'session' });
+    const used = defineMetric<{ method: string }>('test_method_used', {
+      once: 'session',
+    });
     used({ method: 'manual' });
     used({ method: 'manual' });
     used({ method: 'auto' });

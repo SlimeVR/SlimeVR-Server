@@ -1,4 +1,10 @@
-import type { Breadcrumb, ErrorContext, MetricAttrs, ReportLevel, ReportSink } from './sink';
+import type {
+  Breadcrumb,
+  ErrorContext,
+  MetricAttrs,
+  ReportLevel,
+  ReportSink,
+} from './sink';
 
 export interface FakeSink extends ReportSink {
   errors: { error: unknown; context: ErrorContext }[];

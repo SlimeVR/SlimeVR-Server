@@ -63,7 +63,9 @@ export function DesignPage() {
       <div class="grid grid-cols-2 gap-lg md:grid-cols-3">
         <For each={ROLES}>
           {(role) => (
-            <div class={`${ROLE_CLASS[role]} flex flex-col gap-sm rounded-lg p-lg`}>
+            <div
+              class={`${ROLE_CLASS[role]} flex flex-col gap-sm rounded-lg p-lg`}
+            >
               <span class="text-section">{role}</span>
               <div class="bg-surface-control hover:bg-surface-hover rounded-md p-sm">
                 control / hover
