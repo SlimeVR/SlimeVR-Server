@@ -5,6 +5,7 @@ import { render } from 'solid-js/web';
 import { App } from '@/app/app';
 import { createPlatform } from '@/app/platform/detect';
 import { initErrorReporting } from '@/domain/error-reporting';
+import { initKeyboard } from '@/lib/keyboard';
 import { initL10n } from '@/lib/l10n';
 import { setPlatform } from '@/lib/platform';
 import { loadPrefs } from '@/lib/storage';
@@ -19,5 +20,6 @@ setClient(createSocketClient({ url: serverUrl() }));
 await initErrorReporting();
 await loadPrefs();
 await initL10n();
+initKeyboard();
 
 render(() => <App />, root);

@@ -1,10 +1,10 @@
-import {
+import type {
   OpenDialogOptions,
   OpenDialogReturnValue,
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
-import {
+import type {
   CrashReportKind,
   DiscordPresence,
   ErrorReportingState,

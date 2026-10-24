@@ -6,11 +6,6 @@ export {
   type MessageId,
 } from '@/lib/l10n/translate';
 export {
-  Localized,
-  type LocalizedElems,
-  type LocalizedProps,
-} from '@/lib/l10n/localized';
-export {
   DEFAULT_LOCALE,
   availableLocales,
   initL10n,

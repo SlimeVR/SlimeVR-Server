@@ -1,12 +1,7 @@
 import { render } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import {
-  createBundle,
-  setL10nBundles,
-  Localized,
-  type LocalizedElems,
-} from '@/lib/l10n';
-import { splitMarkup } from '@/lib/l10n/localized';
+import { createBundle, setL10nBundles } from '@/lib/l10n';
+import { Localized, type LocalizedElems, splitMarkup } from '@/ui/localized';
 
 function renderLocalized(id: string, elems: LocalizedElems) {
   return render(() => <Localized id={id} elems={elems} />);

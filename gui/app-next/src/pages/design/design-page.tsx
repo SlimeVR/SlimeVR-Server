@@ -1,5 +1,6 @@
 import { For } from 'solid-js';
 import { IconGallery } from './icon-gallery';
+import { MotionDemo } from './motion-demo';
 
 // Dev only token and primitive showcase
 
@@ -116,6 +117,7 @@ export function DesignPage() {
         </div>
       </div>
 
+      <MotionDemo />
       <IconGallery />
     </div>
   );

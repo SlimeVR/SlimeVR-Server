@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import { t, type MessageArgs, type MessageId } from '@/lib/l10n/translate';
+import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 
 export type LocalizedElems = Partial<
   Record<string, (children: string) => JSX.Element>

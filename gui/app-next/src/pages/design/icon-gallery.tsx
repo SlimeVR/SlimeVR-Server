@@ -130,7 +130,10 @@ const ICONS: IconEntry[] = [
   ['material-symbols/head-mounted-device-rounded', HeadMountedDeviceIcon],
   ['slime/hip', HipIcon],
   ['material-symbols/home', HomeIcon],
-  ['material-symbols/horizontal-align-center-rounded', HorizontalAlignCenterIcon],
+  [
+    'material-symbols/horizontal-align-center-rounded',
+    HorizontalAlignCenterIcon,
+  ],
   ['slime/layout', LayoutIcon],
   ['material-symbols/lightbulb-rounded', LightbulbIcon],
   ['slime/lower-arm', LowerArmIcon],
@@ -218,11 +221,16 @@ export function IconGallery() {
         <For each={ICONS}>
           {([path, icon]) => (
             <div
-              class="bg-surface-control hover:bg-surface-hover flex min-w-0 flex-col items-center gap-xs rounded-md p-sm text-center"
+              class="
+                bg-surface-control hover:bg-surface-hover flex min-w-0 flex-col items-center gap-xs
+                rounded-md p-sm text-center
+              "
               title={path}
             >
               <Dynamic component={icon} />
-              <span class="w-full truncate">{path.slice(path.indexOf('/') + 1)}</span>
+              <span class="w-full truncate">
+                {path.slice(path.indexOf('/') + 1)}
+              </span>
             </div>
           )}
         </For>

@@ -1,9 +1,12 @@
 import eslint from '@eslint/js';
+import betterTailwind from 'eslint-plugin-better-tailwindcss';
 import boundaries from 'eslint-plugin-boundaries';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import solid from 'eslint-plugin-solid/configs/typescript';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import l10n from './eslint/l10n.js';
+import layers from './eslint/layers.js';
 
 // Each entry is allowed only in the files listed in `allowedIn`
 const restricted = {
@@ -26,6 +29,12 @@ const restricted = {
     allowedIn: ['src/app/platform/**'],
     selector: "MemberExpression[property.name='electronAPI']",
     message: 'Use platform from @/lib/platform.',
+  },
+  keydown: {
+    allowedIn: ['src/lib/keyboard.ts', 'src/ui/motion/**'],
+    selector:
+      "CallExpression[callee.property.name='addEventListener'][arguments.0.value=/^key(down|up)$/]",
+    message: 'Use useShortcut from @/lib/keyboard, Escape goes to the back stack (useBack).',
   },
   android: {
     allowedIn: ['src/app/platform/**', 'src/env.d.ts'],
@@ -114,6 +123,49 @@ export default tseslint.config(
     },
   },
   ...restrictedOverrides(),
+  {
+    files: ['src/lib/**/*.{ts,tsx}'],
+    plugins: { layers },
+    rules: { 'layers/no-jsx': 'error' },
+  },
+  // Peer range stops at ESLint 9 but the rules only read JSX attributes
+  { files: ['src/**/*.tsx'], ...jsxA11y.flatConfigs.recommended },
+  // Long class strings wrap into a multiline template literal, fixed by lint:fix
+  {
+    files: ['src/**/*.tsx'],
+    plugins: { 'better-tailwindcss': betterTailwind },
+    settings: { 'better-tailwindcss': { entryPoint: 'src/styles.css' } },
+    rules: {
+      'better-tailwindcss/enforce-consistent-line-wrapping': [
+        'error',
+        // Packed lines, no line per variant group. Wider than prettier so
+        // only really long strings wrap at JSX indentation depth.
+        { printWidth: 100, group: 'never', preferSingleLine: true, strictness: 'loose' },
+      ],
+    },
+  },
+  // Solid compiles `ref={x}` into an assignment the rule cannot see
+  { files: ['src/**/*.tsx'], rules: { 'no-unassigned-vars': 'off' } },
+  // Motion hooks belong to ui primitives, pages only use the containers
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/ui/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/ui/motion',
+              importNames: ['useMotionItem'],
+              message: 'Only ui primitives register motion items.',
+            },
+          ],
+          patterns: [{ group: ['@/ui/motion/*'], message: 'Import from @/ui/motion.' }],
+        },
+      ],
+    },
+  },
   // Local rules run in node
   { files: ['eslint/**/*.js'], languageOptions: { globals: globals.node } },
   // Tests build their own bundles with made-up ids
