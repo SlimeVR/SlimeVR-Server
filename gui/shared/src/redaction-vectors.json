@@ -1,0 +1,119 @@
+[
+  {
+    "name": "firmware loaded credentials",
+    "line": "[INFO ] [WiFiHandler] Loaded credentials for SSID 'My Home Wifi' and pass length 12",
+    "known": [],
+    "expected": "[INFO ] [WiFiHandler] Loaded credentials for SSID '[ssid]' and pass length 12"
+  },
+  {
+    "name": "firmware connected, ssid with quote",
+    "line": "[INFO ] [WiFiHandler] Connected successfully to SSID 'Bob's net', IP address 192.168.1.42",
+    "known": [],
+    "expected": "[INFO ] [WiFiHandler] Connected successfully to SSID '[ssid]', IP address [ip]"
+  },
+  {
+    "name": "firmware handshake server ip",
+    "line": "[DEBUG] [UDPConnection] Handshake successful, server is 192.168.1.10:6969",
+    "known": [],
+    "expected": "[DEBUG] [UDPConnection] Handshake successful, server is [ip]:6969"
+  },
+  {
+    "name": "firmware wifi scan",
+    "line": "[INFO ] [SerialCommands] [WSCAN] 0:\t12\t'My Home Wifi'\t(-48 dBm)\tWPA2_PSK",
+    "known": [],
+    "expected": "[INFO ] [SerialCommands] [WSCAN] 0:\t12\t'[ssid]'\t(-48 dBm)\tWPA2_PSK"
+  },
+  {
+    "name": "serial set wifi",
+    "line": "SET WIFI \"My Home Wifi\" \"hunter22\"",
+    "known": [],
+    "expected": "SET WIFI \"[ssid]\" \"[password]\""
+  },
+  {
+    "name": "serial set bwifi",
+    "line": "SET BWIFI TXkgSG9tZQ== aHVudGVyMjI=",
+    "known": [],
+    "expected": "SET BWIFI [ssid] [password]"
+  },
+  {
+    "name": "mac colon",
+    "line": "Tracker AA:BB:CC:DD:EE:FF connected",
+    "known": [],
+    "expected": "Tracker [mac] connected"
+  },
+  {
+    "name": "mac dash lowercase",
+    "line": "Tracker aa-bb-cc-dd-ee-ff connected",
+    "known": [],
+    "expected": "Tracker [mac] connected"
+  },
+  {
+    "name": "linux home",
+    "line": "Loading config from /home/alice/.config/dev.slimevr.SlimeVR/vrconfig.yml",
+    "known": [],
+    "expected": "Loading config from ~/.config/dev.slimevr.SlimeVR/vrconfig.yml"
+  },
+  {
+    "name": "linux var home",
+    "line": "/var/home/alice/SlimeVR",
+    "known": [],
+    "expected": "~/SlimeVR"
+  },
+  {
+    "name": "windows home",
+    "line": "Loading config from C:\\Users\\Alice\\AppData\\Roaming\\dev.slimevr.SlimeVR\\vrconfig.yml",
+    "known": [],
+    "expected": "Loading config from ~\\AppData\\Roaming\\dev.slimevr.SlimeVR\\vrconfig.yml"
+  },
+  {
+    "name": "macos home",
+    "line": "Loading config from /Users/alice/Library/Application Support/dev.slimevr.SlimeVR",
+    "known": [],
+    "expected": "Loading config from ~/Library/Application Support/dev.slimevr.SlimeVR"
+  },
+  {
+    "name": "loopback and unspecified stay",
+    "line": "Connecting to ws://127.0.0.1:21110 and 0.0.0.0",
+    "known": [],
+    "expected": "Connecting to ws://127.0.0.1:21110 and 0.0.0.0"
+  },
+  {
+    "name": "versions and times stay",
+    "line": "Firmware 0.6.3 at 12:34:56",
+    "known": [],
+    "expected": "Firmware 0.6.3 at 12:34:56"
+  },
+  {
+    "name": "ipv6, loopback stays",
+    "line": "Bound to fe80::1c2b:3cff:fe4d:5e6f and ::1",
+    "known": [],
+    "expected": "Bound to [ip] and ::1"
+  },
+  {
+    "name": "known value, single char ignored",
+    "line": "Renamed tracker to Left Knee of Bob",
+    "known": [
+      "Left Knee of Bob",
+      "x"
+    ],
+    "expected": "Renamed tracker to [redacted]"
+  },
+  {
+    "name": "rotations stay",
+    "line": "[INFO ] [SerialCommands] Sensor[0]: BMI270 (0.012 0.999 -0.003 0.040) is working: true, had data: true",
+    "known": [],
+    "expected": "[INFO ] [SerialCommands] Sensor[0]: BMI270 (0.012 0.999 -0.003 0.040) is working: true, had data: true"
+  },
+  {
+    "name": "kotlin member reference stays",
+    "line": "at dev.slimevr.Foo::bar(Foo.kt:12)",
+    "known": [],
+    "expected": "at dev.slimevr.Foo::bar(Foo.kt:12)"
+  },
+  {
+    "name": "multi line",
+    "line": "first 10.0.0.2\nsecond /home/bob/x",
+    "known": [],
+    "expected": "first [ip]\nsecond ~/x"
+  }
+]

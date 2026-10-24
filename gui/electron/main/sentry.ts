@@ -9,7 +9,7 @@ import { app } from 'electron';
 import { join } from 'node:path';
 import { mkdir, readdir, readFile, rm, unlink, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
-import { CrashReportKind, ErrorReportingState } from '@slimevr/gui-shared';
+import { CrashReportKind, ErrorReportingState, redactText } from '@slimevr/gui-shared';
 import { ErrorReportingConsent } from 'solarxr-protocol';
 import { getGuiDataFolder } from './paths';
 import { logger, setLogForwarder } from './logger';
@@ -123,6 +123,7 @@ export function initSentry(isSteam: boolean) {
     sendDefaultPii: false,
     enableLogs: true,
     beforeSendLog: (log) => {
+      log.message = redactText(String(log.message));
       const sessionId = Sentry.getIsolationScope().getScopeData().tags.session_id;
       if (sessionId) log.attributes = { ...log.attributes, ['session_id']: sessionId };
       return log;
@@ -175,12 +176,13 @@ export function captureServerExit(
   signal: string | null,
   outputTail: string
 ) {
+  const tail = redactText(outputTail);
   const eventId = Sentry.captureMessage('server_exit_nonzero', {
     ...serverScope,
     level: 'error',
-    extra: { code, signal, outputTail },
+    extra: { code, signal, outputTail: tail },
   });
-  lastServerFailure = { eventId, code, signal, outputTail };
+  lastServerFailure = { eventId, code, signal, outputTail: tail };
 }
 
 export function sendCrashReport(kind: CrashReportKind) {
@@ -195,7 +197,7 @@ export function sendCrashReport(kind: CrashReportKind) {
       tags: serverScope.tags,
       extra: failure
         ? { code: failure.code, signal: failure.signal, outputTail: failure.outputTail }
-        : { outputTail: serverOutputTail() },
+        : { outputTail: redactText(serverOutputTail()) },
     });
   });
   return true;

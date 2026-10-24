@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { execSync } from 'node:child_process';
 import path from 'node:path';
@@ -49,7 +50,24 @@ export default defineConfig({
     __SENTRY_RELEASE_FORCED__: !!sentryReleaseOverride,
     __SENTRY_ENVIRONMENT__: JSON.stringify(sentryEnv.SENTRY_ENVIRONMENT || 'production'),
   },
-  plugins: [solid(), tailwindcss(), Icons({ compiler: 'solid' }), i18nHotReload()],
+  plugins: [
+    solid(),
+    tailwindcss(),
+    Icons({ compiler: 'solid' }),
+    i18nHotReload(),
+    sentryVitePlugin({
+      org: 'slimevr',
+      project: 'slimevr-server-gui-react',
+      // A forced test release never uploads to the real project
+      disable: !sentryRelease || !!sentryReleaseOverride,
+      release: { name: sentryRelease },
+      // Maps are uploaded to Sentry, not shipped to users
+      sourcemaps: {
+        // electron build passes --outDir ../electron/out/renderer
+        filesToDeleteAfterUpload: ['./dist/**/*.map', '../electron/out/renderer/**/*.map'],
+      },
+    }),
+  ],
   // FIXME: share i18n, images, fonts with the old app until parity
   publicDir: '../app/public',
   server: {
