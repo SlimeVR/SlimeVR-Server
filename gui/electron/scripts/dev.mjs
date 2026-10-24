@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { join, delimiter } from 'node:path';
 
 const HOST = '127.0.0.1';
-const PORT = 5173;
+const PORT = 5174;
 const RENDERER_URL = `http://${HOST}:${PORT}`;
 
 function resolveElectronExecPath() {
@@ -65,7 +65,7 @@ async function waitForServer(url, timeoutMs = 30000) {
 // 1. Start the renderer dev server (fixed port so the URL is deterministic).
 run('pnpm', [
   '--filter',
-  '@slimevr/gui-app',
+  '@slimevr/gui-app-next',
   'exec',
   'vite',
   '--host',

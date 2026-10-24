@@ -1,6 +1,7 @@
 packages:
   - "solarxr-protocol"
   - "gui/app"
+  - "gui/app-next"
   - "gui/electron"
   - "gui/shared"
   - "!solarxr-protocol/lib/flatbuffers/**"
@@ -12,3 +13,7 @@ allowBuilds:
   electron-winstaller: true
   esbuild: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - '@boundaries/elements@3.2.0'
+  - eslint-plugin-boundaries@7.3.0

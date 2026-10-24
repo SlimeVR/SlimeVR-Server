@@ -9,7 +9,7 @@
   "desktopName": "dev.slimevr.SlimeVR",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "electron-vite build --config electron.vite.config.ts && pnpm --filter @slimevr/gui-app exec vite build --outDir ../electron/out/renderer --emptyOutDir",
+    "build": "electron-vite build --config electron.vite.config.ts && pnpm --filter @slimevr/gui-app-next exec vite build --outDir ../electron/out/renderer --emptyOutDir",
     "package": "electron-builder",
     "package:build": "pnpm build && pnpm package",
     "preview": "electron ./out/main/index.js",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@sentry/core": "10.75.0",
     "@sentry/electron": "^7.20.0",
-    "@slimevr/gui-app": "workspace:*",
+    "@slimevr/gui-app-next": "workspace:*",
     "@slimevr/gui-shared": "workspace:*",
     "@xhayper/discord-rpc": "^1.3.0",
     "commander": "^14.0.3",
