@@ -21,6 +21,7 @@
     "@sentry/solid": "11.9.0",
     "@slimevr/gui-shared": "workspace:*",
     "@solidjs/router": "1.0.0",
+    "browser-fs-access": "0.38.0",
     "flatbuffers": "22.10.26",
     "solarxr-protocol": "workspace:*",
     "solid-js": "1.9.17",

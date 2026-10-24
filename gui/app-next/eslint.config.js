@@ -12,7 +12,7 @@ const restricted = {
     message: 'Use fmt() from @/lib/format, it is locale aware.',
   },
   storage: {
-    allowedIn: ['src/lib/storage.ts'],
+    allowedIn: ['src/lib/storage.ts', 'src/lib/storage.test.ts'],
     selector: "Identifier[name=/^(localStorage|sessionStorage)$/]",
     message: 'Use definePref/defineCache/defineSession from @/lib/storage.',
   },
@@ -32,13 +32,26 @@ function allow(from, to) {
   return { from: { element: { type: from } }, allow: { to: { element: { type: to } } } };
 }
 
-function restrictedSyntax(except) {
+function restrictedSyntax(except = []) {
   return [
     'error',
     ...Object.entries(restricted)
-      .filter(([name]) => name !== except)
+      .filter(([name]) => !except.includes(name))
       .map(([, { selector, message }]) => ({ selector, message })),
   ];
+}
+
+function restrictedOverrides() {
+  const byPattern = new Map();
+  for (const [name, { allowedIn }] of Object.entries(restricted)) {
+    for (const pattern of allowedIn) {
+      byPattern.set(pattern, [...(byPattern.get(pattern) ?? []), name]);
+    }
+  }
+  return [...byPattern].map(([pattern, names]) => ({
+    files: [pattern],
+    rules: { 'no-restricted-syntax': restrictedSyntax(names) },
+  }));
 }
 
 export default tseslint.config(
@@ -92,8 +105,5 @@ export default tseslint.config(
       ],
     },
   },
-  ...Object.entries(restricted).map(([name, { allowedIn }]) => ({
-    files: allowedIn,
-    rules: { 'no-restricted-syntax': restrictedSyntax(name) },
-  }))
+  ...restrictedOverrides()
 );
