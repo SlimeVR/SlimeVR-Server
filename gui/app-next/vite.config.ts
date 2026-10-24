@@ -3,6 +3,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { execSync } from 'node:child_process';
 import path from 'node:path';
+import { FileSystemHMRIconLoader } from 'unplugin-icons/loaders';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import solid from 'vite-plugin-solid';
@@ -53,7 +54,14 @@ export default defineConfig({
   plugins: [
     solid(),
     tailwindcss(),
-    Icons({ compiler: 'solid' }),
+    Icons({
+      compiler: 'solid',
+      defaultClass: 'icon',
+      // Custom icons, `~icons/slime/<name>`, hot reloaded when an svg changes
+      customCollections: {
+        ...FileSystemHMRIconLoader(path.resolve(__dirname, 'src/ui/icons/slime'), 'slime'),
+      },
+    }),
     i18nHotReload(),
     sentryVitePlugin({
       org: 'slimevr',

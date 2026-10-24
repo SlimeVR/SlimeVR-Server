@@ -235,7 +235,7 @@
 
   --role-sidebar-surface: var(--palette-bg-90);
   --role-sidebar-control: var(--palette-bg-70);
-  --role-sidebar-hover: var(--palette-bg-70);
+  --role-sidebar-hover: var(--palette-bg-60);
   --role-sidebar-well: var(--palette-bg-80);
 
   --role-page-surface: var(--palette-bg-70);
@@ -251,7 +251,7 @@
 
   --role-card-surface: var(--palette-bg-60);
   --role-card-control: var(--palette-bg-50);
-  --role-card-hover: var(--palette-bg-50);
+  --role-card-hover: var(--palette-bg-40);
   --role-card-well: var(--palette-bg-70);
 
   --role-overlay-surface: var(--palette-bg-60);

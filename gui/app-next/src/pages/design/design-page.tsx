@@ -1,4 +1,5 @@
 import { For } from 'solid-js';
+import { IconGallery } from './icon-gallery';
 
 // Dev only token and primitive showcase
 
@@ -114,6 +115,8 @@ export function DesignPage() {
           <div class="bg-surface-control h-xs" />
         </div>
       </div>
+
+      <IconGallery />
     </div>
   );
 }

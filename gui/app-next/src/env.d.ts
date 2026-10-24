@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="unplugin-icons/types/solid" />
 
 declare const __COMMIT_HASH__: string;
 declare const __VERSION_TAG__: string;
