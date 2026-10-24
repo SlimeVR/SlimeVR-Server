@@ -359,6 +359,12 @@ importers:
       '@fluent/langneg':
         specifier: 0.7.0
         version: 0.7.0
+      '@fontsource/jetbrains-mono':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/poppins':
+        specifier: 5.2.7
+        version: 5.2.7
       '@sentry/solid':
         specifier: 11.9.0
         version: 11.9.0(@solidjs/router@1.0.0(solid-js@1.9.17))(solid-js@1.9.17)

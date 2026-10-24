@@ -1,3 +1,7 @@
+import { DesignPage } from '@/pages/design/design-page';
+
 export function App() {
-  return <main class="p-4">SlimeVR GUI next</main>;
+  return (
+      <DesignPage />
+  );
 }

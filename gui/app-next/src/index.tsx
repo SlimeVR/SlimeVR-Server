@@ -1,3 +1,6 @@
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/700.css';
 import { render } from 'solid-js/web';
 import { App } from '@/app/app';
 import { createPlatform } from '@/app/platform/detect';
