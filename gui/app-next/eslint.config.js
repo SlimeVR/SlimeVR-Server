@@ -12,6 +12,11 @@ const restricted = {
     selector: "CallExpression[callee.property.name='toFixed']",
     message: 'Use fmt() from @/lib/format, it is locale aware.',
   },
+  intl: {
+    allowedIn: ['src/lib/format.ts'],
+    selector: "NewExpression[callee.object.name='Intl']",
+    message: 'Use fmt/fmtList/fmtRelative from @/lib/format, they cache per locale.',
+  },
   storage: {
     allowedIn: ['src/lib/storage.ts', 'src/lib/storage.test.ts'],
     selector: "Identifier[name=/^(localStorage|sessionStorage)$/]",
