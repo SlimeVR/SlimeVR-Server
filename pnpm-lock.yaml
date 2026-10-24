@@ -359,9 +359,6 @@ importers:
       '@fluent/langneg':
         specifier: 0.7.0
         version: 0.7.0
-      '@fluent/sequence':
-        specifier: 0.8.0
-        version: 0.8.0(@fluent/bundle@0.19.1)
       '@sentry/solid':
         specifier: 11.9.0
         version: 11.9.0(@solidjs/router@1.0.0(solid-js@1.9.17))(solid-js@1.9.17)
@@ -7283,10 +7280,6 @@ snapshots:
   '@fluent/sequence@0.8.0(@fluent/bundle@0.18.0)':
     dependencies:
       '@fluent/bundle': 0.18.0
-
-  '@fluent/sequence@0.8.0(@fluent/bundle@0.19.1)':
-    dependencies:
-      '@fluent/bundle': 0.19.1
 
   '@fluent/syntax@0.19.0': {}
 

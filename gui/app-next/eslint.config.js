@@ -3,6 +3,7 @@ import boundaries from 'eslint-plugin-boundaries';
 import solid from 'eslint-plugin-solid/configs/typescript';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import l10n from './eslint/l10n.js';
 
 // Each entry is allowed only in the files listed in `allowedIn`
 const restricted = {
@@ -67,6 +68,7 @@ export default tseslint.config(
     plugins: {
       ...solid.plugins,
       boundaries,
+      l10n,
     },
     settings: {
       'import/resolver': { typescript: { alwaysTryTypes: true, project: './tsconfig.json' } },
@@ -96,6 +98,7 @@ export default tseslint.config(
           ],
         },
       ],
+      'l10n/message-id': 'error',
       'no-throw-literal': 'error',
       'no-duplicate-imports': 'error',
       'no-restricted-syntax': restrictedSyntax(),
@@ -105,5 +108,9 @@ export default tseslint.config(
       ],
     },
   },
-  ...restrictedOverrides()
+  ...restrictedOverrides(),
+  // Local rules run in node
+  { files: ['eslint/**/*.js'], languageOptions: { globals: globals.node } },
+  // Tests build their own bundles with made-up ids
+  { files: ['src/**/*.test.{ts,tsx}'], rules: { 'l10n/message-id': 'off' } }
 );

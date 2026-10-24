@@ -17,7 +17,6 @@
   "dependencies": {
     "@fluent/bundle": "0.19.1",
     "@fluent/langneg": "0.7.0",
-    "@fluent/sequence": "0.8.0",
     "@sentry/solid": "11.9.0",
     "@slimevr/gui-shared": "workspace:*",
     "@solidjs/router": "1.0.0",
