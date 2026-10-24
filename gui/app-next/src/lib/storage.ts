@@ -76,7 +76,7 @@ export function localCrossStorage(prefix: string): CrossStorage {
   };
 }
 
-// Awaited in boot after the platform is set; prefs read defaults until then
+// Awaited in boot after the platform is set. Prefs read defaults until then
 export async function loadPrefs() {
   const raw = parseJson(await platform.storage('settings').get<string>(SETTINGS_KEY));
   setSettings(migrate(isRecord(raw) ? raw : {}));
