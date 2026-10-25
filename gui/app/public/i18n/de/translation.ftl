@@ -300,6 +300,10 @@ dongle-settings-name_section = Dongle Name
 dongle-settings-name_section-description = Geben Sie ihm einen süßen Spitznamen :)
 dongle-settings-update = Jetzt aktualisieren
 dongle-settings-update-title = Firmware-Version
+dongle-settings-telemetry-select_trackers-summary = { $count } von { $total } Trackern
+dongle-settings-telemetry-show_min_max = Min/Max
+dongle-settings-telemetry-chart_rssi = RSSI · dBm
+dongle-settings-telemetry-chart_loss = Paketverlust · %
 
 ## Tracker part card info
 
