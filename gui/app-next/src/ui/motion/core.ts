@@ -405,6 +405,25 @@ function exitEdit() {
   setEditing(null);
 }
 
+function findContainer(node: MotionContainer, el: HTMLElement): MotionContainer | null {
+  if (node.el && el.contains(node.el)) return node;
+  for (const child of node.children) {
+    if (child.kind === 'item') continue;
+    const found = findContainer(child, el);
+    if (found) return found;
+  }
+  return null;
+}
+
+// Focus the entry item of the outermost container inside `el`; false when there is none
+export function focusEntry(el: HTMLElement): boolean {
+  const container = root && findContainer(root, el);
+  const target = container && enter(container, origin ?? ZERO);
+  if (!target) return false;
+  focusItem(target);
+  return true;
+}
+
 function placeCursor() {
   const target = root && enter(root, origin ?? ZERO);
   if (target) focusItem(target);

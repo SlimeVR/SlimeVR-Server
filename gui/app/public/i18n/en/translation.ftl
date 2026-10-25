@@ -1901,3 +1901,10 @@ toolbar-unassigned_trackers = { $count ->
     [one] { $count } tracker unassigned
     *[other] { $count } trackers unassigned
 }
+
+## Shared overlays and status screens
+
+dialog-cancel = Cancel
+status-loading = Loading
+toast-saved = Saved
+toast-not-saved = Not saved, the server is not connected

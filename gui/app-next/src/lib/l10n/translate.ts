@@ -1,7 +1,8 @@
 import { FluentBundle, FluentResource, type FluentVariable } from '@fluent/bundle';
 import { createSignal } from 'solid-js';
 
-export type MessageId = string;
+// `& {}` keeps the alias name on the type, so lint finds every id position by type
+export type MessageId = string & {};
 export type MessageArgs = Record<string, string | number>;
 
 const [bundles, setBundles] = createSignal<FluentBundle[]>([]);

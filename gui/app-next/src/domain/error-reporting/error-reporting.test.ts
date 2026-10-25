@@ -7,7 +7,7 @@ import {
   ResetsSettingsResponseT,
 } from 'solarxr-protocol';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { saveSettings } from '@/domain/save/save-settings';
+import { saveSettings } from '@/domain/settings/save-settings';
 import { platform, setPlatform } from '@/lib/platform';
 import { fakePlatform } from '@/lib/platform-fake';
 import { setClient } from '@/solarxr/client';

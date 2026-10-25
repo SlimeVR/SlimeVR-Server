@@ -102,6 +102,7 @@ export function MotionRing() {
   return (
     <div
       ref={ring}
+      aria-hidden="true"
       data-editing={motionEditing() ? '' : undefined}
       class="
         pointer-events-none fixed top-0 left-0 z-50 rounded-md border-2 border-focus opacity-0

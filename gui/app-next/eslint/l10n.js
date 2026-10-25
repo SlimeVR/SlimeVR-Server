@@ -1,6 +1,6 @@
 // Checks Fluent ids against the en-US translation.ftl: literal ids passed to `t`, `t.attr`,
-// the `id` prop of l10n components, and string values of objects that
-// `satisfies Record<..., MessageId>`. Ids must be full literals, args must match the message.
+// the `id` prop of l10n components (with args), and any other string literal typed as MessageId
+// (props, options, `satisfies Record<..., MessageId>`). Ids must be full literals, args must match.
 import { parse } from '@fluent/syntax';
 import { readFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -59,7 +59,9 @@ function requiredVars(messages, id, attr, seen = new Set()) {
   return vars;
 }
 
-function literalIds(node, context) {
+// `handled` collects literals already checked through t()/Localized, so the type-based pass skips them
+function literalIds(node, context, handled) {
+  if (node.type === 'Literal' || node.type === 'TemplateLiteral') handled.add(node);
   if (node.type === 'Literal' && typeof node.value === 'string') return [node.value];
   if (node.type === 'TemplateLiteral') {
     if (node.expressions.length === 0) return [node.quasis[0].value.cooked];
@@ -67,11 +69,17 @@ function literalIds(node, context) {
     return null;
   }
   if (node.type === 'ConditionalExpression') {
-    const a = literalIds(node.consequent, context);
-    const b = literalIds(node.alternate, context);
+    const a = literalIds(node.consequent, context, handled);
+    const b = literalIds(node.alternate, context, handled);
     return a && b ? [...a, ...b] : null;
   }
   return null;
+}
+
+function isMessageIdType(type) {
+  if (!type) return false;
+  if (type.aliasSymbol?.escapedName === 'MessageId') return true;
+  return type.isUnion() && type.types.some(isMessageIdType);
 }
 
 function propName(prop) {
@@ -97,6 +105,19 @@ const messageId = {
   },
   create(context) {
     const messages = loadMessages();
+    const handled = new WeakSet();
+    const services = context.sourceCode.parserServices;
+    const checker = services?.program?.getTypeChecker();
+
+    function typedAsMessageId(node) {
+      const tsNode = services.esTreeNodeToTSNodeMap.get(node);
+      return isMessageIdType(checker.getContextualType(tsNode));
+    }
+
+    function checkTyped(node) {
+      if (!checker || handled.has(node) || !typedAsMessageId(node)) return;
+      check(node, { attr: undefined, withArgs: false });
+    }
 
     function checkArgs(node, id, attr, argsNode) {
       const vars = requiredVars(messages, id, attr);
@@ -118,7 +139,7 @@ const messageId = {
     }
 
     function check(idNode, { attr, argsNode, withArgs }) {
-      const ids = literalIds(idNode, context);
+      const ids = literalIds(idNode, context, handled);
       if (!ids) return;
       for (const id of ids) {
         const message = messages.get(id);
@@ -169,14 +190,11 @@ const messageId = {
         const argsNode = argsAttr?.value?.type === 'JSXExpressionContainer' ? argsAttr.value.expression : undefined;
         check(idNode, { attr: undefined, argsNode, withArgs });
       },
-      TSSatisfiesExpression(node) {
-        const type = context.sourceCode.getText(node.typeAnnotation);
-        const object = node.expression.type === 'TSAsExpression' ? node.expression.expression : node.expression;
-        if (!/\bMessageId\b/.test(type) || object.type !== 'ObjectExpression') return;
-        for (const prop of object.properties) {
-          if (prop.type === 'Property') check(prop.value, { attr: undefined, withArgs: false });
-        }
+      // Props, options and `satisfies Record<..., MessageId>` values: anything typed MessageId
+      Literal(node) {
+        if (typeof node.value === 'string') checkTyped(node);
       },
+      TemplateLiteral: checkTyped,
     };
   },
 };

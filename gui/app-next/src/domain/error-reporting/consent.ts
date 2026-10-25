@@ -4,7 +4,7 @@ import {
   ErrorReportingSettingsRequestT,
   ErrorReportingSettingsResponseT,
 } from 'solarxr-protocol';
-import { saveSettings } from '@/domain/save/save-settings';
+import { saveSettings } from '@/domain/settings/save-settings';
 import { platform, type CrashKind } from '@/lib/platform';
 import { client } from '@/solarxr/client';
 import { defineSettings } from '@/solarxr/settings';

@@ -1,6 +1,7 @@
 import { createEffect, type JSX, onCleanup, onMount } from 'solid-js';
 import * as v from 'valibot';
 import { definePref } from '@/lib/storage';
+import { Floating } from '@/ui/floating';
 import { MotionParent } from './containers';
 import {
   createContainer,
@@ -47,7 +48,9 @@ export function MotionRoot(props: { children: JSX.Element }) {
   return (
     <MotionParent.Provider value={root}>
       {props.children}
-      <MotionRing />
+      <Floating>
+        <MotionRing />
+      </Floating>
     </MotionParent.Provider>
   );
 }

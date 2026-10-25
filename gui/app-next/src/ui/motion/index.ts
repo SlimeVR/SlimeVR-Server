@@ -7,6 +7,7 @@ export {
 } from './containers';
 export {
   type Direction,
+  focusEntry,
   move,
   motionActive,
   motionEditing,

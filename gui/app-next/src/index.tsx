@@ -5,6 +5,7 @@ import { render } from 'solid-js/web';
 import { App } from '@/app/app';
 import { createPlatform } from '@/app/platform/detect';
 import { initErrorReporting } from '@/domain/error-reporting';
+import { initSaveToasts } from '@/domain/settings/save-toasts';
 import { initKeyboard } from '@/lib/keyboard';
 import { initL10n } from '@/lib/l10n';
 import { setPlatform } from '@/lib/platform';
@@ -21,5 +22,6 @@ await initErrorReporting();
 await loadPrefs();
 await initL10n();
 initKeyboard();
+initSaveToasts();
 
 render(() => <App />, root);

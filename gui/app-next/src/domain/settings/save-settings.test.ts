@@ -9,7 +9,7 @@ import {
   lastSave,
   observeSaves,
   type SaveEvent,
-} from '@/domain/save/save-settings';
+} from '@/domain/settings/save-settings';
 import { setClient } from '@/solarxr/client';
 import { defineSettings } from '@/solarxr/settings';
 import { createFakeClient, type FakeClient } from '@/solarxr/testing';

@@ -22,7 +22,7 @@ const restricted = {
   },
   storage: {
     allowedIn: ['src/lib/storage.ts', 'src/lib/storage.test.ts'],
-    selector: "Identifier[name=/^(localStorage|sessionStorage)$/]",
+    selector: 'Identifier[name=/^(localStorage|sessionStorage)$/]',
     message: 'Use definePref/defineCache/defineSession from @/lib/storage.',
   },
   electronApi: {
@@ -34,7 +34,8 @@ const restricted = {
     allowedIn: ['src/lib/keyboard.ts', 'src/ui/motion/**'],
     selector:
       "CallExpression[callee.property.name='addEventListener'][arguments.0.value=/^key(down|up)$/]",
-    message: 'Use useShortcut from @/lib/keyboard, Escape goes to the back stack (useBack).',
+    message:
+      'Use useShortcut from @/lib/keyboard, Escape goes to the back stack (useBack).',
   },
   android: {
     allowedIn: ['src/app/platform/**', 'src/env.d.ts'],
@@ -44,7 +45,10 @@ const restricted = {
 };
 
 function allow(from, to) {
-  return { from: { element: { type: from } }, allow: { to: { element: { type: to } } } };
+  return {
+    from: { element: { type: from } },
+    allow: { to: { element: { type: to } } },
+  };
 }
 
 function restrictedSyntax(except = []) {
@@ -77,6 +81,7 @@ export default tseslint.config(
     ...solid,
     languageOptions: {
       parser: tseslint.parser,
+      parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
       globals: globals.browser,
     },
     plugins: {
@@ -85,7 +90,9 @@ export default tseslint.config(
       l10n,
     },
     settings: {
-      'import/resolver': { typescript: { alwaysTryTypes: true, project: './tsconfig.json' } },
+      'import/resolver': {
+        typescript: { alwaysTryTypes: true, project: './tsconfig.json' },
+      },
       'boundaries/include': ['src/**/*'],
       'boundaries/elements': [
         { type: 'app', pattern: 'src/app' },
@@ -140,7 +147,12 @@ export default tseslint.config(
         'error',
         // Packed lines, no line per variant group. Wider than prettier so
         // only really long strings wrap at JSX indentation depth.
-        { printWidth: 100, group: 'never', preferSingleLine: true, strictness: 'loose' },
+        {
+          printWidth: 100,
+          group: 'never',
+          preferSingleLine: true,
+          strictness: 'loose',
+        },
       ],
     },
   },

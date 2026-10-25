@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/solid';
 import { redactText } from '@slimevr/gui-shared';
 import { createEffect, createRoot } from 'solid-js';
 import { ErrorReportingConsent } from 'solarxr-protocol';
-import { observeSaves } from '@/domain/save/save-settings';
+import { observeSaves } from '@/domain/settings/save-settings';
 import { platform } from '@/lib/platform';
 import { client } from '@/solarxr/client';
 import { observeResources } from '@/solarxr/resource';
