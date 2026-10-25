@@ -28,6 +28,7 @@ export const formats = {
   },
   volts: { suffix: 'V', minimumFractionDigits: 2, maximumFractionDigits: 2 },
   dbm: { suffix: 'dBm', maximumFractionDigits: 0 },
+  milliseconds: { suffix: 'ms', maximumFractionDigits: 0 },
   offset: { signDisplay: 'exceptZero', maximumFractionDigits: 2 },
 } satisfies Record<string, NumberSpec>;
 

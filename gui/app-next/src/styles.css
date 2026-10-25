@@ -19,6 +19,7 @@
   --palette-warning: #ffe135;
   --palette-critical: #df6d8c;
   --palette-special: #a44fed;
+  --palette-info: #06b6d4;
   --palette-window-icon: #c0a1d8;
   --palette-assign-left: #2b83e8;
   --palette-assign-right: #f956b8;
@@ -463,6 +464,7 @@
   --color-warning: var(--palette-warning);
   --color-critical: var(--palette-critical);
   --color-special: var(--palette-special);
+  --color-info: var(--palette-info);
   --color-window-icon: var(--palette-window-icon);
   --color-assign-left: var(--palette-assign-left);
   --color-assign-right: var(--palette-assign-right);
@@ -633,6 +635,13 @@
 
 @utility crisp-edges {
   image-rendering: crisp-edges;
+}
+
+/* Tracker movement glow, `--movement` 0..1 set inline from trackerMovement */
+@utility movement-glow {
+  --glow: calc(var(--movement, 0) * 8px);
+  box-shadow: 0 0 var(--glow) var(--glow) var(--palette-accent-30);
+  transition: box-shadow 200ms linear;
 }
 
 /* Sprite sheet player, see ui/sprite. One integer frame counter steps through

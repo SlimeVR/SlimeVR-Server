@@ -312,6 +312,9 @@ tracker-status-ok = OK
 tracker-status-timed_out = Timed out
 tracker-status-sleeping = Sleeping
 
+# $hours (Number), $minutes (Number) - Estimated battery runtime left
+tracker-battery-runtime = { $hours }h { $minutes }min
+
 ## Tracker status columns
 tracker-table-column-name = Name
 tracker-table-column-type = Type

@@ -1,5 +1,5 @@
 import { BodyPart, ResetAvailability, TrackerStatus } from 'solarxr-protocol';
-import { For, Index, Show } from 'solid-js';
+import { createSignal, For, Index, Show } from 'solid-js';
 import { bones, serverGuards } from '@/domain/datafeed';
 import {
   assignedTrackerKeys,
@@ -7,16 +7,21 @@ import {
   dongleById,
   dongleIds,
   toEulerDegrees,
+  TrackerCard,
   trackerByKey,
   trackerDevice,
   trackerKeys,
   trackerMovement,
   trackerName,
+  TrackerRow,
   type TrackerKey,
 } from '@/domain/trackers';
 import { fmt, formats } from '@/lib/format';
+import { Pressable } from '@/ui/pressable';
 
-function TrackerRow(props: { trackerKey: TrackerKey }) {
+
+//placholder
+function TrackerTableRow(props: { trackerKey: TrackerKey }) {
   const tracker = () => trackerByKey(props.trackerKey);
   const device = () => trackerDevice(props.trackerKey);
   const euler = () => toEulerDegrees(tracker()?.rotation);
@@ -56,6 +61,54 @@ function TrackerRow(props: { trackerKey: TrackerKey }) {
 
 function availability(value: ResetAvailability | undefined) {
   return value === undefined ? '--' : ResetAvailability[value];
+}
+
+function TrackerWidgets() {
+  const [selected, setSelected] = createSignal<TrackerKey>();
+
+  function toggle(key: TrackerKey) {
+    setSelected(selected() === key ? undefined : key);
+  }
+
+  return (
+    <>
+      <span class="text-section">Tracker cards</span>
+      <div class="grid gap-lg @3xl:grid-cols-2">
+        <For each={trackerKeys()}>
+          {(key, i) => (
+            <Pressable onClick={() => toggle(key)} class="rounded-lg">
+              <TrackerCard
+                trackerKey={key}
+                size="small"
+                warning={i() === 0 ? 'tracker-status-error' : undefined}
+              />
+            </Pressable>
+          )}
+        </For>
+      </div>
+      <Show when={trackerKeys()[0]}>
+        {(key) => (
+          <div class="w-full max-w-xs">
+            <TrackerCard trackerKey={key()} glow={false} />
+          </div>
+        )}
+      </Show>
+      <span class="text-section">Tracker rows (press to select)</span>
+      <div class="flex max-w-md flex-col gap-sm">
+        <For each={trackerKeys()}>
+          {(key) => (
+            <Pressable
+              onClick={() => toggle(key)}
+              pressed={selected() === key}
+              class="rounded-lg aria-pressed:ring-2 aria-pressed:ring-accent"
+            >
+              <TrackerRow trackerKey={key} />
+            </Pressable>
+          )}
+        </For>
+      </div>
+    </>
+  );
 }
 
 // Dev check of the datafeed ingest and the trackers store
@@ -106,11 +159,13 @@ export function DatafeedDemo() {
           </thead>
           <tbody>
             <For each={trackerKeys()}>
-              {(key) => <TrackerRow trackerKey={key} />}
+              {(key) => <TrackerTableRow trackerKey={key} />}
             </For>
           </tbody>
         </table>
       </div>
+
+      <TrackerWidgets />
 
       <span class="text-section">Dongles</span>
       <Show
