@@ -252,10 +252,10 @@ function SelectBox<T>(props: SelectBoxProps<T>) {
         inert={state() === 'loading'}
         class={cx(
           `
-            relative flex min-h-control w-full min-w-0 items-center rounded-md bg-surface-control
-            pr-11 pl-3 text-left text-standard text-fg not-aria-disabled:hover:bg-surface-hover
-            aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-invalid:ring-1
-            aria-invalid:ring-critical
+            relative flex min-h-control w-full min-w-(--field-min,0px) items-center rounded-md
+            bg-surface-control pr-11 pl-3 text-left text-standard text-fg
+            not-aria-disabled:hover:bg-surface-hover aria-disabled:cursor-not-allowed
+            aria-disabled:opacity-50 aria-invalid:ring-1 aria-invalid:ring-critical
           `,
           props.field.label && 'pt-[1.15rem] pb-[0.15rem]',
           props.field.class

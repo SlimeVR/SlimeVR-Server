@@ -286,7 +286,7 @@ const windowState = await readFile(getWindowStateFile(), {
   });
 
 const MIN_WIDTH = 393;
-const MIN_HEIGHT = 667;
+const MIN_HEIGHT = 709;
 
 function validateWindowState(state: typeof defaultWindowState) {
   if (state.x === undefined || state.y === undefined) {

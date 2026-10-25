@@ -1,5 +1,6 @@
 import { createSignal, For } from 'solid-js';
 import { Segmented } from '@/ui/radio-group';
+import { ContainersDemo } from './containers-demo';
 import { IconGallery } from './icon-gallery';
 import { MotionDemo } from './motion-demo';
 import { OverlayDemo } from './overlay-demo';
@@ -119,6 +120,7 @@ export function DesignPage() {
       </div>
 
       <PrimitivesDemo />
+      <ContainersDemo />
       <MotionDemo />
       <OverlayDemo />
       <IconGallery />

@@ -47,9 +47,7 @@ export function Popover(props: PopoverProps) {
     // ring would sit under the menu while pad users move through its items.
     onCleanup(pushLayer(el));
 
-    // Items register in their onMount, queued after this effect. Solid flushes
-    // effects synchronously, so a microtask runs once they are all registered.
-    queueMicrotask(() => focusEntry(el));
+    focusEntry(el);
 
     // The anchor handles its own presses (it toggles)
     function onOutside(e: PointerEvent) {

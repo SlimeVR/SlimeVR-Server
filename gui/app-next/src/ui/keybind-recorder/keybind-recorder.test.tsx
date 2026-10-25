@@ -31,6 +31,7 @@ function renderRecorder(initial: string[] = ['CTRL', 'A']) {
 describe('KeybindRecorder', () => {
   let stopKeyboard: () => void;
   beforeEach(() => {
+    setPlatform(fakePlatform());
     stopKeyboard = initKeyboard();
   });
   afterEach(() => {
@@ -100,7 +101,6 @@ describe('KeybindRecorder', () => {
     expect(keybindRecording).toHaveBeenLastCalledWith(true);
     await user.keyboard('{Escape}');
     expect(keybindRecording).toHaveBeenLastCalledWith(false);
-    setPlatform(fakePlatform());
   });
 
   it('a disabled recorder does not record', async () => {

@@ -225,7 +225,7 @@ export function TextField(props: TextFieldProps) {
     <MotionList
       orientation="horizontal"
       entry="first"
-      class={cx('relative', props.class)}
+      class={cx('relative w-full min-w-(--field-min,0px)', props.class)}
       inert={fieldState(props) === 'loading'}
     >
       <TextFieldBody {...props} />

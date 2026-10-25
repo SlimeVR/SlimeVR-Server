@@ -12,6 +12,8 @@ import {
   vi,
 } from 'vitest';
 import { initKeyboard } from '@/lib/keyboard';
+import { fakePlatform } from '@/lib/platform-fake';
+import { setPlatform } from '@/lib/platform';
 import { Checkbox } from '@/ui/checkbox';
 import { FileInput } from '@/ui/file-input';
 import type { FieldProps } from '@/ui/field';
@@ -31,9 +33,11 @@ interface FieldContract<T> {
   host?: () => HTMLElement;
 }
 
-// The keybind recorder captures keys through the app keyboard listener
+// The keybind recorder captures keys through the app keyboard listener and
+// suspends global shortcuts through the platform
 let stopKeyboard: () => void;
 beforeAll(() => {
+  setPlatform(fakePlatform());
   stopKeyboard = initKeyboard();
 });
 afterAll(() => stopKeyboard());

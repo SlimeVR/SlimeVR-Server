@@ -417,13 +417,26 @@ function findContainer(node: MotionContainer, el: HTMLElement): MotionContainer 
   return null;
 }
 
-// Focus the entry item of the outermost container inside `el`; false when there is none
-export function focusEntry(el: HTMLElement): boolean {
-  const container = root && findContainer(root, el);
-  const target = container && enter(container, origin ?? ZERO);
-  if (!target) return false;
-  focusItem(target);
-  return true;
+function hasAutofocus(el: HTMLElement): boolean {
+  const active = document.activeElement;
+  return (
+    active instanceof HTMLElement &&
+    el.contains(active) &&
+    active.hasAttribute('autofocus')
+  );
+}
+
+// Focus the entry item of the outermost container inside `el`, unless an
+// autofocus element in it holds focus. Call from onMount or an effect: items
+// register in their own onMount, queued after the caller's, and Solid flushes
+// those synchronously, so a microtask runs once they are all registered.
+export function focusEntry(el: HTMLElement) {
+  queueMicrotask(() => {
+    if (hasAutofocus(el)) return;
+    const container = root && findContainer(root, el);
+    const target = container && enter(container, origin ?? ZERO);
+    if (target) focusItem(target);
+  });
 }
 
 function placeCursor() {

@@ -245,9 +245,9 @@ export function NumberField(props: NumberFieldProps) {
       inert={state() === 'loading'}
       class={cx(
         `
-          flex min-h-control items-stretch overflow-hidden rounded-md bg-surface-control
-          text-standard text-fg has-aria-disabled:opacity-50 has-aria-invalid:ring-1
-          has-aria-invalid:ring-critical
+          flex min-h-control w-full min-w-(--field-min,0px) items-stretch overflow-hidden rounded-md
+          bg-surface-control text-standard text-fg has-aria-disabled:opacity-50
+          has-aria-invalid:ring-1 has-aria-invalid:ring-critical
         `,
         props.class
       )}

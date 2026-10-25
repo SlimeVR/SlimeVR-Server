@@ -35,15 +35,6 @@ function closeModal(el: HTMLDialogElement) {
   else el.removeAttribute('open');
 }
 
-function hasAutofocus(el: HTMLElement): boolean {
-  const active = document.activeElement;
-  return (
-    active instanceof HTMLElement &&
-    el.contains(active) &&
-    active.hasAttribute('autofocus')
-  );
-}
-
 // Modal in the top layer, rendered in place. Bottom sheet on narrow screens.
 export function Dialog(props: DialogProps) {
   let el!: HTMLDialogElement;
@@ -66,11 +57,7 @@ export function Dialog(props: DialogProps) {
     }
     showModal(el);
     onCleanup(pushLayer(el));
-    // Items register in their onMount, queued after this effect. Solid flushes
-    // effects synchronously, so a microtask runs once they are all registered.
-    queueMicrotask(() => {
-      if (!hasAutofocus(el)) focusEntry(el);
-    });
+    focusEntry(el);
   });
 
   onCleanup(() => closeModal(el));
