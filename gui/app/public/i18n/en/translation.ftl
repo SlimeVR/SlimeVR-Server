@@ -299,6 +299,9 @@ widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Stay Aligned
 
+## Tracker name
+tracker-unnamed = Unnamed tracker
+
 ## Tracker status
 tracker-status-none = No Status
 tracker-status-busy = Busy

@@ -17,13 +17,14 @@ const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at H
 // Non-empty means the tree is dirty
 const gitCleanString = execSync('git status --porcelain').toString();
 const gitClean = !gitCleanString;
-if (!gitClean) console.log('Git is dirty because of:\n' + gitCleanString);
-
-console.log(`version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`);
+if (!process.env.VITEST) {
+  if (!gitClean) console.log('Git is dirty because of:\n' + gitCleanString);
+  console.log(`version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`);
+}
 
 // SENTRY_* from the repo root .env.local, see .env.example. Real environment variables win.
 // Only clean tagged builds are Sentry releases, SENTRY_RELEASE forces one (CI never sets it).
-const sentryEnv = loadEnv('', path.resolve(__dirname, '../..'), 'SENTRY_');
+const sentryEnv = loadEnv('', path.resolve(import.meta.dirname, '../..'), 'SENTRY_');
 const sentryReleaseOverride = sentryEnv.SENTRY_RELEASE ?? '';
 const sentryRelease = sentryReleaseOverride || (gitClean ? versionTag : '');
 
@@ -60,7 +61,7 @@ export default defineConfig({
       defaultClass: 'icon',
       // Custom icons, `~icons/slime/<name>`, hot reloaded when an svg changes
       customCollections: {
-        ...FileSystemHMRIconLoader(path.resolve(__dirname, 'src/ui/icons/slime'), 'slime'),
+        ...FileSystemHMRIconLoader(path.resolve(import.meta.dirname, 'src/ui/icons/slime'), 'slime'),
       },
     }),
     // `import x from './a.webp?img'` (or `?size=360&img`): AVIF at 1x and 2x of
@@ -80,18 +81,23 @@ export default defineConfig({
       },
     }),
     i18nHotReload(),
-    sentryVitePlugin({
-      org: 'slimevr',
-      project: 'slimevr-server-gui-react',
-      // A forced test release never uploads to the real project
-      disable: !sentryRelease || !!sentryReleaseOverride,
-      release: { name: sentryRelease },
-      // Maps are uploaded to Sentry, not shipped to users
-      sourcemaps: {
-        // electron build passes --outDir ../electron/out/renderer
-        filesToDeleteAfterUpload: ['./dist/**/*.map', '../electron/out/renderer/**/*.map'],
-      },
-    }),
+    // Its vite version probe loads a stray CJS vite and warns, tests never upload
+    ...(process.env.VITEST
+      ? []
+      : [
+          sentryVitePlugin({
+            org: 'slimevr',
+            project: 'slimevr-server-gui-react',
+            // A forced test release never uploads to the real project
+            disable: !sentryRelease || !!sentryReleaseOverride,
+            release: { name: sentryRelease },
+            // Maps are uploaded to Sentry, not shipped to users
+            sourcemaps: {
+              // electron build passes --outDir ../electron/out/renderer
+              filesToDeleteAfterUpload: ['./dist/**/*.map', '../electron/out/renderer/**/*.map'],
+            },
+          }),
+        ]),
   ],
   // FIXME: share i18n, images, fonts with the old app until parity
   publicDir: '../app/public',
@@ -107,7 +113,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(import.meta.dirname, 'src'),
     },
   },
   test: {

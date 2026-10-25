@@ -34,8 +34,11 @@ function format(
   return out;
 }
 
+// Tests load no bundles and query by id, lint already checks ids against en-US
 function missing(id: string) {
-  if (import.meta.env.DEV) console.warn(`[l10n] missing message ${id}`);
+  if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
+    console.warn(`[l10n] missing message ${id}`);
+  }
   return id;
 }
 

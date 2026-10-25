@@ -13,3 +13,8 @@ if (!('inert' in HTMLElement.prototype)) {
     },
   });
 }
+
+// jsdom logs "Not implemented" for these. The router scrolls on navigation,
+// axe probes canvas. A no-op scroll and a missing 2d context are enough.
+window.scrollTo = () => {};
+HTMLCanvasElement.prototype.getContext = () => null;

@@ -1,5 +1,6 @@
 import { createPlatform } from '@/app/platform/detect';
 import { startReleaseCheck } from '@/domain/app-update/release-check';
+import { startDatafeed } from '@/domain/datafeed';
 import { initErrorReporting } from '@/domain/error-reporting';
 import { initSaveToasts } from '@/domain/settings/save-toasts';
 import { initKeyboard } from '@/lib/keyboard';
@@ -17,7 +18,12 @@ export async function boot(): Promise<() => void> {
   await loadPrefs();
   await initL10n();
 
-  const services = [initKeyboard(), initSaveToasts(), startReleaseCheck()];
+  const services = [
+    initKeyboard(),
+    initSaveToasts(),
+    startReleaseCheck(),
+    startDatafeed(),
+  ];
   return () => {
     for (const stop of services) stop();
   };

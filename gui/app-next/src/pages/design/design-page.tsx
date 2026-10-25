@@ -2,6 +2,7 @@ import { createSignal, For } from 'solid-js';
 import { Segmented } from '@/ui/radio-group';
 import { AssetsDemo } from './assets-demo';
 import { ContainersDemo } from './containers-demo';
+import { DatafeedDemo } from './datafeed-demo';
 import { IconGallery } from './icon-gallery';
 import { MotionDemo } from './motion-demo';
 import { OverlayDemo } from './overlay-demo';
@@ -120,6 +121,7 @@ export function DesignPage() {
         </div>
       </div>
 
+      <DatafeedDemo />
       <AssetsDemo />
       <PrimitivesDemo />
       <ContainersDemo />
