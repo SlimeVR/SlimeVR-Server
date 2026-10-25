@@ -52,7 +52,8 @@ export function Checkbox(props: CheckboxProps) {
             class="
               peer col-start-1 row-start-1 size-5 cursor-pointer appearance-none rounded-md
               bg-surface-control checked:bg-accent aria-disabled:cursor-not-allowed
-              aria-invalid:ring-1 aria-invalid:ring-critical inert:animate-pulse
+              aria-invalid:ring-1 aria-invalid:ring-critical in-[[inert]]:animate-pulse
+              in-[[inert]]:bg-fg/15
             "
             onClick={onClick}
             onChange={onChange}

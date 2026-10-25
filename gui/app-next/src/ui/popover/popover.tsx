@@ -6,7 +6,7 @@ import {
   hidePopover,
   showPopover,
   useAnchor,
-} from '@/ui/anchor';
+} from './anchor';
 import { pushLayer } from '@/ui/floating';
 import { focusEntry, MotionRegion } from '@/ui/motion';
 
@@ -68,15 +68,11 @@ export function Popover(props: PopoverProps) {
     <div
       ref={el}
       popover="manual"
-      class={cx(
-        'surface-overlay inset-auto m-xs overflow-visible rounded-md bg-surface p-0 text-fg',
-        'shadow-lg',
-        props.class
-      )}
+      class={cx('flex-col text-fg open:flex', props.class)}
     >
       <MotionRegion
         trap
-        class="flex max-h-[60dvh] flex-col overflow-y-auto p-sm"
+        class="flex min-h-0 flex-col overflow-y-auto overscroll-contain"
       >
         {props.children}
       </MotionRegion>

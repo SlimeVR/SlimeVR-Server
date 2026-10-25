@@ -109,7 +109,6 @@ describe('Button', () => {
         <Button to="/x" label="dialog-cancel" pressed />
         {/* @ts-expect-error links never submit */}
         <Button to="/x" label="dialog-cancel" type="submit" />
-        {/* @ts-expect-error history state needs a link */}
         <Button label="dialog-cancel" state={{}} />
       </>
     ));

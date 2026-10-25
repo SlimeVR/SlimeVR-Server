@@ -8,6 +8,11 @@ import tseslint from 'typescript-eslint';
 import l10n from './eslint/l10n.js';
 import layers from './eslint/layers.js';
 
+const UI_DEEP_IMPORT = {
+  group: ['@/ui/*/*'],
+  message: 'Import a ui folder through its index, e.g. @/ui/select.',
+};
+
 // Each entry is allowed only in the files listed in `allowedIn`
 const restricted = {
   toFixed: {
@@ -154,6 +159,22 @@ export default tseslint.config(
           strictness: 'loose',
         },
       ],
+      // The type scale is the text tokens in styles.css, nothing else
+      'better-tailwindcss/no-restricted-classes': [
+        'error',
+        {
+          restrict: [
+            {
+              pattern: '^(?:.*:)?!?text-[\\[(].*$',
+              message: 'No arbitrary text values, use text-standard, text-section or text-title.',
+            },
+            {
+              pattern: '^(?:.*:)?!?text-(?:xs|sm|base|lg|xl|\\dxl)$',
+              message: 'Tailwind sizes are removed, use text-standard, text-section or text-title.',
+            },
+          ],
+        },
+      ],
     },
   },
   // Solid compiles `ref={x}` into an assignment the rule cannot see
@@ -173,10 +194,15 @@ export default tseslint.config(
               message: 'Only ui primitives register motion items.',
             },
           ],
-          patterns: [{ group: ['@/ui/motion/*'], message: 'Import from @/ui/motion.' }],
+          patterns: [UI_DEEP_IMPORT],
         },
       ],
     },
+  },
+  // Each ui folder is entered through its index; files inside it import each other relatively
+  {
+    files: ['src/ui/**/*.{ts,tsx}'],
+    rules: { 'no-restricted-imports': ['error', { patterns: [UI_DEEP_IMPORT] }] },
   },
   // Local rules run in node
   { files: ['eslint/**/*.js'], languageOptions: { globals: globals.node } },

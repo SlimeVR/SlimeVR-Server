@@ -2,8 +2,7 @@
 import { createSignal, For, type JSX } from 'solid-js';
 import { cx } from '@/lib/cx';
 import { Button } from '@/ui/button';
-import { Dialog } from '@/ui/dialog';
-import { confirm, openDialog } from '@/ui/dialog-host';
+import { confirm, Dialog, openDialog } from '@/ui/dialog';
 import { Loaded } from '@/ui/loaded';
 import { MotionList, MotionRegion, MotionToolbar } from '@/ui/motion';
 import { Popover, type PopoverPlacement } from '@/ui/popover';
@@ -161,6 +160,7 @@ function PopoverDemo(props: { placement: PopoverPlacement }) {
         onClose={() => setOpen(false)}
         anchor={anchor}
         placement={props.placement}
+        class="surface-overlay m-xs max-h-[60dvh] rounded-md bg-surface p-sm shadow-lg"
       >
         <MotionList class="flex flex-col gap-xs">
           <For each={['first item', 'second item', 'third item']}>

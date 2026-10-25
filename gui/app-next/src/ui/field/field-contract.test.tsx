@@ -2,11 +2,23 @@ import { cleanup, render, screen } from '@solidjs/testing-library';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import axe from 'axe-core';
 import { createSignal, type JSX, mergeProps } from 'solid-js';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
+import { initKeyboard } from '@/lib/keyboard';
 import { Checkbox } from '@/ui/checkbox';
+import { FileInput } from '@/ui/file-input';
 import type { FieldProps } from '@/ui/field';
 import { NumberField } from '@/ui/number-field';
+import { KeybindRecorder } from '@/ui/keybind-recorder';
 import { type ChoiceOption, RadioGroup, Segmented } from '@/ui/radio-group';
+import { MultiSelect, Select } from '@/ui/select';
 import { TextField } from '@/ui/text-field';
 import { Toggle } from '@/ui/toggle';
 
@@ -18,6 +30,13 @@ interface FieldContract<T> {
   control: () => HTMLElement;
   host?: () => HTMLElement;
 }
+
+// The keybind recorder captures keys through the app keyboard listener
+let stopKeyboard: () => void;
+beforeAll(() => {
+  stopKeyboard = initKeyboard();
+});
+afterAll(() => stopKeyboard());
 
 const LABEL = 'Contract label';
 const MESSAGE = 'Contract message';
@@ -187,4 +206,47 @@ testFieldContract<number>({
     await user.tab();
   },
   control: () => screen.getByRole('spinbutton'),
+});
+
+testFieldContract<number>({
+  name: 'Select',
+  render: (field) => <Select {...field} options={OPTIONS} />,
+  values: [1, 2],
+  edit: async (control, user) => {
+    await user.click(control);
+    await user.click(screen.getAllByRole('option', { hidden: true })[1]!);
+  },
+  control: () => screen.getByRole('combobox'),
+});
+
+testFieldContract<number[]>({
+  name: 'MultiSelect',
+  render: (field) => <MultiSelect {...field} options={OPTIONS} />,
+  values: [[1], [1, 2]],
+  edit: async (control, user) => {
+    await user.click(control);
+    await user.click(screen.getAllByRole('option', { hidden: true })[1]!);
+  },
+  control: () => screen.getByRole('combobox'),
+});
+
+const PICKED = new File(['{}'], 'model.vrm', { type: '' });
+
+testFieldContract<File | null>({
+  name: 'FileInput',
+  render: (field) => <FileInput {...field} accept=".vrm" />,
+  values: [null, PICKED],
+  edit: (control, user) => user.upload(control as HTMLInputElement, PICKED),
+  control: () => document.querySelector<HTMLElement>('input[type="file"]')!,
+});
+
+testFieldContract<string[]>({
+  name: 'KeybindRecorder',
+  render: (field) => <KeybindRecorder {...field} />,
+  values: [[], ['CTRL', 'K']],
+  edit: async (control, user) => {
+    control.focus();
+    await user.keyboard('{Enter}{Control>}k{/Control}');
+  },
+  control: () => screen.getByRole('button'),
 });

@@ -38,6 +38,8 @@ unit-cm = cm
 ## Dropdown
 dropdown_select-all = Select All
 dropdown_unselect-all = Unselect All
+# Shown in a multi-select box when more than one option is picked
+input-select-count = { $count } selected
 
 
 ## Text input
@@ -50,6 +52,12 @@ input-password-hide = Hide password
 # Accessible names for the pointer-only step buttons on each side of a number field
 input-number-decrease = Decrease
 input-number-increase = Increase
+
+
+## Copy button
+# Announced to screen readers after the copy button put text on the clipboard
+input-copy-done = Copied
+input-copy-failed = Could not copy to the clipboard
 
 
 ## File input

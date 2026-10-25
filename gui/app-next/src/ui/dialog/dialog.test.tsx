@@ -2,8 +2,7 @@ import { cleanup, fireEvent, render, screen } from '@solidjs/testing-library';
 import { createSignal } from 'solid-js';
 import { afterEach, describe, expect, it } from 'vitest';
 import { dismiss, modalOpen } from '@/lib/back-stack';
-import { Dialog } from '@/ui/dialog';
-import { confirm, DialogHost } from '@/ui/dialog-host';
+import { confirm, Dialog, DialogHost } from '@/ui/dialog';
 import { Floating } from '@/ui/floating';
 
 afterEach(cleanup);

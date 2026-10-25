@@ -46,7 +46,7 @@ export function Toggle(props: ToggleProps) {
           class="
             group relative h-4 w-10 shrink-0 rounded-full bg-surface-control transition-colors
             aria-checked:bg-accent aria-disabled:cursor-not-allowed aria-invalid:ring-1
-            aria-invalid:ring-critical inert:animate-pulse
+            aria-invalid:ring-critical inert:animate-pulse inert:bg-fg/15
           "
           onClick={onClick}
         >

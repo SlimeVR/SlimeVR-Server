@@ -15,6 +15,7 @@ import { t, type MessageId } from '@/lib/l10n';
 import { Button } from '@/ui/button';
 import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { MotionList, useMotionItem } from '@/ui/motion';
+import { Skeleton } from '@/ui/skeleton';
 import { Tooltip } from '@/ui/tooltip';
 
 export const TEXT_COMMIT_DEBOUNCE_MS = 500;
@@ -126,10 +127,12 @@ function TextFieldBody(props: TextFieldProps) {
   }
 
   // A blocked field never floats on focus, it must not look editable
+  const loading = () => state() === 'loading';
+
   const floating = () =>
-    (focused() && !fieldBlocked(state())) || draft().length > 0;
+    loading() || (focused() && !fieldBlocked(state())) || draft().length > 0;
   const placeholder = () => {
-    if (!props.placeholder) return undefined;
+    if (!props.placeholder || loading()) return undefined;
     if (props.label && !floating()) return undefined;
     return t(props.placeholder);
   };
@@ -154,8 +157,8 @@ function TextFieldBody(props: TextFieldProps) {
             peer min-h-control w-full rounded-md bg-surface-control px-3 text-standard text-fg
             placeholder:text-fg-muted placeholder:italic aria-disabled:cursor-not-allowed
             aria-disabled:opacity-50 aria-invalid:ring-1 aria-invalid:ring-critical
-            inert:animate-pulse inert:text-transparent
           `,
+          loading() && 'text-transparent',
           !editing() && 'caret-transparent',
           props.label && 'pt-[1.15rem] pb-[0.15rem]',
           password() && 'pr-12',
@@ -187,7 +190,15 @@ function TextFieldBody(props: TextFieldProps) {
           </span>
         )}
       </Show>
-      <Show when={password()}>
+      <Show when={loading()}>
+        <Skeleton
+          class={cx(
+            'pointer-events-none absolute left-3 w-1/3',
+            props.label ? 'bottom-[0.6rem]' : 'top-1/2 -translate-y-1/2'
+          )}
+        />
+      </Show>
+      <Show when={password() && !loading()}>
         <span class="absolute inset-y-0 right-1.5 flex items-center">
           <Button
             variant="ghost"

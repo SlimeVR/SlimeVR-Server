@@ -104,7 +104,9 @@ describe('keyboard', () => {
     const captured: string[] = [];
     const removeBack = pushBack(back);
     shortcut('F1', f1);
-    const release = captureKeys((e) => captured.push(e.key));
+    const release = captureKeys((e) => {
+      captured.push(e.key);
+    });
     press('Escape');
     press('F1');
     release();
@@ -112,6 +114,19 @@ describe('keyboard', () => {
     expect(captured).toEqual(['Escape', 'F1']);
     expect(back).not.toHaveBeenCalled();
     expect(f1).not.toHaveBeenCalled();
+  });
+
+  it('lets a key through when the capture returns true', () => {
+    const back = vi.fn();
+    const removeBack = pushBack(back);
+    const release = captureKeys((e) => {
+      if (e.key !== 'Escape') return;
+      release();
+      return true;
+    });
+    press('Escape');
+    removeBack();
+    expect(back).toHaveBeenCalledOnce();
   });
 
   it('lists labelled shortcuts and warns on duplicates', () => {

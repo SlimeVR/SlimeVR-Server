@@ -19,7 +19,8 @@ import {
 import { t, type MessageId } from '@/lib/l10n';
 import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { useMotionItem } from '@/ui/motion';
-import { type StepRange, stepKeys, stepValue } from '@/ui/step-keys';
+import { Skeleton } from '@/ui/skeleton';
+import { type StepRange, stepKeys, stepValue } from './step-keys';
 import { Tooltip } from '@/ui/tooltip';
 
 export interface NumberFieldProps extends FieldProps<number> {
@@ -245,8 +246,8 @@ export function NumberField(props: NumberFieldProps) {
       class={cx(
         `
           flex min-h-control items-stretch overflow-hidden rounded-md bg-surface-control
-          text-standard text-fg inert:animate-pulse has-aria-disabled:opacity-50
-          has-aria-invalid:ring-1 has-aria-invalid:ring-critical
+          text-standard text-fg has-aria-disabled:opacity-50 has-aria-invalid:ring-1
+          has-aria-invalid:ring-critical
         `,
         props.class
       )}
@@ -254,12 +255,13 @@ export function NumberField(props: NumberFieldProps) {
       <StepButton
         label="input-number-decrease"
         glyph={'-'}
+        hidden={state() === 'loading'}
         enabled={canStep(-1)}
         onStep={() => stepBy(-1)}
       />
       <div
         class={cx(
-          'flex min-w-0 flex-1 items-center justify-center gap-xs px-xs',
+          'relative flex min-w-0 flex-1 items-center justify-center gap-xs px-xs',
           state() === 'loading' && 'text-transparent'
         )}
         role="presentation"
@@ -301,10 +303,14 @@ export function NumberField(props: NumberFieldProps) {
         <Show when={parts().suffix}>
           <span aria-hidden="true">{parts().suffix}</span>
         </Show>
+        <Show when={state() === 'loading'}>
+          <Skeleton class="absolute w-16" />
+        </Show>
       </div>
       <StepButton
         label="input-number-increase"
         glyph="+"
+        hidden={state() === 'loading'}
         enabled={canStep(1)}
         onStep={() => stepBy(1)}
       />
@@ -316,6 +322,7 @@ export function NumberField(props: NumberFieldProps) {
 function StepButton(props: {
   label: MessageId;
   glyph: string;
+  hidden: boolean;
   enabled: boolean;
   onStep: () => void;
 }) {
@@ -325,10 +332,13 @@ function StepButton(props: {
       tabIndex={-1}
       aria-label={t(props.label)}
       disabled={!props.enabled}
-      class={`
-        flex min-w-12 shrink-0 items-center justify-center text-lg leading-none font-bold
-        transition-colors enabled:hover:bg-surface-hover disabled:opacity-30
-      `}
+      class={cx(
+        `
+          flex min-w-12 shrink-0 items-center justify-center text-section leading-none
+          transition-colors enabled:hover:bg-surface-hover disabled:opacity-30
+        `,
+        props.hidden && 'invisible'
+      )}
       onMouseDown={(e) => e.preventDefault()}
       onClick={() => props.onStep()}
     >

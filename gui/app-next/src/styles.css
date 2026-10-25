@@ -312,9 +312,10 @@
   background-color: var(--surface);
 }
 
-/* Default palette removed so raw colour classes do not exist */
+/* Default palette and type scale removed: only the role colours and the text tokens exist */
 @theme {
   --color-*: initial;
+  --text-*: initial;
 
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
@@ -466,7 +467,6 @@
   --font-sans: var(--font-name), 'Noto Sans CJK', sans-serif, emoji;
 
   --text-standard: calc(var(--font-size) / 16);
-  --text-vr: calc(var(--font-size) * 1.16 / 16);
   --text-section: calc(var(--font-size) * 1.16 / 16);
   --text-section--font-weight: 700;
   --text-title: calc(var(--font-size) * 2.08 / 16);
@@ -542,6 +542,17 @@
 }
 
 @layer base {
+  /* Popovers start bare, callers style them with utilities */
+  [popover] {
+    inset: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    overflow: visible;
+  }
+
   :root {
     /* overflow: hidden here breaks scrolling everywhere, never add it */
     overscroll-behavior: none;

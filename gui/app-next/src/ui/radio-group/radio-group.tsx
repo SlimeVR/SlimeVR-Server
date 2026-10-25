@@ -191,14 +191,14 @@ export function RadioGroup<T>(props: ChoiceProps<T>) {
         not-aria-disabled:hover:bg-surface-hover
         aria-checked:border-accent
         aria-disabled:cursor-not-allowed
-        inert:animate-pulse
       `,
       children: (
         <>
           <span
             class="
               mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2
-              border-fg-muted group-aria-checked:border-accent
+              border-fg-muted group-aria-checked:border-accent in-[[inert]]:animate-pulse
+              in-[[inert]]:border-transparent in-[[inert]]:bg-line
             "
           >
             <span class="size-2 rounded-full bg-accent opacity-0 group-aria-checked:opacity-100" />
@@ -226,12 +226,12 @@ export function Segmented<T>(props: ChoiceProps<T>) {
         flex min-h-control min-w-0 flex-wrap items-stretch gap-0.5 rounded-md bg-surface-well p-1
         aria-disabled:opacity-50
         aria-invalid:ring-1 aria-invalid:ring-critical
-        inert:animate-pulse
       `,
     },
     (option) => ({
       class: `
         flex min-w-0 items-center rounded px-3.5 py-1.5 font-bold text-fg-muted transition-colors
+        in-[[inert]]:animate-pulse in-[[inert]]:bg-fg/15 in-[[inert]]:text-transparent
         not-aria-disabled:hover:text-fg
         aria-checked:bg-accent aria-checked:text-on-accent
         aria-disabled:cursor-not-allowed

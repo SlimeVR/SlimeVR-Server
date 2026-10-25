@@ -3,12 +3,22 @@ import { createSignal, For, type JSX } from 'solid-js';
 import GearIcon from '~icons/material-symbols/settings-rounded';
 import { cx } from '@/lib/cx';
 import { formats } from '@/lib/format';
-import { Button, type ButtonVariant } from '@/ui/button';
+import { Button, type ButtonSize, type ButtonVariant } from '@/ui/button';
 import { Checkbox } from '@/ui/checkbox';
+import { CopyButton } from '@/ui/copy-button';
 import type { FieldProps } from '@/ui/field';
+import { FileInput } from '@/ui/file-input';
+import { KeybindRecorder } from '@/ui/keybind-recorder';
 import { MotionGrid, MotionRegion } from '@/ui/motion';
 import { NumberField } from '@/ui/number-field';
 import { type ChoiceOption, RadioGroup, Segmented } from '@/ui/radio-group';
+import {
+  type DotOption,
+  DotMultiSelect,
+  MultiSelect,
+  Select,
+  type SelectOption,
+} from '@/ui/select';
 import { TextField } from '@/ui/text-field';
 import { Toggle } from '@/ui/toggle';
 
@@ -66,6 +76,22 @@ const OPTIONS: ChoiceOption<string>[] = [
   { value: 'c', label: 'Gamma' },
 ];
 
+const SIZES: readonly ButtonSize[] = ['default', 'small'];
+
+const SOURCES: DotOption<string>[] = [
+  { value: 'server', text: 'Server', color: '#a78bfa', detail: '12' },
+  { value: 'gui', text: 'GUI', color: '#34d399', detail: '3' },
+  { value: 'driver', text: 'Driver', color: '#fbbf24', detail: '--' },
+  { value: 'feeder', text: 'Feeder', color: '#f472b6', detail: '--' },
+];
+
+const PORTS: SelectOption<string>[] = [
+  { value: 'COM3', text: 'COM3' },
+  { value: 'COM4', text: 'COM4 (CH340)' },
+  { value: 'ttyUSB0', text: '/dev/ttyUSB0' },
+  { value: 'ttyACM0', text: '/dev/ttyACM0' },
+];
+
 function Row(props: {
   title: string;
   children: (state: DemoState) => JSX.Element;
@@ -95,6 +121,11 @@ export function PrimitivesDemo() {
   const [seconds, setSeconds] = createSignal(0.25);
   const [percent, setPercent] = createSignal(0.5);
   const [surface, setSurface] = createSignal<Surface>('section');
+  const [port, setPort] = createSignal<string | undefined>(undefined);
+  const [ports, setPorts] = createSignal<string[]>(['COM3']);
+  const [sources, setSources] = createSignal<string[]>(['server', 'gui']);
+  const [file, setFile] = createSignal<File | null>(null);
+  const [keys, setKeys] = createSignal<string[]>(['CTRL', 'ALT', 'SHIFT', 'Y']);
 
   return (
     <MotionRegion
@@ -111,22 +142,30 @@ export function PrimitivesDemo() {
         {(variant) => (
           <Row title={`Button ${variant}`}>
             {(state) => (
-              <div class="flex gap-sm">
-                <Button
-                  variant={variant}
-                  label="Press"
-                  disabled={state === 'disabled'}
-                  disabledReason="Disabled because of a reason"
-                  loading={state === 'loading'}
-                />
-                <Button
-                  variant={variant}
-                  label="Settings"
-                  icon={<GearIcon />}
-                  iconOnly
-                  size="small"
-                  disabled={state === 'disabled'}
-                />
+              <div class="flex items-center gap-sm">
+                <For each={SIZES}>
+                  {(size) => (
+                    <>
+                      <Button
+                        variant={variant}
+                        size={size}
+                        label="Press"
+                        disabled={state === 'disabled'}
+                        disabledReason="Disabled because of a reason"
+                        loading={state === 'loading'}
+                      />
+                      <Button
+                        variant={variant}
+                        size={size}
+                        label="Settings"
+                        icon={<GearIcon />}
+                        iconOnly
+                        disabled={state === 'disabled'}
+                        loading={state === 'loading'}
+                      />
+                    </>
+                  )}
+                </For>
               </div>
             )}
           </Row>
@@ -196,6 +235,80 @@ export function PrimitivesDemo() {
               step={0.1}
               format={formats.percent}
             />
+          </div>
+        )}
+      </Row>
+      <Row title="Select">
+        {(state) => (
+          <div class="flex flex-col gap-sm">
+            <Select
+              {...STATE_FIELD[state]}
+              value={port()}
+              onChange={setPort}
+              options={PORTS}
+              label="Port"
+              placeholder="Pick a port"
+            />
+            <MultiSelect
+              {...STATE_FIELD[state]}
+              value={ports()}
+              onChange={setPorts}
+              options={PORTS}
+              placeholder="Pick ports"
+            />
+            <DotMultiSelect
+              {...STATE_FIELD[state]}
+              value={sources()}
+              onChange={setSources}
+              options={SOURCES}
+              label="Sources"
+              allLabel="All sources"
+            />
+          </div>
+        )}
+      </Row>
+      <Row title="FileInput">
+        {(state) => (
+          <FileInput
+            {...STATE_FIELD[state]}
+            value={file()}
+            onChange={setFile}
+            accept=".vrm, .glb, .gltf"
+          />
+        )}
+      </Row>
+      <Row title="KeybindRecorder">
+        {(state) => (
+          <KeybindRecorder
+            {...STATE_FIELD[state]}
+            value={keys()}
+            onChange={setKeys}
+          />
+        )}
+      </Row>
+      <Row title="CopyButton">
+        {(state) => (
+          <div class="flex items-center gap-sm">
+            <For each={SIZES}>
+              {(size) => (
+                <>
+                  <CopyButton
+                    text="SlimeVR"
+                    label="Copy"
+                    size={size}
+                    disabled={state === 'disabled'}
+                    disabledReason="Disabled because of a reason"
+                  />
+                  <CopyButton
+                    text="SlimeVR"
+                    label="Copy"
+                    iconOnly
+                    size={size}
+                    disabled={state === 'disabled'}
+                  />
+                </>
+              )}
+            </For>
           </div>
         )}
       </Row>

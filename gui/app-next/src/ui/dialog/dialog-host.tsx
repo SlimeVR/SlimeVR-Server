@@ -1,7 +1,7 @@
 import { createSignal, For, type JSX, Show } from 'solid-js';
 import type { MessageArgs, MessageId } from '@/lib/l10n';
 import { Button } from '@/ui/button';
-import { Dialog } from '@/ui/dialog';
+import { Dialog } from './dialog';
 import { Localized } from '@/ui/localized';
 import { MotionToolbar } from '@/ui/motion';
 

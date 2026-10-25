@@ -89,7 +89,7 @@ function matches(c: Combo, e: KeyboardEvent): boolean {
 }
 
 const [registered, setRegistered] = createSignal<readonly Shortcut[]>([]);
-const captures: ((e: KeyboardEvent) => void)[] = [];
+const captures: ((e: KeyboardEvent) => boolean | void)[] = [];
 
 // Cheatsheet source
 export function shortcuts(): ShortcutInfo[] {
@@ -124,7 +124,9 @@ export function useShortcut(
   onCleanup(() => setRegistered((list) => list.filter((s) => s !== shortcut)));
 }
 
-export function captureKeys(fn: (e: KeyboardEvent) => void): () => void {
+// fn returns true to let that key through untouched (release first, e.g. Tab
+// leaving a keybind recorder)
+export function captureKeys(fn: (e: KeyboardEvent) => boolean | void): () => void {
   captures.push(fn);
   return () => {
     const i = captures.lastIndexOf(fn);
@@ -139,9 +141,9 @@ export function isCapturing(): boolean {
 function onCapturePhase(e: KeyboardEvent) {
   const capture = captures.at(-1);
   if (!capture) return;
+  if (capture(e) === true) return;
   e.preventDefault();
   e.stopPropagation();
-  capture(e);
 }
 
 function onBubblePhase(e: KeyboardEvent) {

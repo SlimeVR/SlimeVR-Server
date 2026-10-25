@@ -65,8 +65,8 @@ const VARIANT: Record<ButtonVariant, string> = {
 };
 
 const SIZE: Record<ButtonSize, { label: string; icon: string }> = {
-  default: { label: 'min-h-control px-5', icon: 'min-h-control px-3' },
-  small: { label: 'min-h-control-sm px-3', icon: 'min-h-control-sm px-2.5' },
+  default: { label: 'min-h-control px-5', icon: 'size-control shrink-0' },
+  small: { label: 'min-h-control-sm px-3', icon: 'size-control-sm shrink-0' },
 };
 
 const DOT_DELAYS = [0, 150, 300];
@@ -121,13 +121,19 @@ export function Button(props: ButtonProps) {
         </span>
         <Show when={props.loading}>
           <span
-            class="absolute inset-0 flex items-center justify-center gap-1.5"
+            class={cx(
+              'absolute inset-0 flex items-center justify-center',
+              iconOnly() ? 'gap-0.75' : 'gap-1.5'
+            )}
             aria-hidden="true"
           >
             <For each={DOT_DELAYS}>
               {(delay) => (
                 <span
-                  class="size-1.5 animate-pulse rounded-full bg-current"
+                  class={cx(
+                    'animate-pulse rounded-full bg-current',
+                    iconOnly() ? 'size-1' : 'size-1.5'
+                  )}
                   style={{ 'animation-delay': `${delay}ms` }}
                 />
               )}

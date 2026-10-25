@@ -83,7 +83,6 @@ export function DesignPage() {
       <div class="surface-page flex flex-col gap-sm rounded-lg p-lg">
         <span class="text-title">title</span>
         <span class="text-section">section</span>
-        <span class="text-vr">vr</span>
         <span class="text-standard">standard</span>
         <span class="text-fg-muted">muted</span>
         <span class="text-fg-disabled">disabled</span>

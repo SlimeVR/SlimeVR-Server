@@ -6,7 +6,7 @@ import {
   hidePopover,
   showPopover,
   useAnchor,
-} from '@/ui/anchor';
+} from '@/ui/popover';
 import { motionActive } from '@/ui/motion';
 
 const TOUCH_HOLD_MS = 500;
