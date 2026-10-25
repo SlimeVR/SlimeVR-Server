@@ -338,10 +338,15 @@ mounting_selection_menu-close = Schließen
 
 ## Sidebar settings
 
+settings-profiles-save = Speichern
+settings-profiles-cancel = Abbruch
+settings-sidebar-search-close = Schließen
 settings-sidebar-general = Allgemein
+settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-stay_aligned = Bleibe Ausgerichtet
 settings-sidebar-trackers = Tracker
 settings-sidebar-interface = Bedienoberfläche
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
@@ -357,11 +362,14 @@ settings-sidebar-advanced = Erweitert
 settings-routing-description =
     Wählen Sie aus, was jede Ausgabe sendet.
     SteamVR/Monado, VRChat OSC und VMC können jeweils ein anderes Set von Körperteilen erhalten.
+settings-routing-bone = Knochen
 settings-routing-duplicate-warning =
     { $bones } { $boneCount ->
         [one] ist
        *[many] sind
     } zu mehreren Ausgängen geleitet ({ $outputs }), die doppelte Tracker in Anwendungen anzeigen können.
+settings-routing-output-driver = SteamVR / Monado
+settings-routing-output-vmc = VMC
 settings-routing-output-stopped-description = SteamVR oder Monado Treiber nicht verbunden.
 settings-routing-output-badge-off = Aus
 settings-routing-group-fingers = Finger
@@ -374,6 +382,7 @@ settings-routing-hands-warning-cancel = Abbruch
 
 ## SteamVR / Monado output settings
 
+settings-driver = SteamVR / Monado
 settings-driver-description = Einstellungen für den SlimeVR-Treiber, verwendet von SteamVR und Monado gleichermaßen.
 settings-driver-enable = Aktivieren
 settings-driver-status-connection = Treiberverbindung
@@ -383,25 +392,40 @@ settings-driver-status-connection-waiting = Warte auf die Verbindung von SteamVR
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtern
+settings-general-tracker_mechanics-filtering-type = Filter-Typ
+# This also cares about multilines
+settings-general-tracker_mechanics-filtering-description =
+    Wählen Sie den Filter-Typ für Ihre Tracker aus.
+    "{ settings-general-tracker_mechanics-filtering-type-smoothing }" glättet die Bewegung, während "{ settings-general-tracker_mechanics-filtering-type-prediction }" die Latenz minimiert.
 settings-general-tracker_mechanics-filtering-type-none = Kein Filter
 settings-general-tracker_mechanics-filtering-type-none-description = Verwendet die unveränderten Rotationsdaten der Tracker.
 settings-general-tracker_mechanics-filtering-type-smoothing = Glättung
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Glättet Bewegungen, fügt aber etwas Verzögerung hinzu.
 settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
+settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen direkter, erhöht jedoch das Zittern.
 settings-general-tracker_mechanics-filtering-amount = Stärke
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontaler Reset Glättungszeit (0s deaktiviert die Glättung)
+settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Glättet die Rotation der Tracker nach einem Gier-Reset. 0s deaktiviert das Glätten.
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Ausrichtung speichern
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Speichert die automatische Tracker-Ausrichtung für die Tracker zwischen den Neustarts. Nützlich
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
+settings-general-tracker_mechanics-magnetometer_group = Magnetometer
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Verwende das Magnetometer auf allen IMU-Trackern, die dies unterstützen.
 settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
+settings-stay_aligned-status_group = Status
+settings-stay_aligned-position-standing = Stehend
+settings-stay_aligned-position-sitting = Sitzend
+settings-stay_aligned-status-badge-disabled = Aus
+settings-stay_aligned-status-badge-pose-ready = Bereit
+settings-stay_aligned-pose-standing = Stehend
 settings-stay_aligned-debug-label = Debuggen
 settings-stay_aligned-debug-description = Bitte geben Sie Ihre Einstellungen mit an, wenn Sie Probleme mit Stay Aligned melden.
 settings-stay_aligned-debug-copy-label = Einstellungen in die Zwischenablage kopieren
 
 ## Stay Aligned pose recorder
 
+settings-stay_aligned-recorder-close = Abbruch
 
 ## Keybinds Page
 
@@ -463,6 +487,7 @@ settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Sch
 ## Appearance settings
 
 settings-interface-appearance = Erscheinungsbild
+settings-general-interface-dev_mode = Entwicklermodus
 settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
 settings-general-interface-theme = Farbschema
 settings-general-interface-lang = Sprachauswahl
@@ -525,6 +550,7 @@ settings-serial-factory_reset-warning-ok = Ich weiß, was ich tue
 settings-serial-factory_reset-warning-cancel = Abbruch
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
 settings-serial-get_wifi_scan = WLAN-Scan
+settings-serial-meow = Miau!
 settings-serial-save_logs = In Datei speichern
 settings-serial-send_command = Senden
 settings-serial-send_command-placeholder = Befehl...
@@ -534,9 +560,12 @@ settings-serial-send_command-warning-cancel = Abbruch
 
 ## Logs settings
 
+settings-logs-level-error = Fehler
+settings-logs-files-save = Speichern
 
 ## OSC VRChat settings
 
+settings-osc-vrchat = VRChat OSC
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Ändern Sie die Einstellungen, die speziell für den OSC-Trackers-Standard verwendet werden, um Tracking-Daten an Anwendungen ohne SteamVR zu senden (z. B. für Quest Standalone).
@@ -554,19 +583,39 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Ausgangsport (Standard: 9000)
 settings-osc-vrchat-network-address = Netzwerkadresse
 settings-osc-vrchat-network-address-description-v1 = Wählen Sie die IP-Adresse, an die die Daten gesendet werden sollen. Kann für VRChat unverändert bleiben.
+settings-osc-vrchat-network-address-placeholder = VRChat IP-Adresse
 
 ## VRChat OSC status
 
+settings-osc-vrchat-status-title = Status
 settings-osc-vrchat-status-tracking = Drehung
+settings-osc-vrchat-status-output = Output
+settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-last-data = Letzte Daten von VRChat: { $elapsed}.
 settings-osc-vrchat-status-input-no-data = Noch keine Daten von VRChat empfangen.
+settings-osc-vrchat-status-tracking-received = Letzte Pose erhalten: { $elapsed }.
 settings-osc-vrchat-status-tracking-disabled = VRChat ist verbunden, sendet aber keine Kopf-/Handgeld-Tracking-Daten. Aktiviere die OSC-Tracking-Daten in den VRChat-Einstellungen. <OscTrackingLink>Wie aktivieren?</OscTrackingLink>
 settings-osc-vrchat-status-tracking-unknown = Warten auf Verbindung zu VRChat.
+settings-osc-vrchat-status-output-idle = Kein Ziel
+settings-osc-vrchat-status-output-waiting = Ziel { $address }:{ $port } ({ $source })
+settings-osc-vrchat-status-output-sending = Senden an { $address }:{ $port } ({ $source})
+settings-osc-vrchat-status-output-target = Ziel { $address }:{ $port } ({ $source })
+settings-osc-vrchat-status-output-last-frame = Letzter Frame gesendet: { $elapsed }
+settings-osc-vrchat-status-output-no-frame = Noch kein Frame gesendet.
+settings-osc-vrchat-status-oscquery-searching = Noch keine VRChat-Clients gefunden.
+settings-osc-vrchat-status-oscquery-discovered-title = Gefundene VRChat-Clients:
+settings-osc-vrchat-status-badge-ready = Bereit
+settings-osc-vrchat-status-badge-found = Gefunden
+settings-osc-vrchat-status-badge-searching = Suche
+settings-osc-vrchat-status-badge-disabled = Deaktiviert
 settings-osc-vrchat-status-badge-error = Fehler
+settings-osc-vrchat-status-badge-received = Empfangen
+settings-osc-vrchat-status-badge-not-sent = Nicht gesendet
 settings-osc-vrchat-status-badge-unknown = Unbekannt
 
 ## VMC OSC settings
 
+settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description = Einstellungsänderungen spezifisch für das VMC-Protokoll (Virtual Motion Capture Protocol), um die Skelett-Daten von SlimeVR zu senden und Skelett-Daten von anderen Applikationen zu empfangen.
 settings-osc-vmc-enable = Aktivieren
@@ -581,6 +630,7 @@ settings-osc-vmc-network-port_out =
     .placeholder = Ausgehender Port (default: 39539)
 settings-osc-vmc-network-address = Netzwerkadresse
 settings-osc-vmc-network-address-description = Setze die Adresse, wo die Daten hinversendet werden sollen.
+settings-osc-vmc-network-address-placeholder = IPv4-Adresse
 settings-osc-vmc-vrm = VRM-Model
 settings-osc-vmc-vrm-description = Lade ein VRM-Modell um die Kopfverankerung anzuschalten und eine bessere Kompatibilität mit anderen Anwendungen zu bekommen.
 settings-osc-vmc-vrm-untitled_model = Unbenanntes Modell
