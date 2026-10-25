@@ -1,6 +1,16 @@
 /// <reference types="vite/client" />
 /// <reference types="unplugin-icons/types/solid" />
 
+// vite-imagetools presets, see vite.config.ts
+declare module '*?img' {
+  const image: import('@/lib/assets').ImageAsset;
+  export default image;
+}
+declare module '*&img' {
+  const image: import('@/lib/assets').ImageAsset;
+  export default image;
+}
+
 declare const __COMMIT_HASH__: string;
 declare const __VERSION_TAG__: string;
 declare const __GIT_CLEAN__: boolean;

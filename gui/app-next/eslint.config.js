@@ -106,6 +106,7 @@ export default tseslint.config(
         { type: 'solarxr', pattern: 'src/solarxr' },
         { type: 'domain', pattern: 'src/domain/*', capture: ['concept'] },
         { type: 'pages', pattern: 'src/pages/*', capture: ['page'] },
+        { type: 'assets', pattern: 'src/assets' },
       ],
     },
     rules: {
@@ -116,11 +117,12 @@ export default tseslint.config(
         {
           default: 'disallow',
           policies: [
-            allow('app', ['app', 'ui', 'lib', 'solarxr', 'domain', 'pages']),
-            allow('pages', ['ui', 'lib', 'solarxr', 'domain']),
-            allow('domain', ['ui', 'lib', 'solarxr', 'domain']),
+            allow('app', ['app', 'ui', 'lib', 'solarxr', 'domain', 'pages', 'assets']),
+            allow('pages', ['ui', 'lib', 'solarxr', 'domain', 'assets']),
+            allow('domain', ['ui', 'lib', 'solarxr', 'domain', 'assets']),
             allow('solarxr', ['lib', 'solarxr']),
-            allow('ui', ['ui', 'lib']),
+            allow('ui', ['ui', 'lib', 'assets']),
+            allow('assets', ['lib']),
           ],
         },
       ],

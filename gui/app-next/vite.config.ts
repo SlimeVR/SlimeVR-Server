@@ -6,6 +6,7 @@ import path from 'node:path';
 import { FileSystemHMRIconLoader } from 'unplugin-icons/loaders';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig, loadEnv, type PluginOption } from 'vite';
+import { imagetools } from 'vite-imagetools';
 import solid from 'vite-plugin-solid';
 
 const commitHash = execSync('git rev-parse --verify --short=8 HEAD').toString().trim();
@@ -60,6 +61,22 @@ export default defineConfig({
       // Custom icons, `~icons/slime/<name>`, hot reloaded when an svg changes
       customCollections: {
         ...FileSystemHMRIconLoader(path.resolve(__dirname, 'src/ui/icons/slime'), 'slime'),
+      },
+    }),
+    // `import x from './a.webp?img'` (or `?size=360&img`): AVIF at 1x and 2x of
+    // the CSS width (default 480), never upscaled, as [{src, width, height}].
+    // Other imports of images are left alone.
+    imagetools({
+      include: /^[^?]+\.(webp|png|jpe?g|avif)\?(?:.*&)?img(?:&|$)/,
+      defaultDirectives: (url) => {
+        if (!url.searchParams.has('img')) return new URLSearchParams();
+        const size = Number(url.searchParams.get('size')) || 480;
+        return new URLSearchParams({
+          w: `${size};${size * 2}`,
+          withoutEnlargement: 'true',
+          format: 'avif',
+          as: 'meta:src;width;height',
+        });
       },
     }),
     i18nHotReload(),

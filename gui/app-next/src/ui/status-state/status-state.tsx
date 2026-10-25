@@ -1,16 +1,19 @@
 import { type JSX, Show } from 'solid-js';
+import { slimes } from '@/assets/slimes';
+import type { SpriteAsset } from '@/lib/assets';
 import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { Localized } from '@/ui/localized';
+import { Sprite } from '@/ui/sprite';
 
 export type StatusKind = 'loading' | 'error' | 'empty' | 'success';
 export type StatusSize = 'page' | 'panel' | 'inline';
 
-const SLIME: Record<StatusKind, string> = {
-  loading: '/images/jumping-slime.webm',
-  error: '/images/sad-slime.webm',
-  empty: '/images/curious-slime.webm',
-  success: '/images/happy-slime.webm',
+const SLIME: Record<StatusKind, SpriteAsset> = {
+  loading: slimes.jumping,
+  error: slimes.sad,
+  empty: slimes.curious,
+  success: slimes.happy,
 };
 
 const LAYOUT: Record<StatusSize, string> = {
@@ -35,28 +38,13 @@ export interface StatusStateProps {
   action?: JSX.Element;
 }
 
-function reducedMotion(): boolean {
-  return (
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
-  );
-}
-
 // Loading, error, empty and success screens. `kind` picks the slime.
 export function StatusState(props: StatusStateProps) {
   const size = () => props.size ?? 'panel';
   const px = () => SLIME_PX[size()];
 
   const slime = () => (
-    <video
-      aria-hidden="true"
-      src={SLIME[props.kind]}
-      autoplay={!reducedMotion()}
-      loop
-      muted
-      playsinline
-      class="relative aspect-square bg-transparent"
-      style={{ width: `${px()}px` }}
-    />
+    <Sprite asset={SLIME[props.kind]} size={px()} class="relative" />
   );
 
   return (

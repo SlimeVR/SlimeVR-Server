@@ -1923,3 +1923,4 @@ dialog-cancel = Cancel
 status-loading = Loading
 toast-saved = Saved
 toast-not-saved = Not saved, the server is not connected
+video-play = Play video

@@ -499,51 +499,6 @@
   flex: none;
 }
 
-@font-face {
-  font-family: 'OpenDyslexic';
-  src: url('/fonts/OpenDyslexic-Regular.woff') format('woff');
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'OpenDyslexic';
-  src: url('/fonts/OpenDyslexic-Italic.woff') format('woff');
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'OpenDyslexic';
-  src: url('/fonts/OpenDyslexic-Bold.woff') format('woff');
-  font-weight: bold;
-}
-
-@font-face {
-  font-family: 'OpenDyslexic';
-  src: url('/fonts/OpenDyslexic-Bold-Italic.woff') format('woff');
-  font-weight: bold;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Lexend';
-  src: url('/fonts/Lexend[HEXP,wght].woff2') format('woff2-variations');
-  font-weight: 125 950;
-}
-
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/fonts/noto-sans-v42-latin-regular.woff2')
-    format('woff2-variations');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('/fonts/Ubuntu-R.woff2') format('woff2');
-}
-
 @layer base {
   /* Popovers start bare, callers style them with utilities */
   [popover] {
@@ -678,6 +633,34 @@
 
 @utility crisp-edges {
   image-rendering: crisp-edges;
+}
+
+/* Sprite sheet player, see ui/sprite. One integer frame counter steps through
+   the grid left to right, top to bottom, so a partial last row never shows. */
+@property --sprite-frame {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes sprite-frames {
+  to {
+    --sprite-frame: var(--sprite-frames);
+  }
+}
+
+@utility animate-sprite {
+  animation: sprite-frames
+    calc(var(--sprite-frames) * var(--sprite-frame-ms) * 1ms)
+    steps(var(--sprite-frames)) infinite;
+  background-position: calc(
+      mod(var(--sprite-frame), var(--sprite-columns)) /
+        max(var(--sprite-columns) - 1, 1) * 100%
+    )
+    calc(
+      round(down, var(--sprite-frame) / var(--sprite-columns)) /
+        max(var(--sprite-rows) - 1, 1) * 100%
+    );
 }
 
 /* Set on <html> while the app is not active */

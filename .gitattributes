@@ -5,3 +5,10 @@
 *.gif binary
 
 *.ftl -linguist-detectable
+
+# GUI assets (gui/app-next/src/assets)
+gui/app-next/src/assets/**/*.webp filter=lfs diff=lfs merge=lfs -text
+gui/app-next/src/assets/**/*.webm filter=lfs diff=lfs merge=lfs -text
+gui/app-next/src/assets/**/*.gltf filter=lfs diff=lfs merge=lfs -text
+gui/app-next/src/assets/**/*.glb filter=lfs diff=lfs merge=lfs -text
+gui/app-next/src/assets/**/*.ogg filter=lfs diff=lfs merge=lfs -text
