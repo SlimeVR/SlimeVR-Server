@@ -13,6 +13,7 @@ websocket-connection_lost-desc = Es sieht so aus, als wäre der SlimeVR-Server a
 websocket-timedout = Es konnte keine Verbindung zum Server hergestellt werden.
 websocket-timedout-desc = Es sieht so aus, als ob der SlimeVR-Server abgestürzt ist oder nicht rechtzeitig geantwortet hat. Überprüfen Sie die Protokolle und starten Sie das Programm neu.
 websocket-error-close = SlimeVR beenden
+websocket-error-logs = Öffne den Logs-Ordner
 
 ## Update notification
 
