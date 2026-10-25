@@ -1,8 +1,17 @@
-import { sink, type ErrorContext, type MetricAttrs } from './sink';
+import { sink, type Breadcrumb, type ErrorContext, type MetricAttrs } from './sink';
 
 export function reportError(error: unknown, context: ErrorContext = {}) {
   console.error(error);
   sink().error(error, context);
+}
+
+export function addBreadcrumb(crumb: Breadcrumb) {
+  sink().breadcrumb(crumb);
+}
+
+// Scope tag on every later event, undefined clears it
+export function setReportTag(name: string, value: string | undefined) {
+  sink().tag(name, value);
 }
 
 export function ignoreError(reason: string) {

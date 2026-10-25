@@ -1,3 +1,4 @@
+import { useMatch } from '@solidjs/router';
 import { createSignal, type JSX, onCleanup, Show } from 'solid-js';
 import HomeIcon from '~icons/material-symbols/home';
 import DesignIcon from '~icons/material-symbols/palette-outline-rounded';
@@ -62,6 +63,9 @@ function Destinations() {
 }
 
 export function AppShell(props: { children: JSX.Element }) {
+  // Setup runs without destinations, the flow footer owns the bottom
+  const onboarding = useMatch(() => `${paths.onboarding}/*`);
+
   function onPointerUp(e: PointerEvent) {
     if (e.button !== MOUSE_BACK) return;
     if (handleBack()) e.preventDefault();
@@ -75,8 +79,11 @@ export function AppShell(props: { children: JSX.Element }) {
       <TitleBar />
       <ConnectionGate>
         <div class="flex min-h-0 flex-1 flex-col shell:flex-row">
-          <Destinations />
+          <Show when={!onboarding()}>
+            <Destinations />
+          </Show>
           <main
+            classList={{ 'shell:ml-sm': !!onboarding() }}
             class="
               relative min-h-0 flex-1 overflow-y-auto overscroll-contain @container shell:mr-sm
               shell:mb-sm

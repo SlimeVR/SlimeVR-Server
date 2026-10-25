@@ -19,7 +19,6 @@ import {
 import { fmt, formats } from '@/lib/format';
 import { Pressable } from '@/ui/pressable';
 
-
 //placholder
 function TrackerTableRow(props: { trackerKey: TrackerKey }) {
   const tracker = () => trackerByKey(props.trackerKey);

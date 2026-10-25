@@ -17,6 +17,7 @@ export interface Breadcrumb {
 export interface ReportSink {
   error(error: unknown, context: ErrorContext): void;
   breadcrumb(crumb: Breadcrumb): void;
+  tag(name: string, value: string | undefined): void;
   log(level: ReportLevel, message: string): void;
   metric(name: string, attrs: MetricAttrs | undefined): void;
 }
@@ -27,6 +28,9 @@ export const sentrySink: ReportSink = {
   },
   breadcrumb(crumb) {
     Sentry.addBreadcrumb(crumb);
+  },
+  tag(name, value) {
+    Sentry.setTag(name, value);
   },
   log(level, message) {
     Sentry.logger[level](message);

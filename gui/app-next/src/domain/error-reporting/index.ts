@@ -9,7 +9,14 @@ export {
   type ConsentAnswer,
   type ReportingIdentity,
 } from './consent';
-export { defineMetric, ignoreError, reportError, type MetricOptions } from './report';
+export {
+  addBreadcrumb,
+  defineMetric,
+  ignoreError,
+  reportError,
+  setReportTag,
+  type MetricOptions,
+} from './report';
 export { initErrorReporting, lastReportId, setKnownValues } from './sentry';
 export {
   setReportSink,
