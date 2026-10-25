@@ -703,6 +703,7 @@ onboarding-wifi_creds-ssid-label = WLAN-Name
 onboarding-wifi_creds-ssid =
     .placeholder = WLAN-Name eingeben
 onboarding-wifi_creds-ssid-required = WLAN-Name ist erforderlich
+onboarding-wifi_creds-rescan = Neu scannen
 onboarding-wifi_creds-password =
     .label = Passwort
     .placeholder = Enter your Wi-Fi password
@@ -761,10 +762,24 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-tap_modal-cancel = Abbruch
 onboarding-assign_trackers-tab-body = Körper
 onboarding-assign_trackers-tab-fingers = Finger
+onboarding-assign_trackers-tab-toes = Zehen
 onboarding-assign_trackers-side-right = Rechts
 onboarding-assign_trackers-side-left = Links
+# Accessible name for the left/right pill radiogroup in the assignment panel header
+onboarding-assign_trackers-side = Körperseite
 # Accessible name for the mirror-view pill toggle in the assignment panel header
 onboarding-assign_trackers-mirror = Ansicht spiegeln
+onboarding-assign_trackers-finger-thumb = Daumen
+onboarding-assign_trackers-finger-index = Zeigefinger
+onboarding-assign_trackers-finger-middle = Mittelfinger
+onboarding-assign_trackers-finger-ring = Ringfinger
+onboarding-assign_trackers-finger-little = Kleiner Finger
+onboarding-assign_trackers-toes-middle = Mittlere Zehen
+onboarding-assign_trackers-toe-big = Großer Zeh
+onboarding-assign_trackers-toe-index = Zweiter Zeh
+onboarding-assign_trackers-toe-middle = Dritter Zeh
+onboarding-assign_trackers-toe-ring = Vierter Zeh
+onboarding-assign_trackers-toe-little = Kleiner Zeh
 
 ## Tracker assignment warnings
 
