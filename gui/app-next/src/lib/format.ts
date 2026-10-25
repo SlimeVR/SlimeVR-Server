@@ -58,6 +58,72 @@ export function fmt(spec: NumberSpec, value: number | null | undefined): string 
   return spec.suffix ? `${text} ${spec.suffix}` : text;
 }
 
+const NUMBER_PART_TYPES = new Set<string>([
+  'minusSign',
+  'plusSign',
+  'integer',
+  'group',
+  'decimal',
+  'fraction',
+  'nan',
+  'infinity',
+]);
+
+export interface NumberParts {
+  prefix: string;
+  number: string;
+  raw: string;
+  suffix: string;
+}
+
+// Splits the digits from the affixes (unit, percent sign, `suffix`), so an
+// input can hold the number and show the affixes as static text
+export function numberParts(spec: NumberSpec, value: number): NumberParts {
+  const parts = numberFormatter(spec).formatToParts(value);
+  const first = parts.findIndex((p) => NUMBER_PART_TYPES.has(p.type));
+  const last = parts.findLastIndex((p) => NUMBER_PART_TYPES.has(p.type));
+  const join = (from: number, to: number, skipGroups = false) =>
+    parts
+      .slice(from, to)
+      .filter((p) => !skipGroups || p.type !== 'group')
+      .map((p) => p.value)
+      .join('');
+  const suffix = join(last + 1, parts.length).trim();
+  return {
+    prefix: join(0, first).trim(),
+    number: join(first, last + 1),
+    raw: join(first, last + 1, true),
+    suffix: spec.suffix ? `${suffix} ${spec.suffix}`.trim() : suffix,
+  };
+}
+
+const SYMBOLS_SPEC: NumberSpec = { minimumFractionDigits: 1 };
+
+function localeSymbol(type: Intl.NumberFormatPartTypes, fallback: string) {
+  const parts = numberFormatter(SYMBOLS_SPEC).formatToParts(-1234.5);
+  return parts.find((p) => p.type === type)?.value ?? fallback;
+}
+
+// Reactive to locale
+export function decimalSeparator(): string {
+  return localeSymbol('decimal', '.');
+}
+
+const PLAIN_NUMBER = /^[+-]?(\d+\.?\d*|\.\d+)$/;
+
+// Typed text only, never formatted output. Accepts the locale decimal
+// separator and `.`, strips group separators and spaces. NaN when invalid.
+export function parseNumber(text: string): number {
+  const group = localeSymbol('group', ',');
+  const decimal = decimalSeparator();
+  let plain = text.replace(/\s/g, '').replace(/\u2212/g, '-');
+  plain = plain.split(localeSymbol('minusSign', '-')).join('-');
+  // A `.` group separator would clash with the always accepted `.` decimal
+  if (group !== '.') plain = plain.split(group).join('');
+  if (decimal !== '.') plain = plain.split(decimal).join('.');
+  return PLAIN_NUMBER.test(plain) ? Number(plain) : NaN;
+}
+
 const listCache = new Map<string, Intl.ListFormat>();
 
 export function fmtList(

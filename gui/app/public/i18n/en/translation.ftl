@@ -46,6 +46,12 @@ input-password-show = Show password
 input-password-hide = Hide password
 
 
+## Number input
+# Accessible names for the pointer-only step buttons on each side of a number field
+input-number-decrease = Decrease
+input-number-increase = Increase
+
+
 ## File input
 # Accessible name and tooltip for the icon-only button that clears a picked path
 file_input-clear = Clear file

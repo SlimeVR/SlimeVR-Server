@@ -5,6 +5,7 @@ import { createSignal, type JSX, mergeProps } from 'solid-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Checkbox } from '@/ui/checkbox';
 import type { FieldProps } from '@/ui/field';
+import { NumberField } from '@/ui/number-field';
 import { type ChoiceOption, RadioGroup, Segmented } from '@/ui/radio-group';
 import { TextField } from '@/ui/text-field';
 import { Toggle } from '@/ui/toggle';
@@ -174,4 +175,16 @@ testFieldContract<string>({
     await user.tab();
   },
   control: () => screen.getByRole('textbox'),
+});
+
+testFieldContract<number>({
+  name: 'NumberField',
+  render: (field) => <NumberField {...field} min={0} max={10} step={1} />,
+  values: [1, 2],
+  edit: async (control, user) => {
+    control.focus();
+    await user.keyboard('2');
+    await user.tab();
+  },
+  control: () => screen.getByRole('spinbutton'),
 });

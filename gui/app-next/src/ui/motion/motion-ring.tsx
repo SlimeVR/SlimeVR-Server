@@ -50,8 +50,13 @@ export function MotionRing() {
     if (!frame) frame = requestAnimationFrame(place);
   }
 
+  // A `data-focus-ring` ancestor takes the ring for its inner focus target
+  function ringOf(el: HTMLElement): HTMLElement {
+    return el.closest<HTMLElement>('[data-focus-ring]') ?? el;
+  }
+
   function onFocusIn(e: FocusEvent) {
-    setTarget(e.target instanceof HTMLElement ? e.target : null);
+    setTarget(e.target instanceof HTMLElement ? ringOf(e.target) : null);
   }
 
   function onFocusOut(e: FocusEvent) {
@@ -61,7 +66,7 @@ export function MotionRing() {
   onMount(() => {
     const active = document.activeElement;
     if (active instanceof HTMLElement && active !== document.body)
-      setTarget(active);
+      setTarget(ringOf(active));
     document.addEventListener('focusin', onFocusIn);
     document.addEventListener('focusout', onFocusOut);
     window.addEventListener('scroll', place, true);

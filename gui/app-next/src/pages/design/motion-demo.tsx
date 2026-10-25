@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports -- number/range inputs and the edit-mode dial stay raw until NumberField and Slider exist */
+/* eslint-disable no-restricted-imports -- range input and the edit-mode dial stay raw until Slider exists */
 
 import { createSignal, For, type JSX, onCleanup, Show } from 'solid-js';
 import { canHandleBack, setBackFallback, useBack } from '@/lib/back-stack';
@@ -16,6 +16,7 @@ import {
   type MotionItemOptions,
   useMotionItem,
 } from '@/ui/motion';
+import { NumberField } from '@/ui/number-field';
 import { TextField } from '@/ui/text-field';
 
 // Dev only playground for arrows, Ctrl/Alt+Arrow, Tab and gamepad
@@ -26,6 +27,19 @@ const CONTROL =
 function DemoText(props: { label: string }) {
   const [value, setValue] = createSignal('');
   return <TextField label={props.label} value={value()} onChange={setValue} />;
+}
+
+function DemoNumber() {
+  const [value, setValue] = createSignal(5);
+  return (
+    <NumberField
+      value={value()}
+      onChange={setValue}
+      min={0}
+      max={10}
+      step={1}
+    />
+  );
 }
 
 function DemoInput(props: { type: string; label: string } & MotionItemOptions) {
@@ -193,7 +207,7 @@ export function MotionDemo() {
 
           <MotionList class="flex flex-col gap-sm">
             <DemoText label="text" />
-            <DemoInput type="number" label="number" owns="all" />
+            <DemoNumber />
             <DemoInput type="range" label="range" owns="horizontal" />
             <DemoDial />
           </MotionList>

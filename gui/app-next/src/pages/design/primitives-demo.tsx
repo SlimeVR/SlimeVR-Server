@@ -2,10 +2,12 @@
 import { createSignal, For, type JSX } from 'solid-js';
 import GearIcon from '~icons/material-symbols/settings-rounded';
 import { cx } from '@/lib/cx';
+import { formats } from '@/lib/format';
 import { Button, type ButtonVariant } from '@/ui/button';
 import { Checkbox } from '@/ui/checkbox';
 import type { FieldProps } from '@/ui/field';
 import { MotionGrid, MotionRegion } from '@/ui/motion';
+import { NumberField } from '@/ui/number-field';
 import { type ChoiceOption, RadioGroup, Segmented } from '@/ui/radio-group';
 import { TextField } from '@/ui/text-field';
 import { Toggle } from '@/ui/toggle';
@@ -90,6 +92,8 @@ export function PrimitivesDemo() {
   const [text, setText] = createSignal('');
   const [secret, setSecret] = createSignal('hunter2');
   const [choice, setChoice] = createSignal('a');
+  const [seconds, setSeconds] = createSignal(0.25);
+  const [percent, setPercent] = createSignal(0.5);
   const [surface, setSurface] = createSignal<Surface>('section');
 
   return (
@@ -167,6 +171,30 @@ export function PrimitivesDemo() {
               onChange={setSecret}
               label="Password"
               type="password"
+            />
+          </div>
+        )}
+      </Row>
+      <Row title="NumberField">
+        {(state) => (
+          <div class="flex flex-col gap-sm">
+            <NumberField
+              {...STATE_FIELD[state]}
+              value={seconds()}
+              onChange={setSeconds}
+              min={0}
+              max={3}
+              step={0.05}
+              format={formats.seconds}
+            />
+            <NumberField
+              {...STATE_FIELD[state]}
+              value={percent()}
+              onChange={setPercent}
+              min={0.1}
+              max={1}
+              step={0.1}
+              format={formats.percent}
             />
           </div>
         )}

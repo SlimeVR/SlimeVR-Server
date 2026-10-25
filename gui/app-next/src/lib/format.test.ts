@@ -7,6 +7,8 @@ import {
   fmtRelative,
   formats,
   lengthUnit,
+  numberParts,
+  parseNumber,
 } from '@/lib/format';
 import { loadLocale } from '@/lib/l10n';
 import { setPlatform } from '@/lib/platform';
@@ -93,5 +95,62 @@ describe('fmtLength', () => {
     expect(plain(fmtLength(0.45, 'segment'))).toBe(`17.7${IN}`);
     expect(plain(fmtLength(0.0254, 'offset'))).toBe(`+1${IN}`);
     expect(fmtLength(null, 'height')).toBe(EMPTY);
+  });
+});
+
+describe('numberParts', () => {
+  it('splits digits from affixes', async () => {
+    await switchLocale('en');
+    expect(numberParts(formats.seconds, 1234.5)).toEqual({
+      prefix: '',
+      number: '1,234.5',
+      raw: '1234.5',
+      suffix: 's',
+    });
+    expect(numberParts(formats.percent, 0.5)).toMatchObject({
+      number: '50',
+      suffix: '%',
+    });
+    expect(numberParts(formats.volts, 3.7)).toMatchObject({
+      number: '3.70',
+      suffix: 'V',
+    });
+    expect(numberParts(formats.offset, 1)).toMatchObject({
+      number: '+1',
+      suffix: '',
+    });
+  });
+
+  it('drops locale group separators from raw', async () => {
+    await switchLocale('fr');
+    const parts = numberParts(formats.seconds, 1234.5);
+    expect(parts.raw).toBe('1234,5');
+  });
+});
+
+describe('parseNumber', () => {
+  it('parses plain typed numbers', async () => {
+    await switchLocale('en');
+    expect(parseNumber('12.5')).toBe(12.5);
+    expect(parseNumber('-3')).toBe(-3);
+    expect(parseNumber('+1')).toBe(1);
+    expect(parseNumber('.5')).toBe(0.5);
+    expect(parseNumber('1,234')).toBe(1234);
+  });
+
+  it('rejects anything that is not a number', async () => {
+    await switchLocale('en');
+    for (const text of ['', '-', 'abc', '1e5', '0x10', 'Infinity', '1.2.3'])
+      expect(parseNumber(text)).toBeNaN();
+  });
+
+  it('accepts the locale decimal separator and `.`', async () => {
+    await switchLocale('fr');
+    expect(parseNumber('2,25')).toBe(2.25);
+    expect(parseNumber('2.25')).toBe(2.25);
+    expect(parseNumber('1\u202f234,5')).toBe(1234.5);
+    await switchLocale('de');
+    expect(parseNumber('1,5')).toBe(1.5);
+    expect(parseNumber('1.5')).toBe(1.5);
   });
 });

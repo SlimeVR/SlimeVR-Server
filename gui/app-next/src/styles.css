@@ -588,6 +588,20 @@
     outline: none;
   }
 
+  /* A widget box whose focus target is a smaller inner element draws the outline itself */
+  [data-focus-ring] :focus-visible {
+    outline: none;
+  }
+
+  [data-focus-ring]:has(:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .motion-active [data-focus-ring]:has(:focus-visible) {
+    outline: none;
+  }
+
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
