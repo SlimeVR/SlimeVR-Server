@@ -74,6 +74,9 @@ body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
 body_part-RIGHT_LOWER_LEG = Rechter Knöchel
 body_part-RIGHT_FOOT = Rechter Fuß
 body_part-UPPER_CHEST = Obere Brust
+body_part-LOWER_CHEST = Untere Brust
+body_part-UPPER_WAIST = Obere Taille
+body_part-LOWER_WAIST = Untere Taille
 body_part-HIP = Hüfte
 body_part-LEFT_SHOULDER = Linke Schulter
 body_part-LEFT_UPPER_ARM = Linker Oberarm
@@ -112,7 +115,17 @@ body_part-RIGHT_RING_DISTAL = Rechtes Ringfinger-Endglied
 body_part-RIGHT_LITTLE_PROXIMAL = Rechtes Kleinfinger-Grundglied
 body_part-RIGHT_LITTLE_INTERMEDIATE = Rechtes Kleinfinger-Mittelglied
 body_part-RIGHT_LITTLE_DISTAL = Rechtes Kleinfinger-Endglied
+body_part-LEFT_BIG_TOE = Linker großer Zeh
+body_part-LEFT_INDEX_TOE = Linker zweiter Zeh
+body_part-LEFT_MIDDLE_TOE = Linker dritter Zeh
+body_part-LEFT_RING_TOE = Linker vierter Zeh
+body_part-LEFT_LITTLE_TOE = Linker kleiner Zeh
 body_part-RIGHT_TOES = Rechte Zehen
+body_part-RIGHT_BIG_TOE = Rechter großer Zeh
+body_part-RIGHT_INDEX_TOE = Rechter zweiter Zeh
+body_part-RIGHT_MIDDLE_TOE = Rechter dritter Zeh
+body_part-RIGHT_RING_TOE = Rechter vierter Zeh
+body_part-RIGHT_LITTLE_TOE = Rechter kleiner Zeh
 
 ## Proportions
 
