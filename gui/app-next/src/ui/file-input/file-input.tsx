@@ -4,12 +4,12 @@ import FileIcon from '~icons/material-symbols/draft-rounded';
 import UploadIcon from '~icons/material-symbols/upload-file-rounded';
 import { cx } from '@/lib/cx';
 import type { MessageId } from '@/lib/l10n';
-import { Button } from '@/ui/button';
+import { TextButton } from '@/ui/button';
 import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { Localized } from '@/ui/localized';
 import { MotionList, useMotionItem } from '@/ui/motion';
 import { Skeleton } from '@/ui/skeleton';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export interface FileInputProps extends FieldProps<File | null> {
   // Same syntax as the input `accept` attribute: MIME types, `type/*`, `.ext`
@@ -132,7 +132,7 @@ function FileInputBody(props: FileInputProps) {
       </div>
       <Show when={filled()}>
         <span class="absolute inset-y-0 right-1.5 flex items-center">
-          <Button
+          <TextButton
             variant="ghost"
             size="small"
             iconOnly
@@ -143,7 +143,7 @@ function FileInputBody(props: FileInputProps) {
           />
         </span>
       </Show>
-      <Tooltip id={tipId} anchor={() => el} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => el} text={reason()} />
     </>
   );
 }

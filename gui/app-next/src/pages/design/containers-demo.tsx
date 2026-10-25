@@ -2,7 +2,7 @@
 import { createSignal } from 'solid-js';
 import TrackingIcon from '~icons/material-symbols/sports-martial-arts-rounded';
 import { formats } from '@/lib/format';
-import { Button } from '@/ui/button';
+import { TextButton } from '@/ui/button';
 import { NumberField } from '@/ui/number-field';
 import { Page } from '@/ui/page';
 import { RadioGroup } from '@/ui/radio-group';
@@ -29,7 +29,7 @@ export function ContainersDemo() {
         icon={<TrackingIcon class="icon" />}
         gap="2xl"
         actions={
-          <Button
+          <TextButton
             label="Toggle group loading"
             size="small"
             onClick={() => setLoading(!loading())}
@@ -142,7 +142,7 @@ export function ContainersDemo() {
           <SettingsGroup>
             <SettingRow
               title="Danger row"
-              control={() => <Button label="Reset" variant="danger" />}
+              control={() => <TextButton label="Reset" variant="danger" />}
             />
           </SettingsGroup>
         </SettingsAdvanced>
@@ -152,8 +152,8 @@ export function ContainersDemo() {
         description="A titled block of a page."
         actions={
           <Toolbar label="Section actions">
-            <Button label="One" size="small" />
-            <Button label="Two" size="small" variant="ghost" />
+            <TextButton label="One" size="small" />
+            <TextButton label="Two" size="small" variant="ghost" />
           </Toolbar>
         }
       >

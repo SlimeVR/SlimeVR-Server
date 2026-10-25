@@ -4,7 +4,7 @@ import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { useMotionItem } from '@/ui/motion';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export interface CheckboxProps extends FieldProps<boolean> {
   label?: MessageId;
@@ -53,7 +53,7 @@ export function Checkbox(props: CheckboxProps) {
               peer col-start-1 row-start-1 size-5 cursor-pointer appearance-none rounded-md
               bg-surface-control checked:bg-accent aria-disabled:cursor-not-allowed
               aria-invalid:ring-1 aria-invalid:ring-critical in-[[inert]]:animate-pulse
-              in-[[inert]]:bg-fg/15
+              in-[[inert]]:bg-line
             "
             onClick={onClick}
             onChange={onChange}
@@ -71,7 +71,7 @@ export function Checkbox(props: CheckboxProps) {
           {(label) => <span>{t(label(), props.args)}</span>}
         </Show>
       </label>
-      <Tooltip id={tipId} anchor={() => el} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => el} text={reason()} />
     </>
   );
 }

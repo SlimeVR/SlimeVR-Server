@@ -133,14 +133,15 @@ function BackStackDemo() {
   }
 
   // Fake router history under the overlays: pad B goes back, Escape does not
-  setBackFallback({
-    can: () => page() > 1,
-    back: () => {
-      record(`history: page ${page()} -> ${page() - 1}`);
-      setPage((p) => p - 1);
-    },
-  });
-  onCleanup(() => setBackFallback(null));
+  onCleanup(
+    setBackFallback({
+      can: () => page() > 1,
+      back: () => {
+        record(`history: page ${page()} -> ${page() - 1}`);
+        setPage((p) => p - 1);
+      },
+    })
+  );
 
   return (
     <div class="flex flex-col gap-sm">

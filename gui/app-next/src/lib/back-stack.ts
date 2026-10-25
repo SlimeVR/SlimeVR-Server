@@ -1,4 +1,10 @@
-import { type Accessor, createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  onCleanup,
+  untrack,
+} from 'solid-js';
 
 export interface BackOptions {
   // Dialogs: page-scope shortcuts are suspended while one is on the stack
@@ -34,8 +40,10 @@ export function useBack(
   });
 }
 
-export function setBackFallback(next: BackFallback | null) {
+export function setBackFallback(next: BackFallback | null): () => void {
+  const previous = untrack(() => fallback());
   setFallback(() => next);
+  return () => setFallback(() => previous);
 }
 
 export function dismiss(): boolean {

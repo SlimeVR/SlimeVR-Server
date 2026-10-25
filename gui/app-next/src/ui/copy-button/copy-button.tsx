@@ -2,7 +2,7 @@ import { createSignal, onCleanup } from 'solid-js';
 import CheckIcon from '~icons/material-symbols/check-rounded';
 import CopyIcon from '~icons/material-symbols/content-copy-rounded';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
-import { Button, type ButtonSize, type ButtonVariant } from '@/ui/button';
+import { TextButton, type ButtonSize, type ButtonVariant } from '@/ui/button';
 import { showToast } from '@/ui/toast';
 
 export const COPY_FEEDBACK_MS = 2000;
@@ -45,7 +45,7 @@ export function CopyButton(props: CopyButtonProps) {
 
   return (
     <>
-      <Button
+      <TextButton
         variant={props.variant}
         size={props.size}
         label={props.label}

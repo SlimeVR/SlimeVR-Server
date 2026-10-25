@@ -380,6 +380,9 @@ importers:
       flatbuffers:
         specifier: 22.10.26
         version: 22.10.26
+      semver:
+        specifier: 7.7.4
+        version: 7.7.4
       solarxr-protocol:
         specifier: workspace:*
         version: link:../../solarxr-protocol
@@ -426,6 +429,9 @@ importers:
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
+      '@types/semver':
+        specifier: 7.7.1
+        version: 7.7.1
       axe-core:
         specifier: 4.14.0
         version: 4.14.0

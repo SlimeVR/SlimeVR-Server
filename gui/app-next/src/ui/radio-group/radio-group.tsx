@@ -8,7 +8,7 @@ import {
   type MotionOwns,
   useMotionItem,
 } from '@/ui/motion';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export interface ChoiceOption<T> {
   value: T;
@@ -167,7 +167,7 @@ function renderGroup<T>(
           }}
         </For>
       </div>
-      <Tooltip id={tipId} anchor={() => el} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => el} text={reason()} />
     </>
   );
 }

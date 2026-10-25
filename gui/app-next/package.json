@@ -24,6 +24,7 @@
     "@solidjs/router": "1.0.0",
     "browser-fs-access": "0.38.0",
     "flatbuffers": "22.10.26",
+    "semver": "7.7.4",
     "solarxr-protocol": "workspace:*",
     "solid-js": "1.9.17",
     "valibot": "1.5.0"
@@ -41,6 +42,7 @@
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/user-event": "14.6.8",
     "@types/node": "26.6.5",
+    "@types/semver": "7.7.1",
     "axe-core": "4.14.0",
     "eslint": "10.13.0",
     "eslint-import-resolver-typescript": "^4.4.4",

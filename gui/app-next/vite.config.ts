@@ -99,5 +99,7 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}'],
     unstubGlobals: true,
     restoreMocks: true,
+    // Its solidrouter entry imports the router's raw .jsx, so it must go through vite
+    server: { deps: { inline: [/@sentry\/solid/] } },
   },
 });

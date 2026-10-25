@@ -3,7 +3,7 @@ import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { useMotionItem } from '@/ui/motion';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export interface ToggleProps extends FieldProps<boolean> {
   label?: MessageId;
@@ -46,7 +46,7 @@ export function Toggle(props: ToggleProps) {
           class="
             group relative h-4 w-10 shrink-0 rounded-full bg-surface-control transition-colors
             aria-checked:bg-accent aria-disabled:cursor-not-allowed aria-invalid:ring-1
-            aria-invalid:ring-critical inert:animate-pulse inert:bg-fg/15
+            aria-invalid:ring-critical inert:animate-pulse inert:bg-line
           "
           onClick={onClick}
         >
@@ -61,7 +61,7 @@ export function Toggle(props: ToggleProps) {
           {(label) => <span>{t(label(), props.args)}</span>}
         </Show>
       </label>
-      <Tooltip id={tipId} anchor={() => el} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => el} text={reason()} />
     </>
   );
 }

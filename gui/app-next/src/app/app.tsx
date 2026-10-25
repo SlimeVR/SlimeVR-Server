@@ -1,14 +1,38 @@
-import { DesignPage } from '@/pages/design/design-page';
+import { HashRouter, type RouteSectionProps } from '@solidjs/router';
+import { withSentryRouterRouting } from '@sentry/solid/solidrouter';
+import { AppShell } from '@/app/app-shell';
+import { CrashBoundary } from '@/app/crash-screen';
+import { useHistoryBack } from '@/app/history-back';
+import { routes } from '@/app/routes';
+import { useShortcut } from '@/lib/keyboard';
+import { DOCS_SITE } from '@/lib/links';
+import { platform } from '@/lib/platform';
 import { DialogHost } from '@/ui/dialog';
 import { MotionRoot } from '@/ui/motion';
 import { ToastHost } from '@/ui/toast';
 
-export function App() {
+const Router = withSentryRouterRouting(HashRouter);
+
+function AppRoot(props: RouteSectionProps) {
+  useHistoryBack();
+  useShortcut('F1', () => platform.openUrl(DOCS_SITE), {
+    scope: 'global',
+    label: 'titlebar-docs',
+  });
+
   return (
     <MotionRoot>
-      <DesignPage />
+      <AppShell>{props.children}</AppShell>
       <DialogHost />
       <ToastHost />
     </MotionRoot>
+  );
+}
+
+export function App() {
+  return (
+    <CrashBoundary>
+      <Router root={AppRoot}>{routes}</Router>
+    </CrashBoundary>
   );
 }

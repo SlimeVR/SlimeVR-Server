@@ -1,4 +1,10 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  children,
+  createEffect,
+  createSignal,
+  type JSX,
+  onCleanup,
+} from 'solid-js';
 import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import {
@@ -26,9 +32,9 @@ export interface TooltipProps {
   // Referenced by the anchor's aria-describedby when the text is a description
   id: string;
   anchor: () => HTMLElement | undefined;
-  text?: MessageId;
-  args?: MessageArgs;
   placement?: AnchorPlacement;
+  // Nothing shows while empty
+  children?: JSX.Element;
 }
 
 function focusVisible(el: HTMLElement): boolean {
@@ -40,6 +46,7 @@ export function Tooltip(props: TooltipProps) {
   let el!: HTMLDivElement;
   const [open, setOpen] = createSignal(false);
   const placement = () => props.placement ?? 'bottom';
+  const content = children(() => props.children);
 
   useAnchor(
     () => el,
@@ -49,7 +56,7 @@ export function Tooltip(props: TooltipProps) {
 
   createEffect(() => {
     const anchor = props.anchor();
-    if (!anchor || !props.text) {
+    if (!anchor || !content()) {
       setOpen(false);
       return;
     }
@@ -152,7 +159,21 @@ export function Tooltip(props: TooltipProps) {
         GAP[placement()]
       )}
     >
-      {props.text ? t(props.text, props.args) : ''}
+      {content()}
     </div>
+  );
+}
+
+export interface TextTooltipProps extends Omit<TooltipProps, 'children'> {
+  text?: MessageId;
+  args?: MessageArgs;
+}
+
+// Translated tooltip, nothing while `text` is undefined
+export function TextTooltip(props: TextTooltipProps) {
+  return (
+    <Tooltip id={props.id} anchor={props.anchor} placement={props.placement}>
+      {props.text ? t(props.text, props.args) : undefined}
+    </Tooltip>
   );
 }

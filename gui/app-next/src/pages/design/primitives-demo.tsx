@@ -3,7 +3,7 @@ import { createSignal, For, type JSX } from 'solid-js';
 import GearIcon from '~icons/material-symbols/settings-rounded';
 import { cx } from '@/lib/cx';
 import { formats } from '@/lib/format';
-import { Button, type ButtonSize, type ButtonVariant } from '@/ui/button';
+import { TextButton, type ButtonSize, type ButtonVariant } from '@/ui/button';
 import { Checkbox } from '@/ui/checkbox';
 import { CopyButton } from '@/ui/copy-button';
 import type { FieldProps } from '@/ui/field';
@@ -146,7 +146,7 @@ export function PrimitivesDemo() {
                 <For each={SIZES}>
                   {(size) => (
                     <>
-                      <Button
+                      <TextButton
                         variant={variant}
                         size={size}
                         label="Press"
@@ -154,7 +154,7 @@ export function PrimitivesDemo() {
                         disabledReason="Disabled because of a reason"
                         loading={state === 'loading'}
                       />
-                      <Button
+                      <TextButton
                         variant={variant}
                         size={size}
                         label="Settings"

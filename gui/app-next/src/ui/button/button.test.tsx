@@ -2,24 +2,39 @@ import { MemoryRouter, Route, useLocation } from '@solidjs/router';
 import { cleanup, render, screen } from '@solidjs/testing-library';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Button } from '@/ui/button';
+import { Button, TextButton } from '@/ui/button';
 
 describe('Button', () => {
   afterEach(cleanup);
 
   it('shows its label and fires onClick', async () => {
     const onClick = vi.fn();
-    render(() => <Button label="dialog-cancel" onClick={onClick} />);
+    render(() => <TextButton label="dialog-cancel" onClick={onClick} />);
     await userEvent
       .setup()
       .click(screen.getByRole('button', { name: 'dialog-cancel' }));
     expect(onClick).toHaveBeenCalledOnce();
   });
 
+  it('raw base: children are the text, name is the icon only name', () => {
+    render(() => (
+      <>
+        <Button>Tracker 1</Button>
+        <Button name="Tracker 2" icon={<span />} iconOnly />
+      </>
+    ));
+    expect(
+      screen.getByRole('button', { name: 'Tracker 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Tracker 2' })
+    ).not.toHaveTextContent('Tracker 2');
+  });
+
   it('disabled stays focusable, ignores presses, describes the reason', async () => {
     const onClick = vi.fn();
     render(() => (
-      <Button
+      <TextButton
         label="dialog-cancel"
         disabled
         disabledReason="status-loading"
@@ -37,13 +52,15 @@ describe('Button', () => {
 
   it('ignores presses while loading', async () => {
     const onClick = vi.fn();
-    render(() => <Button label="dialog-cancel" loading onClick={onClick} />);
+    render(() => (
+      <TextButton label="dialog-cancel" loading onClick={onClick} />
+    ));
     await userEvent.setup().click(screen.getByRole('button'));
     expect(onClick).not.toHaveBeenCalled();
   });
 
   it('icon only: the label is the name, not visible text', () => {
-    render(() => <Button label="dialog-cancel" icon={<span />} iconOnly />);
+    render(() => <TextButton label="dialog-cancel" icon={<span />} iconOnly />);
     const button = screen.getByRole('button', { name: 'dialog-cancel' });
     expect(button).not.toHaveTextContent('dialog-cancel');
     expect(screen.getByRole('tooltip', { hidden: true })).toHaveTextContent(
@@ -55,7 +72,7 @@ describe('Button', () => {
     const onSubmit = vi.fn((e: SubmitEvent) => e.preventDefault());
     render(() => (
       <form onSubmit={onSubmit}>
-        <Button label="dialog-cancel" type="submit" disabled />
+        <TextButton label="dialog-cancel" type="submit" disabled />
       </form>
     ));
     await userEvent.setup().click(screen.getByRole('button'));
@@ -73,7 +90,11 @@ describe('Button', () => {
         <MemoryRouter
           root={(p) => (
             <>
-              <Button to="/next" label="dialog-cancel" disabled={disabled} />
+              <TextButton
+                to="/next"
+                label="dialog-cancel"
+                disabled={disabled}
+              />
               <Path />
               {p.children}
             </>
@@ -106,10 +127,10 @@ describe('Button', () => {
     void (() => (
       <>
         {/* @ts-expect-error links have no pressed state */}
-        <Button to="/x" label="dialog-cancel" pressed />
+        <TextButton to="/x" label="dialog-cancel" pressed />
         {/* @ts-expect-error links never submit */}
-        <Button to="/x" label="dialog-cancel" type="submit" />
-        <Button label="dialog-cancel" state={{}} />
+        <TextButton to="/x" label="dialog-cancel" type="submit" />
+        <TextButton label="dialog-cancel" state={{}} />
       </>
     ));
   });

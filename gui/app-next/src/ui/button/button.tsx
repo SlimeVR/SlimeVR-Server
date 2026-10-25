@@ -1,5 +1,5 @@
 import { A } from '@solidjs/router';
-import { createUniqueId, For, type JSX, Show } from 'solid-js';
+import { createUniqueId, For, type JSX, Show, splitProps } from 'solid-js';
 import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { useMotionItem } from '@/ui/motion';
@@ -11,19 +11,19 @@ export type ButtonSize = 'default' | 'small';
 type ButtonBase = {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  label?: MessageId;
-  args?: MessageArgs;
+  // Accessible name and tooltip while icon only
+  name?: string;
   icon?: JSX.Element;
   iconOnly?: boolean;
   loading?: boolean;
   disabled?: boolean;
-  disabledReason?: MessageId;
+  disabledReason?: string;
   badge?: JSX.Element;
   autofocus?: boolean;
   id?: string;
   class?: string;
   onClick?: (e: MouseEvent) => void;
-  // Content when there is no label
+  // Hidden while icon only
   children?: JSX.Element;
 };
 
@@ -76,9 +76,9 @@ export function Button(props: ButtonProps) {
   const tipId = createUniqueId();
   useMotionItem(() => el);
 
-  const iconOnly = () => !!props.iconOnly && !!props.label;
+  const iconOnly = () => !!props.iconOnly && !!props.name;
   const reason = () => (props.disabled ? props.disabledReason : undefined);
-  const tooltip = () => reason() ?? (iconOnly() ? props.label : undefined);
+  const tooltip = () => reason() ?? (iconOnly() ? props.name : undefined);
 
   function onClick(e: MouseEvent) {
     if (props.disabled || props.loading) {
@@ -115,9 +115,7 @@ export function Button(props: ButtonProps) {
           <Show when={props.icon}>
             {(icon) => <span class="flex icon-md">{icon()}</span>}
           </Show>
-          <Show when={!iconOnly()}>
-            {props.label ? t(props.label, props.args) : props.children}
-          </Show>
+          <Show when={!iconOnly()}>{props.children}</Show>
         </span>
         <Show when={props.loading}>
           <span
@@ -169,7 +167,7 @@ export function Button(props: ButtonProps) {
             id={props.id}
             type={action()?.type ?? 'button'}
             autofocus={props.autofocus}
-            aria-label={iconOnly() ? t(props.label!, props.args) : undefined}
+            aria-label={iconOnly() ? props.name : undefined}
             aria-describedby={reason() ? tipId : undefined}
             aria-disabled={props.disabled ? 'true' : undefined}
             aria-pressed={action()?.pressed}
@@ -190,7 +188,7 @@ export function Button(props: ButtonProps) {
             replace={link().replace}
             id={props.id}
             autofocus={props.autofocus}
-            aria-label={iconOnly() ? t(props.label!, props.args) : undefined}
+            aria-label={iconOnly() ? props.name : undefined}
             aria-describedby={reason() ? tipId : undefined}
             aria-disabled={props.disabled ? 'true' : undefined}
             class={className()}
@@ -200,12 +198,36 @@ export function Button(props: ButtonProps) {
           </A>
         )}
       </Show>
-      <Tooltip
-        id={tipId}
-        anchor={() => el}
-        text={tooltip()}
-        args={reason() ? undefined : props.args}
-      />
+      <Tooltip id={tipId} anchor={() => el}>
+        {tooltip()}
+      </Tooltip>
     </>
+  );
+}
+
+export type TextButtonProps = Omit<
+  ButtonBase,
+  'name' | 'disabledReason' | 'children'
+> & {
+  label: MessageId;
+  args?: MessageArgs;
+  disabledReason?: MessageId;
+} & (ButtonAction | ButtonLink);
+
+// Translated label: visible text, or the name while icon only
+export function TextButton(props: TextButtonProps) {
+  const [local, rest] = splitProps(props, ['label', 'args', 'disabledReason']);
+  const text = () => t(local.label, local.args);
+
+  return (
+    <Button
+      {...rest}
+      name={text()}
+      disabledReason={
+        local.disabledReason ? t(local.disabledReason) : undefined
+      }
+    >
+      {text()}
+    </Button>
   );
 }

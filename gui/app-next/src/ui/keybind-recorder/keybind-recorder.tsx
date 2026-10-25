@@ -23,7 +23,7 @@ import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { Kbd, type KbdVariant } from './kbd';
 import { Skeleton } from '@/ui/skeleton';
 import { useMotionItem } from '@/ui/motion';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export const MAX_KEYBIND_LENGTH = 5;
 export const UNSUPPORTED_FLASH_MS = 350;
@@ -203,7 +203,7 @@ export function KeybindRecorder(props: KeybindRecorderProps) {
       <span class="sr-only" role="status">
         {flash() ? t('settings-keybinds-error-unsupported-key') : ''}
       </span>
-      <Tooltip id={tipId} anchor={() => el} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => el} text={reason()} />
     </>
   );
 }

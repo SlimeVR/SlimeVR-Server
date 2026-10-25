@@ -10,7 +10,7 @@ export {
   type ReportingIdentity,
 } from './consent';
 export { defineMetric, ignoreError, reportError, type MetricOptions } from './report';
-export { initErrorReporting, setKnownValues } from './sentry';
+export { initErrorReporting, lastReportId, setKnownValues } from './sentry';
 export {
   setReportSink,
   type Breadcrumb,

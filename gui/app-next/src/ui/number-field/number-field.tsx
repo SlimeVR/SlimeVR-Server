@@ -21,7 +21,7 @@ import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { useMotionItem } from '@/ui/motion';
 import { Skeleton } from '@/ui/skeleton';
 import { type StepRange, stepKeys, stepValue } from './step-keys';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export interface NumberFieldProps extends FieldProps<number> {
   min: number;
@@ -314,7 +314,7 @@ export function NumberField(props: NumberFieldProps) {
         enabled={canStep(1)}
         onStep={() => stepBy(1)}
       />
-      <Tooltip id={tipId} anchor={() => box} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => box} text={reason()} />
     </div>
   );
 }

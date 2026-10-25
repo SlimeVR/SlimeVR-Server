@@ -17,7 +17,7 @@ import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { useMotionItem } from '@/ui/motion';
 import { Popover, type PopoverPlacement } from '@/ui/popover';
 import { Skeleton } from '@/ui/skeleton';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export type SelectOption<T> = {
   render?: () => JSX.Element;
@@ -376,7 +376,7 @@ function SelectBox<T>(props: SelectBoxProps<T>) {
           </div>
         </div>
       </Popover>
-      <Tooltip id={tipId} anchor={() => trigger} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => trigger} text={reason()} />
     </>
   );
 }

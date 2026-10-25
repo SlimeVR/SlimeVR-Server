@@ -1,6 +1,6 @@
 import { createSignal, For, type JSX, Show } from 'solid-js';
 import type { MessageArgs, MessageId } from '@/lib/l10n';
-import { Button } from '@/ui/button';
+import { TextButton } from '@/ui/button';
 import { Dialog } from './dialog';
 import { Localized } from '@/ui/localized';
 import { MotionToolbar } from '@/ui/motion';
@@ -46,12 +46,12 @@ export async function confirm(options: ConfirmOptions): Promise<boolean> {
         )}
       </Show>
       <MotionToolbar entry="first" class="flex justify-end gap-sm">
-        <Button
+        <TextButton
           label={options.cancel ?? 'dialog-cancel'}
           variant="secondary"
           onClick={() => close(false)}
         />
-        <Button
+        <TextButton
           label={options.confirm}
           variant={options.danger ? 'danger' : 'primary'}
           onClick={() => close(true)}

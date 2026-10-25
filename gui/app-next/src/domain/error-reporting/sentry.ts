@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/solid';
+import { solidRouterBrowserTracingIntegration } from '@sentry/solid/solidrouter';
 import { redactText } from '@slimevr/gui-shared';
 import { createEffect, createRoot } from 'solid-js';
 import { ErrorReportingConsent } from 'solarxr-protocol';
@@ -50,7 +51,7 @@ function initSentry() {
     environment: __SENTRY_ENVIRONMENT__,
     integrations: (defaults) => [
       ...defaults.filter((integration) => integration.name !== 'BrowserSession'),
-      Sentry.browserTracingIntegration(),
+      solidRouterBrowserTracingIntegration(),
       Sentry.browserProfilingIntegration(),
       Sentry.consoleLoggingIntegration({ levels: ['warn', 'error'] }),
     ],
@@ -201,6 +202,11 @@ function watchLayers() {
       data: event.values,
     });
   });
+}
+
+// Id of the last captured event, shown on the crash screen
+export function lastReportId(): string | undefined {
+  return Sentry.lastEventId();
 }
 
 export async function initErrorReporting() {

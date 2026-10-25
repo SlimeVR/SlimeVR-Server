@@ -233,10 +233,10 @@
   --role-app-hover: var(--palette-bg-60);
   --role-app-well: var(--palette-bg-80);
 
-  --role-sidebar-surface: var(--palette-bg-90);
+  --role-sidebar-surface: var(--palette-bg-80);
   --role-sidebar-control: var(--palette-bg-70);
   --role-sidebar-hover: var(--palette-bg-60);
-  --role-sidebar-well: var(--palette-bg-80);
+  --role-sidebar-well: var(--palette-bg-90);
 
   --role-page-surface: var(--palette-bg-70);
   --role-page-control: var(--palette-bg-60);
@@ -318,6 +318,9 @@
   --text-*: initial;
 
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Rail instead of the bottom bar, old app `mobile` cut */
+  --breakpoint-shell: 50rem;
 
   --width-xs: 20rem;
   --width-sm: 24rem;
@@ -649,6 +652,15 @@
 
   [data-electron-drag-region='true'] {
     -webkit-app-region: drag;
+  }
+
+  /* Toasts clear the bottom bar, the rail replaces it from the shell breakpoint */
+  :root {
+    --toast-offset: 4.5rem;
+
+    @variant shell {
+      --toast-offset: 0px;
+    }
   }
 }
 

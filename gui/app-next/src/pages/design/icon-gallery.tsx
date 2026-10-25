@@ -30,7 +30,7 @@ import CheckIcon from '~icons/material-symbols/check-rounded';
 import ChecklistIcon from '~icons/material-symbols/checklist';
 import CloseIcon from '~icons/material-symbols/close-rounded';
 import CompareArrowsIcon from '~icons/material-symbols/compare-arrows';
-import CropSquareIcon from '~icons/material-symbols/crop-square-rounded';
+import CropSquareIcon from '~icons/material-symbols/crop-square-outline-rounded';
 import DeployedCodeIcon from '~icons/material-symbols/deployed-code-rounded';
 import DiagonalLineIcon from '~icons/material-symbols/diagonal-line';
 import DirectionsWalkIcon from '~icons/material-symbols/directions-walk';
@@ -112,7 +112,7 @@ const ICONS: IconEntry[] = [
   ['material-symbols/close-rounded', CloseIcon],
   ['material-symbols/compare-arrows', CompareArrowsIcon],
   ['slime/controller', ControllerIcon],
-  ['material-symbols/crop-square-rounded', CropSquareIcon],
+  ['material-symbols/crop-square-outline-rounded', CropSquareIcon],
   ['material-symbols/deployed-code-rounded', DeployedCodeIcon],
   ['material-symbols/diagonal-line', DiagonalLineIcon],
   ['material-symbols/directions-walk', DirectionsWalkIcon],

@@ -12,11 +12,11 @@ import EyeSlashIcon from '~icons/heroicons/eye-slash-solid';
 import { cx } from '@/lib/cx';
 import { useBack } from '@/lib/back-stack';
 import { t, type MessageId } from '@/lib/l10n';
-import { Button } from '@/ui/button';
+import { TextButton } from '@/ui/button';
 import { fieldBlocked, type FieldProps, fieldState, idList } from '@/ui/field';
 import { MotionList, useMotionItem } from '@/ui/motion';
 import { Skeleton } from '@/ui/skeleton';
-import { Tooltip } from '@/ui/tooltip';
+import { TextTooltip } from '@/ui/tooltip';
 
 export const TEXT_COMMIT_DEBOUNCE_MS = 500;
 
@@ -200,7 +200,7 @@ function TextFieldBody(props: TextFieldProps) {
       </Show>
       <Show when={password() && !loading()}>
         <span class="absolute inset-y-0 right-1.5 flex items-center">
-          <Button
+          <TextButton
             variant="ghost"
             size="small"
             iconOnly
@@ -212,7 +212,7 @@ function TextFieldBody(props: TextFieldProps) {
           />
         </span>
       </Show>
-      <Tooltip id={tipId} anchor={() => el} text={reason()} />
+      <TextTooltip id={tipId} anchor={() => el} text={reason()} />
     </>
   );
 }
