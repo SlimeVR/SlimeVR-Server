@@ -1,7 +1,9 @@
-import { For } from 'solid-js';
+import { createSignal, For } from 'solid-js';
+import { Segmented } from '@/ui/radio-group';
 import { IconGallery } from './icon-gallery';
 import { MotionDemo } from './motion-demo';
 import { OverlayDemo } from './overlay-demo';
+import { PrimitivesDemo } from './primitives-demo';
 
 // Dev only token and primitive showcase
 
@@ -42,26 +44,25 @@ const SPACING_CLASS: Record<(typeof SPACING)[number], string> = {
   '2xl': 'pl-2xl',
 };
 
-function setTheme(theme: string) {
-  document.documentElement.dataset.theme = theme;
+type Theme = (typeof THEMES)[number];
+
+const [theme, setThemeSignal] = createSignal<Theme>(
+  (document.documentElement.dataset.theme as Theme | undefined) ?? 'slime'
+);
+
+function setTheme(next: Theme) {
+  document.documentElement.dataset.theme = next;
+  setThemeSignal(next);
 }
 
 export function DesignPage() {
   return (
     <div class="surface-app flex min-h-full flex-col gap-xl p-xl">
-      <div class="flex flex-wrap gap-sm">
-        <For each={THEMES}>
-          {(theme) => (
-            <button
-              type="button"
-              class="bg-surface-control hover:bg-surface-hover rounded-md px-md py-xs"
-              onClick={() => setTheme(theme)}
-            >
-              {theme}
-            </button>
-          )}
-        </For>
-      </div>
+      <Segmented
+        value={theme()}
+        onChange={setTheme}
+        options={THEMES.map((value) => ({ value, label: value }))}
+      />
 
       <div class="grid grid-cols-2 gap-lg md:grid-cols-3">
         <For each={ROLES}>
@@ -118,6 +119,7 @@ export function DesignPage() {
         </div>
       </div>
 
+      <PrimitivesDemo />
       <MotionDemo />
       <OverlayDemo />
       <IconGallery />

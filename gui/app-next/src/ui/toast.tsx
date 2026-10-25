@@ -1,4 +1,5 @@
 import { createSignal, For, untrack } from 'solid-js';
+import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { Floating } from '@/ui/floating';
 import CheckRoundedIcon from '~icons/material-symbols/check-rounded';
@@ -101,14 +102,13 @@ export function ToastHost() {
             <div
               role={toast.kind === 'error' ? 'alert' : 'status'}
               onPointerUp={() => dismissToast(toast.id)}
-              class="
-                surface-app pointer-events-auto flex items-center gap-sm rounded-md border-2
-                bg-surface px-lg py-md text-fg shadow-lg icon-sm
-              "
-              classList={{
-                'border-success': toast.kind === 'success',
-                'border-critical': toast.kind === 'error',
-              }}
+              class={cx(
+                `
+                  surface-app pointer-events-auto flex items-center gap-sm rounded-md border-2
+                  bg-surface px-lg py-md text-fg shadow-lg icon-sm
+                `,
+                toast.kind === 'error' ? 'border-critical' : 'border-success'
+              )}
             >
               {toast.kind === 'error' ? (
                 <ErrorRoundedIcon class="icon text-critical" />

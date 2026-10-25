@@ -1,4 +1,5 @@
 import { type JSX, Show } from 'solid-js';
+import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { Localized } from '@/ui/localized';
 
@@ -10,6 +11,12 @@ const SLIME: Record<StatusKind, string> = {
   error: '/images/sad-slime.webm',
   empty: '/images/curious-slime.webm',
   success: '/images/happy-slime.webm',
+};
+
+const LAYOUT: Record<StatusSize, string> = {
+  inline: 'flex-row gap-sm',
+  panel: 'flex-col justify-center gap-lg p-xl',
+  page: 'min-h-full flex-1 flex-col justify-center gap-lg p-2xl',
 };
 
 const SLIME_PX: Record<StatusSize, number> = {
@@ -60,13 +67,10 @@ export function StatusState(props: StatusStateProps) {
           ? t('status-loading')
           : undefined
       }
-      class="flex items-center overflow-hidden rounded-[inherit] text-center"
-      classList={{
-        'flex-row gap-sm': size() === 'inline',
-        'flex-col justify-center gap-lg p-xl': size() === 'panel',
-        'min-h-full flex-1 flex-col justify-center gap-lg p-2xl':
-          size() === 'page',
-      }}
+      class={cx(
+        'flex items-center overflow-hidden rounded-[inherit] text-center',
+        LAYOUT[size()]
+      )}
     >
       <Show when={props.glow && size() !== 'inline'} fallback={slime()}>
         <div class="relative flex items-center justify-center">

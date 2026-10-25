@@ -1,16 +1,11 @@
-/* eslint-disable no-restricted-imports -- dev demo registers raw elements, primitives come later */
 /* eslint-disable l10n/message-id -- dev demo uses raw strings, t() shows missing ids as-is */
 import { createSignal, For, type JSX } from 'solid-js';
+import { cx } from '@/lib/cx';
+import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
 import { confirm, openDialog } from '@/ui/dialog-host';
 import { Loaded } from '@/ui/loaded';
-import {
-  MotionList,
-  MotionRegion,
-  MotionToolbar,
-  type MotionItemOptions,
-  useMotionItem,
-} from '@/ui/motion';
+import { MotionList, MotionRegion, MotionToolbar } from '@/ui/motion';
 import { Popover, type PopoverPlacement } from '@/ui/popover';
 import {
   StatusState,
@@ -18,33 +13,7 @@ import {
   type StatusSize,
 } from '@/ui/status-state';
 import { showToast } from '@/ui/toast';
-
-const CONTROL =
-  'bg-surface-control hover:bg-surface-hover rounded-md px-md py-xs text-left';
-
-function DemoButton(
-  props: {
-    children: JSX.Element;
-    onClick?: () => void;
-    ref?: (el: HTMLButtonElement) => void;
-  } & MotionItemOptions
-) {
-  let el!: HTMLButtonElement;
-  useMotionItem(() => el, props);
-  return (
-    <button
-      ref={(b) => {
-        el = b;
-        props.ref?.(b);
-      }}
-      type="button"
-      class={CONTROL}
-      onClick={() => props.onClick?.()}
-    >
-      {props.children}
-    </button>
-  );
-}
+import { Toggle } from '@/ui/toggle';
 
 function Section(props: { title: string; children: JSX.Element }) {
   return (
@@ -78,9 +47,7 @@ function DialogDemos() {
       <Dialog open onClose={() => close()} title="Pick a fruit">
         <MotionToolbar class="flex gap-sm">
           <For each={['apple', 'pear', 'plum']}>
-            {(fruit) => (
-              <DemoButton onClick={() => close(fruit)}>{fruit}</DemoButton>
-            )}
+            {(fruit) => <Button onClick={() => close(fruit)}>{fruit}</Button>}
           </For>
         </MotionToolbar>
       </Dialog>
@@ -91,19 +58,13 @@ function DialogDemos() {
   return (
     <Section title="Dialogs">
       <MotionToolbar class="flex flex-wrap gap-sm">
-        <DemoButton onClick={() => setBasic(true)}>basic</DemoButton>
-        <DemoButton onClick={() => setLocked(true)}>not closeable</DemoButton>
-        <DemoButton onClick={() => setLong(true)}>long content</DemoButton>
-        <DemoButton onClick={() => setOuter(true)}>nested</DemoButton>
-        <DemoButton onClick={() => void runConfirm(false)}>
-          confirm()
-        </DemoButton>
-        <DemoButton onClick={() => void runConfirm(true)}>
-          confirm() danger
-        </DemoButton>
-        <DemoButton onClick={() => void runOpenDialog()}>
-          openDialog()
-        </DemoButton>
+        <Button onClick={() => setBasic(true)}>basic</Button>
+        <Button onClick={() => setLocked(true)}>not closeable</Button>
+        <Button onClick={() => setLong(true)}>long content</Button>
+        <Button onClick={() => setOuter(true)}>nested</Button>
+        <Button onClick={() => void runConfirm(false)}>confirm()</Button>
+        <Button onClick={() => void runConfirm(true)}>confirm() danger</Button>
+        <Button onClick={() => void runOpenDialog()}>openDialog()</Button>
       </MotionToolbar>
       <span>last result: {result()}</span>
 
@@ -117,14 +78,14 @@ function DialogDemos() {
           window.
         </p>
         <MotionToolbar class="flex gap-sm">
-          <DemoButton
+          <Button
             onClick={() =>
               showToast({ kind: 'success', message: 'Toast above a dialog' })
             }
           >
             toast
-          </DemoButton>
-          <DemoButton onClick={() => setBasic(false)}>close</DemoButton>
+          </Button>
+          <Button onClick={() => setBasic(false)}>close</Button>
         </MotionToolbar>
       </Dialog>
 
@@ -136,14 +97,14 @@ function DialogDemos() {
       >
         <p>Escape, back and backdrop do nothing. Only the button closes it.</p>
         <MotionToolbar class="flex gap-sm">
-          <DemoButton onClick={() => setLocked(false)}>done</DemoButton>
+          <Button onClick={() => setLocked(false)}>done</Button>
         </MotionToolbar>
       </Dialog>
 
       <Dialog open={long()} onClose={() => setLong(false)} title="Long content">
         <MotionList class="flex flex-col gap-xs">
           <For each={Array.from({ length: 30 }, (_, i) => i + 1)}>
-            {(i) => <DemoButton>row {i}</DemoButton>}
+            {(i) => <Button>row {i}</Button>}
           </For>
         </MotionList>
       </Dialog>
@@ -154,8 +115,8 @@ function DialogDemos() {
         title="Outer dialog"
       >
         <MotionToolbar class="flex gap-sm">
-          <DemoButton onClick={() => setInner(true)}>open inner</DemoButton>
-          <DemoButton onClick={() => setOuter(false)}>close</DemoButton>
+          <Button onClick={() => setInner(true)}>open inner</Button>
+          <Button onClick={() => setOuter(false)}>close</Button>
         </MotionToolbar>
         <Dialog
           open={inner()}
@@ -164,7 +125,7 @@ function DialogDemos() {
         >
           <p>Back closes this one first.</p>
           <MotionToolbar class="flex gap-sm">
-            <DemoButton onClick={() => setInner(false)}>close inner</DemoButton>
+            <Button onClick={() => setInner(false)}>close inner</Button>
           </MotionToolbar>
         </Dialog>
       </Dialog>
@@ -188,9 +149,13 @@ function PopoverDemo(props: { placement: PopoverPlacement }) {
   const [anchor, setAnchor] = createSignal<HTMLButtonElement>();
   return (
     <>
-      <DemoButton ref={setAnchor} onClick={() => setOpen((o) => !o)}>
+      <Button
+        ref={(el) => setAnchor(el)}
+        expanded={open()}
+        onClick={() => setOpen((o) => !o)}
+      >
         {props.placement}
-      </DemoButton>
+      </Button>
       <Popover
         open={open()}
         onClose={() => setOpen(false)}
@@ -199,9 +164,7 @@ function PopoverDemo(props: { placement: PopoverPlacement }) {
       >
         <MotionList class="flex flex-col gap-xs">
           <For each={['first item', 'second item', 'third item']}>
-            {(label) => (
-              <DemoButton onClick={() => setOpen(false)}>{label}</DemoButton>
-            )}
+            {(label) => <Button onClick={() => setOpen(false)}>{label}</Button>}
           </For>
         </MotionList>
       </Popover>
@@ -217,9 +180,7 @@ function PopoverDemos() {
         <For each={PLACEMENTS}>
           {(placement) => <PopoverDemo placement={placement} />}
         </For>
-        <DemoButton onClick={() => setInDialog(true)}>
-          popover in dialog
-        </DemoButton>
+        <Button onClick={() => setInDialog(true)}>popover in dialog</Button>
       </MotionToolbar>
       <span>Try them near the window edges for the flip fallbacks.</span>
       <Dialog
@@ -229,7 +190,7 @@ function PopoverDemos() {
       >
         <MotionToolbar class="flex gap-sm">
           <PopoverDemo placement="bottom-start" />
-          <DemoButton onClick={() => setInDialog(false)}>close</DemoButton>
+          <Button onClick={() => setInDialog(false)}>close</Button>
         </MotionToolbar>
       </Dialog>
     </Section>
@@ -241,21 +202,21 @@ function ToastDemos() {
   return (
     <Section title="Toasts">
       <MotionToolbar class="flex flex-wrap gap-sm">
-        <DemoButton
+        <Button
           onClick={() =>
             showToast({ kind: 'success', message: 'Saved', key: 'demo-saved' })
           }
         >
           success, coalesced
-        </DemoButton>
-        <DemoButton
+        </Button>
+        <Button
           onClick={() =>
             showToast({ kind: 'error', message: `Not saved (#${++count})` })
           }
         >
           error, each shown
-        </DemoButton>
-        <DemoButton
+        </Button>
+        <Button
           onClick={() =>
             showToast({
               kind: 'success',
@@ -265,7 +226,7 @@ function ToastDemos() {
           }
         >
           long
-        </DemoButton>
+        </Button>
       </MotionToolbar>
     </Section>
   );
@@ -279,9 +240,7 @@ function StatusDemos() {
   return (
     <Section title="Status states">
       <MotionToolbar class="flex gap-sm">
-        <DemoButton onClick={() => setGlow((g) => !g)}>
-          glow: {glow() ? 'on' : 'off'}
-        </DemoButton>
+        <Toggle label="glow" value={glow()} onChange={setGlow} />
       </MotionToolbar>
       <For each={SIZES}>
         {(size) => (
@@ -330,19 +289,17 @@ function LoadedDemo() {
   return (
     <Section title="Loaded">
       <MotionToolbar class="flex flex-wrap gap-sm">
-        <DemoButton onClick={() => set('never-loaded')}>
-          never-loaded
-        </DemoButton>
-        <DemoButton onClick={() => set('fresh', ['alpha', 'beta', 'gamma'])}>
+        <Button onClick={() => set('never-loaded')}>never-loaded</Button>
+        <Button onClick={() => set('fresh', ['alpha', 'beta', 'gamma'])}>
           fresh
-        </DemoButton>
-        <DemoButton onClick={() => set('stale')}>
-          stale (keeps last value)
-        </DemoButton>
-        <DemoButton onClick={() => set('fresh', [])}>fresh, empty</DemoButton>
-        <DemoButton onClick={() => setSkeleton((on) => !on)}>
-          loading: {skeleton() ? 'skeleton' : 'slime'}
-        </DemoButton>
+        </Button>
+        <Button onClick={() => set('stale')}>stale (keeps last value)</Button>
+        <Button onClick={() => set('fresh', [])}>fresh, empty</Button>
+        <Toggle
+          label="skeleton while loading"
+          value={skeleton()}
+          onChange={setSkeleton}
+        />
       </MotionToolbar>
       <span>state: {state()}</span>
       <div class="surface-card rounded-md">
@@ -373,8 +330,10 @@ function LoadedDemo() {
         >
           {(data) => (
             <ul
-              class="flex flex-col gap-xs p-lg"
-              classList={{ 'opacity-60': state() === 'stale' }}
+              class={cx(
+                'flex flex-col gap-xs p-lg',
+                state() === 'stale' && 'opacity-60'
+              )}
             >
               <For each={data().items}>{(item) => <li>{item}</li>}</For>
             </ul>

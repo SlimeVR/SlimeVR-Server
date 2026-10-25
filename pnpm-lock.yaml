@@ -426,6 +426,9 @@ importers:
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
+      axe-core:
+        specifier: 4.14.0
+        version: 4.14.0
       eslint:
         specifier: 10.13.0
         version: 10.13.0(jiti@1.21.7)(supports-color@7.2.0)

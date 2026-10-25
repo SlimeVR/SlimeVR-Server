@@ -479,6 +479,10 @@
   --spacing-lg: calc(16px * var(--density));
   --spacing-xl: calc(24px * var(--density));
   --spacing-2xl: calc(32px * var(--density));
+
+  /* Shared height of input primitives (button, fields, labelled toggles) */
+  --spacing-control: calc(48px * var(--density));
+  --spacing-control-sm: calc(36px * var(--density));
 }
 
 /* Containers (Button, nav) set the size, `.icon` reads it */

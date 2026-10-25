@@ -1,7 +1,9 @@
-/* eslint-disable no-restricted-imports -- dev demo registers raw elements, primitives come later */
+/* eslint-disable no-restricted-imports -- number/range inputs and the edit-mode dial stay raw until NumberField and Slider exist */
+
 import { createSignal, For, type JSX, onCleanup, Show } from 'solid-js';
 import { canHandleBack, setBackFallback, useBack } from '@/lib/back-stack';
 import { useShortcut } from '@/lib/keyboard';
+import { Button } from '@/ui/button';
 import {
   type Direction,
   MotionGrid,
@@ -14,27 +16,16 @@ import {
   type MotionItemOptions,
   useMotionItem,
 } from '@/ui/motion';
+import { TextField } from '@/ui/text-field';
 
 // Dev only playground for arrows, Ctrl/Alt+Arrow, Tab and gamepad
 
 const CONTROL =
   'bg-surface-control hover:bg-surface-hover rounded-md px-md py-xs text-left';
 
-function DemoButton(
-  props: { children: JSX.Element; onClick?: () => void } & MotionItemOptions
-) {
-  let ref!: HTMLButtonElement;
-  useMotionItem(() => ref, props);
-  return (
-    <button
-      ref={ref}
-      type="button"
-      class={CONTROL}
-      onClick={() => props.onClick?.()}
-    >
-      {props.children}
-    </button>
-  );
+function DemoText(props: { label: string }) {
+  const [value, setValue] = createSignal('');
+  return <TextField label={props.label} value={value()} onChange={setValue} />;
 }
 
 function DemoInput(props: { type: string; label: string } & MotionItemOptions) {
@@ -87,7 +78,7 @@ function Status() {
   );
 }
 
-// Inline stand-ins for overlays until dialogs exist. Closing puts focus back on the opener.
+// Inline overlays on the back stack. Closing puts focus back on the opener.
 function DemoOverlay(props: {
   title: string;
   modal?: boolean;
@@ -111,7 +102,7 @@ function DemoOverlay(props: {
       </span>
       <MotionList class="flex flex-col gap-sm">
         {props.children}
-        <DemoButton onClick={close}>close</DemoButton>
+        <Button onClick={close}>close</Button>
       </MotionList>
     </MotionRegion>
   );
@@ -143,8 +134,8 @@ function BackStackDemo() {
         page {page()}, can handle back: {String(canHandleBack())}
       </span>
       <MotionToolbar class="flex flex-wrap gap-sm">
-        <DemoButton onClick={() => setPage((p) => p + 1)}>next page</DemoButton>
-        <DemoButton onClick={() => setPanel(true)}>open panel</DemoButton>
+        <Button onClick={() => setPage((p) => p + 1)}>next page</Button>
+        <Button onClick={() => setPanel(true)}>open panel</Button>
       </MotionToolbar>
       <Show when={panel()}>
         <DemoOverlay
@@ -154,10 +145,8 @@ function BackStackDemo() {
             setPanel(false);
           }}
         >
-          <DemoInput type="text" label="Escape here" owns="horizontal" />
-          <DemoButton onClick={() => setDialog(true)}>
-            open dialog on top
-          </DemoButton>
+          <DemoText label="Escape here" />
+          <Button onClick={() => setDialog(true)}>open dialog on top</Button>
         </DemoOverlay>
       </Show>
       <Show when={dialog()}>
@@ -185,25 +174,25 @@ export function MotionDemo() {
       <div class="flex gap-lg">
         <MotionRegion class="surface-sidebar flex w-40 shrink-0 flex-col gap-sm rounded-lg p-md">
           <For each={['home', 'body', 'setup', 'settings']}>
-            {(name) => <DemoButton>{name}</DemoButton>}
+            {(name) => <Button>{name}</Button>}
           </For>
         </MotionRegion>
 
         <MotionRegion class="flex flex-1 flex-col gap-lg">
           <MotionToolbar class="flex gap-sm">
             <For each={['bold', 'italic', 'underline', 'strike']}>
-              {(name) => <DemoButton>{name}</DemoButton>}
+              {(name) => <Button>{name}</Button>}
             </For>
           </MotionToolbar>
 
           <MotionGrid class="grid grid-cols-3 gap-sm">
             <For each={Array.from({ length: 8 }, (_, i) => i + 1)}>
-              {(n) => <DemoButton>card {n}</DemoButton>}
+              {(n) => <Button>card {n}</Button>}
             </For>
           </MotionGrid>
 
           <MotionList class="flex flex-col gap-sm">
-            <DemoInput type="text" label="text" owns="horizontal" />
+            <DemoText label="text" />
             <DemoInput type="number" label="number" owns="all" />
             <DemoInput type="range" label="range" owns="horizontal" />
             <DemoDial />
@@ -213,7 +202,7 @@ export function MotionDemo() {
 
           <MotionList class="bg-surface-well flex h-40 flex-col gap-xs overflow-auto rounded-md p-sm">
             <For each={Array.from({ length: 20 }, (_, i) => i + 1)}>
-              {(n) => <DemoButton>scroll row {n}</DemoButton>}
+              {(n) => <Button>scroll row {n}</Button>}
             </For>
           </MotionList>
 
@@ -223,8 +212,8 @@ export function MotionDemo() {
           >
             <span>trapped region: moves bump, leave with Tab or the mouse</span>
             <MotionToolbar class="flex gap-sm">
-              <DemoButton>ok</DemoButton>
-              <DemoButton>cancel</DemoButton>
+              <Button>ok</Button>
+              <Button>cancel</Button>
             </MotionToolbar>
           </MotionRegion>
         </MotionRegion>

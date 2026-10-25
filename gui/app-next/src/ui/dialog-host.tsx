@@ -1,8 +1,9 @@
 import { createSignal, For, type JSX, Show } from 'solid-js';
-import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
+import type { MessageArgs, MessageId } from '@/lib/l10n';
+import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
 import { Localized } from '@/ui/localized';
-import { MotionToolbar, useMotionItem } from '@/ui/motion';
+import { MotionToolbar } from '@/ui/motion';
 
 interface HostEntry {
   render: () => JSX.Element;
@@ -33,35 +34,6 @@ export interface ConfirmOptions {
   danger?: boolean;
 }
 
-type HostButtonVariant = 'secondary' | 'primary' | 'danger';
-
-// Stand-in until the Button primitive exists
-function HostButton(props: {
-  label: MessageId;
-  variant: HostButtonVariant;
-  onPress: () => void;
-}) {
-  let el!: HTMLButtonElement;
-  useMotionItem(() => el);
-  return (
-    <button
-      ref={el}
-      type="button"
-      onClick={() => props.onPress()}
-      class="rounded-md px-lg py-sm"
-      classList={{
-        'bg-surface-control hover:bg-surface-hover':
-          props.variant === 'secondary',
-        'bg-accent text-on-accent hover:bg-accent-hover':
-          props.variant === 'primary',
-        'bg-critical text-on-accent': props.variant === 'danger',
-      }}
-    >
-      {t(props.label)}
-    </button>
-  );
-}
-
 // Resolves false on cancel, Escape, back or backdrop
 export async function confirm(options: ConfirmOptions): Promise<boolean> {
   const result = await openDialog<boolean>((close) => (
@@ -74,15 +46,15 @@ export async function confirm(options: ConfirmOptions): Promise<boolean> {
         )}
       </Show>
       <MotionToolbar entry="first" class="flex justify-end gap-sm">
-        <HostButton
+        <Button
           label={options.cancel ?? 'dialog-cancel'}
           variant="secondary"
-          onPress={() => close(false)}
+          onClick={() => close(false)}
         />
-        <HostButton
+        <Button
           label={options.confirm}
           variant={options.danger ? 'danger' : 'primary'}
-          onPress={() => close(true)}
+          onClick={() => close(true)}
         />
       </MotionToolbar>
     </Dialog>

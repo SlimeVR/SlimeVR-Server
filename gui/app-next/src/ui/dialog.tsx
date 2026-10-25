@@ -6,6 +6,7 @@ import {
   Show,
 } from 'solid-js';
 import { useBack } from '@/lib/back-stack';
+import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { pushLayer } from '@/ui/floating';
 import { focusEntry, MotionRegion } from '@/ui/motion';
@@ -121,15 +122,17 @@ export function Dialog(props: DialogProps) {
       onClose={onNativeClose}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
-      class={`
-        m-0 mt-auto max-h-[90dvh] w-full max-w-full overflow-visible bg-transparent p-0 text-fg
-        opacity-0 transition-[opacity,display,overlay] transition-discrete duration-150 ease-out
-        backdrop:bg-backdrop backdrop:opacity-0 backdrop:transition-[opacity,display,overlay]
-        backdrop:transition-discrete backdrop:duration-150 open:opacity-100
-        open:backdrop:opacity-100 starting:open:opacity-0 starting:open:backdrop:opacity-0
-        motion-reduce:transition-none sm:m-auto sm:w-lg sm:max-w-[calc(100%-2rem)]
-        ${props.class ?? ''}
-      `}
+      class={cx(
+        `
+          m-0 mt-auto max-h-[90dvh] w-full max-w-full overflow-visible bg-transparent p-0 text-fg
+          opacity-0 transition-[opacity,display,overlay] transition-discrete duration-150 ease-out
+          backdrop:bg-backdrop backdrop:opacity-0 backdrop:transition-[opacity,display,overlay]
+          backdrop:transition-discrete backdrop:duration-150 open:opacity-100
+          open:backdrop:opacity-100 starting:open:opacity-0 starting:open:backdrop:opacity-0
+          motion-reduce:transition-none sm:m-auto sm:w-lg sm:max-w-[calc(100%-2rem)]
+        `,
+        props.class
+      )}
     >
       <div
         ref={panel}

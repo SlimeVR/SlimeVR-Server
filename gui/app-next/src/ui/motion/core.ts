@@ -156,7 +156,9 @@ function visible(el: HTMLElement): boolean {
 function navigable(node: MotionNode): boolean {
   if (node.kind === 'item') {
     return (
-      visible(node.el) && (node.el as Partial<HTMLButtonElement>).disabled !== true
+      visible(node.el) &&
+      node.el.tabIndex >= 0 &&
+      (node.el as Partial<HTMLButtonElement>).disabled !== true
     );
   }
   if (node.el && !visible(node.el)) return false;
