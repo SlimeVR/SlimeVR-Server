@@ -1467,6 +1467,7 @@ firmware_tool-next_step = crwdns9074:0crwdne9074:0
 firmware_tool-previous_step = crwdns9076:0crwdne9076:0
 firmware_tool-ok = crwdns9078:0crwdne9078:0
 firmware_tool-retry = crwdns9080:0crwdne9080:0
+firmware_tool-select_all = crwdns10218:0crwdne10218:0
 firmware_tool-loading = crwdns9082:0crwdne9082:0
 
 ## Firmware tool Steps
