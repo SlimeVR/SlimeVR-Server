@@ -13,7 +13,6 @@ websocket-connection_lost-desc = Det ser ut som at SlimeVR serveren har krasjet.
 websocket-timedout = Klarte ikke å koble til serveren.
 websocket-timedout-desc = Det ser ut som at SlimeVR serveren har krasjet eller har brukt for lang til på å koble til. Sjekk loggene og restart programmet.
 websocket-error-close = Avslutt SlimeVR
-websocket-error-logs = Åpne opp "logs" mappen.
 
 ## Update notification
 
@@ -77,16 +76,10 @@ body_part-LEFT_MIDDLE_INTERMEDIATE = Venstre middels langfinger
 body_part-LEFT_MIDDLE_DISTAL = Venstre yterste langfinger
 body_part-LEFT_RING_PROXIMAL = Venstre innerste ring
 
-## BoardType
-
-board_type-UNKNOWN = Ukjent
-board_type-CUSTOM = Egendefinert brett
-
 ## Proportions
 
 skeleton_bone-NONE = Ingen
 skeleton_bone-NECK = Halslengde
-skeleton_bone-torso_group = Torsolengde
 skeleton_bone-HIP = Hofte-lengde
 skeleton_bone-HIPS_WIDTH = Hofte-bredde
 skeleton_bone-UPPER_LEG = Lår-lengde
@@ -175,8 +168,6 @@ tracker-settings-assignment_section-edit = Endre tildeling
 tracker-settings-mounting_section = Monterings posisjon
 tracker-settings-mounting_section-description = Hvor er trackeren montert?
 tracker-settings-mounting_section-edit = Endre montering
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
 tracker-settings-name_section-description = Gi den et søtt kallenavn :)
 tracker-settings-name_section-placeholder = ~Thͭiͪaͥsͣˢ~ venstre ben
@@ -220,7 +211,6 @@ mounting_selection_menu-close = Lukk
 
 ## Sidebar settings
 
-settings-sidebar-title = Innstillinger
 settings-sidebar-general = Generelle
 settings-sidebar-trackers = Trackere
 settings-sidebar-interface = Grensesnitt
@@ -238,49 +228,36 @@ settings-driver-enable = Aktiver
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Velg filtrerings-type for dine trackere.
-    Prediksjon forutser bevegelser mens Utjevning jevner ut bevegelser.
-settings-general-tracker_mechanics-filtering-type = Filtrerings type
 settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
 settings-general-tracker_mechanics-filtering-type-none-description = Bruk rotasjoner som før. Altså ingen filtrering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Utjevning
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Jevner ut bevegelser men øker forsinkelsen litt.
 settings-general-tracker_mechanics-filtering-type-prediction = Forutsigelse
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reduserer forsinkelsen og gjør bevegelser skarpere, men kan påvirke stabiliteten.
 settings-general-tracker_mechanics-filtering-amount = Mengde
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer på alle IMU-trackere som støtter det
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
-    Kan deaktiveres per tracker i trackerens innstillinger. <b>Ikke slå av noen av trackerne mens du endrer denne innstillingen !</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Bruk magnetometer på trackere
-settings-stay_aligned-general-label = Generelle
-settings-stay_aligned-relaxed_poses-close = Lukk
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Nullstill
 settings-keybinds-recorder-modal-cancel-button = Avslutt
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Tracking innstillinger
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Gulv-clip
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = Skating korreksjon
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korreksjon styrke
-settings-general-fk_settings-arm_fk-back = Bak
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Trykk baserte nullstillinger
 settings-general-gesture_control-description = Tillat at nullstillinger aktiveres ved å trykke på en sporer. Den høyeste sporeren på overkroppen blir da brukt til Rask Nullstilling, den høyeste sporeren på det venstre beinet blir brukt til Nullstilling og den høyeste sporeren på det høyre beinet blir brukt til Monterings Nullstilling. Vær obs på at trykking bør skje to ganger innen 0.6 sekunder for å bli registrert.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -295,9 +272,7 @@ settings-general-gesture_control-mountingResetTaps = Trykking for monterings-nul
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Utvikler modus
 settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
-settings-general-interface-dev_mode-label = Utvikler modus
 settings-general-interface-lang = Velg språk
 settings-general-interface-lang-description = Endre hovedspråket du vil bruke.
 settings-general-interface-lang-placeholder = Velg språket du vil bruke
@@ -307,14 +282,6 @@ settings-general-interface-lang-placeholder = Velg språket du vil bruke
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Utvikler modus
-settings-general-interface-dev_mode-label = Utvikler modus
-settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
-    
-    <b>Vi samler ikke inn personlig informasjon</b> slik som din IP-adresse eller trådløs-legitimasjon. SlimeVR verdsetter ditt personvern!
-    
-    For å gi deg den beste brukeropplevelsen, samler vi inn anonymiserte feilrapporter, ytelsesmålinger og informasjon om operativsystemet. Dette hjelper oss med å oppdage feil og problemer med SlimeVR. Disse beregningene samles inn via Sentry.io.
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
 ## Serial settings
@@ -324,7 +291,6 @@ settings-serial = Seriell konsoll
 settings-serial-description =
     Dette er en live informasjons-feed for seriell kommunikasjon.
     Kan være hjelpsomt hvis du lurer på om det er problemer med fastvaren.
-settings-serial-connection_lost = Tilkobling til serie tapt, gjenopptar tilkobling...
 settings-serial-reboot = Omstart
 settings-serial-factory_reset = Fabrikktilbakestilling
 # This cares about multilines
@@ -338,12 +304,13 @@ settings-serial-serial_select = Velg en serieport
 settings-serial-send_command-warning-ok = Jeg vet hva jeg driver med
 settings-serial-send_command-warning-cancel = Avslutt
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackere
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skru av/på utsending og mottakelse av data.
-settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Nettverks-porter
 settings-osc-vrchat-network-port_in =
     .label = Port Inn
@@ -352,7 +319,6 @@ settings-osc-vrchat-network-port_out =
     .label = Port Ut
     .placeholder = Port ut (standardisering: 9000)
 settings-osc-vrchat-network-address = Nettverksadresse
-settings-osc-vrchat-network-address-placeholder = VRChat ip adresse
 
 ## VRChat OSC status
 
@@ -364,7 +330,6 @@ settings-osc-vrchat-status-badge-unknown = Ukjent
 
 settings-osc-vmc-enable = Aktiver
 settings-osc-vmc-enable-description = Skru av/på utsending og mottakelse av data.
-settings-osc-vmc-enable-label = Aktiver
 settings-osc-vmc-network = Nettverks-porter
 settings-osc-vmc-network-port_in =
     .label = Port Inn
@@ -373,7 +338,6 @@ settings-osc-vmc-network-port_out =
     .label = Port Ut
     .placeholder = Port out (default: 39539)
 settings-osc-vmc-network-address = Nettverksadresse
-settings-osc-vmc-network-address-placeholder = IPV4 adresse
 settings-osc-vmc-status-badge-error = Feilmelding
 
 ## Common OSC settings
@@ -409,7 +373,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Tast inn navnet på ditt Wi-Fi nettverk
 onboarding-wifi_creds-password =
     .label = Passord
-    .placeholder = Tast inn passord
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -442,7 +406,6 @@ onboarding-connect_tracker-next = Jeg har tilkoblet alle mine trackere
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Tildel trackerne
-onboarding-assign_trackers-description = La oss velge hvilke trackere som skal hvor. Trykk på stedet der du vil plassere en tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -460,14 +423,20 @@ onboarding-assign_trackers-side-left = Venstre
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-auto_mounting = Automatisk montering
-onboarding-choose_mounting-manual_mounting = Sett opp montering manuelt
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Trykk på en hver tracker og velg hvilken vei de er montert
-onboarding-manual_mounting-auto_mounting = Automatisk montering
 onboarding-manual_mounting-next = Neste steg
 
 ## Tracker automatic mounting setup
@@ -481,14 +450,10 @@ onboarding-automatic_mounting-done-title = Monterings-rotasjoner kalibrert.
 onboarding-automatic_mounting-done-description = Din monterings-kalibrasjon er fullført!
 onboarding-automatic_mounting-done-restart = Tilbake til start
 onboarding-automatic_mounting-mounting_reset-title = Monterings nullstilling
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Gjør knebøy som om du står på ski, bøyde knær, overkroppen rettet forover og armer bøyd.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Trykk på "Nullstill montering" knappen og vent 3 sekunder før trackernes monterings-rotasjon nullstilles.
 onboarding-automatic_mounting-preparation-title = Forberedning
-onboarding-automatic_mounting-put_trackers_on-title = Ta på deg dine trackere
-onboarding-automatic_mounting-put_trackers_on-description = For å kalibrere monterings-rotasjonene, må vi bruke trackerne du akkurat tildelte. Ta på deg alle dine trackere, du kan se hvem som er hvem i figuren til høyre.
-onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -524,13 +489,6 @@ onboarding-automatic_proportions-done-description = Din kropps-proposisjons kali
 ## User height calibration
 
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Ta på deg alle dine trackere
-onboarding-stay_aligned-put_trackers_on-next = Jeg har alle mine trackere på
-onboarding-stay_aligned-verify_mounting-title = Monterings nullstilling
-onboarding-stay_aligned-preparation-title = Forberedning
-
 ## Home
 
 home-settings-close = Lukk
@@ -565,11 +523,13 @@ tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Ukjent
 vrc_config-tracker_model-UNKNOWN = Ukjent
 vrc_config-avatar_measurement_type-UNKNOWN = Ukjent
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section
