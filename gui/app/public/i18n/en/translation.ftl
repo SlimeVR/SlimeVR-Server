@@ -1615,6 +1615,7 @@ firmware_tool-next_step = Next Step
 firmware_tool-previous_step = Previous Step
 firmware_tool-ok = Looks good
 firmware_tool-retry = Retry
+firmware_tool-select_all = Select all trackers
 
 firmware_tool-loading = Loading...
 
