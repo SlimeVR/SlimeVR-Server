@@ -255,7 +255,7 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 		val fromTo = buildFromTo(sourceActive)
 
 		val boneInputs = BodyPartMap(mutableInputSkeleton)
-		for ((spineIndex, spineSourceReliability) in SPINE_SOURCE_RELIABILITY_INDEXED) {
+		loop@ for ((spineIndex, spineSourceReliability) in SPINE_SOURCE_RELIABILITY_INDEXED) {
 			val spineSource = spineSourceReliability.first
 
 			// For optimization's sake, assume only one BodyPart per SpineSource we traverse.
@@ -272,7 +272,7 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			// Determine the sources used for getting rotation
 			val fromRotationSources = from.ifEmpty { to }
 			val fromReliabilitySources = from.ifEmpty { listOf(spineSource) }
-			val toSources = if (from.isNotEmpty()) to else to.flatMap { fromTo[it]?.second ?: emptyList() }
+			val toSources = if (from.isNotEmpty()) to else to.flatMap { fromTo[it]?.second ?: continue@loop }
 
 			// Get From and To's weighted average reliabilities
 			val (fromForwardReliability, fromSideReliability) = weightedAverageReliability(fromReliabilitySources, reliabilities)
