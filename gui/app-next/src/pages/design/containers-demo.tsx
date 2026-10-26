@@ -2,6 +2,7 @@
 import { createSignal } from 'solid-js';
 import TrackingIcon from '~icons/material-symbols/sports-martial-arts-rounded';
 import { formats } from '@/lib/format';
+import { defineSettingsPage } from '@/lib/settings-def';
 import { TextButton } from '@/ui/button';
 import { NumberField } from '@/ui/number-field';
 import { Page } from '@/ui/page';
@@ -13,6 +14,52 @@ import { Toggle } from '@/ui/toggle';
 import { Toolbar } from '@/ui/toolbar';
 
 type Filter = 'none' | 'smoothing' | 'prediction';
+
+const demo = defineSettingsPage({
+  path: 'demo',
+  title: 'Tracking',
+  icon: TrackingIcon,
+  groups: {
+    filtering: {
+      title: 'Filtering',
+      rows: {
+        type: {
+          title: 'Filtering type',
+          description: 'Choose the filtering type for your trackers.',
+        },
+        strength: {
+          title: 'Filter strength',
+          description: 'How strong the selected filter is.',
+        },
+      },
+    },
+    legs: {
+      title: 'Leg tracking',
+      rows: {
+        skating: {
+          title: 'Skating correction',
+          description: 'Corrects for foot sliding, but can decrease accuracy.',
+        },
+        skatingStrength: {
+          title: 'Skating correction strength',
+          description:
+            'A higher value will result in more aggressive correction.',
+        },
+        floorClip: {
+          title: 'Floor clip',
+          description: 'Prevents feet clipping through the floor.',
+        },
+        disabled: {
+          title: 'Disabled row',
+          description: "Reason shows as the control's tooltip.",
+        },
+      },
+    },
+    advanced: { rows: { row: { title: 'Advanced row' } } },
+    danger: { rows: { row: { title: 'Danger row' } } },
+  },
+});
+const { filtering, legs } = demo.groups;
 
 export function ContainersDemo() {
   const [filter, setFilter] = createSignal<Filter>('none');
@@ -36,10 +83,9 @@ export function ContainersDemo() {
           />
         }
       >
-        <SettingsGroup title="Filtering" loading={loading()}>
+        <SettingsGroup group={filtering} loading={loading()}>
           <SettingRow
-            title="Filtering type"
-            description="Choose the filtering type for your trackers."
+            setting={filtering.rows.type}
             controlPlacement="below"
             childrenDisabled={filter() === 'none'}
             childrenDisabledReason="Pick a filter first"
@@ -70,8 +116,7 @@ export function ContainersDemo() {
             )}
           >
             <SettingRow
-              title="Filter strength"
-              description="How strong the selected filter is."
+              setting={filtering.rows.strength}
               control={(w) => (
                 <NumberField
                   value={strength()}
@@ -86,10 +131,9 @@ export function ContainersDemo() {
             />
           </SettingRow>
         </SettingsGroup>
-        <SettingsGroup title="Leg tracking" loading={loading()}>
+        <SettingsGroup group={legs} loading={loading()}>
           <SettingRow
-            title="Skating correction"
-            description="Corrects for foot sliding, but can decrease accuracy."
+            setting={legs.rows.skating}
             pressable
             childrenDisabled={!skating()}
             childrenDisabledReason="Turn on skating correction first"
@@ -98,8 +142,7 @@ export function ContainersDemo() {
             )}
           >
             <SettingRow
-              title="Skating correction strength"
-              description="A higher value will result in more aggressive correction."
+              setting={legs.rows.skatingStrength}
               control={(w) => (
                 <NumberField
                   value={skatingStrength()}
@@ -114,16 +157,14 @@ export function ContainersDemo() {
             />
           </SettingRow>
           <SettingRow
-            title="Floor clip"
-            description="Prevents feet clipping through the floor."
+            setting={legs.rows.floorClip}
             pressable
             control={(w) => (
               <Toggle value={floorClip()} onChange={setFloorClip} {...w} />
             )}
           />
           <SettingRow
-            title="Disabled row"
-            description="Reason shows as the control's tooltip."
+            setting={legs.rows.disabled}
             disabled
             disabledReason="Not available"
             error="An error message placed by the row"
@@ -133,7 +174,7 @@ export function ContainersDemo() {
         <SettingsAdvanced>
           <SettingsGroup>
             <SettingRow
-              title="Advanced row"
+              setting={demo.groups.advanced.rows.row}
               control={(w) => <Toggle value onChange={() => {}} {...w} />}
             />
           </SettingsGroup>
@@ -141,7 +182,7 @@ export function ContainersDemo() {
         <SettingsAdvanced title="Danger zone" danger>
           <SettingsGroup>
             <SettingRow
-              title="Danger row"
+              setting={demo.groups.danger.rows.row}
               control={() => <TextButton label="Reset" variant="danger" />}
             />
           </SettingsGroup>

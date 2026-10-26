@@ -15,6 +15,8 @@ type ButtonBase = {
   name?: string;
   icon?: JSX.Element;
   iconOnly?: boolean;
+  // Pill / circle instead of the rounded rectangle
+  round?: boolean;
   loading?: boolean;
   disabled?: boolean;
   disabledReason?: string;
@@ -95,7 +97,8 @@ export function Button(props: ButtonProps) {
 
   const className = () =>
     cx(
-      'relative inline-flex items-center justify-center rounded-md text-standard',
+      'relative inline-flex items-center justify-center text-standard',
+      props.round ? 'rounded-full' : 'rounded-md',
       'transition-colors aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
       VARIANT[props.variant ?? 'secondary'],
       SIZE[props.size ?? 'default'][iconOnly() ? 'icon' : 'label'],

@@ -3,7 +3,7 @@ import {
   ResetsSettingsRequestT,
   ResetsSettingsResponseT,
 } from 'solarxr-protocol';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   saveSettings,
   lastSave,
@@ -33,15 +33,29 @@ beforeEach(() => {
 });
 
 describe('saveSettings', () => {
-  it('sends and records a save', () => {
+  it('records a pending save, then its confirmation under the same id', async () => {
     const settings = loadedSettings();
     expect(saveSettings(settings, { resetMountingFeet: true })).toBe(true);
     expect(fake.sentOf(ChangeResetsSettingsRequestT)).toHaveLength(1);
-    expect(lastSave()).toMatchObject({
-      outcome: 'saved',
+    const pending = lastSave();
+    expect(pending).toMatchObject({
+      outcome: 'pending',
       keys: ['resetMountingFeet'],
       values: { resetMountingFeet: true },
     });
+    fake.push(
+      Object.assign(new ResetsSettingsResponseT(), { resetMountingFeet: true })
+    );
+    await vi.waitFor(() =>
+      expect(lastSave()).toMatchObject({ id: pending?.id, outcome: 'saved' })
+    );
+  });
+
+  it('records a failed save when the connection drops', async () => {
+    const settings = loadedSettings();
+    saveSettings(settings, { resetMountingFeet: true });
+    fake.disconnect();
+    await vi.waitFor(() => expect(lastSave()?.outcome).toBe('not-saved'));
   });
 
   it('records a refusal while disconnected', () => {

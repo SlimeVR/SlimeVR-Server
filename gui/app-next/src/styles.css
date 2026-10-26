@@ -488,6 +488,8 @@
   /* Shared height of input primitives (button, fields, labelled toggles) */
   --spacing-control: calc(48px * var(--density));
   --spacing-control-sm: calc(36px * var(--density));
+  /* Title bar height, toasts sit right under it */
+  --spacing-titlebar: 2.75rem;
 }
 
 /* Containers (Button, nav) set the size, `.icon` reads it */
@@ -609,15 +611,6 @@
 
   [data-electron-drag-region='true'] {
     -webkit-app-region: drag;
-  }
-
-  /* Toasts clear the bottom bar, the rail replaces it from the shell breakpoint */
-  :root {
-    --toast-offset: 4.5rem;
-
-    @variant shell {
-      --toast-offset: 0px;
-    }
   }
 }
 

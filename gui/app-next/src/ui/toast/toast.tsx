@@ -1,11 +1,14 @@
 import { createSignal, For, untrack } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { cx } from '@/lib/cx';
 import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
 import { Floating } from '@/ui/floating';
 import CheckRoundedIcon from '~icons/material-symbols/check-rounded';
 import ErrorRoundedIcon from '~icons/material-symbols/error-rounded';
+import ProgressIcon from '~icons/material-symbols/progress-activity';
 
-export type ToastKind = 'success' | 'error';
+// pending stays until a toast with the same key replaces it
+export type ToastKind = 'pending' | 'success' | 'error';
 
 export interface ToastOptions {
   kind: ToastKind;
@@ -14,6 +17,8 @@ export interface ToastOptions {
   // A toast with the same key is replaced and its timer restarts
   key?: string;
   durationMs?: number;
+  // Texts the toast keeps room for, so replacing it by key does not resize it
+  reserve?: readonly MessageId[];
 }
 
 export interface Toast {
@@ -22,10 +27,15 @@ export interface Toast {
   message: MessageId;
   args?: MessageArgs;
   key?: string;
+  reserve?: readonly MessageId[];
 }
 
 const MAX_TOASTS = 3;
-const DURATION_MS: Record<ToastKind, number> = { success: 2000, error: 5000 };
+const DURATION_MS: Record<ToastKind, number | null> = {
+  pending: null,
+  success: 2000,
+  error: 5000,
+};
 
 const [toasts, setToasts] = createSignal<readonly Toast[]>([]);
 const timers = new Map<number, ReturnType<typeof setTimeout>>();
@@ -50,7 +60,9 @@ export function showToast(options: ToastOptions): number {
       ? undefined
       : list.find((toast) => toast.key === options.key);
   const same =
-    existing?.message === options.message && existing.args === options.args;
+    existing?.kind === options.kind &&
+    existing.message === options.message &&
+    existing.args === options.args;
   const toast: Toast =
     existing && same
       ? existing
@@ -60,6 +72,7 @@ export function showToast(options: ToastOptions): number {
           message: options.message,
           args: options.args,
           key: options.key,
+          reserve: options.reserve,
         };
 
   let next = existing
@@ -70,13 +83,12 @@ export function showToast(options: ToastOptions): number {
   setToasts(next);
 
   clearTimer(toast.id);
-  timers.set(
-    toast.id,
-    setTimeout(
-      () => dismissToast(toast.id),
-      options.durationMs ?? DURATION_MS[options.kind]
-    )
-  );
+  const duration = options.durationMs ?? DURATION_MS[options.kind];
+  if (duration !== null)
+    timers.set(
+      toast.id,
+      setTimeout(() => dismissToast(toast.id), duration)
+    );
   return toast.id;
 }
 
@@ -87,14 +99,32 @@ export function clearToasts() {
   setToasts([]);
 }
 
+const BORDER: Record<ToastKind, string> = {
+  pending: 'border-line',
+  success: 'border-success',
+  error: 'border-critical',
+};
+
+const ICON: Record<ToastKind, typeof CheckRoundedIcon> = {
+  pending: ProgressIcon,
+  success: CheckRoundedIcon,
+  error: ErrorRoundedIcon,
+};
+
+const ICON_CLASS: Record<ToastKind, string> = {
+  pending: 'icon animate-spin text-fg-muted',
+  success: 'icon text-success',
+  error: 'icon text-critical',
+};
+
 export function ToastHost() {
   return (
     <Floating>
       <div
         aria-live="polite"
         class="
-          pointer-events-none fixed inset-x-0 bottom-0 z-40 mb-(--toast-offset,0px) flex flex-col
-          items-center gap-sm p-lg
+          pointer-events-none fixed top-0 right-4 z-40 mt-titlebar flex max-w-full flex-col
+          items-end gap-sm p-md
         "
       >
         <For each={toasts()}>
@@ -107,15 +137,28 @@ export function ToastHost() {
                   surface-app pointer-events-auto flex items-center gap-sm rounded-md border-2
                   bg-surface px-lg py-md text-fg shadow-lg icon-sm
                 `,
-                toast.kind === 'error' ? 'border-critical' : 'border-success'
+                BORDER[toast.kind]
               )}
             >
-              {toast.kind === 'error' ? (
-                <ErrorRoundedIcon class="icon text-critical" />
-              ) : (
-                <CheckRoundedIcon class="icon text-success" />
-              )}
-              {t(toast.message, toast.args)}
+              <Dynamic
+                component={ICON[toast.kind]}
+                class={ICON_CLASS[toast.kind]}
+              />
+              <span class="grid">
+                <span class="col-start-1 row-start-1">
+                  {t(toast.message, toast.args)}
+                </span>
+                <For each={toast.reserve}>
+                  {(id) => (
+                    <span
+                      aria-hidden="true"
+                      class="invisible col-start-1 row-start-1"
+                    >
+                      {t(id)}
+                    </span>
+                  )}
+                </For>
+              </span>
             </div>
           )}
         </For>

@@ -3,9 +3,9 @@ import {
   ResetsSettingsRequestT,
   ResetsSettingsResponseT,
 } from 'solarxr-protocol';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { saveSettings } from '@/domain/settings/save-settings';
-import { initSaveToasts } from '@/domain/settings/save-toasts';
+import { initSaveToasts, SAVING_GRACE_MS } from '@/domain/settings/save-toasts';
 import { setClient } from '@/solarxr/client';
 import { defineSettings } from '@/solarxr/settings';
 import { createFakeClient, type FakeClient } from '@/solarxr/testing';
@@ -22,6 +22,13 @@ function resetsSettings() {
   });
 }
 
+function loaded() {
+  const settings = resetsSettings();
+  settings.value();
+  fake.push(new ResetsSettingsResponseT());
+  return settings;
+}
+
 beforeEach(() => {
   fake = createFakeClient();
   setClient(fake);
@@ -34,15 +41,47 @@ afterEach(() => {
 });
 
 describe('save toasts', () => {
-  it('coalesces successful saves into one toast', () => {
-    const settings = resetsSettings();
-    settings.value();
-    fake.push(new ResetsSettingsResponseT());
+  it('a fast server goes straight to saved', async () => {
+    const settings = loaded();
     saveSettings(settings, { yawResetSmoothTime: 1 });
     saveSettings(settings, { yawResetSmoothTime: 2 });
-    expect(toasts()).toEqual([
-      expect.objectContaining({ kind: 'success', message: 'toast-saved' }),
-    ]);
+    expect(toasts()).toEqual([]);
+    fake.push(Object.assign(new ResetsSettingsResponseT(), { yawResetSmoothTime: 2 }));
+    await vi.waitFor(() =>
+      expect(toasts()).toEqual([
+        expect.objectContaining({ kind: 'success', message: 'toast-saved' }),
+      ])
+    );
+    await new Promise((resolve) => setTimeout(resolve, SAVING_GRACE_MS + 50));
+    expect(toasts()).toEqual([expect.objectContaining({ kind: 'success' })]);
+  });
+
+  it('a slow server shows saving, then saved in the same toast', async () => {
+    const settings = loaded();
+    saveSettings(settings, { yawResetSmoothTime: 2 });
+    await vi.waitFor(() =>
+      expect(toasts()).toEqual([
+        expect.objectContaining({ kind: 'pending', message: 'toast-saving' }),
+      ])
+    );
+    const [saving] = toasts();
+    fake.push(Object.assign(new ResetsSettingsResponseT(), { yawResetSmoothTime: 2 }));
+    await vi.waitFor(() =>
+      expect(toasts()).toEqual([
+        expect.objectContaining({ id: saving?.id, kind: 'success' }),
+      ])
+    );
+  });
+
+  it('a failed save replaces the saving toast', async () => {
+    const settings = loaded();
+    saveSettings(settings, { yawResetSmoothTime: 1 });
+    fake.disconnect();
+    await vi.waitFor(() =>
+      expect(toasts()).toEqual([
+        expect.objectContaining({ kind: 'error', message: 'toast-save-failed' }),
+      ])
+    );
   });
 
   it('shows every refused save', () => {

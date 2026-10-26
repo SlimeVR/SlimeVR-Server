@@ -3,7 +3,7 @@ import { BodyPage } from '@/pages/body/body-page';
 import { DesignPage } from '@/pages/design/design-page';
 import { HomePage } from '@/pages/home/home-page';
 import { onboardingRoute } from '@/pages/onboarding/onboarding-route';
-import { SettingsPage } from '@/pages/settings/settings-page';
+import { settingsRoute } from '@/pages/settings/settings-route';
 import { SetupPage } from '@/pages/setup/setup-page';
 
 export const paths = {
@@ -20,6 +20,6 @@ export const routes: RouteDefinition[] = [
   { path: paths.body, component: BodyPage },
   { path: paths.setup, component: SetupPage },
   onboardingRoute(paths.onboarding),
-  { path: paths.settings, component: SettingsPage },
+  settingsRoute({ base: paths.settings, wizard: paths.onboarding }),
   ...(import.meta.env.DEV ? [{ path: paths.design, component: DesignPage }] : []),
 ];

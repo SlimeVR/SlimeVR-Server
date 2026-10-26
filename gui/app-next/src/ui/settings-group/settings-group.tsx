@@ -1,14 +1,13 @@
 import { createUniqueId, type JSX, Show } from 'solid-js';
 import { cx } from '@/lib/cx';
-import { t, type MessageArgs, type MessageId } from '@/lib/l10n';
+import { t, type MessageId } from '@/lib/l10n';
+import type { SettingsGroupDef } from '@/lib/settings-def';
 import { MotionList } from '@/ui/motion';
 import { RowScope } from '@/ui/setting-row';
 
 export interface SettingsGroupProps {
-  title?: MessageId;
-  titleArgs?: MessageArgs;
-  description?: MessageId;
-  descriptionArgs?: MessageArgs;
+  // Title and description come from the declaration
+  group?: SettingsGroupDef;
   details?: JSX.Element;
   // Inherited by every row inside
   disabled?: boolean;
@@ -20,30 +19,30 @@ export interface SettingsGroupProps {
 // Label and rule, then the rows in one card split by dividers
 export function SettingsGroup(props: SettingsGroupProps) {
   const titleId = createUniqueId();
+  const title = () => props.group?.title;
+  const description = () => props.group?.description;
 
   return (
     <section
-      aria-labelledby={props.title && titleId}
+      aria-labelledby={title() && titleId}
       class="flex min-w-0 flex-col gap-md"
     >
-      <Show when={props.title || props.description || props.details}>
+      <Show when={title() || description() || props.details}>
         <div class="flex min-w-0 flex-col gap-sm px-md">
-          <Show when={props.title}>
+          <Show when={title()}>
             {(title) => (
               <div class="flex items-center gap-md uppercase">
                 <h2 id={titleId} class="text-section">
-                  {t(title(), props.titleArgs)}
+                  {t(title())}
                 </h2>
                 <div class="h-px grow bg-line" />
               </div>
             )}
           </Show>
-          <Show when={props.description || props.details}>
+          <Show when={description() || props.details}>
             <div class="flex max-w-[75ch] min-w-0 flex-col gap-xs">
-              <Show when={props.description}>
-                {(description) => (
-                  <p>{t(description(), props.descriptionArgs)}</p>
-                )}
+              <Show when={description()}>
+                {(description) => <p>{t(description())}</p>}
               </Show>
               {props.details}
             </div>

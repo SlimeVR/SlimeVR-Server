@@ -10,6 +10,8 @@ export interface PageProps {
   title?: MessageId;
   titleArgs?: MessageArgs;
   icon?: JSX.Element;
+  // Takes the icon's place below the shell breakpoint (mobile)
+  back?: JSX.Element;
   actions?: JSX.Element;
   gap?: PageGap;
   children: JSX.Element;
@@ -34,14 +36,20 @@ export function Page(props: PageProps) {
       "
     >
       <MotionRegion class="flex w-full min-w-0 flex-col gap-lg @container">
-        <Show when={props.title || props.icon || props.actions}>
+        <Show when={props.title || props.icon || props.back || props.actions}>
           <header class="flex flex-wrap items-center gap-lg">
+            <Show when={props.back}>
+              <div class="flex shell:hidden">{props.back}</div>
+            </Show>
             <Show when={props.icon}>
               <div
-                class="
-                  flex size-10 flex-none items-center justify-center rounded-full bg-accent-muted
-                  text-on-accent icon-md
-                "
+                class={cx(
+                  `
+                    size-10 flex-none items-center justify-center rounded-full bg-accent-muted
+                    text-on-accent icon-md
+                  `,
+                  props.back ? 'hidden shell:flex' : 'flex'
+                )}
               >
                 {props.icon}
               </div>

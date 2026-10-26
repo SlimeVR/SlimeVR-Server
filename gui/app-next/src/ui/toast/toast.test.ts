@@ -54,4 +54,14 @@ describe('toasts', () => {
     dismissToast(id);
     expect(toasts()).toHaveLength(0);
   });
+
+  it('pending stays until the same key replaces it', () => {
+    const id = showToast({ kind: 'pending', message: 'toast-saving', key: 'k' });
+    vi.advanceTimersByTime(60_000);
+    expect(toasts()).toHaveLength(1);
+    expect(showToast({ kind: 'success', message: 'toast-saved', key: 'k' })).toBe(id);
+    expect(toasts()[0]).toMatchObject({ kind: 'success', message: 'toast-saved' });
+    vi.advanceTimersByTime(2000);
+    expect(toasts()).toHaveLength(0);
+  });
 });

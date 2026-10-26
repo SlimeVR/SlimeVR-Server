@@ -1,5 +1,5 @@
 import { useMatch } from '@solidjs/router';
-import { createSignal, type JSX, onCleanup, Show } from 'solid-js';
+import { type JSX, Show } from 'solid-js';
 import HomeIcon from '~icons/material-symbols/home';
 import DesignIcon from '~icons/material-symbols/palette-outline-rounded';
 import GearIcon from '~icons/material-symbols/settings-rounded';
@@ -8,27 +8,15 @@ import { ConnectionGate } from '@/app/connection-gate';
 import { paths } from '@/app/routes';
 import { TitleBar } from '@/app/title-bar';
 import { handleBack } from '@/lib/back-stack';
+import { createMediaQuery, SHELL_QUERY } from '@/lib/media';
 import { MotionRegion } from '@/ui/motion';
 import { NavLink } from '@/ui/nav-link';
 
 const MOUSE_BACK = 3;
 
-// Same as the `shell` breakpoint in styles.css
-const RAIL_QUERY = '(width >= 50rem)';
-
-// Arrow axis of the bar follows its layout, so it needs the value in JS
-function createRailQuery() {
-  const query = window.matchMedia(RAIL_QUERY);
-  const [rail, setRail] = createSignal(query.matches);
-  const update = () => setRail(query.matches);
-  query.addEventListener('change', update);
-  onCleanup(() => query.removeEventListener('change', update));
-  return rail;
-}
-
 // Same destinations at every width: bottom bar on phones, rail from `shell` up
 function Destinations() {
-  const rail = createRailQuery();
+  const rail = createMediaQuery(SHELL_QUERY);
 
   return (
     <MotionRegion
@@ -85,8 +73,8 @@ export function AppShell(props: { children: JSX.Element }) {
           <main
             classList={{ 'shell:ml-sm': !!onboarding() }}
             class="
-              relative min-h-0 flex-1 overflow-y-auto overscroll-contain @container shell:mr-sm
-              shell:mb-sm
+              relative min-h-0 flex-1 overflow-y-auto overscroll-contain @container shell:mb-sm
+              shell:scrollbar-gutter-stable
             "
           >
             {props.children}

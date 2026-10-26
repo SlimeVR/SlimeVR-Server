@@ -79,6 +79,28 @@ function WindowControls(props: { api: WindowApi }) {
   );
 }
 
+// Window controls and logo only, for screens outside the router (crash screen): no links,
+// no server data, so it keeps working whatever broke
+export function MinimalTitleBar() {
+  return (
+    <div class="flex h-titlebar shrink-0 items-center gap-sm px-sm">
+      <span class="flex h-5.5 w-12.25 translate-x-[2.17px] items-center justify-center text-special">
+        <SlimevrLogoIcon
+          aria-hidden="true"
+          style={{ '--icon-size': '49.66px' }}
+        />
+      </span>
+      <span class="flex h-full items-center" data-electron-drag-region="true">
+        SlimeVR
+      </span>
+      <div class="h-full flex-1" data-electron-drag-region="true" />
+      <Show when={platform.window}>
+        {(api) => <WindowControls api={api()} />}
+      </Show>
+    </div>
+  );
+}
+
 export function TitleBar() {
   const onSettings = useMatch(() => `${paths.settings}/*`);
   const [versionEl, setVersionEl] = createSignal<HTMLAnchorElement>();
@@ -87,7 +109,7 @@ export function TitleBar() {
   return (
     <MotionRegion
       orientation="horizontal"
-      class="flex h-11 shrink-0 items-center gap-sm px-sm"
+      class="flex h-titlebar shrink-0 items-center gap-sm px-sm"
     >
       <div class="hidden shell:contents">
         <PlainLink

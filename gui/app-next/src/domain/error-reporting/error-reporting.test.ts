@@ -164,7 +164,7 @@ describe('layer signals', () => {
     saveSettings(settings, { resetMountingFeet: true }, { sensitive: true });
     expect(sink.breadcrumbs.at(-1)).toEqual({
       category: 'settings',
-      message: 'saved resetMountingFeet',
+      message: 'pending resetMountingFeet',
       data: undefined,
     });
   });
