@@ -46,3 +46,26 @@ export function idList(
   const list = ids.filter(Boolean).join(' ');
   return list || undefined;
 }
+
+// Same field seen through a value mapping, e.g. an enum shown as a toggle
+export function mapField<A, B>(
+  field: Field<A>,
+  read: (value: A) => B,
+  write: (value: B) => A
+): Field<B> {
+  return {
+    get value() {
+      return read(field.value);
+    },
+    onChange: (value) => field.onChange(write(value)),
+    get loading() {
+      return field.loading;
+    },
+    get disabled() {
+      return field.disabled;
+    },
+    get error() {
+      return field.error;
+    },
+  };
+}

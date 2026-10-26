@@ -11,7 +11,7 @@ const renamedKeys: Record<string, string> = {
   telemetry: 'dongleTelemetry',
 };
 
-export type Pref<T> = Accessor<T> & { set(value: T): void };
+export type Pref<T> = Accessor<T> & { readonly fallback: T; set(value: T): void };
 
 export interface Cache<T> {
   get(id?: string): Promise<T | null>;
@@ -104,6 +104,7 @@ export function definePref<T>(
     });
   });
   return Object.assign(() => value(), {
+    fallback,
     set(next: T) {
       setSettings((s) => ({ ...s, [key]: next }));
       scheduleFlush();
@@ -168,6 +169,7 @@ export function defineSession<T>(
   // The accessor is returned, callers read it in their own tracked scope
   // eslint-disable-next-line solid/reactivity
   return Object.assign(value, {
+    fallback,
     set(next: T) {
       setValue(() => next);
       sessionStorage.setItem(storageKey, JSON.stringify(next));

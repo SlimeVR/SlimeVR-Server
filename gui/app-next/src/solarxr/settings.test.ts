@@ -1,6 +1,9 @@
 import {
   ArmsMountingResetMode,
+  ChangeMagToggleRequestT,
   ChangeResetsSettingsRequestT,
+  MagToggleRequestT,
+  MagToggleResponseT,
   ResetsSettingsRequestT,
   ResetsSettingsResponseT,
   SkeletonSettingsRequestT,
@@ -8,7 +11,11 @@ import {
 } from 'solarxr-protocol';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setClient } from '@/solarxr/client';
-import { defineSettings, SAVE_TIMEOUT_MS } from '@/solarxr/settings';
+import {
+  defineKeyedSettings,
+  defineSettings,
+  SAVE_TIMEOUT_MS,
+} from '@/solarxr/settings';
 import { createFakeClient, type FakeClient } from '@/solarxr/testing';
 
 let fake: FakeClient;
@@ -176,5 +183,45 @@ describe('defineSettings', () => {
 
     fake.push(new ResetsSettingsResponseT());
     expect(settings.update({ resetMountingFeet: true })).not.toBeNull();
+  });
+});
+
+describe('defineKeyedSettings', () => {
+  function mag() {
+    return defineKeyedSettings({
+      request: (trackerId: number) => new MagToggleRequestT(trackerId),
+      key: (msg) => msg.trackerId,
+      response: MagToggleResponseT,
+      change: ChangeMagToggleRequestT,
+    });
+  }
+
+  it('caches one settings per key and routes responses by key', () => {
+    const settings = mag();
+    expect(settings(0)).toBe(settings(0));
+    settings(0).value();
+    settings(7).value();
+    expect(fake.sentOf(MagToggleRequestT).map((r) => r.trackerId)).toEqual([0, 7]);
+    fake.push(new MagToggleResponseT(7, true));
+    expect(settings(0).value()).toBeUndefined();
+    expect(settings(7).value()?.enable).toBe(true);
+    fake.push(new MagToggleResponseT(0, false));
+    expect(settings(0).value()?.enable).toBe(false);
+    expect(settings(7).value()?.enable).toBe(true);
+  });
+
+  it('a save on one key is confirmed only by its own response', async () => {
+    const settings = mag();
+    settings(0).value();
+    fake.push(new MagToggleResponseT(0, false));
+    const saved = settings(0).update({ enable: true });
+    expect(fake.sentOf(ChangeMagToggleRequestT)[0]).toMatchObject({
+      trackerId: 0,
+      enable: true,
+    });
+    fake.push(new MagToggleResponseT(3, true));
+    expect(settings(0).value()?.enable).toBe(true);
+    fake.push(new MagToggleResponseT(0, true));
+    await expect(saved).resolves.toBe('saved');
   });
 });

@@ -1,10 +1,26 @@
 import {
   ChangeResetsSettingsRequestT,
+  ChangeSkeletonSettingsRequestT,
   ResetsSettingsRequestT,
   ResetsSettingsResponseT,
+  SkeletonRatiosT,
+  SkeletonSettingsRequestT,
+  SkeletonSettingsResponseT,
+  SkeletonTogglesT,
 } from 'solarxr-protocol';
+import * as v from 'valibot';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { settingField, settingsReset } from '@/domain/settings/setting-field';
+import {
+  prefRow,
+  settingField,
+  settingsReset,
+  tableSettingField,
+  tableSettingsReset,
+} from '@/domain/settings/setting-field';
+import { setPlatform } from '@/lib/platform';
+import { fakePlatform } from '@/lib/platform-fake';
+import { defineSettingsPage } from '@/lib/settings-def';
+import { definePref } from '@/lib/storage';
 import { setClient } from '@/solarxr/client';
 import { defineSettings } from '@/solarxr/settings';
 import { createFakeClient, type FakeClient } from '@/solarxr/testing';
@@ -24,6 +40,7 @@ function response(patch: Partial<ResetsSettingsResponseT>) {
 }
 
 beforeEach(() => {
+  setPlatform(fakePlatform());
   fake = createFakeClient();
   setClient(fake);
 });
@@ -102,5 +119,69 @@ describe('settingsReset', () => {
       yawResetSmoothTime: 0.1,
       saveMountingReset: true,
     });
+  });
+});
+
+function skeleton() {
+  return defineSettings({
+    request: () => new SkeletonSettingsRequestT(),
+    response: SkeletonSettingsResponseT,
+    change: ChangeSkeletonSettingsRequestT,
+  });
+}
+
+function skeletonResponse(toggles: Partial<SkeletonTogglesT>) {
+  const msg = new SkeletonSettingsResponseT();
+  msg.toggles = Object.assign(new SkeletonTogglesT(), toggles);
+  msg.ratios = new SkeletonRatiosT(0.3);
+  return msg;
+}
+
+describe('tableSettingField', () => {
+  it('reads and saves one key of a nested table', () => {
+    const settings = skeleton();
+    const field = tableSettingField(settings, 'toggles', 'floorClip');
+    settings.value();
+    fake.push(skeletonResponse({ floorClip: false, toeSnap: true }));
+    expect(field.value).toBe(false);
+    field.onChange(true);
+    const [sent] = fake.sentOf(ChangeSkeletonSettingsRequestT);
+    expect(sent?.toggles).toBeInstanceOf(SkeletonTogglesT);
+    expect(sent?.toggles).toMatchObject({ floorClip: true, toeSnap: true });
+    expect(sent?.ratios?.spineCurvature).toBeCloseTo(0.3);
+    expect(field.value).toBe(true);
+  });
+
+  it('resets keys of the table to the defaults', () => {
+    const settings = skeleton();
+    const defaults = () => skeletonResponse({ floorClip: false, toeSnap: false });
+    const reset = tableSettingsReset(settings, defaults, 'toggles', ['floorClip']);
+    settings.value();
+    fake.push(skeletonResponse({ floorClip: true, toeSnap: true }));
+    expect(reset.modified).toBe(true);
+    reset.onReset();
+    const [sent] = fake.sentOf(ChangeSkeletonSettingsRequestT);
+    expect(sent?.toggles).toMatchObject({ floorClip: false, toeSnap: true });
+  });
+});
+
+describe('prefRow', () => {
+  const page = defineSettingsPage({
+    path: 'test',
+    title: 'settings-sidebar-behavior',
+    icon: () => null,
+    groups: { main: { rows: { sound: { title: 'settings-sidebar-behavior' } } } },
+  });
+
+  it('writes the pref and resets it to its fallback', () => {
+    const pref = definePref('test.prefRow', v.boolean(), true);
+    const row = prefRow(page.groups.main.rows.sound, pref);
+    expect(row.field.value).toBe(true);
+    expect(row.reset?.modified).toBe(false);
+    row.field.onChange(false);
+    expect(pref()).toBe(false);
+    expect(row.reset?.modified).toBe(true);
+    row.reset?.onReset();
+    expect(pref()).toBe(true);
   });
 });

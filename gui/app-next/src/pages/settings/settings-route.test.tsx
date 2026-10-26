@@ -71,7 +71,7 @@ describe('settings route', () => {
   it('opens the first page at /settings beside the sidebar', async () => {
     wide = true;
     const history = renderAt('/settings');
-    await waitFor(() => expect(history.get()).toBe('/settings/resets'));
+    await waitFor(() => expect(history.get()).toBe('/settings/tracking'));
   });
 
   it('sends unknown pages back to /settings', async () => {

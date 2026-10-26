@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { setPlatform } from '@/lib/platform';
+import { fakePlatform } from '@/lib/platform-fake';
 import { resetsSettingsPage } from '../resets/resets-def';
 import {
   indexEntries,
@@ -12,13 +14,14 @@ import {
 const text = (id: string) => id;
 
 describe('listSearchEntries', () => {
+  setPlatform(fakePlatform());
   const entries = listSearchEntries('/settings', [
     { path: '/', title: 'navbar-home' },
     { path: '/hidden', title: 'navbar-onboarding', available: () => false },
   ]);
 
   it('lists the page, then each row with its focus key', () => {
-    expect(entries[0]).toMatchObject({
+    expect(entries.find((e) => e.id === '/settings/resets')).toMatchObject({
       id: '/settings/resets',
       route: '/settings/resets',
       crumbs: [],

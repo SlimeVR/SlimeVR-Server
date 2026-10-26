@@ -32,68 +32,124 @@ export interface ResourceOptions<R extends Payload> {
   response: PayloadCtor<R>;
 }
 
-// Requested on first read, then cached for the session. The response is the
-// only writer. Every reconnect re-requests since the server likely restarted.
-export function defineResource<R extends Payload>({
+export interface KeyedResourceOptions<K, R extends Payload> {
+  request: (key: K) => Payload;
+  response: PayloadCtor<R>;
+  // Cache key a response belongs to, e.g. its tracker id
+  key: (msg: R) => K;
+}
+
+interface Entry<R> {
+  resource: Resource<R>;
+  setValue: (msg: R) => void;
+  state: Accessor<ResourceState>;
+  setState: (state: ResourceState) => void;
+  active: boolean;
+  loaded: boolean;
+  timeout?: ReturnType<typeof setTimeout>;
+}
+
+// One cache per key over a response type shared by every key, e.g. mag toggle
+// per tracker id. Each key is requested on first read, then cached for the
+// session. The response is the only writer. Every reconnect re-requests the
+// read keys since the server likely restarted.
+export function defineKeyedResource<K, R extends Payload>({
   request,
   response,
-}: ResourceOptions<R>): Resource<R> {
-  const [value, setValue] = createSignal<R>();
-  const [state, setState] = createSignal<ResourceState>('never-loaded');
+  key,
+}: KeyedResourceOptions<K, R>): (key: K) => Resource<R> {
   const name = routeOf(response).name;
-  let active = false;
-  let loaded = false;
-  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const entries = new Map<K, Entry<R>>();
+  let listening = false;
 
-  function transition(next: ResourceState) {
-    if (untrack(state) === next) return;
-    setState(next);
+  function transition(entry: Entry<R>, next: ResourceState) {
+    if (untrack(entry.state) === next) return;
+    entry.setState(next);
     emit({ kind: 'state', name, state: next });
   }
 
-  function clearTimer() {
-    clearTimeout(timeout);
-    timeout = undefined;
+  function clearTimer(entry: Entry<R>) {
+    clearTimeout(entry.timeout);
+    entry.timeout = undefined;
   }
 
-  function load() {
-    if (!client.send(request())) return;
-    clearTimer();
-    timeout = setTimeout(() => {
-      timeout = undefined;
+  function load(k: K, entry: Entry<R>) {
+    if (!client.send(request(k))) return;
+    clearTimer(entry);
+    entry.timeout = setTimeout(() => {
+      entry.timeout = undefined;
       emit({ kind: 'timeout', name });
     }, REQUEST_TIMEOUT_MS);
   }
 
-  function activate() {
-    if (active) return;
-    active = true;
-    untrack(() => {
-      client.on(response, (msg) => {
-        loaded = true;
-        clearTimer();
-        batch(() => {
-          setValue(() => msg);
-          transition('fresh');
-        });
+  function listen() {
+    if (listening) return;
+    listening = true;
+    client.on(response, (msg) => {
+      const entry = entries.get(key(msg));
+      if (!entry?.active) return;
+      entry.loaded = true;
+      clearTimer(entry);
+      batch(() => {
+        entry.setValue(msg);
+        transition(entry, 'fresh');
       });
-      client.onStatus((status) => {
-        clearTimer();
-        if (loaded) transition('stale');
-        if (status === 'connected') load();
-      });
-      if (client.status() === 'connected') load();
+    });
+    client.onStatus((status) => {
+      for (const [k, entry] of entries) {
+        if (!entry.active) continue;
+        clearTimer(entry);
+        if (entry.loaded) transition(entry, 'stale');
+        if (status === 'connected') load(k, entry);
+      }
     });
   }
 
-  return {
-    value() {
-      activate();
-      return value();
-    },
-    state() {
-      activate();
-      return state();
-    },
+  function activate(k: K, entry: Entry<R>) {
+    if (entry.active) return;
+    entry.active = true;
+    untrack(() => {
+      listen();
+      if (client.status() === 'connected') load(k, entry);
+    });
+  }
+
+  function create(k: K): Entry<R> {
+    const [value, setValue] = createSignal<R>();
+    const [state, setState] = createSignal<ResourceState>('never-loaded');
+    const entry: Entry<R> = {
+      setValue: (msg) => setValue(() => msg),
+      state,
+      setState,
+      active: false,
+      loaded: false,
+      resource: {
+        value() {
+          activate(k, entry);
+          return value();
+        },
+        state() {
+          activate(k, entry);
+          return state();
+        },
+      },
+    };
+    return entry;
+  }
+
+  return (k) => {
+    let entry = entries.get(k);
+    if (!entry) {
+      entry = create(k);
+      entries.set(k, entry);
+    }
+    return entry.resource;
   };
+}
+
+export function defineResource<R extends Payload>({
+  request,
+  response,
+}: ResourceOptions<R>): Resource<R> {
+  return defineKeyedResource({ request, response, key: () => undefined })(undefined);
 }

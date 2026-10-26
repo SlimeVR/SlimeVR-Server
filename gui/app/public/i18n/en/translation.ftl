@@ -912,6 +912,7 @@ settings-interface-behavior-error_tracking-footer = This data is linked to a ran
 settings-interface-behavior-bvh_directory = Directory to save BVH recordings
 settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
 settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
+settings-interface-behavior-bvh_directory-choose = Choose folder
 settings-interface-behavior-skeleton_mesh = Skeleton preview style
 settings-interface-behavior-skeleton_mesh-description = Draw the body preview with solid 3D shapes instead of simple lines. Turn this off on low-end machines.
 settings-interface-behavior-skeleton_mesh-label = Use 3D shapes
