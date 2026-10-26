@@ -187,7 +187,9 @@ class ComputedSkeletonBehaviour(
 	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
+	// BodyParts that are active even when tracking is paused
 	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
+
 	private val IK_THRESHOLD = 0.002f
 	private val IK_MAX_ITERATIONS = 100
 
@@ -257,15 +259,7 @@ class ComputedSkeletonBehaviour(
 						}
 
 						// Use single map for the inputs that we'll mutate for performance
-						val mutableBoneInputs: InputSkeleton = BodyPartMap(
-							if (targetState.pausedProcessedBoneInputs != null) {
-								// If tracking is paused, we only run the skeleton loop for the always active bones (head and neck)
-								// and add the pausedProcessedBoneInputs later on.
-								targetState.boneInputs.filter { it.key in ALWAYS_ACTIVE_PARTS }
-							} else {
-								targetState.boneInputs
-							},
-						)
+						val mutableBoneInputs: InputSkeleton = BodyPartMap(targetState.boneInputs)
 
 						// Run pre-FK processors (input processors)
 						for (processor in inputProcessors) processor.process(mutableBoneInputs, targetState.skeletonHeight)
