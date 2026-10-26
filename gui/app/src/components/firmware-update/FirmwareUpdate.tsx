@@ -396,7 +396,7 @@ export function FirmwareUpdate() {
                         </div>
                         <div className="flex flex-row flex-wrap gap-2 items-center h-full p-2">
                           <div className="p-1 px-3 rounded-full bg-background-40">
-                            Select all trackers
+                            <Localized id="firmware_tool-select_all" />
                           </div>
                         </div>
                       </label>
