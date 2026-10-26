@@ -40,7 +40,7 @@ fun getCorrectedAcceleration(acceleration: Vector3, protocolVersion: Int) = if (
 	acceleration
 }
 
-internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Pair<Tracker, Boolean> {
+internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Tracker {
 	val deviceState = device.context.state.value
 	val deviceHardwareId = deviceState.hardwareId ?: udpHardwareId(deviceState.macAddress, deviceState.address)
 	val hardwareId = "$deviceHardwareId:${info.sensorId}"
@@ -54,7 +54,7 @@ internal fun assignTracker(receiver: UDPConnection, device: Device, info: Sensor
 				trackerId = TrackerSensorIds(trackerId = existingTracker.context.state.value.id, sensorId = info.sensorId),
 			),
 		)
-		return existingTracker to false
+		return existingTracker
 	}
 
 	val trackerId = receiver.appContext.server.nextHandle()
@@ -71,7 +71,7 @@ internal fun assignTracker(receiver: UDPConnection, device: Device, info: Sensor
 	receiver.context.dispatch(
 		UDPConnectionActions.AssignTracker(trackerId = TrackerSensorIds(trackerId = trackerId, sensorId = info.sensorId)),
 	)
-	return newTracker to true
+	return newTracker
 }
 
 class PacketBehaviour : UDPConnectionBehaviour {
@@ -244,7 +244,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			)
 
 			if (packet.data.protocolVersion < 9) {
-				val (tracker, _) = assignTracker(receiver, device, SensorInfo(status = TrackerStatus.OK, imuType = ImuType.fromValue(packet.data.imuType.toUShort()) ?: ImuType.UNKNOWN))
+				val tracker = assignTracker(receiver, device, SensorInfo(status = TrackerStatus.OK, imuType = ImuType.fromValue(packet.data.imuType.toUShort()) ?: ImuType.UNKNOWN))
 				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 			}
 
@@ -342,51 +342,48 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 			val device = receiver.getDevice() ?: error("invalid state - a device should exist at this point")
 			receiver.send(SensorInfoAck(sensorId = event.data.sensorId, status = event.data.status))
 
-			val existingTracker = receiver.getTracker(event.data.sensorId)
-			if (existingTracker != null) {
-				existingTracker.context.dispatchAll(
-					listOf(
-						TrackerActions.Update { copy(imuType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
-						TrackerActions.SetStatus(event.data.status),
-					),
-				)
-				return@onPacket
-			}
-
-			val (tracker, isNew) = assignTracker(receiver, device, event.data)
+			val tracker = receiver.getTracker(event.data.sensorId) ?: assignTracker(receiver, device, event.data)
 			tracker.context.dispatchAll(
 				listOf(
 					TrackerActions.Update { copy(imuType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
 					TrackerActions.SetStatus(event.data.status),
 				),
 			)
-			if (isNew && tracker.context.state.value.magStatus == MagnetometerStatus.NOT_SUPPORTED) {
-				tracker.context.dispatch(
-					TrackerActions.SetMagStatus(
-						if (event.data.sensorConfig?.magSupported == true) MagnetometerStatus.DISABLED else MagnetometerStatus.NOT_SUPPORTED,
-					),
-				)
-			}
-
-			val remoteMagStatus = event.data.sensorConfig?.let {
-				if (it.magSupported) {
-					if (it.magEnabled) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED
-				} else {
-					MagnetometerStatus.NOT_SUPPORTED
-				}
-			} ?: MagnetometerStatus.NOT_SUPPORTED
-
-			var desiredMagStatus = tracker.context.state.value.magStatus
-			val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.trackersConfig.globalMagEnabled
-			if (remoteMagStatus != desiredMagStatus) {
-				if (globalMagEnabled && remoteMagStatus != MagnetometerStatus.ENABLED && desiredMagStatus != MagnetometerStatus.NOT_SUPPORTED) {
-					desiredMagStatus = MagnetometerStatus.ENABLED
-				}
-				receiver.context.dispatch(
-					UDPConnectionActions.SetSensorConfig(sensorId = event.data.sensorId, flags = SensorConfigFlags(magStatus = desiredMagStatus)),
-				)
-			}
+			syncMagStatus(receiver, tracker, event.data)
 		}.launchIn(receiver.context.scope)
+	}
+}
+
+// Runs on every SensorInfo
+private fun syncMagStatus(receiver: UDPConnection, tracker: Tracker, info: SensorInfo) {
+	val remoteMagStatus = info.sensorConfig?.let {
+		if (it.magSupported) {
+			if (it.magEnabled) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED
+		} else {
+			MagnetometerStatus.NOT_SUPPORTED
+		}
+	} ?: MagnetometerStatus.NOT_SUPPORTED
+
+	if (remoteMagStatus == MagnetometerStatus.NOT_SUPPORTED) {
+		tracker.context.dispatch(TrackerActions.SetMagStatus(MagnetometerStatus.NOT_SUPPORTED))
+		return
+	}
+	val firstSupported = tracker.context.state.value.magStatus == MagnetometerStatus.NOT_SUPPORTED
+	if (firstSupported) {
+		tracker.context.dispatch(TrackerActions.SetMagStatus(remoteMagStatus))
+	}
+
+	val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.trackersConfig.globalMagEnabled
+	// The tracker status holds the per-tracker choice, a tracker without one defaults to on
+	val desiredMagStatus = when {
+		!globalMagEnabled -> MagnetometerStatus.DISABLED
+		firstSupported -> MagnetometerStatus.ENABLED
+		else -> tracker.context.state.value.magStatus
+	}
+	if (remoteMagStatus != desiredMagStatus) {
+		receiver.context.dispatch(
+			UDPConnectionActions.SetSensorConfig(sensorId = info.sensorId, flags = SensorConfigFlags(magStatus = desiredMagStatus)),
+		)
 	}
 }
 
