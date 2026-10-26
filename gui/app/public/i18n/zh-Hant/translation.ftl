@@ -295,7 +295,6 @@ tracker-settings-use_mag-label = 允許使用這個追蹤器的磁力計
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-bone_offset_section = 骨骼位移
-tracker-settings-bone_offset_section-description = 從追蹤器到骨骼的位移距離，單位為公尺。
 tracker-settings-bone_offset_section-x = X
 tracker-settings-bone_offset_section-y = Y
 tracker-settings-bone_offset_section-z = Z
