@@ -1,5 +1,6 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
+import { CHECKBOX_CLASSES } from '@/components/commons/Checkbox';
 import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -157,6 +158,7 @@ export function FirmwareUpdate() {
     control,
     watch,
     reset,
+    setValue,
     formState: { isValid },
   } = useForm<FirmwareUpdateForm>({
     reValidateMode: 'onChange',
@@ -335,6 +337,10 @@ export function FirmwareUpdate() {
 
   const statusKeys = Object.keys(status);
 
+  const allSelected =
+    devices.length > 0 &&
+    devices.every(({ id }) => selectedDevicesForm?.[id] === true);
+
   return (
     <div className="flex flex-col p-4 w-full items-center justify-center">
       <div className="mobile:w-full w-10/12 h-full flex flex-col gap-2">
@@ -366,7 +372,37 @@ export function FirmwareUpdate() {
                 {statusKeys.length > 0 ? (
                   <StatusList status={status} />
                 ) : (
-                  <DeviceList control={control} devices={devices} />
+                  <>
+                    <div className="rounded-md h-[86px] pt-2 border-2 relative border-transparent bg-background-60">
+                      <label className="flex flex-row gap-2 px-4 h-full">
+                        <div className="flex justify-center flex-col">
+                          <input
+                            type="checkbox"
+                            className={CHECKBOX_CLASSES}
+                            checked={allSelected}
+                            onChange={(e) =>
+                              setValue(
+                                'selectedDevices',
+                                Object.fromEntries(
+                                  devices.map(({ id }) => [
+                                    id,
+                                    e.target.checked,
+                                  ])
+                                ),
+                                { shouldValidate: true }
+                              )
+                            }
+                          />
+                        </div>
+                        <div className="flex flex-row flex-wrap gap-2 items-center h-full p-2">
+                          <div className="p-1 px-3 rounded-full bg-background-40">
+                            Select all trackers
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <DeviceList control={control} devices={devices} />
+                  </>
                 )}
                 {devices.length === 0 && statusKeys.length === 0 && (
                   <div
