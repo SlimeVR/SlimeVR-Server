@@ -72,10 +72,11 @@ export function MagnetometerToggleSetting({
   }, [trackerId]);
 
   useRPCPacket(RpcMessage.MagToggleResponse, (mag: MagToggleResponseT) => {
-    if (trackerId !== undefined && mag.trackerId === undefined) {
+    // trackerId 0 is the global setting
+    if (trackerId !== undefined && mag.trackerId === 0) {
       setGlobalToggle(mag.enable);
     }
-    if (mag.trackerId !== trackerId) {
+    if (mag.trackerId !== (trackerId ?? 0)) {
       return;
     }
     originalValue.current = mag.enable;
