@@ -23,8 +23,8 @@ class HIDSleepLegacyBehaviour : HIDReceiverBehaviour {
 		// Legacy packets 6/7 carry a 16-bit millisecond timeout: 0 = no hint, 65535 = never sleep.
 		fun applyLegacyTimeout(hidId: Int, timeoutMs: Int) = when (timeoutMs) {
 			0 -> Unit
-			65535 -> timers.cancelSleep(hidId)
-			else -> timers.scheduleSleep(hidId, timeoutMs.toLong())
+			65535 -> timers.clearSleepDeadline(hidId)
+			else -> timers.setSleepDeadline(hidId, timeoutMs.toLong())
 		}
 
 		receiver.packetEvents.on<HIDRotationButtonLegacy> { packet ->
