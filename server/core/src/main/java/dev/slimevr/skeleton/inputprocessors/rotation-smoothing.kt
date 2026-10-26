@@ -22,7 +22,7 @@ private const val SMOOTH_MAX = 0.92f
 class RotationSmoothingInputProcessor(val settings: Settings) :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
-	private var smoothed: BodyPartMap<Quaternion> = bodyPartMap()
+	private val smoothed: BodyPartMap<Quaternion> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
@@ -42,16 +42,14 @@ class RotationSmoothingInputProcessor(val settings: Settings) :
 		val smoothingAmount = SMOOTH_MIN + filteringAmount * (SMOOTH_MAX - SMOOTH_MIN)
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
-		val newSmoothed = bodyPartMap<Quaternion>()
 		for ((bodyPart, bone) in mutableInputSkeleton) {
 			if (!bone.isRotationActive) continue
 
 			val prev = smoothed[bodyPart] ?: bone.rotation
 			val rotation = prev.lerpQ(bone.rotation, alpha).unit()
-			newSmoothed[bodyPart] = rotation
+			smoothed[bodyPart] = rotation
 			if (rotation != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
 		}
-		smoothed = newSmoothed
 	}
 
 	override fun reset(resetType: ResetType) {

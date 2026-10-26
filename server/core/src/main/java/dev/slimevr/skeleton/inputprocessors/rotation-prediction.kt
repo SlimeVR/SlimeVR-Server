@@ -14,6 +14,9 @@ import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration.Companion.milliseconds
 
+/** How long the running average of rotation deltas used for predictions is */
+val RUNNING_AVERAGE_WINDOW = 10.milliseconds
+
 /** How far ahead the prediction reaches at amount 1, scaled down by the configured amount */
 val PREDICTION_LEAD = 12.milliseconds
 
@@ -29,20 +32,19 @@ class RotationPredictionInputProcessor(val settings: Settings) :
 		val lastChange: MonotonicValueTimeMark,
 	)
 
-	private var deltas: BodyPartMap<BoneDelta> = bodyPartMap()
+	// Used to minimize latency even more for arm tracking where it is more noticeable in VR.
+	private val PART_MULTIPLIER = BodyPartMap(
+		mapOf(
+			BodyPart.LEFT_SHOULDER to 1.4f,
+			BodyPart.RIGHT_SHOULDER to 1.4f,
+			BodyPart.LEFT_UPPER_ARM to 1.4f,
+			BodyPart.RIGHT_UPPER_ARM to 1.4f,
+			BodyPart.LEFT_LOWER_ARM to 1.4f,
+			BodyPart.RIGHT_LOWER_ARM to 1.4f,
+		)
+	)
 
-	// Used to minimize latency even more for elbow tracking in VR where it is more noticeable.
-	private fun getMultiplier(bodyPart: BodyPart) = when (bodyPart) {
-		BodyPart.LEFT_SHOULDER,
-		BodyPart.RIGHT_SHOULDER,
-		BodyPart.LEFT_UPPER_ARM,
-		BodyPart.RIGHT_UPPER_ARM,
-		BodyPart.LEFT_LOWER_ARM,
-		BodyPart.RIGHT_LOWER_ARM,
-		-> 1.4f
-
-		else -> 1f
-	}
+	private val deltas: BodyPartMap<BoneDelta> = bodyPartMap()
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
@@ -54,32 +56,24 @@ class RotationPredictionInputProcessor(val settings: Settings) :
 		}
 		val now = timeSource.markNow()
 
-		val newVelocities = bodyPartMap<BoneDelta>()
 		for ((bodyPart, bone) in mutableInputSkeleton) {
 			if (!bone.isRotationActive) continue
 
 			val prev = deltas[bodyPart]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
+				deltas[bodyPart] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
 				continue
 			}
 
-			val bonePredictionAmount = filteringAmount * getMultiplier(bodyPart)
+			val leadScale = (PREDICTION_LEAD / (now - prev.lastChange)).toFloat()
+			val rotationDelta = (bone.rotation / prev.lastRotation).pow(leadScale)
+			deltas[bodyPart] = BoneDelta(bone.rotation, rotationDelta, now)
 
-			val changed = bone.rotation !== prev.lastRotation
-			val rotationDelta = if (changed) {
-				val leadScale = (PREDICTION_LEAD / (now - prev.lastChange)).toFloat()
-				Quaternion.IDENTITY.lerpR(bone.rotation * prev.lastRotation.inv(), leadScale).unit()
-			} else {
-				prev.rotationDelta
-			}
-
-			newVelocities[bodyPart] = BoneDelta(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
-			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
-			val predicted = (scaledDelta * bone.rotation).unit()
+			val bonePredictionAmount = filteringAmount * (PART_MULTIPLIER[bodyPart] ?: 1f)
+			val scaledDelta = rotationDelta.pow(bonePredictionAmount)
+			val predicted = scaledDelta * bone.rotation
 			if (predicted != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = predicted)
 		}
-		deltas = newVelocities
 	}
 
 	override fun reset(resetType: ResetType) {

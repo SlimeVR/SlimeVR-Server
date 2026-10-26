@@ -360,7 +360,7 @@ tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-bone_offset_section = Bone offset
-tracker-settings-bone_offset_section-description = Offset of the tracker from its bone, in meters.
+tracker-settings-bone_offset_section-description = Offset of the bone from this tracker, in meters.
 tracker-settings-bone_offset_section-x = X
 tracker-settings-bone_offset_section-y = Y
 tracker-settings-bone_offset_section-z = Z

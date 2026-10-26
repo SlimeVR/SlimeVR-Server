@@ -10,8 +10,8 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		state.copy(
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
-					trackerOffset = action.trackerOffset ?: bone.trackerOffset,
-					expectedTps = action.expectedTps ?: bone.expectedTps,
+					boneOffset = action.boneOffset ?: bone.boneOffset,
+					tps = action.tps ?: bone.tps,
 					rotation = action.rotation ?: bone.rotation,
 					acceleration = action.acceleration ?: bone.acceleration,
 					position = action.position ?: bone.position,
@@ -28,8 +28,8 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		state.copy(
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
-					trackerOffset = Vector3.ZERO,
-					expectedTps = null,
+					boneOffset = Vector3.ZERO,
+					tps = null,
 					rotation = Quaternion.IDENTITY,
 					acceleration = Vector3.ZERO,
 					position = null,
