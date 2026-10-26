@@ -350,6 +350,19 @@ data class SensorInfo(
 	}
 }
 
+data class SensorInfoAck(override val sensorId: Int, val status: TrackerStatus) : SensorSpecificPacket {
+	override fun write(dst: Sink) {
+		dst.writeUByte(sensorId.toUByte())
+		dst.writeUByte(
+			when (status) {
+				TrackerStatus.OK -> 1u
+				TrackerStatus.ERROR -> 2u
+				else -> 0u
+			},
+		)
+	}
+}
+
 data class Rotation2(override val sensorId: Int = 1, val rotation: Quaternion = Quaternion.IDENTITY) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source) = Rotation2(1, src.readSafeQuat())
@@ -520,14 +533,20 @@ fun writePacket(dst: Sink, packet: UDPPacket) {
 		is Handshake -> PacketType.HANDSHAKE
 		is PingPong -> PacketType.PING_PONG
 		is SetConfigFlag -> PacketType.SET_CONFIG_FLAG
+		is SensorInfoAck -> PacketType.SENSOR_INFO
 		is ProtocolChange -> PacketType.PROTOCOL_CHANGE
 		is FeatureFlags -> PacketType.FEATURE_FLAGS
 		else -> throw UnsupportedOperationException("Outbound support not implemented for ${packet::class.simpleName}")
 	}
 
-	if (type != PacketType.HANDSHAKE) {
-		dst.writeInt(type.id)
-		dst.writeLong(0)
+	when (type) {
+		PacketType.HANDSHAKE -> Unit
+		PacketType.SENSOR_INFO -> dst.writeInt(type.id)
+
+		else -> {
+			dst.writeInt(type.id)
+			dst.writeLong(0)
+		}
 	}
 	packet.write(dst)
 }

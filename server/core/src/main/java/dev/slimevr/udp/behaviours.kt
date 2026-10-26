@@ -340,6 +340,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<SensorInfo> { event ->
 			val device = receiver.getDevice() ?: error("invalid state - a device should exist at this point")
+			receiver.send(SensorInfoAck(sensorId = event.data.sensorId, status = event.data.status))
 
 			val existingTracker = receiver.getTracker(event.data.sensorId)
 			if (existingTracker != null) {
