@@ -2,6 +2,7 @@ import { useMatch } from '@solidjs/router';
 import { createSignal, createUniqueId, Show } from 'solid-js';
 import { ServerInfosRequestT, ServerInfosResponseT } from 'solarxr-protocol';
 import DownloadIcon from '~icons/heroicons/arrow-down-tray-solid';
+import SearchIcon from '~icons/heroicons/magnifying-glass-20-solid';
 import QuestionIcon from '~icons/heroicons/question-mark-circle';
 import CloseIcon from '~icons/material-symbols/close-rounded';
 import MaximiseIcon from '~icons/material-symbols/crop-square-outline-rounded';
@@ -18,6 +19,7 @@ import {
 } from '@/lib/links';
 import { platform, type WindowApi } from '@/lib/platform';
 import { flushPrefs } from '@/lib/storage';
+import { openQuickSearch } from '@/pages/settings/quick-search/quick-search';
 import { defineResource } from '@/solarxr/resource';
 import { TextButton } from '@/ui/button';
 import { MotionRegion } from '@/ui/motion';
@@ -162,6 +164,14 @@ export function TitleBar() {
         />
       </Show>
       <div class="h-full flex-1" data-electron-drag-region="true" />
+      <TextButton
+        variant="ghost"
+        size="small"
+        iconOnly
+        label="titlebar-search"
+        icon={<SearchIcon />}
+        onClick={openQuickSearch}
+      />
       <TextButton
         to={paths.settings}
         variant="ghost"

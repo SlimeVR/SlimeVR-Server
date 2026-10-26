@@ -3,6 +3,7 @@ import WizardIcon from '~icons/material-symbols/auto-awesome-rounded';
 import { t } from '@/lib/l10n';
 import { TextListLink } from '@/ui/list-link';
 import { MotionList } from '@/ui/motion';
+import { QuickSearchField } from './quick-search/quick-search';
 import { pageAvailable, settingsSections } from './settings-pages';
 
 export interface SettingsLinks {
@@ -16,6 +17,7 @@ export function SettingsMenu(props: {
 }) {
   return (
     <div class="flex flex-col gap-lg">
+      <QuickSearchField />
       <For each={settingsSections}>
         {(section) => (
           <section class="flex flex-col gap-sm">

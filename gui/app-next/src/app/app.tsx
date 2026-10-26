@@ -3,10 +3,12 @@ import { withSentryRouterRouting } from '@sentry/solid/solidrouter';
 import { AppShell } from '@/app/app-shell';
 import { CrashBoundary } from '@/app/crash-screen';
 import { useHistoryBack } from '@/app/history-back';
-import { routes } from '@/app/routes';
+import { paths, routes } from '@/app/routes';
+import { searchDestinations } from '@/app/search-destinations';
 import { useShortcut } from '@/lib/keyboard';
 import { DOCS_SITE } from '@/lib/links';
 import { platform } from '@/lib/platform';
+import { QuickSearch } from '@/pages/settings/quick-search/quick-search';
 import { DialogHost } from '@/ui/dialog';
 import { MotionRoot } from '@/ui/motion';
 import { ToastHost } from '@/ui/toast';
@@ -23,6 +25,7 @@ function AppRoot(props: RouteSectionProps) {
   return (
     <MotionRoot>
       <AppShell>{props.children}</AppShell>
+      <QuickSearch base={paths.settings} destinations={searchDestinations} />
       <DialogHost />
       <ToastHost />
     </MotionRoot>

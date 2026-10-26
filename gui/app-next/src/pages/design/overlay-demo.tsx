@@ -2,7 +2,7 @@
 import { createSignal, For, type JSX } from 'solid-js';
 import { cx } from '@/lib/cx';
 import { Button } from '@/ui/button';
-import { confirm, Dialog, openDialog } from '@/ui/dialog';
+import { confirm, openDialog, TitledDialog } from '@/ui/dialog';
 import { Loaded } from '@/ui/loaded';
 import { MotionList, MotionRegion, MotionToolbar } from '@/ui/motion';
 import { Popover, type PopoverPlacement } from '@/ui/popover';
@@ -43,13 +43,13 @@ function DialogDemos() {
 
   async function runOpenDialog() {
     const picked = await openDialog<string>((close) => (
-      <Dialog open onClose={() => close()} title="Pick a fruit">
+      <TitledDialog open onClose={() => close()} title="Pick a fruit">
         <MotionToolbar class="flex gap-sm">
           <For each={['apple', 'pear', 'plum']}>
             {(fruit) => <Button onClick={() => close(fruit)}>{fruit}</Button>}
           </For>
         </MotionToolbar>
-      </Dialog>
+      </TitledDialog>
     ));
     setResult(picked ?? 'dismissed');
   }
@@ -67,7 +67,7 @@ function DialogDemos() {
       </MotionToolbar>
       <span>last result: {result()}</span>
 
-      <Dialog
+      <TitledDialog
         open={basic()}
         onClose={() => setBasic(false)}
         title="Basic dialog"
@@ -86,9 +86,9 @@ function DialogDemos() {
           </Button>
           <Button onClick={() => setBasic(false)}>close</Button>
         </MotionToolbar>
-      </Dialog>
+      </TitledDialog>
 
-      <Dialog
+      <TitledDialog
         open={locked()}
         onClose={() => setLocked(false)}
         closeable={false}
@@ -98,17 +98,21 @@ function DialogDemos() {
         <MotionToolbar class="flex gap-sm">
           <Button onClick={() => setLocked(false)}>done</Button>
         </MotionToolbar>
-      </Dialog>
+      </TitledDialog>
 
-      <Dialog open={long()} onClose={() => setLong(false)} title="Long content">
+      <TitledDialog
+        open={long()}
+        onClose={() => setLong(false)}
+        title="Long content"
+      >
         <MotionList class="flex flex-col gap-xs">
           <For each={Array.from({ length: 30 }, (_, i) => i + 1)}>
             {(i) => <Button>row {i}</Button>}
           </For>
         </MotionList>
-      </Dialog>
+      </TitledDialog>
 
-      <Dialog
+      <TitledDialog
         open={outer()}
         onClose={() => setOuter(false)}
         title="Outer dialog"
@@ -117,7 +121,7 @@ function DialogDemos() {
           <Button onClick={() => setInner(true)}>open inner</Button>
           <Button onClick={() => setOuter(false)}>close</Button>
         </MotionToolbar>
-        <Dialog
+        <TitledDialog
           open={inner()}
           onClose={() => setInner(false)}
           title="Inner dialog"
@@ -126,8 +130,8 @@ function DialogDemos() {
           <MotionToolbar class="flex gap-sm">
             <Button onClick={() => setInner(false)}>close inner</Button>
           </MotionToolbar>
-        </Dialog>
-      </Dialog>
+        </TitledDialog>
+      </TitledDialog>
     </Section>
   );
 }
@@ -183,7 +187,7 @@ function PopoverDemos() {
         <Button onClick={() => setInDialog(true)}>popover in dialog</Button>
       </MotionToolbar>
       <span>Try them near the window edges for the flip fallbacks.</span>
-      <Dialog
+      <TitledDialog
         open={inDialog()}
         onClose={() => setInDialog(false)}
         title="Popover inside a dialog"
@@ -192,7 +196,7 @@ function PopoverDemos() {
           <PopoverDemo placement="bottom-start" />
           <Button onClick={() => setInDialog(false)}>close</Button>
         </MotionToolbar>
-      </Dialog>
+      </TitledDialog>
     </Section>
   );
 }

@@ -1,7 +1,7 @@
 import { createSignal, For, type JSX, Show } from 'solid-js';
 import type { MessageArgs, MessageId } from '@/lib/l10n';
 import { TextButton } from '@/ui/button';
-import { Dialog } from './dialog';
+import { TitledDialog } from './dialog';
 import { Localized } from '@/ui/localized';
 import { MotionToolbar } from '@/ui/motion';
 
@@ -11,7 +11,7 @@ interface HostEntry {
 
 const [entries, setEntries] = createSignal<readonly HostEntry[]>([]);
 
-// App-wide dialogs opened by services. Page dialogs render <Dialog> in place.
+// App-wide dialogs opened by services. Page dialogs render <TitledDialog> in place.
 export function openDialog<T>(
   render: (close: (result?: T) => void) => JSX.Element
 ): Promise<T | undefined> {
@@ -37,7 +37,7 @@ export interface ConfirmOptions {
 // Resolves false on cancel, Escape, back or backdrop
 export async function confirm(options: ConfirmOptions): Promise<boolean> {
   const result = await openDialog<boolean>((close) => (
-    <Dialog open onClose={() => close(false)} title={options.title}>
+    <TitledDialog open onClose={() => close(false)} title={options.title}>
       <Show when={options.description}>
         {(description) => (
           <p>
@@ -57,7 +57,7 @@ export async function confirm(options: ConfirmOptions): Promise<boolean> {
           onClick={() => close(true)}
         />
       </MotionToolbar>
-    </Dialog>
+    </TitledDialog>
   ));
   return result ?? false;
 }

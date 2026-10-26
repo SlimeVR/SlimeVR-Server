@@ -505,6 +505,17 @@
 
 @layer base {
   /* Popovers start bare, callers style them with utilities */
+  /* Dialog decides its own look and size; inset stays so margins can place it */
+  dialog {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    max-width: none;
+    max-height: none;
+  }
+
   [popover] {
     inset: auto;
     margin: 0;

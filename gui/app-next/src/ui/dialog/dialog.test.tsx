@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen } from '@solidjs/testing-library';
 import { createSignal } from 'solid-js';
 import { afterEach, describe, expect, it } from 'vitest';
 import { dismiss, modalOpen } from '@/lib/back-stack';
-import { confirm, Dialog, DialogHost } from '@/ui/dialog';
+import { confirm, Dialog, DialogHost, TitledDialog } from '@/ui/dialog';
 import { Floating } from '@/ui/floating';
 
 afterEach(cleanup);
@@ -10,14 +10,14 @@ afterEach(cleanup);
 function renderDialog(closeable = true) {
   const [open, setOpen] = createSignal(true);
   render(() => (
-    <Dialog
+    <TitledDialog
       open={open()}
       onClose={() => setOpen(false)}
       closeable={closeable}
       title="dialog-title"
     >
       <p>body</p>
-    </Dialog>
+    </TitledDialog>
   ));
   return {
     open,
@@ -47,6 +47,17 @@ describe('Dialog', () => {
     expect(dismiss()).toBe(true);
     expect(open()).toBe(true);
     expect(modalOpen()).toBe(true);
+  });
+
+  it('bare dialog is named by its label', () => {
+    render(() => (
+      <Dialog open onClose={() => {}} label="bare">
+        <p>body</p>
+      </Dialog>
+    ));
+    expect(screen.getByRole('dialog', { hidden: true })).toHaveAccessibleName(
+      'bare'
+    );
   });
 
   it('drops its back entry on unmount', () => {
