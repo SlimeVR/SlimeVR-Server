@@ -167,8 +167,6 @@ dependencies {
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
 	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
 
-	// mDNS for OSCQuery, resolves to the NsdManager-backed android variant
-
 	// Logging
 	implementation("io.klogging:klogging:0.11.7")
 
