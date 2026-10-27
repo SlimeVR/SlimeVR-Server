@@ -957,6 +957,7 @@ settings-osc-vrchat-status-source-auto = crwdns8274:0crwdne8274:0
 settings-osc-vrchat-status-oscquery-disabled = crwdns8276:0crwdne8276:0
 settings-osc-vrchat-status-oscquery-advertising = crwdns8278:0$portcrwdne8278:0
 settings-osc-vrchat-status-oscquery-searching = crwdns8280:0crwdne8280:0
+settings-osc-vrchat-status-oscquery-manual = crwdns10220:0crwdne10220:0
 settings-osc-vrchat-status-oscquery-discovered-title = crwdns8282:0crwdne8282:0
 settings-osc-vrchat-status-oscquery-switch = crwdns8284:0crwdne8284:0
 settings-osc-vrchat-status-network-mode = crwdns8286:0crwdne8286:0
