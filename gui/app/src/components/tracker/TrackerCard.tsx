@@ -95,7 +95,7 @@ function TrackerSmol({
     <div className="flex rounded-md py-1.5 px-3 w-full gap-4 h-[70px]">
       <div className="flex flex-col justify-center items-center fill-background-10 relative">
         {warning && (
-          <div className="absolute -right-2 -bottom-3 text-status-warning ">
+          <div className="absolute -right-2 -bottom-0.5 text-status-warning ">
             <WarningIcon width={20} />
           </div>
         )}
