@@ -43,6 +43,18 @@ private fun shutdownHidApi() {
 	}
 }
 
+/**
+ * JNA reports a native access violation as a bare java.lang.Error. Left as is it escapes the manager's
+ * exception handling and cancels the whole server scope, so it becomes a regular failure to retry.
+ * hidapi's Windows enumeration can fault this way while devices are in flux, like on resume from sleep
+ */
+private inline fun <T> nativeHidCall(block: () -> T): T = try {
+	block()
+} catch (e: Error) {
+	if (e::class != Error::class) throw e
+	throw IllegalStateException("Native HID call failed", e)
+}
+
 private fun enumerateHidDevices(directTrackersEnabled: Boolean): Map<String, HidDeviceDescriptor> {
 	ensureHidApi()
 
@@ -94,7 +106,7 @@ private class DesktopHidConnection(private val struct: HidDeviceStructure) : Hid
 		var result = -1
 
 		while (!closed) {
-			result = HidApi.read(struct, buffer, budgetMs)
+			result = nativeHidCall { HidApi.read(struct, buffer, budgetMs) }
 			if (result >= 0 || !wasInterrupted(struct)) break
 
 			// hidapi's poll() has no EINTR retry, so any signal delivered to this thread, like a
@@ -114,7 +126,7 @@ private class DesktopHidConnection(private val struct: HidDeviceStructure) : Hid
 	override suspend fun write(data: ByteArray): Int = writeLock.withLock {
 		if (closed) return@withLock -1
 		withContext(Dispatchers.IO) {
-			val written = HidApi.write(struct, data, data.size, 0)
+			val written = nativeHidCall { HidApi.write(struct, data, data.size, 0) }
 			if (written > 0) written - 1 else written
 		}
 	}
@@ -132,12 +144,14 @@ private class DesktopHidTransport : HidTransport {
 	override val wakeSignal: ReceiveChannel<Unit>? = null
 
 	override suspend fun enumerate(directTrackersEnabled: Boolean): Map<String, HidDeviceDescriptor> = withContext(Dispatchers.IO) {
-		enumerateHidDevices(directTrackersEnabled)
+		nativeHidCall { enumerateHidDevices(directTrackersEnabled) }
 	}
 
 	override suspend fun open(descriptor: HidDeviceDescriptor): HidConnection? = withContext(Dispatchers.IO) {
-		ensureHidApi()
-		HidApi.open(descriptor.key)?.let { struct -> DesktopHidConnection(struct) }
+		nativeHidCall {
+			ensureHidApi()
+			HidApi.open(descriptor.key)?.let { struct -> DesktopHidConnection(struct) }
+		}
 	}
 
 	override suspend fun shutdown() = withContext(Dispatchers.IO) { shutdownHidApi() }
