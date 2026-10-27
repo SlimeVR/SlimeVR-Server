@@ -273,6 +273,7 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			val fromRotationSources = from.ifEmpty { to }
 			val fromReliabilitySources = from.ifEmpty { listOf(spineSource) }
 			val toSources = if (from.isNotEmpty()) to else to.flatMap { fromTo[it]?.second ?: continue@loop }
+			if (toSources.isEmpty()) continue
 
 			// Get From and To's weighted average reliabilities
 			val (fromForwardReliability, fromSideReliability) = weightedAverageReliability(fromReliabilitySources, reliabilities)
