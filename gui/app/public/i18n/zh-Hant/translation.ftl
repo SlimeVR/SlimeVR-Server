@@ -754,7 +754,6 @@ settings-osc-vrchat-status-output-last-frame = 最後傳送幀資料：{ $elapse
 settings-osc-vrchat-status-output-no-frame = 尚未傳送幀資料。
 settings-osc-vrchat-status-source-manual = 手動
 settings-osc-vrchat-status-source-auto = 自動偵測
-settings-osc-vrchat-status-oscquery-disabled = OSCQuery 已關閉（手動網路模式）
 settings-osc-vrchat-status-oscquery-advertising = 在 { $port } 埠廣播
 settings-osc-vrchat-status-oscquery-searching = 尚未找到 VRChat 客戶端。
 settings-osc-vrchat-status-oscquery-discovered-title = 已發現的 VRChat 客戶端：
