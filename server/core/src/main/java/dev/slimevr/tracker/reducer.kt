@@ -53,7 +53,6 @@ fun reduce(
 		val acceleration: CalibratedAcceleration? =
 			if (action.acceleration != null) {
 				if (state.imuType != null) {
-					// TODO: double check calibration; doesn't seem right - Erimel
 					applyCalibration(
 						action.acceleration,
 						correctedRawRotation,

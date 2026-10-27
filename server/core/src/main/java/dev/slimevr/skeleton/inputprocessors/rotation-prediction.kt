@@ -6,16 +6,13 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.ResetType
+import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration.Companion.milliseconds
-
-/** How long the running average of rotation deltas used for predictions is */
-val RUNNING_AVERAGE_WINDOW = 10.milliseconds
 
 /** How far ahead the prediction reaches at amount 1, scaled down by the configured amount */
 val PREDICTION_LEAD = 12.milliseconds
@@ -29,7 +26,7 @@ class RotationPredictionInputProcessor(val settings: Settings) :
 	private data class BoneDelta(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
-		val lastChange: MonotonicValueTimeMark,
+		val lastChange: ComparableTimeMark,
 	)
 
 	// Used to minimize latency even more for arm tracking where it is more noticeable in VR.

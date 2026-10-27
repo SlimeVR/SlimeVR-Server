@@ -5,10 +5,8 @@ import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscSender
 import dev.slimevr.routing.BoneRoutingManager
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.formatExceptionMessage
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -21,8 +19,8 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.VRCOSCOutputState
 import solarxr_protocol.rpc.VRCOSCTargetSource
+import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
 
 private val FRAME_RETRY_DELAY = 2.seconds
 
@@ -39,8 +37,8 @@ class VRCOSCOutputBehaviour(
 	private class OutputRuntime {
 		var sender: OscSender? = null
 		var sendFailing = false
-		var nextFrameRetryAt: MonotonicValueTimeMark? = null
-		var healthySince: MonotonicValueTimeMark? = null
+		var nextFrameRetryAt: ComparableTimeMark? = null
+		var healthySince: ComparableTimeMark? = null
 	}
 
 	override fun observe(receiver: VRCOSCManager) {
