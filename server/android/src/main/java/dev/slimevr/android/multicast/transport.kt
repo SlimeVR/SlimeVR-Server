@@ -42,7 +42,6 @@ suspend fun bindAndroidMulticast(group: ByteArray, port: Int, interfaceAddress: 
 		.setOption(StandardSocketOptions.SO_REUSEADDR, true)
 		.setOption(StandardSocketOptions.IP_MULTICAST_IF, iface)
 		.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, true)
-		// The wildcard of InetSocketAddress(port) is IPv6 on Android, which an INET channel rejects
 		.bind(InetSocketAddress(InetAddress.getByAddress(ByteArray(4)), port))
 	channel.join(groupAddress, iface)
 	AndroidMulticastSocket(channel, InetSocketAddress(groupAddress, port))
