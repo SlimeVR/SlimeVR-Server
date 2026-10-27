@@ -46,7 +46,7 @@ function SourcesValue({ shown, total }: { shown: LogSource[]; total: number }) {
     return <Typography tag="span" id="settings-logs-source-all" />;
   }
   return (
-    <span className="flex items-center gap-1.5">
+    <span className="flex items-center gap-1.5 min-w-0">
       {shown.map((source) => (
         <span
           key={source}
@@ -55,10 +55,13 @@ function SourcesValue({ shown, total }: { shown: LogSource[]; total: number }) {
         />
       ))}
       {shown.length === 1 && (
-        <Typography
-          tag="span"
-          id={`settings-logs-source-${sourceKey(shown[0])}`}
-        />
+        <span className="truncate">
+          <Typography
+            tag="span"
+            whitespace="whitespace-nowrap"
+            id={`settings-logs-source-${sourceKey(shown[0])}`}
+          />
+        </span>
       )}
     </span>
   );
@@ -78,10 +81,13 @@ function LoggerLabel({ row }: { row: LogRow }) {
       {row.logger ? (
         <span className="truncate">{row.logger}</span>
       ) : (
-        <Typography
-          tag="span"
-          id={`settings-logs-source-${sourceKey(row.source)}`}
-        />
+        <span className="truncate">
+          <Typography
+            tag="span"
+            whitespace="whitespace-nowrap"
+            id={`settings-logs-source-${sourceKey(row.source)}`}
+          />
+        </span>
       )}
     </span>
   );
