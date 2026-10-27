@@ -1,9 +1,11 @@
 package dev.slimevr.mdns
 
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.multicast.MulticastBind
 import dev.slimevr.multicast.MulticastSocket
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
@@ -12,10 +14,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,6 +31,7 @@ import kotlin.time.TimeSource
 private const val MDNS_PORT = 5353
 private val MDNS_GROUP = byteArrayOf(224.toByte(), 0, 0, 251.toByte())
 private val MAX_QUERY_INTERVAL = 60.seconds
+private val REBIND_DELAY = 5.seconds
 
 data class MdnsDiscoveredService(
 	val name: String,
@@ -59,6 +65,18 @@ private val ticks = flow {
 }
 
 private enum class MdnsReply { SERVICE, HOST }
+
+private class MdnsSocket(private val socket: MulticastSocket, val address: String) {
+	suspend fun send(packet: ByteArray) {
+		try {
+			socket.send(packet)
+		} catch (e: CancellationException) {
+			throw e
+		} catch (e: Exception) {
+			AppLogger.mdns.warn(e, "mDNS send failed on $address")
+		}
+	}
+}
 
 /** What to send back for [question] about [service], null when the question is not about it. */
 private fun replyFor(question: MdnsQuestion, service: MdnsService): MdnsReply? {
@@ -124,18 +142,20 @@ private fun missingQuestions(records: Collection<MdnsRecord>, type: String): Lis
 }
 
 /**
- * mDNS on the interface owning [address], through one multicast socket opened with [bind] while
- * anything is advertised or browsed.
+ * mDNS on the interface owning the latest [localAddress], through one multicast socket opened with
+ * [bind] while anything is advertised or browsed. The socket is bound again whenever the address
+ * changes, and after [REBIND_DELAY] when binding or listening fails.
  *
  * Responses are DNS-SD style: PTR as the answer, SRV/TXT/A as additional records. VRChat
  * only reads SRV/TXT/A from the additional records and drops responses carrying
  * them as answers
  */
-fun createMdns(scope: CoroutineScope, address: String, bind: MulticastBind): Mdns {
+@OptIn(ExperimentalCoroutinesApi::class)
+fun createMdns(scope: CoroutineScope, localAddress: Flow<String>, bind: MulticastBind): Mdns {
 	val published = MutableStateFlow<List<MdnsService>>(emptyList())
 	val cache = MutableStateFlow<RecordCache>(emptyMap())
 
-	fun onPacket(opened: MulticastSocket, packet: ByteArray) {
+	fun onPacket(opened: MdnsSocket, packet: ByteArray) {
 		val (questions, records) = try {
 			parseQueryQuestions(packet) to parseResponseRecords(packet)
 		} catch (_: IndexOutOfBoundsException) {
@@ -152,37 +172,42 @@ fun createMdns(scope: CoroutineScope, address: String, bind: MulticastBind): Mdn
 		if (replies.isNotEmpty()) scope.launch { replies.forEach { opened.send(it) } }
 	}
 
-	val socket = channelFlow {
-		val opened = try {
-			bind(MDNS_GROUP, MDNS_PORT, address)
-		} catch (e: CancellationException) {
-			throw e
-		} catch (e: Exception) {
-			send(Result.failure(e))
-			awaitCancellation()
-		}
-		launch { opened.listen { packet -> onPacket(opened, packet) } }
+	val socket = localAddress.distinctUntilChanged().transformLatest { address ->
+		val bound = bind(MDNS_GROUP, MDNS_PORT, address)
+		val opened = MdnsSocket(bound, address)
 		try {
-			send(Result.success(opened))
-			awaitCancellation()
+			coroutineScope {
+				launch { bound.listen { packet -> onPacket(opened, packet) } }
+				try {
+					emit(opened)
+					awaitCancellation()
+				} finally {
+					withContext(NonCancellable) {
+						published.value.forEach { opened.send(buildServiceResponse(it, ttl = Duration.ZERO)) }
+						bound.close()
+					}
+				}
+			}
 		} finally {
-			withContext(NonCancellable) { opened.close() }
 			cache.value = emptyMap()
 		}
+	}.retryWhen { cause, _ ->
+		AppLogger.mdns.warn(cause, "mDNS socket failed, binding again in $REBIND_DELAY")
+		delay(REBIND_DELAY)
+		true
 	}.shareIn(scope, SharingStarted.WhileSubscribed(replayExpirationMillis = 0), replay = 1)
 
 	return object : Mdns {
 		override val advertise: MdnsAdvertise = { type, name, port, txt ->
-			val service = MdnsService(
-				type = "$type.local",
-				instance = "$name.$type.local",
-				host = "$name.local",
-				address = address,
-				port = port,
-				txt = txt,
-			)
-			socket.collect { result ->
-				val opened = result.getOrThrow()
+			socket.collectLatest { opened ->
+				val service = MdnsService(
+					type = "$type.local",
+					instance = "$name.$type.local",
+					host = "$name.local",
+					address = opened.address,
+					port = port,
+					txt = txt,
+				)
 				published.update { it + service }
 				try {
 					// Announce twice, one second apart (RFC 6762 8.3)
@@ -191,16 +216,16 @@ fun createMdns(scope: CoroutineScope, address: String, bind: MulticastBind): Mdn
 					opened.send(buildServiceResponse(service))
 					awaitCancellation()
 				} finally {
-					published.update { it - service }
 					withContext(NonCancellable) { opened.send(buildServiceResponse(service, ttl = Duration.ZERO)) }
+					published.update { it - service }
 				}
 			}
+			awaitCancellation()
 		}
 
 		override val browse: MdnsBrowse = { type ->
 			channelFlow {
-				socket.collect { result ->
-					val opened = result.getOrThrow()
+				socket.collectLatest { opened ->
 					coroutineScope {
 						launch {
 							var interval = 1.seconds

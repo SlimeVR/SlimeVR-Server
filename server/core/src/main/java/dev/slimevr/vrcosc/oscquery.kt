@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -29,20 +30,18 @@ private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
 
 class VRCOSCOscQueryBehaviour(
 	private val settings: Settings,
-	private val localIp: String,
+	private val localIp: StateFlow<String>,
 	private val browse: MdnsBrowse,
 	private val advertise: MdnsAdvertise,
 ) : VRCOSCBehaviour {
-	private class OscQueryRuntime(
-		val localIp: String,
-	) {
+	private class OscQueryRuntime {
 		var server: OscQueryServer? = null
 		var advertiseJob: Job? = null
 		var discoveryJob: Job? = null
 	}
 
 	override fun observe(receiver: VRCOSCManager) {
-		val runtime = OscQueryRuntime(localIp)
+		val runtime = OscQueryRuntime()
 
 		val settingsFlow = settings.context.state
 			.map { Pair(it.data.vrcOscConfig.enabled, it.data.vrcOscConfig.useManualNetwork) }
@@ -112,7 +111,7 @@ class VRCOSCOscQueryBehaviour(
 			try {
 				val newServer = OscQueryServer(
 					name = "SlimeVR-Server",
-					address = runtime.localIp,
+					localAddress = localIp,
 					oscPort = portIn.toUShort(),
 					advertise = advertise,
 				)
@@ -135,7 +134,7 @@ class VRCOSCOscQueryBehaviour(
 						)
 					}
 				}
-				AppLogger.vrc.info("VRChat OSCQuery started on http://${runtime.localIp}:${newServer.oscQueryPort}")
+				AppLogger.vrc.info("VRChat OSCQuery started on http://${localIp.value}:${newServer.oscQueryPort}")
 				receiver.context.dispatch(
 					VRCOSCActions.SetOscQuery(
 						state = VRCOSCOscQueryState.SEARCHING,

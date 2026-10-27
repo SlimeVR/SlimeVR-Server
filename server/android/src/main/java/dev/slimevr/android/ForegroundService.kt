@@ -28,6 +28,7 @@ import dev.slimevr.android.serial.AndroidFirmwareFlasher
 import dev.slimevr.android.serial.createAndroidSerialServer
 import dev.slimevr.android.timing.createAndroidWaiter
 import dev.slimevr.android.udp.bindAndroidUdp
+import dev.slimevr.android.vrchat.observeAndroidLocalIpAddress
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
@@ -180,11 +181,11 @@ class ForegroundService : Service() {
 		val boneRouting = BoneRoutingManager.create(scope = scope)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
 		val vmcManager = VMCManager.create(scope = scope)
-		val oscQueryAddress = resolveAndroidLocalIpAddress()
-		val mdns = createMdns(scope = scope, address = oscQueryAddress, bind = ::bindAndroidMulticast)
+		val localIpAddress = observeAndroidLocalIpAddress(context = this@ForegroundService, scope = scope)
+		val mdns = createMdns(scope = scope, localAddress = localIpAddress, bind = ::bindAndroidMulticast)
 		val vrcOscManager = VRCOSCManager.create(
 			scope = scope,
-			oscQueryAddress = oscQueryAddress,
+			oscQueryAddress = localIpAddress,
 			browse = mdns.browse,
 			advertise = mdns.advertise,
 		)

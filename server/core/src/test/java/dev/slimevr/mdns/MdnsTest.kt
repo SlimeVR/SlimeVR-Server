@@ -1,14 +1,17 @@
 package dev.slimevr.mdns
 
 import dev.slimevr.multicast.MulticastSocket
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -65,7 +68,7 @@ class MdnsTest {
 	@Test
 	fun advertisingAnnouncesTwiceThenSaysGoodbyeAndClosesTheSocket() = runTest {
 		val sockets = mutableListOf<FakeSocket>()
-		val mdns = createMdns(backgroundScope, "192.168.1.10") { _, _, _ -> FakeSocket().also(sockets::add) }
+		val mdns = createMdns(backgroundScope, MutableStateFlow("192.168.1.10")) { _, _, _ -> FakeSocket().also(sockets::add) }
 
 		val advertising = launch { mdns.advertise("_oscjson._tcp", "SlimeVR-Server-ABC123", 1234, mapOf("txtvers" to "1")) }
 		advanceTimeBy(1_500)
@@ -80,7 +83,7 @@ class MdnsTest {
 	@Test
 	fun browsingSharesTheSocketAndFindsAnsweringServices() = runTest {
 		val sockets = mutableListOf<FakeSocket>()
-		val mdns = createMdns(backgroundScope, "192.168.1.10") { _, _, _ -> FakeSocket().also(sockets::add) }
+		val mdns = createMdns(backgroundScope, MutableStateFlow("192.168.1.10")) { _, _, _ -> FakeSocket().also(sockets::add) }
 
 		val advertising = launch { mdns.advertise("_osc._udp", "SlimeVR-Server-ABC123", 9001, emptyMap()) }
 		val found = async { mdns.browse("_oscjson._tcp").first { it.isNotEmpty() } }
@@ -102,10 +105,37 @@ class MdnsTest {
 	}
 
 	@Test
-	fun bindFailureReachesTheCaller() = runTest {
-		val mdns = createMdns(backgroundScope, "192.168.1.10") { _, _, _ -> error("no interface") }
+	fun bindFailureIsRetried() = runTest {
+		var attempts = 0
+		val mdns = createMdns(backgroundScope, MutableStateFlow("192.168.1.10")) { _, _, _ ->
+			if (attempts++ == 0) error("no interface")
+			FakeSocket()
+		}
 
-		assertEquals("no interface", runCatching { mdns.browse("_oscjson._tcp").first() }.exceptionOrNull()?.message)
+		val browsing = launch { mdns.browse("_oscjson._tcp").collect {} }
+		advanceTimeBy(6_000)
+		assertEquals(2, attempts)
+		browsing.cancelAndJoin()
+	}
+
+	@Test
+	fun addressChangeRebindsAndReannouncesOnTheNewAddress() = runTest {
+		val address = MutableStateFlow("192.168.1.10")
+		val sockets = mutableListOf<Pair<String, FakeSocket>>()
+		val mdns = createMdns(backgroundScope, address) { _, _, bound -> FakeSocket().also { sockets += bound to it } }
+
+		val advertising = launch { mdns.advertise("_oscjson._tcp", "SlimeVR-Server-ABC123", 1234, emptyMap()) }
+		advanceTimeBy(1_500)
+		address.value = "192.168.1.20"
+		advanceTimeBy(1_500)
+
+		val (firstAddress, first) = sockets.first()
+		val (secondAddress, second) = sockets.last()
+		assertEquals(listOf("192.168.1.10", "192.168.1.20"), listOf(firstAddress, secondAddress))
+		assertTrue(first.closed)
+		val announced = parseResponseRecords(second.sent.first()).map { it.record }
+		assertTrue(MdnsRecord.Address("SlimeVR-Server-ABC123.local", "192.168.1.20") in announced)
+		advertising.cancelAndJoin()
 	}
 
 	private fun header(flags: Int, questions: Int = 0, answers: Int = 0) = u16(0) + u16(flags) + u16(questions) + u16(answers) + u16(0) + u16(0)
@@ -124,7 +154,7 @@ private class FakeSocket : MulticastSocket {
 	val incoming = Channel<ByteArray>(Channel.UNLIMITED)
 	var closed = false
 
-	override suspend fun listen(onPacket: (ByteArray) -> Unit) {
+	override suspend fun listen(onPacket: (ByteArray) -> Unit) = withContext(NonCancellable) {
 		for (packet in incoming) onPacket(packet)
 	}
 

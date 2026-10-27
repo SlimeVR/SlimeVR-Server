@@ -27,6 +27,7 @@ import dev.slimevr.desktop.timing.createDesktopWaiter
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
 import dev.slimevr.desktop.udp.bindDesktopUdp
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
+import dev.slimevr.desktop.vrchat.observeDesktopLocalIpAddress
 import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
@@ -165,11 +166,11 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val boneRouting = BoneRoutingManager.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(scope = this)
-	val oscQueryAddress = resolveDesktopLocalIpAddress()
-	val mdns = createMdns(scope = this, address = oscQueryAddress, bind = ::bindDesktopMulticast)
+	val localIpAddress = observeDesktopLocalIpAddress(scope = this)
+	val mdns = createMdns(scope = this, localAddress = localIpAddress, bind = ::bindDesktopMulticast)
 	val vrcOscManager = VRCOSCManager.create(
 		scope = this,
-		oscQueryAddress = oscQueryAddress,
+		oscQueryAddress = localIpAddress,
 		browse = mdns.browse,
 		advertise = mdns.advertise,
 	)

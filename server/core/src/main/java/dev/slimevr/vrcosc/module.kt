@@ -8,6 +8,7 @@ import dev.slimevr.mdns.MdnsAdvertise
 import dev.slimevr.mdns.MdnsBrowse
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.VRCOSCInputState
 import solarxr_protocol.rpc.VRCOSCOscQueryState
@@ -98,7 +99,7 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCManager>
 
 class VRCOSCManager(
 	val context: VRCOSCContext,
-	val oscQueryAddress: String,
+	private val oscQueryAddress: StateFlow<String>,
 	private val browse: MdnsBrowse,
 	private val advertise: MdnsAdvertise,
 ) {
@@ -131,7 +132,7 @@ class VRCOSCManager(
 	companion object {
 		fun create(
 			scope: CoroutineScope,
-			oscQueryAddress: String,
+			oscQueryAddress: StateFlow<String>,
 			browse: MdnsBrowse,
 			advertise: MdnsAdvertise,
 		): VRCOSCManager {

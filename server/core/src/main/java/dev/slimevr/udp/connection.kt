@@ -5,7 +5,9 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -64,7 +66,13 @@ class UDPConnection(
 		scope.launch {
 			val buf = Buffer()
 			writePacket(buf, packet)
-			socket.send(peer, buf.readByteArray())
+			try {
+				socket.send(peer, buf.readByteArray())
+			} catch (e: CancellationException) {
+				throw e
+			} catch (e: Exception) {
+				AppLogger.udp.warn(e, "Failed to send ${packet::class.simpleName}")
+			}
 		}
 	}
 

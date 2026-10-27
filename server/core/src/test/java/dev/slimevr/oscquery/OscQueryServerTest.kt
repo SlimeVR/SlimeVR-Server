@@ -16,17 +16,27 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.net.URI
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class OscQueryServerTest {
 	private val json = Json { ignoreUnknownKeys = true }
 
 	@Test
+	fun instanceNameIsStableForAnEndpointAndChangesWithIt() {
+		val name = instanceName("SlimeVR-Server", "192.168.1.10", 9001u)
+		assertEquals(name, instanceName("SlimeVR-Server", "192.168.1.10", 9001u))
+		assertTrue(name.matches(Regex("SlimeVR-Server-[0-9A-F]{6}")))
+		assertNotEquals(name, instanceName("SlimeVR-Server", "192.168.1.10", 9002u))
+		assertNotEquals(name, instanceName("SlimeVR-Server", "192.168.1.11", 9001u))
+	}
+
+	@Test
 	fun httpRoutesAndAdvertisementsAreWired() = runBlocking {
 		val advertised = MutableStateFlow<List<Advertised>>(emptyList())
 		val server = OscQueryServer(
 			name = "SlimeVR",
-			address = "127.0.0.1",
+			localAddress = MutableStateFlow("127.0.0.1"),
 			oscPort = 9000u,
 			advertise = { type, name, port, txt ->
 				val ad = Advertised(type, name, port, txt)

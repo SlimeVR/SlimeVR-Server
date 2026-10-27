@@ -29,6 +29,7 @@ object AppLogger {
 	val bvh = logger("BVH")
 	val vmc = logger("VMC")
 	val oscQuery = logger("OSCQuery")
+	val mdns = logger("mDNS")
 	val install = logger("Install")
 	val resets = logger("Resets")
 	val keybind = logger("Keybind")

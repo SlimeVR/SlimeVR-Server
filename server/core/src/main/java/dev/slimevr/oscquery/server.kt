@@ -5,16 +5,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
 private const val OSC_UDP_SERVICE_TYPE = "_osc._udp"
 
 class OscQueryServer(
 	private val name: String,
-	private val address: String,
+	private val localAddress: StateFlow<String>,
 	oscPort: UShort,
 	private val advertise: MdnsAdvertise,
 	private val tree: OscQueryTree = OscQueryTree(),
@@ -22,11 +23,6 @@ class OscQueryServer(
 ) {
 	private val httpServer = OscQueryHttpServer(hostInfo = ::buildHostInfo, tree = tree)
 	private val oscPort = MutableStateFlow(oscPort)
-
-	// mDNS instance names must be unique on the network and we don't probe for conflicts
-	// the odds are very low 1 in 16.7 million, if it happens the user can restart the server
-	// TODO: actually check for conflicts someday
-	private val instanceName = "$name-${Random.nextInt(0x1000000).toString(16).uppercase().padStart(6, '0')}"
 
 	val oscQueryPort: UShort
 		get() = httpServer.port
@@ -40,7 +36,8 @@ class OscQueryServer(
 	}
 
 	suspend fun advertise(): Nothing {
-		oscPort.collectLatest { port ->
+		combine(localAddress, oscPort, ::Pair).collectLatest { (address, port) ->
+			val instanceName = instanceName(name, address, port)
 			coroutineScope {
 				launch {
 					advertise(
@@ -66,8 +63,13 @@ class OscQueryServer(
 
 	private fun buildHostInfo() = OscQueryHostInfo(
 		name = name,
-		oscIp = address,
+		oscIp = localAddress.value,
 		oscPort = oscPort.value,
 		oscTransport = transport,
 	)
+}
+
+internal fun instanceName(name: String, address: String, oscPort: UShort): String {
+	val suffix = ("$address:$oscPort".hashCode().toUInt() % 0x1000000u).toString(16).uppercase().padStart(6, '0')
+	return "$name-$suffix"
 }
