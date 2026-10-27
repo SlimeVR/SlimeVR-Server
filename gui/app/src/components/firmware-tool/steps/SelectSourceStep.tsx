@@ -300,7 +300,7 @@ export function SelectSourceStep({
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleVersions?.map(
-                      ({ name, disabled, latest, prerelease }, i) => (
+                      ({ name, disabled, latest, prerelease }) => (
                         <Selector
                           active={partialBoard?.version === name}
                           disabled={disabled}

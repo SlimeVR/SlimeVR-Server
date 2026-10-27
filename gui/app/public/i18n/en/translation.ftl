@@ -933,6 +933,10 @@ settings-serial-send_command-warning =
     <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
 settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
+settings-serial-search = Search output
+settings-serial-commands = Commands
+settings-serial-module = Module
+settings-serial-module-all = All modules
 
 ## Logs settings
 settings-logs = Logs

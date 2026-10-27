@@ -98,7 +98,7 @@ export function PopoverMenu({
             {
               positionAnchor: anchorName,
               positionArea: 'bottom span-left',
-              positionTryFallbacks: 'flip-inline',
+              positionTryFallbacks: 'flip-inline, flip-block',
             } as CSSProperties
           }
         >

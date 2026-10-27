@@ -318,9 +318,10 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   );
 });
 
-export function DropdownInside(
-  props: DropdownProps & (DropdownSingleSelection | DropdownMultipleSelection)
-) {
+export type DropdownInsideProps = DropdownProps &
+  (DropdownSingleSelection | DropdownMultipleSelection);
+
+export function DropdownInside(props: DropdownInsideProps) {
   const {
     direction = 'up',
     variant = 'primary',

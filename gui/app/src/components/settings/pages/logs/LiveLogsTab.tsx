@@ -1,20 +1,30 @@
-import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { useMemo, useState } from 'react';
 import { LogLevel, LogSource } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import { DropdownInside } from '@/components/commons/Dropdown';
-import { InputInside } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
-import { PopoverMenu } from '@/components/commons/PopoverMenu';
 import { CopyIcon } from '@/components/commons/icon/CopyIcon';
-import { TuneIcon } from '@/components/commons/icon/TuneIcon';
-import { TrashIcon } from '@/components/commons/icon/TrashIcon';
 import { FolderIcon } from '@/components/commons/icon/FolderIcon';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { ArrowLeftIcon } from '@/components/commons/icon/ArrowIcons';
-import { PauseIcon } from '@/components/commons/icon/PauseIcon';
-import { PlayIcon } from '@/components/commons/icon/PlayIcon';
+import { LogView } from '@/components/commons/log-view/LogView';
+import {
+  DotLabel,
+  FilterDropdown,
+  FilterPlace,
+  LevelFilter,
+  LogFilterBar,
+} from '@/components/commons/log-view/LogFilterBar';
+import {
+  ClearLogButton,
+  LogFooter,
+  PauseLogButton,
+} from '@/components/commons/log-view/LogFooter';
+import {
+  LogViewLine,
+  passesLevel,
+  passesQuery,
+} from '@/components/commons/log-view/log-line';
 import { useElectron } from '@/hooks/electron';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import {
@@ -25,16 +35,8 @@ import {
   sourceColor,
 } from '@/hooks/logs';
 import { error } from '@/utils/logging';
-import { LogList } from './LogList';
 
 const ALL_LOGGERS = '*';
-
-const LEVEL_FILTERS = [
-  { level: LogLevel.DEBUG, id: 'settings-logs-level-debug' },
-  { level: LogLevel.INFO, id: 'settings-logs-level-info' },
-  { level: LogLevel.WARN, id: 'settings-logs-level-warn' },
-  { level: LogLevel.ERROR, id: 'settings-logs-level-error' },
-];
 
 export interface Viewing {
   file: LogFileRow;
@@ -69,28 +71,6 @@ function SourcesValue({ shown, total }: { shown: LogSource[]; total: number }) {
 
 function loggerKey(row: LogRow) {
   return `${row.source}:${row.logger}`;
-}
-
-function LoggerLabel({ row }: { row: LogRow }) {
-  return (
-    <span className="flex items-center gap-2 min-w-0">
-      <span
-        className="w-2 h-2 rounded-full shrink-0"
-        style={{ backgroundColor: sourceColor(row.source) }}
-      />
-      {row.logger ? (
-        <span className="truncate">{row.logger}</span>
-      ) : (
-        <span className="truncate">
-          <Typography
-            tag="span"
-            whitespace="whitespace-nowrap"
-            id={`settings-logs-source-${sourceKey(row.source)}`}
-          />
-        </span>
-      )}
-    </span>
-  );
 }
 
 export function LiveLogsTab({
@@ -130,16 +110,37 @@ export function LiveLogsTab({
     );
   }, [rows]);
 
-  const visible = useMemo(() => {
-    const needle = query.toLowerCase();
-    return rows.filter(
-      (row) =>
-        !hiddenSources.includes(row.source) &&
-        row.level >= minLevel &&
-        (logger === ALL_LOGGERS || loggerKey(row) === logger) &&
-        (!needle || row.message.toLowerCase().includes(needle))
-    );
-  }, [rows, hiddenSources, minLevel, logger, query]);
+  const visible = useMemo(
+    () =>
+      rows.filter(
+        (row) =>
+          !hiddenSources.includes(row.source) &&
+          passesLevel(row.level, minLevel) &&
+          (logger === ALL_LOGGERS || loggerKey(row) === logger) &&
+          passesQuery(row.message, query)
+      ),
+    [rows, hiddenSources, minLevel, logger, query]
+  );
+
+  const lines = useMemo(
+    () =>
+      visible.map(
+        (row): LogViewLine => ({
+          id: row.id,
+          timeMs: row.timeMs,
+          timeTitle: null,
+          level: row.level,
+          label:
+            row.logger ||
+            l10n.getString(`settings-logs-source-${sourceKey(row.source)}`),
+          color: sourceColor(row.source),
+          message: row.message,
+          spans: null,
+          details: row.stackTrace,
+        })
+      ),
+    [visible, l10n]
+  );
 
   const copy = async () => {
     try {
@@ -155,150 +156,94 @@ export function LiveLogsTab({
     }
   };
 
-  const live = !viewing && !paused;
-
   const filtersActive =
     hiddenSources.length > 0 ||
     minLevel !== LogLevel.INFO ||
     logger !== ALL_LOGGERS;
 
-  const renderFilters = (place: 'inline' | 'drawer') => (
+  const renderFilters = (place: FilterPlace) => (
     <>
       {sources.length > 1 && (
-        <div className={place === 'inline' ? 'w-40' : undefined}>
-          <DropdownInside
-            name={`logs-sources-${place}`}
-            variant={place === 'drawer' ? 'secondary' : 'primary'}
-            direction="down"
-            display="block"
-            menuWidth={place === 'inline' ? 'w-60' : undefined}
-            alignment="left"
-            label={l10n.getString('settings-logs-sources')}
-            inside="label"
-            placeholder=""
-            multiple
-            value={sources
-              .filter((source) => !hiddenSources.includes(source))
-              .map(String)}
-            onChange={(values) =>
-              setHiddenSources(
-                sources.filter((source) => !values.includes(String(source)))
-              )
-            }
-            renderValue={() => (
-              <SourcesValue
-                shown={sources.filter(
-                  (source) => !hiddenSources.includes(source)
-                )}
-                total={sources.length}
-              />
-            )}
-            items={sources.map((source) => ({
-              value: String(source),
-              label: (
-                <span className="flex items-center gap-2">
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: sourceColor(source) }}
-                  />
-                  <Typography
-                    tag="span"
-                    id={`settings-logs-source-${sourceKey(source)}`}
-                  />
-                </span>
-              ),
-            }))}
-          />
-        </div>
-      )}
-      <div className={place === 'inline' ? 'w-40' : undefined}>
-        <DropdownInside
-          name={`logs-level-${place}`}
-          variant={place === 'drawer' ? 'secondary' : 'primary'}
-          direction="down"
-          display="block"
-          menuWidth={place === 'inline' ? 'w-60' : undefined}
-          alignment="left"
-          label={l10n.getString('settings-logs-level')}
-          inside="label"
-          placeholder=""
-          value={String(minLevel)}
-          onChange={(value) => setMinLevel(Number(value))}
-          items={LEVEL_FILTERS.map(({ level, id }) => ({
-            value: String(level),
-            label: <Typography tag="span" id={id} />,
+        <FilterDropdown
+          place={place}
+          name="logs-sources"
+          label={l10n.getString('settings-logs-sources')}
+          multiple
+          value={sources
+            .filter((source) => !hiddenSources.includes(source))
+            .map(String)}
+          onChange={(values) =>
+            setHiddenSources(
+              sources.filter((source) => !values.includes(String(source)))
+            )
+          }
+          renderValue={() => (
+            <SourcesValue
+              shown={sources.filter(
+                (source) => !hiddenSources.includes(source)
+              )}
+              total={sources.length}
+            />
+          )}
+          items={sources.map((source) => ({
+            value: String(source),
+            label: (
+              <DotLabel color={sourceColor(source)}>
+                <Typography
+                  tag="span"
+                  id={`settings-logs-source-${sourceKey(source)}`}
+                />
+              </DotLabel>
+            ),
           }))}
         />
-      </div>
-      <div className={place === 'inline' ? 'w-40' : undefined}>
-        <DropdownInside
-          name={`logs-logger-${place}`}
-          variant={place === 'drawer' ? 'secondary' : 'primary'}
-          direction="down"
-          display="block"
-          menuWidth={place === 'inline' ? 'w-60' : undefined}
-          alignment="left"
-          label={l10n.getString('settings-logs-logger')}
-          inside="label"
-          placeholder=""
-          value={logger}
-          onChange={setLogger}
-          items={[
-            {
-              value: ALL_LOGGERS,
-              label: <Typography tag="span" id="settings-logs-logger-all" />,
-            },
-            ...loggers.map(([key, row]) => ({
-              value: key,
-              label: <LoggerLabel row={row} />,
-            })),
-          ]}
-        />
-      </div>
+      )}
+      <LevelFilter
+        place={place}
+        name="logs-level"
+        value={minLevel}
+        onChange={setMinLevel}
+      />
+      <FilterDropdown
+        place={place}
+        name="logs-logger"
+        label={l10n.getString('settings-logs-logger')}
+        value={logger}
+        onChange={setLogger}
+        items={[
+          {
+            value: ALL_LOGGERS,
+            label: <Typography tag="span" id="settings-logs-logger-all" />,
+          },
+          ...loggers.map(([key, row]) => ({
+            value: key,
+            label: (
+              <DotLabel color={sourceColor(row.source)}>
+                {row.logger || (
+                  <Typography
+                    tag="span"
+                    whitespace="whitespace-nowrap"
+                    id={`settings-logs-source-${sourceKey(row.source)}`}
+                  />
+                )}
+              </DotLabel>
+            ),
+          })),
+        ]}
+      />
     </>
   );
 
   return (
     <div className="flex flex-col gap-2 flex-grow h-0">
-      <div className="flex flex-wrap gap-2 items-center">
-        <div className="contents mobile:hidden">{renderFilters('inline')}</div>
-        <div className="flex-grow basis-48 min-w-0">
-          <InputInside
-            name="logs-search"
-            type="text"
-            placeholder={l10n.getString('settings-logs-search')}
-            value={query}
-            onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
-          />
-        </div>
-        <div className="xs:hidden">
-          <PopoverMenu
-            drawerTitle={
-              <Typography variant="section-title" id="settings-logs-filters" />
-            }
-            trigger={(triggerProps) => (
-              <Button
-                variant="secondary"
-                {...triggerProps}
-                id="settings-logs-filters"
-                iconOnly
-                icon={
-                  <span className="relative flex fill-background-10">
-                    <TuneIcon size={18} />
-                    {filtersActive && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-accent-background-10" />
-                    )}
-                  </span>
-                }
-              />
-            )}
-          >
-            <div className="flex flex-col gap-4 p-4">
-              {renderFilters('drawer')}
-            </div>
-          </PopoverMenu>
-        </div>
-      </div>
+      <LogFilterBar
+        renderFilters={renderFilters}
+        filtersActive={filtersActive}
+        searchName="logs-search"
+        searchPlaceholder={l10n.getString('settings-logs-search')}
+        query={query}
+        onQueryChange={setQuery}
+      />
 
       <div className="bg-background-80 rounded-lg flex-grow h-0 min-h-[160px] flex flex-col p-2">
         {viewing && (
@@ -321,39 +266,13 @@ export function LiveLogsTab({
           </div>
         )}
 
-        <LogList key={viewing ? 'file' : 'live'} rows={visible} query={query} />
+        <LogView key={viewing ? 'file' : 'live'} lines={lines} query={query} />
 
-        <div className="border-t-2 pt-2 mt-1.5 border-background-60 flex flex-wrap gap-2 items-center">
-          <span className="flex items-center gap-1.5">
-            <span
-              className={classNames(
-                'w-2 h-2 rounded-full',
-                live ? 'bg-status-success animate-pulse' : 'bg-status-warning'
-              )}
-            />
-            <Typography
-              tag="span"
-              color={live ? 'text-status-success' : 'text-status-warning'}
-              id={
-                viewing
-                  ? 'settings-logs-status-file'
-                  : paused
-                    ? 'settings-logs-status-paused'
-                    : 'settings-logs-status-live'
-              }
-            />
-          </span>
-          <Typography
-            tag="span"
-            color="text-background-20"
-            id={
-              visible.length === rows.length
-                ? 'settings-logs-lines'
-                : 'settings-logs-lines-filtered'
-            }
-            vars={{ shown: visible.length, total: rows.length }}
-          />
-          <div className="flex-grow" />
+        <LogFooter
+          status={viewing ? 'file' : paused ? 'paused' : 'live'}
+          shown={visible.length}
+          total={rows.length}
+        >
           <Button
             variant="secondary"
             size="small"
@@ -368,18 +287,7 @@ export function LiveLogsTab({
             iconOnly={compactBar}
           />
           {!viewing && (
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={onClear}
-              icon={
-                <span className="flex fill-background-10">
-                  <TrashIcon size={14} />
-                </span>
-              }
-              id="settings-logs-clear"
-              iconOnly={compactBar}
-            />
+            <ClearLogButton onClick={onClear} iconOnly={compactBar} />
           )}
           {electron.isElectron && (
             <Button
@@ -396,20 +304,13 @@ export function LiveLogsTab({
             />
           )}
           {!viewing && (
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={onTogglePause}
-              icon={
-                <span className="flex fill-background-10">
-                  {paused ? <PlayIcon width={14} /> : <PauseIcon width={14} />}
-                </span>
-              }
-              id={paused ? 'settings-logs-resume' : 'settings-logs-pause'}
+            <PauseLogButton
+              paused={paused}
+              onToggle={onTogglePause}
               iconOnly={compactBar}
             />
           )}
-        </div>
+        </LogFooter>
       </div>
     </div>
   );

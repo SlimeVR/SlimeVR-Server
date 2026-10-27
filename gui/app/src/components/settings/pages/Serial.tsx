@@ -1,5 +1,13 @@
 import { defineSettingsPage } from '@/components/settings/settings-definitions';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import classNames from 'classnames';
+import {
+  KeyboardEvent,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
@@ -16,6 +24,7 @@ import {
   SerialTrackerCustomCommandRequestT,
   SerialDeviceType,
   SerialKeepaliveRequestT,
+  LogLevel,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useSerialDevices } from '@/hooks/serial';
@@ -27,16 +36,56 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { WarningBox } from '@/components/commons/TipBox';
 import { saveFile } from '@/utils/save-file';
 import { waitUntil } from '@/utils/a11y';
-import { Input } from '@/components/commons/Input';
-import { PauseIcon } from '@/components/commons/icon/PauseIcon';
-import { PlayIcon } from '@/components/commons/icon/PlayIcon';
+import { PopoverMenu, PopoverMenuItem } from '@/components/commons/PopoverMenu';
+import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
+import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
 import { USBIcon } from '@/components/commons/icon/UsbIcon';
+import { ButterflyIcon } from '@/components/commons/icon/ButterflyIcon';
+import { SlimeNormalIcon } from '@/components/commons/icon/SlimeNormalIcon';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
+import { LogView } from '@/components/commons/log-view/LogView';
+import {
+  DotLabel,
+  FilterDropdown,
+  FilterPlace,
+  LevelFilter,
+  LogFilterBar,
+} from '@/components/commons/log-view/LogFilterBar';
+import {
+  ClearLogButton,
+  LogFooter,
+  PauseLogButton,
+  usePausableLines,
+} from '@/components/commons/log-view/LogFooter';
+import {
+  nameColor,
+  passesLevel,
+  passesQuery,
+} from '@/components/commons/log-view/log-line';
+import {
+  appendTextLog,
+  clearTextLog,
+  EMPTY_TEXT_LOG,
+  textLogLines,
+} from '@/components/commons/log-view/text-log-stream';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import {
+  espLogParser,
+  LogLineParser,
+  zephyrLogParser,
+} from '@/utils/log-line-parsers';
 
 export interface SerialForm {
   port: string;
-  customCommand: string;
 }
+
+interface SerialCommand {
+  id: string;
+  run: () => void;
+  danger?: boolean;
+}
+
+const MAX_COMMAND_HISTORY = 50;
 
 const consoleStatusMessage: Partial<Record<SerialConsoleStatus, string>> = {
   [SerialConsoleStatus.OPENING]: 'settings-serial-opening',
@@ -45,16 +94,45 @@ const consoleStatusMessage: Partial<Record<SerialConsoleStatus, string>> = {
   [SerialConsoleStatus.OPEN_FAILED]: 'settings-serial-open_failed',
 };
 
-const MAX_CONSOLE_CHARS = 200_000;
+const MAX_CONSOLE_LINES = 5_000;
 
 // Several of these fit in the server's grace window, so one dropped message costs nothing
 const SERIAL_KEEPALIVE_MS = 4_000;
 
-function appendLog(content: string, log: string) {
-  const next = content + log;
-  if (next.length <= MAX_CONSOLE_CHARS) return next;
-  const cut = next.indexOf('\n', next.length - MAX_CONSOLE_CHARS);
-  return cut === -1 ? next : next.slice(cut + 1);
+const ALL_MODULES = '*';
+
+const SERIAL_LOG_PARSERS: Record<SerialDeviceType, LogLineParser | null> = {
+  [SerialDeviceType.ESP_TRACKER]: espLogParser,
+  [SerialDeviceType.HID_RECEIVER]: zephyrLogParser,
+  [SerialDeviceType.HID_TRACKER]: zephyrLogParser,
+  [SerialDeviceType.UNKNOWN]: null,
+};
+
+function serialLogParser(type: SerialDeviceType | undefined) {
+  return SERIAL_LOG_PARSERS[type ?? SerialDeviceType.UNKNOWN];
+}
+
+function SerialDeviceIcon({
+  type,
+  name,
+}: {
+  type: SerialDeviceType;
+  name: string;
+}) {
+  switch (type) {
+    case SerialDeviceType.ESP_TRACKER:
+      return <SlimeNormalIcon width={16} />;
+    case SerialDeviceType.HID_RECEIVER:
+      return <USBIcon size={16} />;
+    case SerialDeviceType.HID_TRACKER:
+      return name.toLowerCase().includes('butterfly') ? (
+        <ButterflyIcon width={16} />
+      ) : (
+        <SlimeNormalIcon width={16} />
+      );
+    default:
+      return null;
+  }
 }
 
 export const serialSettingsPage = defineSettingsPage({
@@ -68,8 +146,7 @@ export function Serial() {
   const { state } = useLocation();
 
   const { useRPCPacket, sendRPCPacket, useConnectedEffect } = useWebsocketAPI();
-  const consoleRef = useRef<HTMLDivElement>(null);
-  const [consoleContent, setConsole] = useState('');
+  const [consoleState, setConsole] = useState(EMPTY_TEXT_LOG);
 
   const [consoleStatus, setConsoleStatus] =
     useState<SerialConsoleStatus | null>(null);
@@ -77,12 +154,24 @@ export function Serial() {
     SerialDeviceT,
     'pack'
   > | null>(null);
+  const consoleLines = useMemo(
+    () => textLogLines(consoleState, serialLogParser(openedSerialDevice?.type)),
+    [consoleState, openedSerialDevice?.type]
+  );
+  const pausable = usePausableLines(consoleLines);
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
   const [trySendCustomCommand, setTrySendCustomCommand] = useState(false);
 
   const [acceptedCustomCommandWarning, setAcceptedCustomCommandWarning] =
     useState(false);
+  const [command, setCommand] = useState('');
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState<number | null>(null);
+  const [query, setQuery] = useState('');
+  const [minLevel, setMinLevel] = useState(LogLevel.DEBUG);
+  const [module, setModule] = useState(ALL_MODULES);
+  const { isNmd: compactBar } = useBreakpoint('nmd');
 
   const typedState: { serialPort?: string } | null = state;
   const { control, watch, setValue } = useForm<SerialForm>({
@@ -90,10 +179,7 @@ export function Serial() {
   });
 
   const port = watch('port');
-  const customCommand = watch('customCommand');
   const serialDevices = useSerialDevices();
-
-  const [isPaused, setPaused] = useState(false);
 
   // The server holds every port this page opened and takes them back if the keepalive stops, so a
   // tab that dies without unmounting doesn't leave them locked
@@ -119,7 +205,9 @@ export function Serial() {
 
   useConnectedEffect(() => {
     if (!port) return;
-    setConsole('');
+    setConsole(EMPTY_TEXT_LOG);
+    pausable.resume();
+    setModule(ALL_MODULES);
     setOpenedSerialDevice(null);
     setConsoleStatus(SerialConsoleStatus.OPENING);
     const req = new OpenSerialRequestT();
@@ -138,42 +226,22 @@ export function Serial() {
       }
 
       if (data.log) {
-        setConsole((console) => appendLog(console, data.log as string));
+        const log = data.log as string;
+        const nowMs = Date.now();
+        const parser = serialLogParser(data.device?.type);
+        setConsole((console) =>
+          appendTextLog(console, log, nowMs, parser, MAX_CONSOLE_LINES)
+        );
       }
     }
   );
 
-  useEffect(() => {
-    if (isPaused) {
-      return;
-    }
-    if (!consoleRef.current) {
-      return;
-    }
-
-    consoleRef.current.scrollTo({
-      top: consoleRef.current.scrollHeight,
-    });
-  }, [consoleContent]);
-
-  useEffect(() => {
-    if (!consoleRef.current) {
-      return;
-    }
-
-    consoleRef.current.addEventListener('scroll', () => {
-      if (!consoleRef.current) {
-        return;
-      }
-      const bottomAllowance = 10;
-      setPaused(
-        consoleRef.current.scrollTop +
-          consoleRef.current.getBoundingClientRect().height <
-          consoleRef.current.scrollHeight - bottomAllowance
-      );
-    });
-  }, [consoleRef.current]);
-
+  const sendCommand = (text: string) => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT(text)
+    );
+  };
   const reboot = () => {
     sendRPCPacket(
       RpcMessage.SerialTrackerRebootRequest,
@@ -202,92 +270,173 @@ export function Serial() {
       new SerialTrackerGetWifiScanRequestT()
     );
   };
+
   const sendCustomSerialCommand = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT(customCommand)
+    sendCommand(command);
+    setHistory((current) =>
+      [...current.filter((entry) => entry !== command), command].slice(
+        -MAX_COMMAND_HISTORY
+      )
     );
-
+    setHistoryIndex(null);
     setTrySendCustomCommand(false);
-    setValue('customCommand', '');
+    setCommand('');
   };
 
-  // HID
-  const enterPairing = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT('pair')
-    );
-  };
-  const dfu = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT('dfu')
-    );
-  };
-  const meow = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT('meow')
-    );
-  };
-
-  // HID receiver
-  const exitPairing = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT('exit')
-    );
+  const browseHistory = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      if (history.length === 0) return;
+      e.preventDefault();
+      const index =
+        historyIndex === null
+          ? history.length - 1
+          : Math.max(historyIndex - 1, 0);
+      setHistoryIndex(index);
+      setCommand(history[index]);
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      if (historyIndex === null) return;
+      e.preventDefault();
+      const index = historyIndex + 1;
+      if (index >= history.length) {
+        setHistoryIndex(null);
+        setCommand('');
+        return;
+      }
+      setHistoryIndex(index);
+      setCommand(history[index]);
+    }
   };
 
-  // HID tracker
-  const calibrate = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT('calibrate')
-    );
-  };
-  const sixSideCalibrate = () => {
-    sendRPCPacket(
-      RpcMessage.SerialTrackerCustomCommandRequest,
-      new SerialTrackerCustomCommandRequestT('6-side')
-    );
+  const clearConsole = () => {
+    setConsole(clearTextLog);
+    pausable.clearFrozen();
   };
 
-  const consoleContentRef = useRef(consoleContent);
+  const consoleLinesRef = useRef(consoleLines);
   useLayoutEffect(() => {
-    consoleContentRef.current = consoleContent;
-  }, [consoleContent]);
+    consoleLinesRef.current = consoleLines;
+  }, [consoleLines]);
+  const consoleText = () =>
+    consoleLinesRef.current.map((line) => line.text).join('\n');
 
   const saveLogToFile = async () => {
     // Check if we have getInfos and fetch them if we don't
-    if (!consoleContentRef.current.includes('GET INFO')) {
+    if (!consoleText().includes('GET INFO')) {
       getInfos();
-      await waitUntil(
-        () => consoleContentRef.current.includes('GET INFO'),
-        100,
-        10
-      );
+      await waitUntil(() => consoleText().includes('GET INFO'), 100, 10);
     }
 
-    const blob = new Blob([consoleContentRef.current], {
+    const blob = new Blob([consoleText()], {
       type: 'text/plain',
     });
     await saveFile(blob, 'serial-logs.txt', ['.txt']);
   };
 
+  const deviceType = openedSerialDevice?.type;
+  const isEspDevice = deviceType === SerialDeviceType.ESP_TRACKER;
   // Pairing, DFU and calibration are HID firmware commands, unrecognized devices get none of them
   const isHidDevice =
-    openedSerialDevice?.type === SerialDeviceType.HID_RECEIVER ||
-    openedSerialDevice?.type === SerialDeviceType.HID_TRACKER;
+    deviceType === SerialDeviceType.HID_RECEIVER ||
+    deviceType === SerialDeviceType.HID_TRACKER;
 
-  const pauseScroll = () => {
-    setPaused(!isPaused);
+  const commands: SerialCommand[] = [
+    { id: 'settings-serial-reboot', run: reboot },
+    ...(isEspDevice
+      ? [{ id: 'settings-serial-get_wifi_scan', run: getWifiScan }]
+      : []),
+    ...(isHidDevice
+      ? [
+          {
+            id: 'settings-serial-enter_pairing',
+            run: () => sendCommand('pair'),
+          },
+        ]
+      : []),
+    ...(deviceType === SerialDeviceType.HID_RECEIVER
+      ? [{ id: 'settings-serial-exit_pairing', run: () => sendCommand('exit') }]
+      : []),
+    ...(deviceType === SerialDeviceType.HID_TRACKER
+      ? [
+          {
+            id: 'settings-serial-calibrate',
+            run: () => sendCommand('calibrate'),
+          },
+          {
+            id: 'settings-serial-six_side_calibrate',
+            run: () => sendCommand('6-side'),
+          },
+        ]
+      : []),
+    ...(isHidDevice
+      ? [
+          { id: 'settings-serial-dfu', run: () => sendCommand('dfu') },
+          { id: 'settings-serial-meow', run: () => sendCommand('meow') },
+        ]
+      : []),
+    ...(isEspDevice
+      ? [
+          {
+            id: 'settings-serial-factory_reset',
+            run: () => setTryFactoryReset(true),
+            danger: true,
+          },
+        ]
+      : []),
+  ];
 
-    consoleRef.current?.scrollTo({
-      top: consoleRef.current.scrollHeight,
-    });
-  };
+  const modules = useMemo(
+    () =>
+      [
+        ...new Set(
+          consoleLines.flatMap((line) => (line.label ? [line.label] : []))
+        ),
+      ].sort((a, b) => a.localeCompare(b)),
+    [consoleLines]
+  );
+  const visibleLines = useMemo(
+    () =>
+      pausable.lines.filter(
+        (line) =>
+          passesLevel(line.level, minLevel) &&
+          (module === ALL_MODULES || line.label === module) &&
+          passesQuery(line.text, query)
+      ),
+    [pausable.lines, minLevel, module, query]
+  );
+
+  const filtersActive = minLevel !== LogLevel.DEBUG || module !== ALL_MODULES;
+
+  const renderFilters = (place: FilterPlace) => (
+    <>
+      <LevelFilter
+        place={place}
+        name="serial-level"
+        value={minLevel}
+        onChange={setMinLevel}
+      />
+      {modules.length > 0 && (
+        <FilterDropdown
+          place={place}
+          name="serial-module"
+          label={l10n.getString('settings-serial-module')}
+          value={module}
+          onChange={setModule}
+          items={[
+            {
+              value: ALL_MODULES,
+              label: <Typography tag="span" id="settings-serial-module-all" />,
+            },
+            ...modules.map((name) => ({
+              value: name,
+              label: <DotLabel color={nameColor(name)}>{name}</DotLabel>,
+            })),
+          ]}
+        />
+      )}
+    </>
+  );
 
   return (
     <>
@@ -360,146 +509,171 @@ export function Serial() {
               ))}
           </>
         </div>
-        <div className="bg-background-80 rounded-lg flex-grow h-0 flex flex-col p-2">
-          <div
-            className="flex-grow overflow-x-auto overflow-y-auto"
-            ref={consoleRef}
-          >
-            <div className="flex select-text">
-              <pre>
-                {openedSerialDevice !== null
-                  ? consoleContent
-                  : l10n.getString(
-                      (consoleStatus !== null &&
-                        consoleStatusMessage[consoleStatus]) ||
-                        'settings-serial-no_port'
-                    )}
-              </pre>
-            </div>
-          </div>
-          <div className="border-t-2 pt-2 border-background-60 border-solid gap-2 flex flex-row">
-            <div className="xs:flex flex-grow xs:flex-wrap gap-2 grid grid-cols-2">
-              {openedSerialDevice !== null && (
-                <>
-                  <Button variant="quaternary" onClick={reboot}>
-                    {l10n.getString('settings-serial-reboot')}
-                  </Button>
-                  {openedSerialDevice?.type ===
-                    SerialDeviceType.ESP_TRACKER && (
-                    <>
-                      <Button
-                        variant="quaternary"
-                        onClick={() => setTryFactoryReset(true)}
-                      >
-                        {l10n.getString('settings-serial-factory_reset')}
-                      </Button>
-                      <Button variant="quaternary" onClick={getWifiScan}>
-                        {l10n.getString('settings-serial-get_wifi_scan')}
-                      </Button>
-                    </>
-                  )}
-                  {isHidDevice && (
-                    <Button variant="quaternary" onClick={enterPairing}>
-                      {l10n.getString('settings-serial-enter_pairing')}
-                    </Button>
-                  )}
-                  {openedSerialDevice?.type ===
-                    SerialDeviceType.HID_RECEIVER && (
-                    <Button variant="quaternary" onClick={exitPairing}>
-                      {l10n.getString('settings-serial-exit_pairing')}
-                    </Button>
-                  )}
-                  {openedSerialDevice?.type ===
-                    SerialDeviceType.HID_TRACKER && (
-                    <>
-                      <Button variant="quaternary" onClick={calibrate}>
-                        {l10n.getString('settings-serial-calibrate')}
-                      </Button>
-                      <Button variant="quaternary" onClick={sixSideCalibrate}>
-                        {l10n.getString('settings-serial-six_side_calibrate')}
-                      </Button>
-                    </>
-                  )}
-                  {isHidDevice && (
-                    <>
-                      <Button variant="quaternary" onClick={dfu}>
-                        {l10n.getString('settings-serial-dfu')}
-                      </Button>
-                      <Button variant="quaternary" onClick={meow}>
-                        {l10n.getString('settings-serial-meow')}
-                      </Button>
-                    </>
-                  )}
-                  <Button
-                    variant="quaternary"
-                    onClick={saveLogToFile}
-                    disabled={
-                      openedSerialDevice === null || !consoleContent.trim()
-                    }
-                  >
-                    {l10n.getString('settings-serial-save_logs')}
-                  </Button>
-                  <div className="ml-auto">
-                    <Button
-                      variant="quaternary"
-                      onClick={pauseScroll}
-                      icon={
-                        isPaused ? (
-                          <PlayIcon width={16} />
-                        ) : (
-                          <PauseIcon width={16} />
-                        )
-                      }
-                    />
-                  </div>
-                  <form
-                    className="w-full flex flex-row gap-2 mobile:col-span-2"
-                    onSubmit={(e) => {
-                      if (openedSerialDevice === null) {
-                        return;
-                      }
-                      e.preventDefault();
-                      if (!acceptedCustomCommandWarning) {
-                        setTrySendCustomCommand(true);
-                      } else {
-                        sendCustomSerialCommand();
-                      }
-                    }}
-                  >
-                    <div className="flex-grow">
-                      <Input
-                        control={control}
-                        name="customCommand"
-                        className="flex-grow"
-                        placeholder={l10n.getString(
-                          'settings-serial-send_command-placeholder'
-                        )}
-                      />
-                    </div>
-                    <Button
-                      variant="quaternary"
-                      disabled={openedSerialDevice === null}
-                      type="submit"
-                    >
-                      {l10n.getString('settings-serial-send_command')}
-                    </Button>
-                  </form>
-                </>
-              )}
-
-              <div className="w-full mobile:col-span-2">
+        <div className="flex flex-col gap-2 flex-grow h-0">
+          <LogFilterBar
+            renderFilters={renderFilters}
+            filtersActive={filtersActive}
+            searchName="serial-search"
+            searchPlaceholder={l10n.getString('settings-serial-search')}
+            query={query}
+            onQueryChange={setQuery}
+            leading={
+              <div className="w-72 mobile:w-full">
                 <Dropdown
                   control={control}
                   name="port"
                   display="block"
+                  direction="down"
                   placeholder={l10n.getString('settings-serial-serial_select')}
                   items={(serialDevices ?? []).map((device) => ({
-                    label: device.name?.toString() || 'error',
+                    label: (
+                      <span className="flex items-center gap-2 min-w-0">
+                        <span className="flex w-4 shrink-0 justify-center fill-background-10">
+                          <SerialDeviceIcon
+                            type={device.type}
+                            name={device.name?.toString() ?? ''}
+                          />
+                        </span>
+                        <span className="truncate">
+                          {device.name?.toString() || 'error'}
+                        </span>
+                      </span>
+                    ),
                     value: device.port?.toString() || 'error',
                   }))}
                 />
               </div>
-            </div>
+            }
+          />
+          <div className="bg-background-80 rounded-lg flex-grow h-0 min-h-[160px] flex flex-col p-2">
+            {openedSerialDevice !== null ? (
+              <LogView lines={visibleLines} query={query} />
+            ) : (
+              <div className="flex-grow">
+                <pre>
+                  {l10n.getString(
+                    (consoleStatus !== null &&
+                      consoleStatusMessage[consoleStatus]) ||
+                      'settings-serial-no_port'
+                  )}
+                </pre>
+              </div>
+            )}
+            {openedSerialDevice !== null && (
+              <>
+                <div className="mt-1.5 flex gap-2 items-stretch">
+                  <form
+                    className="flex-grow min-w-0 flex items-center gap-2 bg-background-70 rounded-md pl-3 font-mono text-[12px] focus-within:ring-2 focus-within:ring-accent-background-30"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!command.trim()) return;
+                      if (!acceptedCustomCommandWarning) {
+                        setTrySendCustomCommand(true);
+                        return;
+                      }
+                      sendCustomSerialCommand();
+                    }}
+                  >
+                    <span className="text-background-10 select-none">&gt;</span>
+                    <input
+                      className="flex-grow min-w-0 bg-transparent border-0 outline-none focus:ring-0 px-0 py-2 text-[12px] text-background-10 placeholder:text-background-10"
+                      value={command}
+                      spellCheck={false}
+                      autoComplete="off"
+                      placeholder={l10n.getString(
+                        'settings-serial-send_command-placeholder'
+                      )}
+                      onChange={(e) => {
+                        setCommand(e.target.value);
+                        setHistoryIndex(null);
+                      }}
+                      onKeyDown={browseHistory}
+                    />
+                    <Button
+                      variant="quaternary"
+                      size="small"
+                      type="submit"
+                      disabled={!command.trim()}
+                      id="settings-serial-send_command"
+                    />
+                  </form>
+                  <PopoverMenu
+                    drawerTitle={
+                      <Typography
+                        variant="section-title"
+                        id="settings-serial-commands"
+                      />
+                    }
+                    trigger={(triggerProps, open) => (
+                      <Button variant="primary" size="small" {...triggerProps}>
+                        <span className="flex items-center gap-2">
+                          <Typography
+                            tag="span"
+                            id="settings-serial-commands"
+                          />
+                          <span
+                            className={classNames(
+                              'flex fill-background-10 transition-transform',
+                              open && 'rotate-180'
+                            )}
+                          >
+                            <ArrowDownIcon size={12} />
+                          </span>
+                        </span>
+                      </Button>
+                    )}
+                  >
+                    {({ close }) =>
+                      commands.map(({ id, run, danger }) => (
+                        <PopoverMenuItem
+                          key={id}
+                          className={classNames(
+                            danger && 'border-t border-background-50'
+                          )}
+                          onClick={() => {
+                            close();
+                            run();
+                          }}
+                        >
+                          <Typography
+                            bold
+                            color={danger ? 'text-status-critical' : undefined}
+                            id={id}
+                          />
+                        </PopoverMenuItem>
+                      ))
+                    }
+                  </PopoverMenu>
+                </div>
+                <LogFooter
+                  status={pausable.paused ? 'paused' : 'live'}
+                  shown={visibleLines.length}
+                  total={pausable.lines.length}
+                >
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={saveLogToFile}
+                    disabled={!consoleLines.some((line) => line.text.trim())}
+                    icon={
+                      <DownloadIcon width={14} className="fill-background-10" />
+                    }
+                    id="settings-serial-save_logs"
+                    iconOnly={compactBar}
+                  />
+                  <ClearLogButton
+                    onClick={clearConsole}
+                    disabled={consoleLines.length === 0}
+                    iconOnly={compactBar}
+                  />
+                  <PauseLogButton
+                    paused={pausable.paused}
+                    onToggle={pausable.togglePause}
+                    iconOnly={compactBar}
+                  />
+                </LogFooter>
+              </>
+            )}
           </div>
         </div>
       </SettingsPagePaneLayout>
