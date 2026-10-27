@@ -862,6 +862,10 @@ settings-serial-send_command-placeholder = crwdns8198:0crwdne8198:0
 settings-serial-send_command-warning = crwdns8200:0crwdne8200:0
 settings-serial-send_command-warning-ok = crwdns8202:0crwdne8202:0
 settings-serial-send_command-warning-cancel = crwdns8204:0crwdne8204:0
+settings-serial-search = crwdns10226:0crwdne10226:0
+settings-serial-commands = crwdns10228:0crwdne10228:0
+settings-serial-module = crwdns10230:0crwdne10230:0
+settings-serial-module-all = crwdns10232:0crwdne10232:0
 
 ## Logs settings
 
