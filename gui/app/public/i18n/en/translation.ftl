@@ -1583,6 +1583,8 @@ home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
 home-connection_group-driver = VR Devices
+home-connection_group-vmc = VMC Trackers
+home-connection_group-vrc = VRChat OSC Trackers
 home-new_trackers-count = { $count ->
     [one] { $count } new tracker
     *[other] { $count } new trackers

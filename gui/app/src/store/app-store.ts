@@ -93,6 +93,8 @@ export type TrackerConnectionGroup = {
     }
   | { kind: 'wifi'; pending: UnknownDeviceT[] }
   | { kind: 'driver' }
+  | { kind: 'vmc' }
+  | { kind: 'vrc' }
 );
 
 export function groupTrackersByConnection(
@@ -124,9 +126,31 @@ export function groupTrackersByConnection(
     unassigned: [],
   };
 
+  const vmcGroup: Extract<TrackerConnectionGroup, { kind: 'vmc' }> = {
+    key: 'vmc',
+    kind: 'vmc',
+    assigned: [],
+    unassigned: [],
+  };
+
+  const vrcGroup: Extract<TrackerConnectionGroup, { kind: 'vrc' }> = {
+    key: 'vrc',
+    kind: 'vrc',
+    assigned: [],
+    unassigned: [],
+  };
+
   const getGroup = (flatTracker: FlatDeviceTracker): TrackerConnectionGroup => {
     if (flatTracker.tracker.origin == DeviceOrigin.DRIVER) {
       return driverGroup;
+    }
+
+    if (flatTracker.tracker.origin == DeviceOrigin.VMC) {
+      return vmcGroup;
+    }
+
+    if (flatTracker.tracker.origin == DeviceOrigin.VRC) {
+      return vrcGroup;
     }
 
     // 2. Dongle check
@@ -172,13 +196,21 @@ export function groupTrackersByConnection(
   const activeGroups = [
     ...dongleGroups.values(),
     ...(isNotEmpty(wifiGroup) || pending.length > 0 ? [wifiGroup] : []),
+    ...(isNotEmpty(vmcGroup) ? [vmcGroup] : []),
+    ...(isNotEmpty(vrcGroup) ? [vrcGroup] : []),
     ...(isNotEmpty(driverGroup) ? [driverGroup] : []),
   ];
 
+  const sortRank = (group: TrackerConnectionGroup) => {
+    if (group.kind === 'driver') return 3;
+    if (group.kind === 'vrc') return 2;
+    if (group.kind === 'vmc') return 1;
+    return 0;
+  };
+
   return activeGroups.sort((a, b) => {
-    // Driver group always goes last
-    if (a.kind === 'driver') return 1;
-    if (b.kind === 'driver') return -1;
+    const rankDiff = sortRank(a) - sortRank(b);
+    if (rankDiff !== 0) return rankDiff;
 
     // Otherwise sort descending by total tracker count
     return getTrackerCount(b) - getTrackerCount(a);
