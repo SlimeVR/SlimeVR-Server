@@ -297,7 +297,9 @@ class DisconnectBehaviour : UDPConnectionBehaviour {
 					delay(500)
 					continue
 				}
-				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.trackersConfig.timeoutDelay.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
+
+				val timeoutDelay = receiver.appContext.config.settings.context.state.value.data.trackersConfig.timeoutDelay.coerceAtLeast(0f)
+				val timeUntilRemoval = CONNECTION_TIMEOUT_MS.milliseconds + timeoutDelay.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
 				if (timeUntilRemoval <= 0.milliseconds) {
 					AppLogger.udp.info("Connection removed after extended timeout")
 					receiver.appContext.udpServer.removeConnection(state.address)
