@@ -1,35 +1,32 @@
 package dev.slimevr.oscquery
 
-import com.appstractive.dnssd.NetService
+import dev.slimevr.mdns.MdnsAdvertise
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
 private const val OSC_UDP_SERVICE_TYPE = "_osc._udp"
 
-typealias OscQueryServiceFactory = (
-	type: String,
-	name: String,
-	port: Int,
-	priority: Int,
-	weight: Int,
-	addresses: List<String>?,
-	txt: Map<String, String>,
-) -> NetService
-
 class OscQueryServer(
 	private val name: String,
 	private val address: String,
-	private var oscPort: UShort,
-	private val serviceFactory: OscQueryServiceFactory,
+	oscPort: UShort,
+	private val advertise: MdnsAdvertise,
 	private val tree: OscQueryTree = OscQueryTree(),
 	private val transport: OscQueryTransport = OscQueryTransport.UDP,
 ) {
 	private val httpServer = OscQueryHttpServer(hostInfo = ::buildHostInfo, tree = tree)
-	private var oscQueryService: NetService? = null
-	private var oscService: NetService? = null
-	private var started = false
+	private val oscPort = MutableStateFlow(oscPort)
+
+	// mDNS instance names must be unique on the network and we don't probe for conflicts
+	// the odds are very low 1 in 16.7 million, if it happens the user can restart the server
+	// TODO: actually check for conflicts someday
+	private val instanceName = "$name-${Random.nextInt(0x1000000).toString(16).uppercase().padStart(6, '0')}"
 
 	val oscQueryPort: UShort
 		get() = httpServer.port
@@ -39,65 +36,38 @@ class OscQueryServer(
 	fun removeNode(path: String): Boolean = tree.remove(path)
 
 	suspend fun start(scope: CoroutineScope) {
-		if (started) return
-		val httpPort = httpServer.start(scope)
-		oscQueryService = createOscQueryService(httpPort).also { it.register() }
-		oscService = createOscService(oscPort).also { it.register() }
-		started = true
+		httpServer.start(scope)
 	}
 
-	suspend fun updateOscPort(port: UShort) {
-		if (oscPort == port) return
-		oscPort = port
-		if (!started) return
-		withContext(NonCancellable) {
-			oscService?.unregister()
-			oscService = createOscService(port).also { it.register() }
+	suspend fun advertise(): Nothing {
+		oscPort.collectLatest { port ->
+			coroutineScope {
+				launch {
+					advertise(
+						OSC_JSON_SERVICE_TYPE,
+						instanceName,
+						oscQueryPort.toInt(),
+						mapOf("txtvers" to "1", "osc_transport" to transport.name.lowercase(), "osc_port" to port.toString()),
+					)
+				}
+				advertise(OSC_UDP_SERVICE_TYPE, instanceName, port.toInt(), mapOf("txtvers" to "1", "oscquery_port" to oscQueryPort.toString()))
+			}
 		}
+		awaitCancellation()
 	}
 
-	suspend fun close() {
-		withContext(NonCancellable) {
-			oscService?.unregister()
-			oscService = null
-			oscQueryService?.unregister()
-			oscQueryService = null
-		}
+	fun updateOscPort(port: UShort) {
+		oscPort.value = port
+	}
+
+	fun close() {
 		httpServer.close()
-		started = false
 	}
-
-	private fun createOscQueryService(httpPort: UShort) = createService(
-		type = OSC_JSON_SERVICE_TYPE,
-		name = "$name-$httpPort",
-		port = httpPort.toInt(),
-		txt = mapOf(
-			"txtvers" to "1",
-			"osc_transport" to transport.name.lowercase(),
-			"osc_port" to oscPort.toString(),
-		),
-	)
-
-	private fun createOscService(port: UShort) = createService(
-		type = OSC_UDP_SERVICE_TYPE,
-		name = "$name-$oscQueryPort",
-		port = port.toInt(),
-		txt = mapOf(
-			"txtvers" to "1",
-			"oscquery_port" to oscQueryPort.toString(),
-		),
-	)
-
-	// Pin the advertised address to our resolved local IP. Otherwise dns-sd-kt
-	// falls back to `getLocalAddresses().firstOrNull()` which iterates every NIC
-	// and may pick a virtual / wrong-subnet adapter, making the service
-	// unreachable from headsets on the actual LAN.
-	private fun createService(type: String, name: String, port: Int, txt: Map<String, String>): NetService = serviceFactory(type, name, port, 0, 1, listOf(address), txt)
 
 	private fun buildHostInfo() = OscQueryHostInfo(
 		name = name,
 		oscIp = address,
-		oscPort = oscPort,
+		oscPort = oscPort.value,
 		oscTransport = transport,
 	)
 }

@@ -1,39 +1,43 @@
 package dev.slimevr.vrcosc
 
-import com.appstractive.dnssd.DiscoveryEvent
 import dev.slimevr.config.DEFAULT_VRC_OSC_PORT_OUT
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.mdns.MdnsAdvertise
+import dev.slimevr.mdns.MdnsBrowse
 import dev.slimevr.oscquery.OscQueryAccess
-import dev.slimevr.oscquery.OscQueryDiscovery
 import dev.slimevr.oscquery.OscQueryNode
 import dev.slimevr.oscquery.OscQueryServer
-import dev.slimevr.oscquery.OscQueryServiceFactory
+import dev.slimevr.oscquery.fetchOscQueryOscPort
 import dev.slimevr.util.formatExceptionMessage
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import solarxr_protocol.rpc.VRCOSCOscQueryState
 
 private const val VRCHAT_SERVICE_PREFIX = "VRChat-Client"
+private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
 
 class VRCOSCOscQueryBehaviour(
 	private val settings: Settings,
 	private val localIp: String,
-	private val discoverServicesFlow: (String) -> Flow<DiscoveryEvent>,
-	private val serviceFactory: OscQueryServiceFactory,
+	private val browse: MdnsBrowse,
+	private val advertise: MdnsAdvertise,
 ) : VRCOSCBehaviour {
 	private class OscQueryRuntime(
 		val localIp: String,
 	) {
 		var server: OscQueryServer? = null
-		var discovery: OscQueryDiscovery? = null
+		var advertiseJob: Job? = null
 		var discoveryJob: Job? = null
 	}
 
@@ -52,21 +56,41 @@ class VRCOSCOscQueryBehaviour(
 			::Pair,
 		)
 			.onEach { (settings, portIn) ->
-				if (!settings.first || settings.second || portIn == null) {
+				val (enabled, useManualNetwork) = settings
+				if (!enabled || portIn == null) {
 					stopOscQuery(receiver, runtime)
 					return@onEach
 				}
 
 				syncOscQueryServer(receiver, runtime, portIn)
-				startDiscovery(receiver, runtime)
+				if (useManualNetwork) {
+					stopDiscovery(receiver, runtime)
+				} else {
+					startDiscovery(receiver, runtime)
+				}
 			}.launchIn(receiver.context.scope)
 	}
 
-	private suspend fun stopOscQuery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {
-		runtime.discoveryJob?.cancel()
+	private suspend fun stopDiscovery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {
+		runtime.discoveryJob?.cancelAndJoin()
 		runtime.discoveryJob = null
-		runtime.discovery?.close()
-		runtime.discovery = null
+		val server = runtime.server ?: return
+		receiver.context.dispatchAll(
+			listOf(
+				VRCOSCActions.SetDiscoveredTargets(emptyList()),
+				VRCOSCActions.SetOscQuery(
+					state = VRCOSCOscQueryState.SEARCHING,
+					advertisedPort = server.oscQueryPort.toInt(),
+				),
+			),
+		)
+	}
+
+	private suspend fun stopOscQuery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {
+		runtime.discoveryJob?.cancelAndJoin()
+		runtime.discoveryJob = null
+		runtime.advertiseJob?.cancelAndJoin()
+		runtime.advertiseJob = null
 		try {
 			runtime.server?.close()
 		} catch (e: Exception) {
@@ -90,13 +114,27 @@ class VRCOSCOscQueryBehaviour(
 					name = "SlimeVR-Server",
 					address = runtime.localIp,
 					oscPort = portIn.toUShort(),
-					serviceFactory = serviceFactory,
+					advertise = advertise,
 				)
 				arrayOf(HEAD_POSE_SUBPATH, LEFT_WRIST_POSE_SUBPATH, RIGHT_WRIST_POSE_SUBPATH).forEach {
 					newServer.addNode(OscQueryNode("$TRACKING_VRSYSTEM_PATH$it", type = "ffffff", access = OscQueryAccess.WRITE))
 				}
 				withContext(Dispatchers.IO) { newServer.start(receiver.context.scope) }
 				runtime.server = newServer
+				runtime.advertiseJob = receiver.context.scope.launch {
+					try {
+						newServer.advertise()
+					} catch (e: CancellationException) {
+						throw e
+					} catch (e: Exception) {
+						dispatchOscQueryError(
+							receiver = receiver,
+							message = "Failed to advertise VRChat OSCQuery",
+							throwable = e,
+							advertisedPort = newServer.oscQueryPort.toInt(),
+						)
+					}
+				}
 				AppLogger.vrc.info("VRChat OSCQuery started on http://${runtime.localIp}:${newServer.oscQueryPort}")
 				receiver.context.dispatch(
 					VRCOSCActions.SetOscQuery(
@@ -115,66 +153,54 @@ class VRCOSCOscQueryBehaviour(
 			return
 		}
 
-		try {
-			existing.updateOscPort(portIn.toUShort())
-		} catch (e: Exception) {
-			dispatchOscQueryError(
-				receiver = receiver,
-				message = "Failed to update VRChat OSCQuery port",
-				throwable = e,
-				advertisedPort = existing.oscQueryPort.toInt(),
-			)
-		}
+		existing.updateOscPort(portIn.toUShort())
 	}
 
-	private suspend fun startDiscovery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {
-		if (runtime.discovery != null) return
+	private fun startDiscovery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {
+		if (runtime.discoveryJob != null) return
 
-		val discovery = OscQueryDiscovery(
-			discoverServicesFlow = discoverServicesFlow,
-			serviceFilter = { serviceName -> serviceName.startsWith(VRCHAT_SERVICE_PREFIX) },
-		)
-		runtime.discovery = discovery
-
-		try {
-			discovery.start(receiver.context.scope)
-		} catch (e: Exception) {
-			discovery.close()
-			runtime.discovery = null
-			dispatchOscQueryError(
-				receiver = receiver,
-				message = "Failed to start VRChat OSCQuery discovery",
-				throwable = e,
-				advertisedPort = runtime.server?.oscQueryPort?.toInt(),
-			)
-			return
-		}
-
-		runtime.discoveryJob = discovery.services
+		runtime.discoveryJob = browse(OSC_JSON_SERVICE_TYPE)
+			.map { services -> services.filter { it.name.startsWith(VRCHAT_SERVICE_PREFIX) && it.addresses.isNotEmpty() } }
+			.distinctUntilChanged()
 			.onEach { services ->
-				val targets = services.mapNotNull { service ->
-					val address = service.addresses.firstOrNull().orEmpty().ifEmpty { service.host }
-					if (address.isBlank()) {
-						null
-					} else {
-						VRCOSCDiscoveredTargetInfo(
-							name = service.name,
-							address = address,
-							portOut = DEFAULT_VRC_OSC_PORT_OUT, // TODO should read VRChat's /?HOST_INFO
-						)
+				AppLogger.oscQuery.info("Discovered VRChat clients: ${services.map { "${it.name} ${it.addresses}:${it.port}" }}")
+				val targets = services.map { service ->
+					val address = service.addresses.first()
+					val portOut = try {
+						fetchOscQueryOscPort(address, service.port).also { port ->
+							AppLogger.oscQuery.info("HOST_INFO of ${service.name} at $address:${service.port}: OSC port $port")
+						}
+					} catch (e: CancellationException) {
+						throw e
+					} catch (e: Exception) {
+						AppLogger.oscQuery.warn(e, "Could not read HOST_INFO of ${service.name} at $address:${service.port}, assuming OSC port $DEFAULT_VRC_OSC_PORT_OUT")
+						DEFAULT_VRC_OSC_PORT_OUT
 					}
+					VRCOSCDiscoveredTargetInfo(
+						name = service.name,
+						address = address,
+						portOut = portOut,
+					)
 				}
-				val advertisedPort = runtime.server?.oscQueryPort?.toInt()
 				receiver.context.dispatchAll(
 					listOf(
 						VRCOSCActions.SetDiscoveredTargets(targets),
 						VRCOSCActions.SetOscQuery(
 							state = if (targets.isEmpty()) VRCOSCOscQueryState.SEARCHING else VRCOSCOscQueryState.FOUND,
-							advertisedPort = advertisedPort,
+							advertisedPort = runtime.server?.oscQueryPort?.toInt(),
 						),
 					),
 				)
-			}.launchIn(receiver.context.scope)
+			}
+			.catch { e ->
+				dispatchOscQueryError(
+					receiver = receiver,
+					message = "VRChat OSCQuery discovery failed",
+					throwable = e,
+					advertisedPort = runtime.server?.oscQueryPort?.toInt(),
+				)
+			}
+			.launchIn(receiver.context.scope)
 	}
 
 	private suspend fun dispatchOscQueryError(

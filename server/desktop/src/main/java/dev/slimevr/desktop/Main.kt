@@ -2,8 +2,6 @@
 
 package dev.slimevr.desktop
 
-import com.appstractive.dnssd.createNetService
-import com.appstractive.dnssd.discoverServices
 import dev.slimevr.AppContext
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.FeatureFlags
@@ -21,6 +19,7 @@ import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.keybind.createDesktopKeybindManager
 import dev.slimevr.desktop.keybind.isGnome
+import dev.slimevr.desktop.multicast.bindDesktopMulticast
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
@@ -33,6 +32,7 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.mdns.createMdns
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -165,11 +165,13 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val boneRouting = BoneRoutingManager.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(scope = this)
+	val oscQueryAddress = resolveDesktopLocalIpAddress()
+	val mdns = createMdns(scope = this, address = oscQueryAddress, bind = ::bindDesktopMulticast)
 	val vrcOscManager = VRCOSCManager.create(
 		scope = this,
-		oscQueryAddress = resolveDesktopLocalIpAddress(),
-		discoverServicesFlow = ::discoverServices,
-		serviceFactory = ::createNetService,
+		oscQueryAddress = oscQueryAddress,
+		browse = mdns.browse,
+		advertise = mdns.advertise,
 	)
 	val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = this)
 	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, stepMountingManager = stepMountingManager, scope = this)

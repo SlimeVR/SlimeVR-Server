@@ -84,12 +84,3 @@ data class OscQueryNode(
 			return fullPath.substring(0, parentEnd).ifEmpty { "/" }
 		}
 }
-
-data class OscQueryService(
-	val name: String,
-	val addresses: List<String>,
-	val host: String,
-	val type: String,
-	val port: Int,
-	val txt: Map<String, String>,
-)

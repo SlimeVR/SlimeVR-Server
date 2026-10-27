@@ -1,10 +1,15 @@
 package dev.slimevr.oscquery
 
-import com.appstractive.dnssd.NetService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -17,26 +22,34 @@ class OscQueryServerTest {
 	private val json = Json { ignoreUnknownKeys = true }
 
 	@Test
-	fun httpRoutesAndServiceLifecycleAreWired() = runBlocking {
-		val createdServices = mutableListOf<FakeNetService>()
+	fun httpRoutesAndAdvertisementsAreWired() = runBlocking {
+		val advertised = MutableStateFlow<List<Advertised>>(emptyList())
 		val server = OscQueryServer(
 			name = "SlimeVR",
 			address = "127.0.0.1",
 			oscPort = 9000u,
-			serviceFactory = { type, name, port, _, _, _, txt ->
-				FakeNetService(type = type, name = name, port = port, txt = txt).also(createdServices::add)
+			advertise = { type, name, port, txt ->
+				val ad = Advertised(type, name, port, txt)
+				advertised.update { it + ad }
+				try {
+					awaitCancellation()
+				} finally {
+					advertised.update { it - ad }
+				}
 			},
 		)
 		server.addNode(OscQueryNode(fullPath = "/tracking/vrsystem"))
 
+		server.start(this)
+		val advertising = launch { server.advertise() }
 		try {
-			server.start(this)
-
 			assertTrue(server.oscQueryPort > 0u)
-			assertEquals(2, createdServices.size)
-			assertEquals("_oscjson._tcp", createdServices[0].type)
-			assertEquals("_osc._udp", createdServices[1].type)
-			assertTrue(createdServices.all { it.isRegistered.value })
+			val initial = withTimeout(5_000) { advertised.first { it.size == 2 } }
+			val oscJson = initial.single { it.type == "_oscjson._tcp" }
+			assertEquals(server.oscQueryPort.toInt(), oscJson.port)
+			assertEquals("9000", oscJson.txt["osc_port"])
+			assertEquals(9000, initial.single { it.type == "_osc._udp" }.port)
+			assertEquals(1, initial.map { it.name }.distinct().size) // both services share the instance name
 
 			val hostInfo = json.parseToJsonElement(readUrl("http://127.0.0.1:${server.oscQueryPort}/?HOST_INFO")).jsonObject
 			assertEquals("SlimeVR", hostInfo["NAME"]?.jsonPrimitive?.content)
@@ -49,17 +62,20 @@ class OscQueryServerTest {
 			val node = json.parseToJsonElement(readUrl("http://127.0.0.1:${server.oscQueryPort}/tracking/vrsystem")).jsonObject
 			assertEquals("/tracking/vrsystem", node["FULL_PATH"]?.jsonPrimitive?.content)
 
-			val notFound = readStatus("http://127.0.0.1:${server.oscQueryPort}/missing")
-			assertEquals(404, notFound)
+			assertEquals(404, readStatus("http://127.0.0.1:${server.oscQueryPort}/missing"))
 
+			// A new OSC port is re-advertised in both records
 			server.updateOscPort(9100u)
-			assertEquals(3, createdServices.size)
-			assertEquals(createdServices[1].unregisterCount, 1)
-			assertEquals(9100, createdServices[2].port)
-			assertTrue(createdServices[2].isRegistered.value)
+			val updated = withTimeout(5_000) {
+				advertised.first { ads -> ads.size == 2 && ads.any { it.type == "_osc._udp" && it.port == 9100 } }
+			}
+			assertEquals("9100", updated.single { it.type == "_oscjson._tcp" }.txt["osc_port"])
+
+			advertising.cancelAndJoin()
+			assertEquals(emptyList(), advertised.value)
 		} finally {
+			advertising.cancel()
 			server.close()
-			assertTrue(createdServices.all { it.unregistered.value })
 		}
 	}
 }
@@ -80,26 +96,9 @@ private suspend fun readStatus(url: String): Int {
 	}
 }
 
-private class FakeNetService(
-	override val name: String,
-	override val domain: String = "",
-	override val type: String,
-	override val port: Int,
-	private val txt: Map<String, String>,
-) : NetService {
-	override val isRegistered = MutableStateFlow(false)
-	val unregistered = MutableStateFlow(false)
-	var registerCount = 0
-	var unregisterCount = 0
-
-	override suspend fun register(timeoutInMs: Long) {
-		registerCount++
-		isRegistered.value = true
-	}
-
-	override suspend fun unregister() {
-		unregisterCount++
-		unregistered.value = true
-		isRegistered.value = false
-	}
-}
+private data class Advertised(
+	val type: String,
+	val name: String,
+	val port: Int,
+	val txt: Map<String, String>,
+)

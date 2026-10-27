@@ -81,7 +81,6 @@ dependencies {
 	implementation("org.hid4java:hid4java:0.8.0")
 
 	// mDNS for OSCQuery, resolves to the JmDNS-backed jvm variant
-	implementation("com.appstractive:dns-sd-kt:1.1.0")
 
 	implementation("io.klogging:klogging:0.11.7")
 	// SLF4J provider, so what ktor and the discovery libraries log reaches our sinks
