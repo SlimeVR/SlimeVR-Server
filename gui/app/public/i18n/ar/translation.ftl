@@ -300,12 +300,6 @@ settings-driver-enable = تمكين
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = تصفية
-settings-general-tracker_mechanics-filtering-type-none = بدون تصفية
-settings-general-tracker_mechanics-filtering-type-none-description = استخدم التدوير كما هو. لن تفعل أي تصفية
-settings-general-tracker_mechanics-filtering-type-smoothing = التنعيم
-settings-general-tracker_mechanics-filtering-type-smoothing-description = ينعم الحركات لكنه يزيد من وقت الاستجابة.
-settings-general-tracker_mechanics-filtering-type-prediction = التنبؤ
-settings-general-tracker_mechanics-filtering-amount = المبلغ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = إعادة ضبط الانعراج على نحو سلس (يتعطل التنعيم 0 ثوان)
 settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إعادة ضبط التركيب التلقائي
 settings-general-tracker_mechanics-save_mounting_reset-description =
