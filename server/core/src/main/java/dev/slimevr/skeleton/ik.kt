@@ -4,7 +4,6 @@ import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
-import java.util.EnumMap
 
 fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
 	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
@@ -113,9 +112,11 @@ fun ccdIk(
 	if (goals.isEmpty()) return
 
 	for (i in 0..maxIterations) {
+		var allGoalsMet = true
 		for (goal in goals) {
 			// Only iterate chains not meeting the threshold
-			if (chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target) <= threshold) break
+			if (chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target) <= threshold) continue
+			allGoalsMet = false
 
 			// The chain from the current bone to the end, iterating backwards
 			val iterationChain = goal.chain.takeLast((i % goal.chain.size) + 1)
@@ -127,5 +128,6 @@ fun ccdIk(
 				constraints,
 			)
 		}
+		if (allGoalsMet) break
 	}
 }
