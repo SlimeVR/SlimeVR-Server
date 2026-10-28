@@ -392,18 +392,6 @@ settings-driver-status-connection-waiting = Warte auf die Verbindung von SteamVR
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtern
-settings-general-tracker_mechanics-filtering-type = Filter-Typ
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Wählen Sie den Filter-Typ für Ihre Tracker aus.
-    "{ settings-general-tracker_mechanics-filtering-type-smoothing }" glättet die Bewegung, während "{ settings-general-tracker_mechanics-filtering-type-prediction }" die Latenz minimiert.
-settings-general-tracker_mechanics-filtering-type-none = Kein Filter
-settings-general-tracker_mechanics-filtering-type-none-description = Verwendet die unveränderten Rotationsdaten der Tracker.
-settings-general-tracker_mechanics-filtering-type-smoothing = Glättung
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Glättet Bewegungen, fügt aber etwas Verzögerung hinzu.
-settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
-settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen direkter, erhöht jedoch das Zittern.
-settings-general-tracker_mechanics-filtering-amount = Stärke
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontaler Reset Glättungszeit (0s deaktiviert die Glättung)
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Glättet die Rotation der Tracker nach einem Gier-Reset. 0s deaktiviert das Glätten.
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Ausrichtung speichern
