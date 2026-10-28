@@ -316,12 +316,6 @@ settings-driver-status-badge-disabled = Отключено
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Фильтрация
-settings-general-tracker_mechanics-filtering-type-none = Нет фильтрации
-settings-general-tracker_mechanics-filtering-type-none-description = Используется вращение как есть. Не применяет никакой фильтрации.
-settings-general-tracker_mechanics-filtering-type-smoothing = Сглаживание
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Сглаживает движения, но добавляет некоторую задержку.
-settings-general-tracker_mechanics-filtering-type-prediction = Предсказывание
-settings-general-tracker_mechanics-filtering-amount = Количество
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Время сглаживания сброса отклонения (0 сек. отключает сглаживание)
 settings-general-tracker_mechanics-save_mounting_reset = Сохранить калибровку автоматического сброса крепления
 settings-general-tracker_mechanics-save_mounting_reset-description =
