@@ -237,12 +237,6 @@ settings-driver-enable = Увімкнути
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Фільтрація
-settings-general-tracker_mechanics-filtering-type-none = Без фільтрації
-settings-general-tracker_mechanics-filtering-type-none-description = Використовуйте обертання як є. Ніякої фільтрації не зробить.
-settings-general-tracker_mechanics-filtering-type-smoothing = Згладжування
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Згладжує рухи, але додає деяку затримку.
-settings-general-tracker_mechanics-filtering-type-prediction = Передбачення
-settings-general-tracker_mechanics-filtering-amount = Кількість
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Час згладжування скидання рискання (0 сек. відключає згладжування)
 settings-general-tracker_mechanics-save_mounting_reset = Зберегти автоматичне калібрування положення трекерів
 settings-general-tracker_mechanics-save_mounting_reset-description =
