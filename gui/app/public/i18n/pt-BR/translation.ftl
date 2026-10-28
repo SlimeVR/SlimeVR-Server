@@ -330,12 +330,6 @@ settings-driver-status-badge-disabled = Desativado
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtros
-settings-general-tracker_mechanics-filtering-type-none = Sem filtro
-settings-general-tracker_mechanics-filtering-type-none-description = Usa as rotações como estão. Não aplicará nenhuma filtragem.
-settings-general-tracker_mechanics-filtering-type-smoothing = Suavização
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza os movimentos, mas adiciona um pouco de latência.
-settings-general-tracker_mechanics-filtering-type-prediction = Predição
-settings-general-tracker_mechanics-filtering-amount = Quantidade
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo de suavização do "Redefinir Rápido (Guinada)" (0s desativa a suavização)
 settings-general-tracker_mechanics-save_mounting_reset = Salvar calibração automática de montagem
 settings-general-tracker_mechanics-save_mounting_reset-description = Salva a calibração automática de montagem dos trackers entre reinicializações. Útil ao usar um traje em que os trackers não se movem entre as sessões. <b>Não recomendado para usuários normais!</b>
