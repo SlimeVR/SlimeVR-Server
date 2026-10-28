@@ -234,12 +234,6 @@ settings-driver-enable = Käytä
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Suodatus
-settings-general-tracker_mechanics-filtering-type-none = Ei suodatusta
-settings-general-tracker_mechanics-filtering-type-none-description = Käytä kiertoja sellaisenaan. Ei tee mitään suodatusta.
-settings-general-tracker_mechanics-filtering-type-smoothing = Tasoitus
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoittaa liikettä, mutta lisää hieman viivettä.
-settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
-settings-general-tracker_mechanics-filtering-amount = Määrä
 
 ## Stay Aligned pose recorder
 
