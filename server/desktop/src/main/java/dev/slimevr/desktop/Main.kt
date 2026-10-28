@@ -119,7 +119,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		} else {
 			arrayOf("udevadm", "cat")
 		}
-		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.second?.contains("slime")
+		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.second?.contains("69-slimevr-devices.rules")
 	}
 
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
