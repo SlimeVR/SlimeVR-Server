@@ -245,12 +245,6 @@ settings-driver-enable = Bật
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Lọc nhiễu
-settings-general-tracker_mechanics-filtering-type-none = Không lọc
-settings-general-tracker_mechanics-filtering-type-none-description = Sử dụng giá trị thực, không áp dụng bất kì bộ lọc nào
-settings-general-tracker_mechanics-filtering-type-smoothing = Khử nhiễu
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Làm chuyển động mềm mại hơn nhưng có thể tăng độ trễ
-settings-general-tracker_mechanics-filtering-type-prediction = Dự đoán
-settings-general-tracker_mechanics-filtering-amount = Mức độ lọc
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Thời gian thiết lập lại chiều quay lệch (0s tắt làm mượt)
 settings-general-tracker_mechanics-save_mounting_reset = Lưu thiết bị đã giao tự động
 settings-general-tracker_mechanics-save_mounting_reset-description =
