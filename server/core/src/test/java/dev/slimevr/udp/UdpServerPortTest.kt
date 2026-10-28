@@ -19,6 +19,7 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.PortUnreachableException
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,6 +42,14 @@ private fun isBound(port: Int): Boolean = DatagramSocket().use { probe ->
 	} catch (_: SocketTimeoutException) {
 		true
 	}
+}
+
+// Windows does not report ICMP unreachable, so binding is the only portable proof the port is free
+private fun isReleased(port: Int): Boolean = try {
+	DatagramSocket(port).close()
+	true
+} catch (_: SocketException) {
+	false
 }
 
 private suspend fun awaitUntil(what: String, condition: () -> Boolean) {
@@ -108,7 +117,7 @@ class UdpServerPortTest {
 			h.config.switchProfile(ProfileKind.SETTINGS, "other")
 
 			awaitUntil("the second port to be bound") { isBound(second) }
-			awaitUntil("the first port to be released") { !isBound(first) }
+			awaitUntil("the first port to be released") { isReleased(first) }
 		}
 	}
 
@@ -144,7 +153,7 @@ class UdpServerPortTest {
 
 			DatagramSocket(busy).use {
 				h.config.switchProfile(ProfileKind.SETTINGS, "busy")
-				awaitUntil("the first port to be released") { !isBound(first) }
+				awaitUntil("the first port to be released") { isReleased(first) }
 				delay(300.milliseconds)
 				assertEquals(emptyList(), h.failures)
 			}
@@ -165,7 +174,7 @@ class UdpServerPortTest {
 
 			h.server.dispose()
 
-			awaitUntil("the port to be released") { !isBound(port) }
+			awaitUntil("the port to be released") { isReleased(port) }
 		}
 	}
 }
