@@ -271,7 +271,7 @@ class Skeleton(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 15, speed = 1f, packetLoss = 0f, sendPosition = true),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 100, speed = 1f, randomPacketLoss = 0f, constantPacketLoss = 0f, sendPosition = true),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
@@ -283,8 +283,8 @@ class Skeleton(
 						BoneOffsetInputProcessor(),
 						HeadPositionFallbackInputProcessor(),
 						FallbackInputProcessor(),
-						UpperLegsRollAlignInputProcessor(settings),
 						SpineInputProcessor(settings),
+						UpperLegsRollAlignInputProcessor(settings),
 						NeckInputProcessor(),
 						DirectLinkInputProcessor(),
 						FingersInputProcessor(),

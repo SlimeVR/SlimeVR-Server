@@ -24,6 +24,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import java.util.EnumMap
 import java.util.concurrent.Executors
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -69,19 +70,19 @@ class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 }
 
 /**
- * packetLoss is random and from 0 to 1.
+ * randomPacketLoss and constantPacketLoss are from 0 to 1
  * sendPosition is for the head data.
  */
-class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f, val packetLoss: Float = 0f, val sendPosition: Boolean = false) : SkeletonBehaviour {
+class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f, val randomPacketLoss: Float = 0f, val constantPacketLoss: Float = 0f, val sendPosition: Boolean = false) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
-			val intervalMs = (millisecondsInSecond / inputHz.toFloat()).toLong()
+			val interval = (millisecondsInSecond / inputHz.toFloat()).toLong().milliseconds
 			val startTime = timeSource.markNow()
 			while (true) {
-				delay(intervalMs)
+				delay(interval / abs(constantPacketLoss - 1f).toDouble())
 
 				// Simulate packet loss
-				if (Random.nextFloat() < packetLoss) continue
+				if (Random.nextFloat() < randomPacketLoss) continue
 
 				val elapsed = startTime.elapsedNow().inWholeMilliseconds / millisecondsInSecond * speed
 				val state = receiver.context.state.value
