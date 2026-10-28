@@ -260,10 +260,6 @@ settings-driver-enable = 활성화
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = 필터링
-settings-general-tracker_mechanics-filtering-type-none = 필터링 없음
-settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
-settings-general-tracker_mechanics-filtering-amount = 강도
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw 정렬할 때 부드럽게 움직이는 시간 (비활성화: 0초)
 settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 정렬 보정값 저장
 settings-general-tracker_mechanics-save_mounting_reset-description =
