@@ -322,12 +322,6 @@ settings-driver-status-badge-disabled = Apagado
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtro
-settings-general-tracker_mechanics-filtering-type-none = Sin filtrar
-settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones tal como son. No hará ningún filtrado.
-settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
-settings-general-tracker_mechanics-filtering-type-prediction = Predicción
-settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tiempo de suavizado al restablecer el eje horizontal (0s deshabilita el suavizado)
 settings-general-tracker_mechanics-save_mounting_reset = Guardar la calibración de reajuste de montaje automático
 settings-general-tracker_mechanics-save_mounting_reset-description =
