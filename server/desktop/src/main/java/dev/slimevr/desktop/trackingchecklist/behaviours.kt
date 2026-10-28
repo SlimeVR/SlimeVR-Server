@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.seconds
 private val PROCESS_POLL_INTERVAL = 3.seconds
 
 // SteamVR's web server comes up some time after vrserver starts
-private val STEAMVR_WEB_SERVER_STARTUP = 5.seconds
+private val STEAMVR_WEB_SERVER_STARTUP = 1.seconds
 
 // Retry delay doubles from 1s up to 2^step seconds (16s)
 private const val DRIVERS_RETRY_MAX_BACKOFF_STEP = 4L
