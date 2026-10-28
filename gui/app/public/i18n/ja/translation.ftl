@@ -261,12 +261,6 @@ settings-driver-enable = 有効
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = フィルター機能
-settings-general-tracker_mechanics-filtering-type-none = フィルター無し
-settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
-settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
-settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
-settings-general-tracker_mechanics-filtering-amount = 数値
 
 ## Stay Aligned pose recorder
 
