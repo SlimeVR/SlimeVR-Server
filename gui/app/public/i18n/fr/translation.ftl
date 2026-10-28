@@ -333,12 +333,6 @@ settings-driver-status-badge-disabled = Désactivé
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrage
-settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
-settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
-settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
-settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
-settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Temps de fluidification de la réinitialisation horizontale (0s désactive la fluidification)
 settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
 settings-general-tracker_mechanics-save_mounting_reset-description =
