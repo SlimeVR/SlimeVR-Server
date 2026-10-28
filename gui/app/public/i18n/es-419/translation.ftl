@@ -316,12 +316,6 @@ settings-sidebar-advanced = Avanzado
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrado
-settings-general-tracker_mechanics-filtering-type-none = Sin filtro
-settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones como son. No se realizará ningún filtrado.
-settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
-settings-general-tracker_mechanics-filtering-type-prediction = Predicción
-settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tiempo de interpolación para el reinicio horizontal (0s desactiva el suavizado)
 settings-general-tracker_mechanics-save_mounting_reset = Guardar calibración automática de reinicio de montura
 settings-general-tracker_mechanics-save_mounting_reset-description =
