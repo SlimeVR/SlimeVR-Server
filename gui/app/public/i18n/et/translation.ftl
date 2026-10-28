@@ -227,12 +227,6 @@ settings-driver-enable = Luba
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtreerimine
-settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
-settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
-settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
-settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
-settings-general-tracker_mechanics-filtering-amount = Amount
 
 ## Stay Aligned pose recorder
 
