@@ -338,12 +338,6 @@ settings-driver-status-badge-disabled = 关
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = 滤波
-settings-general-tracker_mechanics-filtering-type-none = 无滤波
-settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不进行滤波。
-settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 让运动更加平滑，但会增加一些延迟。
-settings-general-tracker_mechanics-filtering-type-prediction = 预测型
-settings-general-tracker_mechanics-filtering-amount = 滤波强度
 settings-general-tracker_mechanics-yaw-reset-smooth-time = 重置航向轴平滑过渡时长（0s时关闭平滑瞬移到位）
 settings-general-tracker_mechanics-save_mounting_reset = 保存佩戴重置结果
 settings-general-tracker_mechanics-save_mounting_reset-description =
