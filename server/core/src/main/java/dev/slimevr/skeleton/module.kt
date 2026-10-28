@@ -8,6 +8,7 @@ import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.inputprocessors.BoneOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.DirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FallbackInputProcessor
@@ -18,7 +19,6 @@ import dev.slimevr.skeleton.inputprocessors.RotationPredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.RotationSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
-import dev.slimevr.skeleton.inputprocessors.BoneOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpsamplingInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.SkeletonBone
+import kotlin.time.ComparableTimeMark
 
 data class Velocity(
 	/** In meters/s */
@@ -49,7 +50,8 @@ data class BoneInput(
 	val headOffset: Vector3,
 	val offset: Vector3,
 	val boneOffset: Vector3,
-	val tps: UShort?,
+	val expectedTps: UShort?,
+	val poseTime: ComparableTimeMark?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val position: Vector3?,
@@ -115,7 +117,8 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
 	boneOffset = Vector3.ZERO,
-	tps = null,
+	expectedTps = null,
+	poseTime = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
 	position = null,
@@ -182,7 +185,7 @@ sealed interface SkeletonActions {
 	data class SetBonePose(
 		val bodyPart: BodyPart,
 		val boneOffset: Vector3?,
-		val tps: UShort?,
+		val expectedTps: UShort?,
 		val rotation: Quaternion?,
 		val acceleration: Vector3?,
 		val position: Vector3?,
@@ -268,7 +271,7 @@ class Skeleton(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 50),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 15, speed = 1f, packetLoss = 0f, sendPosition = true),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
@@ -290,7 +293,7 @@ class Skeleton(
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
-						VelocityComputedProcessor(false),
+						VelocityComputedProcessor(),
 					),
 					// Run on the inputs with the result of FK and run FK
 					fkProcessors = listOf(
@@ -306,7 +309,7 @@ class Skeleton(
 					),
 					// Run on the result of IK and persist.
 					ikComputedProcessors = listOf(
-						VelocityComputedProcessor(true),
+						VelocityComputedProcessor(),
 					),
 				),
 			)

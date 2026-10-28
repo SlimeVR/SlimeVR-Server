@@ -541,6 +541,7 @@ fun writePacket(dst: Sink, packet: UDPPacket) {
 
 	when (type) {
 		PacketType.HANDSHAKE -> Unit
+
 		PacketType.SENSOR_INFO -> dst.writeInt(type.id)
 
 		else -> {

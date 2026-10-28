@@ -51,8 +51,13 @@ class MdnsTest {
 	fun parsesCompressedNamesAndSkipsUnknownRecordTypes() {
 		// Question "_osc._udp" + pointer to "local" in the first question's name
 		val query = header(flags = 0, questions = 2) +
-			encode("_oscjson._tcp.local") + u16(12) + u16(1) +
-			encode("_osc._udp", terminated = false) + u16(0xC000 or (12 + 1 + 8 + 1 + 4)) + u16(255) + u16(0x8001)
+			encode("_oscjson._tcp.local") +
+			u16(12) +
+			u16(1) +
+			encode("_osc._udp", terminated = false) +
+			u16(0xC000 or (12 + 1 + 8 + 1 + 4)) +
+			u16(255) +
+			u16(0x8001)
 		assertEquals(
 			listOf(MdnsQuestion("_oscjson._tcp.local", MdnsRecordType.PTR), MdnsQuestion("_osc._udp.local", MdnsRecordType.ANY)),
 			parseQueryQuestions(query),
@@ -60,8 +65,20 @@ class MdnsTest {
 
 		// AAAA (type 28) is not read, the A record after it is
 		val response = header(flags = 0x8400, answers = 2) +
-			encode("host.local") + u16(28) + u16(1) + u16(0) + u16(120) + u16(16) + ByteArray(16) +
-			encode("host.local") + u16(1) + u16(1) + u16(0) + u16(120) + u16(4) + byteArrayOf(10, 0, 0, 1)
+			encode("host.local") +
+			u16(28) +
+			u16(1) +
+			u16(0) +
+			u16(120) +
+			u16(16) +
+			ByteArray(16) +
+			encode("host.local") +
+			u16(1) +
+			u16(1) +
+			u16(0) +
+			u16(120) +
+			u16(4) +
+			byteArrayOf(10, 0, 0, 1)
 		assertEquals(listOf(ReceivedRecord(MdnsRecord.Address("host.local", "10.0.0.1"), 2.minutes)), parseResponseRecords(response))
 	}
 
@@ -142,7 +159,8 @@ class MdnsTest {
 
 	private fun encode(name: String, terminated: Boolean = true): ByteArray = name.split('.').fold(byteArrayOf()) { acc, label ->
 		acc + byteArrayOf(label.length.toByte()) + label.encodeToByteArray()
-	} + if (terminated) byteArrayOf(0) else byteArrayOf()
+	} +
+		if (terminated) byteArrayOf(0) else byteArrayOf()
 
 	private fun u16(value: Int) = byteArrayOf((value shr 8).toByte(), value.toByte())
 

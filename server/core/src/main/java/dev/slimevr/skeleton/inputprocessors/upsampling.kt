@@ -10,82 +10,100 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.ResetType
+import kotlin.time.ComparableTimeMark
 
-private data class BoneInterpolation(
+private data class BoneSample(
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val position: Vector3?,
 )
+
+private data class BoneSamples(
+	val fromSample: BoneSample?,
+	val targetSample: BoneSample?,
+	val latestPoseTime: ComparableTimeMark,
+)
+
+// Allow a little extrapolation to ease into the next pose
+private const val MAX_EXTRAPOLATION = 0.25f
+private const val EXTRAPOLATION_MULTIPLIER = 0.05f
 
 /**
  * Since the skeleton runs at a different rate than trackers (e.g: 500hz vs 100hz),
  * this processor handles interpolating data received from trackers across skeleton frames up
  * until the next tracker data (e.g: interpolating the 100hz data across 5 frames to reach 500hz).
  *
- * This has the side effect of smoothing data a bit but that is **not** its primary goal as it will run whether
- * smoothing filtering is enabled or not.
- * Its main goal is to make the data more reliable and easier to work with by avoiding spikes over frames as the skeleton
- * receives new data from trackers. We trade off a little bit of latency (~4 ms) for this.
+ * Its goal is to make the data more reliable and easier to work with by avoiding spikes over frames as the skeleton
+ * receives new data from trackers. We trade off a little bit of latency (1 tracker tick, or ~10 ms) for this.
+ *
+ * It will also extrapolate a little if we haven't received new tracker data in the time we were supposed to,
+ * to mitigate packet loss and late packets.
  *
  * With this, processors don't have to care that trackers only send at 100hz and can know that the data from one skeleton
- * frame to another is reliable.
- * For example, since rotation is interpolated here, the velocity processor doesn't have to do its own interpolation.
+ * frame to another will have reliably changed according to the IRL movements.
  */
 class UpsamplingInputProcessor :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
-	private var interpolationData: BodyPartMap<BoneInterpolation> = bodyPartMap()
-	private var lastProcessTime = timeSource.markNow()
+	private val boneSamples: BodyPartMap<BoneSamples> = bodyPartMap()
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		val deltaTime = lastProcessTime.elapsedNow().inFloatingSeconds
-		lastProcessTime = timeSource.markNow()
-
+		val now = timeSource.markNow()
 		for ((bodyPart, bone) in mutableInputSkeleton) {
-			if (bone.tps == null) continue
+			if (bone.expectedTps == null || bone.poseTime == null) continue
 
-			// For a 100hz tracker on 500hz skeleton, this will be 0.2f (interpolating 1/5 every frame)
-			val interpolationRatio = (deltaTime * bone.tps.toFloat()).coerceAtMost(1f)
-			val newBone = interpolationData[bodyPart]?.let { interpolation ->
-				// Interpolate rotation, acceleration and position.
-				val rotation = if (bone.isRotationActive) {
-					interpolation.rotation.interpQ(bone.rotation, interpolationRatio)
-				} else {
-					bone.rotation
+			val oldSamples = boneSamples[bodyPart]
+			val samples = if (bone.poseTime != oldSamples?.latestPoseTime) {
+				// New pose data
+				val fromSample = oldSamples?.targetSample
+				val targetSample = BoneSample(bone.rotation, bone.acceleration, bone.position)
+				BoneSamples(
+					fromSample,
+					targetSample,
+					bone.poseTime,
+				).also {
+					boneSamples[bodyPart] = it
 				}
-				val acceleration = if (bone.isAccelerationActive) {
-					interpolation.acceleration.lerp(bone.acceleration, interpolationRatio)
-				} else {
-					bone.acceleration
+			} else {
+				oldSamples
+			}
+
+			samples.fromSample?.let { fromSample ->
+				samples.targetSample?.let { targetSample ->
+					val timeSinceLastPose = now - bone.poseTime
+					val rawRatio = (timeSinceLastPose * bone.expectedTps.toInt()).inFloatingSeconds
+					val extrapolationRatio = ((rawRatio - 1f).coerceAtLeast(0f) * EXTRAPOLATION_MULTIPLIER).coerceAtMost(MAX_EXTRAPOLATION)
+					val interpolationRatio = rawRatio.coerceAtMost(1f) + extrapolationRatio
+
+					// Upsample rotation, acceleration and position.
+					val rotation = if (bone.isRotationActive) {
+						fromSample.rotation.interpQ(targetSample.rotation, interpolationRatio)
+					} else {
+						targetSample.rotation
+					}
+					val acceleration = if (bone.isAccelerationActive) {
+						fromSample.acceleration.lerp(targetSample.acceleration, interpolationRatio)
+					} else {
+						targetSample.acceleration
+					}
+					val position = if (bone.isPositionActive && fromSample.position != null && targetSample.position != null) {
+						fromSample.position.lerp(targetSample.position, interpolationRatio)
+					} else {
+						targetSample.position
+					}
+
+					// Update bone data in skeleton and return the bone
+					mutableInputSkeleton[bodyPart] = bone.copy(
+						rotation = rotation,
+						acceleration = acceleration,
+						position = position,
+					)
 				}
-				val position = if (bone.isPositionActive && bone.position != null && interpolation.position != null) {
-					interpolation.position.lerp(bone.position, interpolationRatio)
-				} else {
-					bone.position
-				}
-
-				// Return modified bone with interpolated data
-				bone.copy(
-					rotation = rotation,
-					acceleration = acceleration,
-					position = position,
-				)
-			} ?: bone
-
-			// Set new interpolated bone data
-			if (bone != newBone) mutableInputSkeleton[bodyPart] = newBone
-
-			// Set running interpolation data
-			interpolationData[bodyPart] = BoneInterpolation(
-				newBone.rotation,
-				newBone.acceleration,
-				newBone.position,
-			)
+			}
 		}
 	}
 
 	override fun reset(resetType: ResetType) {
-		interpolationData.clear()
-		lastProcessTime = timeSource.markNow()
+		boneSamples.clear()
 	}
 }

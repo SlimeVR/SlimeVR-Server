@@ -38,7 +38,7 @@ class RotationPredictionInputProcessor(val settings: Settings) :
 			BodyPart.RIGHT_UPPER_ARM to 1.4f,
 			BodyPart.LEFT_LOWER_ARM to 1.4f,
 			BodyPart.RIGHT_LOWER_ARM to 1.4f,
-		)
+		),
 	)
 
 	private val deltas: BodyPartMap<BoneDelta> = bodyPartMap()

@@ -26,6 +26,7 @@ import java.util.EnumMap
 import java.util.concurrent.Executors
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -67,14 +68,22 @@ class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 	}
 }
 
-class YouSpinMeRightRoundBehaviour(val inputHz: Int = 1) : SkeletonBehaviour {
+/**
+ * packetLoss is random and from 0 to 1.
+ * sendPosition is for the head data.
+ */
+class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f, val packetLoss: Float = 0f, val sendPosition: Boolean = false) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
 			val intervalMs = (millisecondsInSecond / inputHz.toFloat()).toLong()
 			val startTime = timeSource.markNow()
 			while (true) {
 				delay(intervalMs)
-				val elapsed = startTime.elapsedNow().inWholeMilliseconds / millisecondsInSecond
+
+				// Simulate packet loss
+				if (Random.nextFloat() < packetLoss) continue
+
+				val elapsed = startTime.elapsedNow().inWholeMilliseconds / millisecondsInSecond * speed
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
@@ -98,20 +107,22 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Int = 1) : SkeletonBehaviour {
 					),
 				)
 
-				val circleRadius = 0.5f
-				val circleX = cos(elapsed * 2f) * circleRadius
-				val circleZ = sin(elapsed * 2f) * circleRadius
-				val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
-				receiver.context.dispatch(
-					SkeletonActions.SetBonePose(
-						BodyPart.HEAD,
-						Vector3.ZERO,
-						inputHz.toUShort(),
-						Quaternion.IDENTITY,
-						Vector3.ZERO,
-						Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
-					),
-				)
+				if (sendPosition) {
+					val circleRadius = 0.5f
+					val circleX = cos(elapsed * 2f) * circleRadius
+					val circleZ = sin(elapsed * 2f) * circleRadius
+					val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
+					receiver.context.dispatch(
+						SkeletonActions.SetBonePose(
+							BodyPart.HEAD,
+							Vector3.ZERO,
+							inputHz.toUShort(),
+							Quaternion.IDENTITY,
+							Vector3.ZERO,
+							Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
+						),
+					)
+				}
 			}
 		}
 	}

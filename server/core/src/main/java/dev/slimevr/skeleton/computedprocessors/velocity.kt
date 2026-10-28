@@ -29,7 +29,6 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	)
 }
 
-// Optional smoothing of velocity, to make it smoother for the output (SteamVR/Monado prediction).
 private const val SMOOTHING_MS = 25f
 private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
 	val t = (deltaTime * (millisecondsInSecond / SMOOTHING_MS)).coerceAtMost(1f)
@@ -42,9 +41,8 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 /**
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
-class VelocityComputedProcessor(
-	private val smooth: Boolean = false,
-) : SkeletonComputedProcessor,
+class VelocityComputedProcessor :
+	SkeletonComputedProcessor,
 	ResettableSkeletonProcessor {
 	private val lastVelocities: BodyPartMap<Velocity> = bodyPartMap()
 	private val lastVelocityData: BodyPartMap<VelocityData> = bodyPartMap()
@@ -61,15 +59,11 @@ class VelocityComputedProcessor(
 			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
 			val currentVelocity = lastVelocityData[bodyPart]?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
 
-			val newVelocity = if (smooth) {
-				smoothVelocity(currentVelocity, lastVelocities[bodyPart] ?: ZERO_VELOCITY, deltaTime)
-			} else {
-				currentVelocity
-			}
-			mutableComputedSkeleton[bodyPart] = bone.copy(velocity = newVelocity)
+			val smoothedVelocity = smoothVelocity(currentVelocity, lastVelocities[bodyPart] ?: ZERO_VELOCITY, deltaTime)
+			mutableComputedSkeleton[bodyPart] = bone.copy(velocity = smoothedVelocity)
 
 			lastVelocityData[bodyPart] = currentVelocityData
-			lastVelocities[bodyPart] = newVelocity
+			lastVelocities[bodyPart] = smoothedVelocity
 		}
 	}
 

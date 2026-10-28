@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -11,7 +12,8 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
 					boneOffset = action.boneOffset ?: bone.boneOffset,
-					tps = action.tps ?: bone.tps,
+					expectedTps = action.expectedTps ?: bone.expectedTps,
+					poseTime = timeSource.markNow(),
 					rotation = action.rotation ?: bone.rotation,
 					acceleration = action.acceleration ?: bone.acceleration,
 					position = action.position ?: bone.position,
@@ -29,7 +31,8 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
 					boneOffset = Vector3.ZERO,
-					tps = null,
+					expectedTps = null,
+					poseTime = null,
 					rotation = Quaternion.IDENTITY,
 					acceleration = Vector3.ZERO,
 					position = null,

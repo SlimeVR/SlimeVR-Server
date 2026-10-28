@@ -40,14 +40,14 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 					.filter { it.bodyPart != null && it.status.isActive() }
 
 				activeState
-					.distinctUntilChanged { old, new -> old.rotation == new.rotation && old.position == new.position && old.pendingSkeletonResets == new.pendingSkeletonResets }
+					.distinctUntilChanged { old, new -> old.rotation == new.rotation && old.acceleration == new.acceleration && old.position == new.position && old.pendingSkeletonResets == new.pendingSkeletonResets }
 					.onEach { trackerState ->
 						trackerState.bodyPart?.let { bodyPart ->
 							val pendingResets = trackerState.pendingSkeletonResets
 							val bonePoseActions = SkeletonActions.SetBonePose(
 								bodyPart,
 								trackerState.boneOffsets[bodyPart],
-								trackerState.tps,
+								trackerState.expectedTps ?: trackerState.tps,
 								trackerState.rotation,
 								trackerState.acceleration,
 								trackerState.position,

@@ -135,6 +135,7 @@ private fun buildFromTo(sourceActive: Map<SpineSource, Boolean>) = SPINE_SOURCE_
 
 // Higher value makes it so attitude is less prioritized
 const val ATTITUDE_MIN = 0.3f
+
 /**
  * Prioritize the rotation with the lowest attitude to prevent one thigh driving the whole spine by itself.
  * TODO to improve this even more for cases like crossing legs while sitting down, we need to use the rotation delta
