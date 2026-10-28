@@ -25,13 +25,46 @@ import kotlin.time.TimeMark
 class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	data class TrackerTapDetectionState(
 		var trackerId: Int,
-		var resetType: ResetType? = null,
+		var performsReset: Boolean = false,
 		var tapsNeeded: Int = 2,
-		var actionDelay: Float = 0f,
 		val accelList: ArrayDeque<Pair<Float, TimeMark>> = ArrayDeque(),
 		val tapTimestamps: ArrayDeque<TimeMark> = ArrayDeque(),
 		var waitForLowAccel: Boolean = false,
 	)
+
+	// Loads TapDetection config and initializes a tracker's state
+	private fun createTrackerTapDetectionState(
+		tapDetectionConfig: TapDetectionConfig,
+		tapDetectionState: TapDetectionState,
+		trackerState: TrackerState,
+	): TrackerTapDetectionState {
+		// This holds a tracker's config and state for tap detection
+		val trackerTapDetectionState = TrackerTapDetectionState(trackerState.id)
+
+		// setupMode uses defaults
+		if (!tapDetectionState.setupMode) {
+			when (trackerState.bodyPart) {
+				tapDetectionState.yawResetBodyPart -> {
+					trackerTapDetectionState.performsReset = true
+					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetTaps
+				}
+
+				tapDetectionState.fullResetBodyPart -> {
+					trackerTapDetectionState.performsReset = true
+					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.fullResetTaps
+				}
+
+				tapDetectionState.mountingResetBodyPart -> {
+					trackerTapDetectionState.performsReset = true
+					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetTaps
+				}
+
+				else -> {}
+			}
+		}
+
+		return trackerTapDetectionState
+	}
 
 	// This + the assigned tap body parts are used.
 	private val falsePositiveBodyParts = setOf(
@@ -72,41 +105,46 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 					.map { trackers.filter { it.context.state.value.status == TrackerStatus.OK } }
 			}
 
+		combine(tapConfigFlow, setupModeFlow, okTrackersFlow, ::Triple).onEach { (tapDetectionConfig, setupMode, trackers) ->
+			if (setupMode) {
+				receiver.context.dispatch(TapDetectionActions.UpdateBodyParts(null, null, null))
+				return@onEach
+			}
+
+			val trackersBodyParts = trackers.map { it.context.state.value.bodyPart }.toSet()
+			val yawResetBodyPart = arrayOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST)
+				.firstOrNull { it in trackersBodyParts } ?: BodyPart.UPPER_CHEST
+			val fullResetBodyPart = arrayOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
+				.firstOrNull { it in trackersBodyParts } ?: BodyPart.LEFT_UPPER_LEG
+			val mountingResetBodyPart = arrayOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
+				.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
+
+			receiver.context.dispatch(TapDetectionActions.UpdateBodyParts(yawResetBodyPart, fullResetBodyPart, mountingResetBodyPart))
+		}.launchIn(receiver.context.scope)
+
 		// Outer flow is refreshed whenever TapDetection config, setupMode, or a tracker's bodyPart or status changes
 		combine(
 			tapConfigFlow,
-			setupModeFlow,
+			receiver.context.state,
 			okTrackersFlow,
 			::Triple,
 		)
-			.flatMapLatest { (tapDetectionConfig, setupMode, trackers) ->
-				// Computed once per outer-flow refresh for all trackers
-				val trackersBodyParts = trackers.map { it.context.state.value.bodyPart }.toSet()
-				val yawResetBodyPart = arrayOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST)
-					.firstOrNull { it in trackersBodyParts } ?: BodyPart.UPPER_CHEST
-				val fullResetBodyPart = arrayOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
-					.firstOrNull { it in trackersBodyParts } ?: BodyPart.LEFT_UPPER_LEG
-				val mountingResetBodyPart = arrayOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
-					.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
-
+			.flatMapLatest { (tapDetectionConfig, tapDetectionState, trackers) ->
 				// To keep track of which trackers are moving
 				val numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
-				val bodyPartsToCheck = falsePositiveBodyParts + yawResetBodyPart + fullResetBodyPart + mountingResetBodyPart
+				val bodyPartsToCheck = falsePositiveBodyParts + tapDetectionState.yawResetBodyPart + tapDetectionState.fullResetBodyPart + tapDetectionState.mountingResetBodyPart
 				val trackersOverThreshold = mutableSetOf<Int>()
 
 				trackers.map { tracker ->
 					val trackerTapDetectionState = createTrackerTapDetectionState(
 						tapDetectionConfig,
-						setupMode,
+						tapDetectionState,
 						tracker.context.state.value,
-						yawResetBodyPart,
-						fullResetBodyPart,
-						mountingResetBodyPart,
 					)
 
 					// Inner flow emits whenever a tracker's rawAcceleration is updated
 					tracker.context.state
-						.filter { it.bodyPart in bodyPartsToCheck || setupMode }
+						.filter { tapDetectionState.setupMode || it.bodyPart in bodyPartsToCheck }
 						.map { it.rawAcceleration to it.origin }
 						.distinctUntilChanged()
 						.onEach { (rawAcceleration, origin) ->
@@ -124,7 +162,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 							}
 
 							// Only trackers that actually have to detect taps
-							if (trackerTapDetectionState.resetType != null || setupMode) {
+							if (trackerTapDetectionState.performsReset || tapDetectionState.setupMode) {
 								val othersOverThreshold = trackersOverThreshold.count() - if (isOverThreshold) 1 else 0
 								val tapTriggered = runTapDetection(
 									timeSource.markNow(),
@@ -135,71 +173,13 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 								)
 
 								if (tapTriggered) {
-									receiver.context.scope.launch {
-										// If it's in setup mode, tap to assign
-										if (setupMode) {
-											receiver.server.sendSolarxrRpc(
-												TapDetectionSetupNotification(
-													trackerTapDetectionState.trackerId.toUShort(),
-												),
-											)
-										}
-
-										// If it has a reset to execute
-										trackerTapDetectionState.resetType?.let { reset ->
-											receiver.resetsManager.scheduleReset(
-												"TapDetection",
-												reset,
-												trackerTapDetectionState.actionDelay,
-											)
-										}
-									}
+									receiver.actionTriggered(trackerTapDetectionState.trackerId)
 								}
 							}
 						}
 				}.merge()
 			}
 			.launchIn(receiver.context.scope)
-	}
-
-	// Loads TapDetection config and initializes a tracker's state
-	private fun createTrackerTapDetectionState(
-		tapDetectionConfig: TapDetectionConfig,
-		setupMode: Boolean,
-		trackerState: TrackerState,
-		yawResetBodyPart: BodyPart,
-		fullResetBodyPart: BodyPart,
-		mountingResetBodyPart: BodyPart,
-	): TrackerTapDetectionState {
-		// This holds a tracker's config and state for tap detection
-		val trackerTapDetectionState = TrackerTapDetectionState(trackerState.id)
-
-		// setupMode uses defaults
-		if (!setupMode) {
-			when (trackerState.bodyPart) {
-				yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
-					trackerTapDetectionState.resetType = ResetType.YAW
-					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetTaps
-					trackerTapDetectionState.actionDelay = tapDetectionConfig.yawResetDelay
-				}
-
-				fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
-					trackerTapDetectionState.resetType = ResetType.FULL
-					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.fullResetTaps
-					trackerTapDetectionState.actionDelay = tapDetectionConfig.fullResetDelay
-				}
-
-				mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
-					trackerTapDetectionState.resetType = ResetType.MOUNTING
-					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetTaps
-					trackerTapDetectionState.actionDelay = tapDetectionConfig.mountingResetDelay
-				}
-
-				else -> {}
-			}
-		}
-
-		return trackerTapDetectionState
 	}
 
 	// Logic loop for tap detection

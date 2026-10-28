@@ -778,8 +778,8 @@ settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without any positional tracker.
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control-subtitle = Tap-based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
+settings-general-gesture_control-subtitle = Tap/button based resets
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker or pressing its button. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->

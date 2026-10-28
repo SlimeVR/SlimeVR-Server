@@ -76,7 +76,7 @@ interface HIDReceiverBehaviour : Behaviour<HIDReceiver> {
 }
 typealias HIDPacketDispatcher = EventDispatcher<HIDPacket>
 
-private fun v3Behaviours(): List<HIDReceiverBehaviour> = listOf(
+private fun v3Behaviours(appContext: AppContextProvider): List<HIDReceiverBehaviour> = listOf(
 	HIDDongleInfoBehaviour(),
 	HIDTrackerListBehaviour(),
 	HIDDeviceInfoV3Behaviour(),
@@ -86,17 +86,17 @@ private fun v3Behaviours(): List<HIDReceiverBehaviour> = listOf(
 	HIDRssiBehaviour(),
 	HIDPacketLossBehaviour(),
 	HIDSleepV3Behaviour(),
-	HIDButtonV3Behaviour(),
+	HIDButtonV3Behaviour(appContext.tapDetectionManager),
 )
 
-private fun legacyBehaviours(): List<HIDReceiverBehaviour> = listOf(
+private fun legacyBehaviours(appContext: AppContextProvider): List<HIDReceiverBehaviour> = listOf(
 	HIDRegistrationBehaviour(),
 	HIDDeviceInfoBehaviour(),
 	HIDRotationBehaviour(),
 	HIDBatteryBehaviour(),
 	HIDStatusBehaviour(),
 	HIDSleepLegacyBehaviour(),
-	HIDButtonLegacyBehaviour(),
+	HIDButtonLegacyBehaviour(appContext.tapDetectionManager),
 )
 
 class HIDReceiver(
@@ -119,7 +119,7 @@ class HIDReceiver(
 			AppLogger.hid.warn("HID protocol changed ($current -> $version) for ${context.state.value.serialNumber}; restart to re-wire")
 			return
 		}
-		val behaviours = if (version == HID_PROTOCOL_V3) v3Behaviours() else legacyBehaviours()
+		val behaviours = if (version == HID_PROTOCOL_V3) v3Behaviours(appContext) else legacyBehaviours(appContext)
 		context.behaviours.addAll(behaviours)
 		behaviours.forEach { it.observe(this) }
 		context.dispatch(HIDReceiverActions.SetProtocolVersion(version))

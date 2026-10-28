@@ -76,7 +76,7 @@ class TapDetectionBehaviour(
 			)
 		}.launchIn(receiver.context.scope)
 
-		// Setup Mode (tap to assign)
+		// Setup Mode (tap/button press to assign)
 		receiver.rpcDispatcher.on<TapDetectionSetupModeRequest> { req ->
 			tapDetectionManager.context.dispatch(TapDetectionActions.SetSetupMode(req.setupMode == true))
 		}.launchIn(receiver.context.scope)
