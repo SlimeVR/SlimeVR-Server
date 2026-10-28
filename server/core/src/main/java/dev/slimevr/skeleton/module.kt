@@ -83,7 +83,7 @@ data class BoneState(
 		get() = rotation * orientationOffset
 
 	val localRotation: Quaternion
-		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
+		get() = parentBone?.let { rotation.localAbout(it.rotation) } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
 	val localTailPosition: Vector3

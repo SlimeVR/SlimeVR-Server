@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton
 
 import com.jme3.math.FastMath
+import dev.slimevr.util.subListOfLast
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -18,7 +19,9 @@ fun chainDistanceFromTarget(
 	return (target - chainTail).len()
 }
 
-private val oppositeRotation = Quaternion.rotationAroundZAxis(FastMath.PI)
+// Bones are most likely opposite along the X axis
+private val oppositeRotation = Quaternion.rotationAroundXAxis(FastMath.PI)
+private val smallRotation = Quaternion.rotationAroundXAxis(1f * FastMath.DEG_TO_RAD)
 fun fromChainToTarget(
 	bodyPart: BodyPart,
 	bones: ComputedSkeleton,
@@ -28,25 +31,69 @@ fun fromChainToTarget(
 	val boneHead = requireBone(bones, bodyPart).headPosition
 	val chainTail = requireBone(bones, chain.last()).tailPosition
 
-	val localChainTail = (chainTail - boneHead).unit()
-	if (FastMath.isApproxEqual(localChainTail.lenSq(), 0f)) {
+	val localChainTail = chainTail - boneHead
+	val localChainTailLenSq = localChainTail.lenSq()
+	if (FastMath.isApproxZero(localChainTailLenSq)) {
 		// Chain tail is at the origin
 		return null
 	}
 
-	val localTarget = (target - boneHead).unit()
-	if (FastMath.isApproxEqual(localTarget.lenSq(), 0f)) {
+	val localTarget = target - boneHead
+	val localTargetLenSq = localTarget.lenSq()
+	if (FastMath.isApproxZero(localTargetLenSq)) {
 		// Target is at the origin
 		return null
 	}
 
-	val offset = Quaternion.fromTo(localChainTail, localTarget)
+	val offset = Quaternion.fromTo(localChainTail.unit(), localTarget.unit())
+
+	if (localTargetLenSq < localChainTailLenSq &&
+		FastMath.isApproxZero(offset.angleQ())
+	) {
+		// TODO This is not ideal whatsoever, this should be based on a preferred axis
+		//  and aligned to global space using the bone's parent.
+		// If the target is closer than the tail and the bone is parallel to the target,
+		//  apply an arbitrary small rotation to promote movement
+		return smallRotation
+	}
+
 	return if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
 		offset
 	} else {
 		// When the vectors are exactly opposite, arbitrarily choose an axis
 		oppositeRotation
 	}
+}
+
+// Apply offset in global space to rotation
+fun applyOffset(
+	rotation: Quaternion,
+	offset: Quaternion,
+) = offset * rotation
+
+fun computeOffset(
+	rotation: Quaternion,
+	rotationWithOffset: Quaternion,
+) = rotationWithOffset / rotation
+
+fun constrainOffsetWithSkeleton(
+	bodyPart: BodyPart,
+	offset: Quaternion,
+	bones: ComputedSkeleton,
+	constraint: Constraint,
+): Quaternion {
+	val boneRot = bones[bodyPart]?.rotation ?: return offset
+	val parentRot = parentOf(bodyPart)?.let { parent ->
+		bones[parent]?.rotation
+	} ?: Quaternion.IDENTITY
+
+	return computeOffset(
+		boneRot,
+		constraint.apply(
+			parentRot,
+			applyOffset(boneRot, offset),
+		),
+	)
 }
 
 fun rotateChain(
@@ -59,7 +106,7 @@ fun rotateChain(
 			requireNotNull(boneInput) {
 				"The provided bone inputs are missing \"${bodyPart}\" from the IK chain."
 			}.copy(
-				rotation = rotation * boneInput.rotation,
+				rotation = applyOffset(boneInput.rotation, rotation),
 			)
 		}
 	}
@@ -70,22 +117,32 @@ fun ccdIkIteration(
 	mutableComputedSkeleton: ComputedSkeleton,
 	chain: IKChain,
 	target: Vector3,
-	constraints: BodyPartMap<Constraint>?,
+	offsetConstraint: Constraint?,
+	constraint: Constraint?,
 ) {
 	// TODO: Do we need annealing and/or dampening?
 	// The first bone in the chain is the one we are adjusting in this iteration
 	val bodyPart = chain.first()
 	val offset = fromChainToTarget(bodyPart, mutableComputedSkeleton, chain, target) ?: return
 
+	// TODO Constrain the local offset
+	val localConstrainedOffset = offset
+// 	val localConstrainedOffset = offsetConstraint?.let {
+// 		val parentRot = parentOf(bodyPart)?.let { parent ->
+// 			mutableComputedSkeleton[parent]?.rotation
+// 		} ?: Quaternion.IDENTITY
+// 		it.apply(parentRot, offset)
+// 	} ?: offset
+
 	// We only need to constrain the bone that we are adjusting
-	val constrainedOffset = constraints?.let {
+	val constrainedOffset = constraint?.let {
 		constrainOffsetWithSkeleton(
 			bodyPart,
-			offset,
+			localConstrainedOffset,
 			mutableComputedSkeleton,
 			it,
 		)
-	} ?: offset
+	} ?: localConstrainedOffset
 
 	// Mutate the input skeleton
 	rotateChain(mutableBoneInputs, chain, constrainedOffset)
@@ -100,34 +157,46 @@ data class IKChainGoal(
 	val target: Vector3,
 )
 
+/**
+ * @return True if all goals were met, false if any goal was not met.
+ */
 fun ccdIk(
 	mutableBoneInputs: InputSkeleton,
 	mutableComputedSkeleton: ComputedSkeleton,
 	goals: List<IKChainGoal>,
+	offsetConstraints: BodyPartMap<Constraint>?,
 	constraints: BodyPartMap<Constraint>?,
 	threshold: Float,
 	maxIterations: Int,
-) {
+): Boolean {
 	// No goal leaves every bone as the FK pass built it, so nothing below needs to run
-	if (goals.isEmpty()) return
+	if (goals.isEmpty()) return true
 
-	for (i in 0..maxIterations) {
+	for (i in 0 until maxIterations) {
 		var allGoalsMet = true
-		for (goal in goals) {
+		for ((chain, target) in goals) {
 			// Only iterate chains not meeting the threshold
-			if (chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target) <= threshold) continue
+			if (chainDistanceFromTarget(mutableComputedSkeleton, chain, target) <= threshold) continue
 			allGoalsMet = false
 
 			// The chain from the current bone to the end, iterating backwards
-			val iterationChain = goal.chain.takeLast((i % goal.chain.size) + 1)
+			// TODO We can avoid making any objects or just cache this if it's slow,
+			//  check performance to see if needed
+			val iterationChain = chain.subListOfLast((i % chain.size) + 1)
+			val bodyPart = iterationChain.first()
 			ccdIkIteration(
 				mutableBoneInputs,
 				mutableComputedSkeleton,
 				iterationChain,
-				goal.target,
-				constraints,
+				target,
+				offsetConstraints?.get(bodyPart),
+				constraints?.get(bodyPart),
 			)
 		}
 		if (allGoalsMet) break
+	}
+
+	return goals.all { (chain, target) ->
+		chainDistanceFromTarget(mutableComputedSkeleton, chain, target) <= threshold
 	}
 }

@@ -314,7 +314,7 @@ class ComputedSkeletonBehaviour(
 						for (processor in targetProcessors) processor.process(ikTargets, mutableBoneInputs, mutableComputedSkeleton, targetState.floorLevel)
 
 						// Run IK
-						ccdIk(
+						val ikSuccess = ccdIk(
 							mutableBoneInputs,
 							mutableComputedSkeleton,
 							ikTargets.map { (bodyPart, target) ->
@@ -323,10 +323,15 @@ class ComputedSkeletonBehaviour(
 									target,
 								)
 							},
+							BODY_PART_OFFSET_CONSTRAINT_MAP,
 							BODY_PART_CONSTRAINT_MAP,
 							IK_THRESHOLD,
 							IK_MAX_ITERATIONS,
 						)
+						// TODO Make this not spam logs on repeated failures
+// 						if (!ikSuccess) {
+// 							AppLogger.skeleton.warn("IK step did not meet all requested targets within $IK_THRESHOLD meters")
+// 						}
 
 						// Save or restore paused tracking
 						if (targetState.pausedProcessedBoneInputs != null) {

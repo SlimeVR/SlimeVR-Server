@@ -12,9 +12,9 @@ fun applyLocalOperation(
 	parentRotation: Quaternion,
 	childRotation: Quaternion,
 	operation: (localRotation: Quaternion) -> Quaternion,
-): Quaternion = parentRotation * operation(parentRotation.inv() * childRotation)
+): Quaternion = operation(childRotation.localAbout(parentRotation)).globalAbout(parentRotation)
 
-// TODO Actually rewrite, currently still using original server code
+// TODO Create unit tests to validate behaviour
 interface Constraint {
 	/**
 	 * Applies the constraint to a local rotation.
@@ -40,7 +40,7 @@ data class TwistSwingConstraint(
 	/**
 	 * Swing range in radians.
 	 */
-	val swing: Float = 0f,
+	val swing: Float,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, Vector3.NEG_Y)
@@ -58,8 +58,7 @@ data class HingeConstraint(
 	/**
 	 * Maximum rotation in radians.
 	 */
-	val max: Float = 0f,
-	val maxDeviationFromTracker: Float = 15f,
+	val max: Float,
 	val hingeAxis: Vector3 = Vector3.NEG_X,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
@@ -76,9 +75,11 @@ data class LooseHingeConstraint(
 	/**
 	 * Maximum rotation in radians.
 	 */
-	val max: Float = 0f,
-	val allowedDeviation: Float = 0f,
-	val maxDeviationFromTracker: Float = 15f,
+	val max: Float,
+	/**
+	 * Maximum non-hinge axis rotation in radians.
+	 */
+	val allowedDeviation: Float,
 	val hingeAxis: Vector3 = Vector3.NEG_X,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
@@ -88,13 +89,46 @@ data class LooseHingeConstraint(
 	}
 }
 
+data class AxisConstraint(
+	val axis: Vector3 = Vector3.NEG_X,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion = localRotation.project(axis).unit()
+
+	// Optimized to reduce quaternion operations
+	override fun apply(
+		parentRotation: Quaternion,
+		childRotation: Quaternion,
+	): Quaternion {
+		val globalAxis = parentRotation.sandwich(axis)
+		return childRotation.project(globalAxis).unit()
+	}
+}
+
+data class LooseAxisConstraint(
+	/**
+	 * Maximum non-axis rotation in radians.
+	 */
+	val allowedDeviation: Float,
+	val axis: Vector3 = Vector3.NEG_X,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion {
+		val (nonAxisRot, axisRot) = decomposeToSwingTwist(localRotation, axis)
+		return constrainAngle(nonAxisRot, allowedDeviation) * axisRot
+	}
+}
+
+data class SwingTwist(
+	val swing: Quaternion,
+	val twist: Quaternion,
+)
+
 fun decomposeToSwingTwist(
 	rotation: Quaternion,
 	twistAxis: Vector3,
-): Pair<Quaternion, Quaternion> {
+): SwingTwist {
 	val twist = rotation.project(twistAxis).unit()
 	val swing = rotation / twist
-	return Pair(swing, twist)
+	return SwingTwist(swing, twist)
 }
 
 fun constrainAngle(rotation: Quaternion, angle: Float): Quaternion {
