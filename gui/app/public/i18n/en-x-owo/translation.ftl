@@ -291,12 +291,6 @@ settings-driver-enable = enaybwe
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = fiwtewing~
-settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
-settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
-settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
-settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
-settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
-settings-general-tracker_mechanics-filtering-amount = amownt
 settings-general-tracker_mechanics-yaw-reset-smooth-time = nyaw weset smootse taim (0s disaeblez smooting)
 settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
 settings-general-tracker_mechanics-save_mounting_reset-description =
