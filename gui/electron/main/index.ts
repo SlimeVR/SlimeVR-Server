@@ -246,7 +246,7 @@ handleIpc(IPC_CHANNELS.GUI_LOG_UNSUBSCRIBE, (e) => stopGuiLogs(e.sender.id));
 handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
   switch (folder) {
     case 'config':
-      return getGuiDataFolder();
+      return getServerDataFolder();
     case 'logs':
       return getLogsFolder();
     case 'exe':
