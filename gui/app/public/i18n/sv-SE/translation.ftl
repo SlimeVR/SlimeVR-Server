@@ -309,12 +309,6 @@ settings-driver-status-badge-disabled = Av
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
-settings-general-tracker_mechanics-filtering-type-none-description = Använd rotationer som de är. Kommer inte att göra någon filtrering.
-settings-general-tracker_mechanics-filtering-type-smoothing = Utjämning
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Utjämnar rörelser men ger viss fördröjning.
-settings-general-tracker_mechanics-filtering-type-prediction = Förutsägelse
-settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
 settings-general-tracker_mechanics-save_mounting_reset = Spara automatisk montering återställning kalibrering
 settings-general-tracker_mechanics-save_mounting_reset-description = Sparar de automatiska kalibreringarna för återställning av montering för trackers mellan omstarter. Användbart när du bär en dräkt där trackers inte flyttas mellan sessionerna. <b>Rekommenderas inte för normala användare!</b>
