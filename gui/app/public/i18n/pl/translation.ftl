@@ -326,12 +326,6 @@ settings-driver-status-badge-disabled = Od
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrowanie
-settings-general-tracker_mechanics-filtering-type-none = Brak Filtrów
-settings-general-tracker_mechanics-filtering-type-none-description = Używa rotacji w niezmienionej formie. Wszystkie filtry są wyłączone.
-settings-general-tracker_mechanics-filtering-type-smoothing = Wygładzanie
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
-settings-general-tracker_mechanics-filtering-type-prediction = Przewidywanie
-settings-general-tracker_mechanics-filtering-amount = Ilość
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Czas wygładzania resetu odchylenia (0s wyłącza wygładzanie)
 settings-general-tracker_mechanics-save_mounting_reset = Zapisz pozycję trackerów na ciele
 settings-general-tracker_mechanics-save_mounting_reset-description =
