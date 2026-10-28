@@ -442,6 +442,20 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	)
 
 	/**
+	 * Aligns this global quaternion to be local within the [parent]'s space.
+	 * @param parent The global quaternion to become relative to.
+	 * @return This quaternion aligned to [parent]'s local space.
+	 */
+	fun localAbout(parent: Quaternion): Quaternion = parent.inv() * this
+
+	/**
+	 * Aligns this local quaternion to be global from within the parent's space.
+	 * @param parent The global quaternion which this quaternion is relative to.
+	 * @return This quaternion aligned to a global space.
+	 */
+	fun globalAbout(parent: Quaternion): Quaternion = parent * this
+
+	/**
 	 * computes this quaternion's unit length rotation axis
 	 * @return rotation axis
 	 **/
