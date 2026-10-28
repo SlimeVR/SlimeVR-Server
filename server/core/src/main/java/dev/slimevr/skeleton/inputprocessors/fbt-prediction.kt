@@ -10,8 +10,8 @@ import kotlin.collections.set
 
 class FbtPrediction : SkeletonInputProcessor  {
 
-	var lastHeadPosition = Vector3(0,0,0);
-	var lastHeadPositionNoY = Vector3(0,0,0);
+	var lastHeadPosition = Vector3(0f,0f,0f);
+	var lastHeadPositionNoY = Vector3(0f,0f,0f);
 
 	var currentLeftLegUpperPitch = 0f;
 	var currentRightLegUpperPitch = 0f;
@@ -20,9 +20,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val head = mutableInputSkeleton[BodyPart.HEAD]
-
-		lastHeadPosition = head!!.position
-		lastHeadPositionNoY = Vector3(head!!.position!!.x, 0,head!!.position!!.x);
+		val currentHeadPosition = Vector3(head!!.position!!.x, head!!.position!!.y,head!!.position!!.x)
+		val currentHeadPositionNoY = Vector3(head!!.position!!.x, 0f,head!!.position!!.x);
 		val leftUpperLeg = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG]
 		val rightUpperLeg = mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG]
 
@@ -39,7 +38,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 		currentLeftLegLowerPitch = (-normalizedTilt + 1) / 2
 		currentRightLegLowerPitch = (normalizedTilt + 1) / 2
-
+		
 		if(!leftUpperLeg!!.isRotationActive){
 		    var euler =	leftUpperLeg.rotation.toEulerAngles(EulerOrder.XYZ)
 			euler = EulerAngles(EulerOrder.XYZ, calculateLegMotion(-rotationRange, rotationRange, currentLeftLegUpperPitch), euler.y, euler.z)
@@ -63,6 +62,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 			euler = EulerAngles(EulerOrder.XYZ, lerp(-rotationRange, rotationRange, currentRightLegLowerPitch), euler.y, euler.z)
 			mutableInputSkeleton[BodyPart.RIGHT_LOWER_LEG] = rightLowerLeg.copy(rotation = euler.toQuaternion());
 		}
+		lastHeadPosition = currentHeadPosition;
+		lastHeadPositionNoY = currentHeadPositionNoY;
 	}
 
 	fun lerp(start: Float, end: Float, t: Float): Float {
@@ -87,7 +88,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 		t: Float
 	): Float {
 		return if (t < 0f) {
-			parabola(start, peak * 2,0.50f, -t)
+			parabola(start, peak * 3,0.50f, -t)
 		} else {
 			lerp(peak, start, t)
 		}
