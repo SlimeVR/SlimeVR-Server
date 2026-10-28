@@ -1,5 +1,7 @@
 package dev.slimevr.skeleton.inputprocessors
 
+import com.jme3.math.FastMath
+import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
@@ -25,17 +27,40 @@ private data class BoneSamples(
 	val runningSample: BoneSample?,
 	val targetSample: BoneSample?,
 	val timeBetweenPoses: Duration?,
+	val predictionRotation: Quaternion?,
 	val timeLeftForLastPose: Duration = Duration.ZERO,
 )
 
+// TODO fine tune these values
 // Smoothing
-private const val TIME_CARRYOVER_DECAY = 0.9 // Carries over 90% of the last pose's remaining time
+private const val TIME_CARRYOVER_DECAY_MIN = 0.8f
+private const val TIME_CARRYOVER_DECAY_MAX = 0.1f
+
+// Smaller = more smoother
+private const val ROTATION_SMOOTHING_MIN = 0.3f
+private const val ROTATION_SMOOTHING_MAX = 0.04f
 
 // Prediction
-private const val EXTRAPOLATION_LOG_BASE = 5.0 // Higher = less extrapolation
-private const val EXTRAPOLATION_MAX = 1.0 // Allows 5 seconds
+private const val EXTRAPOLATION_MAX_SECONDS = 4.5
+
+// Higher = less extrapolation
+private const val EXTRAPOLATION_LOG_BASE_MIN = 8.0f
+private const val EXTRAPOLATION_LOG_BASE_MAX = 4.0f
+
+// Higher = more prediction
+private const val ROTATION_PREDICTION_MIN = 0f
+private const val ROTATION_PREDICTION_MAX = 0.95f
+
+// Lower = more biased towards recent rotations
+private const val PREVIOUS_PREDICTION_DECAY = 0.2f
+
+// TODO this could use 'some' (A LOT OF) refactoring
+//  pls don't judge the code quality, I was just trying to make it work for now!
 
 /**
+ * This processor handles upsampling, smoothing and prediction, all in one processor for optimization's sake.
+ *
+ * ----- Upsampling -----
  * Since the skeleton runs at a different rate than trackers (e.g: 500hz vs 100hz),
  * this processor handles interpolating data received from trackers across skeleton frames up
  * until the next tracker data (e.g: interpolating the 100hz data across 5 frames to reach 500hz).
@@ -48,14 +73,28 @@ private const val EXTRAPOLATION_MAX = 1.0 // Allows 5 seconds
  *
  * With this, processors don't have to care that trackers only send at 100hz and can know that the data from one skeleton
  * frame to another will have reliably changed according to the IRL movements.
+ *
+ * ----- Smoothing -----
+ * Smoothing decides how fast to get to the target rotation by just scaling down the interpolation ratio.
+ *
+ * ----- Prediction -----
+ * Prediction decides how far away the target rotation is using an average of past rotation deltas.
  */
-class UpsamplingInputProcessor :
+class FilteringInputProcessor(val settings: Settings) :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
 	private val boneSamples: BodyPartMap<BoneSamples> = bodyPartMap()
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val now = timeSource.markNow()
+		val skeletonRatios = settings.context.state.value.data.skeletonConfig.ratios
+		val smoothingStrength = skeletonRatios.smoothingStrength
+		val predictionStrength = skeletonRatios.predictionStrength
+		val timeCarryoverDecay = FastMath.remapClamped(smoothingStrength, 0f, 1f, TIME_CARRYOVER_DECAY_MIN, TIME_CARRYOVER_DECAY_MAX).toDouble()
+		val rotationSmoothingMultiplier = FastMath.remapClamped(smoothingStrength, 0f, 1f, ROTATION_SMOOTHING_MIN, ROTATION_SMOOTHING_MAX)
+		val extrapolationLogBase = FastMath.remapClamped(predictionStrength, 0f, 1f, EXTRAPOLATION_LOG_BASE_MIN, EXTRAPOLATION_LOG_BASE_MAX).toDouble()
+		val rotationPredictionMultiplier = FastMath.remapClamped(predictionStrength, 0f, 1f, ROTATION_PREDICTION_MIN, ROTATION_PREDICTION_MAX)
+
 		for ((bodyPart, bone) in mutableInputSkeleton) {
 			if (bone.expectedTps == null || bone.poseTime == null) continue
 
@@ -71,13 +110,22 @@ class UpsamplingInputProcessor :
 					val timeBetweenLastPoses = bone.poseTime - targetPoseTime
 					oldSamples.runningSample?.poseTime?.let { runningPoseTime ->
 						// Add some of last pose's remaining time
-						val lastPoseCarryoverTime = oldSamples.timeLeftForLastPose * TIME_CARRYOVER_DECAY
+						val lastPoseCarryoverTime = oldSamples.timeLeftForLastPose * timeCarryoverDecay
 						val timeSinceRunningPose = now - runningPoseTime
 						(timeBetweenLastPoses + lastPoseCarryoverTime - timeSinceRunningPose).coerceAtLeast(Duration.ZERO)
 					} ?: timeBetweenLastPoses
 				}
+				val predictionRotation = oldSamples?.targetSample?.rotation?.let { previousRotation ->
+					if (predictionStrength > 0f) {
+						val previousPrediction = oldSamples.predictionRotation?.pow(PREVIOUS_PREDICTION_DECAY) ?: Quaternion.IDENTITY
+						val currentDelta = (previousRotation.inv() * targetSample.rotation).pow(rotationPredictionMultiplier)
+						previousPrediction * currentDelta
+					} else {
+						null
+					}
+				}
 
-				BoneSamples(fromSample, null, targetSample, timeBetweenPoses)
+				BoneSamples(fromSample, null, targetSample, timeBetweenPoses, predictionRotation)
 			} else {
 				oldSamples
 			}
@@ -89,16 +137,23 @@ class UpsamplingInputProcessor :
 				// Time between now and tracker data.
 				val timeSinceLastPose = now - bone.poseTime
 				// Ratio of how close we should be to the next pose.
-				//  0 = we just got started, 1 = we should have the next one, >1 = we didn't get it yet, packet loss?
+				//  0 = we just got started, 1 = we should have the next one, >1 = we didn't get it yet; packet lost or late
 				val rawRatio = timeSinceLastPose / timeBetweenPoses
 				// In case the rawRatio is >1, we extrapolate using log to keep some smooth perceived movement.
-				val extrapolationAmount = log((rawRatio).coerceAtLeast(1.0), EXTRAPOLATION_LOG_BASE).coerceAtMost(EXTRAPOLATION_MAX)
+				val extrapolationAmount = log((rawRatio).coerceIn(1.0, EXTRAPOLATION_MAX_SECONDS), extrapolationLogBase)
 				// Resulting ratio to use for interpolation, with extrapolation if any.
 				val interpolationRatio = (rawRatio.coerceAtMost(1.0) + extrapolationAmount).toFloat()
 
 				// Upsample rotation, acceleration and position.
 				val rotation = if (bone.isRotationActive) {
-					fromSample.rotation.interpQ(targetSample.rotation, interpolationRatio)
+					val rotationInterpolationRatio = if (smoothingStrength > 0f) {
+						val extrapolationAmount = log((rawRatio * rotationSmoothingMultiplier).coerceIn(1.0, EXTRAPOLATION_MAX_SECONDS), extrapolationLogBase)
+						((rawRatio * rotationSmoothingMultiplier).coerceAtMost(1.0) + extrapolationAmount).toFloat()
+					} else {
+						interpolationRatio
+					}
+					val targetRotation = samples.predictionRotation?.let { targetSample.rotation * it } ?: targetSample.rotation
+					fromSample.rotation.interpQ(targetRotation, rotationInterpolationRatio)
 				} else {
 					targetSample.rotation
 				}

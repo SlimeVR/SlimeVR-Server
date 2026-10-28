@@ -3,7 +3,6 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.SkeletonConfig
-import dev.slimevr.config.SkeletonFilteringConfig
 import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
@@ -18,7 +17,6 @@ import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
 import solarxr_protocol.rpc.LegTweaksTmpChange
 import solarxr_protocol.rpc.LegTweaksTmpClear
 import solarxr_protocol.rpc.SetPauseTrackingRequest
-import solarxr_protocol.rpc.SkeletonFiltering
 import solarxr_protocol.rpc.SkeletonRatios
 import solarxr_protocol.rpc.SkeletonSettingsRequest
 import solarxr_protocol.rpc.SkeletonSettingsResponse
@@ -37,14 +35,12 @@ internal fun buildSkeletonSettingsResponse(config: SkeletonConfig) = SkeletonSet
 		enforceConstraints = config.toggles.enforceConstraints,
 	),
 	ratios = SkeletonRatios(
+		smoothingStrength = config.ratios.smoothingStrength,
+		predictionStrength = config.ratios.predictionStrength,
 		spineCurvature = config.ratios.spineCurvature,
 		imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
 		interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
 		skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
-	),
-	filtering = SkeletonFiltering(
-		type = config.filtering.type,
-		amount = config.filtering.amount,
 	),
 )
 
@@ -84,18 +80,14 @@ class SkeletonSettingsBehaviour(
 							} ?: skeletonConfig.toggles,
 							ratios = req.ratios?.let {
 								SkeletonRatiosConfig(
+									smoothingStrength = it.smoothingStrength ?: 0f,
+									predictionStrength = it.predictionStrength ?: 0f,
 									spineCurvature = it.spineCurvature ?: 0f,
 									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
 									interpolateUpperLegsTwistWithLowerLegs = it.interpolateUpperLegsTwistWithLowerLegs ?: 0f,
 									skatingCorrectionStrength = it.skatingCorrectionStrength ?: 0f,
 								)
 							} ?: skeletonConfig.ratios,
-							filtering = req.filtering?.let {
-								SkeletonFilteringConfig(
-									type = it.type,
-									amount = it.amount,
-								)
-							} ?: skeletonConfig.filtering,
 						),
 					)
 				},

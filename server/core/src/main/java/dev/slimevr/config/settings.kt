@@ -13,7 +13,6 @@ import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsMountingResetMode
-import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
 
@@ -117,24 +116,18 @@ data class SkeletonTogglesConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonRatiosConfig(
+	val smoothingStrength: Float = 0.1f,
+	val predictionStrength: Float = 0.2f,
 	val spineCurvature: Float = 0.75f,
 	val imputeSpineFromUpperToLower: Float = DEFAULT_SPINE_UPPER_LOWER,
 	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.5f,
 )
 
-// Used in SkeletonConfig
-@Serializable
-data class SkeletonFilteringConfig(
-	val type: FilteringType = FilteringType.NONE,
-	val amount: Float = 0.25f,
-)
-
 @Serializable
 data class SkeletonConfig(
 	val toggles: SkeletonTogglesConfig = SkeletonTogglesConfig(),
 	val ratios: SkeletonRatiosConfig = SkeletonRatiosConfig(),
-	val filtering: SkeletonFilteringConfig = SkeletonFilteringConfig(),
 )
 
 const val DEFAULT_VRC_OSC_PORT_OUT: Int = 9000

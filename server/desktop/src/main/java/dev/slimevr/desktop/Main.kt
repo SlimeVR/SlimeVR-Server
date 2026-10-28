@@ -13,7 +13,6 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.contextDebugEnabled
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
-import dev.slimevr.desktop.utils.executeShellCommand
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.keybind.createDesktopKeybindManager
@@ -25,6 +24,7 @@ import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.timing.createDesktopWaiter
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
 import dev.slimevr.desktop.udp.bindDesktopUdp
+import dev.slimevr.desktop.utils.executeShellCommand
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.desktop.vrchat.observeDesktopLocalIpAddress
 import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
@@ -89,11 +89,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	for (arg in args) {
 		when (arg) {
 			"--steam", "-s" -> featureFlags.steam = true
-
 			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
-
 			"--skeleton-ticks", "-st" -> AppLogger.ShouldDebug.skeletonTicks = true
-
 			"--event-dispatcher", "-ed" -> AppLogger.ShouldDebug.eventDispatcher = true
 		}
 	}

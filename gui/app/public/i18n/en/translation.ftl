@@ -593,20 +593,10 @@ settings-general-mounting_method = Mounting calibration method
 settings-general-mounting_method-pose_only = Only used by pose mounting calibration.
 settings-general-mounting_method-description = What mounting calibration method to use to calibrate your trackers' mounting orientations.
 settings-general-tracker_mechanics-filtering = Filtering
-settings-general-tracker_mechanics-filtering-type = Filtering type
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Choose the filtering type for your trackers.
-    "{ settings-general-tracker_mechanics-filtering-type-smoothing }" makes movement smoother while "{ settings-general-tracker_mechanics-filtering-type-prediction }" minimizes latency.
-settings-general-tracker_mechanics-filtering-type-none = No filtering
-settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
-settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooths movements but adds some latency.
-settings-general-tracker_mechanics-filtering-type-prediction = Prediction
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements snappier, but increases jitter.
-settings-general-tracker_mechanics-filtering-amount = Filter strength
-settings-general-tracker_mechanics-filtering-amount-description = How strong the selected filter is. Higher values increase smoothing or prediction while lower ones make the effect more subtle.
-settings-general-tracker_mechanics-filtering-amount-no_filtering = Pick a filtering type to set its strength.
+settings-general-tracker_mechanics-filtering-smoothing-strength = Smoothing strength
+settings-general-tracker_mechanics-filtering-smoothing-strength-description = Smooths out movement. Set to 0 to disable.
+settings-general-tracker_mechanics-filtering-prediction-strength = Prediction strength
+settings-general-tracker_mechanics-filtering-prediction-strength-description = Compensates for latency. Set to 0 to disable.
 settings-general-fk_settings-reset_behaviour_group = Reset behaviour
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Smooths the trackers' rotations upon doing a yaw reset. 0s disables smoothing.

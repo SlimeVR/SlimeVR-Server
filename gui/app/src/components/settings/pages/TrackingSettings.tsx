@@ -3,9 +3,7 @@ import { useEffect } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
 import {
   ChangeSkeletonSettingsRequestT,
-  FilteringType,
   RpcMessage,
-  SkeletonFilteringT,
   SkeletonRatiosT,
   SkeletonSettingsRequestT,
   SkeletonSettingsResponseT,
@@ -16,7 +14,6 @@ import { useSettingsDefaults } from '@/hooks/settings-defaults';
 import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { NumberSelector } from '@/components/commons/NumberSelector';
-import { Radio } from '@/components/commons/Radio';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPagePaneLayout';
 import { settingReset } from '@/components/settings/SettingReset';
 import {
@@ -41,14 +38,12 @@ type SkeletonForm = {
     enforceConstraints: boolean;
   };
   ratios: {
+    smoothingStrength: number;
+    predictionStrength: number;
     imputeSpineFromUpperToLower: number;
     spineCurvature: number;
     interpolateUpperLegsTwistWithLowerLegs: number;
     skatingCorrectionStrength: number;
-  };
-  filtering: {
-    type: number;
-    amount: number;
   };
 };
 
@@ -64,7 +59,7 @@ const skeletonSettingsValueAtom = selectAtom(
 );
 
 function toForm(settings: SkeletonSettingsResponseT): SkeletonForm {
-  const { toggles, ratios, filtering } = settings;
+  const { toggles, ratios } = settings;
   return {
     toggles: {
       floorClip: toggles?.floorClip ?? false,
@@ -76,15 +71,13 @@ function toForm(settings: SkeletonSettingsResponseT): SkeletonForm {
       enforceConstraints: toggles?.enforceConstraints ?? false,
     },
     ratios: {
+      smoothingStrength: ratios?.smoothingStrength ?? 0,
+      predictionStrength: ratios?.predictionStrength ?? 0,
       imputeSpineFromUpperToLower: ratios?.imputeSpineFromUpperToLower ?? 0,
       spineCurvature: ratios?.spineCurvature ?? 0,
       interpolateUpperLegsTwistWithLowerLegs:
         ratios?.interpolateUpperLegsTwistWithLowerLegs ?? 0,
       skatingCorrectionStrength: ratios?.skatingCorrectionStrength ?? 0,
-    },
-    filtering: {
-      type: filtering?.type ?? FilteringType.NONE,
-      amount: filtering?.amount ?? 0,
     },
   };
 }
@@ -96,15 +89,17 @@ export const trackingSettingsPage = defineSettingsPage({
     filtering: {
       title: 'settings-general-tracker_mechanics-filtering',
       rows: {
-        type: {
-          title: 'settings-general-tracker_mechanics-filtering-type',
+        smoothing: {
+          title:
+            'settings-general-tracker_mechanics-filtering-smoothing-strength',
           description:
-            'settings-general-tracker_mechanics-filtering-description',
+            'settings-general-tracker_mechanics-filtering-smoothing-strength-description',
         },
-        amount: {
-          title: 'settings-general-tracker_mechanics-filtering-amount',
+        prediction: {
+          title:
+            'settings-general-tracker_mechanics-filtering-prediction-strength',
           description:
-            'settings-general-tracker_mechanics-filtering-amount-description',
+            'settings-general-tracker_mechanics-filtering-prediction-strength-description',
         },
       },
     },
@@ -197,7 +192,6 @@ const { groups } = trackingSettingsPage;
 export function TrackingSettings() {
   const setSettings = useSetAtom(skeletonSettingsAtom);
   const settings = useAtomValue(skeletonSettingsValueAtom);
-  const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket, useConnectedEffect } = useWebsocketAPI();
   const defaults = useSettingsDefaults().skeleton;
@@ -228,6 +222,8 @@ export function TrackingSettings() {
     settingsReq.toggles = toggles;
 
     const ratios = new SkeletonRatiosT();
+    ratios.smoothingStrength = values.ratios.smoothingStrength;
+    ratios.predictionStrength = values.ratios.predictionStrength;
     ratios.imputeSpineFromUpperToLower =
       values.ratios.imputeSpineFromUpperToLower;
     ratios.spineCurvature = values.ratios.spineCurvature;
@@ -235,11 +231,6 @@ export function TrackingSettings() {
       values.ratios.interpolateUpperLegsTwistWithLowerLegs;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;
     settingsReq.ratios = ratios;
-
-    const filtering = new SkeletonFilteringT();
-    filtering.type = values.filtering.type;
-    filtering.amount = values.filtering.amount;
-    settingsReq.filtering = filtering;
 
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, settingsReq);
   };
@@ -270,7 +261,6 @@ export function TrackingSettings() {
     }
   );
 
-  const filteringEnabled = watch('filtering.type') !== FilteringType.NONE;
   const skatingCorrection = watch('toggles.skatingCorrection');
 
   const resetTo = (name: FieldPath<SkeletonForm>) =>
@@ -320,52 +310,13 @@ export function TrackingSettings() {
       <div className="flex flex-col">
         <SettingsGroup group={groups.filtering}>
           <SettingRow
-            setting={groups.filtering.rows.type}
-            {...resetTo('filtering.type')}
-            childrenDisabled={!filteringEnabled}
-            below={
-              <div className="flex md:flex-row flex-col gap-3">
-                <Radio
-                  control={control}
-                  name="filtering.type"
-                  label={l10n.getString(
-                    'settings-general-tracker_mechanics-filtering-type-none'
-                  )}
-                  description={l10n.getString(
-                    'settings-general-tracker_mechanics-filtering-type-none-description'
-                  )}
-                  value={FilteringType.NONE}
-                />
-                <Radio
-                  control={control}
-                  name="filtering.type"
-                  label={l10n.getString(
-                    'settings-general-tracker_mechanics-filtering-type-smoothing'
-                  )}
-                  description={l10n.getString(
-                    'settings-general-tracker_mechanics-filtering-type-smoothing-description'
-                  )}
-                  value={FilteringType.SMOOTHING}
-                />
-                <Radio
-                  control={control}
-                  name="filtering.type"
-                  label={l10n.getString(
-                    'settings-general-tracker_mechanics-filtering-type-prediction'
-                  )}
-                  description={l10n.getString(
-                    'settings-general-tracker_mechanics-filtering-type-prediction-description'
-                  )}
-                  value={FilteringType.PREDICTION}
-                />
-              </div>
-            }
-          >
-            <SettingRow
-              setting={groups.filtering.rows.amount}
-              {...stepper('filtering.amount')}
-            />
-          </SettingRow>
+            setting={groups.filtering.rows.smoothing}
+            {...stepper('ratios.smoothingStrength')}
+          />
+          <SettingRow
+            setting={groups.filtering.rows.prediction}
+            {...stepper('ratios.predictionStrength')}
+          />
         </SettingsGroup>
 
         <SettingsGroup group={groups.legFk}>

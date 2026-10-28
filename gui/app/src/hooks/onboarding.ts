@@ -117,7 +117,6 @@ export function useProvideOnboarding() {
     const skeletonReq = new ChangeSkeletonSettingsRequestT();
     skeletonReq.toggles = toggles;
     skeletonReq.ratios = skeletonSettings.ratios;
-    skeletonReq.filtering = skeletonSettings.filtering;
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
     setResetsSettings({
