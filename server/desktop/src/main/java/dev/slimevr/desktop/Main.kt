@@ -13,8 +13,7 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.contextDebugEnabled
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
-import dev.slimevr.desktop.install.executeShellCommand
-import dev.slimevr.desktop.install.runInstaller
+import dev.slimevr.desktop.utils.executeShellCommand
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.keybind.createDesktopKeybindManager
@@ -91,11 +90,6 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		when (arg) {
 			"--steam", "-s" -> featureFlags.steam = true
 
-			"--install", "-i" -> {
-				runInstaller()
-				return@runBlocking
-			}
-
 			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
 
 			"--skeleton-ticks", "-st" -> AppLogger.ShouldDebug.skeletonTicks = true
@@ -118,9 +112,6 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 
 		else -> KeybindSupport.UNSUPPORTED
 	}
-
-	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toIntOrNull()
-	if (featureFlags.steam && isInstallDisabled != 1) runInstaller()
 
 	if (!featureFlags.skipCheckUdev) {
 		val command = if (featureFlags.steam) {
