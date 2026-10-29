@@ -76,8 +76,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 			val sideTiltDegrees = sideTiltRadians * FastMath.RAD_TO_DEG
 			val normalizedTilt = (sideTiltDegrees / 45).coerceIn(-1f, 1f)
 
-			currentLeftLegUpperPitch = (-normalizedTilt + 1) / 2
-			currentRightLegUpperPitch = (normalizedTilt + 1) / 2
+			currentLeftLegUpperPitch = (normalizedTilt + 1) / 2
+			currentRightLegUpperPitch = (-normalizedTilt + 1) / 2
 
 			currentLeftLegLowerPitch = (normalizedTilt + 1) / 2
 			currentRightLegLowerPitch = (-normalizedTilt + 1) / 2
@@ -85,10 +85,9 @@ class FbtPrediction : SkeletonInputProcessor  {
 			if(head.position!!.y > standingThreshold) {
 				if (!leftUpperLeg!!.isRotationActive) {
 					var euler = (headYawOnly.inv() * leftUpperLeg.rotation).toEulerAngles(EulerOrder.XYZ)
-					var pitch = calculateLegMotion(
+					var pitch = calculateUpperLegMotion(
 						-rotationRange,
 						rotationRange,
-						rotationRange * 2,
 						currentLeftLegUpperPitch) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
@@ -117,10 +116,9 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 				if (!rightUpperLeg!!.isRotationActive) {
 					var euler = (headYawOnly.inv() * rightUpperLeg.rotation).toEulerAngles(EulerOrder.XYZ)
-					var pitch = calculateLegMotion(
+					var pitch = calculateUpperLegMotion(
 						-rotationRange,
 						rotationRange,
-						rotationRange * 2,
 						currentRightLegUpperPitch) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
@@ -224,21 +222,19 @@ class FbtPrediction : SkeletonInputProcessor  {
 		}
 	}
 
-	fun calculateLegMotion(
+	fun calculateUpperLegMotion(
 		start: Float,
 		end: Float,
-		lift: Float = 0f,
 		t: Float
 	): Float {
 		val progress = t.coerceIn(0f, 1f)
 		val basePitch = lerp(start, end, progress)
-		val liftAmount = if (progress <= 0.5f) {
-			val u = progress * 2f
-			4f * u * (1f - u) * lift
-		} else {
-			0f
-		}
 
-		return basePitch + liftAmount
+		if (progress <= 0.5f) return basePitch
+
+		val u = (progress - 0.5f) * 2f
+		val bump = 4f * u * (1f - u)
+
+		return basePitch + (90f - end) * bump
 	}
 }
