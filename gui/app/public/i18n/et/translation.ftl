@@ -255,7 +255,6 @@ settings-general-fk_settings-self_localization-title = Mocapi režiim
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.3 sekundi jooksul, et need registreeritaks.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
