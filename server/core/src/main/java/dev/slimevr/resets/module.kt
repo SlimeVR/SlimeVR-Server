@@ -101,7 +101,7 @@ class ResetsManager(
 	 * resetSourceName is used for logging
 	 * If bodyParts is null, resets all trackers.
 	 */
-	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
+	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null, solarXRBridgeId: Int? = null, txId: UInt? = null) {
 		val method = settings.context.state.value.data.resetsConfig.mountingMethod.takeIf { resetType == ResetType.MOUNTING }
 		if (method == MountingMethod.UNKNOWN || method == MountingMethod.MANUAL) {
 			AppLogger.resets.info("Ignoring mounting reset from $resetSourceName: the mounting method is $method")
@@ -127,7 +127,7 @@ class ResetsManager(
 		}
 
 		resetJob.cancelAndJoin()
-		resetJob = context.scope.launch { runReset(resetSourceName, resetType, method, delay, bodyParts) }
+		resetJob = context.scope.launch { runReset(resetSourceName, resetType, method, delay, bodyParts, solarXRBridgeId, txId) }
 	}
 
 	suspend fun cancel() {
@@ -135,7 +135,7 @@ class ResetsManager(
 		resetJob.cancelAndJoin()
 	}
 
-	private suspend fun runReset(resetSourceName: String, resetType: ResetType, method: MountingMethod?, delaySeconds: Float, bodyParts: List<BodyPart>?) {
+	private suspend fun runReset(resetSourceName: String, resetType: ResetType, method: MountingMethod?, delaySeconds: Float, bodyParts: List<BodyPart>?, solarXRBridgeId: Int?, txId: UInt?) {
 		val delayMs = (delaySeconds * 1000).toInt()
 		var lastDetail: ResetDetail = CountdownDetail(0, delayMs)
 
@@ -143,7 +143,9 @@ class ResetsManager(
 			lastDetail = detail
 			val status = ResetStatusResponse(resetType, lifecycle, bodyParts, detail)
 			context.dispatch(ResetsActions.SetStatus(status))
-			server.sendSolarxrRpc(status)
+			server.context.state.value.solarxr.values.forEach { bridge ->
+				bridge.sendRpc(status, if (bridge.id == solarXRBridgeId) txId else null)
+			}
 		}
 
 		try {
