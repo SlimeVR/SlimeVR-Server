@@ -376,7 +376,6 @@ settings-general-fk_settings-self_localization-title = โหมด Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = เปิดใช้การรีเซ็ตด้วยการแตะแทร็กเกอร์ แทร็กเกอร์ที่อยู่สูงที่สุดบนลำตัวจะใช้สำหรับการรีเซ็ตแกนตั้ง แทร็กเกอร์ที่อยู่สูงที่สุดบนขาซ้ายใช้สำหรับรีเซ็ตทั้งหมด และแทร็กเกอร์ที่อยู่สูงที่สุดบนขาขวาใช้สำหรับรีเซ็ตตั้งศูนย์การติดตั้ง โดยการแตะจะต้องเกิดขึ้นภายในเวลา 0.3 วินาทีคูณด้วยจำนวนครั้งของการแตะเพื่อให้ระบบรับรู้
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount } ครั้ง
