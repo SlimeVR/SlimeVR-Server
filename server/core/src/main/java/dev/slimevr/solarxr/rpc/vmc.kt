@@ -52,8 +52,8 @@ class VmcBehaviour(
 			.launchIn(receiver.context.scope)
 
 		// Send VMC config
-		receiver.rpcDispatcher.on<VMCOSCSettingsRequest> {
-			receiver.sendRpc(buildVmcOscSettingsResponse(settings.context.state.value.data.vmcConfig))
+		receiver.onRpc<VMCOSCSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildVmcOscSettingsResponse(settings.context.state.value.data.vmcConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches
@@ -64,13 +64,13 @@ class VmcBehaviour(
 			.onEach(receiver::sendRpc)
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<VMCOSCStatusRequest> {
-			receiver.sendRpc(buildStatusResponse(vmcManager.context.state.value.status))
+		receiver.onRpc<VMCOSCStatusRequest> { _, txId ->
+			receiver.sendRpc(buildStatusResponse(vmcManager.context.state.value.status), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Send VRM json
-		receiver.rpcDispatcher.on<VRMSettingsRequest> {
-			receiver.sendRpc(buildVrmSettingsResponse(settings.context.state.value.data.vmcConfig))
+		receiver.onRpc<VRMSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildVrmSettingsResponse(settings.context.state.value.data.vmcConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches

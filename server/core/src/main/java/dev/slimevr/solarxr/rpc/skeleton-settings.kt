@@ -49,8 +49,8 @@ class SkeletonSettingsBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
-		receiver.rpcDispatcher.on<SkeletonSettingsRequest> {
-			receiver.sendRpc(buildSkeletonSettingsResponse(settings.context.state.value.data.skeletonConfig))
+		receiver.onRpc<SkeletonSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildSkeletonSettingsResponse(settings.context.state.value.data.skeletonConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches
@@ -94,25 +94,27 @@ class SkeletonSettingsBehaviour(
 			)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<SetPauseTrackingRequest> {
+		receiver.onRpc<SetPauseTrackingRequest> { req, txId ->
 			receiver.appContext.skeleton.context.dispatch(
 				SkeletonActions.PauseTracking(
-					it.pauseTracking,
+					req.pauseTracking,
 				),
 			)
 
 			receiver.sendRpc(
 				TrackingPauseStateResponse(
-					trackingPaused = it.pauseTracking,
+					trackingPaused = req.pauseTracking,
 				),
+				txId,
 			)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<TrackingPauseStateRequest> {
+		receiver.onRpc<TrackingPauseStateRequest> { _, txId ->
 			receiver.sendRpc(
 				TrackingPauseStateResponse(
 					trackingPaused = receiver.appContext.skeleton.context.state.value.paused,
 				),
+				txId,
 			)
 		}.launchIn(receiver.context.scope)
 

@@ -33,8 +33,8 @@ class ResetsBehaviour(
 			.launchIn(receiver.context.scope)
 
 		// Send config
-		receiver.rpcDispatcher.on<ResetsSettingsRequest> {
-			receiver.sendRpc(buildResetsSettingsResponse(settings.context.state.value.data.resetsConfig))
+		receiver.onRpc<ResetsSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildResetsSettingsResponse(settings.context.state.value.data.resetsConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Receive config

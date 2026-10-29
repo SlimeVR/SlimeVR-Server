@@ -66,8 +66,8 @@ class TrackingChecklistBehaviour(
 			.onEach { response -> receiver.sendRpc(response) }
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<TrackingChecklistRequest> {
-			receiver.sendRpc(buildResponse())
+		receiver.onRpc<TrackingChecklistRequest> { _, txId ->
+			receiver.sendRpc(buildResponse(), txId)
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<IgnoreTrackingChecklistStepRequest> { req ->

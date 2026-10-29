@@ -62,8 +62,8 @@ class SkeletonProportionsBehaviour(
 			}
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<SkeletonProportionsRequest> {
-			receiver.sendRpc(buildConfigResponse(skeleton.context.state.value.boneInputs))
+		receiver.onRpc<SkeletonProportionsRequest> { _, txId ->
+			receiver.sendRpc(buildConfigResponse(skeleton.context.state.value.boneInputs), txId)
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeUserHeightRequest> { req ->

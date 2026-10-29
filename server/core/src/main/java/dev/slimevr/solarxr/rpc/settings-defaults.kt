@@ -38,8 +38,8 @@ private fun buildSettingsDefaultsResponse(): SettingsDefaultsResponse {
 
 class SettingsDefaultsBehaviour : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<SettingsDefaultsRequest> {
-			receiver.sendRpc(buildSettingsDefaultsResponse())
+		receiver.onRpc<SettingsDefaultsRequest> { _, txId ->
+			receiver.sendRpc(buildSettingsDefaultsResponse(), txId)
 		}.launchIn(receiver.context.scope)
 	}
 }

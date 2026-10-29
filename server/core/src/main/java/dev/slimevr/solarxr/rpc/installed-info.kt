@@ -7,9 +7,9 @@ import solarxr_protocol.rpc.InstalledInfoResponse
 
 class InstalledInfoBehaviour : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<InstalledInfoRequest> {
-			val udevRulesInstalled = receiver.appContext.featureFlags.udevRulesInstalled ?: return@on
-			receiver.sendRpc(InstalledInfoResponse(isUdevInstalled = udevRulesInstalled))
+		receiver.onRpc<InstalledInfoRequest> { _, txId ->
+			val udevRulesInstalled = receiver.appContext.featureFlags.udevRulesInstalled ?: return@onRpc
+			receiver.sendRpc(InstalledInfoResponse(isUdevInstalled = udevRulesInstalled), txId)
 		}.launchIn(receiver.context.scope)
 	}
 }

@@ -52,8 +52,8 @@ class KeybindsBehaviour(
 			support = receiver.appContext.featureFlags.keybindSupport,
 		)
 
-		receiver.rpcDispatcher.on<KeybindRequest> {
-			receiver.sendRpc(buildResponse(settings.context.state.value.data.keybinds))
+		receiver.onRpc<KeybindRequest> { _, txId ->
+			receiver.sendRpc(buildResponse(settings.context.state.value.data.keybinds), txId)
 		}.launchIn(receiver.context.scope)
 
 		settings.context.state

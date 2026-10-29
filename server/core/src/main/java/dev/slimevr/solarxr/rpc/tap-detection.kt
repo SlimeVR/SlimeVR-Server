@@ -39,8 +39,8 @@ class TapDetectionBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
-		receiver.rpcDispatcher.on<TapDetectionSettingsRequest> {
-			receiver.sendRpc(buildTapDetectionSettingsResponse(settings.context.state.value.data.tapDetectionConfig))
+		receiver.onRpc<TapDetectionSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildTapDetectionSettingsResponse(settings.context.state.value.data.tapDetectionConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches

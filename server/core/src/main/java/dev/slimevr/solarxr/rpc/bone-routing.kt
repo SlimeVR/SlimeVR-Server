@@ -67,8 +67,8 @@ class BoneRoutingBehaviour(
 			::buildResponse,
 		).distinctUntilChanged()
 
-		receiver.rpcDispatcher.on<BoneRoutingSettingsRequest> {
-			receiver.sendRpc(responses.first())
+		receiver.onRpc<BoneRoutingSettingsRequest> { _, txId ->
+			receiver.sendRpc(responses.first(), txId)
 		}.launchIn(receiver.context.scope)
 
 		responses

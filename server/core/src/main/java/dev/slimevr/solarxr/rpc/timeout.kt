@@ -23,8 +23,8 @@ class TimeoutSettingsBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
-		receiver.rpcDispatcher.on<TimeoutSettingsRequest> {
-			receiver.sendRpc(buildTimeoutSettingsResponse(settings.context.state.value.data.trackersConfig))
+		receiver.onRpc<TimeoutSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildTimeoutSettingsResponse(settings.context.state.value.data.trackersConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches

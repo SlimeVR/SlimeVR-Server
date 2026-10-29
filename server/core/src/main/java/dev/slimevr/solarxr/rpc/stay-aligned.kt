@@ -118,13 +118,13 @@ class StayAlignedBehaviour(
 		observeRecording(receiver)
 	}
 
-	private suspend fun sendConfig(receiver: SolarXRBridge) {
-		receiver.sendRpc(buildStayAlignedSettingsResponse(settings.context.state.value.data.stayAlignedConfig, userConfig.context.state.value.data))
+	private suspend fun sendConfig(receiver: SolarXRBridge, txId: UInt?) {
+		receiver.sendRpc(buildStayAlignedSettingsResponse(settings.context.state.value.data.stayAlignedConfig, userConfig.context.state.value.data), txId)
 	}
 
 	private fun observeSettings(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<StayAlignedSettingsRequest> {
-			sendConfig(receiver)
+		receiver.onRpc<StayAlignedSettingsRequest> { _, txId ->
+			sendConfig(receiver, txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches
@@ -138,7 +138,7 @@ class StayAlignedBehaviour(
 			.onEach(receiver::sendRpc)
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<ChangeStayAlignedSettingsRequest> { req ->
+		receiver.onRpc<ChangeStayAlignedSettingsRequest> { req, txId ->
 			settings.context.dispatch(SettingsActions.Update { copy(stayAlignedConfig = StayAlignedConfig(enabled = req.enabled)) })
 			userConfig.context.dispatch(
 				UserConfigActions.Update {
@@ -151,14 +151,14 @@ class StayAlignedBehaviour(
 					copy(stayAlignedPoses = stayAlignedPoses + toggled)
 				},
 			)
-			sendConfig(receiver)
+			sendConfig(receiver, txId)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<ResetStayAlignedRelaxedPoseRequest> { req ->
-			if (req.pose == StayAlignedRelaxedPose.UNKNOWN) return@on
+		receiver.onRpc<ResetStayAlignedRelaxedPoseRequest> { req, txId ->
+			if (req.pose == StayAlignedRelaxedPose.UNKNOWN) return@onRpc
 			userConfig.context.dispatch(UserConfigActions.Update { copy(stayAlignedPoses = stayAlignedPoses - req.pose) })
 			AppLogger.stayAligned.info("Reset relaxed pose ${req.pose}")
-			sendConfig(receiver)
+			sendConfig(receiver, txId)
 		}.launchIn(receiver.context.scope)
 	}
 
