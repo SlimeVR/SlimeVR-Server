@@ -203,7 +203,7 @@ class SolarXRBridge(
 			add(ProfilesBehaviour(appContext.config))
 			add(SettingsResetBehaviour(appContext))
 			add(SettingsDefaultsBehaviour())
-			add(SkeletonSettingsBehaviour(appContext.config.settings))
+			add(SkeletonSettingsBehaviour(appContext.skeleton, appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton, appContext.errorReporting))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings, appContext.errorReporting))
 			add(UpdateTrackerBehaviour(appContext.server, appContext.errorReporting))

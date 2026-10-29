@@ -5,6 +5,7 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
@@ -45,6 +46,7 @@ internal fun buildSkeletonSettingsResponse(config: SkeletonConfig) = SkeletonSet
 )
 
 class SkeletonSettingsBehaviour(
+	private val skeleton: Skeleton,
 	private val settings: Settings,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
@@ -94,19 +96,16 @@ class SkeletonSettingsBehaviour(
 			)
 		}.launchIn(receiver.context.scope)
 
-		receiver.onRpc<SetPauseTrackingRequest> { req, txId ->
+		receiver.rpcDispatcher.on<SetPauseTrackingRequest> { req ->
 			receiver.appContext.skeleton.context.dispatch(
 				SkeletonActions.PauseTracking(
 					req.pauseTracking,
 				),
 			)
+		}.launchIn(receiver.context.scope)
 
-			receiver.sendRpc(
-				TrackingPauseStateResponse(
-					trackingPaused = req.pauseTracking,
-				),
-				txId,
-			)
+		skeleton.context.state.map { it.paused }.distinctUntilChanged().drop(1).onEach { paused ->
+			receiver.sendRpc(TrackingPauseStateResponse(trackingPaused = paused))
 		}.launchIn(receiver.context.scope)
 
 		receiver.onRpc<TrackingPauseStateRequest> { _, txId ->
