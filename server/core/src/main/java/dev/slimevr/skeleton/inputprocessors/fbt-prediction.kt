@@ -227,12 +227,13 @@ class FbtPrediction : SkeletonInputProcessor  {
 		end: Float,
 		t: Float
 	): Float {
+		val bumpEnd = 0.65f
 		val progress = t.coerceIn(0f, 1f)
 		val basePitch = lerp(start, end, progress)
 
-		if (progress <= 0.5f) return basePitch
+		if (progress <= 0.5f || progress >= bumpEnd) return basePitch
 
-		val u = (progress - 0.5f) * 2f
+		val u = (progress - 0.5f) / (bumpEnd - 0.5f)
 		val bump = 4f * u * (1f - u)
 
 		return basePitch + (90f - end) * bump
