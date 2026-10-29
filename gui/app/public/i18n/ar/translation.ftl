@@ -336,7 +336,6 @@ settings-general-fk_settings-self_localization-title = وضع Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = يسمح بتشغيل عملية إعادة التعيين من خلال النقر على جهاز التعقب. يتم استخدام جهاز التعقب الأعلى على جذعك لإعادة ضبط سريع ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليسرى لإعادة ضبط ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليمنى إعادة ضبط التركيب . تجدر الإشارة إلى أن النقرات يجب أن تتم خلال 0.6 ثانية لكي يتم تسجيلها.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
