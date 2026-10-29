@@ -117,7 +117,7 @@ data class SkeletonTogglesConfig(
 @Serializable
 data class SkeletonRatiosConfig(
 	val smoothingStrength: Float = 0.1f,
-	val predictionStrength: Float = 0.2f,
+	val predictionStrength: Float = 0.3f,
 	val spineCurvature: Float = 0.75f,
 	val imputeSpineFromUpperToLower: Float = DEFAULT_SPINE_UPPER_LOWER,
 	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,

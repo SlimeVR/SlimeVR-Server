@@ -91,7 +91,6 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f
 					SkeletonActions.SetBonePose(
 						BodyPart.LOWER_CHEST,
 						Vector3.ZERO,
-						inputHz.toUShort(),
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
 						Vector3.ZERO,
 						null,
@@ -101,7 +100,6 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f
 					SkeletonActions.SetBonePose(
 						BodyPart.LEFT_LOWER_LEG,
 						Vector3.ZERO,
-						inputHz.toUShort(),
 						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
 						Vector3.ZERO,
 						null,
@@ -117,7 +115,6 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f
 						SkeletonActions.SetBonePose(
 							BodyPart.HEAD,
 							Vector3.ZERO,
-							inputHz.toUShort(),
 							Quaternion.IDENTITY,
 							Vector3.ZERO,
 							Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
@@ -302,7 +299,7 @@ class ComputedSkeletonBehaviour(
 
 								// If head changed position, set the new position in state (for Localizer).
 								if (bodyPart == BodyPart.HEAD && !boneInput.isPositionActive && boneInput.position != previous?.position) {
-									receiver.context.dispatch(SkeletonActions.SetBonePose(BodyPart.HEAD, Vector3.ZERO, null, null, null, boneInput.position, false))
+									receiver.context.dispatch(SkeletonActions.SetBonePose(BodyPart.HEAD, Vector3.ZERO, null, null, boneInput.position, false))
 								}
 							}
 							// Inputs changed; re-run FK

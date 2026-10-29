@@ -48,7 +48,6 @@ data class BoneInput(
 	val headOffset: Vector3,
 	val offset: Vector3,
 	val boneOffset: Vector3,
-	val expectedTps: UShort?,
 	val poseTime: ComparableTimeMark?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
@@ -115,7 +114,6 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
 	boneOffset = Vector3.ZERO,
-	expectedTps = null,
 	poseTime = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
@@ -183,7 +181,6 @@ sealed interface SkeletonActions {
 	data class SetBonePose(
 		val bodyPart: BodyPart,
 		val boneOffset: Vector3?,
-		val expectedTps: UShort?,
 		val rotation: Quaternion?,
 		val acceleration: Vector3?,
 		val position: Vector3?,
@@ -269,7 +266,7 @@ class Skeleton(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 100, speed = 1f, randomPacketLoss = 0f, constantPacketLoss = 0f, sendPosition = true),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 100, speed = 1f, randomPacketLoss = 0.9f, constantPacketLoss = 0f, sendPosition = false),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,

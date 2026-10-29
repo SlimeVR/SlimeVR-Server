@@ -234,8 +234,10 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f
 		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
-		const val HID_MULTIPLIER = 1.25f
 		val ACCEL_WINDOW = 0.06.seconds
 		val TAP_WINDOW_PER_TAP = 0.3.seconds
+
+		// Smol slimes/butterflies are more sensible to taps
+		const val HID_MULTIPLIER = 1.3f
 	}
 }

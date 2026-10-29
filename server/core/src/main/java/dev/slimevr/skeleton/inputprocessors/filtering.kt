@@ -3,6 +3,7 @@ package dev.slimevr.skeleton.inputprocessors
 import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.BoneInput
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
@@ -14,48 +15,97 @@ import solarxr_protocol.rpc.ResetType
 import kotlin.math.log
 import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+
+// Upsampling
+private val UPSAMPLING_EXTRAPOLATION_MAX_DURATION = 0.8.seconds
+
+// Technically Prediction but always on
+private const val UPSAMPLING_EXTRAPOLATION_LOG_BASE_MIN = 7.5f
+private const val UPSAMPLING_EXTRAPOLATION_LOG_BASE_MAX = 3.5f
+
+// Smoothing
+private const val SMOOTHING_TIME_CARRYOVER_MIN = 0.65f
+private const val SMOOTHING_TIME_CARRYOVER_MAX = 0.9f
+private const val SMOOTHING_MS_MAX = 20.0
+
+// Prediction
+private const val PREDICTION_MS_MAX = 30.0
+private const val PREVIOUS_PREDICTION_DECAY = 0.25f
 
 private data class BoneSample(
-	val poseTime: ComparableTimeMark,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val position: Vector3?,
-)
+) {
+	companion object {
+		fun fromBone(bone: BoneInput) = BoneSample(bone.rotation, bone.acceleration, bone.position)
+	}
+}
 
 private data class BoneSamples(
+	// These get assigned everytime we get a new pose for a bone
 	val fromSample: BoneSample?,
-	val runningSample: BoneSample?,
 	val targetSample: BoneSample?,
-	val timeBetweenPoses: Duration?,
-	val predictionRotation: Quaternion?,
-	val timeLeftForLastPose: Duration = Duration.ZERO,
+	val poseTime: ComparableTimeMark,
+	val timeBetweenSamples: Duration,
+	val timeBetweenRotations: Duration,
+	val predictedRotationDelta: Quaternion?,
+	val predictedRotation: Quaternion,
+	// Mutable since these get changed every skeleton frame even if no new pose is received
+	var runningSample: BoneSample?,
+	var timeLeftForLastPose: Duration, // can be negative
 )
 
-// TODO fine tune these values
-// Smoothing
-private const val TIME_CARRYOVER_DECAY_MIN = 0.8f
-private const val TIME_CARRYOVER_DECAY_MAX = 0.1f
+private fun computePoseTimeDelta(
+	previousPoseTime: ComparableTimeMark?,
+	currentPoseTime: ComparableTimeMark,
+) = previousPoseTime?.let {
+	currentPoseTime - previousPoseTime
+} ?: Duration.ZERO
 
-// Smaller = more smoother
-private const val ROTATION_SMOOTHING_MIN = 0.3f
-private const val ROTATION_SMOOTHING_MAX = 0.04f
+private fun computeTimeBetweenPoses(
+	poseTimeDelta: Duration,
+	timeLeftForLastPose: Duration?,
+	timeCarryover: Double,
+	smoothingTime: Duration,
+): Duration {
+	// Use some of last pose's remaining time
+	val lastPoseCarryoverTime = timeLeftForLastPose?.let { it * timeCarryover } ?: Duration.ZERO
+	return (lastPoseCarryoverTime + poseTimeDelta).coerceAtLeast(Duration.ZERO) + smoothingTime
+}
 
-// Prediction
-private const val EXTRAPOLATION_MAX_SECONDS = 4.5
+private fun computePredictedRotationDelta(
+	previousRotation: Quaternion?,
+	previousPredictedRotationDelta: Quaternion?,
+	targetRotation: Quaternion,
+	rotationPredictionTime: Duration,
+	poseTimeDelta: Duration,
+) = previousRotation?.let {
+	// Use some of the previous prediction
+	val previousDeltaDecayed = previousPredictedRotationDelta?.pow(PREVIOUS_PREDICTION_DECAY) ?: Quaternion.IDENTITY
+	if (poseTimeDelta <= Duration.ZERO) return@let previousDeltaDecayed
+	val currentDelta = (it.inv() * targetRotation).pow((rotationPredictionTime / poseTimeDelta).toFloat())
+	previousDeltaDecayed * currentDelta
+}
 
-// Higher = less extrapolation
-private const val EXTRAPOLATION_LOG_BASE_MIN = 8.0f
-private const val EXTRAPOLATION_LOG_BASE_MAX = 4.0f
-
-// Higher = more prediction
-private const val ROTATION_PREDICTION_MIN = 0f
-private const val ROTATION_PREDICTION_MAX = 0.95f
-
-// Lower = more biased towards recent rotations
-private const val PREVIOUS_PREDICTION_DECAY = 0.2f
-
-// TODO this could use 'some' (A LOT OF) refactoring
-//  pls don't judge the code quality, I was just trying to make it work for now!
+private fun computeInterpolationRatio(
+	now: ComparableTimeMark,
+	poseTime: ComparableTimeMark,
+	smoothedTimeBetweenPoses: Duration,
+	extrapolationLogBase: Double,
+): Float {
+	// Time between now and tracker data.
+	val timeSinceLastPose = (now - poseTime).coerceAtMost(smoothedTimeBetweenPoses + UPSAMPLING_EXTRAPOLATION_MAX_DURATION)
+	// Ratio of how close we should be to the next pose.
+	//  0 = we just got started, 1 = we should have the next one, >1 = we didn't get it yet; packet lost or late
+	val rawRatio = if (smoothedTimeBetweenPoses > Duration.ZERO) timeSinceLastPose / smoothedTimeBetweenPoses else 1.0
+	// In case the rawRatio is >1, we extrapolate using log to keep some smooth perceived movement.
+	val extrapolationAmount = log((rawRatio).coerceAtLeast(1.0), extrapolationLogBase)
+	// Resulting ratio to use for interpolation, including extrapolation if any.
+	return (rawRatio.coerceAtMost(1.0) + extrapolationAmount).toFloat()
+}
 
 /**
  * This processor handles upsampling, smoothing and prediction, all in one processor for optimization's sake.
@@ -88,84 +138,85 @@ class FilteringInputProcessor(val settings: Settings) :
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val now = timeSource.markNow()
 		val skeletonRatios = settings.context.state.value.data.skeletonConfig.ratios
-		val smoothingStrength = skeletonRatios.smoothingStrength
-		val predictionStrength = skeletonRatios.predictionStrength
-		val timeCarryoverDecay = FastMath.remapClamped(smoothingStrength, 0f, 1f, TIME_CARRYOVER_DECAY_MIN, TIME_CARRYOVER_DECAY_MAX).toDouble()
-		val rotationSmoothingMultiplier = FastMath.remapClamped(smoothingStrength, 0f, 1f, ROTATION_SMOOTHING_MIN, ROTATION_SMOOTHING_MAX)
-		val extrapolationLogBase = FastMath.remapClamped(predictionStrength, 0f, 1f, EXTRAPOLATION_LOG_BASE_MIN, EXTRAPOLATION_LOG_BASE_MAX).toDouble()
-		val rotationPredictionMultiplier = FastMath.remapClamped(predictionStrength, 0f, 1f, ROTATION_PREDICTION_MIN, ROTATION_PREDICTION_MAX)
+		val timeCarryover = FastMath.remapClamped(skeletonRatios.smoothingStrength, 0f, 1f, SMOOTHING_TIME_CARRYOVER_MIN, SMOOTHING_TIME_CARRYOVER_MAX).toDouble()
+		val extrapolationLogBase = FastMath.remapClamped(skeletonRatios.predictionStrength, 0f, 1f, UPSAMPLING_EXTRAPOLATION_LOG_BASE_MIN, UPSAMPLING_EXTRAPOLATION_LOG_BASE_MAX).toDouble()
+		val smoothingTime = (skeletonRatios.smoothingStrength * SMOOTHING_MS_MAX).milliseconds
+		val predictionTime = (skeletonRatios.predictionStrength * PREDICTION_MS_MAX).milliseconds
+		val smoothingEnabled = skeletonRatios.smoothingStrength > 0
+		val predictionEnabled = skeletonRatios.predictionStrength > 0
 
 		for ((bodyPart, bone) in mutableInputSkeleton) {
-			if (bone.expectedTps == null || bone.poseTime == null) continue
-
-			val oldSamples = boneSamples[bodyPart]
-			val receivedNewPose = bone.poseTime != oldSamples?.targetSample?.poseTime
-			val samples = if (receivedNewPose) {
-				// Use the runningSample as starting point if any to resume where we were at last frame
-				val fromSample = oldSamples?.runningSample ?: oldSamples?.targetSample
-				// Need to store this data in time because we mutate the skeleton bones
-				val targetSample = BoneSample(bone.poseTime, bone.rotation, bone.acceleration, bone.position)
-				// The time we'll take to interpolate to the new pose
-				val timeBetweenPoses = oldSamples?.targetSample?.poseTime?.let { targetPoseTime ->
-					val timeBetweenLastPoses = bone.poseTime - targetPoseTime
-					oldSamples.runningSample?.poseTime?.let { runningPoseTime ->
-						// Add some of last pose's remaining time
-						val lastPoseCarryoverTime = oldSamples.timeLeftForLastPose * timeCarryoverDecay
-						val timeSinceRunningPose = now - runningPoseTime
-						(timeBetweenLastPoses + lastPoseCarryoverTime - timeSinceRunningPose).coerceAtLeast(Duration.ZERO)
-					} ?: timeBetweenLastPoses
-				}
-				val predictionRotation = oldSamples?.targetSample?.rotation?.let { previousRotation ->
-					if (predictionStrength > 0f) {
-						val previousPrediction = oldSamples.predictionRotation?.pow(PREVIOUS_PREDICTION_DECAY) ?: Quaternion.IDENTITY
-						val currentDelta = (previousRotation.inv() * targetSample.rotation).pow(rotationPredictionMultiplier)
-						previousPrediction * currentDelta
-					} else {
-						null
-					}
-				}
-
-				BoneSamples(fromSample, null, targetSample, timeBetweenPoses, predictionRotation)
-			} else {
-				oldSamples
+			if (bone.poseTime == null) {
+				boneSamples.remove(bodyPart)
+				continue
 			}
 
-			val fromSample = samples.fromSample
-			val targetSample = samples.targetSample
-			val timeBetweenPoses = samples.timeBetweenPoses
-			if (fromSample != null && targetSample != null && timeBetweenPoses != null) {
-				// Time between now and tracker data.
-				val timeSinceLastPose = now - bone.poseTime
-				// Ratio of how close we should be to the next pose.
-				//  0 = we just got started, 1 = we should have the next one, >1 = we didn't get it yet; packet lost or late
-				val rawRatio = timeSinceLastPose / timeBetweenPoses
-				// In case the rawRatio is >1, we extrapolate using log to keep some smooth perceived movement.
-				val extrapolationAmount = log((rawRatio).coerceIn(1.0, EXTRAPOLATION_MAX_SECONDS), extrapolationLogBase)
-				// Resulting ratio to use for interpolation, with extrapolation if any.
-				val interpolationRatio = (rawRatio.coerceAtMost(1.0) + extrapolationAmount).toFloat()
+			// Get our samples for this bone
+			var samples = boneSamples[bodyPart]
 
-				// Upsample rotation, acceleration and position.
+			// New pose data updates the samples
+			if (bone.poseTime != samples?.poseTime) {
+				// Use the runningSample as starting point if any to resume where we were at last frame
+				val fromSample = samples?.runningSample ?: samples?.targetSample
+				// Need to store this data in time because we mutate the skeleton bones
+				val targetSample = BoneSample.fromBone(bone)
+
+				// How much time has passed between the last 2 bone poses
+				val poseTimeDelta = computePoseTimeDelta(samples?.poseTime, bone.poseTime)
+
+				// The time we'll take to interpolate to the new pose
+				val timeBetweenRotations = computeTimeBetweenPoses(poseTimeDelta, samples?.timeLeftForLastPose, timeCarryover, smoothingTime)
+
+				// The predicted target rotation change
+				val predictedRotationDelta = if (predictionEnabled) {
+					computePredictedRotationDelta(
+						samples?.targetSample?.rotation,
+						samples?.predictedRotationDelta,
+						targetSample.rotation,
+						predictionTime,
+						poseTimeDelta,
+					)
+				} else {
+					null
+				}
+				// The predicted target rotation
+				val predictedRotation = predictedRotationDelta?.let { targetSample.rotation * it } ?: targetSample.rotation
+
+				// New samples
+				samples = BoneSamples(fromSample, targetSample, bone.poseTime, poseTimeDelta, timeBetweenRotations, predictedRotationDelta, predictedRotation, null, Duration.ZERO)
+			}
+
+			// Filtering
+			if (samples.fromSample != null && samples.targetSample != null) {
+				val upsamplingRatio = computeInterpolationRatio(now, bone.poseTime, samples.timeBetweenSamples, extrapolationLogBase)
+
+				// Rotation
 				val rotation = if (bone.isRotationActive) {
-					val rotationInterpolationRatio = if (smoothingStrength > 0f) {
-						val extrapolationAmount = log((rawRatio * rotationSmoothingMultiplier).coerceIn(1.0, EXTRAPOLATION_MAX_SECONDS), extrapolationLogBase)
-						((rawRatio * rotationSmoothingMultiplier).coerceAtMost(1.0) + extrapolationAmount).toFloat()
+					val smoothingRatio = if (smoothingEnabled) {
+						// Compute ratio with smoothing time.
+						// timeBetweenRotations has some carry over from previous poses
+						computeInterpolationRatio(now, bone.poseTime, samples.timeBetweenRotations + smoothingTime, extrapolationLogBase)
 					} else {
-						interpolationRatio
+						upsamplingRatio
 					}
-					val targetRotation = samples.predictionRotation?.let { targetSample.rotation * it } ?: targetSample.rotation
-					fromSample.rotation.interpQ(targetRotation, rotationInterpolationRatio)
+					// Use the predicted rotation as target
+					samples.fromSample.rotation.interpQ(samples.predictedRotation, smoothingRatio)
 				} else {
-					targetSample.rotation
+					samples.targetSample.rotation
 				}
+
+				// Acceleration
 				val acceleration = if (bone.isAccelerationActive) {
-					fromSample.acceleration.lerp(targetSample.acceleration, interpolationRatio)
+					samples.fromSample.acceleration.lerp(samples.targetSample.acceleration, upsamplingRatio)
 				} else {
-					targetSample.acceleration
+					samples.targetSample.acceleration
 				}
-				val position = if (bone.isPositionActive && fromSample.position != null && targetSample.position != null) {
-					fromSample.position.lerp(targetSample.position, interpolationRatio)
+
+				// Position
+				val position = if (bone.isPositionActive && samples.fromSample.position != null && samples.targetSample.position != null) {
+					samples.fromSample.position.lerp(samples.targetSample.position, upsamplingRatio)
 				} else {
-					targetSample.position
+					samples.targetSample.position
 				}
 
 				// Update bone data in skeleton
@@ -173,14 +224,13 @@ class FilteringInputProcessor(val settings: Settings) :
 				mutableInputSkeleton[bodyPart] = newBone
 
 				// Update running sample so that we resume from where we left off if we get a new pose next frame
-				boneSamples[bodyPart] = samples.copy(
-					runningSample = BoneSample(now, newBone.rotation, newBone.acceleration, newBone.position),
-					// Time left for this pose, using interpolationRatio because extrapolation isn't linear
-					timeLeftForLastPose = timeBetweenPoses - (timeBetweenPoses * interpolationRatio.toDouble()),
-				)
-			} else if (receivedNewPose) {
-				boneSamples[bodyPart] = samples
+				samples.runningSample = BoneSample.fromBone(newBone)
+				// Time left for this pose, using the ratio to account for non-linear extrapolation
+				samples.timeLeftForLastPose = samples.timeBetweenSamples - (samples.timeBetweenSamples * upsamplingRatio.toDouble())
 			}
+
+			// Save updated samples
+			boneSamples[bodyPart] = samples
 		}
 	}
 
