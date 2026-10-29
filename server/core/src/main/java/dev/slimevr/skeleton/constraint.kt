@@ -92,16 +92,9 @@ data class LooseHingeConstraint(
 data class AxisConstraint(
 	val axis: Vector3 = Vector3.NEG_X,
 ) : Constraint {
-	override fun apply(localRotation: Quaternion): Quaternion = localRotation.project(axis).unit()
-
-	// Optimized to reduce quaternion operations
 	override fun apply(
-		parentRotation: Quaternion,
-		childRotation: Quaternion,
-	): Quaternion {
-		val globalAxis = parentRotation.sandwich(axis)
-		return childRotation.project(globalAxis).unit()
-	}
+		localRotation: Quaternion,
+	): Quaternion = localRotation.project(axis).unit()
 }
 
 data class LooseAxisConstraint(

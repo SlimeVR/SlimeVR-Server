@@ -19,6 +19,13 @@ fun chainDistanceFromTarget(
 	return (target - chainTail).len()
 }
 
+fun parentRot(
+	bones: ComputedSkeleton,
+	bodyPart: BodyPart,
+) = parentOf(bodyPart)?.let { parent ->
+	bones[parent]?.rotation
+} ?: Quaternion.IDENTITY
+
 // Bones are most likely opposite along the X axis
 private val oppositeRotation = Quaternion.rotationAroundXAxis(FastMath.PI)
 private val smallRotation = Quaternion.rotationAroundXAxis(1f * FastMath.DEG_TO_RAD)
@@ -47,21 +54,19 @@ fun fromChainToTarget(
 
 	val offset = Quaternion.fromTo(localChainTail.unit(), localTarget.unit())
 
-	if (localTargetLenSq < localChainTailLenSq &&
+	return if (localTargetLenSq < localChainTailLenSq &&
 		FastMath.isApproxZero(offset.angleQ())
 	) {
-		// TODO This is not ideal whatsoever, this should be based on a preferred axis
-		//  and aligned to global space using the bone's parent.
+		// TODO Should be based off a preferred axis/direction, currently seems to
+		//  "snap" a little when hitting this fallback
 		// If the target is closer than the tail and the bone is parallel to the target,
 		//  apply an arbitrary small rotation to promote movement
-		return smallRotation
-	}
-
-	return if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
+		alignOffset(parentRot(bones, bodyPart).inv(), smallRotation)
+	} else if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
 		offset
 	} else {
 		// When the vectors are exactly opposite, arbitrarily choose an axis
-		oppositeRotation
+		alignOffset(parentRot(bones, bodyPart).inv(), oppositeRotation)
 	}
 }
 
@@ -76,6 +81,11 @@ fun computeOffset(
 	rotationWithOffset: Quaternion,
 ) = rotationWithOffset / rotation
 
+fun alignOffset(
+	rotation: Quaternion,
+	offset: Quaternion,
+) = rotation.inv() * offset * rotation
+
 fun constrainOffsetWithSkeleton(
 	bodyPart: BodyPart,
 	offset: Quaternion,
@@ -83,14 +93,11 @@ fun constrainOffsetWithSkeleton(
 	constraint: Constraint,
 ): Quaternion {
 	val boneRot = bones[bodyPart]?.rotation ?: return offset
-	val parentRot = parentOf(bodyPart)?.let { parent ->
-		bones[parent]?.rotation
-	} ?: Quaternion.IDENTITY
 
 	return computeOffset(
 		boneRot,
 		constraint.apply(
-			parentRot,
+			parentRot(bones, bodyPart),
 			applyOffset(boneRot, offset),
 		),
 	)
@@ -125,14 +132,14 @@ fun ccdIkIteration(
 	val bodyPart = chain.first()
 	val offset = fromChainToTarget(bodyPart, mutableComputedSkeleton, chain, target) ?: return
 
-	// TODO Constrain the local offset
-	val localConstrainedOffset = offset
-// 	val localConstrainedOffset = offsetConstraint?.let {
-// 		val parentRot = parentOf(bodyPart)?.let { parent ->
-// 			mutableComputedSkeleton[parent]?.rotation
-// 		} ?: Quaternion.IDENTITY
-// 		it.apply(parentRot, offset)
-// 	} ?: offset
+	// Constrain the local offset
+	val localConstrainedOffset = offsetConstraint?.let {
+		val parentRot = parentRot(mutableComputedSkeleton, bodyPart)
+		alignOffset(
+			parentRot.inv(),
+			it.apply(alignOffset(parentRot, offset)),
+		)
+	} ?: offset
 
 	// We only need to constrain the bone that we are adjusting
 	val constrainedOffset = constraint?.let {
