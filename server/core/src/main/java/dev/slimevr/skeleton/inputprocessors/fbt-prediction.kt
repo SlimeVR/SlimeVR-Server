@@ -1,4 +1,5 @@
 package dev.slimevr.skeleton.inputprocessors
+import com.jme3.math.FastMath
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.EulerAngles
@@ -6,6 +7,8 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.math.atan2
+import kotlin.math.sqrt
 import kotlin.collections.set
 
 class FbtPrediction : SkeletonInputProcessor  {
@@ -24,6 +27,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 	var lastRightLowerLegPitchFloat = 0f
 
 	var maxHeight = 0f
+	private var lastHeadYaw = Quaternion.IDENTITY
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val head = mutableInputSkeleton[BodyPart.HEAD]
@@ -33,13 +37,16 @@ class FbtPrediction : SkeletonInputProcessor  {
 			if(head!!.position!!.y > maxHeight) {
 				maxHeight = head.position!!.y
 			}
+
 			val heightUnits = maxHeight / 4f
 			val standingThreshold = heightUnits * 3.5f
 			val sittingOnGroundThreshold = heightUnits * 3;
+
 			val currentHeadPosition =
 				Vector3(head!!.position!!.x, head!!.position!!.y, head!!.position!!.x)
 			val currentHeadPositionNoY =
 				Vector3(head!!.position!!.x, 0f, head!!.position!!.x);
+
 			val leftUpperLeg = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG]
 			val rightUpperLeg = mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG]
 
@@ -48,8 +55,26 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 			val rotationRange = 45f;
 
-			val headEuler = head!!.rotation.toEulerAngles(EulerOrder.XYZ)
-			val normalizedTilt = (headEuler.z / 45f).coerceIn(-1f, 1f)
+			val headRotation = head.rotation.unit()
+
+			val yawLength = sqrt(headRotation.w * headRotation.w + headRotation.y * headRotation.y)
+			val headYawOnly = if (yawLength > 1e-5f) {
+				Quaternion(headRotation.w / yawLength, 0f, headRotation.y / yawLength, 0f)
+					.also { lastHeadYaw = it }
+			} else {
+				lastHeadYaw
+			}
+
+			val headTiltRotation = (headYawOnly.inv() * headRotation).unit()
+
+			val rollLength = sqrt(headTiltRotation.w * headTiltRotation.w + headTiltRotation.z * headTiltRotation.z)
+			val sideTiltRadians = if (rollLength > 1e-5f) {
+				2f * atan2(headTiltRotation.z / rollLength, headTiltRotation.w / rollLength)
+			} else {
+				0f
+			}
+			val sideTiltDegrees = sideTiltRadians * FastMath.RAD_TO_DEG
+			val normalizedTilt = (sideTiltDegrees / 45).coerceIn(-1f, 1f)
 
 			currentLeftLegUpperPitch = (-normalizedTilt + 1) / 2
 			currentRightLegUpperPitch = (normalizedTilt + 1) / 2
@@ -59,11 +84,12 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 			if(head.position!!.y > standingThreshold) {
 				if (!leftUpperLeg!!.isRotationActive) {
-					var euler = leftUpperLeg.rotation.toEulerAngles(EulerOrder.XYZ)
+					var euler = (headYawOnly.inv() * leftUpperLeg.rotation).toEulerAngles(EulerOrder.XYZ)
 					var pitch = calculateLegMotion(
 						-rotationRange,
 						rotationRange,
-						currentLeftLegUpperPitch)
+						rotationRange * 2,
+						currentLeftLegUpperPitch) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -72,12 +98,12 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastLeftUpperLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG] =
-						leftUpperLeg.copy(rotation = euler.toQuaternion());
+						leftUpperLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 
 				if (!leftLowerLeg!!.isRotationActive) {
-					var euler = leftLowerLeg.rotation.toEulerAngles(EulerOrder.XYZ)
-					var pitch = lerp(-rotationRange, rotationRange, currentLeftLegLowerPitch)
+					var euler = (headYawOnly.inv() * leftLowerLeg.rotation).toEulerAngles(EulerOrder.XYZ)
+					var pitch = lerp(-rotationRange, rotationRange, currentLeftLegLowerPitch) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -86,15 +112,16 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastLeftLowerLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.LEFT_LOWER_LEG] =
-						leftLowerLeg.copy(rotation = euler.toQuaternion());
+						leftLowerLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 
 				if (!rightUpperLeg!!.isRotationActive) {
-					var euler = rightUpperLeg.rotation.toEulerAngles(EulerOrder.XYZ)
+					var euler = (headYawOnly.inv() * rightUpperLeg.rotation).toEulerAngles(EulerOrder.XYZ)
 					var pitch = calculateLegMotion(
 						-rotationRange,
 						rotationRange,
-						currentRightLegUpperPitch)
+						rotationRange * 2,
+						currentRightLegUpperPitch) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -103,12 +130,12 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastRightUpperLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG] =
-						rightUpperLeg.copy(rotation = euler.toQuaternion());
+						rightUpperLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 
 				if (!rightLowerLeg!!.isRotationActive) {
-					var euler = rightLowerLeg.rotation.toEulerAngles(EulerOrder.XYZ)
-					var pitch = lerp(-rotationRange, rotationRange, currentRightLegLowerPitch)
+					var euler = (headYawOnly.inv() * rightLowerLeg.rotation).toEulerAngles(EulerOrder.XYZ)
+					var pitch = lerp(-rotationRange, rotationRange, currentRightLegLowerPitch) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -117,13 +144,14 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastRightLowerLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.RIGHT_LOWER_LEG] =
-						rightLowerLeg.copy(rotation = euler.toQuaternion());
+						rightLowerLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 			}else if (head.position!!.y < standingThreshold)
 			{
+				val maxAngle = 45f
 				if (!leftUpperLeg!!.isRotationActive) {
-					var euler = leftUpperLeg.rotation.toEulerAngles(EulerOrder.XYZ)
-					val pitch = lerp(lastLeftUpperLegPitchFloat, 90f, 1f)
+					var euler = (headYawOnly.inv() * leftUpperLeg.rotation).toEulerAngles(EulerOrder.XYZ)
+					val pitch = lerp(lastLeftUpperLegPitchFloat, maxAngle, 1f) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,pitch,
 						euler.y,
@@ -131,12 +159,12 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastLeftUpperLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG] =
-						leftUpperLeg.copy(rotation = euler.toQuaternion());
+						leftUpperLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 
 				if (!leftLowerLeg!!.isRotationActive) {
-					var euler = leftLowerLeg.rotation.toEulerAngles(EulerOrder.XYZ)
-					val pitch = lerp(lastLeftLowerLegPitchFloat, 90f, 1f)
+					var euler = (headYawOnly.inv() * leftLowerLeg.rotation).toEulerAngles(EulerOrder.XYZ)
+					val pitch = lerp(lastLeftLowerLegPitchFloat, maxAngle, 1f) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,pitch,
 						euler.y,
@@ -144,12 +172,12 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastLeftLowerLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.LEFT_LOWER_LEG] =
-						leftLowerLeg.copy(rotation = euler.toQuaternion());
+						leftLowerLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 
 				if (!rightUpperLeg!!.isRotationActive) {
-					var euler = rightUpperLeg.rotation.toEulerAngles(EulerOrder.XYZ)
-					val pitch = lerp(lastRightUpperLegPitchFloat, 90f, 1f)
+					var euler = (headYawOnly.inv() * rightUpperLeg.rotation).toEulerAngles(EulerOrder.XYZ)
+					val pitch = lerp(lastRightUpperLegPitchFloat, maxAngle, 1f) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -158,12 +186,12 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastRightUpperLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG] =
-						rightUpperLeg.copy(rotation = euler.toQuaternion());
+						rightUpperLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 
 				if (!rightLowerLeg!!.isRotationActive) {
-					var euler = rightLowerLeg.rotation.toEulerAngles(EulerOrder.XYZ)
-					val pitch = lerp(lastRightLowerLegPitchFloat, 90f, 1f)
+					var euler = (headYawOnly.inv() * rightLowerLeg.rotation).toEulerAngles(EulerOrder.XYZ)
+					val pitch = lerp(lastRightLowerLegPitchFloat, maxAngle, 1f) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -172,7 +200,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastRightLowerLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.RIGHT_LOWER_LEG] =
-						rightLowerLeg.copy(rotation = euler.toQuaternion());
+						rightLowerLeg.copy(rotation = headYawOnly * euler.toQuaternion());
 				}
 			}
 			lastHeadPosition = currentHeadPosition;
@@ -183,12 +211,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 	fun lerp(start: Float, end: Float, t: Float): Float {
 		return start + (end - start) * t
 	}
-	fun lerpAngle(start: Float, end: Float, t: Float): Float {
-		val difference = ((end - start + 540f) % 360f) - 180f
-		val result = start + difference * t
 
-		return ((result % 360f) + 360f) % 360f
-	}
 	fun parabola(start: Float, peak: Float, peakPercentage: Float, t: Float): Float {
 		val x = t.coerceIn(0f, 1f)
 
@@ -203,13 +226,19 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 	fun calculateLegMotion(
 		start: Float,
-		peak: Float,
+		end: Float,
+		lift: Float = 0f,
 		t: Float
 	): Float {
-		return if (t < 0f) {
-			parabola(start, peak * 3,0.50f, -t)
+		val progress = t.coerceIn(0f, 1f)
+		val basePitch = lerp(start, end, progress)
+		val liftAmount = if (progress <= 0.5f) {
+			val u = progress * 2f
+			4f * u * (1f - u) * lift
 		} else {
-			lerp(peak, start, t)
+			0f
 		}
+
+		return basePitch + liftAmount
 	}
 }
