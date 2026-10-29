@@ -331,12 +331,6 @@ settings-driver-status-badge-disabled = ปิด
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = การกรองข้อมูล
-settings-general-tracker_mechanics-filtering-type-none = ไม่มีการกรอง
-settings-general-tracker_mechanics-filtering-type-none-description = ใช้ค่าการหมุนตามจริง จะไม่มีการกรองข้อมูลใดๆ
-settings-general-tracker_mechanics-filtering-type-smoothing = ทำให้ราบรื่น
-settings-general-tracker_mechanics-filtering-type-smoothing-description = ทำให้การเคลื่อนไหวราบรื่นขึ้น แต่จะเพิ่มความหน่วง
-settings-general-tracker_mechanics-filtering-type-prediction = คาดการณ์
-settings-general-tracker_mechanics-filtering-amount = ปริมาณ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = เวลาหน่วงการรีเซ็ตแกนตั้ง(ตั้งที่ 0 วินาทีเพื่อปิดการใช้)
 settings-general-tracker_mechanics-save_mounting_reset = บันทึกค่าการตั้งศูนย์การติดตั้งโดยอัตโนมัติ
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -382,7 +376,6 @@ settings-general-fk_settings-self_localization-title = โหมด Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = เปิดใช้การรีเซ็ตด้วยการแตะแทร็กเกอร์ แทร็กเกอร์ที่อยู่สูงที่สุดบนลำตัวจะใช้สำหรับการรีเซ็ตแกนตั้ง แทร็กเกอร์ที่อยู่สูงที่สุดบนขาซ้ายใช้สำหรับรีเซ็ตทั้งหมด และแทร็กเกอร์ที่อยู่สูงที่สุดบนขาขวาใช้สำหรับรีเซ็ตตั้งศูนย์การติดตั้ง โดยการแตะจะต้องเกิดขึ้นภายในเวลา 0.3 วินาทีคูณด้วยจำนวนครั้งของการแตะเพื่อให้ระบบรับรู้
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount } ครั้ง

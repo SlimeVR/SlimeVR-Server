@@ -261,12 +261,6 @@ settings-driver-enable = 有効
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = フィルター機能
-settings-general-tracker_mechanics-filtering-type-none = フィルター無し
-settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
-settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
-settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
-settings-general-tracker_mechanics-filtering-amount = 数値
 
 ## Stay Aligned pose recorder
 
@@ -294,7 +288,6 @@ settings-general-fk_settings-self_localization-title = モーションキャプ�
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = ダブルタップクイックリセットの有効・無効を設定します。有効にすると、最も高い胴体トラッカー上の任意の場所をダブルタップすると、クイックリセットが起動します。ディレイは、タップされてからリセットされるまでの時間です。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

@@ -309,12 +309,6 @@ settings-driver-status-badge-disabled = Spento
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtro movimenti
-settings-general-tracker_mechanics-filtering-type-none = Non usare alcun filtro
-settings-general-tracker_mechanics-filtering-type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
-settings-general-tracker_mechanics-filtering-type-smoothing = Attenuazione
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
-settings-general-tracker_mechanics-filtering-type-prediction = Predizione
-settings-general-tracker_mechanics-filtering-amount = Quantità
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo di attenuazione del ripristino dell'orientamento (0 secondi disabilita l'attenuazione)
 settings-general-tracker_mechanics-save_mounting_reset = Salva automaticamente la calibrazione del ripristino del posizionamento
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -355,7 +349,6 @@ settings-general-fk_settings-self_localization-title = Modalità Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Abilita o disabilita il ripristino toccando un tracker. Il tracker più in alto sul torso viene utilizzato per il ripristino dell'orientamento, il tracker più in alto sulla gamba sinistra viene utilizzato per il ripristino completo e il tracker più in alto sulla gamba destra viene utilizzato per il ripristino del posizionamento. Si deve tener presente che i tocchi devono avvenire entro 0,6 secondi per essere registrati.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

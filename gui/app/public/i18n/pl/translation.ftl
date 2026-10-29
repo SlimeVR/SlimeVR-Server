@@ -326,12 +326,6 @@ settings-driver-status-badge-disabled = Od
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrowanie
-settings-general-tracker_mechanics-filtering-type-none = Brak Filtrów
-settings-general-tracker_mechanics-filtering-type-none-description = Używa rotacji w niezmienionej formie. Wszystkie filtry są wyłączone.
-settings-general-tracker_mechanics-filtering-type-smoothing = Wygładzanie
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
-settings-general-tracker_mechanics-filtering-type-prediction = Przewidywanie
-settings-general-tracker_mechanics-filtering-amount = Ilość
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Czas wygładzania resetu odchylenia (0s wyłącza wygładzanie)
 settings-general-tracker_mechanics-save_mounting_reset = Zapisz pozycję trackerów na ciele
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -375,7 +369,6 @@ settings-general-fk_settings-self_localization-title = Tryb Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Umożliwia wyzwalanie resetów przez stuknięcie modułu śledzącego. Układ śledzący znajdujący się najwyżej na tułowiu służy do resetowania odchylenia, układ śledzący znajdujący się najwyżej na lewej nodze służy do pełnego resetu, a układ śledzący znajdujący się najwyżej na prawej nodze służy do resetowania montażu. Należy wspomnieć, że stuknięcia muszą nastąpić w ciągu 0,6 sekundy, aby zostały zarejestrowane.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

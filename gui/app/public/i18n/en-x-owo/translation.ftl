@@ -291,12 +291,6 @@ settings-driver-enable = enaybwe
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = fiwtewing~
-settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
-settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
-settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
-settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
-settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
-settings-general-tracker_mechanics-filtering-amount = amownt
 settings-general-tracker_mechanics-yaw-reset-smooth-time = nyaw weset smootse taim (0s disaeblez smooting)
 settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -331,7 +325,6 @@ settings-general-fk_settings-self_localization-title = mocap mowd
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = awwows fow wesets to be twiggewed by bapping a twackew. teh twackew hyest up on youw towso is used fow yaw weset, the twackew hyest up on youw weft weg is use fow fuww reset, and da twackew hiest up on youw wight weg is used fow mounting weset. it shouwd be menshuned dat baps must bappen wifin 0.6 second to be wegistewed.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

@@ -237,12 +237,6 @@ settings-driver-enable = Увімкнути
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Фільтрація
-settings-general-tracker_mechanics-filtering-type-none = Без фільтрації
-settings-general-tracker_mechanics-filtering-type-none-description = Використовуйте обертання як є. Ніякої фільтрації не зробить.
-settings-general-tracker_mechanics-filtering-type-smoothing = Згладжування
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Згладжує рухи, але додає деяку затримку.
-settings-general-tracker_mechanics-filtering-type-prediction = Передбачення
-settings-general-tracker_mechanics-filtering-amount = Кількість
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Час згладжування скидання рискання (0 сек. відключає згладжування)
 settings-general-tracker_mechanics-save_mounting_reset = Зберегти автоматичне калібрування положення трекерів
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -276,7 +270,6 @@ settings-general-fk_settings-self_localization-title = Режим Мокап
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Дозволяє запускати скидання, торкнувшись трекера. Трекер найвищий на вашому тулубі використовується для скидання рискання, трекер найвищий на лівій нозі використовується для повного скидання, а трекер найвищий на правій нозі використовується для скидання положення. Слід зазначити, що для реєстрації дотики мають тривати протягом 0,3 секунди.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

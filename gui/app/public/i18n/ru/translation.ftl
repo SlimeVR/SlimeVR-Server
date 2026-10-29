@@ -316,12 +316,6 @@ settings-driver-status-badge-disabled = Отключено
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Фильтрация
-settings-general-tracker_mechanics-filtering-type-none = Нет фильтрации
-settings-general-tracker_mechanics-filtering-type-none-description = Используется вращение как есть. Не применяет никакой фильтрации.
-settings-general-tracker_mechanics-filtering-type-smoothing = Сглаживание
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Сглаживает движения, но добавляет некоторую задержку.
-settings-general-tracker_mechanics-filtering-type-prediction = Предсказывание
-settings-general-tracker_mechanics-filtering-amount = Количество
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Время сглаживания сброса отклонения (0 сек. отключает сглаживание)
 settings-general-tracker_mechanics-save_mounting_reset = Сохранить калибровку автоматического сброса крепления
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -362,7 +356,6 @@ settings-general-fk_settings-self_localization-title = Режим Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Позволяет запускать сброс настроек нажатием на трекер. Трекер, расположенный выше всего на вашем торсе, используется для быстрого сброса, трекер, расположенный выше всего на вашей левой ноге, используется для сброса, а трекер, расположенный выше всего на вашей правой ноге, используется для сброса установок. Нажатия должны происходить в течение 0.3 секунд, умноженное на количество нажатий для регистрации нажатия.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

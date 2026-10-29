@@ -234,12 +234,6 @@ settings-driver-enable = Käytä
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Suodatus
-settings-general-tracker_mechanics-filtering-type-none = Ei suodatusta
-settings-general-tracker_mechanics-filtering-type-none-description = Käytä kiertoja sellaisenaan. Ei tee mitään suodatusta.
-settings-general-tracker_mechanics-filtering-type-smoothing = Tasoitus
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoittaa liikettä, mutta lisää hieman viivettä.
-settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
-settings-general-tracker_mechanics-filtering-amount = Määrä
 
 ## Stay Aligned pose recorder
 
@@ -257,7 +251,6 @@ settings-general-fk_settings-self_localization-title = Mocap-tila
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Mahdollistaa nollauksen napauttamalla jäljitintä. Ylävartalon korkeinta jäljitintä käytetään Pikanollaukseen. Vasemman jalan korkeinta jäljitintä käytetään Nollaukseen, vastaavaisesti oikean jalan korkeinta jäljitintä käytetään Asennusnollaukseen. On syytä mainita, että napautusten on tapahduttava 0.6 sekunnin sisällä, jotta ne rekisteröityvät.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

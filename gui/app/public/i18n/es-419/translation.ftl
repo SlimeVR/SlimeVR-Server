@@ -316,12 +316,6 @@ settings-sidebar-advanced = Avanzado
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrado
-settings-general-tracker_mechanics-filtering-type-none = Sin filtro
-settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones como son. No se realizará ningún filtrado.
-settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
-settings-general-tracker_mechanics-filtering-type-prediction = Predicción
-settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tiempo de interpolación para el reinicio horizontal (0s desactiva el suavizado)
 settings-general-tracker_mechanics-save_mounting_reset = Guardar calibración automática de reinicio de montura
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -364,7 +358,6 @@ settings-general-fk_settings-self_localization-title = Modo mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Permite la ejecución de un reinicio al tocar un sensor. El sensor más alto en el torso es utilizado para el reinicio rápido, el sensor más alto en tu pierna izquierda es utilizado para el reinicio, y el sensor más alto en tu pierna derecha es utilizado para reiniciar la montura. Cabe destacar que los toques deben suceder dentro de 0.6 segundos para ser registrados.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

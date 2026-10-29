@@ -333,12 +333,6 @@ settings-driver-status-badge-disabled = Désactivé
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrage
-settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
-settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
-settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
-settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
-settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Temps de fluidification de la réinitialisation horizontale (0s désactive la fluidification)
 settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -384,7 +378,6 @@ settings-general-fk_settings-self_localization-title = Mode Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers =

@@ -483,13 +483,6 @@ settings-general-mounting_method = 配戴校正方法
 settings-general-mounting_method-pose_only = 僅用於姿勢型配戴校正。
 settings-general-mounting_method-description = 校正追蹤器的配戴方向時，要使用哪種校正方法來進行。
 settings-general-tracker_mechanics-filtering = 濾波
-settings-general-tracker_mechanics-filtering-type-none = 不進行濾波
-settings-general-tracker_mechanics-filtering-type-none-description = 使用原始資料，不進行濾波。
-settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 讓運動更加平滑，但會增加一些延遲。
-settings-general-tracker_mechanics-filtering-type-prediction = 預測型
-settings-general-tracker_mechanics-filtering-amount = 濾波強度
-settings-general-tracker_mechanics-filtering-amount-no_filtering = 選擇一個濾波方法來設定強度。
 settings-general-fk_settings-reset_behaviour_group = 重置行為
 settings-general-tracker_mechanics-yaw-reset-smooth-time = 左右偏擺重置平滑過渡時間
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = 進行左右偏移重置時，平滑化追蹤器的旋轉角度。0 秒會關閉此選項。
@@ -578,7 +571,6 @@ settings-general-fk_settings-self_localization-title = 動作捕捉模式
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = 使用敲擊追蹤器的方法觸發重置。敲擊軀幹所配戴的最高的追蹤器會啟用左右偏擺重置，敲擊左腳配戴最高的追蹤器會觸發完整重置，敲擊右腳配戴最高的追蹤器會觸發配戴重置。請注意，需要在 0.3 秒內滿足敲擊次數才會觸發。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -754,7 +746,6 @@ settings-osc-vrchat-status-output-last-frame = 最後傳送幀資料：{ $elapse
 settings-osc-vrchat-status-output-no-frame = 尚未傳送幀資料。
 settings-osc-vrchat-status-source-manual = 手動
 settings-osc-vrchat-status-source-auto = 自動偵測
-settings-osc-vrchat-status-oscquery-disabled = OSCQuery 已關閉（手動網路模式）
 settings-osc-vrchat-status-oscquery-advertising = 在 { $port } 埠廣播
 settings-osc-vrchat-status-oscquery-searching = 尚未找到 VRChat 客戶端。
 settings-osc-vrchat-status-oscquery-discovered-title = 已發現的 VRChat 客戶端：

@@ -186,12 +186,6 @@ settings-routing-hands-warning-cancel = ביטול
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = סינון
-settings-general-tracker_mechanics-filtering-type-none = ללא סינון
-settings-general-tracker_mechanics-filtering-type-none-description = השתמש בערכי סיבוב כפי שהם. לא יעשה שום סינון.
-settings-general-tracker_mechanics-filtering-type-smoothing = החלקה
-settings-general-tracker_mechanics-filtering-type-smoothing-description = מחליק את התנועות אך מוסיף השהיה מסויימת.
-settings-general-tracker_mechanics-filtering-type-prediction = חיזוי
-settings-general-tracker_mechanics-filtering-amount = כמות
 
 ## Stay Aligned pose recorder
 

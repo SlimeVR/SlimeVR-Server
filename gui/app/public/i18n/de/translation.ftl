@@ -392,18 +392,6 @@ settings-driver-status-connection-waiting = Warte auf die Verbindung von SteamVR
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtern
-settings-general-tracker_mechanics-filtering-type = Filter-Typ
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Wählen Sie den Filter-Typ für Ihre Tracker aus.
-    "{ settings-general-tracker_mechanics-filtering-type-smoothing }" glättet die Bewegung, während "{ settings-general-tracker_mechanics-filtering-type-prediction }" die Latenz minimiert.
-settings-general-tracker_mechanics-filtering-type-none = Kein Filter
-settings-general-tracker_mechanics-filtering-type-none-description = Verwendet die unveränderten Rotationsdaten der Tracker.
-settings-general-tracker_mechanics-filtering-type-smoothing = Glättung
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Glättet Bewegungen, fügt aber etwas Verzögerung hinzu.
-settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
-settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen direkter, erhöht jedoch das Zittern.
-settings-general-tracker_mechanics-filtering-amount = Stärke
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontaler Reset Glättungszeit (0s deaktiviert die Glättung)
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Glättet die Rotation der Tracker nach einem Gier-Reset. 0s deaktiviert das Glätten.
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Ausrichtung speichern
@@ -457,7 +445,6 @@ settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Erlaubt Reset durch das Antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Reset der Tracker-Ausrichtung genutzt. Das Antippen muss innerhalb von 0.5 Sekunden erfolgen, um erkannt zu werden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
