@@ -325,7 +325,6 @@ settings-general-fk_settings-self_localization-title = mocap mowd
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = awwows fow wesets to be twiggewed by bapping a twackew. teh twackew hyest up on youw towso is used fow yaw weset, the twackew hyest up on youw weft weg is use fow fuww reset, and da twackew hiest up on youw wight weg is used fow mounting weset. it shouwd be menshuned dat baps must bappen wifin 0.6 second to be wegistewed.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
