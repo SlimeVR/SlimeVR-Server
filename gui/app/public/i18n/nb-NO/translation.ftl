@@ -252,7 +252,6 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korre
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Tillat at nullstillinger aktiveres ved å trykke på en sporer. Den høyeste sporeren på overkroppen blir da brukt til Rask Nullstilling, den høyeste sporeren på det venstre beinet blir brukt til Nullstilling og den høyeste sporeren på det høyre beinet blir brukt til Monterings Nullstilling. Vær obs på at trykking bør skje to ganger innen 0.6 sekunder for å bli registrert.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
