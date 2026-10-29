@@ -339,7 +339,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Leidžia atstatyti bakstelėjant sekiklį: aukščiausias krūtinės sekiklis yra naudojamas horizontaliam atstatymui; aukščiausias kairės kojos sekiklis pilnam atstatymui; o aukščiausias dešinės kojos - tvirtinimo pozicijų atstatymui. Bakstelėjimas turi būti atliktas per 0.3 sekundžių padauginus bakstelėjimų skaičiumi.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
