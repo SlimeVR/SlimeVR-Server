@@ -349,7 +349,6 @@ settings-general-fk_settings-self_localization-title = Modalità Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Abilita o disabilita il ripristino toccando un tracker. Il tracker più in alto sul torso viene utilizzato per il ripristino dell'orientamento, il tracker più in alto sulla gamba sinistra viene utilizzato per il ripristino completo e il tracker più in alto sulla gamba destra viene utilizzato per il ripristino del posizionamento. Si deve tener presente che i tocchi devono avvenire entro 0,6 secondi per essere registrati.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
