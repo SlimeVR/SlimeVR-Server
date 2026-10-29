@@ -37,7 +37,7 @@ import { discordPresence } from './presence';
 import { options } from './cli';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
-import { openCrowdinPopup } from './crowdin';
+import { openCrowdinPopup, rewriteCrowdinOrigin } from './crowdin';
 import {
   applyErrorReporting,
   captureJavaNotFound,
@@ -602,6 +602,8 @@ app.whenReady().then(async () => {
     headers.set('Document-Policy', 'js-profiling');
     return new Response(response.body, { status: response.status, headers });
   });
+
+  rewriteCrowdinOrigin();
 
   try {
     await createFolders();

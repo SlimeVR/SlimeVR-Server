@@ -1,5 +1,5 @@
-import { BrowserWindow } from 'electron';
-import { isAppUrl, openExternalUrl } from './urls';
+import { BrowserWindow, session } from 'electron';
+import { getAppUrl, isAppUrl, openExternalUrl } from './urls';
 import { IPC_CHANNELS } from '@slimevr/gui-shared';
 
 const SESSION_SET_URL = /^https:\/\/[\w-]+\.crowdin\.com\/backend\/jwt\/set\b/;
@@ -26,6 +26,39 @@ const SHOW_WAIT_JS = `document.body?.appendChild(
 const HIDE_WAIT_JS = `document.querySelectorAll('.slimevr-crowdin-wait').forEach((el) => el.remove());`;
 
 let crowdinPopup: BrowserWindow | null = null;
+
+const FAKE_ORIGIN = 'http://localhost';
+const JIPT_API = /^https:\/\/[\w-]+\.crowdin\.com\/api\/v2\/jipt\//;
+
+// The jipt API rejects any non-http(s) origin with "Invalid origin", and the
+// prod build runs on app://. we make it sees http://localhost instead
+export function rewriteCrowdinOrigin() {
+  const appUrl = new URL(getAppUrl());
+  const appOrigin = `${appUrl.protocol}//${appUrl.host}`;
+  if (appOrigin.startsWith('http')) return;
+
+  session.defaultSession.webRequest.onBeforeRequest(
+    { urls: ['https://*.crowdin.com/*'] },
+    (details, callback) => {
+      const url = new URL(details.url);
+      if (details.resourceType === 'subFrame') {
+        callback(replaceParam(url, 'jipt', FAKE_ORIGIN, appOrigin));
+        return;
+      }
+      if (JIPT_API.test(details.url)) {
+        callback(replaceParam(url, 'origin', appOrigin, FAKE_ORIGIN));
+        return;
+      }
+      callback({});
+    }
+  );
+}
+
+function replaceParam(url: URL, param: string, from: string, to: string) {
+  if (url.searchParams.get(param) !== from) return {};
+  url.searchParams.set(param, to);
+  return { redirectURL: url.toString() };
+}
 
 export function openCrowdinPopup(parent: BrowserWindow, url: string) {
   if (crowdinPopup) {
