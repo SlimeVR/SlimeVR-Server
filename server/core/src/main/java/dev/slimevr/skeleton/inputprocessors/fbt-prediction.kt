@@ -27,6 +27,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 	var lastRightLowerLegPitchFloat = 0f
 
 	var maxHeight = 0f
+	var lastNormalizedTilt = 0f
+	var lastDirection = false;
 	private var lastHeadYaw = Quaternion.IDENTITY
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
@@ -43,9 +45,9 @@ class FbtPrediction : SkeletonInputProcessor  {
 			val sittingOnGroundThreshold = heightUnits * 3;
 
 			val currentHeadPosition =
-				Vector3(head!!.position!!.x, head!!.position!!.y, head!!.position!!.x)
+				Vector3(head!!.position!!.x, head!!.position!!.y, head!!.position!!.z)
 			val currentHeadPositionNoY =
-				Vector3(head!!.position!!.x, 0f, head!!.position!!.x);
+				Vector3(head!!.position!!.x, 0f, head!!.position!!.z);
 
 			val leftUpperLeg = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG]
 			val rightUpperLeg = mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG]
@@ -75,6 +77,11 @@ class FbtPrediction : SkeletonInputProcessor  {
 			}
 			val sideTiltDegrees = sideTiltRadians * FastMath.RAD_TO_DEG
 			val normalizedTilt = (sideTiltDegrees / 45).coerceIn(-1f, 1f)
+			val direction = if (kotlin.math.abs(normalizedTilt - lastNormalizedTilt) > 0.001f) {
+				normalizedTilt > lastNormalizedTilt
+			} else {
+				lastDirection
+			}
 
 			currentLeftLegUpperPitch = (normalizedTilt + 1) / 2
 			currentRightLegUpperPitch = (-normalizedTilt + 1) / 2
@@ -88,7 +95,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 					var pitch = calculateUpperLegMotion(
 						-rotationRange,
 						rotationRange,
-						currentLeftLegUpperPitch) * FastMath.DEG_TO_RAD
+						currentLeftLegUpperPitch,direction) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -119,7 +126,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 					var pitch = calculateUpperLegMotion(
 						-rotationRange,
 						rotationRange,
-						currentRightLegUpperPitch) * FastMath.DEG_TO_RAD
+						currentRightLegUpperPitch,!direction) * FastMath.DEG_TO_RAD
 					euler = EulerAngles(
 						EulerOrder.XYZ,
 						pitch,
@@ -198,11 +205,13 @@ class FbtPrediction : SkeletonInputProcessor  {
 					)
 					lastRightLowerLegPitchFloat = pitch
 					mutableInputSkeleton[BodyPart.RIGHT_LOWER_LEG] =
-						rightLowerLeg.copy(rotation = headYawOnly * euler.toQuaternion());
+						rightLowerLeg.copy(rotation = headYawOnly * euler.toQuaternion())
 				}
 			}
-			lastHeadPosition = currentHeadPosition;
-			lastHeadPositionNoY = currentHeadPositionNoY;
+			lastHeadPosition = currentHeadPosition
+			lastHeadPositionNoY = currentHeadPositionNoY
+			lastNormalizedTilt = normalizedTilt
+			lastDirection = direction
 		}
 	}
 
@@ -210,28 +219,17 @@ class FbtPrediction : SkeletonInputProcessor  {
 		return start + (end - start) * t
 	}
 
-	fun parabola(start: Float, peak: Float, peakPercentage: Float, t: Float): Float {
-		val x = t.coerceIn(0f, 1f)
-
-		return if (x <= peakPercentage) {
-			val u = x / peakPercentage
-			start + (peak - start) * (2f * u - u * u)
-		} else {
-			val u = (x - peakPercentage) / 0.25f
-			peak + (start - peak) * u * u
-		}
-	}
-
 	fun calculateUpperLegMotion(
 		start: Float,
 		end: Float,
-		t: Float
+		t: Float,
+		movingForward : Boolean
 	): Float {
 		val bumpEnd = 0.65f
 		val progress = t.coerceIn(0f, 1f)
 		val basePitch = lerp(start, end, progress)
 
-		if (progress <= 0.5f || progress >= bumpEnd) return basePitch
+		if (!movingForward || progress <= 0.5f || progress >= bumpEnd) return basePitch
 
 		val u = (progress - 0.5f) / (bumpEnd - 0.5f)
 		val bump = 4f * u * (1f - u)
