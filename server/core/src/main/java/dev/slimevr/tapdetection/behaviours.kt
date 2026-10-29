@@ -44,17 +44,17 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		// setupMode uses defaults
 		if (!tapDetectionState.setupMode) {
 			when (trackerState.bodyPart) {
-				tapDetectionState.yawResetBodyPart -> {
+				tapDetectionState.yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
 					trackerTapDetectionState.performsReset = true
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetTaps
 				}
 
-				tapDetectionState.fullResetBodyPart -> {
+				tapDetectionState.fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
 					trackerTapDetectionState.performsReset = true
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.fullResetTaps
 				}
 
-				tapDetectionState.mountingResetBodyPart -> {
+				tapDetectionState.mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
 					trackerTapDetectionState.performsReset = true
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetTaps
 				}

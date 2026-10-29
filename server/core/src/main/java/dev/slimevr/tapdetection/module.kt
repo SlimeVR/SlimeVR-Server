@@ -48,9 +48,9 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 		val bodyPart = tracker.context.state.value.bodyPart ?: return
 		val tapDetectionConfig = settings.context.state.value.data.tapDetectionConfig
 		val (resetType, actionDelay) = when (bodyPart) {
-			state.yawResetBodyPart -> ResetType.YAW to tapDetectionConfig.yawResetDelay
-			state.fullResetBodyPart -> ResetType.FULL to tapDetectionConfig.fullResetDelay
-			state.mountingResetBodyPart -> ResetType.MOUNTING to tapDetectionConfig.mountingResetDelay
+			state.yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> ResetType.YAW to tapDetectionConfig.yawResetDelay
+			state.fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> ResetType.FULL to tapDetectionConfig.fullResetDelay
+			state.mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> ResetType.MOUNTING to tapDetectionConfig.mountingResetDelay
 			else -> return
 		}
 
