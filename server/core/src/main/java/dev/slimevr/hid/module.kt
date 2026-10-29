@@ -86,7 +86,7 @@ private fun v3Behaviours(appContext: AppContextProvider): List<HIDReceiverBehavi
 	HIDRssiBehaviour(),
 	HIDPacketLossBehaviour(),
 	HIDSleepV3Behaviour(),
-	HIDButtonV3Behaviour(appContext.tapDetectionManager),
+	HIDButtonV3Behaviour(appContext),
 )
 
 private fun legacyBehaviours(appContext: AppContextProvider): List<HIDReceiverBehaviour> = listOf(
@@ -96,7 +96,7 @@ private fun legacyBehaviours(appContext: AppContextProvider): List<HIDReceiverBe
 	HIDBatteryBehaviour(),
 	HIDStatusBehaviour(),
 	HIDSleepLegacyBehaviour(),
-	HIDButtonLegacyBehaviour(appContext.tapDetectionManager),
+	HIDButtonLegacyBehaviour(appContext),
 )
 
 class HIDReceiver(

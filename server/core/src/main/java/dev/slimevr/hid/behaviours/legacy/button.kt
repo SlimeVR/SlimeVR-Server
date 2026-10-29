@@ -2,14 +2,13 @@
 
 package dev.slimevr.hid.behaviours.legacy
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.hid.HIDDataLegacy
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.HIDReceiverBehaviour
 import dev.slimevr.hid.HIDRotationButtonLegacy
-import dev.slimevr.tapdetection.TapDetectionManager
-import solarxr_protocol.rpc.TapDetectionSetupNotification
 
-class HIDButtonLegacyBehaviour(private val tapDetectionManager: TapDetectionManager) : HIDReceiverBehaviour {
+class HIDButtonLegacyBehaviour(private val appContext: AppContextProvider) : HIDReceiverBehaviour {
 	private val lastButton = mutableMapOf<Int, Int>()
 
 	override fun observe(receiver: HIDReceiver) {
@@ -25,7 +24,7 @@ class HIDButtonLegacyBehaviour(private val tapDetectionManager: TapDetectionMana
 		if (!fired) return
 
 		val tracker = receiver.getTracker(hidId) ?: return
-		tapDetectionManager.actionTriggered(tracker.context.state.value.id)
+		appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id)
 	}
 
 	companion object {
