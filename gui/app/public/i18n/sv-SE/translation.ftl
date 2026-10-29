@@ -346,7 +346,6 @@ settings-general-fk_settings-self_localization-title = Mocap-läge
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Gör att återställningar kan utlösas genom att trycka på en tracker. Den tracker som sitter högst upp på din bål används för Yaw Reset, den tracker som sitter högst upp på ditt vänstra ben används för Full Reset och den tracker som sitter högst upp på ditt högra ben används för Mounting Reset. Taps måste ske inom tidsgränsen 0,3 sekunder gånger antalet taps som ska erkännas.
 settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
 settings-general-gesture_control-yawResetDelay = Fördröjning av återställning av yaw
 settings-general-gesture_control-yawResetTaps = Tryck för återställning av yaw
