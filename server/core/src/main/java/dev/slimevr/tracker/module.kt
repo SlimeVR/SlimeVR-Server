@@ -18,6 +18,7 @@ import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
 import dev.slimevr.util.isActive
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,7 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import solarxr_protocol.rpc.ResetType
+import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration
 
 // A tracker is initialized as ROTATING to prevent TapDetection and Stay Aligned from running immediately.
@@ -81,6 +83,7 @@ data class TrackerState(
 	val imuTemp: Float?,
 	val accumulatedTicks: UShort,
 	val tps: UShort,
+	val lastPoseTime: ComparableTimeMark,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
@@ -109,7 +112,7 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val poseTime: ComparableTimeMark = timeSource.markNow(), val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion?, val resetHmdAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
@@ -224,6 +227,7 @@ class Tracker(
 			imuTemp = null,
 			accumulatedTicks = 0u,
 			tps = 0u,
+			lastPoseTime = timeSource.markNow(),
 			status = TrackerStatus.DISCONNECTED,
 			completedRestCalibration = null,
 			magStatus = MagnetometerStatus.NOT_SUPPORTED,

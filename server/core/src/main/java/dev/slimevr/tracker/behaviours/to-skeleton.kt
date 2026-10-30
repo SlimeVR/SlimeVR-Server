@@ -4,7 +4,9 @@ import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.isActive
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,7 +15,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
+import kotlin.time.ComparableTimeMark
+import kotlin.time.Duration.Companion.milliseconds
 
 class TrackerToSkeletonBehaviour : TrackerBehaviour {
 	var lastBodyPartSent: BodyPart? = null
@@ -47,6 +52,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 							val bonePoseActions = SkeletonActions.SetBonePose(
 								bodyPart,
 								trackerState.boneOffsets[bodyPart],
+								trackerState.lastPoseTime,
 								trackerState.rotation,
 								trackerState.acceleration,
 								trackerState.position,

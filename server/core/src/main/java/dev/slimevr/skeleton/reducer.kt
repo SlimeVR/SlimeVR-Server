@@ -4,6 +4,7 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration.Companion.milliseconds
 
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBonePose -> {
@@ -12,7 +13,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 			boneInputs = state.boneInputs.mutateCopy {
 				it[action.bodyPart] = bone.copy(
 					boneOffset = action.boneOffset ?: bone.boneOffset,
-					poseTime = timeSource.markNow(),
+					poseTime = action.poseTime ?: bone.poseTime,
 					rotation = action.rotation ?: bone.rotation,
 					acceleration = action.acceleration ?: bone.acceleration,
 					position = action.position ?: bone.position,

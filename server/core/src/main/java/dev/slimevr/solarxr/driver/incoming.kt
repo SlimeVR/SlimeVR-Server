@@ -24,6 +24,8 @@ import solarxr_protocol.driver_protocol.UpdateTrackerBattery
 import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
 import kotlin.time.ComparableTimeMark
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlin.to
 
 // These are all only defaults and the user can edit any and they will save.
@@ -210,6 +212,7 @@ class DriverIncomingTrackersBehaviour(
 					rotation = event.rotation?.toQuaternion()?.times(rotationOffset),
 					acceleration = acceleration,
 					position = event.position?.toVector3(),
+					poseTime = timeSource.markNow() - 5.milliseconds, // TODO can we get this from driver?
 				),
 			)
 		}.launchIn(receiver.context.scope)

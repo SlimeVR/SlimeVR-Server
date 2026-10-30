@@ -23,6 +23,13 @@ class TrackerRotationRefreshBehaviour : TrackerBehaviour {
 	}
 
 	companion object {
-		fun getRotationRefreshAction(trackerState: TrackerState) = TrackerActions.SetRotation(trackerState.rawRotation, trackerState.rawAcceleration, trackerState.rawMagnetometer, trackerState.position, false)
+		fun getRotationRefreshAction(trackerState: TrackerState) = TrackerActions.SetRotation(
+			trackerState.rawRotation,
+			trackerState.rawAcceleration,
+			trackerState.rawMagnetometer,
+			trackerState.position,
+			_root_ide_package_.dev.slimevr.util.timeSource.markNow(),
+			false,
+		)
 	}
 }
