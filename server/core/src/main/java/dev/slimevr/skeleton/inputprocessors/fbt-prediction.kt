@@ -32,7 +32,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 	private var lastHeadDirection = false
 	private var lastBackwardsMovement = timeSource.markNow()
 	private var lastMovement = timeSource.markNow()
-	var headTiltMax = 5f;
+	private var headTiltMax = 5f;
 
 	private var lastHeadYaw = Quaternion.IDENTITY
 
