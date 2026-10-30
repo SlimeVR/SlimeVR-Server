@@ -2,9 +2,14 @@ package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
+import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.findFirstParent
+import dev.slimevr.util.timeSource
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.collections.set
+import kotlin.time.Duration.Companion.seconds
+
+private val FALLBACK_REFRESH = 1.seconds
 
 // Only allow child fallbacks in certain cases
 val CHILD_FALLBACKS = mapOf(
@@ -59,23 +64,38 @@ val CHILD_FALLBACKS = mapOf(
  * This does not produce reliable data. For that, see the direct link processor.
  */
 class FallbackInputProcessor : SkeletonInputProcessor {
+	// First is rotation, second is acceleration
+	val cachedFallbacks = bodyPartMap<Pair<BodyPart?, BodyPart?>>()
+	var timeSinceRefresh = timeSource.markNow()
+
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		// Only lookup fallbacks every so often for optimization's sake
+		if (timeSinceRefresh.elapsedNow() > FALLBACK_REFRESH) {
+			for ((bodyPart, bone) in mutableInputSkeleton) {
+				if (bone.isRotationActive && bone.isAccelerationActive) continue
+				val rotationFallback = if (!bone.isRotationActive) {
+					bodyPart.findFirstParent { mutableInputSkeleton[it]?.isRotationActive == true }
+						?: CHILD_FALLBACKS[bodyPart]?.firstOrNull { mutableInputSkeleton[it]?.isRotationActive == true }
+				} else {
+					null
+				}
+				val accelFallback = if (!bone.isAccelerationActive) {
+					bodyPart.findFirstParent { mutableInputSkeleton[it]?.isAccelerationActive == true }
+						?: CHILD_FALLBACKS[bodyPart]?.firstOrNull { mutableInputSkeleton[it]?.isAccelerationActive == true }
+				} else {
+					null
+				}
+				cachedFallbacks[bodyPart] = rotationFallback to accelFallback
+			}
+			timeSinceRefresh = timeSource.markNow()
+		}
+
 		for ((bodyPart, bone) in mutableInputSkeleton) {
 			if (bone.isRotationActive && bone.isAccelerationActive) continue
-			val newRotation = if (!bone.isRotationActive) {
-				val fallbackPart = bodyPart.findFirstParent { mutableInputSkeleton[it]?.isRotationActive == true }
-					?: CHILD_FALLBACKS[bodyPart]?.firstOrNull { mutableInputSkeleton[it]?.isRotationActive == true }
-				mutableInputSkeleton[fallbackPart]?.rotation?.eulerHeading() ?: bone.rotation
-			} else {
-				bone.rotation
-			}
-			val newAcceleration = if (!bone.isAccelerationActive) {
-				val fallbackPart = bodyPart.findFirstParent { mutableInputSkeleton[it]?.isAccelerationActive == true }
-					?: CHILD_FALLBACKS[bodyPart]?.firstOrNull { mutableInputSkeleton[it]?.isAccelerationActive == true }
-				mutableInputSkeleton[fallbackPart]?.acceleration ?: bone.acceleration
-			} else {
-				bone.acceleration
-			}
+			val cachedFallback = cachedFallbacks[bodyPart]
+			val newRotation = mutableInputSkeleton[cachedFallback?.first]?.rotation?.eulerHeading() ?: bone.rotation
+			val newAcceleration = mutableInputSkeleton[cachedFallback?.second]?.acceleration ?: bone.acceleration
+
 			mutableInputSkeleton[bodyPart] = bone.copy(rotation = newRotation, acceleration = newAcceleration)
 		}
 	}

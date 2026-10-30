@@ -396,7 +396,7 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	/**
 	 * Returns a Quaternion representing the heading of this Quaternion using Euler angles and preserving polarity.
 	 */
-	fun eulerHeading() = rotationAroundYAxis(this.toEulerAngles(EulerOrder.YZX).y).twinNearest(this)
+	fun eulerHeading() = rotationAroundYAxis(this.toMatrix().eulerHeadingAssumingOrthonormal(EulerOrder.YZX)).twinNearest(this)
 
 	/**
 	 * applies this quaternion's rotation to that vector

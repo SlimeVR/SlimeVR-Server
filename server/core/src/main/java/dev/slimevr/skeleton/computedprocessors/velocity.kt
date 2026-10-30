@@ -15,12 +15,12 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.ResetType
 
-private data class VelocityData(
+private data class BoneSample(
 	val rotation: Quaternion,
 	val position: Vector3,
 )
 
-private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData: VelocityData, deltaTime: Float): Velocity {
+private fun computeVelocity(currentVelocityData: BoneSample, lastVelocityData: BoneSample, deltaTime: Float): Velocity {
 	val deltaPosition = currentVelocityData.position - lastVelocityData.position
 	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
 	return Velocity(
@@ -29,7 +29,7 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	)
 }
 
-private const val SMOOTHING_MS = 25f
+private const val SMOOTHING_MS = 20f
 private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
 	val t = (deltaTime * (millisecondsInSecond / SMOOTHING_MS)).coerceAtMost(1f)
 	return Velocity(
@@ -44,7 +44,7 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 class VelocityComputedProcessor :
 	SkeletonComputedProcessor,
 	ResettableSkeletonProcessor {
-	private val lastVelocities: BodyPartMap<Pair<Velocity, VelocityData>> = bodyPartMap()
+	private val lastVelocities: BodyPartMap<Pair<Velocity, BoneSample>> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	override fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton) {
@@ -55,13 +55,13 @@ class VelocityComputedProcessor :
 
 		for ((bodyPart, bone) in mutableComputedSkeleton) {
 			// Compute current velocity
-			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
-			val currentVelocity = lastVelocities[bodyPart]?.second?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
+			val currentBoneSample = BoneSample(bone.rotation, bone.tailPosition)
+			val currentVelocity = lastVelocities[bodyPart]?.second?.let { computeVelocity(currentBoneSample, it, deltaTime) } ?: ZERO_VELOCITY
 
 			val smoothedVelocity = smoothVelocity(currentVelocity, lastVelocities[bodyPart]?.first ?: ZERO_VELOCITY, deltaTime)
 			mutableComputedSkeleton[bodyPart] = bone.copy(velocity = smoothedVelocity)
 
-			lastVelocities[bodyPart] = smoothedVelocity to currentVelocityData
+			lastVelocities[bodyPart] = smoothedVelocity to currentBoneSample
 		}
 	}
 
