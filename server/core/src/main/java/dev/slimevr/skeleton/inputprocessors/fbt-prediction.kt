@@ -124,9 +124,9 @@ class FbtPrediction : SkeletonInputProcessor  {
 						MAXIMUM_LEG_RANGE, !headDirection)
 					generateLowerLeg(mutableInputSkeleton, leftLowerLeg,
 						headYaw, MAXIMUM_LEG_RANGE)
-					generateUpperLeg(mutableInputSkeleton,rightUpperLeg,
+					generateUpperLeg(mutableInputSkeleton, rightUpperLeg,
 						headYaw, MAXIMUM_LEG_RANGE, headDirection)
-					generateLowerLeg(mutableInputSkeleton,	rightLowerLeg,
+					generateLowerLeg(mutableInputSkeleton, rightLowerLeg,
 						headYaw, MAXIMUM_LEG_RANGE)
 					generateFootAcceleration(mutableInputSkeleton, leftFoot)
 					generateFootAcceleration(mutableInputSkeleton, rightFoot)
@@ -185,7 +185,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			var acceleration = MAXIMUM_FOOT_ACCELERATION * currentJointPercentages[boneInput.bodyPart]!!;
 			mutableInputSkeleton[boneInput.bodyPart] =
 				boneInput.copy(acceleration =
-					Vector3(acceleration,acceleration,acceleration));
+					Vector3(acceleration, acceleration, acceleration));
 		}
 	}
 
@@ -195,7 +195,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			var acceleration = MAXIMUM_FOOT_ACCELERATION * currentJointPercentages[boneInput.bodyPart]!!;
 			mutableInputSkeleton[boneInput.bodyPart] =
 				boneInput.copy(acceleration =
-					Vector3(acceleration,acceleration,acceleration));
+					Vector3(acceleration, acceleration, acceleration));
 		}
 	}
 
