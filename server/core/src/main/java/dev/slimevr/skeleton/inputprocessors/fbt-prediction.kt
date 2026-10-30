@@ -120,9 +120,9 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 				// Allow leg movement after commiting to a direction.
 				if(lastMovement.elapsedNow() < DECISION_WAIT_TIME) {
-					generateUpperLeg(mutableInputSkeleton,leftUpperLeg, headYaw,
+					generateUpperLeg(mutableInputSkeleton, leftUpperLeg, headYaw,
 						MAXIMUM_LEG_RANGE, !headDirection)
-					generateLowerLeg(mutableInputSkeleton,leftLowerLeg,
+					generateLowerLeg(mutableInputSkeleton, leftLowerLeg,
 						headYaw, MAXIMUM_LEG_RANGE)
 					generateUpperLeg(mutableInputSkeleton,rightUpperLeg,
 						headYaw, MAXIMUM_LEG_RANGE, headDirection)
@@ -133,21 +133,21 @@ class FbtPrediction : SkeletonInputProcessor  {
 				}else{
 					val staticAngle = 0f
 					val transitionSpeed = 0.5f
-					generateStaticPitch(mutableInputSkeleton,leftUpperLeg, headYaw, staticAngle, transitionSpeed)
-					generateStaticPitch(mutableInputSkeleton,leftLowerLeg, headYaw, staticAngle, transitionSpeed)
-					generateStaticPitch(mutableInputSkeleton,rightUpperLeg, headYaw, staticAngle, transitionSpeed)
-					generateStaticPitch(mutableInputSkeleton,rightLowerLeg, headYaw, staticAngle, transitionSpeed)
+					generateStaticPitch(mutableInputSkeleton, leftUpperLeg, headYaw, staticAngle, transitionSpeed)
+					generateStaticPitch(mutableInputSkeleton, leftLowerLeg, headYaw, staticAngle, transitionSpeed)
+					generateStaticPitch(mutableInputSkeleton, rightUpperLeg, headYaw, staticAngle, transitionSpeed)
+					generateStaticPitch(mutableInputSkeleton, rightLowerLeg, headYaw, staticAngle, transitionSpeed)
 				}
 			}else if (head.position!!.y < standingThreshold)
 			{
 				val staticAngle = 90f
 				val transitionSpeed = 0.5f
-				generateStaticPitch(mutableInputSkeleton,leftUpperLeg, headYaw, staticAngle, transitionSpeed)
-				generateStaticPitch(mutableInputSkeleton,leftLowerLeg, headYaw, staticAngle, transitionSpeed)
-				generateStaticPitch(mutableInputSkeleton,rightUpperLeg, headYaw, staticAngle, transitionSpeed)
-				generateStaticPitch(mutableInputSkeleton,rightLowerLeg, headYaw, staticAngle, transitionSpeed)
-				generateStaticPitch(mutableInputSkeleton,leftFoot, headYaw, staticAngle, transitionSpeed)
-				generateStaticPitch(mutableInputSkeleton,rightFoot, headYaw, staticAngle, transitionSpeed)
+				generateStaticPitch(mutableInputSkeleton, leftUpperLeg, headYaw, staticAngle, transitionSpeed)
+				generateStaticPitch(mutableInputSkeleton, leftLowerLeg, headYaw, staticAngle, transitionSpeed)
+				generateStaticPitch(mutableInputSkeleton, rightUpperLeg, headYaw, staticAngle, transitionSpeed)
+				generateStaticPitch(mutableInputSkeleton, rightLowerLeg, headYaw, staticAngle, transitionSpeed)
+				generateStaticPitch(mutableInputSkeleton, leftFoot, headYaw, staticAngle, transitionSpeed)
+				generateStaticPitch(mutableInputSkeleton, rightFoot, headYaw, staticAngle, transitionSpeed)
 				setFootAcceleration(mutableInputSkeleton, leftFoot, MAXIMUM_FOOT_ACCELERATION)
 				setFootAcceleration(mutableInputSkeleton, rightFoot, MAXIMUM_FOOT_ACCELERATION)
 				headTiltMax = 5f
@@ -166,7 +166,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			var pitch = calculateUpperLegMotion(
 				-rotationRange,
 				rotationRange,
-				currentJointPercentages[boneInput.bodyPart],direction) * FastMath.DEG_TO_RAD
+				currentJointPercentages[boneInput.bodyPart], direction) * FastMath.DEG_TO_RAD
 			euler = EulerAngles(
 				EulerOrder.XYZ,
 				pitch,
