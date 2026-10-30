@@ -147,28 +147,28 @@ body {
   --default-color: 255, 255, 255;
 }
 
-:root[data-theme='midnight'] {
+:root[data-theme='oled'] {
   --background-10: 255, 255, 255;
-  --background-20: 151, 148, 153;
-  --background-30: 126, 124, 128;
-  --background-40: 88, 87, 89;
-  --background-50: 55, 54, 56;
-  --background-60: 37, 37, 38;
-  --background-70: 21, 20, 21;
-  --background-80: 7, 7, 7;
+  --background-20: 189, 186, 191;
+  --background-30: 151, 148, 153;
+  --background-40: 101, 99, 102;
+  --background-50: 53, 52, 54;
+  --background-60: 32, 32, 33;
+  --background-70: 12, 12, 12;
+  --background-80: 0, 0, 0;
   --background-90: 0, 0, 0;
 
-  --accent-background-10: 153, 151, 156;
-  --accent-background-20: 116, 114, 117;
-  --accent-background-30: 78, 77, 79;
-  --accent-background-40: 73, 72, 74;
-  --accent-background-50: 35, 35, 36;
+  --accent-background-10: 166, 163, 168;
+  --accent-background-20: 128, 126, 130;
+  --accent-background-30: 70, 69, 71;
+  --accent-background-40: 45, 44, 46;
+  --accent-background-50: 17, 17, 17;
 
   --success: 77, 227, 147;
   --warning: 255, 225, 53;
   --critical: 223, 109, 140;
-  --special: 123, 121, 125;
-  --window-icon-stroke: 172, 172, 172;
+  --special: 126, 124, 128;
+  --window-icon-stroke: 150, 150, 150;
 
   --default-color: 255, 255, 255;
 }

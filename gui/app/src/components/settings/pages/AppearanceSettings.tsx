@@ -137,7 +137,7 @@ export function AppearanceSettings() {
   const themes = [
     { value: 'slime', colors: '!bg-slime' },
     { value: 'space', colors: '!bg-space' },
-    { value: 'midnight', colors: '!bg-midnight' },
+    { value: 'oled', colors: '!bg-oled' },
     { value: 'light', colors: '!bg-light' },
     { value: 'fire', colors: '!bg-fire' },
     { value: 'citrus', colors: '!bg-citrus' },
