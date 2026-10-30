@@ -320,7 +320,7 @@ const config = {
       backgroundImage: {
         slime: `linear-gradient(135deg, ${colors.purple[200]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
         space: `linear-gradient(135deg, ${colors.purple[200]} 50%, ${colors['dark-background'][700]} 50% 100%)`,
-        oled: `linear-gradient(135deg, ${colors['dark-accent'][900]} 50%, ${colors['dark-background'][900]} 50% 100%)`,
+        oled: `linear-gradient(135deg, ${colors.purple[200]} 50%, ${colors['dark-background'][900]} 50% 100%)`,
         light: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         citrus: `linear-gradient(135deg, ${colors['yellow-accent'][100]} 50%, ${colors['green-background'][300]} 50% 100%)`,
         fire: `linear-gradient(135deg, ${colors['orange-accent'][100]} 50%, ${colors['red-accent'][200]} 50% 100%)`,
