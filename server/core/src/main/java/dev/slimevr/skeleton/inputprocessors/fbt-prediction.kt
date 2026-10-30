@@ -94,6 +94,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 			} else {
 				lastHeadDirection
 			}
+
+			// Detect if we're walking backwards and reverse the math.
 			if (relativeForwardMovement < 0.001f || lastBackwardsMovement.elapsedNow() < DECISION_WAIT_TIME) {
 				headDirection = !headDirection
 				lastBackwardsMovement = timeSource.markNow()
