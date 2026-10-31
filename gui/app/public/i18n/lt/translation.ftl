@@ -1,0 +1,524 @@
+# Please developers (not translators) don't reuse a key inside another key
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
+# translators on what it means
+
+
+## Websocket (server) status
+
+websocket-connecting = Įkeliama...
+websocket-connection_lost = Įvyko techninė klaida!
+websocket-connection_lost-desc = Panašu, kad įvyko techninė klaida SlimeVR serveryje. Patikrinkite log'us ir bandykite jį perkrauti.
+websocket-timedout = Nepavyko susisiekti su serveriu
+websocket-timedout-desc = Panašu, kad SlimeVR serveris užstrigo. Patikrinkite log'us ir bandykite jį perkrauti.
+websocket-error-close = Uždaryti SlimeVR
+
+## Update notification
+
+version_update-title = Yra nauja versija: { $version }
+version_update-description = Paspaudus „{ version_update-update }“, bus atsiųstas SlimeVR diegiklis.
+version_update-update = Atnaujinti
+version_update-close = Atmesti
+
+## Tips
+
+tips-find_tracker = Neaiškų, kuris sekiklis yra kuris? Pakratykite vieną - atitinkamas elementas bus paryškintas.
+tips-do_not_move_heels = Įrašymo metu pasirūpinkite, kad kulnai nejudėtų!
+tips-file_select = Tempkite failus čia, arba <u>pasirinkite</u> rankiniu būdu.
+tips-failed_webgl = Įvyko techninė klaida inicijuojant WebGL.
+
+## Units
+
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = Uždaryti
+
+## Body parts
+
+body_part-NONE = Nepriskirta
+body_part-HEAD = Galva
+body_part-NECK = Kaklas
+body_part-RIGHT_SHOULDER = Dešinysis petys
+body_part-RIGHT_UPPER_ARM = Dešinysis žastas
+body_part-RIGHT_LOWER_ARM = Dešinysis dilbis
+body_part-RIGHT_HAND = Dešinioji ranka
+body_part-RIGHT_UPPER_LEG = Dešinioji šlaunis
+body_part-RIGHT_LOWER_LEG = Dešinioji blauzda
+body_part-RIGHT_FOOT = Dešinioji pėda
+body_part-UPPER_CHEST = Viršutinė krūtinės dalis
+body_part-HIP = Klubai
+body_part-LEFT_SHOULDER = Kairysis petys
+body_part-LEFT_UPPER_ARM = Kairysis žastas
+body_part-LEFT_LOWER_ARM = Kairysis dilbis
+body_part-LEFT_HAND = Kairioji ranka
+body_part-LEFT_UPPER_LEG = Kairioji šlaunis
+body_part-LEFT_LOWER_LEG = Kairioji blauzda
+body_part-LEFT_FOOT = Kairioji pėda
+body_part-LEFT_THUMB_METACARPAL = Kairiojo nykščio delnakaulis
+body_part-LEFT_THUMB_PROXIMAL = Kairiojo nykščio artimoji dalis
+body_part-LEFT_THUMB_DISTAL = Kairiojo nykščio tolimiausioji dalis
+body_part-LEFT_INDEX_PROXIMAL = Kairiojo smiliaus artimoji dalis
+body_part-LEFT_INDEX_INTERMEDIATE = Kairiojo smiliaus vidurinė dalis
+body_part-LEFT_INDEX_DISTAL = Kairiojo smiliaus tolimiausioji dalis
+body_part-LEFT_MIDDLE_PROXIMAL = Kairiojo didžiojo piršto artimoji dalis
+body_part-LEFT_MIDDLE_INTERMEDIATE = Kairiojo didžiojo piršto vidurinė dalis
+body_part-LEFT_MIDDLE_DISTAL = Kairiojo didžiojo piršto tolimiausioji dalis
+body_part-LEFT_RING_PROXIMAL = Kairiojo bevardžio piršto artimoji dalis
+body_part-LEFT_RING_INTERMEDIATE = Kairiojo bevardžio piršto vidurinė dalis
+body_part-LEFT_RING_DISTAL = Kairiojo bevardžio piršto tolimiausioji dalis
+body_part-LEFT_LITTLE_PROXIMAL = Kairiojo mažylio artimoji dalis
+body_part-LEFT_LITTLE_INTERMEDIATE = Kairiojo mažylio vidurinė dalis
+body_part-LEFT_LITTLE_DISTAL = Kairiojo mažylio tolimiausioji dalis
+body_part-RIGHT_THUMB_METACARPAL = Dešiniojo nykščio delnakaulis
+body_part-RIGHT_THUMB_PROXIMAL = Dešiniojo nykščio artimoji dalis
+body_part-RIGHT_THUMB_DISTAL = Dešiniojo nykščio tolimiausioji dalis
+body_part-RIGHT_INDEX_PROXIMAL = Dešiniojo smiliaus artimoji dalis
+body_part-RIGHT_INDEX_INTERMEDIATE = Dešiniojo smiliaus vidurinė dalis
+body_part-RIGHT_INDEX_DISTAL = Dešiniojo smiliaus tolimiausioji dalis
+body_part-RIGHT_MIDDLE_PROXIMAL = Dešinioji didžiojo piršto artimoji dalis
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Dešinioji didžiojo piršto vidurinė dalis
+body_part-RIGHT_MIDDLE_DISTAL = Dešinioji didžiojo piršto tolimiausioji dalis
+body_part-RIGHT_RING_PROXIMAL = Dešiniojo bevardžio piršto artimoji dalis
+body_part-RIGHT_RING_INTERMEDIATE = Dešiniojo bevardžio piršto vidurinė dalis
+body_part-RIGHT_RING_DISTAL = Dešiniojo bevardžio piršto tolimiausioji dalis
+body_part-RIGHT_LITTLE_PROXIMAL = Dešiniojo mažylio artimoji dalis
+body_part-RIGHT_LITTLE_INTERMEDIATE = Dešiniojo mažylio vidurinė dalis
+body_part-RIGHT_LITTLE_DISTAL = Dešiniojo mažylio tolimiausioji dalis
+
+## Proportions
+
+skeleton_bone-NONE = Nenurodyta
+skeleton_bone-NECK = Kaklo ilgis
+skeleton_bone-NECK-desc =
+    Tai atstumas nuo galvos centro iki kaklo pagrindo.
+    Norėdami tinkamai nustatyti, linktelėkite galvą aukštyn ir žemyn, arba palenkite
+    galvą į kairę ir dešinę ir koreguokite, kol judesys kituose sekikliuose taps minimalus
+skeleton_bone-torso_group-desc =
+    Tai atstumas nuo kaklo pagrindo iki klubų.
+    Norėdami tinkamai nustatyti, stovėkite tiesiai ir koreguokite, kol
+    virtualūs klubai sutaps su jūsų realiaisiais.
+skeleton_bone-UPPER_CHEST = Viršutinės krūtinės ilgis
+skeleton_bone-HIP = Klubų ilgis
+skeleton_bone-HIPS_WIDTH = Klubų plotis
+skeleton_bone-HIPS_WIDTH-desc =
+    Tai atstumas tarp jūsų kojų pradžios taškų.
+    Norėdami tinkamai nustatyti, atlikite pilną atstatymą tiesiomis kojomis ir koreguokite,
+    kol virtualios kojos horizontaliai sutaps su realiosiomis.
+skeleton_bone-UPPER_LEG = Šlaunies ilgis
+skeleton_bone-LOWER_LEG = Blauzdos ilgis
+skeleton_bone-FOOT_LENGTH = Pėdos ilgis
+skeleton_bone-FOOT_LENGTH-desc =
+    Tai atstumas nuo kulkšnių iki kojų pirštų.
+    Norėdami tinkamai nustatyti, atsistokite ant pirštų galų ir koreguokite, kol
+    virtualios pėdos stabiliai laikysis vietoje.
+skeleton_bone-FOOT_SHIFT = Pėdos poslinkis
+skeleton_bone-SHOULDERS_DISTANCE = Pečių atstumas
+skeleton_bone-SHOULDERS_WIDTH = Pečių plotis
+skeleton_bone-UPPER_ARM = Žasto ilgis
+skeleton_bone-LOWER_ARM = Dilbio ilgis
+
+## Tracker reset buttons
+
+reset-reset_all = Atstatyti visas proporcijas
+reset-reset_all_warning-reset = Atstatyti proporcijas
+reset-reset_all_warning-cancel = Atšaukti
+reset-full = Pilnas atstatymas
+reset-mounting = Tvirtinimo pozicijų atstatymas
+reset-yaw = Horizontalus atstatymas
+
+## Navigation bar
+
+navbar-home = Pradžia
+navbar-body_proportions = Kūno proporcijos
+navbar-trackers_assign = Sekiklių priskyrimas
+navbar-mounting = Tvirtinimo kalibravimas
+navbar-onboarding = Sąrankos vedlys
+navbar-settings = Nustatymai
+
+## Biovision hierarchy recording
+
+bvh-start_recording = Įrašyti BVH
+bvh-recording = Įrašoma...
+
+## Tracking pause
+
+tracking-unpaused = Pristabdyti sekimą
+tracking-paused = Tęsti sekimą
+
+## Widget: Developer settings
+
+widget-developer_mode = Kūrėjo režimas
+widget-developer_mode-high_contrast = Didelis kontrastas
+widget-developer_mode-precise_rotation = Tiksli rotacija
+widget-developer_mode-fast_data_feed = Greitas duomenų perdavimas
+widget-developer_mode-raw_slime_rotation = Neapdorota rotacija
+
+## Widget: IMU Visualizer
+
+widget-imu_visualizer = Sekimo duomenys
+widget-imu_visualizer-preview = Peržiūra
+widget-imu_visualizer-hide = Slėpti
+widget-imu_visualizer-rotation_raw = Neapdorota rotacija
+widget-imu_visualizer-rotation_preview = Rotacijos peržiūra
+widget-imu_visualizer-acceleration = Akceleracija
+widget-imu_visualizer-position = Pozicija
+
+## Tracker status
+
+tracker-status-none = Nėra būsenos
+tracker-status-busy = Užimtas
+tracker-status-error = Klaida
+tracker-status-disconnected = Atjungtas
+tracker-status-occluded = Užblokuotas
+tracker-status-ok = Veikiantis
+tracker-status-timed_out = Nebepasiekiamas
+
+## Tracker status columns
+
+tracker-table-column-name = Pavadinimas
+tracker-table-column-type = Tipas
+tracker-table-column-battery = Baterija
+tracker-table-column-linear-acceleration = Akcel. X/Y/Z
+tracker-table-column-rotation = Rotacija X/Y/Z
+tracker-table-column-position = Pozicija X/Y/Z
+
+## Tracker rotation
+
+tracker-rotation-front = Priekyje
+tracker-rotation-front_left = Priekyje kairėje
+tracker-rotation-front_right = Priekyje dešinėje
+tracker-rotation-left = Kairėje
+tracker-rotation-right = Dešinėje
+tracker-rotation-back = Gale
+tracker-rotation-back_left = Gale kairėje
+tracker-rotation-back_right = Gale dešinėje
+tracker-rotation-custom = Pasirinktinis
+
+## Tracker information
+
+tracker-infos-manufacturer = Gamintojas
+tracker-infos-display_name = Rodomas pavadinimas
+tracker-infos-custom_name = Pasirinktinis pavadinimas
+tracker-infos-url = Sekiklio URL
+tracker-infos-hardware_identifier = Įrenginio ID
+tracker-infos-imu = IMU jutiklis
+tracker-infos-board_type = Pagrindinė plokštė
+tracker-infos-network_version = Protokolo versija
+tracker-infos-magnetometer = Magnetometras
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] Išjungtas
+        [ENABLED] Įjungtas
+       *[NOT_SUPPORTED] Nepalaikomas
+    }
+
+## Tracker settings
+
+tracker-settings-back = Grįžti į sekiklio sąrašą
+tracker-settings-title = Sekiklio nustatymai
+tracker-settings-assignment_section = Priskyrimas
+tracker-settings-assignment_section-description = Kūno dalis, kuriai priskirtas sekiklis.
+tracker-settings-assignment_section-edit = Keisti priskyrimą
+tracker-settings-mounting_section = Tvirtinimo kryptis
+tracker-settings-mounting_section-description = Kur sekiklis yra tvirtinamas?
+tracker-settings-mounting_section-edit = Keisti tvirtinimą
+tracker-settings-use_mag = Leisti sekiklio magnetometro naudojimą
+tracker-settings-use_mag-label = Leisti magnetometro naudojimą
+tracker-settings-name_section = Sekiklio pavadinimas
+tracker-settings-name_section-description = Sugalvokite jam mielą vardą :)
+tracker-settings-name_section-placeholder = NightyBeast kairė koja
+tracker-settings-name_section-label = Sekiklio pavadinimas
+tracker-settings-forget = Pamiršti sekiklį
+tracker-settings-forget-label = Pamiršti sekiklį
+tracker-settings-update-low-battery = Negalima atnaujinti, baterijos lygis žemesnis nei 50%
+tracker-settings-update-up_to_date = Atnaujinta
+tracker-settings-update = Atnaujinti dabar
+tracker-settings-update-title = Programinės įrangos versija
+
+## Dongle settings
+
+dongle-infos-hardware_revision = Įrenginio revizija
+dongle-status-disconnected = Atjungtas
+dongle-settings-back = Grįžti į sekiklio sąrašą
+dongle-settings-update = Atnaujinti dabar
+dongle-settings-update-title = Programinės įrangos versija
+
+## Tracker part card info
+
+tracker-part_card-unassigned = Nepriskirtas
+
+## Body assignment menu
+
+body_assignment_menu = Kur norite priskirti šį sekiklį?
+body_assignment_menu-description = Pasirinkite kūno vietą, į kurią priskirti šį sekikli. Taip pat galite valdyti visus sekiklius vienu metu, o ne po vieną.
+body_assignment_menu-manage_trackers = Tvarkyti visus sekiklius
+body_assignment_menu-unassign_tracker = Išvalyti sekiklio priskyrimą
+
+## Tracker assignment menu
+
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Dėmesio:</b> Kaklo sekiklio naudojimas gali sutrikdyti kraujotaką į 
+    galvą ir būti mirtinai pavojingas, jei dirželis netinkamai sureguliuotas!
+tracker_selection_menu-neck_warning-done = Suprantu riziką
+tracker_selection_menu-neck_warning-cancel = Atšaukti
+
+## Mounting menu
+
+mounting_selection_menu = Kur norite tvirtinti šį sekiklį?
+mounting_selection_menu-close = Uždaryti
+
+## Sidebar settings
+
+settings-sidebar-general = Bendrieji
+settings-sidebar-interface = Sąsaja
+settings-sidebar-utils = Įrankiai
+settings-sidebar-serial = Serijinė konsolė
+settings-sidebar-appearance = Išvaizda
+settings-sidebar-behavior = Elgsena
+settings-sidebar-firmware-tool = DIY sekiklių programinės įrangos įrankis
+settings-sidebar-advanced = Išplėstiniai
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = Atšaukti
+
+## SteamVR / Monado output settings
+
+
+## Tracker mechanics
+
+settings-general-tracker_mechanics-filtering = Filtravimas
+settings-general-tracker_mechanics-filtering-type-none = Be filtravimo
+settings-general-tracker_mechanics-filtering-type-none-description = Naudoja judesius be jokio filtravimo.
+settings-general-tracker_mechanics-filtering-type-smoothing = Švelninimas
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Sušvelnina judesius, bet prideda sekimo vėlavimą.
+settings-general-tracker_mechanics-filtering-type-prediction = Prognozavimas
+settings-general-tracker_mechanics-filtering-amount = Filtravimo stiprumas
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontalaus atstatymo sušvelninimo laikas (0 s išjungs švelninimą)
+settings-general-tracker_mechanics-save_mounting_reset = Išsaugoti automatinio tvirtinimo pozicijų kalibravimą
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Išsaugo sekiklių automatinio tvirtinimo pozicijų kalibravimą tarp paleidimų iš naujo. Tai yra naudinga,
+    jeigu naudojate sekimo aprangą, kuriame sekikliai nepajuda tarp sesijų. <b>Nerekomenduojama įprastiems naudotojams!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Naudoti magnetometrą visuose IMU jutikliuose, kurie jį turi
+
+## Stay Aligned pose recorder
+
+
+## Keybinds Page
+
+settings-keybinds-recorder-modal-cancel-button = Atšaukti
+
+## FK/Tracking settings
+
+# Floor clip:
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
+settings-general-fk_settings-leg_tweak-floor_clip = Rėmimas prie grindų
+# Skating correction:
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
+settings-general-fk_settings-leg_tweak-skating_correction = Slydimo korekcija
+settings-general-fk_settings-leg_tweak-toe_snap = Pėdų pasukimo spėjimas
+settings-general-fk_settings-leg_tweak-foot_plant = Pėdos prispaudimas
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Slydimo korekcijos stiprumas
+settings-general-fk_settings-leg_fk = Kojų sekimas
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
+
+## Gesture control settings (tracker tapping)
+
+settings-general-gesture_control-description = Leidžia atstatyti bakstelėjant sekiklį: aukščiausias krūtinės sekiklis yra naudojamas horizontaliam atstatymui; aukščiausias kairės kojos sekiklis pilnam atstatymui; o aukščiausias dešinės kojos - tvirtinimo pozicijų atstatymui. Bakstelėjimas turi būti atliktas per 0.3 sekundžių padauginus bakstelėjimų skaičiumi.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] { $amount } bakstelėjimas
+        [few] { $amount } bakstelėjimai
+        [many] { $amount } bakstelėjimo
+       *[other] { $amount } bakstelėjimų
+    }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] { $amount } sekiklis
+        [few] { $amount } sekikliai
+        [many] { $amount } sekiklio
+       *[other] { $amount } sekiklių
+    }
+
+## Appearance settings
+
+settings-interface-appearance = Išvaizda
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+
+## Notification settings
+
+
+## Behavior settings
+
+
+## Serial settings
+
+settings-serial-factory_reset-warning-cancel = Atšaukti
+settings-serial-send_command-warning-cancel = Atšaukti
+
+## Logs settings
+
+
+## OSC VRChat settings
+
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = Sekimo duomenys
+settings-osc-vrchat-status-badge-error = Klaida
+settings-osc-vrchat-status-badge-unknown = Nežinoma
+
+## VMC OSC settings
+
+settings-osc-vmc-status-badge-error = Klaida
+
+## Common OSC settings
+
+
+## Advanced settings
+
+settings-utils-advanced = Išplėstiniai
+settings-utils-advanced-reset_warning-cancel = Atšaukti
+
+## Home Screen
+
+
+## Tracking Checklist
+
+
+## Setup/onboarding menu
+
+
+## Quiz
+
+onboarding-quiz_back = Gale
+onboarding-quiz-mocap_preferences-head_tracker-yes = Taip
+
+## Wi-Fi setup
+
+onboarding-wifi_creds-submit = Patvirtinti!
+
+## Install info
+
+install-info_udev-rules_modal_button = Uždaryti
+
+## Setup start
+
+
+## Tracker connection setup
+
+onboarding-connect_tracker-close = Uždaryti
+
+## Tracker assignment setup
+
+onboarding-assign_trackers-tap_modal-cancel = Atšaukti
+onboarding-assign_trackers-side-right = Dešinėje
+onboarding-assign_trackers-side-left = Kairėje
+
+## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
+## Tracker manual mounting setup
+
+
+## Tracker automatic mounting setup
+
+onboarding-automatic_mounting-title = Tvirtinimo kalibravimas
+onboarding-automatic_mounting-mounting_reset-title = Tvirtinimo kalibravimas
+
+## Tracker manual proportions setup
+
+
+## Tracker automatic proportions setup
+
+
+## User height calibration
+
+
+## Home
+
+home-settings-close = Uždaryti
+
+## Trackers Still On notification
+
+trackers_still_on-modal-confirm = Uždaryti SlimeVR
+
+## Firmware tool globals
+
+firmware_tool-loading = Įkeliama...
+
+## Firmware tool Steps
+
+firmware_tool-select_source-version = Programinės įrangos versija
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+tray_menu-hide = Slėpti
+
+## First exit modal
+
+tray_or_exit_modal-cancel = Atšaukti
+
+## Unknown device modal
+
+vrc_config-tracker_model-UNKNOWN = Nežinoma
+vrc_config-avatar_measurement_type-UNKNOWN = Nežinoma
+
+## Error collection consent modal
+
+error_collection_modal-confirm = Sutinku
+error_collection_modal-cancel = Nesutinku
+
+## Crash screen
+
+
+## Tracking checklist section
+
+tracking_checklist-settings-close = Uždaryti
+toolbar-mounting_calibration = Tvirtinimo kalibravimas

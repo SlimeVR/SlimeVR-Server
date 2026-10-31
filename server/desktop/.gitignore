@@ -1,1 +1,6 @@
 /build
+config/*
+!config/.gitkeep
+
+logs/*
+!logs/.gitkeep

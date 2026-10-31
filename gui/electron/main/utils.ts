@@ -1,7 +1,7 @@
 import os from 'os';
-import { OSStats } from '../preload/interface';
+import { OSStats } from '@slimevr/gui-shared';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
-import { IpcInvokeMap } from '../shared';
+import { IpcInvokeMap } from '@slimevr/gui-shared';
 import net from 'net';
 
 export const getPlatform = (): OSStats['type'] => {

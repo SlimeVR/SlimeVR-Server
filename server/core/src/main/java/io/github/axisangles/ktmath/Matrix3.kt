@@ -5,9 +5,10 @@ package io.github.axisangles.ktmath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-@JvmInline
+private const val FLOAT_EPSILON = 1e-7f
+
 @Serializable
-value class Matrix3
+class Matrix3
 @Suppress("ktlint") constructor(
 	val xx: Float, val yx: Float, val zx: Float,
 	val xy: Float, val yy: Float, val zy: Float,
@@ -340,115 +341,153 @@ value class Matrix3
 	 */
 	fun toEulerAnglesAssumingOrthonormal(order: EulerOrder): EulerAngles {
 		val ETA = 1.5707964f
-		when (order) {
+		return when (order) {
 			EulerOrder.XYZ -> {
 				val kc = sqrt(zy * zy + zz * zz)
-				if (kc < 1e-7f) {
-					return EulerAngles(
+				if (kc < FLOAT_EPSILON) {
+					EulerAngles(
 						EulerOrder.XYZ,
 						atan2(yz, yy),
 						ETA.withSign(zx),
 						0f
 					)
+				} else {
+					EulerAngles(
+						EulerOrder.XYZ,
+						atan2(-zy, zz),
+						atan2(zx, kc),
+						atan2(xy * zz - xz * zy, yy * zz - yz * zy)
+					)
 				}
-
-				return EulerAngles(
-					EulerOrder.XYZ,
-					atan2(-zy, zz),
-					atan2(zx, kc),
-					atan2(xy * zz - xz * zy, yy * zz - yz * zy)
-				)
 			}
 			EulerOrder.YZX -> {
 				val kc = sqrt(xx * xx + xz * xz)
-				if (kc < 1e-7f) {
-					return EulerAngles(
+				if (kc < FLOAT_EPSILON) {
+					EulerAngles(
 						EulerOrder.YZX,
 						0f,
 						atan2(zx, zz),
 						ETA.withSign(xy)
 					)
+				} else {
+					EulerAngles(
+						EulerOrder.YZX,
+						atan2(xx * yz - xz * yx, xx * zz - xz * zx),
+						atan2(-xz, xx),
+						atan2(xy, kc)
+					)
 				}
-
-				return EulerAngles(
-					EulerOrder.YZX,
-					atan2(xx * yz - xz * yx, xx * zz - xz * zx),
-					atan2(-xz, xx),
-					atan2(xy, kc)
-				)
 			}
 			EulerOrder.ZXY -> {
 				val kc = sqrt(yy * yy + yx * yx)
-				if (kc < 1e-7f) {
-					return EulerAngles(
+				if (kc < FLOAT_EPSILON) {
+					EulerAngles(
 						EulerOrder.ZXY,
 						ETA.withSign(yz),
 						0f,
 						atan2(xy, xx)
 					)
+				} else {
+					EulerAngles(
+						EulerOrder.ZXY,
+						atan2(yz, kc),
+						atan2(yy * zx - yx * zy, yy * xx - yx * xy),
+						atan2(-yx, yy)
+					)
 				}
-
-				return EulerAngles(
-					EulerOrder.ZXY,
-					atan2(yz, kc),
-					atan2(yy * zx - yx * zy, yy * xx - yx * xy),
-					atan2(-yx, yy)
-				)
 			}
 			EulerOrder.ZYX -> {
 				val kc = sqrt(xy * xy + xx * xx)
-				if (kc < 1e-7f) {
-					return EulerAngles(
+				if (kc < FLOAT_EPSILON) {
+					EulerAngles(
 						EulerOrder.ZYX,
 						0f,
 						ETA.withSign(-xz),
 						atan2(-yx, yy)
 					)
+				} else {
+					EulerAngles(
+						EulerOrder.ZYX,
+						atan2(zx * xy - zy * xx, yy * xx - yx * xy),
+						atan2(-xz, kc),
+						atan2(xy, xx)
+					)
 				}
-
-				return EulerAngles(
-					EulerOrder.ZYX,
-					atan2(zx * xy - zy * xx, yy * xx - yx * xy),
-					atan2(-xz, kc),
-					atan2(xy, xx)
-				)
 			}
-
 			EulerOrder.YXZ -> {
 				val kc = sqrt(zx * zx + zz * zz)
-				if (kc < 1e-7f) {
-					return EulerAngles(
+				if (kc < FLOAT_EPSILON) {
+					EulerAngles(
 						EulerOrder.YXZ,
 						ETA.withSign(-zy),
 						atan2(-xz, xx),
 						0f
 					)
+				} else {
+					EulerAngles(
+						EulerOrder.YXZ,
+						atan2(-zy, kc),
+						atan2(zx, zz),
+						atan2(yz * zx - yx * zz, xx * zz - xz * zx)
+					)
 				}
-
-				return EulerAngles(
-					EulerOrder.YXZ,
-					atan2(-zy, kc),
-					atan2(zx, zz),
-					atan2(yz * zx - yx * zz, xx * zz - xz * zx)
-				)
 			}
 			EulerOrder.XZY -> {
 				val kc = sqrt(yz * yz + yy * yy)
-				if (kc < 1e-7f) {
-					return EulerAngles(
+				if (kc < FLOAT_EPSILON) {
+					EulerAngles(
 						EulerOrder.XZY,
 						atan2(-zy, zz),
 						0f,
 						ETA.withSign(-yx)
 					)
+				} else {
+					EulerAngles(
+						EulerOrder.XZY,
+						atan2(yz, yy),
+						atan2(xy * yz - xz * yy, zz * yy - zy * yz),
+						atan2(-yx, kc)
+					)
 				}
+			}
+		}
+	}
 
-				return EulerAngles(
-					EulerOrder.XZY,
-					atan2(yz, yy),
-					atan2(xy * yz - xz * yy, zz * yy - zy * yz),
-					atan2(-yx, kc)
-				)
+	/**
+	 * Returns just the y-axis of the Euler angle.
+	 */
+	fun eulerHeadingAssumingOrthonormal(order: EulerOrder): Float {
+		val ETA = 1.5707964f
+		return when (order) {
+			EulerOrder.XYZ -> {
+				val kc = sqrt(zy * zy + zz * zz)
+				if (kc < FLOAT_EPSILON) ETA.withSign(zx)
+				else atan2(zx, kc)
+			}
+			EulerOrder.YZX -> {
+				val kc = sqrt(xx * xx + xz * xz)
+				if (kc < FLOAT_EPSILON) atan2(zx, zz)
+				else atan2(-xz, xx)
+			}
+			EulerOrder.ZXY -> {
+				val kc = sqrt(yy * yy + yx * yx)
+				if (kc < FLOAT_EPSILON) 0f
+				else atan2(yy * zx - yx * zy, yy * xx - yx * xy)
+			}
+			EulerOrder.ZYX -> {
+				val kc = sqrt(xy * xy + xx * xx)
+				if (kc < FLOAT_EPSILON) ETA.withSign(-xz)
+				else atan2(-xz, kc)
+			}
+			EulerOrder.YXZ -> {
+				val kc = sqrt(zx * zx + zz * zz)
+				if (kc < FLOAT_EPSILON) atan2(-xz, xx)
+				else atan2(zx, zz)
+			}
+			EulerOrder.XZY -> {
+				val kc = sqrt(yz * yz + yy * yy)
+				if (kc < FLOAT_EPSILON) 0f
+				else atan2(xy * yz - xz * yy, zz * yy - zy * yz)
 			}
 		}
 	}
@@ -462,6 +501,29 @@ value class Matrix3
 		orthonormalize().toEulerAnglesAssumingOrthonormal(order)
 
 	fun toObject() = ObjectMatrix3(xx, yx, zx, xy, yy, zy, xz, yz, zz)
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Matrix3) return false
+		return xx == other.xx && yx == other.yx && zx == other.zx &&
+			xy == other.xy && yy == other.yy && zy == other.zy &&
+			xz == other.xz && yz == other.yz && zz == other.zz
+	}
+
+	override fun hashCode(): Int {
+		var result = xx.hashCode()
+		result = 31 * result + yx.hashCode()
+		result = 31 * result + zx.hashCode()
+		result = 31 * result + xy.hashCode()
+		result = 31 * result + yy.hashCode()
+		result = 31 * result + zy.hashCode()
+		result = 31 * result + xz.hashCode()
+		result = 31 * result + yz.hashCode()
+		result = 31 * result + zz.hashCode()
+		return result
+	}
+
+	override fun toString(): String = "Matrix3([$xx, $yx, $zx], [$xy, $yy, $zy], [$xz, $yz, $zz])"
 }
 
 data class ObjectMatrix3(

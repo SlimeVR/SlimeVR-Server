@@ -199,6 +199,22 @@ class QuaternionTest {
 	}
 
 	@Test
+	fun localAbout() {
+		val parent = Quaternion(1f, 1f, 0f, 0f).unit()
+		val global = Quaternion(1f, 1f, -1f, 1f).unit()
+		val local = Quaternion(1f, 0f, 0f, 1f).unit()
+		assertEquals(local, global.localAbout(parent), 1e-5)
+	}
+
+	@Test
+	fun globalAbout() {
+		val parent = Quaternion(1f, 1f, 0f, 0f).unit()
+		val global = Quaternion(1f, 1f, -1f, 1f).unit()
+		val local = Quaternion(1f, 0f, 0f, 1f).unit()
+		assertEquals(global, local.globalAbout(parent), 1e-5)
+	}
+
+	@Test
 	fun axis() {
 		val v1 = Quaternion(0f, Quaternion(1f, 2f, 3f, 4f).axis())
 		val v2 = Quaternion(0f, Vector3(0.37139067f, 0.557086f, 0.74278134f))
@@ -206,8 +222,8 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun toRotationVector() {
-		val v1 = Quaternion(1f, 2f, 3f, 4f).toRotationVector()
+	fun toRotationVectorR() {
+		val v1 = Quaternion(1f, 2f, 3f, 4f).toRotationVectorR()
 		val v2 = Vector3(1.0303806f, 1.5455709f, 2.0607612f)
 		assertEquals(v2, v1)
 	}
