@@ -403,7 +403,28 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param that the vector to be transformed
 	 * @return that vector transformed by this quaternion
 	 **/
-	fun sandwich(that: Vector3): Vector3 = (this * Quaternion(0f, that) / this).xyz
+	fun sandwich(that: Vector3): Vector3 {
+		// Optimized because of frequent calls; equivalent to:
+		// (this * Quaternion(0f, that) / this).xyz
+		// I benchmarked this sandwich to be about twice as fast >:3
+		// - https://raw.org/math/algebra/vector-rotation-using-quaternions/
+		// - https://github.com/g-truc/glm/issues/205
+
+		// t = (this.xyz x that) + (this.w * that)
+		val x = ((this.y * that.z) - (this.z * that.y)) + (this.w * that.x)
+		val y = ((this.z * that.x) - (this.x * that.z)) + (this.w * that.y)
+		val z = ((this.x * that.y) - (this.y * that.x)) + (this.w * that.z)
+
+		// If quaternion is not unitized, we need to divide by length squared
+		val twoFactor = 2f / lenSq()
+
+		// v + (twoFactor * (this.xyz x t))
+		return Vector3(
+			that.x + (twoFactor * ((this.y * z) - (this.z * y))),
+			that.y + (twoFactor * ((this.z * x) - (this.x * z))),
+			that.z + (twoFactor * ((this.x * y) - (this.y * x))),
+		)
+	}
 
 	/**
 	 * Sandwiches the unit X vector
