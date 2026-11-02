@@ -128,8 +128,8 @@ body {
   --background-40: 90, 87, 92;
   --background-50: 55, 53, 56;
   --background-60: 40, 39, 41;
-  --background-70: 25, 25, 26;
-  --background-80: 10, 10, 10;
+  --background-70: 25, 24, 26;
+  --background-80: 9, 9, 10;
   --background-90: 4, 4, 4;
 
   --accent-background-10: 187, 138, 229;
@@ -149,12 +149,12 @@ body {
 
 :root[data-theme='oled'] {
   --background-10: 255, 255, 255;
-  --background-20: 189, 186, 191;
-  --background-30: 151, 148, 153;
-  --background-40: 88, 87, 89;
-  --background-50: 42, 42, 43;
-  --background-60: 34, 34, 35;
-  --background-70: 12, 12, 12;
+  --background-20: 188, 184, 191;
+  --background-30: 151, 147, 153;
+  --background-40: 87, 85, 89;
+  --background-50: 41, 41, 43;
+  --background-60: 36, 36, 38;
+  --background-70: 16, 16, 17;
   --background-80: 0, 0, 0;
   --background-90: 0, 0, 0;
 
@@ -162,7 +162,7 @@ body {
   --accent-background-20: 138, 80, 186;
   --accent-background-30: 72, 49, 110;
   --accent-background-40: 58, 34, 77;
-  --accent-background-50: 24, 16, 36;
+  --accent-background-50: 27, 19, 41;
 
   --success: 77, 227, 147;
   --warning: 255, 225, 53;
