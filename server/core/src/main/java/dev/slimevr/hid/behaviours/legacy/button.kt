@@ -24,7 +24,7 @@ class HIDButtonLegacyBehaviour(private val appContext: AppContextProvider) : HID
 		if (!fired) return
 
 		val tracker = receiver.getTracker(hidId) ?: return
-		appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id)
+		appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id, "HIDButtonLegacy")
 	}
 
 	companion object {
