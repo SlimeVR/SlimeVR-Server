@@ -33,7 +33,7 @@ private const val UPSAMPLING_TIME_CARRYOVER_MAX = 0.9f
 private const val SMOOTHING_MS_MAX = 75.0
 
 // Prediction
-private const val PREDICTION_MS_MAX = 30.0
+private const val PREDICTION_MS_MAX = 32.0
 private const val PREVIOUS_PREDICTION_DECAY = 0.25f
 
 private data class BoneSample(

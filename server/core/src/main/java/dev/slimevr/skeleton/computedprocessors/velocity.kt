@@ -61,11 +61,14 @@ class VelocityComputedProcessor :
 		for ((bodyPart, bone) in mutableComputedSkeleton) {
 			val lastVelocitySample = lastVelocities[bodyPart]
 
-			// Compute current velocity
+			// Compute velocity
 			val currentBoneSample = BoneSample(bone.rotation, bone.tailPosition)
-
-			val currentVelocity = lastVelocitySample?.boneSample?.let { computeVelocity(currentBoneSample, it, deltaTime) } ?: ZERO_VELOCITY
-			val smoothedVelocity = smoothVelocity(currentVelocity, lastVelocitySample?.velocity ?: ZERO_VELOCITY, deltaTime)
+			val smoothedVelocity = if (lastVelocitySample != null) {
+				val currentVelocity = computeVelocity(currentBoneSample, lastVelocitySample.boneSample, deltaTime)
+				smoothVelocity(currentVelocity, lastVelocitySample.velocity, deltaTime)
+			} else {
+				ZERO_VELOCITY
+			}
 
 			mutableComputedSkeleton[bodyPart] = bone.copy(velocity = smoothedVelocity)
 			lastVelocities[bodyPart] = VelocitySample(currentBoneSample, smoothedVelocity)
