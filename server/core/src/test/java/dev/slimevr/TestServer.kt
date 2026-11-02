@@ -151,6 +151,7 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		server,
 		settings,
 		buildTestSkeleton(scope),
+		null,
 		buildTestStepMountingManager(server, settings, scope),
 		buildTestErrorReporting(scope),
 	)
@@ -275,7 +276,7 @@ fun buildTestAppContext(server: VRServer, config: AppConfig): AppContextProvider
 	override val config: AppConfig = config
 }
 
-private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
+private fun buildTestUdpServer(): UdpServer {
 	val context = Context.create(
 		initialState = dev.slimevr.udp.UdpServerState(emptyMap()),
 		scope = CoroutineScope(kotlinx.coroutines.Job()),
@@ -292,11 +293,10 @@ class FakeUdpSocket : UdpSocket {
 	override suspend fun close() {}
 }
 
-@Suppress("RedundantSuspendModifier")
 suspend fun bindFakeUdp(port: Int): UdpSocket = FakeUdpSocket()
 
 abstract class TestAppContext : AppContextProvider {
-	open override val server: VRServer get() = error("not used in test")
+	override val server: VRServer get() = error("not used in test")
 	override val featureFlags: FeatureFlags = FeatureFlags()
 	override val keybindManager: KeybindManager get() = error("not used in test")
 	override val skeleton: Skeleton get() = error("not used in test")
@@ -309,7 +309,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val provisioningManager: ProvisioningManager get() = error("not used in test")
 	override val heightCalibrationManager: HeightCalibrationManager get() = error("not used in test")
 	override val trackingChecklist: TrackingChecklist get() = error("not used in test")
-	override val udpServer: dev.slimevr.udp.UdpServer = buildTestUdpServer()
+	override val udpServer: UdpServer = buildTestUdpServer()
 	override val networkProfileManager: NetworkProfileManager? = null
 	override val bvhManager: BVHManager get() = error("not used in test")
 	override val vmcManager: VMCManager get() = error("not used in test")

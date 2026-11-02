@@ -190,7 +190,7 @@ class ForegroundService : Service() {
 			advertise = mdns.advertise,
 		)
 		val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = scope)
-		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, stepMountingManager = stepMountingManager, scope = scope)
+		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, vrcOscManager = vrcOscManager, stepMountingManager = stepMountingManager, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
 		val serverInfos = ServerInfos(::resolveAndroidLocalIpAddress)

@@ -163,7 +163,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		advertise = mdns.advertise,
 	)
 	val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = this)
-	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, stepMountingManager = stepMountingManager, scope = this)
+	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, vrcOscManager = vrcOscManager, stepMountingManager = stepMountingManager, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
 	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)

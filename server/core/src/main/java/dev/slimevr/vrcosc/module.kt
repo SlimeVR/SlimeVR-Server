@@ -123,9 +123,9 @@ class VRCOSCManager(
 		context.observeAll(this)
 	}
 
-	fun yawAlign(headRotation: Quaternion) {
+	fun yawAlign(referenceRotation: Quaternion) {
 		context.scope.launch {
-			events.emit(VRCOSCEvent.YawAlign(headRotation))
+			events.emit(VRCOSCEvent.YawAlign(referenceRotation))
 		}
 	}
 

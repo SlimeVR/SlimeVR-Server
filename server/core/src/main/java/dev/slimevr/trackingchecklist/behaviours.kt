@@ -87,16 +87,16 @@ internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> =
 
 class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
-		val hmdTracker = trackers.firstOrNull { tracker -> tracker.isHmd }
-		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
+		val hmdTracker = trackers.filter { tracker -> tracker.isHmd }
+		val isAssigned = hmdTracker.any { it.bodyPart == BodyPart.HEAD }
 		return TrackingChecklistStep(
 			valid = isAssigned,
-			enabled = hmdTracker != null,
+			enabled = hmdTracker.isNotEmpty(),
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
-			extraData = if (hmdTracker != null && !isAssigned) {
+			extraData = if (hmdTracker.isNotEmpty() && !isAssigned) {
 				TrackingChecklistUnassignedHMD(
-					trackerId = hmdTracker.id.toUShort(),
+					trackerId = hmdTracker.first().id.toUShort(),
 				)
 			} else {
 				null

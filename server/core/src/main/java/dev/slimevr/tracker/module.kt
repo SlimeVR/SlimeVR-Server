@@ -91,12 +91,12 @@ data class TrackerState(
 	val needsFullReset: Boolean = false,
 	val needsMountingReset: Boolean = false,
 ) {
-	val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
-	val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
-	val isVmc = origin == DeviceOrigin.VMC
+	val fromVR = origin == DeviceOrigin.DRIVER || origin == DeviceOrigin.VRC
+	val isHmd = fromVR && intendedBodyPart == BodyPart.HEAD
+	val isController = fromVR && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
 
 	/** Indicates if the tracker is a reliable reference for aligning other trackers. */
-	val isReliableReference = isHmd || isController || isVmc
+	val isReliableReference = isHmd || isController || origin == DeviceOrigin.VMC
 	val isAssignedReliableReference = isReliableReference && bodyPart == intendedBodyPart
 }
 

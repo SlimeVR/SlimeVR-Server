@@ -47,10 +47,11 @@ internal fun buildOutgoingBundle(
 			)
 		}
 
-		bones[BodyPart.HEAD]?.let { head ->
+		// Use the neck bone's tail as the head position
+		bones[BodyPart.NECK]?.let { neck ->
 			add(
 				OscContent.Message(
-					positionMessage("/tracking/trackers/head/position", head.tailPosition),
+					positionMessage("/tracking/trackers/head/position", neck.tailPosition),
 				),
 			)
 		}

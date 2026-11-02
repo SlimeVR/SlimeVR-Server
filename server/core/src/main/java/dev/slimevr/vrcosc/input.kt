@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import com.jme3.math.FastMath
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.config.Settings
@@ -12,6 +13,8 @@ import dev.slimevr.osc.forEachOscMessage
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.formatExceptionMessage
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -21,6 +24,16 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.VRCOSCInputState
+
+private val TRACKER_OFFSET = mapOf(
+	VRSystemTracker.HEAD to Vector3(0f, 0f, 0.1f),
+)
+
+// I have no idea why we need these somewhat arbitrary offsets -Erimel
+private val TRACKER_ROTATION_OFFSET = mapOf(
+	VRSystemTracker.LEFT_WRIST to Quaternion.fromRotationVector(45f * FastMath.DEG_TO_RAD, -45f * FastMath.DEG_TO_RAD, -67.5f * FastMath.DEG_TO_RAD),
+	VRSystemTracker.RIGHT_WRIST to Quaternion.fromRotationVector(45f * FastMath.DEG_TO_RAD, 45f * FastMath.DEG_TO_RAD, 67.5f * FastMath.DEG_TO_RAD),
+)
 
 /**
  * Holds the long-lived VRC VRSystem device + head/wrist trackers. Trackers are
@@ -57,6 +70,7 @@ private class VRSystemTrackerRegistry(
 			name = trackerName,
 			bodyPart = bodyPart,
 			intendedBodyPart = bodyPart,
+			intendedBoneOffset = TRACKER_OFFSET[tracker],
 			deviceId = device.context.state.value.id,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,
@@ -207,11 +221,12 @@ class VRCOSCInputBehaviour(
 
 		val position = parsePosition(message.args) ?: return
 		val rotation = parseVrcEulerRotation(message.args, startIndex = 3) ?: return
+		val rotationOffset = TRACKER_ROTATION_OFFSET[tracker]
 		val runtimeTracker = registry.trackerFor(tracker)
 		runtimeTracker.context.dispatchAll(
 			listOf(
 				TrackerActions.SetStatus(TrackerStatus.OK),
-				TrackerActions.SetRotation(rotation = rotation, position = position),
+				TrackerActions.SetRotation(rotation = rotationOffset?.let { rotation * it } ?: rotation, position = position),
 			),
 		)
 		registry.setStatus(TrackerStatus.OK)

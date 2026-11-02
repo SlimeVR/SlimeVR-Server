@@ -97,7 +97,7 @@ class ForgetDeviceTest {
 		// Same MAC over HID must survive a UDP forget
 		val hidDevice = addDevice(appContext, DeviceOrigin.HID)
 		val hidTracker = addTracker(appContext, hidDevice, 5)
-		appContext.skeleton.context.dispatch(SkeletonActions.SetBonePose(BodyPart.UPPER_CHEST, null, null, Quaternion.IDENTITY, null, null))
+		appContext.skeleton.context.dispatch(SkeletonActions.SetBonePose(BodyPart.UPPER_CHEST, null, Quaternion.IDENTITY, null, null))
 		runCurrent()
 
 		forgetUdpDevice(appContext, MAC)

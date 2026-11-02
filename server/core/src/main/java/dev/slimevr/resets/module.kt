@@ -16,6 +16,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.util.isActive
+import dev.slimevr.vrcosc.VRCOSCManager
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -66,6 +67,7 @@ class ResetsManager(
 	val server: VRServer,
 	val settings: Settings,
 	val skeleton: Skeleton,
+	val vrcOscManager: VRCOSCManager?,
 	private val stepMountingManager: StepMountingManager,
 	private val errorReporting: ErrorReportingManager,
 ) {
@@ -172,7 +174,12 @@ class ResetsManager(
 					return
 				}
 			} else {
-				executeTrackerResets(resetType, method, bodyParts, config)
+				val referenceRotation = executeTrackerResets(resetType, method, bodyParts, config)
+
+				// Yaw align VRCOSC
+				if (resetType == ResetType.FULL || resetType == ResetType.YAW) {
+					vrcOscManager?.yawAlign(referenceRotation)
+				}
 			}
 
 			if (resetType == ResetType.FULL) {
@@ -325,7 +332,7 @@ class ResetsManager(
 		}
 	}
 
-	private fun executeTrackerResets(resetType: ResetType, method: MountingMethod?, bodyParts: List<BodyPart>?, config: ResetsConfig) {
+	private fun executeTrackerResets(resetType: ResetType, method: MountingMethod?, bodyParts: List<BodyPart>?, config: ResetsConfig): Quaternion {
 		val allTrackers = server.context.state.value.trackers.values
 
 		// Get the reference. The reference is used to align rotation/spaces.
@@ -354,10 +361,13 @@ class ResetsManager(
 			// Do the actual reset
 			it.context.dispatch(getResetAction(referenceRotation, resetType, it.context.state.value.bodyPart, config))
 		}
+
+		return referenceRotation
 	}
 
 	companion object {
-		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, stepMountingManager: StepMountingManager, scope: CoroutineScope): ResetsManager {
+		// TODO vrcOscManager is only nullable for tests bc I'm lazy
+		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, vrcOscManager: VRCOSCManager?, stepMountingManager: StepMountingManager, scope: CoroutineScope): ResetsManager {
 			val context = Context.create(
 				initialState = ResetsState(
 					canDoYawReset = false,
@@ -369,7 +379,7 @@ class ResetsManager(
 				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton, stepMountingManager, ctx.errorReporting)
+			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton, vrcOscManager, stepMountingManager, ctx.errorReporting)
 		}
 	}
 }
