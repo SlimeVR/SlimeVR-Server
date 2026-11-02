@@ -3,6 +3,7 @@ package dev.slimevr.tracker.behaviours
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
+import dev.slimevr.util.isActive
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -23,7 +24,7 @@ class TrackerStaleCalibrationBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		var previous: Placement? = null
 		receiver.context.state
-			.map { Placement(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING, it.bodyPart) }
+			.map { Placement(it.status.isActive() || it.status == TrackerStatus.OCCLUDED, it.bodyPart) }
 			.distinctUntilChanged()
 			.onEach { placement ->
 				val last = previous

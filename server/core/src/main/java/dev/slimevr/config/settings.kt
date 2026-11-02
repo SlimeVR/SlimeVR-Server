@@ -22,7 +22,7 @@ private const val SETTINGS_CONFIG_VERSION = 2
 data class TrackersConfig(
 	val trackerPort: Int = 6969, // Not in SolarXR
 	val globalMagEnabled: Boolean = false,
-	val timeoutDelay: Float = 20.0f,
+	val timeoutDelay: Float = 15f,
 )
 
 @Serializable

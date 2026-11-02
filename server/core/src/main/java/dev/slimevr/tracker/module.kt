@@ -66,7 +66,7 @@ data class TrackerState(
 	val intendedBodyPart: BodyPart?,
 	val boneOffsets: Map<BodyPart, Vector3>,
 	val customName: String?,
-	val trackerDataType: TrackerDataType, // TODO
+	val trackerDataType: TrackerDataType, // TODO flex sensors
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
 	val lastReference: Quaternion?,
