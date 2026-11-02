@@ -43,6 +43,12 @@ class DriverHandshakeBehaviour(
 				return@onDriverMessage
 			}
 
+			val driverConfig = appContext.config.settings.context.state.value.data.driverConfig
+			if (!driverConfig.enabled) {
+				receiver.sendDriverMessage(HandshakeResponse(status = HandshakeStatus.REJECTED_DISABLED), replyTo = replyTo)
+				return@onDriverMessage
+			}
+
 			val duplicate = server.context.state.value.solarxr.values.any {
 				it.id != receiver.id && it.context.state.value.driverName == name
 			}
