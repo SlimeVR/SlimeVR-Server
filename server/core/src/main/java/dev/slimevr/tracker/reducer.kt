@@ -1,6 +1,5 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ResetType
@@ -77,7 +76,6 @@ fun reduce(
 			position = position,
 			accumulatedTicks = accumulatedTicks,
 			rotationDirty = false,
-			lastPoseTime = action.poseTime,
 			lastReference = null,
 		)
 	}

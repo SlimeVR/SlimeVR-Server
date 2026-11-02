@@ -20,12 +20,17 @@ private data class BoneSample(
 	val position: Vector3,
 )
 
-private fun computeVelocity(currentVelocityData: BoneSample, lastVelocityData: BoneSample, deltaTime: Float): Velocity {
-	val deltaPosition = currentVelocityData.position - lastVelocityData.position
-	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
+private data class VelocitySample(
+	val boneSample: BoneSample,
+	val velocity: Velocity,
+)
+
+private fun computeVelocity(currentBoneSample: BoneSample, lastBoneSample: BoneSample, deltaTime: Float): Velocity {
+	val deltaPosition = currentBoneSample.position - lastBoneSample.position
+	val deltaRotation = currentBoneSample.rotation / lastBoneSample.rotation
 	return Velocity(
 		linear = deltaPosition / deltaTime,
-		angular = currentVelocityData.rotation.sandwich(deltaRotation.toRotationVectorQ()) / deltaTime,
+		angular = currentBoneSample.rotation.sandwich(deltaRotation.toRotationVectorQ()) / deltaTime,
 	)
 }
 
@@ -44,7 +49,7 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 class VelocityComputedProcessor :
 	SkeletonComputedProcessor,
 	ResettableSkeletonProcessor {
-	private val lastVelocities: BodyPartMap<Pair<Velocity, BoneSample>> = bodyPartMap()
+	private val lastVelocities: BodyPartMap<VelocitySample> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	override fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton) {
@@ -54,14 +59,16 @@ class VelocityComputedProcessor :
 		lastProcessTime = now
 
 		for ((bodyPart, bone) in mutableComputedSkeleton) {
+			val lastVelocitySample = lastVelocities[bodyPart]
+
 			// Compute current velocity
 			val currentBoneSample = BoneSample(bone.rotation, bone.tailPosition)
-			val currentVelocity = lastVelocities[bodyPart]?.second?.let { computeVelocity(currentBoneSample, it, deltaTime) } ?: ZERO_VELOCITY
 
-			val smoothedVelocity = smoothVelocity(currentVelocity, lastVelocities[bodyPart]?.first ?: ZERO_VELOCITY, deltaTime)
+			val currentVelocity = lastVelocitySample?.boneSample?.let { computeVelocity(currentBoneSample, it, deltaTime) } ?: ZERO_VELOCITY
+			val smoothedVelocity = smoothVelocity(currentVelocity, lastVelocitySample?.velocity ?: ZERO_VELOCITY, deltaTime)
+
 			mutableComputedSkeleton[bodyPart] = bone.copy(velocity = smoothedVelocity)
-
-			lastVelocities[bodyPart] = smoothedVelocity to currentBoneSample
+			lastVelocities[bodyPart] = VelocitySample(currentBoneSample, smoothedVelocity)
 		}
 	}
 

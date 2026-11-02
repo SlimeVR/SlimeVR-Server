@@ -32,8 +32,6 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.SkeletonBone
 import kotlin.time.ComparableTimeMark
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 data class Velocity(
 	/** In meters/s */
@@ -183,7 +181,6 @@ sealed interface SkeletonActions {
 	data class SetBonePose(
 		val bodyPart: BodyPart,
 		val boneOffset: Vector3?,
-		val poseTime: ComparableTimeMark?,
 		val rotation: Quaternion?,
 		val acceleration: Vector3?,
 		val position: Vector3?,
@@ -269,7 +266,7 @@ class Skeleton(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 100, speed = 1f, randomPacketLoss = 0f, constantPacketLoss = 0f, sendPosition = false, 10.milliseconds),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 100, speed = 1f, randomPacketLoss = 0f, constantPacketLoss = 0f, sendPosition = true),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
