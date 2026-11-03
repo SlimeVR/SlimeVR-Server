@@ -134,6 +134,7 @@ private fun buildFromTo(sourceActive: Map<SpineSource, Boolean>) = SPINE_SOURCE_
 	spineSource to (from to to)
 }
 
+// Too high or too low will make roll priority too snappy or not strong enough
 const val ANGLE_MULTIPLIER = 12f
 
 // Higher value makes it so local rotation is less prioritized
@@ -150,6 +151,7 @@ private fun localWeightedAverageRotation(inputSkeleton: InputSkeleton, bodyParts
 	val numRotations = rotationsToAverage.count()
 	if (numRotations <= 1) return rotationsToAverage.firstOrNull()
 
+	// Precompute local angles "lengths" of rotations, weighted so that roll counts more
 	val localLengths = rotationsToAverage.map {
 		val local = it.localAbout(parentRotation)
 		val roll = local.project(Vector3.POS_Z).unit()
@@ -157,9 +159,11 @@ private fun localWeightedAverageRotation(inputSkeleton: InputSkeleton, bodyParts
 		ANGLE_MIN + (roll.angleQ() * ANGLE_MULTIPLIER).pow(ROLL_NOT_PRIORITY) + (rest.angleQ() * ANGLE_MULTIPLIER)
 	}
 	val localLengthsSum = localLengths.sum()
+	val nbDivider = (numRotations - 1f)
 	return rotationsToAverage
 		.foldIndexed(Quaternion.ZERO) { i, acc, rotation ->
-			val ratio = abs(1f - (localLengths[i] / localLengthsSum)) / (numRotations - 1f)
+			// Use the inverse ratio of the angle, accounting for the number of rotations
+			val ratio = abs(1f - (localLengths[i] / localLengthsSum)) / nbDivider
 			acc + (rotation * ratio)
 		}.unit()
 }
@@ -171,7 +175,7 @@ private fun weightedAverageRotation(sources: List<SpineSource>, reliabilities: M
 		if (rotation != null) {
 			val proportion = if (i + 1 == sources.count()) {
 				// Use all the remaining
-				1 - accProportion
+				1f - accProportion
 			} else {
 				reliabilities[fromSource]?.proportion ?: error("No proportion found for $fromSource")
 			}
@@ -193,7 +197,7 @@ private fun weightedAverageReliability(sources: List<SpineSource>, reliabilities
 
 		val proportion = if (i + 1 == sources.count()) {
 			// Use all the remaining
-			1 - accProportion
+			1f - accProportion
 		} else {
 			reliabilities[source]?.proportion ?: error("No proportion found for $source")
 		}
