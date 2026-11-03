@@ -19,8 +19,8 @@ import kotlin.math.sin
 import kotlin.time.Duration.Companion.milliseconds
 
 private val DECISION_WAIT_TIME = 200.milliseconds
-private val MAXIMUM_FOOT_ACCELERATION = 1.5f
-private val MAXIMUM_LEG_RANGE = 25f
+private const val MAXIMUM_FOOT_ACCELERATION = 1.5f
+private const val MAXIMUM_LEG_RANGE = 25f
 
 class FbtPrediction : SkeletonInputProcessor  {
 	private var lastProcessTime = timeSource.markNow()
@@ -32,7 +32,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 	private var lastHeadDirection = false
 	private var lastBackwardsMovement = timeSource.markNow()
 	private var lastMovement = timeSource.markNow()
-	private var headTiltMax = 5f;
+	private var headTiltMax = 5f
 
 	private var lastHeadYaw = Quaternion.IDENTITY
 
@@ -44,8 +44,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 		if(head!!.isRotationActive) {
 
 			// We'll need to populate the user's height properly later, this is temporary
-			if(head!!.position!!.y > maxHeight) {
-				maxHeight = head.position!!.y
+			if(head.position!!.y > maxHeight) {
+				maxHeight = head.position.y
 			}
 
 			val leftUpperLeg = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG]
@@ -58,7 +58,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			val heightUnits = maxHeight / 4f
 			val standingThreshold = heightUnits * 3.5f
 			val currentHeadPositionNoY =
-				Vector3(head!!.position!!.x, 0f, head!!.position!!.z);
+				Vector3(head.position.x, 0f, head.position.z)
 			val headRotation = head.rotation.unit()
 			val yawLength = sqrt(headRotation.w * headRotation.w + headRotation.y * headRotation.y)
 			val headYaw = if (yawLength > 0.00001f) {
@@ -82,10 +82,10 @@ class FbtPrediction : SkeletonInputProcessor  {
 
 			// Automatically calibrate to the users usual head tilt over time
 			val decaySpeed = (0.001f * deltaTime * 60f).coerceIn(0f, 1f)
-			if (absoluteSideTilt > headTiltMax) {
-				headTiltMax = absoluteSideTilt
+			headTiltMax = if (absoluteSideTilt > headTiltMax) {
+				absoluteSideTilt
 			} else {
-				headTiltMax = FastMath.lerp(headTiltMax, 5f, decaySpeed)
+				FastMath.lerp(headTiltMax, 5f, decaySpeed)
 			}
 
 			val normalizedTilt = (sideTiltDegrees / headTiltMax).coerceIn(-1f, 1f)
@@ -101,17 +101,17 @@ class FbtPrediction : SkeletonInputProcessor  {
 				lastBackwardsMovement = timeSource.markNow()
 			}
 
-			val leftLegTilt = (normalizedTilt + 1) / 2;
+			val leftLegTilt = (normalizedTilt + 1) / 2
 			currentJointPercentages[BodyPart.LEFT_UPPER_LEG] = leftLegTilt
 			currentJointPercentages[BodyPart.LEFT_LOWER_LEG] = leftLegTilt
 			currentJointPercentages[BodyPart.LEFT_FOOT] = leftLegTilt
 
-			val rightLegTilt = (-normalizedTilt + 1) / 2;
+			val rightLegTilt = (-normalizedTilt + 1) / 2
 			currentJointPercentages[BodyPart.RIGHT_UPPER_LEG] = rightLegTilt
 			currentJointPercentages[BodyPart.RIGHT_LOWER_LEG] = rightLegTilt
 			currentJointPercentages[BodyPart.RIGHT_FOOT] = rightLegTilt
 
-			if(head.position!!.y > standingThreshold) {
+			if(head.position.y > standingThreshold) {
 				val absoluteForwardMovement = abs(relativeForwardMovement)
 
 				if(absoluteForwardMovement > 0.0005f){
@@ -138,7 +138,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 					generateStaticPitch(mutableInputSkeleton, rightUpperLeg, headYaw, staticAngle, transitionSpeed)
 					generateStaticPitch(mutableInputSkeleton, rightLowerLeg, headYaw, staticAngle, transitionSpeed)
 				}
-			}else if (head.position!!.y < standingThreshold)
+			}else if (head.position.y < standingThreshold)
 			{
 				val staticAngle = 90f
 				val transitionSpeed = 0.5f
@@ -163,7 +163,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 	){
 		if (!boneInput!!.isRotationActive) {
 			var euler = (headYaw.inv() * boneInput.rotation).toEulerAngles(EulerOrder.XYZ)
-			var pitch = calculateUpperLegMotion(
+			val pitch = calculateUpperLegMotion(
 				-rotationRange,
 				rotationRange,
 				currentJointPercentages[boneInput.bodyPart], direction) * FastMath.DEG_TO_RAD
@@ -175,27 +175,26 @@ class FbtPrediction : SkeletonInputProcessor  {
 			)
 			lastJointPercentages[boneInput.bodyPart] = pitch
 			mutableInputSkeleton[boneInput.bodyPart] =
-				boneInput.copy(rotation = headYaw * euler.toQuaternion());
+				boneInput.copy(rotation = headYaw * euler.toQuaternion())
 		}
 	}
 
 	fun generateFootAcceleration (
 		mutableInputSkeleton: InputSkeleton, boneInput: BoneInput?){
 		if (!boneInput!!.isRotationActive) {
-			var acceleration = MAXIMUM_FOOT_ACCELERATION * currentJointPercentages[boneInput.bodyPart]!!;
+			val acceleration = MAXIMUM_FOOT_ACCELERATION * currentJointPercentages[boneInput.bodyPart]!!
 			mutableInputSkeleton[boneInput.bodyPart] =
 				boneInput.copy(acceleration =
-					Vector3(acceleration, acceleration, acceleration));
+					Vector3(acceleration, acceleration, acceleration))
 		}
 	}
 
 	fun setFootAcceleration (
 		mutableInputSkeleton: InputSkeleton, boneInput: BoneInput?, acceleration : Float){
 		if (!boneInput!!.isRotationActive) {
-			var acceleration = MAXIMUM_FOOT_ACCELERATION * currentJointPercentages[boneInput.bodyPart]!!;
 			mutableInputSkeleton[boneInput.bodyPart] =
 				boneInput.copy(acceleration =
-					Vector3(acceleration, acceleration, acceleration));
+					Vector3(acceleration, acceleration, acceleration))
 		}
 	}
 
@@ -204,7 +203,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 		headYaw: Quaternion, rotationRange: Float){
 		if (!boneInput!!.isRotationActive) {
 			var euler = (headYaw.inv() * boneInput.rotation).toEulerAngles(EulerOrder.XYZ)
-			var pitch = FastMath.lerp(-rotationRange, rotationRange,
+			val pitch = FastMath.lerp(-rotationRange, rotationRange,
 				currentJointPercentages[boneInput.bodyPart]!!) * FastMath.DEG_TO_RAD
 			euler = EulerAngles(
 				EulerOrder.XYZ,
@@ -214,7 +213,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			)
 			lastJointPercentages[boneInput.bodyPart] = pitch
 			mutableInputSkeleton[boneInput.bodyPart] =
-				boneInput.copy(rotation = headYaw * euler.toQuaternion());
+				boneInput.copy(rotation = headYaw * euler.toQuaternion())
 		}
 	}
 
@@ -235,7 +234,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			)
 			lastJointPercentages[boneInput.bodyPart] = pitch
 			mutableInputSkeleton[boneInput.bodyPart] =
-				boneInput.copy(rotation = headYaw * euler.toQuaternion());
+				boneInput.copy(rotation = headYaw * euler.toQuaternion())
 		}
 	}
 
