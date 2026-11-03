@@ -28,6 +28,7 @@ private const val UPSAMPLING_EXTRAPOLATION_LOG_BASE_MAX = 3f
 // Upsampling (technically Smoothing but always active)
 private const val UPSAMPLING_TIME_CARRYOVER_MIN = 0.6f
 private const val UPSAMPLING_TIME_CARRYOVER_MAX = 0.9f
+private val UPSAMPLING_TIME_CARRYOVER_LIMIT = 900.milliseconds
 
 // Smoothing
 private const val SMOOTHING_MS_MAX = 75.0
@@ -72,7 +73,7 @@ private fun computeTimeBetweenPoses(
 	timeCarryover: Double,
 ): Duration {
 	// Use some of last pose's remaining time
-	val lastPoseCarryoverTime = timeLeftForLastPose?.let { it * timeCarryover } ?: Duration.ZERO
+	val lastPoseCarryoverTime = timeLeftForLastPose?.let { it.coerceAtMost(UPSAMPLING_TIME_CARRYOVER_LIMIT) * timeCarryover } ?: Duration.ZERO
 	return (lastPoseCarryoverTime + poseTimeDelta).coerceAtLeast(Duration.ZERO)
 }
 
