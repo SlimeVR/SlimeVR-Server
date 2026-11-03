@@ -66,7 +66,7 @@ type ModelRatios = {
 };
 
 const RIG_SHOULDER_WIDTH = 0.338;
-const RIG_HIP_WIDTH = 0.26;
+const RIG_HIP_WIDTH = 0.23;
 const RIG_HAND_LENGTH = 0.08;
 const RIG_FOOT_LENGTH = 0.13;
 

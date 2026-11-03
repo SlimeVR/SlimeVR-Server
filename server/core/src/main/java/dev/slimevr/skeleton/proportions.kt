@@ -109,12 +109,12 @@ private val SHOULDERS_WIDTH_BY_STATURE = listOf(
 // TODO : Placeholder, move the defaults to config defaults somehow
 val BONE_SPECS: Map<SkeletonBone, BoneSpec> = mapOf(
 	SkeletonBone.NECK to BoneSpec(default = 0.1f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
-	SkeletonBone.UPPER_CHEST to BoneSpec(default = 0.16f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
-	SkeletonBone.LOWER_CHEST to BoneSpec(default = 0.16f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
-	SkeletonBone.UPPER_WAIST to BoneSpec(default = 0.1f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
-	SkeletonBone.LOWER_WAIST to BoneSpec(default = 0.1f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.UPPER_CHEST to BoneSpec(default = 0.168f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.LOWER_CHEST to BoneSpec(default = 0.168f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.UPPER_WAIST to BoneSpec(default = 0.105f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.LOWER_WAIST to BoneSpec(default = 0.105f, min = 0.01f, max = 0.5f, curve = LINEAR_WITH_HEIGHT),
 	SkeletonBone.HIP to BoneSpec(default = 0.05f, min = 0.01f, max = 0.3f, curve = LINEAR_WITH_HEIGHT),
-	SkeletonBone.HIPS_WIDTH to BoneSpec(default = 0.26f, min = 0.01f, max = 0.6f, curve = LINEAR_WITH_HEIGHT),
+	SkeletonBone.HIPS_WIDTH to BoneSpec(default = 0.23f, min = 0.01f, max = 0.6f, curve = LINEAR_WITH_HEIGHT),
 	SkeletonBone.UPPER_LEG to BoneSpec(default = 0.4f, min = 0.01f, max = 0.8f, curve = UPPER_LEG_LENGTH_BY_STATURE),
 	SkeletonBone.LOWER_LEG to BoneSpec(default = 0.5f, min = 0.01f, max = 0.8f, curve = LOWER_LEG_LENGTH_BY_STATURE),
 	SkeletonBone.FOOT_LENGTH to BoneSpec(default = 0.115f, min = 0.01f, max = 0.35f, curve = FOOT_LENGTH_BY_STATURE),

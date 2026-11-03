@@ -45,7 +45,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.LOWER_CHEST to Reliability(-6f, -15f, 0f),
 		SpineSource.UPPER_WAIST to Reliability(1.5f, 4f, 0.4f),
 		SpineSource.LOWER_WAIST to Reliability(2f, 5f, 0.4f),
-		SpineSource.HIP to Reliability(4f, 6.25f, 0.3f),
+		SpineSource.HIP to Reliability(4f, 6.25f, 0.35f),
 		SpineSource.UPPER_LEGS to Reliability(4f, 5f),
 	),
 	SpineSource.LOWER_CHEST to arrayOf(
@@ -55,7 +55,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		// To
 		SpineSource.UPPER_WAIST to Reliability(1.5f, 10f, 0.4f),
 		SpineSource.LOWER_WAIST to Reliability(2f, 8f, 0.4f),
-		SpineSource.HIP to Reliability(4f, 7.25f, 0.3f),
+		SpineSource.HIP to Reliability(4f, 7.25f, 0.35f),
 		SpineSource.UPPER_LEGS to Reliability(4f, 6f),
 	),
 	SpineSource.UPPER_WAIST to arrayOf(
@@ -65,7 +65,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_WAIST to Reliability(40f), // Itself
 		// To
 		SpineSource.LOWER_WAIST to Reliability(16f, 18f, 0.85f),
-		SpineSource.HIP to Reliability(4.5f, 13.5f, 0.85f),
+		SpineSource.HIP to Reliability(4.5f, 13.5f, 0.87f),
 		SpineSource.UPPER_LEGS to Reliability(0.25f, 12f),
 	),
 	SpineSource.LOWER_WAIST to arrayOf(
@@ -75,7 +75,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.UPPER_WAIST to Reliability(25f),
 		SpineSource.LOWER_WAIST to Reliability(38f), // Itself
 		// To
-		SpineSource.HIP to Reliability(5.25f, 13f, 0.85f),
+		SpineSource.HIP to Reliability(5.25f, 13f, 0.87f),
 		SpineSource.UPPER_LEGS to Reliability(1.75f, 11f),
 	),
 	SpineSource.HIP to arrayOf(
@@ -84,7 +84,7 @@ private val SPINE_SOURCE_RELIABILITY = arrayOf(
 		SpineSource.LOWER_CHEST to Reliability(9.75f, 9.25f),
 		SpineSource.UPPER_WAIST to Reliability(13f, 20f),
 		SpineSource.LOWER_WAIST to Reliability(14f, 30f),
-		SpineSource.HIP to Reliability(38f, 60f, 0.9f), // Itself
+		SpineSource.HIP to Reliability(38f, 60f, 0.92f), // Itself
 		// To
 		SpineSource.UPPER_LEGS to Reliability(7f, 17f),
 	),
@@ -135,13 +135,14 @@ private fun buildFromTo(sourceActive: Map<SpineSource, Boolean>) = SPINE_SOURCE_
 }
 
 // Too high or too low will make roll priority too snappy or not strong enough
-const val ANGLE_MULTIPLIER = 12f
+const val ROLL_MULTIPLIER = 16f
+const val REST_MULTIPLIER = 10f
 
 // Higher value makes it so local rotation is less prioritized
 const val ANGLE_MIN = 3f
 
 // How much to not prioritize a tracker with roll rotation
-const val ROLL_NOT_PRIORITY = 2
+const val ROLL_POW = 1.8f
 
 /**
  * Prioritize the rotation with the smallest local rotation to prevent one thigh driving the whole spine by itself.
@@ -156,7 +157,7 @@ private fun localWeightedAverageRotation(inputSkeleton: InputSkeleton, bodyParts
 		val local = it.localAbout(parentRotation)
 		val roll = local.project(Vector3.POS_Z).unit()
 		val rest = local / roll
-		ANGLE_MIN + (roll.angleQ() * ANGLE_MULTIPLIER).pow(ROLL_NOT_PRIORITY) + (rest.angleQ() * ANGLE_MULTIPLIER)
+		ANGLE_MIN + (roll.angleQ() * ROLL_MULTIPLIER).pow(ROLL_POW) + (rest.angleQ() * REST_MULTIPLIER)
 	}
 	val localLengthsSum = localLengths.sum()
 	val nbDivider = (numRotations - 1f)
