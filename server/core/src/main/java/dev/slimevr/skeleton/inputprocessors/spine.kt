@@ -135,10 +135,13 @@ private fun buildFromTo(sourceActive: Map<SpineSource, Boolean>) = SPINE_SOURCE_
 }
 
 const val ANGLE_MULTIPLIER = 12f
+
 // Higher value makes it so local rotation is less prioritized
 const val ANGLE_MIN = 3f
+
 // How much to not prioritize a tracker with roll rotation
 const val ROLL_NOT_PRIORITY = 2
+
 /**
  * Prioritize the rotation with the smallest local rotation to prevent one thigh driving the whole spine by itself.
  */
@@ -275,9 +278,9 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			if (to.isEmpty()) continue // Nothing to interpolate with
 
 			// Determine the sources used for getting rotation
-			val fromRotationSources = from.ifEmpty { to }
+			val fromRotationSources = from.ifEmpty { listOf(to.first()) }
 			val fromReliabilitySources = from.ifEmpty { listOf(spineSource) }
-			val toSources = if (from.isNotEmpty()) to else to.flatMap { fromTo[it]?.second ?: continue@loop }
+			val toSources = if (from.isNotEmpty()) to else fromTo[to.first()]?.second ?: continue@loop
 			if (toSources.isEmpty()) continue
 
 			// Get From and To's weighted average reliabilities
