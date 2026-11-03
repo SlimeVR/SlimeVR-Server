@@ -10,6 +10,7 @@ import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.enums.enumEntries
 import kotlin.math.abs
+import kotlin.math.pow
 
 // At this default value, the user's spine should behave as we meant it to.
 const val DEFAULT_SPINE_UPPER_LOWER = 0.5f
@@ -133,34 +134,37 @@ private fun buildFromTo(sourceActive: Map<SpineSource, Boolean>) = SPINE_SOURCE_
 	spineSource to (from to to)
 }
 
-// Higher value makes it so attitude is less prioritized
-const val ATTITUDE_MIN = 0.3f
-
+const val ANGLE_MULTIPLIER = 12f
+// Higher value makes it so local rotation is less prioritized
+const val ANGLE_MIN = 3f
+// How much to not prioritize a tracker with roll rotation
+const val ROLL_NOT_PRIORITY = 2
 /**
- * Prioritize the rotation with the lowest attitude to prevent one thigh driving the whole spine by itself.
- * TODO to improve this even more for cases like crossing legs while sitting down, we need to use the rotation delta
- *  from the From. E.g: when using Upper Chest + Upper Legs, need to use delta from each Upper Leg to Upper Chest.
- *  This would allow us to apply different weights to forward (x-axis) rotation and side (z-axis rotation).
+ * Prioritize the rotation with the smallest local rotation to prevent one thigh driving the whole spine by itself.
  */
-private fun attitudeWeightedAverageRotation(inputSkeleton: InputSkeleton, bodyParts: Array<BodyPart> = arrayOf()): Quaternion? {
+private fun localWeightedAverageRotation(inputSkeleton: InputSkeleton, bodyParts: Array<BodyPart>, parentRotation: Quaternion): Quaternion? {
 	val rotationsToAverage = inputSkeleton.values.filter { it.bodyPart in bodyParts }.map { it.rotation }
-	if (rotationsToAverage.count() <= 1) return rotationsToAverage.firstOrNull()
-	// TODO should SpineSource's parameter be a Pair with a nullable second argument?
-	if (rotationsToAverage.count() > 2) error("attitudeWeightedAverageRotation only works with 2 rotations max")
+	val numRotations = rotationsToAverage.count()
+	if (numRotations <= 1) return rotationsToAverage.firstOrNull()
 
-	val attitudeLengthSum = rotationsToAverage.sumOf { ATTITUDE_MIN + (it.eulerHeading().inv() * it).angleQ().toDouble() }.toFloat()
+	val localLengths = rotationsToAverage.map {
+		val local = it.localAbout(parentRotation)
+		val roll = local.project(Vector3.POS_Z).unit()
+		val rest = local / roll
+		ANGLE_MIN + (roll.angleQ() * ANGLE_MULTIPLIER).pow(ROLL_NOT_PRIORITY) + (rest.angleQ() * ANGLE_MULTIPLIER)
+	}
+	val localLengthsSum = localLengths.sum()
 	return rotationsToAverage
-		.fold(Quaternion.ZERO) { acc, rotation ->
-			// This only works for 2 rotations, but we don't have any case with >2 anyways
-			val ratio = abs(1 - ((ATTITUDE_MIN + (rotation.eulerHeading().inv() * rotation).angleQ()) / attitudeLengthSum))
+		.foldIndexed(Quaternion.ZERO) { i, acc, rotation ->
+			val ratio = abs(1f - (localLengths[i] / localLengthsSum)) / (numRotations - 1f)
 			acc + (rotation * ratio)
 		}.unit()
 }
 
-private fun weightedAverageRotation(sources: List<SpineSource>, reliabilities: Map<SpineSource, Reliability>, boneInputs: InputSkeleton): Quaternion {
+private fun weightedAverageRotation(sources: List<SpineSource>, reliabilities: Map<SpineSource, Reliability>, boneInputs: InputSkeleton, fromRotation: Quaternion?): Quaternion {
 	var accProportion = 0f
 	return sources.foldIndexed(Quaternion.ZERO) { i, acc, fromSource ->
-		val rotation = attitudeWeightedAverageRotation(boneInputs, fromSource.parts)
+		val rotation = localWeightedAverageRotation(boneInputs, fromSource.parts, fromRotation ?: Quaternion.IDENTITY)
 		if (rotation != null) {
 			val proportion = if (i + 1 == sources.count()) {
 				// Use all the remaining
@@ -281,8 +285,8 @@ class SpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 			val (toForwardReliability, toSideReliability) = weightedAverageReliability(toSources, reliabilities)
 
 			// Get From and To's weighted average rotations
-			val fromRotation = weightedAverageRotation(fromRotationSources, reliabilities, boneInputs)
-			val toRotation = weightedAverageRotation(toSources, reliabilities, boneInputs)
+			val fromRotation = weightedAverageRotation(fromRotationSources, reliabilities, boneInputs, null)
+			val toRotation = weightedAverageRotation(toSources, reliabilities, boneInputs, fromRotation)
 
 			// We are interpolating as-if we were the To if From is empty
 			val sourceActive = bone.isRotationActive || from.isEmpty()
