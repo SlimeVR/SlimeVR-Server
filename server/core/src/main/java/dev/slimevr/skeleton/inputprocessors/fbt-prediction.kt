@@ -85,7 +85,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			if (absoluteSideTilt > headTiltMax) {
 				headTiltMax = absoluteSideTilt
 			} else {
-				headTiltMax = lerp(headTiltMax, 5f, decaySpeed)
+				headTiltMax = FastMath.lerp(headTiltMax, 5f, decaySpeed)
 			}
 
 			val normalizedTilt = (sideTiltDegrees / headTiltMax).coerceIn(-1f, 1f)
@@ -204,8 +204,8 @@ class FbtPrediction : SkeletonInputProcessor  {
 		headYaw: Quaternion, rotationRange: Float){
 		if (!boneInput!!.isRotationActive) {
 			var euler = (headYaw.inv() * boneInput.rotation).toEulerAngles(EulerOrder.XYZ)
-			var pitch = lerp(-rotationRange, rotationRange,
-				currentJointPercentages[boneInput.bodyPart]) * FastMath.DEG_TO_RAD
+			var pitch = FastMath.lerp(-rotationRange, rotationRange,
+				currentJointPercentages[boneInput.bodyPart]!!) * FastMath.DEG_TO_RAD
 			euler = EulerAngles(
 				EulerOrder.XYZ,
 				pitch,
@@ -226,7 +226,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			if(!lastJointPercentages.containsKey(boneInput.bodyPart)){
 				lastJointPercentages[boneInput.bodyPart] = currentJointPercentages[boneInput.bodyPart]!!
 			}
-			val pitch = lerp(lastJointPercentages[boneInput.bodyPart],
+			val pitch = FastMath.lerp(lastJointPercentages[boneInput.bodyPart]!!,
 				staticAngle, transitionSpeed) * FastMath.DEG_TO_RAD
 			euler = EulerAngles(
 				EulerOrder.XYZ,pitch,
@@ -237,10 +237,6 @@ class FbtPrediction : SkeletonInputProcessor  {
 			mutableInputSkeleton[boneInput.bodyPart] =
 				boneInput.copy(rotation = headYaw * euler.toQuaternion());
 		}
-	}
-
-	fun lerp(start: Float?, end: Float, time: Float?): Float {
-		return start!! + (end - start) * time!!
 	}
 
 	fun calculateForwardMovement(
@@ -264,7 +260,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 	): Float {
 		val bumpEnd = 0.80f
 		val progress = time!!.coerceIn(0f, 1f)
-		val basePitch = lerp(start, end, progress)
+		val basePitch = FastMath.lerp(start, end, progress)
 		if (!movingForward || progress <= 0.5f || progress >= bumpEnd) {
 			return basePitch
 		}
