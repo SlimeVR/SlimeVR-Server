@@ -27,11 +27,11 @@ private const val UPSAMPLING_EXTRAPOLATION_LOG_BASE_MAX = 3f
 
 // Upsampling (technically Smoothing but always active)
 private const val UPSAMPLING_TIME_CARRYOVER_MIN = 0.6f
-private const val UPSAMPLING_TIME_CARRYOVER_MAX = 0.9f
+private const val UPSAMPLING_TIME_CARRYOVER_MAX = 0.92f
 private val UPSAMPLING_TIME_CARRYOVER_LIMIT = 900.milliseconds
 
 // Smoothing
-private const val SMOOTHING_MS_MAX = 75.0
+private const val SMOOTHING_MS_MAX = 50.0
 
 // Prediction
 private const val PREDICTION_MS_MAX = 32.0
