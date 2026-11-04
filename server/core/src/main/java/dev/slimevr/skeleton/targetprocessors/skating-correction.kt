@@ -25,7 +25,8 @@ const val OFFSET_LIMIT_MAX = 0.20f
 
 // Multiply the acceleration threshold
 const val COM_DISTANCE_MULTIPLIER = 1.5f
-const val LIFT_MAX = 0.35f
+const val LIFT_MIN = -0.85f
+const val LIFT_MAX = 0.4f
 
 // Parameters to decide if a foot should be locked
 // Higher makes it harder to unlock after being locked
@@ -68,33 +69,52 @@ data class ReleaseSmoothing(
 	val offset: Vector3,
 )
 
+/**
+ * Horizontal distance from the centre of mass, scaled by COM_DISTANCE_MULTIPLIER
+ */
 fun computeComDistance(
 	position: Vector3,
 	centreOfMass: Vector3,
 ) = (position - centreOfMass).let { Vector3(it.x, 0f, it.z) }.len() * COM_DISTANCE_MULTIPLIER
 
+/**
+ * Lower comDistance = higher multiplier
+ * Higher comDistance = lower multiplier
+ * Lower comDistancesAverage = lower multiplier
+ * Higher comDistancesAverage = higher multiplier
+ */
 fun computeComMultiplier(
 	comDistance: Float,
 	comDistancesAverage: Float,
 ) = (1f + comDistancesAverage) * (comDistancesAverage / comDistance)
 
+/**
+ * Remaps the localLiftPosition (thigh local position).
+ * localLiftPosition.unit().y goes from -1 (downwards) to +1 (upwards)
+ */
 fun computeLiftMultiplier(
 	localLiftPosition: Vector3,
-) = -((localLiftPosition.unit().y - LIFT_MAX).coerceAtMost(0f)) / (2f - LIFT_MAX)
+) = FastMath.remapClamped(localLiftPosition.unit().y, LIFT_MIN, LIFT_MAX, 1f, 0f)
 
+/**
+ * Locked if close enough to the floor
+ */
 fun floorLocked(
 	wasLocked: Boolean,
 	position: Vector3,
 	floorLevel: Float,
 ) = position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * (if (wasLocked) LOCKED_UNLOCK_MULTIPLIER else 1f)
 
+/**
+ * Locked if accel is below the threshold
+ */
 fun accelLocked(
 	wasLocked: Boolean,
 	acceleration: Vector3,
 	accelerationThreshold: Float,
 ) = acceleration.len() <= accelerationThreshold * (if (wasLocked) LOCKED_UNLOCK_MULTIPLIER else 1f)
 
-fun computeLockState(
+fun updateLockState(
 	lastState: LockState,
 	now: ComparableTimeMark,
 	lockWarmup: Float,
@@ -113,28 +133,31 @@ fun computeLockState(
 		lastState
 	}
 
-	if (shouldLock) {
-		// This frame should lock
-		if (adjustedLastState.locked) return adjustedLastState
-		if (adjustedLastState.lockChangeTime == null) return LockState(lockChangeTime = now, locked = false)
-		return if ((now - adjustedLastState.lockChangeTime).inFloatingSeconds > lockWarmup) {
-			LockState(true, position = position)
+	// No lock change
+	if (shouldLock == adjustedLastState.locked) {
+		return adjustedLastState
+	}
+
+	// Need to have been locked or unlocked for enough time
+	return if (shouldLock) {
+		// Should lock
+		if (adjustedLastState.lockChangeTime == null) {
+			adjustedLastState.copy(lockChangeTime = now, unlockChangeTime = null)
+		} else if ((now - adjustedLastState.lockChangeTime).inFloatingSeconds > lockWarmup) {
+			// Locked state needs position when lock happened
+			LockState(locked = true, position = position)
 		} else {
 			adjustedLastState
 		}
 	} else {
-		// This frame should **not** lock
-		if (adjustedLastState.locked) {
-			// Need to unlock
-			if (adjustedLastState.unlockChangeTime == null) return adjustedLastState.copy(unlockChangeTime = now)
-			return if ((now - adjustedLastState.unlockChangeTime).inFloatingSeconds > unlockWarmup) {
-				LockState(false)
-			} else {
-				adjustedLastState
-			}
+		// Should unlock
+		if (adjustedLastState.unlockChangeTime == null) {
+			adjustedLastState.copy(lockChangeTime = null, unlockChangeTime = now)
+		} else if ((now - adjustedLastState.unlockChangeTime).inFloatingSeconds > unlockWarmup) {
+			// Unlocked state doesn't need position at unlock; we just use the current position.
+			LockState(locked = false)
 		} else {
-			// Already unlocked
-			return adjustedLastState
+			adjustedLastState
 		}
 	}
 }
@@ -192,7 +215,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 		val deltaTime = (now - lastProcessTime).inFloatingSeconds.coerceIn(0f, 1f)
 		lastProcessTime = now
 
-		// Centre of mass
+		// Compute the distance from the centre of mass for each foot
 		val com = centreOfMass(fk)
 		val comDistances: BodyPartMap<Float> = bodyPartMap()
 		for ((bodyPart, ikTargetBodyPart) in skatingBodyParts) {
@@ -208,11 +231,11 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 			val curPosition = mutableIkTargets[ikTargetBodyPart] ?: ikBone.tailPosition
 			val lastState = lockState[bodyPart] ?: LockState(locked = false)
 
-			// Apply multipliers to the acceleration threshold
 			// comMultiplier increases the threshold when the foot is alone near COM, or together far from COM
 			val comMultiplier = computeComMultiplier(comDistances[bodyPart] ?: continue, comDistancesAverage)
 			// liftMultiplier decreases the threshold when the upper leg is lifted. Useful when sitting/lying down
 			val liftMultiplier = computeLiftMultiplier(liftBone.localTailPosition)
+			// Apply multipliers to the acceleration threshold
 			val scaledAccelerationThreshold = accelerationThreshold * comMultiplier * liftMultiplier
 
 			// Compute if the body part should be locked
@@ -221,7 +244,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 			val shouldLock = floorLocked && accelLocked
 
 			// Update lock state
-			val activeState = computeLockState(
+			val activeState = updateLockState(
 				lastState,
 				now,
 				lockWarmup,
