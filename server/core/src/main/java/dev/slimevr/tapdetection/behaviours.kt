@@ -95,7 +95,10 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 				// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
 				// Dedup per tracker first, or combine gets resumed once per packet per tracker.
 				combine(
-					trackers.map { tracker ->
+					trackers.filter {
+						// Only run tap detection for IMU trackers
+						it.context.state.value.imuType != null
+					}.map { tracker ->
 						tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
 					},
 				) { states ->
