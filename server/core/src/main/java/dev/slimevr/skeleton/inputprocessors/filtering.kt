@@ -11,6 +11,7 @@ import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import kotlin.math.log
 import kotlin.time.ComparableTimeMark
@@ -36,6 +37,18 @@ private const val SMOOTHING_MS_MAX = 50.0
 // Prediction
 private const val PREDICTION_MS_MAX = 32.0
 private const val PREVIOUS_PREDICTION_DECAY = 0.25f
+
+// Used to minimize latency even more for arm tracking where it is more noticeable
+private val PART_MULTIPLIER = BodyPartMap(
+	mapOf(
+		BodyPart.LEFT_SHOULDER to 1.4,
+		BodyPart.RIGHT_SHOULDER to 1.4,
+		BodyPart.LEFT_UPPER_ARM to 1.4,
+		BodyPart.RIGHT_UPPER_ARM to 1.4,
+		BodyPart.LEFT_LOWER_ARM to 1.4,
+		BodyPart.RIGHT_LOWER_ARM to 1.4,
+	),
+)
 
 private data class BoneSample(
 	val rotation: Quaternion,
@@ -155,6 +168,8 @@ class FilteringInputProcessor(val settings: Settings) :
 		val predictionTime = (skeletonRatios.predictionStrength * PREDICTION_MS_MAX).milliseconds
 
 		for ((bodyPart, bone) in mutableInputSkeleton) {
+			val partPredictionTime = predictionTime * (PART_MULTIPLIER[bodyPart] ?: 1.0)
+
 			if (bone.poseTime == null) {
 				boneSamples.remove(bodyPart)
 				continue
@@ -176,13 +191,13 @@ class FilteringInputProcessor(val settings: Settings) :
 				val timeBetweenPoses = computeTimeBetweenPoses(poseTimeDelta, previousSamples?.timeLeftForLastPose, timeCarryover)
 
 				// The predicted target rotation
-				val predictedRotation = if (predictionTime > Duration.ZERO) {
+				val predictedRotation = if (partPredictionTime > Duration.ZERO) {
 					// Prediction enabled
 					computePredictedRotation(
 						previousSamples?.targetSample?.rotation,
 						previousSamples?.predictedRotation,
 						targetSample.rotation,
-						predictionTime,
+						partPredictionTime,
 						poseTimeDelta,
 					)
 				} else {
