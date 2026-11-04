@@ -40,12 +40,13 @@ class FbtPrediction : SkeletonInputProcessor  {
 		val deltaTime = lastProcessTime.elapsedNow().inFloatingSeconds
 		lastProcessTime = timeSource.markNow()
 
-		val head = mutableInputSkeleton[BodyPart.HEAD]
-		if(head!!.isRotationActive) {
-
+		val head = mutableInputSkeleton[BodyPart.HEAD]!!
+		if(head.isRotationActive) {
+			val headPosition = head.position!!
+			
 			// We'll need to populate the user's height properly later, this is temporary
-			if(head.position!!.y > maxHeight) {
-				maxHeight = head.position.y
+			if(headPosition.y > maxHeight) {
+				maxHeight = headPosition.y
 			}
 
 			val leftUpperLeg = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG]
@@ -58,7 +59,7 @@ class FbtPrediction : SkeletonInputProcessor  {
 			val heightUnits = maxHeight / 4f
 			val standingThreshold = heightUnits * 3.5f
 			val currentHeadPositionNoY =
-				Vector3(head.position.x, 0f, head.position.z)
+				Vector3(headPosition.x, 0f, headPosition.z)
 			val headRotation = head.rotation.unit()
 			val yawLength = sqrt(headRotation.w * headRotation.w + headRotation.y * headRotation.y)
 			val headYaw = if (yawLength > 0.00001f) {
