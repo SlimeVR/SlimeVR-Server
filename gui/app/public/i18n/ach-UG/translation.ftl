@@ -540,18 +540,10 @@ settings-general-mounting_method = crwdns9568:0crwdne9568:0
 settings-general-mounting_method-pose_only = crwdns9692:0crwdne9692:0
 settings-general-mounting_method-description = crwdns9570:0crwdne9570:0
 settings-general-tracker_mechanics-filtering = crwdns7812:0crwdne7812:0
-settings-general-tracker_mechanics-filtering-type = crwdns9794:0crwdne9794:0
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description = crwdns7814:0{ settings-general-tracker_mechanics-filtering-type-smoothing }crwdnd7814:0{ settings-general-tracker_mechanics-filtering-type-prediction }crwdne7814:0
-settings-general-tracker_mechanics-filtering-type-none = crwdns7818:0crwdne7818:0
-settings-general-tracker_mechanics-filtering-type-none-description = crwdns7820:0crwdne7820:0
-settings-general-tracker_mechanics-filtering-type-smoothing = crwdns7822:0crwdne7822:0
-settings-general-tracker_mechanics-filtering-type-smoothing-description = crwdns7824:0crwdne7824:0
-settings-general-tracker_mechanics-filtering-type-prediction = crwdns7826:0crwdne7826:0
-settings-general-tracker_mechanics-filtering-type-prediction-description = crwdns7828:0crwdne7828:0
-settings-general-tracker_mechanics-filtering-amount = crwdns7830:0crwdne7830:0
-settings-general-tracker_mechanics-filtering-amount-description = crwdns9796:0crwdne9796:0
-settings-general-tracker_mechanics-filtering-amount-no_filtering = crwdns9694:0crwdne9694:0
+settings-general-tracker_mechanics-filtering-smoothing-strength = crwdns10234:0crwdne10234:0
+settings-general-tracker_mechanics-filtering-smoothing-strength-description = crwdns10236:0crwdne10236:0
+settings-general-tracker_mechanics-filtering-prediction-strength = crwdns10238:0crwdne10238:0
+settings-general-tracker_mechanics-filtering-prediction-strength-description = crwdns10240:0crwdne10240:0
 settings-general-fk_settings-reset_behaviour_group = crwdns9696:0crwdne9696:0
 settings-general-tracker_mechanics-yaw-reset-smooth-time = crwdns7832:0crwdne7832:0
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = crwdns7834:0crwdne7834:0
@@ -862,6 +854,10 @@ settings-serial-send_command-placeholder = crwdns8198:0crwdne8198:0
 settings-serial-send_command-warning = crwdns8200:0crwdne8200:0
 settings-serial-send_command-warning-ok = crwdns8202:0crwdne8202:0
 settings-serial-send_command-warning-cancel = crwdns8204:0crwdne8204:0
+settings-serial-search = crwdns10226:0crwdne10226:0
+settings-serial-commands = crwdns10228:0crwdne10228:0
+settings-serial-module = crwdns10230:0crwdne10230:0
+settings-serial-module-all = crwdns10232:0crwdne10232:0
 
 ## Logs settings
 
@@ -957,6 +953,7 @@ settings-osc-vrchat-status-source-auto = crwdns8274:0crwdne8274:0
 settings-osc-vrchat-status-oscquery-disabled = crwdns8276:0crwdne8276:0
 settings-osc-vrchat-status-oscquery-advertising = crwdns8278:0$portcrwdne8278:0
 settings-osc-vrchat-status-oscquery-searching = crwdns8280:0crwdne8280:0
+settings-osc-vrchat-status-oscquery-manual = crwdns10220:0crwdne10220:0
 settings-osc-vrchat-status-oscquery-discovered-title = crwdns8282:0crwdne8282:0
 settings-osc-vrchat-status-oscquery-switch = crwdns8284:0crwdne8284:0
 settings-osc-vrchat-status-network-mode = crwdns8286:0crwdne8286:0
@@ -1437,6 +1434,8 @@ home-settings = crwdns9042:0crwdne9042:0
 home-settings-close = crwdns9044:0crwdne9044:0
 home-connection_group-wifi = crwdns9046:0crwdne9046:0
 home-connection_group-driver = crwdns9048:0crwdne9048:0
+home-connection_group-vmc = crwdns10222:0crwdne10222:0
+home-connection_group-vrc = crwdns10224:0crwdne10224:0
 home-new_trackers-count = crwdns9964:0$countcrwdnd9964:0$countcrwdnd9964:0$countcrwdne9964:0
 home-new_trackers-pill = crwdns9966:0$countcrwdne9966:0
 home-new_trackers-add = crwdns9968:0crwdne9968:0
@@ -1467,6 +1466,7 @@ firmware_tool-next_step = crwdns9074:0crwdne9074:0
 firmware_tool-previous_step = crwdns9076:0crwdne9076:0
 firmware_tool-ok = crwdns9078:0crwdne9078:0
 firmware_tool-retry = crwdns9080:0crwdne9080:0
+firmware_tool-select_all = crwdns10218:0crwdne10218:0
 firmware_tool-loading = crwdns9082:0crwdne9082:0
 
 ## Firmware tool Steps
