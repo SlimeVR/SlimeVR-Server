@@ -32,7 +32,7 @@ static void OnYawReset(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::YAW, 0, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, flatbuffers::nullopt, flatbuffers::nullopt, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -43,7 +43,7 @@ static void OnFullReset(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::FULL, 0, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, flatbuffers::nullopt, flatbuffers::nullopt, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -54,7 +54,7 @@ static void OnMountingCalibration(BridgeTransport& conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::MOUNTING, 0, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, flatbuffers::nullopt, flatbuffers::nullopt, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -67,7 +67,7 @@ static void OnFeetMountingCalibration(BridgeTransport& conn) {
     auto bodyParts = fbb.CreateVector(
         { datatypes::BodyPart::LEFT_FOOT, datatypes::BodyPart::RIGHT_FOOT });
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::MOUNTING, bodyParts, 0.f);
-    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, flatbuffers::nullopt, flatbuffers::nullopt, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -80,7 +80,7 @@ static void OnToggleTracking(BridgeTransport& conn) {
 
     shouldPause = !shouldPause;
     auto toggleReq = rpc::CreateSetPauseTrackingRequest(fbb, shouldPause);
-    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, 0, 0, rpc::RpcMessage::SetPauseTrackingRequest, toggleReq.Union());
+    auto msgHeader = rpc::CreateRpcMessageHeader(fbb, flatbuffers::nullopt, flatbuffers::nullopt, rpc::RpcMessage::SetPauseTrackingRequest, toggleReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
