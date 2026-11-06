@@ -18,6 +18,7 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.NeckInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FbtPrediction
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
@@ -280,6 +281,7 @@ class Skeleton(
 						NeckInputProcessor(),
 						UpperLegsRollAlignInputProcessor(settings),
 						DirectLinkInputProcessor(),
+						FbtPrediction(),
 						FingersInputProcessor(),
 						ToesInputProcessor(),
 						ConstraintInputProcessor(settings),
