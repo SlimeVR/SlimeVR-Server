@@ -41,9 +41,10 @@ data class TwistSwingConstraint(
 	 * Swing range in radians.
 	 */
 	val swing: Float,
+	val twistAxis: Vector3 = Vector3.NEG_Y,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
-		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, Vector3.NEG_Y)
+		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, twistAxis)
 		swingQ = constrainAngle(swingQ, swing)
 		twistQ = constrainAngle(twistQ, twist)
 		return swingQ * twistQ

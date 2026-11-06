@@ -2,6 +2,7 @@ package dev.slimevr.skeleton
 
 import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
 // For fingers and toes
@@ -183,11 +184,26 @@ fun constrainSkeleton(
 val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 	mapOf(
 		// TODO Figure out arms
-		// BodyPart.LEFT_UPPER_ARM to AxisConstraint(),
-		// BodyPart.RIGHT_UPPER_ARM to AxisConstraint(),
+		BodyPart.LEFT_UPPER_ARM to TwistSwingConstraint(
+			5f * FastMath.DEG_TO_RAD,
+			30f * FastMath.DEG_TO_RAD,
+			Vector3.NEG_X,
+		),
+		BodyPart.LEFT_LOWER_ARM to LooseAxisConstraint(
+			1f * FastMath.DEG_TO_RAD,
+		),
+
+		BodyPart.RIGHT_UPPER_ARM to TwistSwingConstraint(
+			5f * FastMath.DEG_TO_RAD,
+			30f * FastMath.DEG_TO_RAD,
+			Vector3.NEG_X,
+		),
+		BodyPart.RIGHT_LOWER_ARM to LooseAxisConstraint(
+			1f * FastMath.DEG_TO_RAD,
+		),
 
 		BodyPart.UPPER_CHEST to LooseAxisConstraint(
-			10f * FastMath.DEG_TO_RAD,
+			15f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LOWER_CHEST to LooseAxisConstraint(
 			10f * FastMath.DEG_TO_RAD,
@@ -203,14 +219,14 @@ val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			5f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_LOWER_LEG to LooseAxisConstraint(
-			0.1f * FastMath.DEG_TO_RAD,
+			1f * FastMath.DEG_TO_RAD,
 		),
 
 		BodyPart.RIGHT_UPPER_LEG to LooseAxisConstraint(
 			5f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_LOWER_LEG to LooseAxisConstraint(
-			0.1f * FastMath.DEG_TO_RAD,
+			1f * FastMath.DEG_TO_RAD,
 		),
 	),
 )

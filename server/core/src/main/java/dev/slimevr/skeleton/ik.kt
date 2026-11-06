@@ -155,6 +155,8 @@ fun ccdIkIteration(
 	rotateChain(mutableBoneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
+	// If performance is bad, we can combine buildBones calls for non-overlapping IK
+	//  chains
 	buildBones(mutableComputedSkeleton, mutableBoneInputs, chain.toSet())
 }
 
