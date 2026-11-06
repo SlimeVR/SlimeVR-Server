@@ -8,6 +8,7 @@ import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.inputprocessors.ArmsInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.DirectLinkInputProcessor
@@ -280,6 +281,7 @@ class Skeleton(
 						NeckInputProcessor(),
 						UpperLegsRollAlignInputProcessor(settings),
 						DirectLinkInputProcessor(),
+						ArmsInputProcessor(),
 						FingersInputProcessor(),
 						ToesInputProcessor(),
 						ConstraintInputProcessor(settings),

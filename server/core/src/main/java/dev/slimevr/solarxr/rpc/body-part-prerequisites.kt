@@ -4,6 +4,7 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.skeleton.BODY_PART_IK_CHAIN_MAP
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.inputprocessors.ARM_TO_SOURCE
 import dev.slimevr.skeleton.inputprocessors.BONE_DIRECT_LINK_SOURCES
 import dev.slimevr.skeleton.inputprocessors.SPINE_IMPUTED_PARTS
 import dev.slimevr.skeleton.iterateBodyPartHierarchy
@@ -27,6 +28,11 @@ import solarxr_protocol.rpc.BodyPartPrerequisitesResponse
 import solarxr_protocol.rpc.BodyPartRequirement
 
 private val DIRECT_LINK_SOURCE_OF: BodyPartMap<BodyPart> = BodyPartMap(BONE_DIRECT_LINK_SOURCES.toMap())
+private val ARM_SOURCE_OF: BodyPartMap<List<BodyPart>> = BodyPartMap(
+	ARM_TO_SOURCE.associate { armSource ->
+		armSource.first to armSource.second.mapNotNull { if (it.reliable) it.bodyPart else null }
+	},
+)
 
 // Finger and toe bones. Their processors impute each one from its siblings, so one is never a
 // prerequisite for another: only the hand or foot they hang off is.
@@ -53,8 +59,8 @@ private fun trackingPointsFlow(server: VRServer): Flow<List<TrackingPoint>> = al
  * List the bones that are solved by IK
  *
  * TODO: Ahead of the solver. [dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor] still
- * drops the IK once any arm bone has a tracker, so a controller plus an upper arm leaves the
- * forearm copying the upper arm.
+ *  drops the IK once any arm bone has a tracker, so a controller plus an upper arm leaves the
+ *  forearm copying the upper arm.
  */
 internal fun ikSolvedParts(trackers: List<TrackingPoint>, useTrackerPositions: Boolean): Set<BodyPart> {
 	if (!useTrackerPositions) return emptySet()
@@ -96,8 +102,9 @@ private fun limbPrerequisites(bodyPart: BodyPart): List<List<BodyPart>> {
 
 	var ancestor = parentOf(bodyPart)
 	while (ancestor != null && ancestor !in SPINE_IMPUTED_PARTS && ancestor != BodyPart.NECK) {
-		val source = DIRECT_LINK_SOURCE_OF[ancestor]
-		val followsWithoutTracker = (source != null && source in SPINE_IMPUTED_PARTS) || ancestor in DIGIT_PARTS
+		val directLink = DIRECT_LINK_SOURCE_OF[ancestor]
+		val armSources = ARM_SOURCE_OF[ancestor]
+		val followsWithoutTracker = directLink in SPINE_IMPUTED_PARTS || armSources?.any { it in SPINE_IMPUTED_PARTS } == true || ancestor in DIGIT_PARTS
 		if (!followsWithoutTracker) required.add(listOf(ancestor))
 		ancestor = parentOf(ancestor)
 	}

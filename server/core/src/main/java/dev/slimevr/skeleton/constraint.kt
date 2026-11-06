@@ -51,6 +51,20 @@ data class TwistSwingConstraint(
 	}
 }
 
+data class TwistConstraint(
+	/**
+	 * Twist range in radians.
+	 */
+	val twist: Float = 0f,
+	val twistAxis: Vector3 = Vector3.NEG_Y,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion {
+		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, twistAxis)
+		twistQ = constrainAngle(twistQ, twist)
+		return swingQ * twistQ
+	}
+}
+
 data class HingeConstraint(
 	/**
 	 * Minimum rotation in radians.
