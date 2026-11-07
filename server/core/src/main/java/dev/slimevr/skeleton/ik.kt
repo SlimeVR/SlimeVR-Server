@@ -28,24 +28,24 @@ fun parentRot(
 
 // Bones are most likely opposite along the X axis
 private val oppositeRotation = Quaternion.rotationAroundXAxis(FastMath.PI)
-private val smallRotation = Quaternion.rotationAroundXAxis(1f * FastMath.DEG_TO_RAD)
+private val smallRotation = Quaternion.rotationAroundXAxis(-1f * FastMath.DEG_TO_RAD)
 fun fromChainToTarget(
 	bodyPart: BodyPart,
 	bones: ComputedSkeleton,
 	chain: IKChain,
 	target: Vector3,
 ): Quaternion? {
-	val boneHead = requireBone(bones, bodyPart).headPosition
+	val bone = requireBone(bones, bodyPart)
 	val chainTail = requireBone(bones, chain.last()).tailPosition
 
-	val localChainTail = chainTail - boneHead
+	val localChainTail = chainTail - bone.headPosition
 	val localChainTailLenSq = localChainTail.lenSq()
 	if (FastMath.isApproxZero(localChainTailLenSq)) {
 		// Chain tail is at the origin
 		return null
 	}
 
-	val localTarget = target - boneHead
+	val localTarget = target - bone.headPosition
 	val localTargetLenSq = localTarget.lenSq()
 	if (FastMath.isApproxZero(localTargetLenSq)) {
 		// Target is at the origin
@@ -61,12 +61,12 @@ fun fromChainToTarget(
 		//  "snap" a little when hitting this fallback
 		// If the target is closer than the tail and the bone is parallel to the target,
 		//  apply an arbitrary small rotation to promote movement
-		alignOffset(parentRot(bones, bodyPart).inv(), smallRotation)
+		alignOffset(bone.rotation.inv(), smallRotation)
 	} else if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
 		offset
 	} else {
 		// When the vectors are exactly opposite, arbitrarily choose an axis
-		alignOffset(parentRot(bones, bodyPart).inv(), oppositeRotation)
+		alignOffset(bone.rotation.inv(), oppositeRotation)
 	}
 }
 
@@ -134,10 +134,10 @@ fun ccdIkIteration(
 
 	// Constrain the local offset
 	val localConstrainedOffset = offsetConstraint?.let {
-		val parentRot = parentRot(mutableComputedSkeleton, bodyPart)
+		val rotation = mutableComputedSkeleton[bodyPart]?.rotation ?: return@let null
 		alignOffset(
-			parentRot.inv(),
-			it.apply(alignOffset(parentRot, offset)),
+			rotation.inv(),
+			it.apply(alignOffset(rotation, offset)),
 		)
 	} ?: offset
 
