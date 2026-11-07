@@ -1,0 +1,810 @@
+# Please developers (not translators) don't reuse a key inside another key
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
+# translators on what it means
+
+
+## Websocket (server) status
+
+websocket-connecting = جاري التحميل...
+websocket-connection_lost = تعطل الخادم!
+websocket-connection_lost-desc = يبدو أن خادم SlimeVR تعطل. تحقق من السجلات وأعد تشغيل البرنامج
+websocket-timedout = تعذر الاتصال بالخادم
+websocket-timedout-desc = يبدو أن خادم SlimeVR قد تعطل أو انتهت مهلته. تحقق من السجلات وأعد تشغيل البرنامج
+websocket-error-close = الخروج من SlimeVR
+
+## Update notification
+
+version_update-title = نسخة جديدة متوفرة: { $version }
+version_update-description = سيؤدي النقر على "{ version_update-update }" إلى تنزيل مثبت SlimeVR نيابة عنك.
+version_update-update = تحديث
+version_update-close = أغلق
+
+## Tips
+
+tips-find_tracker = لست متأكد من أجهزة التعقب؟ قم بتحريك الجهاز لتحديد العنصر المناسب.
+tips-do_not_move_heels = يرجى عدم تحريك كاحليك أثناء التسجيل!
+tips-file_select = اسحب الملفات وأفلتها لاستخدامها أو <u> تصفح </ u>
+tips-failed_webgl = فشل تهيئة WebGL.
+
+## Units
+
+
+## Dropdown
+
+
+## Text input
+
+
+## File input
+
+
+## Window controls
+
+titlebar-close = أغلق
+
+## Body parts
+
+body_part-NONE = غير محدد
+body_part-HEAD = الرأس
+body_part-NECK = العنق
+body_part-RIGHT_SHOULDER = الكتف الأيمن
+body_part-RIGHT_UPPER_ARM = العضد الأيمن
+body_part-RIGHT_LOWER_ARM = الساعد الأيمن
+body_part-RIGHT_HAND = اليد اليمنى
+body_part-RIGHT_UPPER_LEG = الفخذ الأيمن
+body_part-RIGHT_LOWER_LEG = الكاحل الأيمن
+body_part-RIGHT_FOOT = القدم اليمنى
+body_part-UPPER_CHEST = أعلى الصدر
+body_part-HIP = الورك
+body_part-LEFT_SHOULDER = الكتف الأيسر
+body_part-LEFT_UPPER_ARM = العضد الأيسر
+body_part-LEFT_LOWER_ARM = الساعد الأيسر
+body_part-LEFT_HAND = اليد اليسرى
+body_part-LEFT_UPPER_LEG = الفخذ الأيسر
+body_part-LEFT_LOWER_LEG = الكاحل الأيسر
+body_part-LEFT_FOOT = القدم اليسرى
+body_part-LEFT_THUMB_METACARPAL = عظم مشط الإبهام الأيسر
+body_part-LEFT_THUMB_PROXIMAL = الإبهام الأيسر القريب
+body_part-LEFT_THUMB_DISTAL = الإبهام الأيسر البعيد
+body_part-LEFT_INDEX_PROXIMAL = السبابة اليسرى القريبة
+body_part-LEFT_INDEX_INTERMEDIATE = السبابة اليسرى المتوسطة
+body_part-LEFT_INDEX_DISTAL = السبابة اليسرى البعيدة
+body_part-LEFT_MIDDLE_PROXIMAL = الجزء الأوسط الأيسر القريب
+body_part-LEFT_MIDDLE_INTERMEDIATE = الوسط الأيسر المتوسط
+body_part-LEFT_MIDDLE_DISTAL = الجزء الأوسط الأيسر البعيد
+body_part-LEFT_RING_PROXIMAL = الحلقة اليسرى القريبة
+body_part-LEFT_RING_INTERMEDIATE = الحلقة اليسرى المتوسطة
+body_part-LEFT_RING_DISTAL = الحلقة اليسرى البعيدة
+body_part-LEFT_LITTLE_PROXIMAL = الجزء الأيسر الصغير القريب
+body_part-LEFT_LITTLE_INTERMEDIATE = اليسار الصغير المتوسط
+body_part-LEFT_LITTLE_DISTAL = الجزء البعيد الأيسر الصغير
+body_part-RIGHT_THUMB_METACARPAL = مشط الإبهام الأيمن
+body_part-RIGHT_THUMB_PROXIMAL = الإبهام الأيمن القريب
+body_part-RIGHT_THUMB_DISTAL = الإبهام الأيمن البعيد
+body_part-RIGHT_INDEX_PROXIMAL = السبابة اليمنى القريبة
+body_part-RIGHT_INDEX_INTERMEDIATE = السبابة اليمنى المتوسطة
+body_part-RIGHT_INDEX_DISTAL = السبابة اليمنى البعيدة
+body_part-RIGHT_MIDDLE_PROXIMAL = منتصف اليمين القريب
+body_part-RIGHT_MIDDLE_INTERMEDIATE = الوسط الأيمن المتوسط
+body_part-RIGHT_MIDDLE_DISTAL = منتصف اليمين البعيد
+body_part-RIGHT_RING_PROXIMAL = الحلقة اليمنى القريبة
+body_part-RIGHT_RING_INTERMEDIATE = الحلقة اليمنى المتوسطة
+body_part-RIGHT_RING_DISTAL = الحلقة اليمنى البعيدة
+body_part-RIGHT_LITTLE_PROXIMAL = الجزء القريب الأيمن الصغير
+body_part-RIGHT_LITTLE_INTERMEDIATE = المتوسط ​​الصغير الأيمن
+body_part-RIGHT_LITTLE_DISTAL = الجزء البعيد الصغير الأيمن
+
+## Proportions
+
+skeleton_bone-NONE = غير محدد
+skeleton_bone-NECK = طول العنق
+skeleton_bone-NECK-desc =
+    هذه هي المسافة من منتصف رأسك إلى قاعدة رقبتك.
+    لضبطها ، حرك رأسك لأعلى ولأسفل كما لو كنت تومئ رأسك أو تميل رأسك
+    إلى اليسار واليمين وقم بتعديله حتى تصبح أي حركة في أجهزة التتبع الأخرى ضئيلة.
+skeleton_bone-UPPER_CHEST = طول أعلى الصدر
+skeleton_bone-HIP = طول الورك
+skeleton_bone-HIPS_WIDTH = عرض الورك
+skeleton_bone-UPPER_LEG = طول الفخذ
+skeleton_bone-LOWER_LEG = طول الساق السفلي
+skeleton_bone-FOOT_LENGTH = طول القدم
+skeleton_bone-FOOT_SHIFT = إمالة القدم
+skeleton_bone-SHOULDERS_DISTANCE = مسافة الكتفين
+skeleton_bone-SHOULDERS_WIDTH = عرض الكتفين
+skeleton_bone-UPPER_ARM = طول العضد
+skeleton_bone-LOWER_ARM = طول الساعد
+
+## Tracker reset buttons
+
+reset-reset_all = إعادة تعيين جميع النسب
+reset-reset_all_warning-reset = إعادة تعيين النسب
+reset-reset_all_warning-cancel = إلغاء
+reset-full = اعاده تعيين
+reset-mounting = إعادة تعيين التركيب
+reset-yaw = إعادة تعيين الانعراج
+
+## Navigation bar
+
+navbar-home = الصفحة الرئيسية
+navbar-body_proportions = نسب الجسم
+navbar-trackers_assign = تعيين جهاز التعقب
+navbar-mounting = معايرة التركيب
+navbar-onboarding = معالج الإعداد
+navbar-settings = الإعدادات
+
+## Biovision hierarchy recording
+
+bvh-start_recording = سجل بي في ايتش
+bvh-recording = تسجيل...
+
+## Tracking pause
+
+tracking-unpaused = إيقاف التعقب مؤقتا
+tracking-paused = إلغاء الإيقاف التعقب
+
+## Widget: Developer settings
+
+widget-developer_mode = وضع المطوّر
+widget-developer_mode-high_contrast = تباين عالي
+widget-developer_mode-precise_rotation = دوران دقيق
+widget-developer_mode-fast_data_feed = تغذية البيانات السريعة
+widget-developer_mode-raw_slime_rotation = الدوران الصافي
+
+## Widget: IMU Visualizer
+
+widget-imu_visualizer = دوران
+widget-imu_visualizer-preview = عرض
+widget-imu_visualizer-hide = إخفاء
+widget-imu_visualizer-rotation_raw = صافي
+widget-imu_visualizer-rotation_preview = عرض مسبق
+widget-imu_visualizer-acceleration = التسارع
+widget-imu_visualizer-position = الموضع
+
+## Tracker status
+
+tracker-status-none = لا توجد حالة
+tracker-status-busy = مشغول
+tracker-status-error = خطأ
+tracker-status-disconnected = فقد الاتصال
+tracker-status-occluded = محجوب
+tracker-status-ok = حسنًا
+tracker-status-timed_out = انتهت المهله
+
+## Tracker status columns
+
+tracker-table-column-name = الاسم
+tracker-table-column-type = النوع
+tracker-table-column-battery = البطارية
+tracker-table-column-ping = بينج
+tracker-table-column-tps = تي بي أس
+tracker-table-column-temperature = درجة الحرارة درجة مئوية
+tracker-table-column-linear-acceleration = تسارع X/Y/Z
+tracker-table-column-rotation = دوران X / Y / Z
+tracker-table-column-position = موضع X/Y/Z
+tracker-table-column-url = عنوان URL
+
+## Tracker rotation
+
+tracker-rotation-front = المقدمة
+tracker-rotation-front_left = أمامي-يسار
+tracker-rotation-front_right = أمامي -يمين
+tracker-rotation-left = اليسار
+tracker-rotation-right = اليمين
+tracker-rotation-back = الخلف
+tracker-rotation-back_left = الخلف اليسار
+tracker-rotation-back_right = الخلف الأيمن
+tracker-rotation-custom = مخصص
+
+## Tracker information
+
+tracker-infos-manufacturer = المصنّع
+tracker-infos-display_name = اسم العرض
+tracker-infos-custom_name = اسم مخصص
+tracker-infos-url = عنوان URL لجهاز التعقب
+tracker-infos-hardware_identifier = معرف الجهاز
+tracker-infos-imu = مستشعر IMU
+tracker-infos-board_type = اللوحة الرئيسية
+tracker-infos-network_version = نسخة البروتوكول
+tracker-infos-magnetometer = المقياس المغناطيسي
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] ملغي
+        [ENABLED] فعال
+       *[NOT_SUPPORTED] غير مدعوم
+    }
+
+## Tracker settings
+
+tracker-settings-back = ارجع إلى قائمة أجهزة التعقب
+tracker-settings-title = إعدادات جهاز التعقب
+tracker-settings-assignment_section = التكليف
+tracker-settings-assignment_section-description = أي جزء من الجسم تم تعيين جهاز التعقب له.
+tracker-settings-assignment_section-edit = تعديل التكليف
+tracker-settings-mounting_section = مكان التركيب
+tracker-settings-mounting_section-description = أين تم تركيب جهاز التعقب؟
+tracker-settings-mounting_section-edit = تعديل التركيب
+tracker-settings-use_mag = اسمح بالمقياس المغناطيسي على هذا المتتبع
+tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
+tracker-settings-name_section = اسم جهاز التعقب
+tracker-settings-name_section-description = أعطها لقب لطيف :)
+tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
+tracker-settings-name_section-label = اسم جهاز التعقب
+tracker-settings-forget = انسي جهاز التعقب
+tracker-settings-forget-label = ننسى جهاز التعقب
+tracker-settings-update-up_to_date = حديث
+tracker-settings-update = التحديث الآن
+tracker-settings-update-title = إصدار البرنامج الثابت
+
+## Dongle settings
+
+dongle-infos-hardware_revision = مراجعة الأجهزة
+dongle-status-disconnected = فقد الاتصال
+dongle-settings-back = ارجع إلى قائمة أجهزة التعقب
+dongle-settings-name_section-description = أعطها لقب لطيف :)
+dongle-settings-update = التحديث الآن
+dongle-settings-update-title = إصدار البرنامج الثابت
+
+## Tracker part card info
+
+tracker-part_card-unassigned = غير محدد
+
+## Body assignment menu
+
+body_assignment_menu = أين تريد أن يكون هذا الجهاز التعقب؟
+body_assignment_menu-description = اختر الموقع الذي تريد تعيين هذا جهاز التعقب. بدلاً من ذلك، يمكنك اختيار إدارة جميع أجهزة التعقب مرة واحدة بدلاً من إدارة كل جهاز تلو الآخر.
+body_assignment_menu-manage_trackers = إدارة جميع أجهزة التعقب
+body_assignment_menu-unassign_tracker = إلغاء تعيين جهاز التعقب
+
+## Tracker assignment menu
+
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>تحذير:</b> يمكن أن يكون جهاز تعقب الرقبة مميتا إذا تم شدها كثيراً،
+    يمكن للحزام أن يقطع الدورة الدموية إلى رأسك!
+tracker_selection_menu-neck_warning-done = أفهم المخاطر
+tracker_selection_menu-neck_warning-cancel = إلغاء
+
+## Mounting menu
+
+mounting_selection_menu = أين تريد أن يكون جهاز التعقب؟
+mounting_selection_menu-close = أغلق
+
+## Sidebar settings
+
+settings-sidebar-general = الاعدادات العامة
+settings-sidebar-trackers = أجهزة التعقب
+settings-sidebar-interface = واجهة المستخدم
+settings-sidebar-utils = الأدوات المساعدة
+settings-sidebar-serial = وحدة التحكم التسلسلية
+settings-sidebar-appearance = مظهر
+settings-sidebar-behavior = سلوك
+settings-sidebar-firmware-tool = أداة برامج الجهاز المصنوع بنفسك
+settings-sidebar-advanced = متقدم
+
+## Bone routing settings
+
+settings-routing-hands-warning-cancel = إلغاء
+
+## SteamVR / Monado output settings
+
+settings-driver-enable = تمكين
+
+## Tracker mechanics
+
+settings-general-tracker_mechanics-filtering = تصفية
+settings-general-tracker_mechanics-filtering-type-none = بدون تصفية
+settings-general-tracker_mechanics-filtering-type-none-description = استخدم التدوير كما هو. لن تفعل أي تصفية
+settings-general-tracker_mechanics-filtering-type-smoothing = التنعيم
+settings-general-tracker_mechanics-filtering-type-smoothing-description = ينعم الحركات لكنه يزيد من وقت الاستجابة.
+settings-general-tracker_mechanics-filtering-type-prediction = التنبؤ
+settings-general-tracker_mechanics-filtering-amount = المبلغ
+settings-general-tracker_mechanics-yaw-reset-smooth-time = إعادة ضبط الانعراج على نحو سلس (يتعطل التنعيم 0 ثوان)
+settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إعادة ضبط التركيب التلقائي
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    يحفظ معايرة إعادة تعيين التثبيت التلقائي لأجهزة التتبع بين عمليات إعادة التشغيل. مفيد
+    عند ارتداء بدلة حيث لا تتحرك المتتبعات بين الجلسات. <b>لا ينصح به للمستخدمين العاديين!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers = استخدم المقياس المغناطيسي على جميع أجهزة تتبع IMU التي تدعمه
+
+## Stay Aligned pose recorder
+
+
+## Keybinds Page
+
+settings-keybinds_reset-all-button = إعادة تعيين الكل
+settings-keybinds-recorder-modal-cancel-button = إلغاء
+
+## FK/Tracking settings
+
+# Floor clip:
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
+settings-general-fk_settings-leg_tweak-floor_clip = فلور كليب
+# Skating correction:
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
+settings-general-fk_settings-leg_tweak-skating_correction = تصحيح التزحلق
+settings-general-fk_settings-leg_tweak-toe_snap = انجذاب إلى أصابع القدم
+settings-general-fk_settings-leg_tweak-foot_plant = تثبيت اصبع القدم
+settings-general-fk_settings-leg_tweak-skating_correction-amount = قوة تصحيح التزحلق
+settings-general-fk_settings-leg_fk = تعقب الساق
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
+settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
+settings-general-fk_settings-self_localization-title = وضع Mocap
+
+## Gesture control settings (tracker tapping)
+
+settings-general-gesture_control-description = يسمح بتشغيل عملية إعادة التعيين من خلال النقر على جهاز التعقب. يتم استخدام جهاز التعقب الأعلى على جذعك لإعادة ضبط سريع ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليسرى لإعادة ضبط ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليمنى إعادة ضبط التركيب . تجدر الإشارة إلى أن النقرات يجب أن تتم خلال 0.6 ثانية لكي يتم تسجيلها.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [zero] { $amount } نقرات
+        [one] نقرة واحدة
+        [two] نقرتان
+        [few] { $amount } نقرات
+        [many] { $amount } نقرات
+       *[other] { $amount } نقرات
+    }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [zero] لا أجهزة تعقب
+        [one] جهاز تعقب واحد
+        [two] جهازي تعقب
+        [few] { "" }
+        [many] { "" }
+       *[other] { $amount } أجهزة تعقب
+    }
+settings-general-gesture_control-yawResetEnabled = تمكين النقر لإعادة التعيين الانعراج
+settings-general-gesture_control-yawResetDelay = إعادة تعيين التأخير الانعراج
+settings-general-gesture_control-yawResetTaps = عدد النقرات لإعادة تعيين الانعراج
+settings-general-gesture_control-fullResetEnabled = تمكين النقر لإعادة التعيين الكامل
+settings-general-gesture_control-fullResetDelay = تأخير إعادة التعيين الكامل
+settings-general-gesture_control-fullResetTaps = عدد النقرات لإعادة التعيين الكامل
+settings-general-gesture_control-mountingResetEnabled = تمكين النقر لإعادة تعيين التركيب
+settings-general-gesture_control-mountingResetDelay = تأخير إعادة تعيين التركيب
+settings-general-gesture_control-mountingResetTaps = نقرات لإعادة تعيين التركيب
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = أجهزة تعقب فوق قيمة القطع
+
+## Appearance settings
+
+settings-interface-appearance = مظهر
+settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
+settings-general-interface-theme = موضوع اللون
+settings-general-interface-lang = اختر اللغة
+settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
+settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
+# Keep the font name untranslated
+settings-interface-appearance-font = خط واجهة المستخدم الرسومية
+settings-interface-appearance-font-description = هذا يغير الخط المستخدم من قبل الواجهة.
+settings-interface-appearance-font-placeholder = الخط الافتراضي
+settings-interface-appearance-font-os_font = خط نظام التشغيل
+settings-interface-appearance-font-slime_font = الخط الافتراضي
+settings-interface-appearance-font_size = قياس الخط الأساسي
+settings-interface-appearance-font_size-description = يؤثر هذا على حجم خط الواجهة بأكملها باستثناء لوحة الإعدادات هذه.
+
+## Notification settings
+
+settings-general-interface-feedback_sound = صوت ردود الفعل
+settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
+settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
+settings-general-interface-connected_trackers_warning = تحذير عن أجهزة التعقب المتصلة
+settings-general-interface-connected_trackers_warning-description = سيعرض هذا الخيار نافذة كل مرة تحاول فيها الخروج من SlimeVR أثناء وجود جهاز أو أكثر من أجهزة التعقب المتصلة. سيذكرك بإيقاف تشغيل أجهزة التعقب عند الانتهاء للحفاظ على عمر البطارية.
+
+## Behavior settings
+
+settings-interface-behavior = السلوك
+settings-general-interface-use_tray = تصغير إلى علبة النظام
+settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
+settings-general-interface-discord_presence = مشاركة النشاط على Discord
+settings-general-interface-discord_presence-description = يخبر عميل Discord الخاص بك أنك تستخدم SlimeVR جنبا إلى جنب مع عدد أجهزة تعقب IMU التي تستخدمها.
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] صفر
+        [zero] صفر
+        [one] واحد
+        [two] اثنان
+        [few] قليل
+        [many] كثيرة
+       *[other] أخرى
+    }
+settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
+settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
+
+## Serial settings
+
+settings-serial = وحدة التحكم التسلسلية
+# This cares about multilines
+settings-serial-description =
+    هذا هو موجز معلومات مباشر للاتصال التسلسلي.
+    قد يكون مفيدًا إذا كنت بحاجة إلى معرفة إن كان البرنامج الثابت به خلل.
+settings-serial-reboot = إعادة التشغيل
+settings-serial-factory_reset = إعادة التعيين إلى إعدادات المصنع
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين المتعقب إلى إعدادات المصنع.
+    مما يعني أن إعدادات واي فاي والمعايرة <b>ستفقد جميعا!</b>
+settings-serial-factory_reset-warning-ok = أنا أعرف ماذا أفعل
+settings-serial-factory_reset-warning-cancel = إلغاء
+settings-serial-serial_select = اختر منفذ تسلسلي
+settings-serial-get_wifi_scan = احصل على فحص WiFi
+settings-serial-save_logs = حفظ في ملف
+settings-serial-send_command-warning-ok = أنا أعرف ماذا أفعل
+settings-serial-send_command-warning-cancel = إلغاء
+
+## Logs settings
+
+
+## OSC VRChat settings
+
+# This cares about multilines
+settings-osc-vrchat-description-v1 =
+    تغيير الإعدادات الخاصة بمعيار أجهزة تعقب OSC  المستخدم لإرسال
+    بيانات التعقب  إلى التطبيقات التي لا تحتوي على SteamVR (مثل Quest المستقل).
+    تأكد من تمكين OSC في VRChat عبر قائمة الإجراءات ضمن OSC > ممكن.
+settings-osc-vrchat-enable = تمكين
+settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
+settings-osc-vrchat-network = منافذ الشبكة
+settings-osc-vrchat-network-port_in =
+    .label = منفذ الدخول
+    .placeholder = منفذ الدخول (الإفتراضي: 9001)
+settings-osc-vrchat-network-port_out =
+    .label = منفذ الخروج
+    .placeholder = منفذ الخروج (الإفتراضي: 9000)
+settings-osc-vrchat-network-address = عنوان الشبكة
+settings-osc-vrchat-network-address-description-v1 = اختر العنوان الذي تريد إرسال البيانات إليه. يمكن تركها دون أن تمس ل VRChat.
+
+## VRChat OSC status
+
+settings-osc-vrchat-status-tracking = دوران
+settings-osc-vrchat-status-badge-error = خطأ
+settings-osc-vrchat-status-badge-unknown = مجهول
+
+## VMC OSC settings
+
+# This cares about multilines
+settings-osc-vmc-description =
+    قم بتغيير الإعدادات الخاصة ببروتوكول التقاط الحركة الافتراضية
+    لإرسال بيانات عظام سلايم في ار وتلقي بيانات العظام من تطبيقات أخرى.
+settings-osc-vmc-enable = تمكين
+settings-osc-vmc-enable-description = تبديل إرسال واستقبال البيانات.
+settings-osc-vmc-network = منافذ الشبكة
+settings-osc-vmc-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى التقاط الحركة الافتراضية
+settings-osc-vmc-network-port_in =
+    .label = منفذ الدخول
+    .placeholder = منفذ الدخول (الافتراضي: 39540)
+settings-osc-vmc-network-port_out =
+    .label = منفذ الخروج
+    .placeholder = منفذ الخروج (الافتراضي: 39539)
+settings-osc-vmc-network-address = عنوان الشبكة
+settings-osc-vmc-network-address-description = قم بتعيين العنوان لإرسال البيانات إلى التقاط الحركة الافتراضية.
+settings-osc-vmc-vrm = نموذج في ار إم
+settings-osc-vmc-vrm-description = قم بتحميل نموذج في ار إم للسماح بتركيز الرأس وتمكين توافق أعلى مع تطبيقات الأخرى
+settings-osc-vmc-vrm-untitled_model = نموذج بدون عنوان
+settings-osc-vmc-vrm-file_select = اسحب نموذج وأفلته لاستخدامه أو <u> تصفح </ u>
+settings-osc-vmc-anchor_hip = ثبت في الوركين
+settings-osc-vmc-anchor_hip-description = ثبت التعقب في الوركين، هو مفيد إن كنت تيوبنغ جالسًا. في حالة التعطيل، قم بتحميل نموذج في ار إم.
+settings-osc-vmc-mirror_tracking = اعكس التعقب
+settings-osc-vmc-mirror_tracking-description = اعكس التعقب أفقيا.
+settings-osc-vmc-status-badge-error = خطأ
+
+## Common OSC settings
+
+
+## Advanced settings
+
+settings-utils-advanced = متقدم
+settings-utils-advanced-reset-gui = إعادة تعيين إعدادات واجهة المستخدم الرسومية (GUI)
+settings-utils-advanced-reset-gui-description = قم باستعادة الإعدادات الافتراضية للواجهة.
+settings-utils-advanced-reset-gui-label = إعادة تعيين واجهة المستخدم الرسومية
+settings-utils-advanced-reset-server = إعادة تعيين إعدادات التعقب
+settings-utils-advanced-reset-server-label = إعادة تعيين التعقب
+settings-utils-advanced-reset-all = إعادة تعيين جميع الإعدادات
+settings-utils-advanced-reset-all-label = إعادة تعيين الكل
+settings-utils-advanced-reset_warning-reset = إعادة تعيين الإعدادات
+settings-utils-advanced-reset_warning-cancel = إلغاء
+settings-utils-advanced-open_data-v1 = مجلد التكوين
+settings-utils-advanced-open_data-description-v1 = فتح مجلد إعدادات SlimeVR في مستكشف الملفات ، والذي يحتوي على الإعدادات
+settings-utils-advanced-open_data-label = فتح المجلد
+settings-utils-advanced-open_logs = مجلد السجلات
+settings-utils-advanced-open_logs-description = افتح مجلد سجلات SlimeVR في مستكشف الملفات ، والذي يحتوي على سجلات التطبيق
+settings-utils-advanced-open_logs-label = فتح المجلد
+
+## Home Screen
+
+
+## Tracking Checklist
+
+
+## Setup/onboarding menu
+
+onboarding-skip = تخطى الإعداد
+onboarding-continue = ‏‏متابعة
+onboarding-previous_step = الخطوة السابقة
+onboarding-setup_warning =
+    <b>تحذير:<b> الإعداد ضروري للتعقب الجيد،
+    إنه مطلوب إذا كانت هذه هي المرة الأولى التي تستخدم سلايم في ار.
+onboarding-setup_warning-skip = تخطى الإعداد
+onboarding-setup_warning-cancel = متابعة الإعداد
+
+## Quiz
+
+onboarding-quiz_continue = ‏‏متابعة
+onboarding-quiz_back = العودة
+onboarding-quiz-runtime-answer-steamvr = ستيم في ار
+onboarding-quiz-mocap_preferences-head_tracker-yes = نعم
+
+## Wi-Fi setup
+
+onboarding-wifi_creds-back-v2 = الرجوع
+onboarding-wifi_creds-submit = إرسال!
+onboarding-wifi_creds-retry = اعادة المحاولة
+onboarding-wifi_creds-ssid-label = اسم الواي فاي
+onboarding-wifi_creds-ssid =
+    .placeholder = أدخل اسم الواي فاي
+onboarding-wifi_creds-ssid-required = مطلوب اسم Wi-Fi
+onboarding-wifi_creds-password =
+    .label = كلمة السر
+    .placeholder = Enter your Wi-Fi password
+
+## Install info
+
+install-info_udev-rules_modal_button = أغلق
+
+## Setup start
+
+onboarding-home = مرحبا بكم في سلايم في ار
+onboarding-home-start = هيا نتجهز!
+
+## Tracker connection setup
+
+onboarding-connect_tracker-title = ربط أجهزة التعقب
+onboarding-connect_tracker-issue-serial = أواجه مشكلة في الاتصال!
+onboarding-connect_tracker-usb = جهاز تعقب يو أس بي
+onboarding-connect_tracker-close = أغلق
+onboarding-connect_tracker-connection_status-serial_init = نتواصل بجهاز التسلسلي
+onboarding-connect_tracker-connection_status-provisioning = نرسل بيانات اعتماد واي فاي
+onboarding-connect_tracker-connection_status-connecting = جارٍ إرسال بيانات اعتماد الواي فاي
+onboarding-connect_tracker-connection_status-looking_for_server = نبحث عن السرفر
+onboarding-connect_tracker-connection_status-connection_error = غير قادر على الاتصال بشبكة الواي فاي
+onboarding-connect_tracker-connection_status-could_not_find_server = تعذر العثور على السرفر
+onboarding-connect_tracker-connection_status-done = متصل بالسيرفر
+# $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
+# More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
+# English in this case only has 2 plural rules, which are "one" and "other",
+# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
+# if $amount is 0 then we say "No trackers connected"
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] لا يوجد جهاز تعقب متصل
+        [zero] لا يوجد جهاز تعقب متصل
+        [one] جهاز تعقب واحد متصل
+        [two] جهازا تعقب متصلان
+        [few] { $amount } أجهزة تعقب متصلة
+        [many] { $amount } أجهزة تعقب متصلة
+       *[other] { $amount } أجهزة تعقب متصلة
+    }
+onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة التعقب
+
+## Tracker assignment setup
+
+onboarding-assign_trackers-title = تعيين أجهزة التعقب
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned =
+    { $trackers ->
+        [zero] { $assigned } من { $trackers } أجهزة تعقب عينت
+        [one] جهاز واحد من { $trackers } أجهزة تعقب عينت
+        [two] جهازان من { $trackers } أجهزة تعقب عينت
+        [few] { $assigned } من { $trackers } أجهزة تعقب عينت
+        [many] { $assigned } من { $trackers } أجهزة تعقب عينت
+       *[other] { $assigned } من { $trackers } أجهزة تعقب عينت
+    }
+onboarding-assign_trackers-tap_modal-cancel = إلغاء
+onboarding-assign_trackers-side-right = اليمين
+onboarding-assign_trackers-side-left = اليسار
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = عرض المرآة
+
+## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
+onboarding-choose_mounting = ما طريقة معايرة التركيب المستخدمة؟
+# Multiline text
+onboarding-choose_mounting-description = اتجاه التركيب يصحح وضع أجهزة التعقب على جسمك.
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
+## Tracker manual mounting setup
+
+onboarding-manual_mounting = التركيب اليدوي
+onboarding-manual_mounting-description = انقر فوق كل جهاز تعقب وحدد طريقة تركيبها
+onboarding-manual_mounting-next = الخطوة التالية
+
+## Tracker automatic mounting setup
+
+onboarding-automatic_mounting-title = معايرة التركيب
+onboarding-automatic_mounting-description = لكي تعمل أجهزة تعقب سلايم في ار، نحتاج إلى تعيين دوران تركيب أجهزة التعقب لمواءمتها مع تركيب جهاز التعقب المادي.
+onboarding-automatic_mounting-manual_mounting = ضبط التركيب يدويًا
+onboarding-automatic_mounting-next = الخطوة التالية
+onboarding-automatic_mounting-prev_step = الخطوة السابقة
+onboarding-automatic_mounting-done-title = تم معايرة دوران التركيب
+onboarding-automatic_mounting-done-description = اكتملت معايرة التركيب!
+onboarding-automatic_mounting-done-restart = العودة إلى البداية
+onboarding-automatic_mounting-mounting_reset-title = إعادة تعيين التركيب
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. اضغط على زر "إعادة تعيين التركيب" وانتظر لمدة 3 ثوان قبل إعادة تعيين دوران تركيب أجهزة التعقب.
+onboarding-automatic_mounting-preparation-title = التحضير
+
+## Tracker manual proportions setup
+
+onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
+onboarding-manual_proportions-export = تصدير النسب
+onboarding-manual_proportions-import = استيراد النسب
+
+## Tracker automatic proportions setup
+
+onboarding-automatic_proportions-back = العودة إلى برنامج تعليم إعادة التعيين
+onboarding-automatic_proportions-title = قياس جسمك
+onboarding-automatic_proportions-description = لكي تعمل أجهزة تعقب سلايم في ار, نحتاج إلى معرفة طول عظامك. هذه المعايرة القصيرة ستقيسها لك.
+onboarding-automatic_proportions-prev_step = الخطوة السابقة
+onboarding-automatic_proportions-put_trackers_on-title = ارتدي أجهزة التعقب
+onboarding-automatic_proportions-put_trackers_on-description = لمعايرة نسب جسمك ، سنستخدم أجهزة التعقب التي قمت بتعيينها. ضع جميع أجهزة التعقب، يمكنك معرفة أين تم تعيينه في المستند على اليمين.
+onboarding-automatic_proportions-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
+onboarding-automatic_proportions-requirements-title = المتطلبات
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    لديك على الأقل ما يكفي من أجهزة التعقب لتتبع قدميك (بشكل عام 5 أجهزة تعقب).
+    لديك أجهزة التعقب  وجهاز الواقع الافتراضي الخاص بك وترتديهم.
+    أجهزة التعقب وجهاز الواقع الافتراضي متصلة بخادم SlimeVR وتعمل بشكل صحيح (مثلاً، لا يوجد تأتأة أو قطع اتصال ، إلخ).
+    يقوم جهاز الواقع الافتراضي بالإبلاغ عن البيانات الموضعية إلى خادم SlimeVR (وهذا يعني عموما تشغيل SteamVR وتوصيله ب SlimeVR باستخدام برنامج تشغيل SteamVR الخاص ب SlimeVR).
+    يعمل التتبع الخاص بك ويمثل تحركاتك بدقة (على سبيل المثال ، لقد أجريت إعادة تعيين كاملة وتتحرك في الاتجاه الصحيح عند الركل, الانحناء, الجلوس, إلخ).
+onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
+onboarding-automatic_proportions-start_recording-title = استعد للتحرك
+onboarding-automatic_proportions-start_recording-description = سنقوم الآن بتسجيل بعض الوضعيات والحركات المحددة. ستتم مطالبتك بذلك في الشاشة التالية. كن مستعدا للبدء عند الضغط على الزر!
+onboarding-automatic_proportions-start_recording-next = بدء التسجيل
+onboarding-automatic_proportions-recording-title = تسجيل
+onboarding-automatic_proportions-recording-description-p0 = جاري التسجيل...
+onboarding-automatic_proportions-recording-description-p1 = قم بالحركات الموضحة أدناه:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    قف بشكل مستقيم، لف رأسك بشكل دائري.
+    اثنِ ظهرك للأمام و قرفص. أثناء الجلوس ، انظر إلى يسارك ، ثم إلى يمينك.
+    قم بتدوير الجزء العلوي من جسمك إلى اليسار (عكس اتجاه عقارب الساعة) ، ثم انزل نحو الأرض.
+    قم بتدوير الجزء العلوي من جسمك إلى اليمين (في اتجاه عقارب الساعة) ، ثم انزل نحو الأرض.
+    قم بتدوير وركيك في حركة دائرية كما لو كنت تستخدم طوق هولا هوب.
+    إذا كان هناك وقت متبقي على التسجيل ، فيمكنك تكرار هذه الخطوات حتى تنتهي.
+onboarding-automatic_proportions-recording-processing = معالجة النتيجة
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [zero] { $time } ثانية متبقية
+        [one] { $time } ثانية متبقية
+        [two] ثانيتين متبقية
+        [few] { $time } ثوان متبقية
+        [many] { $time } ثوان متبقية
+       *[other] { $time } ثوان متبقية
+    }
+onboarding-automatic_proportions-verify_results-title = تحقق من النتائج
+onboarding-automatic_proportions-verify_results-description = تحقق من النتائج أدناه ، هل تبدو صحيحة؟
+onboarding-automatic_proportions-verify_results-results = تسجيل النتائج
+onboarding-automatic_proportions-verify_results-processing = معالجة النتيجة
+onboarding-automatic_proportions-verify_results-redo = إعادة التسجيل
+onboarding-automatic_proportions-verify_results-confirm = تبدو صحيحة
+onboarding-automatic_proportions-done-title = تم قياس الجسم و حفظه.
+onboarding-automatic_proportions-done-description = اكتملت معايرة نسب جسمك!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>تحذير:</b> حدث خطأ أثناء تقدير النسب!
+    من المحتمل أن تكون هذه مشكلة معايرة التركيب. تأكد من أن التعقب يعمل بشكل صحيح قبل المحاولة مرة أخرى.
+    يرجى <docs>التحقق من التعليمات</docs> أو الانضمام إلى <discord>Discord</discord> للحصول على المساعدة ^_^
+onboarding-automatic_proportions-error_modal-confirm = مفهوم!
+onboarding-automatic_proportions-smol_warning =
+    الارتفاع الذي تم تكوينه هو { $height } و هو أصغر من الحد الأدنى للارتفاع المقبول البالغ { $minHeight }.
+    <b>يرجى إعادة القياسات والتأكد من صحتها.</b>
+onboarding-automatic_proportions-smol_warning-cancel = الرجوع
+
+## User height calibration
+
+
+## Home
+
+home-settings-close = أغلق
+home-no_trackers-connect = ربط أجهزة التعقب
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = أجهزة التعقب لا تزال قيد التشغيل
+trackers_still_on-modal-description =
+    لا يزال واحد أو أكثر من أجهزة التعقب قيد التشغيل.
+    هل مازلت تريد الخروج من SlimeVR؟
+trackers_still_on-modal-confirm = الخروج من SlimeVR
+trackers_still_on-modal-cancel = انتظر...
+
+## Firmware tool globals
+
+firmware_tool-next_step = الخطوة التالية
+firmware_tool-previous_step = الخطوة السابقة
+firmware_tool-ok = تبدو جيدة
+firmware_tool-retry = اعادة المحاولة
+firmware_tool-loading = تحميل...
+
+## Firmware tool Steps
+
+firmware_tool = أداة البرامج الثابتة DIY
+firmware_tool-description = يسمح لك بتكوين و لتحديث أجهزة التعقب DIY الخاصة بك
+firmware_tool-not_available = عفوا ، أداة البرامج الثابتة غير متوفرة في الوقت الحالي. عد لاحقا!
+firmware_tool-not_compatible = أداة البرنامج الثابت غير متوافقة مع هذا الإصدار من الخادم. يرجى تحديث الخادم الخاص بك!
+firmware_tool-select_source-version = إصدار البرنامج الثابت
+firmware_tool-flash_method_step = طريقة التثبيت
+firmware_tool-flash_method_step-description = الرجاء حدد طريقة التثبيت التي تريد استخدامها
+firmware_tool-flashbtn_step = اضغط على زر التمهيد
+firmware_tool-flashbtn_step-description = قبل الانتقال إل الخطوة التالية، هناك بعض الأشياء التي عليك القيام بها
+firmware_tool-flashbtn_step-board_SLIMEVR = أوقف تشغيل جهاز التعقب، قم بإزالة العلبة (إن وجدت)، وقم بتوصيل كابل USB بهذا الكمبيوتر ، ثم قم بإحدى الخطوات التالية وفقا لمراجعة لوحة SlimeVR:
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+firmware_update-retry = اعادة المحاولة
+
+## Tray Menu
+
+tray_menu-show = عرض
+tray_menu-hide = إخفاء
+tray_menu-quit = انهاء
+
+## First exit modal
+
+tray_or_exit_modal-title = ماذا يجب أن يفعل زر الإغلاق؟
+# Multiline text
+tray_or_exit_modal-description =
+    يتيح لك ذلك اختيار ما إذا كنت تريد الخروج من الخادم أو تصغيره إلى علبة النظام عند الضغط على زر الإغلاق.
+    
+    يمكنك تغيير هذا لاحقا في إعدادات الواجهة!
+tray_or_exit_modal-radio-exit = الخروج عند الإغلاق
+tray_or_exit_modal-radio-tray = تصغير إلى علبة النظام
+tray_or_exit_modal-submit = احفظ
+tray_or_exit_modal-cancel = إلغاء
+
+## Unknown device modal
+
+vrc_config-tracker_model-UNKNOWN = مجهول
+vrc_config-avatar_measurement_type-UNKNOWN = مجهول
+
+## Error collection consent modal
+
+
+## Crash screen
+
+
+## Tracking checklist section
+
+tracking_checklist-settings-close = أغلق
+toolbar-mounting_calibration = معايرة التركيب
+toolbar-mounting_calibration-feet = القدمين

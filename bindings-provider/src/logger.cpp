@@ -7,7 +7,7 @@
 #endif
 
 Logger::Logger()
-    : log_stream(Paths::getLogPath() / "slimevr-bindings-provider.log",
+    : log_stream(Paths::GetLogPath() / "slimevr-bindings-provider.log",
                  std::ios::out | std::ios::app)
 #ifdef _WIN32
     , should_log_to_std_streams(GetConsoleWindow() != nullptr)
@@ -15,7 +15,7 @@ Logger::Logger()
 {
 }
 
-Logger &Logger::get() {
+Logger& Logger::Get() {
     static Logger logger;
     return logger;
 }
