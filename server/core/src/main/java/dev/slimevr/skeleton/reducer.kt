@@ -72,7 +72,10 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.ResetFloorLevel -> {
 		val skeletonHeight = state.skeletonHeight
-		val headHeight = state.boneInputs[BodyPart.HEAD]?.position?.y ?: skeletonHeight
+		val headHeight = state.boneInputs[BodyPart.HEAD]?.let {
+			val headOffset = it.rotation.sandwich(it.boneOffset).y
+			it.position?.y?.plus(headOffset)
+		} ?: skeletonHeight
 		state.copy(floorLevel = headHeight - skeletonHeight)
 	}
 
