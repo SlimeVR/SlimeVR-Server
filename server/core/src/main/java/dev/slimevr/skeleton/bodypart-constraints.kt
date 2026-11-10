@@ -29,7 +29,7 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			45f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_LOWER_ARM to LooseHingeConstraint(
-			-165f * FastMath.DEG_TO_RAD,
+			-170f * FastMath.DEG_TO_RAD,
 			0f * FastMath.DEG_TO_RAD,
 			55f * FastMath.DEG_TO_RAD,
 		),
@@ -47,7 +47,7 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			45f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_LOWER_ARM to LooseHingeConstraint(
-			-165f * FastMath.DEG_TO_RAD,
+			-170f * FastMath.DEG_TO_RAD,
 			0f * FastMath.DEG_TO_RAD,
 			55f * FastMath.DEG_TO_RAD,
 		),
@@ -79,13 +79,15 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		),
 
 		// Left leg
-		BodyPart.LEFT_UPPER_LEG to TwistSwingConstraint(
-			120f * FastMath.DEG_TO_RAD,
-			165f * FastMath.DEG_TO_RAD,
+		BodyPart.LEFT_UPPER_LEG to LooseHingeConstraint(
+			-50f * FastMath.DEG_TO_RAD,
+			170f * FastMath.DEG_TO_RAD,
+			85f * FastMath.DEG_TO_RAD,
+			hingeAxis = Vector3.POS_X,
 		),
 		BodyPart.LEFT_LOWER_LEG to LooseHingeConstraint(
 			-6f * FastMath.DEG_TO_RAD,
-			165f * FastMath.DEG_TO_RAD,
+			170f * FastMath.DEG_TO_RAD,
 			50f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_FOOT to TwistSwingConstraint(
@@ -94,13 +96,15 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		),
 
 		// Right leg
-		BodyPart.RIGHT_UPPER_LEG to TwistSwingConstraint(
-			120f * FastMath.DEG_TO_RAD,
-			165f * FastMath.DEG_TO_RAD,
+		BodyPart.RIGHT_UPPER_LEG to LooseHingeConstraint(
+			-50f * FastMath.DEG_TO_RAD,
+			170f * FastMath.DEG_TO_RAD,
+			85f * FastMath.DEG_TO_RAD,
+			hingeAxis = Vector3.POS_X,
 		),
 		BodyPart.RIGHT_LOWER_LEG to LooseHingeConstraint(
 			-6f * FastMath.DEG_TO_RAD,
-			165f * FastMath.DEG_TO_RAD,
+			170f * FastMath.DEG_TO_RAD,
 			50f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_FOOT to TwistSwingConstraint(
@@ -175,6 +179,23 @@ fun constrainSkeleton(
 	return bones
 }
 
+/**
+ * Used for the initial rotation before doing IK.
+ */
+val BODY_PART_PREFERRED_ROTATION = BodyPartMap(
+	mapOf(
+		BodyPart.LEFT_UPPER_LEG to Quaternion.rotationAroundXAxis(90f * FastMath.DEG_TO_RAD),
+		BodyPart.RIGHT_UPPER_LEG to Quaternion.rotationAroundXAxis(90f * FastMath.DEG_TO_RAD),
+		BodyPart.LEFT_LOWER_LEG to Quaternion.rotationAroundXAxis(-45f * FastMath.DEG_TO_RAD),
+		BodyPart.RIGHT_LOWER_LEG to Quaternion.rotationAroundXAxis(-45f * FastMath.DEG_TO_RAD),
+		// TODO arms and others
+// 		BodyPart.LEFT_UPPER_ARM to Quaternion.rotationAroundXAxis(-45f * FastMath.DEG_TO_RAD),
+// 		BodyPart.RIGHT_UPPER_ARM to Quaternion.rotationAroundXAxis(-45f * FastMath.DEG_TO_RAD),
+// 		BodyPart.LEFT_LOWER_ARM to Quaternion.rotationAroundXAxis(90f * FastMath.DEG_TO_RAD),
+// 		BodyPart.RIGHT_LOWER_ARM to Quaternion.rotationAroundXAxis(90f * FastMath.DEG_TO_RAD),
+	),
+)
+
 // Constraints to apply to a local offset to best fit a bone's natural movement
 // Basically the max angle change per IK iteration within local axes
 // TODO May need to decay constraint over iterations
@@ -216,14 +237,14 @@ val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			5f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_LOWER_LEG to LooseAxisConstraint(
-			1f * FastMath.DEG_TO_RAD,
+			0.2f * FastMath.DEG_TO_RAD,
 		),
 
 		BodyPart.RIGHT_UPPER_LEG to LooseAxisConstraint(
 			5f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_LOWER_LEG to LooseAxisConstraint(
-			1f * FastMath.DEG_TO_RAD,
+			0.2f * FastMath.DEG_TO_RAD,
 		),
 	),
 )

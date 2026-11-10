@@ -28,7 +28,6 @@ fun parentRot(
 
 // Bones are most likely opposite along the X axis
 private val oppositeRotation = Quaternion.rotationAroundXAxis(FastMath.PI)
-private val smallRotation = Quaternion.rotationAroundXAxis(-1f * FastMath.DEG_TO_RAD)
 fun fromChainToTarget(
 	bodyPart: BodyPart,
 	bones: ComputedSkeleton,
@@ -53,16 +52,7 @@ fun fromChainToTarget(
 	}
 
 	val offset = Quaternion.fromTo(localChainTail.unit(), localTarget.unit())
-
-	return if (localTargetLenSq < localChainTailLenSq &&
-		FastMath.isApproxZero(offset.angleQ())
-	) {
-		// TODO Should be based off a preferred axis/direction, currently seems to
-		//  "snap" a little when hitting this fallback
-		// If the target is closer than the tail and the bone is parallel to the target,
-		//  apply an arbitrary small rotation to promote movement
-		alignOffset(bone.rotation.inv(), smallRotation)
-	} else if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
+	return if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
 		offset
 	} else {
 		// When the vectors are exactly opposite, arbitrarily choose an axis
@@ -155,8 +145,7 @@ fun ccdIkIteration(
 	rotateChain(mutableBoneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
-	// If performance is bad, we can combine buildBones calls for non-overlapping IK
-	//  chains
+	// If performance is bad, we can combine buildBones calls for non-overlapping IK chains
 	buildBones(mutableComputedSkeleton, mutableBoneInputs, chain.toSet())
 }
 
@@ -181,8 +170,25 @@ fun ccdIk(
 	// No goal leaves every bone as the FK pass built it, so nothing below needs to run
 	if (goals.isEmpty()) return true
 
+	// Set each bone in each chain of each goal to its preferred rotation
+	val changedBodyParts = mutableSetOf<BodyPart>()
+	for (goal in goals) {
+		val distanceToTarget = chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target)
+		val chainLength = goal.chain.sumOf { requireBone(mutableComputedSkeleton, it).offset.len().toDouble() }.toFloat()
+		val t = (distanceToTarget / chainLength).coerceAtMost(1f)
+		for (bodyPart in goal.chain) {
+			val bone = mutableBoneInputs[bodyPart] ?: continue
+			val preferredRotation = BODY_PART_PREFERRED_ROTATION[bodyPart] ?: continue
+			val rotationChange = preferredRotation.pow(t)
+			mutableBoneInputs[bodyPart] = bone.copy(rotation = bone.rotation * rotationChange)
+			changedBodyParts.add(bodyPart)
+		}
+	}
+	if (changedBodyParts.isNotEmpty()) buildBones(mutableComputedSkeleton, mutableBoneInputs, changedBodyParts)
+
+	var allGoalsMet = true
 	for (i in 0 until maxIterations) {
-		var allGoalsMet = true
+		allGoalsMet = true
 		for ((chain, target) in goals) {
 			// Only iterate chains not meeting the threshold
 			if (chainDistanceFromTarget(mutableComputedSkeleton, chain, target) <= threshold) continue
@@ -205,7 +211,5 @@ fun ccdIk(
 		if (allGoalsMet) break
 	}
 
-	return goals.all { (chain, target) ->
-		chainDistanceFromTarget(mutableComputedSkeleton, chain, target) <= threshold
-	}
+	return allGoalsMet
 }

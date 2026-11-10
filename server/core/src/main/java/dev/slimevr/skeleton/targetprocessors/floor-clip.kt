@@ -16,7 +16,6 @@ class FloorClipTargetProcessor(
 		BodyPart.RIGHT_LOWER_LEG,
 	),
 ) : SkeletonTargetProcessor {
-	// TODO don't just correct ankles, also correct some of the hip (20% in old code). Probably to be done on IK directly.
 	override fun process(mutableIkTargets: IKTargets, inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		if (!skeleton.effectiveFloorClip) return
 

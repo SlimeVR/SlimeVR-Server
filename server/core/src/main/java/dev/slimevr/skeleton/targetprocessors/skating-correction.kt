@@ -47,7 +47,7 @@ const val UNLOCK_WARMUP_MAX = 0.050f
 // The distance correction scales with the linear velocity and distance from locked position
 const val DISTANCE_MIN = 0.01f
 const val DISTANCE_MAX = 0.1f
-const val DISTANCE_CORRECTION_MIN = 0f
+const val DISTANCE_CORRECTION_MIN = 0.05f
 const val DISTANCE_CORRECTION_MAX = 1f
 
 // The correction speed accelerates with time
