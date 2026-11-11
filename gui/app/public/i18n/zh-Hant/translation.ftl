@@ -1510,7 +1510,6 @@ tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-desc =
     <OscTrackingLink>開啟方法看這裡。</OscTrackingLink>
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = 開啟 VRChat OSC 設定
 tracking_checklist-ignore = 忽略
-preview-mocap_mode_soon = 動作捕捉模式（即將推出™）
 preview-disable_render = 停用預覽
 preview-disabled_render = 預覽已停用
 preview-render_mode = 變更渲染模式
