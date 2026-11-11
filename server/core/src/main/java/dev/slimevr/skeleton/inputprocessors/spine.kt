@@ -239,22 +239,22 @@ private fun interpolateRatio(fromUpperToLower: Float, curvature: Float, fromReli
 private fun interpolateForwardSide(fromRotation: Quaternion, toRotation: Quaternion, forwardRatio: Float, sideRatio: Float?): Quaternion {
 	if (sideRatio == null) return fromRotation.interpQ(toRotation, forwardRatio)
 
-	// Work with the rotation delta to avoid axes being ambiguous
-	val delta = fromRotation.inv() * toRotation
+	// Work with the local rotation to avoid axes being ambiguous
+	val local = toRotation.localAbout(fromRotation)
 
-	// Decompose the delta into its twist (forward) and swing (remaining/sides) along the x-axis
-	val forward = delta.project(Vector3.POS_X).unit()
-	val side = delta / forward
+	// Decompose the local rotation into its twist (forward) and swing (remaining/sides) along the x-axis
+	val forward = local.project(Vector3.POS_X).unit()
+	val side = local / forward
 
-	// Scale each axis of the delta with our ratios
+	// Scale each axis of the local rotation with our ratios
 	val scaledForward = forward.pow(forwardRatio)
 	val scaledSide = side.pow(sideRatio)
 
-	// Recompose the delta. We removed formward from delta to get side, so we must add forward to side back.
-	val scaledDelta = scaledSide * scaledForward
+	// Recompose the local rotation. We removed forward from local rotation to get side, so we must add forward to side back.
+	val scaledLocal = scaledSide * scaledForward
 
-	// Return scaled delta applied to From rotation
-	return fromRotation * scaledDelta
+	// Return scaled local rotation applied to From rotation
+	return scaledLocal.globalAbout(fromRotation)
 }
 
 /**

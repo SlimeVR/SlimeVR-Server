@@ -14,7 +14,7 @@ private val METACARPAL_THUMB_CONSTRAINT = LooseHingeConstraint(
 private val THUMB_CONSTRAINT = LooseHingeConstraint(
 	-5f * FastMath.DEG_TO_RAD,
 	100f * FastMath.DEG_TO_RAD,
-	5f * FastMath.DEG_TO_RAD,
+	3f * FastMath.DEG_TO_RAD,
 	Vector3.NEG_X,
 )
 
@@ -27,7 +27,7 @@ private val LEFT_PROXIMAL_FINGER_CONSTRAINT = LooseHingeConstraint(
 private val LEFT_FINGER_CONSTRAINT = LooseHingeConstraint(
 	-5f * FastMath.DEG_TO_RAD,
 	110f * FastMath.DEG_TO_RAD,
-	0f,
+	3f,
 	Vector3.POS_Z,
 )
 private val RIGHT_PROXIMAL_FINGER_CONSTRAINT = LEFT_PROXIMAL_FINGER_CONSTRAINT.copy(hingeAxis = Vector3.NEG_Z)
