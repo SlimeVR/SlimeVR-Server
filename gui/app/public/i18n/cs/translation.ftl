@@ -935,7 +935,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
 tracking_checklist-ignore = Ignorovat
-preview-mocap_mode_soon = Režim Mocap (brzy™)
 preview-disable_render = Vypnout vykreslování
 preview-disabled_render = Vykreslování vypnuto
 toolbar-mounting_calibration = Kalibrace nasazení
