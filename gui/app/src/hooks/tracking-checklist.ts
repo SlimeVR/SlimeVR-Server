@@ -43,6 +43,7 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
     'tracking_checklist-STANDABLE_INSTALLED',
   [TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED]:
     'tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED',
+  [TrackingChecklistStepId.FIRMWARE_UPDATE]: 'tracking_checklist-FIRMWARE_UPDATE',
 };
 
 export const trackingchecklistIdtoSettingsDescription: Record<
@@ -77,6 +78,8 @@ export const trackingchecklistIdtoSettingsDescription: Record<
     'tracking_checklist-STANDABLE_INSTALLED-settings_desc',
   [TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED]:
     'tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-settings_desc',
+  [TrackingChecklistStepId.FIRMWARE_UPDATE]:
+    'tracking_checklist-FIRMWARE_UPDATE-settings_desc',
 };
 
 export type TrackingChecklistStepStatus =

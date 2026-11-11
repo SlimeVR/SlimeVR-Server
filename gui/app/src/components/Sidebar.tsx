@@ -142,10 +142,7 @@ export function PreviewControls({ open }: { open: boolean }) {
 
           <Tooltip
             content={
-              <Typography
-                variant="section-title"
-                id="preview-recenter_mocap"
-              />
+              <Typography variant="section-title" id="preview-recenter_mocap" />
             }
             preferedDirection="top"
           >

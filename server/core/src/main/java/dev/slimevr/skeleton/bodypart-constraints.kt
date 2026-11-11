@@ -257,23 +257,23 @@ val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		),
 
 		BodyPart.UPPER_CHEST to TwistSwingConstraint(
+			8f * FastMath.DEG_TO_RAD,
+			4f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
+		),
+		BodyPart.LOWER_CHEST to TwistSwingConstraint(
 			4f * FastMath.DEG_TO_RAD,
 			2f * FastMath.DEG_TO_RAD,
 			Vector3.POS_X,
 		),
-		BodyPart.LOWER_CHEST to TwistSwingConstraint(
-			3f * FastMath.DEG_TO_RAD,
-			0.5f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
-		),
 		BodyPart.UPPER_WAIST to TwistSwingConstraint(
-			3f * FastMath.DEG_TO_RAD,
-			2f * FastMath.DEG_TO_RAD,
+			6f * FastMath.DEG_TO_RAD,
+			4f * FastMath.DEG_TO_RAD,
 			Vector3.POS_X,
 		),
 		BodyPart.LOWER_WAIST to TwistSwingConstraint(
+			3f * FastMath.DEG_TO_RAD,
 			2f * FastMath.DEG_TO_RAD,
-			0.5f * FastMath.DEG_TO_RAD,
 			Vector3.POS_X,
 		),
 
