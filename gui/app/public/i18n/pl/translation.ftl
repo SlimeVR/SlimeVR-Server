@@ -1020,7 +1020,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otwórz panel sterowania
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfiguruj Opcje Wyrównywania
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zapisz pozycje wyrównywania, aby zmniejszyć poślizg
 tracking_checklist-ignore = Ignoruj
-preview-mocap_mode_soon = Tryb mocap (wkrótce™)
 preview-disable_render = Wyłącz renderowanie
 preview-disabled_render = Renderowanie wyłączone
 toolbar-mounting_calibration = Kalibracja Pozycji
