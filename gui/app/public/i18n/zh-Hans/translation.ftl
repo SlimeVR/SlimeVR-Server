@@ -1015,7 +1015,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 记录持续校准所使用的姿势以减缓漂移现象
 tracking_checklist-ignore = 忽略
-preview-mocap_mode_soon = 动作捕捉模式（即将推出™）
 preview-disable_render = 禁用预览
 preview-disabled_render = 预览已禁用
 toolbar-mounting_calibration = 佩戴校准
