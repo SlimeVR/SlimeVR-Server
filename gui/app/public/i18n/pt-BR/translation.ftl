@@ -1036,7 +1036,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Abrir o Painel de Controle
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurar o Manter Alinhado
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Grave as poses da função Manter Alinhado para reduzir o drift
 tracking_checklist-ignore = Ignorar
-preview-mocap_mode_soon = Modo Mocap (Em Breve™)
 preview-disable_render = Desativar renderização
 preview-disabled_render = Renderização desativada
 toolbar-mounting_calibration = Calibração de Montagem
