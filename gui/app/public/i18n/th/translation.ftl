@@ -983,7 +983,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = เปิด Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = ตั้งค่า Stay Aligned
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = บันทึกท่าท่างใน Stay Aligned เพื่อลดการดริฟท์
 tracking_checklist-ignore = ละเว้น
-preview-mocap_mode_soon = โหมด Mocap (เร็ว ๆ นี้™)
 preview-disable_render = ปิดการแสดงตัวอย่าง
 preview-disabled_render = การแสดงตัวอย่างถูกปิด
 toolbar-mounting_calibration = ตั้งศูนย์การติดตั้ง
