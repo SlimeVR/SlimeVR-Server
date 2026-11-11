@@ -168,7 +168,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
 /**
  * Runs FK from boneInputs, mutating the passed bones.
  */
-fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet) {
+fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, changedParts: Collection<BodyPart> = headPartSet) {
 	for (bodyPart in highestBodyParts(changedParts)) {
 		for ((parentPart, childPart) in iterateBodyPartHierarchy(bodyPart, false)) {
 			val rawBone = boneInputs[childPart] ?: continue
@@ -279,12 +279,12 @@ class Skeleton(
 						FallbackInputProcessor(),
 						SpineInputProcessor(settings),
 						NeckInputProcessor(),
-						UpperLegsRollAlignInputProcessor(settings),
 						DirectLinkInputProcessor(),
 						ArmsInputProcessor(),
 						FingersInputProcessor(),
 						ToesInputProcessor(),
 						ConstraintInputProcessor(settings),
+						UpperLegsRollAlignInputProcessor(settings),
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(

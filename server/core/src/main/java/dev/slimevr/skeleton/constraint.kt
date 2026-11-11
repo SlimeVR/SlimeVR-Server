@@ -1,9 +1,11 @@
 package dev.slimevr.skeleton
 
+import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.abs
-import kotlin.math.min
+import kotlin.math.cos
+import kotlin.math.floor
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.withSign
@@ -41,7 +43,7 @@ data class TwistSwingConstraint(
 	 * Swing range in radians.
 	 */
 	val swing: Float,
-	val twistAxis: Vector3 = Vector3.NEG_Y,
+	val twistAxis: Vector3 = Vector3.POS_Y,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, twistAxis)
@@ -56,7 +58,7 @@ data class TwistConstraint(
 	 * Twist range in radians.
 	 */
 	val twist: Float = 0f,
-	val twistAxis: Vector3 = Vector3.NEG_Y,
+	val twistAxis: Vector3 = Vector3.POS_Y,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, twistAxis)
@@ -74,7 +76,7 @@ data class HingeConstraint(
 	 * Maximum rotation in radians.
 	 */
 	val max: Float,
-	val hingeAxis: Vector3 = Vector3.NEG_X,
+	val hingeAxis: Vector3 = Vector3.POS_X,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		val (_, hingeAxisRot) = decomposeToSwingTwist(localRotation, hingeAxis)
@@ -95,7 +97,7 @@ data class LooseHingeConstraint(
 	 * Maximum non-hinge axis rotation in radians.
 	 */
 	val allowedDeviation: Float,
-	val hingeAxis: Vector3 = Vector3.NEG_X,
+	val hingeAxis: Vector3 = Vector3.POS_X,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		val (nonHingeRot, hingeAxisRot) = decomposeToSwingTwist(localRotation, hingeAxis)
@@ -104,8 +106,25 @@ data class LooseHingeConstraint(
 	}
 }
 
+data class FreeHingeConstraint(
+	/**
+	 * Minimum rotation in radians.
+	 */
+	val min: Float = 0f,
+	/**
+	 * Maximum rotation in radians.
+	 */
+	val max: Float,
+	val hingeAxis: Vector3 = Vector3.POS_X,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion {
+		val (nonHingeRot, hingeAxisRot) = decomposeToSwingTwist(localRotation, hingeAxis)
+		return nonHingeRot * constrainOnAxis(hingeAxisRot, min, max, hingeAxis)
+	}
+}
+
 data class AxisConstraint(
-	val axis: Vector3 = Vector3.NEG_X,
+	val axis: Vector3 = Vector3.POS_X,
 ) : Constraint {
 	override fun apply(
 		localRotation: Quaternion,
@@ -117,7 +136,7 @@ data class LooseAxisConstraint(
 	 * Maximum non-axis rotation in radians.
 	 */
 	val allowedDeviation: Float,
-	val axis: Vector3 = Vector3.NEG_X,
+	val axis: Vector3 = Vector3.POS_X,
 ) : Constraint {
 	override fun apply(localRotation: Quaternion): Quaternion {
 		val (nonAxisRot, axisRot) = decomposeToSwingTwist(localRotation, axis)
@@ -158,36 +177,27 @@ fun constrainAngle(rotation: Quaternion, angle: Float): Quaternion {
 	}
 }
 
+// Wraps an angle to -pi to pi
+private fun wrapAngle(angle: Float) = angle - FastMath.TWO_PI * floor((angle + FastMath.PI) / FastMath.TWO_PI)
+
 fun constrainOnAxis(
 	rotation: Quaternion,
 	minAngle: Float,
 	maxAngle: Float,
 	axis: Vector3,
 ): Quaternion {
-	val magnitudeMin = sin(minAngle * 0.5f)
-	val magnitudeMax = sin(maxAngle * 0.5f)
-	val magnitudeSqrMin = (magnitudeMin * magnitudeMin).withSign(minAngle)
-	val magnitudeSqrMax = (magnitudeMax * magnitudeMax).withSign(maxAngle)
-	val vector = rotation.xyz
+	val angle = rotation.angleAboutR(axis)
+	return if (angle !in minAngle..maxAngle) {
+		val distToMin = abs(wrapAngle(angle - minAngle))
+		val distToMax = abs(wrapAngle(angle - maxAngle))
+		val magnitude = if (distToMin < distToMax) minAngle else maxAngle
 
-	val rotMagnitudeSqr = vector.lenSq().withSign(vector.dot(axis) * rotation.w)
-	return if (rotMagnitudeSqr !in magnitudeSqrMin..magnitudeSqrMax) {
-		val distToMin = min(
-			abs(rotMagnitudeSqr - magnitudeSqrMin),
-			abs(rotMagnitudeSqr + magnitudeSqrMin),
-		)
-		val distToMax = min(
-			abs(rotMagnitudeSqr - magnitudeSqrMax),
-			abs(rotMagnitudeSqr + magnitudeSqrMax),
-		)
-
-		val magnitude = if (distToMin < distToMax) magnitudeMin else magnitudeMax
-		val magnitudeSqr =
-			abs(if (distToMin < distToMax) magnitudeSqrMin else magnitudeSqrMax)
-
+		// Could do Quaternion.fromRotationVector(axis * magnitude) but this is more optimized
+		// and constraints run several times per frame because of IK.
+		val halfMagnitude = magnitude * 0.5f
 		Quaternion(
-			sqrt(1f - magnitudeSqr),
-			vector.unit() * -magnitude,
+			cos(halfMagnitude),
+			axis * sin(halfMagnitude),
 		)
 	} else {
 		rotation

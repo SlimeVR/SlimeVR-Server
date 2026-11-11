@@ -99,7 +99,7 @@ inline fun BodyPart.findFirstParent(predicate: (BodyPart) -> Boolean): BodyPart?
 }
 
 val headPartSet = setOf(BodyPart.HEAD)
-fun highestBodyParts(bodyParts: Set<BodyPart>): Set<BodyPart> {
+fun highestBodyParts(bodyParts: Collection<BodyPart>): Set<BodyPart> {
 	if (BodyPart.HEAD in bodyParts) return headPartSet
 
 	// Construct boolean array once

@@ -5,6 +5,7 @@ import dev.slimevr.util.subListOfLast
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.math.log
 
 fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
 	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
@@ -19,12 +20,41 @@ fun chainDistanceFromTarget(
 	return (target - chainTail).len()
 }
 
+fun chainOffsetsLength(
+	bones: ComputedSkeleton,
+	chain: IKChain,
+): Double = chain.sumOf { requireBone(bones, it).offset.len().toDouble() }
+
 fun parentRot(
 	bones: ComputedSkeleton,
 	bodyPart: BodyPart,
 ) = parentOf(bodyPart)?.let { parent ->
 	bones[parent]?.rotation
 } ?: Quaternion.IDENTITY
+
+const val PREFERRED_ROTATION_START_BIAS = 25.0
+const val PREFERRED_ROTATION_START_BIAS_MULTIPLIER = (PREFERRED_ROTATION_START_BIAS * PREFERRED_ROTATION_START_BIAS) - PREFERRED_ROTATION_START_BIAS
+fun adjustToPreferredRotations(
+	mutableBoneInputs: InputSkeleton,
+	mutableComputedSkeleton: ComputedSkeleton,
+	goals: List<IKChainGoal>,
+) {
+	val changedBodyParts = mutableSetOf<BodyPart>()
+	for (goal in goals) {
+		val distanceToTarget = chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target).toDouble()
+		val chainLength = chainOffsetsLength(mutableComputedSkeleton, goal.chain)
+		// TODO what if the target is outwards, out of reach? Shouldn't really happen with legs, but for arms yes
+		val distanceRatio = (distanceToTarget / chainLength).coerceAtMost(1.0)
+		val t = (log(PREFERRED_ROTATION_START_BIAS + (distanceRatio * PREFERRED_ROTATION_START_BIAS_MULTIPLIER), PREFERRED_ROTATION_START_BIAS) - 1).toFloat()
+		for (bodyPart in goal.chain) {
+			val preferredRotation = BODY_PART_PREFERRED_ROTATION[bodyPart] ?: continue
+			val bone = mutableBoneInputs[bodyPart] ?: continue
+			mutableBoneInputs[bodyPart] = bone.copy(rotation = bone.rotation * preferredRotation.pow(t))
+			changedBodyParts.add(bodyPart)
+		}
+	}
+	if (changedBodyParts.isNotEmpty()) buildBones(mutableComputedSkeleton, mutableBoneInputs, changedBodyParts)
+}
 
 // Bones are most likely opposite along the X axis
 private val oppositeRotation = Quaternion.rotationAroundXAxis(FastMath.PI)
@@ -146,7 +176,7 @@ fun ccdIkIteration(
 
 	// Only build bones for inputs that were changed
 	// If performance is bad, we can combine buildBones calls for non-overlapping IK chains
-	buildBones(mutableComputedSkeleton, mutableBoneInputs, chain.toSet())
+	buildBones(mutableComputedSkeleton, mutableBoneInputs, chain)
 }
 
 typealias IKChain = List<BodyPart>
@@ -170,22 +200,10 @@ fun ccdIk(
 	// No goal leaves every bone as the FK pass built it, so nothing below needs to run
 	if (goals.isEmpty()) return true
 
-	// Set each bone in each chain of each goal to its preferred rotation
-	val changedBodyParts = mutableSetOf<BodyPart>()
-	for (goal in goals) {
-		val distanceToTarget = chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target)
-		val chainLength = goal.chain.sumOf { requireBone(mutableComputedSkeleton, it).offset.len().toDouble() }.toFloat()
-		val t = (distanceToTarget / chainLength).coerceAtMost(1f)
-		for (bodyPart in goal.chain) {
-			val bone = mutableBoneInputs[bodyPart] ?: continue
-			val preferredRotation = BODY_PART_PREFERRED_ROTATION[bodyPart] ?: continue
-			val rotationChange = preferredRotation.pow(t)
-			mutableBoneInputs[bodyPart] = bone.copy(rotation = bone.rotation * rotationChange)
-			changedBodyParts.add(bodyPart)
-		}
-	}
-	if (changedBodyParts.isNotEmpty()) buildBones(mutableComputedSkeleton, mutableBoneInputs, changedBodyParts)
+	// Set each bone we're gonna do IK on to its preferred rotation
+	adjustToPreferredRotations(mutableBoneInputs, mutableComputedSkeleton, goals)
 
+	// IK iterations
 	var allGoalsMet = true
 	for (i in 0 until maxIterations) {
 		allGoalsMet = true

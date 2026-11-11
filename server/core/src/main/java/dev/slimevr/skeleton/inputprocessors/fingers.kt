@@ -8,6 +8,7 @@ import dev.slimevr.util.side
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
+// TODO only use this for forward/curling. Everything else it should just copy
 private const val INTERMEDIATE_FROM_PROXIMAL = 2.12f
 private const val DISTAL_FROM_PROXIMAL = 3.03f
 
