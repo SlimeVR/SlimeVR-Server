@@ -1010,7 +1010,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Ouvrir le panneau de configurat
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurer Garder Aligné
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Enregistrez les poses Garder Aligné pour réduire la dérive
 tracking_checklist-ignore = Ignorer
-preview-mocap_mode_soon = Mode Mocap (Bientôt™)
 preview-disable_render = Désactiver le rendu
 preview-disabled_render = Rendu désactivé
 toolbar-mounting_calibration = Calibration de l'alignement
