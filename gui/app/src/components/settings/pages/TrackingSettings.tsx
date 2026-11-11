@@ -1,4 +1,3 @@
-import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
 import {

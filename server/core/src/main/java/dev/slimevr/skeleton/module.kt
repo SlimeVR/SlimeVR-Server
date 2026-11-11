@@ -192,6 +192,7 @@ sealed interface SkeletonActions {
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
+	data object RecenterHeadPosition : SkeletonActions
 	data object ResetFloorLevel : SkeletonActions
 	data class RequestProcessorReset(val resetType: ResetType) : SkeletonActions
 	data class ProcessorResetsApplied(val count: Int) : SkeletonActions

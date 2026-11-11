@@ -1878,7 +1878,7 @@ tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = Go to VRChat OSC Settings
 
 tracking_checklist-ignore = Ignore
 
-preview-mocap_mode_soon = Mocap Mode (Soon™)
+preview-recenter_mocap = Recenter Mocap Mode
 preview-disable_render = Disable rendering
 preview-disabled_render = Rendering disabled
 preview-render_mode = Change rendering mode

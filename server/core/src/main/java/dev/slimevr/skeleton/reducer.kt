@@ -70,6 +70,16 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		state.copy(boneInputs = state.boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = null) })
 	}
 
+	is SkeletonActions.RecenterHeadPosition -> {
+		val headBone = state.boneInputs[BodyPart.HEAD] ?: return state
+		if (headBone.isPositionActive) return state
+		state.copy(
+			boneInputs = state.boneInputs.mutateCopy { bones ->
+				bones[BodyPart.HEAD] = headBone.copy(position = headBone.position?.let { Vector3(0f, it.y, 0f) })
+			},
+		)
+	}
+
 	is SkeletonActions.ResetFloorLevel -> {
 		val skeletonHeight = state.skeletonHeight
 		val headHeight = state.boneInputs[BodyPart.HEAD]?.let {

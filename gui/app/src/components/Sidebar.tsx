@@ -13,6 +13,7 @@ import { Typography } from './commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
+  RecenterMocapModeRequestT,
   RpcMessage,
   SkeletonProportionsRequestT,
   SkeletonProportionsResponseT,
@@ -21,11 +22,11 @@ import { Tooltip } from './commons/Tooltip';
 import { Vector3 } from 'three';
 import { RecordIcon } from './commons/icon/RecordIcon';
 import { PauseIcon } from './commons/icon/PauseIcon';
-import { HumanIcon } from './commons/icon/HumanIcon';
 import { useConfig } from '@/hooks/config';
 import { useBHV } from '@/hooks/bvh';
 import { usePauseTracking } from '@/hooks/pause-tracking';
 import { PlayIcon } from './commons/icon/PlayIcon';
+import { RecenterIcon } from './commons/icon/RecenterIcon';
 
 export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
@@ -117,6 +118,7 @@ export function PreviewControls({ open }: { open: boolean }) {
               </Clickable>
             </Tooltip>
           )}
+
           <Tooltip
             content={
               <Typography
@@ -137,18 +139,29 @@ export function PreviewControls({ open }: { open: boolean }) {
               {paused && <PlayIcon width={25} />}
             </Clickable>
           </Tooltip>
+
           <Tooltip
             content={
               <Typography
                 variant="section-title"
-                id="preview-mocap_mode_soon"
+                id="preview-recenter_mocap"
               />
             }
             preferedDirection="top"
           >
-            <div className="flex justify-center items-center w-10 h-10 rounded-full cursor-not-allowed">
-              <HumanIcon width={20} />
-            </div>
+            <Clickable
+              className={classNames(
+                'flex justify-center items-center w-10 h-10 rounded-full hover:bg-background-60 cursor-pointer'
+              )}
+              onClick={() =>
+                sendRPCPacket(
+                  RpcMessage.RecenterMocapModeRequest,
+                  new RecenterMocapModeRequestT()
+                )
+              }
+            >
+              <RecenterIcon width={24} />
+            </Clickable>
           </Tooltip>
         </div>
       </div>

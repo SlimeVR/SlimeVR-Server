@@ -14,9 +14,12 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
 import solarxr_protocol.rpc.LegTweaksTmpChange
 import solarxr_protocol.rpc.LegTweaksTmpClear
+import solarxr_protocol.rpc.RecenterMocapModeRequest
+import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.SetPauseTrackingRequest
 import solarxr_protocol.rpc.SkeletonRatios
 import solarxr_protocol.rpc.SkeletonSettingsRequest
@@ -140,6 +143,13 @@ class SkeletonSettingsBehaviour(
 						footPlant = if (req.footPlant) null else footPlant,
 					)
 				},
+			)
+		}.launchIn(receiver.context.scope)
+
+		// Reset Mocap Mode head
+		receiver.rpcDispatcher.on<RecenterMocapModeRequest> { _ ->
+			receiver.appContext.skeleton.context.dispatchAll(
+				listOf(SkeletonActions.RecenterHeadPosition, SkeletonActions.RequestProcessorReset(ResetType.FULL)),
 			)
 		}.launchIn(receiver.context.scope)
 	}
