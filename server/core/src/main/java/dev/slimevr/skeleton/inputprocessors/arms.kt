@@ -27,26 +27,26 @@ val ARM_TO_SOURCE = arrayOf(
 	),
 
 	BodyPart.LEFT_UPPER_ARM to arrayOf(
-		ArmSource(BodyPart.LEFT_LOWER_ARM, true, 0.5f),
-		ArmSource(BodyPart.LEFT_SHOULDER, true, 0.5f),
-		ArmSource(BodyPart.UPPER_CHEST, false, 0.75f),
-		ArmSource(BodyPart.LEFT_HAND),
+		ArmSource(BodyPart.LEFT_LOWER_ARM, true),
+		ArmSource(BodyPart.LEFT_HAND, true),
+		ArmSource(BodyPart.LEFT_SHOULDER, true, 0.4f),
+		ArmSource(BodyPart.UPPER_CHEST, false),
 	),
 	BodyPart.RIGHT_UPPER_ARM to arrayOf(
-		ArmSource(BodyPart.RIGHT_LOWER_ARM, true, 0.5f),
-		ArmSource(BodyPart.RIGHT_SHOULDER, true, 0.5f),
-		ArmSource(BodyPart.UPPER_CHEST, false, 0.75f),
-		ArmSource(BodyPart.RIGHT_HAND),
+		ArmSource(BodyPart.RIGHT_LOWER_ARM, true),
+		ArmSource(BodyPart.RIGHT_HAND, true),
+		ArmSource(BodyPart.RIGHT_SHOULDER, true, 0.4f),
+		ArmSource(BodyPart.UPPER_CHEST, false),
 	),
 
 	BodyPart.LEFT_LOWER_ARM to arrayOf(
-		ArmSource(BodyPart.LEFT_HAND, true, 0.8f),
+		ArmSource(BodyPart.LEFT_HAND, true),
 		ArmSource(BodyPart.LEFT_UPPER_ARM, true),
 		ArmSource(BodyPart.LEFT_SHOULDER, true, 0.2f),
 		ArmSource(BodyPart.UPPER_CHEST, false),
 	),
 	BodyPart.RIGHT_LOWER_ARM to arrayOf(
-		ArmSource(BodyPart.RIGHT_HAND, true, 0.8f),
+		ArmSource(BodyPart.RIGHT_HAND, true),
 		ArmSource(BodyPart.RIGHT_UPPER_ARM, true),
 		ArmSource(BodyPart.RIGHT_SHOULDER, true, 0.2f),
 		ArmSource(BodyPart.UPPER_CHEST, false),
@@ -68,6 +68,8 @@ val ARM_TO_SOURCE = arrayOf(
 
 /**
  * Handles imputing missing arm bones from other arm bones and the upper chest.
+ *
+ * It's useful to set a good starting rotation for arms before IK.
  *
  * This processor must run after the spine processor.
  */

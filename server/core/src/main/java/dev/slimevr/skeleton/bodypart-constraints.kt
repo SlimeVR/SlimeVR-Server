@@ -4,6 +4,7 @@ import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import javax.swing.text.StyledEditorKit
 
 private val METACARPAL_THUMB_CONSTRAINT = LooseHingeConstraint(
 	-80f * FastMath.DEG_TO_RAD,
@@ -191,10 +192,12 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 fun constrainSkeleton(
 	bones: InputSkeleton,
 	constraints: BodyPartMap<Constraint>,
+	onlyActive: Boolean,
 ): InputSkeleton {
 	// Apply constraints top-down
 	for ((parentBodyPart, bodyPart) in iterateBodyPartHierarchy()) {
 		val bone = bones[bodyPart] ?: continue
+		if (onlyActive && !bone.isRotationActive) continue
 		val constraint = constraints[bodyPart] ?: continue
 		val parentRotation = bones[parentBodyPart]?.rotation ?: Quaternion.IDENTITY
 		bones[bodyPart] = bone.copy(
@@ -212,15 +215,20 @@ fun constrainSkeleton(
  */
 val BODY_PART_PREFERRED_ROTATION = BodyPartMap(
 	mapOf(
-		BodyPart.LEFT_UPPER_ARM to Quaternion.rotationAroundXAxis(-30f * FastMath.DEG_TO_RAD),
-		BodyPart.RIGHT_UPPER_ARM to Quaternion.rotationAroundXAxis(-30f * FastMath.DEG_TO_RAD),
-		BodyPart.LEFT_LOWER_ARM to Quaternion.rotationAroundXAxis(90f * FastMath.DEG_TO_RAD),
-		BodyPart.RIGHT_LOWER_ARM to Quaternion.rotationAroundXAxis(90f * FastMath.DEG_TO_RAD),
+		BodyPart.LEFT_UPPER_ARM to Quaternion.fromRotationVector(-45f * FastMath.DEG_TO_RAD, 90f * FastMath.DEG_TO_RAD, -100f * FastMath.DEG_TO_RAD),
+		BodyPart.RIGHT_UPPER_ARM to Quaternion.fromRotationVector(-45f * FastMath.DEG_TO_RAD, -90f * FastMath.DEG_TO_RAD, 100f * FastMath.DEG_TO_RAD),
+		BodyPart.LEFT_LOWER_ARM to Quaternion.fromRotationVector(0f, 70f * FastMath.DEG_TO_RAD, 0f),
+		BodyPart.RIGHT_LOWER_ARM to Quaternion.fromRotationVector(0f, -70f * FastMath.DEG_TO_RAD, 0f),
 
 		BodyPart.LEFT_UPPER_LEG to Quaternion.rotationAroundXAxis(115f * FastMath.DEG_TO_RAD),
 		BodyPart.RIGHT_UPPER_LEG to Quaternion.rotationAroundXAxis(115f * FastMath.DEG_TO_RAD),
 		BodyPart.LEFT_LOWER_LEG to Quaternion.rotationAroundXAxis(-48f * FastMath.DEG_TO_RAD),
 		BodyPart.RIGHT_LOWER_LEG to Quaternion.rotationAroundXAxis(-48f * FastMath.DEG_TO_RAD),
+
+// 		BodyPart.UPPER_CHEST to Quaternion.rotationAroundXAxis(-10f * FastMath.DEG_TO_RAD),
+// 		BodyPart.LOWER_CHEST to Quaternion.rotationAroundXAxis(-5f * FastMath.DEG_TO_RAD),
+// 		BodyPart.UPPER_WAIST to Quaternion.rotationAroundXAxis(7.5f * FastMath.DEG_TO_RAD),
+// 		BodyPart.LOWER_WAIST to Quaternion.rotationAroundXAxis(7.5f * FastMath.DEG_TO_RAD),
 	),
 )
 
@@ -232,8 +240,8 @@ val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		// TODO Figure out arms
 		BodyPart.LEFT_UPPER_ARM to TwistSwingConstraint(
 			5f * FastMath.DEG_TO_RAD,
-			30f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
+			10f * FastMath.DEG_TO_RAD,
+			Vector3.POS_Z,
 		),
 		BodyPart.LEFT_LOWER_ARM to LooseAxisConstraint(
 			1f * FastMath.DEG_TO_RAD,
@@ -241,24 +249,32 @@ val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 
 		BodyPart.RIGHT_UPPER_ARM to TwistSwingConstraint(
 			5f * FastMath.DEG_TO_RAD,
-			30f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
+			10f * FastMath.DEG_TO_RAD,
+			Vector3.NEG_Z,
 		),
 		BodyPart.RIGHT_LOWER_ARM to LooseAxisConstraint(
 			1f * FastMath.DEG_TO_RAD,
 		),
 
-		BodyPart.UPPER_CHEST to LooseAxisConstraint(
-			15f * FastMath.DEG_TO_RAD,
+		BodyPart.UPPER_CHEST to TwistSwingConstraint(
+			4f * FastMath.DEG_TO_RAD,
+			2f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
 		),
-		BodyPart.LOWER_CHEST to LooseAxisConstraint(
-			10f * FastMath.DEG_TO_RAD,
+		BodyPart.LOWER_CHEST to TwistSwingConstraint(
+			3f * FastMath.DEG_TO_RAD,
+			0.5f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
 		),
-		BodyPart.UPPER_WAIST to LooseAxisConstraint(
-			10f * FastMath.DEG_TO_RAD,
+		BodyPart.UPPER_WAIST to TwistSwingConstraint(
+			3f * FastMath.DEG_TO_RAD,
+			2f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
 		),
-		BodyPart.LOWER_WAIST to LooseAxisConstraint(
-			10f * FastMath.DEG_TO_RAD,
+		BodyPart.LOWER_WAIST to TwistSwingConstraint(
+			2f * FastMath.DEG_TO_RAD,
+			0.5f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
 		),
 
 		BodyPart.LEFT_UPPER_LEG to LooseAxisConstraint(

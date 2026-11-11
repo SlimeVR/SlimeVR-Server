@@ -8,7 +8,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.constrainSkeleton
 
-// TODO don't run constraints for inactive bones, or inactive bone groups.
 class ConstraintInputProcessor(
 	val settings: Settings,
 	val constraints: BodyPartMap<Constraint> = BODY_PART_CONSTRAINT_MAP,
@@ -17,6 +16,6 @@ class ConstraintInputProcessor(
 		val skeletonConfig = settings.context.state.value.data.skeletonConfig
 		if (!skeletonConfig.toggles.enforceConstraints) return
 
-		constrainSkeleton(mutableInputSkeleton, constraints)
+		constrainSkeleton(mutableInputSkeleton, constraints, true)
 	}
 }

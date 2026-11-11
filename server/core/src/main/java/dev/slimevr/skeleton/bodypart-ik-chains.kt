@@ -17,12 +17,11 @@ val BODY_PART_IK_CHAIN_MAP: BodyPartMap<IKChain> = BodyPartMap(
 			BodyPart.RIGHT_UPPER_ARM,
 			BodyPart.RIGHT_LOWER_ARM,
 		),
-		BodyPart.HIP to listOf(
+		BodyPart.LOWER_WAIST to listOf(
 			BodyPart.UPPER_CHEST,
 			BodyPart.LOWER_CHEST,
 			BodyPart.UPPER_WAIST,
 			BodyPart.LOWER_WAIST,
-			BodyPart.HIP,
 		),
 		BodyPart.LEFT_LOWER_LEG to listOf(
 			BodyPart.LEFT_UPPER_LEG,
@@ -31,16 +30,6 @@ val BODY_PART_IK_CHAIN_MAP: BodyPartMap<IKChain> = BodyPartMap(
 		BodyPart.RIGHT_LOWER_LEG to listOf(
 			BodyPart.RIGHT_UPPER_LEG,
 			BodyPart.RIGHT_LOWER_LEG,
-		),
-		BodyPart.LEFT_FOOT to listOf(
-			BodyPart.LEFT_UPPER_LEG,
-			BodyPart.LEFT_LOWER_LEG,
-			BodyPart.LEFT_FOOT,
-		),
-		BodyPart.RIGHT_FOOT to listOf(
-			BodyPart.RIGHT_UPPER_LEG,
-			BodyPart.RIGHT_LOWER_LEG,
-			BodyPart.RIGHT_FOOT,
 		),
 	),
 )

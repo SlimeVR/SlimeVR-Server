@@ -41,10 +41,15 @@ fun adjustToPreferredRotations(
 ) {
 	val changedBodyParts = mutableSetOf<BodyPart>()
 	for (goal in goals) {
-		val distanceToTarget = chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target).toDouble()
-		val chainLength = chainOffsetsLength(mutableComputedSkeleton, goal.chain)
-		// TODO what if the target is outwards, out of reach? Shouldn't really happen with legs, but for arms yes
-		val distanceRatio = (distanceToTarget / chainLength).coerceAtMost(1.0)
+		val distanceFromTarget = chainDistanceFromTarget(mutableComputedSkeleton, goal.chain, goal.target).toDouble()
+		val maxChainLength = chainOffsetsLength(mutableComputedSkeleton, goal.chain)
+		val chainStartToTarget = (goal.target - requireBone(mutableComputedSkeleton, goal.chain.first()).headPosition).len()
+		val distanceRatio = if (chainStartToTarget < maxChainLength) {
+			(distanceFromTarget / maxChainLength).coerceAtMost(1.0)
+		} else {
+			// Unreachable
+			continue
+		}
 		val t = (log(PREFERRED_ROTATION_START_BIAS + (distanceRatio * PREFERRED_ROTATION_START_BIAS_MULTIPLIER), PREFERRED_ROTATION_START_BIAS) - 1).toFloat()
 		for (bodyPart in goal.chain) {
 			val preferredRotation = BODY_PART_PREFERRED_ROTATION[bodyPart] ?: continue
