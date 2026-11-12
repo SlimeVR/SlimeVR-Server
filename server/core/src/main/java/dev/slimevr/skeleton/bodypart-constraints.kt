@@ -115,7 +115,7 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		BodyPart.LEFT_LOWER_LEG to LooseHingeConstraint(
 			-150f * FastMath.DEG_TO_RAD,
 			6f * FastMath.DEG_TO_RAD,
-			50f * FastMath.DEG_TO_RAD,
+			65f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_FOOT to LooseHingeConstraint(
 			-45f * FastMath.DEG_TO_RAD,
@@ -132,7 +132,7 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 		BodyPart.RIGHT_LOWER_LEG to LooseHingeConstraint(
 			-150f * FastMath.DEG_TO_RAD,
 			6f * FastMath.DEG_TO_RAD,
-			50f * FastMath.DEG_TO_RAD,
+			65f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_FOOT to LooseHingeConstraint(
 			-45f * FastMath.DEG_TO_RAD,

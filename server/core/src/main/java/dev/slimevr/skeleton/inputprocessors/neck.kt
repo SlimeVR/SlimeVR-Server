@@ -8,8 +8,8 @@ import solarxr_protocol.datatypes.BodyPart
 // Neck bends less when looking up
 private const val UP_RATIO = 0.74f
 
-// Neck bends slightly more when looking down.
-private const val DOWN_RATIO = 1.14f
+// Neck bends more when looking down.
+private const val DOWN_RATIO = 1.24f
 
 /**
  * Guesses where the neck is supposed to be when the user has a head tracker but no neck tracker.
