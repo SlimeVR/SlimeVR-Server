@@ -19,7 +19,7 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.NeckInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
-import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.UpperLegsTwistInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
@@ -285,7 +285,7 @@ class Skeleton(
 						FingersInputProcessor(),
 						ToesInputProcessor(),
 						ConstraintInputProcessor(settings),
-						UpperLegsRollAlignInputProcessor(settings),
+						UpperLegsTwistInputProcessor(settings),
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(

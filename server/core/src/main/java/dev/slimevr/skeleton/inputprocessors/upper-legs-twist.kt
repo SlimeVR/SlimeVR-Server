@@ -4,6 +4,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -15,19 +16,18 @@ import solarxr_protocol.datatypes.BodyPart
  * @return the rotated Quaternion
  */
 private fun alignRoll(from: Quaternion, to: Quaternion): Quaternion {
-	val r = to.inv() * from
-	val c = Quaternion(r.w, 0f, -r.y, 0f)
-	return (to * r * c).unit()
+	val local = to.localAbout(from)
+	val roll = local.project(Vector3.POS_Y).unit()
+	return roll.globalAbout(from)
 }
 
 /**
  * Handles rotating the upper legs' roll to match the lower legs' roll.
  */
-class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
+class UpperLegsTwistInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	/**
 	 * First value is the BodyPart to be aligned.
-	 *
-	 * Second value is a source BodyPart
+	 * Second value is the source BodyPart.
 	 */
 	private val bodyPartToSources = arrayOf(
 		BodyPart.LEFT_UPPER_LEG to BodyPart.LEFT_LOWER_LEG,
