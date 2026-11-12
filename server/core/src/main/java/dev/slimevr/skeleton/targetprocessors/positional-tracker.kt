@@ -43,7 +43,7 @@ class PositionalTargetProcessor(
 		for ((bodyPart, target) in bodyParts) {
 			// TODO Use active rotations as IK constraints instead and fill in the blanks
 			// Disable if you have arm trackers
-			if (requiredInactive[bodyPart]?.any { inputSkeleton[it]?.isRotationActive == true } == true) return
+			if (requiredInactive[bodyPart]?.any { inputSkeleton[it]?.isRotationActive == true } == true) continue
 
 			mutableIkTargets[target] = inputSkeleton[bodyPart]?.position ?: continue
 		}

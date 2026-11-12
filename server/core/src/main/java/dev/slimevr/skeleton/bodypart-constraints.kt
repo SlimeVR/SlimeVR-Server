@@ -4,7 +4,6 @@ import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
-import javax.swing.text.StyledEditorKit
 
 private val METACARPAL_THUMB_CONSTRAINT = LooseHingeConstraint(
 	-80f * FastMath.DEG_TO_RAD,
@@ -49,8 +48,8 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			70f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_UPPER_ARM to FreeHingeConstraint(
-			-30f * FastMath.DEG_TO_RAD,
-			130f * FastMath.DEG_TO_RAD,
+			-40f * FastMath.DEG_TO_RAD,
+			125f * FastMath.DEG_TO_RAD,
 			Vector3.POS_Y,
 		),
 		BodyPart.LEFT_LOWER_ARM to LooseHingeConstraint(
@@ -70,8 +69,8 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			70f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_UPPER_ARM to FreeHingeConstraint(
-			-30f * FastMath.DEG_TO_RAD,
-			130f * FastMath.DEG_TO_RAD,
+			-40f * FastMath.DEG_TO_RAD,
+			125f * FastMath.DEG_TO_RAD,
 			Vector3.NEG_Y,
 		),
 		BodyPart.RIGHT_LOWER_ARM to LooseHingeConstraint(
@@ -237,45 +236,44 @@ val BODY_PART_PREFERRED_ROTATION = BodyPartMap(
 // TODO May need to decay constraint over iterations
 val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 	mapOf(
-		// TODO Figure out arms
-		BodyPart.LEFT_UPPER_ARM to TwistSwingConstraint(
+		BodyPart.LEFT_UPPER_ARM to LooseAxisConstraint(
 			5f * FastMath.DEG_TO_RAD,
-			10f * FastMath.DEG_TO_RAD,
-			Vector3.POS_Z,
+			Vector3.POS_X,
 		),
 		BodyPart.LEFT_LOWER_ARM to LooseAxisConstraint(
-			1f * FastMath.DEG_TO_RAD,
+			5f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
 		),
 
-		BodyPart.RIGHT_UPPER_ARM to TwistSwingConstraint(
+		BodyPart.RIGHT_UPPER_ARM to LooseAxisConstraint(
 			5f * FastMath.DEG_TO_RAD,
-			10f * FastMath.DEG_TO_RAD,
-			Vector3.NEG_Z,
+			Vector3.POS_X,
 		),
 		BodyPart.RIGHT_LOWER_ARM to LooseAxisConstraint(
-			1f * FastMath.DEG_TO_RAD,
+			5f * FastMath.DEG_TO_RAD,
+			Vector3.POS_X,
 		),
 
-		BodyPart.UPPER_CHEST to TwistSwingConstraint(
-			8f * FastMath.DEG_TO_RAD,
-			4f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
-		),
-		BodyPart.LOWER_CHEST to TwistSwingConstraint(
-			4f * FastMath.DEG_TO_RAD,
-			2f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
-		),
-		BodyPart.UPPER_WAIST to TwistSwingConstraint(
-			6f * FastMath.DEG_TO_RAD,
-			4f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
-		),
-		BodyPart.LOWER_WAIST to TwistSwingConstraint(
-			3f * FastMath.DEG_TO_RAD,
-			2f * FastMath.DEG_TO_RAD,
-			Vector3.POS_X,
-		),
+// 		BodyPart.UPPER_CHEST to TwistSwingConstraint(
+// 			8f * FastMath.DEG_TO_RAD,
+// 			4f * FastMath.DEG_TO_RAD,
+// 			Vector3.POS_X,
+// 		),
+// 		BodyPart.LOWER_CHEST to TwistSwingConstraint(
+// 			4f * FastMath.DEG_TO_RAD,
+// 			2f * FastMath.DEG_TO_RAD,
+// 			Vector3.POS_X,
+// 		),
+// 		BodyPart.UPPER_WAIST to TwistSwingConstraint(
+// 			6f * FastMath.DEG_TO_RAD,
+// 			4f * FastMath.DEG_TO_RAD,
+// 			Vector3.POS_X,
+// 		),
+// 		BodyPart.LOWER_WAIST to TwistSwingConstraint(
+// 			3f * FastMath.DEG_TO_RAD,
+// 			2f * FastMath.DEG_TO_RAD,
+// 			Vector3.POS_X,
+// 		),
 
 		BodyPart.LEFT_UPPER_LEG to LooseAxisConstraint(
 			5f * FastMath.DEG_TO_RAD,
