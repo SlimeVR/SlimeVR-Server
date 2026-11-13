@@ -6,10 +6,9 @@ import dev.slimevr.config.DevicesConfigActions
 import dev.slimevr.device.Device
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.SkeletonActions
-import dev.slimevr.util.isActive
+import dev.slimevr.util.isPresent
 import kotlinx.coroutines.cancel
 import solarxr_protocol.datatypes.DeviceOrigin
-import solarxr_protocol.datatypes.TrackerStatus
 
 private fun findUdpDevices(appContext: AppContextProvider, predicate: (String) -> Boolean): List<Device> = appContext.server.context.state.value.devices.values.filter { device ->
 	val state = device.context.state.value
@@ -35,7 +34,7 @@ fun removeUdpDevice(appContext: AppContextProvider, device: Device) {
 
 	// The tracker's own skeleton behaviour dies with its scope, so release its bone here
 	trackerStates
-		.filter { it.status.isActive() || it.status == TrackerStatus.OCCLUDED }
+		.filter { isPresent(it.status) }
 		.mapNotNull { it.bodyPart }
 		.forEach { bodyPart ->
 			appContext.skeleton.context.dispatch(SkeletonActions.DisableBone(bodyPart))

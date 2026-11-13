@@ -5,6 +5,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.util.isActive
+import dev.slimevr.util.isPresent
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.TrackerStatus
 
 class TrackerToSkeletonBehaviour : TrackerBehaviour {
 	var lastBodyPartSent: BodyPart? = null
@@ -26,7 +26,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 				// Tell the skeleton the tracker has stopped sending data to the last bone it was sending data to.
 				lastBodyPartSent?.let {
 					val trackerState = receiver.context.state.value
-					if ((!trackerState.status.isActive() && trackerState.status != TrackerStatus.OCCLUDED) || trackerState.bodyPart != lastBodyPartSent) {
+					if (!isPresent(trackerState.status) || trackerState.bodyPart != lastBodyPartSent) {
 						receiver.appContext.skeleton.context.dispatch(
 							SkeletonActions.DisableBone(it),
 						)

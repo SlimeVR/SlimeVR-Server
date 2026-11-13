@@ -3,7 +3,7 @@ package dev.slimevr.tracker.behaviours
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.util.isActive
+import dev.slimevr.util.isPresent
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -15,13 +15,13 @@ class TrackerAssignmentConflictBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		val server = receiver.appContext.server
 		receiver.context.state
-			.distinctUntilChanged { old, new -> old.status.isActive() == new.status.isActive() }
+			.distinctUntilChanged { old, new -> isPresent(old.status) == isPresent(new.status) }
 			.onEach { state ->
 				val bodyPart = state.bodyPart ?: return@onEach
 
 				val bodyPartTaken = server.context.state.value.trackers.values.any { other ->
 					val otherState = other.context.state.value
-					otherState.id != state.id && otherState.bodyPart == bodyPart && otherState.status.isActive()
+					otherState.id != state.id && otherState.bodyPart == bodyPart && isPresent(otherState.status)
 				}
 				if (bodyPartTaken) {
 					receiver.context.dispatch(TrackerActions.Update { copy(bodyPart = null) })

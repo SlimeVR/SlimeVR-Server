@@ -233,39 +233,25 @@ export function groupTrackersByDevice(
   return order.map((key) => byDevice.get(key)!);
 }
 
+const PRESENT_STATUSES = new Set([
+  TrackerStatus.OK,
+  TrackerStatus.SLEEPING,
+  TrackerStatus.TIMED_OUT,
+  TrackerStatus.OCCLUDED,
+]);
+
+function isPresent(status: TrackerStatus) {
+  return PRESENT_STATUSES.has(status);
+}
+
 export function groupTrackerByBodyPart(
   trackers: FlatDeviceTracker[]
 ): Partial<Record<BodyPart, FlatDeviceTracker>> {
   const byPart: Partial<Record<BodyPart, FlatDeviceTracker>> = {};
-  trackers
-    .toSorted((a, b) => {
-      if (
-        a.tracker.info &&
-        b.tracker.info &&
-        a.tracker.info.bodyPart == b.tracker.info.bodyPart
-      ) {
-        // Make sure the active tracker is further in the array, so that it takes precedence in the byPart record.
-
-        // This shouldn't happen if the body parts are equal, but handle it just in case.
-        if (a.tracker.status == b.tracker.status) return 0;
-
-        if (
-          a.tracker.status !== TrackerStatus.OK &&
-          a.tracker.status !== TrackerStatus.SLEEPING &&
-          a.tracker.status !== TrackerStatus.TIMED_OUT
-        ) {
-          // put a before b
-          return -1;
-        } else {
-          // put b before a
-          return 1;
-        }
-      }
-      return a.tracker.trackerId - b.tracker.trackerId;
-    })
-    .forEach((td) => {
-      byPart[td.tracker.info?.bodyPart ?? BodyPart.NONE] = td;
-    });
+  trackers.forEach((td) => {
+    const part = td.tracker.info?.bodyPart ?? BodyPart.NONE;
+    if (!byPart[part] || isPresent(td.tracker.status)) byPart[part] = td;
+  });
   return byPart;
 }
 

@@ -3,14 +3,13 @@ package dev.slimevr.tracker.behaviours
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.util.isActive
+import dev.slimevr.util.isPresent
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
-import solarxr_protocol.datatypes.TrackerStatus
 
 /**
  * Marks the calibration stale when the tracker starts being used on a body part: when it connects
@@ -24,7 +23,7 @@ class TrackerStaleCalibrationBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		var previous: Placement? = null
 		receiver.context.state
-			.map { Placement(it.status.isActive() || it.status == TrackerStatus.OCCLUDED, it.bodyPart) }
+			.map { Placement(isPresent(it.status), it.bodyPart) }
 			.distinctUntilChanged()
 			.onEach { placement ->
 				val last = previous

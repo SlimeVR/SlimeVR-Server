@@ -8,7 +8,7 @@ import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.toVector3
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.util.isActive
+import dev.slimevr.util.isPresent
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetTrackerAssignments
@@ -31,7 +31,7 @@ class UpdateTrackerBehaviour(
 					val state = it.context.state.value
 					it != tracker &&
 						state.bodyPart == bodyPart &&
-						state.status.isActive()
+						isPresent(state.status)
 				}.forEach {
 					it.context.dispatch(
 						TrackerActions.Update { copy(bodyPart = null) },
