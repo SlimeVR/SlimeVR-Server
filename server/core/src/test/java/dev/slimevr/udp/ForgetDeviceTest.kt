@@ -15,6 +15,7 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.udpTrackerHardwareId
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,7 +76,7 @@ private fun addTracker(
 		status = status,
 		origin = device.context.state.value.origin,
 	)
-	val hardwareId = "$MAC:$sensorId"
+	val hardwareId = udpTrackerHardwareId(MAC, sensorId)
 	tracker.context.dispatch(TrackerActions.Update { copy(deviceId = device.context.state.value.id, hardwareId = hardwareId) })
 	appContext.server.context.dispatch(VRServerActions.NewTracker(id, tracker))
 	appContext.config.devices.context.dispatch(DevicesConfigActions.UpdateTracker(hardwareId) { copy(bodyPart = bodyPart) })
@@ -110,7 +111,7 @@ class ForgetDeviceTest {
 		trackers.forEach { assertFalse(it.context.scope.isActive) }
 		assertTrue(hidDevice.context.scope.isActive)
 		assertFalse(MAC in devices.context.state.value.allowedUdpDevices)
-		assertEquals(setOf("$MAC:5"), devices.context.state.value.trackers.keys)
+		assertEquals(setOf(udpTrackerHardwareId(MAC, 5)), devices.context.state.value.trackers.keys)
 		assertEquals(false, appContext.skeleton.context.state.value.boneInputs[BodyPart.UPPER_CHEST]?.isRotationActive)
 	}
 }

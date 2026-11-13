@@ -7,6 +7,7 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.udpTrackerHardwareId
 import dev.slimevr.util.udpHardwareId
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -43,7 +44,7 @@ fun getCorrectedAcceleration(acceleration: Vector3, protocolVersion: Int) = if (
 internal fun assignTracker(receiver: UDPConnection, device: Device, info: SensorInfo): Tracker {
 	val deviceState = device.context.state.value
 	val deviceHardwareId = deviceState.hardwareId ?: udpHardwareId(deviceState.macAddress, deviceState.address)
-	val hardwareId = "$deviceHardwareId:${info.sensorId}"
+	val hardwareId = udpTrackerHardwareId(deviceHardwareId, info.sensorId)
 
 	val existingTracker = receiver.appContext.server.context.state.value.trackers.values
 		.find { t -> t.context.state.value.deviceId == deviceState.id && t.context.state.value.hardwareId == hardwareId }

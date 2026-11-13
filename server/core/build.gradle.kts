@@ -52,6 +52,7 @@ kotlin {
 
 				implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+				implementation("it.krzeminski:snakeyaml-engine-kmp:3.2.1")
 			}
 		}
 		val commonTest = getByName("commonTest") {

@@ -16,6 +16,9 @@ import solarxr_protocol.rpc.StayAlignedRelaxedPose
 private const val USER_CONFIG_VERSION = 1
 private const val DEFAULT_USER_HEIGHT = 1.6f
 
+/** Lowest eye height accepted as the user height. */
+const val MIN_USER_HEIGHT = 0.9f
+
 /** A relaxed pose of the user, used by Stay Aligned to correct moving trackers. */
 @Serializable
 data class StayAlignedPoseConfig(

@@ -20,6 +20,7 @@ import solarxr_protocol.rpc.ProfileKind
 import solarxr_protocol.rpc.ProfileOperationStatus
 import java.util.UUID
 
+const val GLOBAL_CONFIG_PATH = "global.json"
 private const val GLOBAL_CONFIG_VERSION = 1
 private const val CURRENT_CONSENT_VERSION = 2
 
@@ -67,7 +68,7 @@ class GlobalConfig(
 
 	companion object {
 		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): GlobalConfig {
-			val initialState = loadFileWithBackup(storage, "global.json", GlobalConfigState()) {
+			val initialState = loadFileWithBackup(storage, GLOBAL_CONFIG_PATH, GlobalConfigState()) {
 				parseAndMigrateGlobalConfig(it)
 			}.let(::withSafeProfileNames)
 			val context = Context.create(
@@ -79,12 +80,12 @@ class GlobalConfig(
 			val globalConfig = GlobalConfig(context)
 			globalConfig.startObserving()
 			// Persists defaults filled on load (the generated userId), autosave skips the initial state
-			storage.write("global.json", jsonConfig.encodeToString(initialState))
+			storage.write(GLOBAL_CONFIG_PATH, jsonConfig.encodeToString(initialState))
 			launchAutosave(
 				scope = scope,
 				state = context.state,
 				storage = storage,
-				toPath = { "global.json" },
+				toPath = { GLOBAL_CONFIG_PATH },
 				serialize = { jsonConfig.encodeToString(it) },
 			)
 			return globalConfig
@@ -280,6 +281,7 @@ class AppConfig(
 
 	companion object {
 		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): AppConfig {
+			importLegacyConfig(storage)
 			val globalConfig = GlobalConfig.create(scope, storage)
 
 			val userConfig = UserConfig.create(scope, storage, globalConfig.context.state.value.selectedUserProfile)

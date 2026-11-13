@@ -2,18 +2,22 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.tracker.driverTrackerHardwareId
+import dev.slimevr.tracker.hidTrackerHardwareId
+import dev.slimevr.tracker.udpTrackerHardwareId
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 
-private const val DEVICES_CONFIG_VERSION = 1
+private const val DEVICES_CONFIG_VERSION = 2
 const val DEVICES_CONFIG_PATH = "devices.json"
 
 @Serializable
@@ -88,9 +92,32 @@ class DevicesConfig(
 
 private fun migrateDevicesConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
-	return when {
-		else -> json
+	if (version >= DEVICES_CONFIG_VERSION) return json
+	val migrated = (version + 1..DEVICES_CONFIG_VERSION).fold(json) { current, to -> migrateDevicesConfigTo(to, current) }
+	return JsonObject(migrated + ("version" to JsonPrimitive(DEVICES_CONFIG_VERSION)))
+}
+
+/** Brings a devices config up to version [to] from the one before. */
+private fun migrateDevicesConfigTo(to: Int, json: JsonObject): JsonObject = when (to) {
+	1 -> json
+	2 -> migrateDevicesConfigV2(json)
+	else -> error("No devices config migration to version $to")
+}
+
+/** Version 1 keyed trackers by their bare hardware id, version 2 prefixes it with the tracker origin. */
+private fun migrateDevicesConfigV2(json: JsonObject): JsonObject {
+	val udpTrackerId = Regex("((?:[0-9A-F]{2}:){5}[0-9A-F]{2}|\\d{1,3}(?:\\.\\d{1,3}){3}):(\\d{1,9})")
+	val hidTrackerId = Regex("[0-9A-F]{12}|[0-9A-F]{16}")
+
+	fun prefixed(id: String): String {
+		if (id.startsWith("vmc:") || id.startsWith("vrcosc:")) return id
+		udpTrackerId.matchEntire(id)?.let { return udpTrackerHardwareId(it.groupValues[1], it.groupValues[2].toInt()) }
+		if (hidTrackerId.matches(id)) return hidTrackerHardwareId(id)
+		return driverTrackerHardwareId(id)
 	}
+
+	val trackers = json["trackers"] as? JsonObject ?: return json
+	return JsonObject(json + ("trackers" to JsonObject(trackers.mapKeys { (id, _) -> prefixed(id) })))
 }
 
 private fun parseAndMigrateDevicesConfig(raw: String): DevicesConfigState {

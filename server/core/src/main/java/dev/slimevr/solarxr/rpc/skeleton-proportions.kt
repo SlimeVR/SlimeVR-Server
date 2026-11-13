@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr.rpc
 
+import dev.slimevr.config.MIN_USER_HEIGHT
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.config.withDefaultProportions
@@ -28,8 +29,6 @@ import solarxr_protocol.rpc.SkeletonPart
 import solarxr_protocol.rpc.SkeletonProportionsRequest
 import solarxr_protocol.rpc.SkeletonProportionsResetAllRequest
 import solarxr_protocol.rpc.SkeletonProportionsResponse
-
-private const val MIN_HEIGHT = 0.9f
 
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
@@ -70,7 +69,7 @@ class SkeletonProportionsBehaviour(
 			val headHeight = req.headHeight ?: return@on
 			val floorHeight = req.floorHeight ?: 0f
 			val height = headHeight - floorHeight
-			if (height >= MIN_HEIGHT) {
+			if (height >= MIN_USER_HEIGHT) {
 				userConfig.context.dispatch(
 					UserConfigActions.Update { withUserHeight(this, height) },
 				)
@@ -80,7 +79,7 @@ class SkeletonProportionsBehaviour(
 
 		receiver.rpcDispatcher.on<SkeletonProportionsResetAllRequest> {
 			val height = userConfig.context.state.value.data.userHeight
-			if (height >= MIN_HEIGHT) {
+			if (height >= MIN_USER_HEIGHT) {
 				userConfig.context.dispatch(UserConfigActions.Update { withDefaultProportions(this) })
 			}
 		}.launchIn(receiver.context.scope)

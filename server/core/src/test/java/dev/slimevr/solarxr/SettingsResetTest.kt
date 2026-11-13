@@ -15,6 +15,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.udpTrackerHardwareId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -96,10 +97,11 @@ class SettingsResetTest {
 			protocolVersion = 21,
 		)
 		server.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
+		val hardwareId = udpTrackerHardwareId(mac, 0)
 		val tracker = buildTestTracker(server.context.scope, bridge.appContext, config.settings, server.nextHandle())
-		tracker.context.dispatch(TrackerActions.Update { copy(deviceId = device.context.state.value.id, hardwareId = "$mac:0") })
+		tracker.context.dispatch(TrackerActions.Update { copy(deviceId = device.context.state.value.id, hardwareId = hardwareId) })
 		server.context.dispatch(VRServerActions.NewTracker(tracker.context.state.value.id, tracker))
-		config.devices.context.dispatch(DevicesConfigActions.UpdateTracker("$mac:0") { copy(customName = "Left foot") })
+		config.devices.context.dispatch(DevicesConfigActions.UpdateTracker(hardwareId) { copy(customName = "Left foot") })
 		config.globalConfig.context.dispatch(
 			GlobalConfigActions.SetErrorReporting(
 				changeConsent(config.globalConfig.context.state.value.errorReporting, ErrorReportingConsent.ALLOWED),

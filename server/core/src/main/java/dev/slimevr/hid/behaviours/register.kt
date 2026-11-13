@@ -7,6 +7,7 @@ import dev.slimevr.hid.HIDReceiverActions
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.hidTrackerHardwareId
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
@@ -53,10 +54,11 @@ internal suspend fun registerHidDevice(
 /** Creates or finds the [Tracker] for an already-registered HID device and links it to [hidId]. */
 internal fun ensureHidTracker(receiver: HIDReceiver, hidId: Int, deviceId: Int, imuType: ImuType? = null): Tracker? {
 	val deviceState = receiver.appContext.server.getDevice(deviceId)?.context?.state?.value ?: return null
+	val hardwareId = hidTrackerHardwareId(deviceState.address)
 
 	val tracker = receiver.getTracker(hidId)
 		?: receiver.appContext.server.context.state.value.trackers.values
-			.find { it.context.state.value.hardwareId == deviceState.address && it.context.state.value.origin == DeviceOrigin.HID }
+			.find { it.context.state.value.hardwareId == hardwareId && it.context.state.value.origin == DeviceOrigin.HID }
 		?: run {
 			val trackerId = receiver.appContext.server.nextHandle()
 			val newTracker = Tracker.create(
@@ -64,7 +66,7 @@ internal fun ensureHidTracker(receiver: HIDReceiver, hidId: Int, deviceId: Int, 
 				id = trackerId,
 				deviceId = deviceState.id,
 				imuType = imuType,
-				hardwareId = deviceState.address,
+				hardwareId = hardwareId,
 				origin = DeviceOrigin.HID,
 				appContext = receiver.appContext,
 			)

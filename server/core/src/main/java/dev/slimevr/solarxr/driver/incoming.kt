@@ -11,6 +11,7 @@ import dev.slimevr.solarxr.toQuaternion
 import dev.slimevr.solarxr.toVector3
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.driverTrackerHardwareId
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -100,9 +101,10 @@ class DriverIncomingTrackersBehaviour(
 				return@onDriverMessage
 			}
 			val hardwareId = req.hardwareIdentifier
+			val trackerHardwareId = driverTrackerHardwareId(hardwareId)
 
 			val existing = server.context.state.value.trackers.values
-				.find { it.context.state.value.hardwareId == hardwareId }
+				.find { it.context.state.value.hardwareId == trackerHardwareId }
 			if (existing != null) {
 				val trackerState = existing.context.state.value
 				// Tracker is in use by another driver right now
@@ -149,7 +151,7 @@ class DriverIncomingTrackersBehaviour(
 				intendedBodyPart = req.bodyPart,
 				intendedBoneOffset = offset?.boneOffset,
 				deviceId = deviceId,
-				hardwareId = hardwareId,
+				hardwareId = trackerHardwareId,
 				origin = DeviceOrigin.DRIVER,
 				driverName = driverName,
 				appContext = appContext,
