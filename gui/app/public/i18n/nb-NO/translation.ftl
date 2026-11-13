@@ -228,12 +228,6 @@ settings-driver-enable = Aktiver
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
-settings-general-tracker_mechanics-filtering-type-none-description = Bruk rotasjoner som før. Altså ingen filtrering.
-settings-general-tracker_mechanics-filtering-type-smoothing = Utjevning
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Jevner ut bevegelser men øker forsinkelsen litt.
-settings-general-tracker_mechanics-filtering-type-prediction = Forutsigelse
-settings-general-tracker_mechanics-filtering-amount = Mengde
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer på alle IMU-trackere som støtter det
 
 ## Stay Aligned pose recorder
@@ -258,7 +252,6 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korre
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Tillat at nullstillinger aktiveres ved å trykke på en sporer. Den høyeste sporeren på overkroppen blir da brukt til Rask Nullstilling, den høyeste sporeren på det venstre beinet blir brukt til Nullstilling og den høyeste sporeren på det høyre beinet blir brukt til Monterings Nullstilling. Vær obs på at trykking bør skje to ganger innen 0.6 sekunder for å bli registrert.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

@@ -212,12 +212,6 @@ settings-driver-enable = Aktiver
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
-settings-general-tracker_mechanics-filtering-type-none = Ingen filtrering
-settings-general-tracker_mechanics-filtering-type-none-description = Brug rotationer, som de er. Vil ikke foretage nogen filtrering.
-settings-general-tracker_mechanics-filtering-type-smoothing = Udjævning
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Udjævner bevægelser, men tilføjer en smule latens.
-settings-general-tracker_mechanics-filtering-type-prediction = Forudsigelse
-settings-general-tracker_mechanics-filtering-amount = Mængde
 
 ## Stay Aligned pose recorder
 

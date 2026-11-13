@@ -322,12 +322,6 @@ settings-driver-status-badge-disabled = Apagado
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtro
-settings-general-tracker_mechanics-filtering-type-none = Sin filtrar
-settings-general-tracker_mechanics-filtering-type-none-description = Usa las rotaciones tal como son. No hará ningún filtrado.
-settings-general-tracker_mechanics-filtering-type-smoothing = Suavizado
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
-settings-general-tracker_mechanics-filtering-type-prediction = Predicción
-settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tiempo de suavizado al restablecer el eje horizontal (0s deshabilita el suavizado)
 settings-general-tracker_mechanics-save_mounting_reset = Guardar la calibración de reajuste de montaje automático
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -370,7 +364,6 @@ settings-general-fk_settings-self_localization-title = Modo Captura de movimient
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Permite que los reinicios se activen tocando un tracker. El tracker situado más arriba en tu torso se utiliza para el restablecimiento horizontal, el tracker situado más arriba en tu pierna izquierda se utiliza para el reinicio completo y el tracker situado más arriba en tu pierna derecha se utiliza para el reinicio de montaje. Los toques deben producirse dentro del tiempo límite de 0,3 segundos multiplicado por el número de toques a reconocer.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =

@@ -306,12 +306,6 @@ settings-routing-hands-warning-cancel = Atšaukti
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtravimas
-settings-general-tracker_mechanics-filtering-type-none = Be filtravimo
-settings-general-tracker_mechanics-filtering-type-none-description = Naudoja judesius be jokio filtravimo.
-settings-general-tracker_mechanics-filtering-type-smoothing = Švelninimas
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Sušvelnina judesius, bet prideda sekimo vėlavimą.
-settings-general-tracker_mechanics-filtering-type-prediction = Prognozavimas
-settings-general-tracker_mechanics-filtering-amount = Filtravimo stiprumas
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontalaus atstatymo sušvelninimo laikas (0 s išjungs švelninimą)
 settings-general-tracker_mechanics-save_mounting_reset = Išsaugoti automatinio tvirtinimo pozicijų kalibravimą
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -345,7 +339,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Leidžia atstatyti bakstelėjant sekiklį: aukščiausias krūtinės sekiklis yra naudojamas horizontaliam atstatymui; aukščiausias kairės kojos sekiklis pilnam atstatymui; o aukščiausias dešinės kojos - tvirtinimo pozicijų atstatymui. Bakstelėjimas turi būti atliktas per 0.3 sekundžių padauginus bakstelėjimų skaičiumi.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
