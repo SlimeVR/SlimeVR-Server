@@ -22,6 +22,8 @@ Latest setup instructions are [in our docs](https://docs.slimevr.dev/server/inde
 ## Building & Contributing
 For information on building and contributing to the codebase, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+For an overview of the server architecture and design guidelines, see [server/README.md](server/README.md).
+
 ## Translating
 
 Translation is done via Pontoon at [i18n.slimevr.dev](https://i18n.slimevr.dev/). Please join our [Discord translation forum](https://discord.com/channels/817184208525983775/1050413434249949235) to coordinate.

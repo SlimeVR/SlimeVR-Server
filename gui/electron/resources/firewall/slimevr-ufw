@@ -1,0 +1,4 @@
+[SlimeVR]
+title=SlimeVR Server
+description=Tracker data (UDP 6969), tracker OTA firmware uploads (TCP 8266) and the SolarXR WebSocket (TCP 21110).
+ports=6969/udp|8266,21110/tcp

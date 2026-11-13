@@ -15,8 +15,8 @@ private:
 #endif
 
     template <bool important, typename... Args>
-    void log(std::string_view suffix, std::format_string<Args...> fmt,
-             Args &&...args) {
+    void Log(std::string_view suffix, std::format_string<Args...> fmt,
+             Args&&... args) {
         auto now = std::chrono::system_clock::now();
         auto time_t = std::chrono::system_clock::to_time_t(now);
 
@@ -40,28 +40,28 @@ public:
     Logger();
 
     template <typename... Args>
-    void debug(std::format_string<Args...> fmt, Args &&...args) {
+    void Debug(std::format_string<Args...> fmt, Args&&... args) {
 #ifndef NDEBUG
-        log<false>("[DEBUG]", fmt, std::forward<Args>(args)...);
+        Log<false>("[DEBUG]", fmt, std::forward<Args>(args)...);
 #endif
     }
 
     template <typename... Args>
-    void info(std::format_string<Args...> fmt, Args &&...args) {
-        log<false>("[INFO]", fmt, std::forward<Args>(args)...);
+    void Info(std::format_string<Args...> fmt, Args&&... args) {
+        Log<false>("[INFO]", fmt, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
-    void warning(std::format_string<Args...> fmt, Args &&...args) {
-        log<true>("[WARN]", fmt, std::forward<Args>(args)...);
+    void Warning(std::format_string<Args...> fmt, Args&&... args) {
+        Log<true>("[WARN]", fmt, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
-    void error(std::format_string<Args...> fmt, Args &&...args) {
-        log<true>("[ERROR]", fmt, std::forward<Args>(args)...);
+    void Error(std::format_string<Args...> fmt, Args&&... args) {
+        Log<true>("[ERROR]", fmt, std::forward<Args>(args)...);
     }
 
-    void flush() {
+    void Flush() {
 #ifdef _WIN32
         if (should_log_to_std_streams) {
 #endif
@@ -73,5 +73,5 @@ public:
         log_stream.flush();
     }
 
-    static Logger &get();
+    static Logger& Get();
 };
