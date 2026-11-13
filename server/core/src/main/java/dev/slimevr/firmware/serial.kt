@@ -7,6 +7,7 @@ import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConsole
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.serial.buildSetWifiCommand
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -197,7 +198,7 @@ private suspend fun provisionFlashedPort(
 
 	onStatus(FirmwareUpdateStatus.PROVISIONING, 0)
 	val provisionStartTime = System.currentTimeMillis()
-	serialConn.write("SET WIFI \"$ssid\" \"$password\"\n")
+	serialConn.write(buildSetWifiCommand(ssid, password))
 
 	// Wait for Wi-Fi to connect ("looking for the server")
 	val provisioned = withTimeoutOrNull(30_000) {
