@@ -197,13 +197,13 @@ const fingerRight = (file: string) =>
 // shows. The length ratio keeps the tip on the bone's tail despite the tuck.
 const TOE_TUCK = 0.5;
 const toeScale = (width: number, depth: number) =>
-  spanBone({ width, depth, length: 1 + TOE_TUCK, girthFrom: 'foot' });
-const toeOffset = inBoneLengths({ length: TOE_TUCK, depth: 0.11 });
-const toe = (file: string, scale = toeScale(1.3, 1.0)) =>
+  spanBone({ width, depth, length: 1 + TOE_TUCK, girthFrom: 'height' });
+const toeOffset = inBoneLengths({ length: TOE_TUCK, depth: -0.02 });
+const toe = (file: string, scale = toeScale(1, 1.0)) =>
   part(model(file, { scale, offset: toeOffset }));
-const toeRight = (file: string, scale = toeScale(1.3, 1.0)) =>
+const toeRight = (file: string, scale = toeScale(1, 1.0)) =>
   part(model(file, { scale: otherSide(scale), offset: toeOffset }));
-const bigToeScale = toeScale(1.3, 1.15);
+const bigToeScale = toeScale(1, 1.1);
 
 const HEAD_SIZE_EXPONENT = 0.25;
 const headSize = ({ bodyScale }: SkeletonProportions) =>
@@ -245,9 +245,14 @@ const lowerArmScale = spanBone({
 const upperLegScale = spanBone({ girthFrom: 'hips', length: 1.0 });
 const lowerLegScale = spanBone({ girthFrom: 'hips', length: 0.78 });
 const footScale: ShapeScale = {
-  compute: ({ boneLength }) => {
-    const ratio = boneLength / RIG_FOOT_LENGTH;
-    return { width: 0.91 * ratio, length: 1.12 * ratio, depth: 1.195 };
+  compute: ({ boneLength, proportions }) => {
+    const heightRatio = proportions.bodyScale;
+    const footRatio = boneLength / RIG_FOOT_LENGTH;
+    return {
+      width: 0.91 * footRatio,
+      length: 1.12 * footRatio,
+      depth: 1.1 * heightRatio,
+    };
   },
 };
 // Forward follows foot length; the drop from the ankle to the sole doesn't.
