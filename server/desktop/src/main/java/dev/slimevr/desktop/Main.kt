@@ -68,6 +68,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val serverLogSource = setupDesktopLogging()
 	installUncaughtExceptionReporting()
 
+	// TODO BuildConfig.kt doesn't seem to be regenerated when building through CI because version/GIT_COMMIT_HASH
+	//  is always e7344798 from CI/release builds.
 	val version = GIT_VERSION_TAG.ifBlank { GIT_COMMIT_HASH } + if (!GIT_CLEAN) "-dirty" else ""
 	AppLogger.logging.info("Starting SlimeVR Server $version (commit $GIT_COMMIT_HASH)")
 
