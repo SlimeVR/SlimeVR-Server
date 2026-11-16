@@ -791,8 +791,12 @@ settings-general-gesture_control-trackers = { $amount ->
     [one] 1 tracker
     *[other] { $amount } trackers
 }
+settings-general-gesture_control-Button = Button
+settings-general-gesture_control-Tap = Tap
+settings-general-gesture_control-Both = Both
 settings-general-gesture_control-column-reset = Reset
 settings-general-gesture_control-column-tracker = Tracker
+settings-general-gesture_control-column-method = Tap/Button
 settings-general-gesture_control-column-taps = Taps
 settings-general-gesture_control-column-delay = Delay
 settings-general-gesture_control-yawReset-name = Yaw reset

@@ -3,6 +3,7 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tapdetection.TapDetectionActions
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.TapDetectionMethod
 import solarxr_protocol.rpc.ChangeTapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsResponse
@@ -31,6 +33,9 @@ internal fun buildTapDetectionSettingsResponse(config: TapDetectionConfig) = Tap
 	fullResetTracker = config.fullResetBodyPart,
 	mountingResetTracker = config.mountingResetBodyPart,
 	numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
+	yawResetMethod = config.yawResetMethod,
+	fullResetMethod = config.fullResetMethod,
+	mountingResetMethod = config.mountingResetMethod,
 )
 
 class TapDetectionBehaviour(
@@ -70,6 +75,9 @@ class TapDetectionBehaviour(
 							fullResetBodyPart = req.fullResetTracker,
 							mountingResetBodyPart = req.mountingResetTracker,
 							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: 1,
+							yawResetMethod = req.yawResetMethod ?: TapDetectionMethod.None,
+							fullResetMethod = req.fullResetMethod ?: TapDetectionMethod.None,
+							mountingResetMethod = req.mountingResetMethod ?: TapDetectionMethod.None,
 						),
 					)
 				},
