@@ -48,6 +48,8 @@ object StayAlignedDefaults {
 		set(ImuType.LSM6DSR, YAW_CORRECTION_IMU_GOOD)
 		set(ImuType.ICM45686, YAW_CORRECTION_IMU_GOOD)
 		set(ImuType.ICM45605, YAW_CORRECTION_IMU_GOOD)
+		// ADC_RESISTANCE is a flex sensor so it has no yaw drift
+		set(ImuType.ADC_RESISTANCE, YAW_CORRECTION_IMU_DISABLED)
 		set(ImuType.ICM55686, YAW_CORRECTION_IMU_GOOD)
 	}
 
