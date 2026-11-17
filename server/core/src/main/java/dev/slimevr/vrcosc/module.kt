@@ -123,6 +123,8 @@ class VRCOSCManager(
 		context.observeAll(this)
 	}
 
+	// TODO limit to once every 300ms to prevent lerping on VRChat's side
+	//  https://docs.vrchat.com/docs/osc-trackers#receiving-head-data
 	fun yawAlign(referenceRotation: Quaternion) {
 		context.scope.launch {
 			events.emit(VRCOSCEvent.YawAlign(referenceRotation))
