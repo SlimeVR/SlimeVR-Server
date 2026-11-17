@@ -265,7 +265,6 @@ tracker-infos-display_name = 顯示名稱
 tracker-infos-custom_name = 自訂名稱
 tracker-infos-url = 追蹤器 URL
 tracker-infos-hardware_identifier = 硬體 ID
-tracker-infos-data_type = 資料型態
 tracker-infos-imu = 慣性測量單元 (IMU)
 tracker-infos-board_type = 主板
 tracker-infos-network_version = 通訊協定版本
