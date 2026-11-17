@@ -1,7 +1,9 @@
-package dev.slimevr.skeleton.inputprocessors
+package dev.slimevr.skeleton.computedprocessors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -22,9 +24,11 @@ private fun alignRoll(from: Quaternion, to: Quaternion): Quaternion {
 }
 
 /**
- * Handles rotating the upper legs' roll to match the lower legs' roll.
+ * Handles rotating the upper legs' roll to match the lower legs' roll to make VRChat's knee IK work better.
+ *
+ * This is a computed processor running after IK because we want to use the real upper leg's twist for IK and constraints.
  */
-class UpperLegsTwistInputProcessor(val settings: Settings) : SkeletonInputProcessor {
+class UpperLegsTwistComputedProcessor(val settings: Settings) : SkeletonComputedProcessor {
 	/**
 	 * First value is the BodyPart to be aligned.
 	 * Second value is the source BodyPart.
@@ -34,18 +38,17 @@ class UpperLegsTwistInputProcessor(val settings: Settings) : SkeletonInputProces
 		BodyPart.RIGHT_UPPER_LEG to BodyPart.RIGHT_LOWER_LEG,
 	)
 
-	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+	override fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton) {
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
 		if (ratio == 0f) return
 
 		// Upper legs are written, lower legs are read, so the two never overlap
 		for (bodyPartToSource in bodyPartToSources) {
-			val bone = mutableInputSkeleton[bodyPartToSource.first] ?: continue
-			if (!bone.isRotationActive) continue
+			val bone = mutableComputedSkeleton[bodyPartToSource.first] ?: continue
+			val sourceRotation = mutableComputedSkeleton[bodyPartToSource.second]?.rotation ?: continue
 
-			val sourceRotation = mutableInputSkeleton[bodyPartToSource.second]?.rotation ?: continue
 			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
-			mutableInputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
+			mutableComputedSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
 		}
 	}
 }

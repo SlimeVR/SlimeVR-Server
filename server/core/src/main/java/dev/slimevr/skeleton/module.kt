@@ -4,6 +4,7 @@ import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.computedprocessors.UpperLegsTwistComputedProcessor
 import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
@@ -19,7 +20,6 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.NeckInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
-import dev.slimevr.skeleton.inputprocessors.UpperLegsTwistInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
@@ -285,7 +285,6 @@ class Skeleton(
 						FingersInputProcessor(),
 						ToesInputProcessor(),
 						ConstraintInputProcessor(settings),
-						UpperLegsTwistInputProcessor(settings),
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
@@ -305,6 +304,7 @@ class Skeleton(
 					),
 					// Run on the result of IK and persist.
 					ikComputedProcessors = listOf(
+						UpperLegsTwistComputedProcessor(settings),
 						VelocityComputedProcessor(),
 					),
 				),
