@@ -32,12 +32,13 @@ fun parentRot(
 	bones[parent]?.rotation
 } ?: Quaternion.IDENTITY
 
-const val PREFERRED_ROTATION_START_BIAS = 25.0
+const val PREFERRED_ROTATION_START_BIAS = 62.0
 const val PREFERRED_ROTATION_START_BIAS_MULTIPLIER = (PREFERRED_ROTATION_START_BIAS * PREFERRED_ROTATION_START_BIAS) - PREFERRED_ROTATION_START_BIAS
 fun adjustToPreferredRotations(
 	mutableBoneInputs: InputSkeleton,
 	mutableComputedSkeleton: ComputedSkeleton,
 	goals: List<IKChainGoal>,
+	constraints: BodyPartMap<Constraint>?,
 ) {
 	val changedBodyParts = mutableSetOf<BodyPart>()
 	for (goal in goals) {
@@ -48,7 +49,13 @@ fun adjustToPreferredRotations(
 		for (bodyPart in goal.chain) {
 			val preferredRotation = BODY_PART_PREFERRED_ROTATION[bodyPart] ?: continue
 			val bone = mutableBoneInputs[bodyPart] ?: continue
-			mutableBoneInputs[bodyPart] = bone.copy(rotation = bone.rotation * preferredRotation.pow(t))
+			val offsetRotation = bone.rotation * preferredRotation.pow(t)
+			val newRotation = constraints?.get(bodyPart)?.apply(
+				parentRot(mutableComputedSkeleton, bodyPart),
+				offsetRotation,
+			) ?: offsetRotation
+
+			mutableBoneInputs[bodyPart] = bone.copy(rotation = newRotation)
 			changedBodyParts.add(bodyPart)
 		}
 	}
@@ -200,7 +207,7 @@ fun ccdIk(
 	if (goals.isEmpty()) return true
 
 	// Set each bone we're gonna do IK on to its preferred rotation
-	adjustToPreferredRotations(mutableBoneInputs, mutableComputedSkeleton, goals)
+	adjustToPreferredRotations(mutableBoneInputs, mutableComputedSkeleton, goals, constraints)
 
 	// IK iterations
 	var allGoalsMet = true

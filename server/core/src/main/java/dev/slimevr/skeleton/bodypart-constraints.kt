@@ -113,7 +113,7 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			90f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.LEFT_LOWER_LEG to LooseHingeConstraint(
-			-150f * FastMath.DEG_TO_RAD,
+			-165f * FastMath.DEG_TO_RAD,
 			6f * FastMath.DEG_TO_RAD,
 			65f * FastMath.DEG_TO_RAD,
 		),
@@ -130,7 +130,7 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			90f * FastMath.DEG_TO_RAD,
 		),
 		BodyPart.RIGHT_LOWER_LEG to LooseHingeConstraint(
-			-150f * FastMath.DEG_TO_RAD,
+			-165f * FastMath.DEG_TO_RAD,
 			6f * FastMath.DEG_TO_RAD,
 			65f * FastMath.DEG_TO_RAD,
 		),
@@ -219,10 +219,10 @@ val BODY_PART_PREFERRED_ROTATION = BodyPartMap(
 		BodyPart.LEFT_LOWER_ARM to Quaternion.fromRotationVector(0f, 70f * FastMath.DEG_TO_RAD, 0f),
 		BodyPart.RIGHT_LOWER_ARM to Quaternion.fromRotationVector(0f, -70f * FastMath.DEG_TO_RAD, 0f),
 
-		BodyPart.LEFT_UPPER_LEG to Quaternion.rotationAroundXAxis(115f * FastMath.DEG_TO_RAD),
-		BodyPart.RIGHT_UPPER_LEG to Quaternion.rotationAroundXAxis(115f * FastMath.DEG_TO_RAD),
-		BodyPart.LEFT_LOWER_LEG to Quaternion.rotationAroundXAxis(-48f * FastMath.DEG_TO_RAD),
-		BodyPart.RIGHT_LOWER_LEG to Quaternion.rotationAroundXAxis(-48f * FastMath.DEG_TO_RAD),
+		BodyPart.LEFT_UPPER_LEG to Quaternion.rotationAroundXAxis(35f * FastMath.DEG_TO_RAD),
+		BodyPart.RIGHT_UPPER_LEG to Quaternion.rotationAroundXAxis(35f * FastMath.DEG_TO_RAD),
+		BodyPart.LEFT_LOWER_LEG to Quaternion.rotationAroundXAxis(-20f * FastMath.DEG_TO_RAD),
+		BodyPart.RIGHT_LOWER_LEG to Quaternion.rotationAroundXAxis(-20f * FastMath.DEG_TO_RAD),
 
 // 		BodyPart.UPPER_CHEST to Quaternion.rotationAroundXAxis(-10f * FastMath.DEG_TO_RAD),
 // 		BodyPart.LOWER_CHEST to Quaternion.rotationAroundXAxis(-5f * FastMath.DEG_TO_RAD),
