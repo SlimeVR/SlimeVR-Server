@@ -27,7 +27,6 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 
@@ -66,7 +65,6 @@ data class TrackerState(
 	val intendedBodyPart: BodyPart?,
 	val boneOffsets: Map<BodyPart, Vector3>,
 	val customName: String?,
-	val trackerDataType: TrackerDataType, // TODO flex sensors
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
 	val lastReference: Quaternion?,
@@ -209,7 +207,6 @@ class Tracker(
 			intendedBodyPart = null,
 			boneOffsets = emptyMap(),
 			customName = null,
-			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,
 			mountingOrientation = Quaternion.IDENTITY,
 			lastReference = Quaternion.IDENTITY,

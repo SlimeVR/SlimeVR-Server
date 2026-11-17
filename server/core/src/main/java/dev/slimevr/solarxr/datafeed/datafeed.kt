@@ -67,7 +67,6 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			customName = tracker.customName,
 			lastMountingMethod = tracker.lastMountingMethod,
 			magnetometer = tracker.magStatus,
-			dataType = tracker.trackerDataType,
 			boneOffset = (tracker.boneOffsets[tracker.bodyPart] ?: Vector3.ZERO).toVec3f(),
 		)
 	} else {

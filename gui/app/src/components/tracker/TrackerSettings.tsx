@@ -14,7 +14,6 @@ import {
   MagnetometerStatus,
   MountingMethod,
   RpcMessage,
-  TrackerDataType,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
@@ -361,14 +360,6 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between">
               <Typography id="tracker-infos-mac_address" />
               <Typography>{macAddress || '--'}</Typography>
-            </div>
-            <div className="flex justify-between">
-              <Typography>
-                {l10n.getString('tracker-infos-data_type')}
-              </Typography>
-              <Typography>
-                {TrackerDataType[tracker?.tracker.info?.dataType ?? 0]}
-              </Typography>
             </div>
             <div className="flex justify-between">
               <Typography>{l10n.getString('tracker-infos-imu')}</Typography>
