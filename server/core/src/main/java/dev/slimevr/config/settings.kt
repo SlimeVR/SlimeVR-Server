@@ -70,7 +70,7 @@ data class TapDetectionConfig(
 	var fullResetMethod: TapDetectionMethod = TapDetectionMethod.Tap,
 	var mountingResetMethod: TapDetectionMethod = TapDetectionMethod.Tap,
 
-	)
+)
 
 @Serializable
 data class ResetsConfig(

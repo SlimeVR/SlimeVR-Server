@@ -70,7 +70,8 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 			resetsManager.scheduleReset(
 				sourceName,
 				resetType,
-				actionDelay)
+				actionDelay,
+			)
 		}
 	}
 	companion object {
