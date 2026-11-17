@@ -31,7 +31,7 @@ typealias TapDetectionBehaviour = Behaviour<TapDetectionManager>
 class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
 
-	suspend fun actionTriggered(trackerId: Int, sourceName: String = "TapDetection") {
+	suspend fun actionTriggered(trackerId: Int, sourceName: String = "TapDetection", sourceMethod: TapDetectionMethod = TapDetectionMethod.Tap) {
 		val tracker = server.getTracker(trackerId) ?: return
 		val state = context.state.value
 
@@ -58,12 +58,6 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 			ResetType.YAW -> tapDetectionConfig.yawResetMethod
 			ResetType.FULL -> tapDetectionConfig.fullResetMethod
 			ResetType.MOUNTING -> tapDetectionConfig.mountingResetMethod
-		}
-
-		val sourceMethod = if (sourceName == "HIDButtonV3" || sourceName == "HIDButtonLegacy") {
-			TapDetectionMethod.Button
-		} else {
-			TapDetectionMethod.Tap
 		}
 
 		if (method == sourceMethod || method == TapDetectionMethod.Both) {
