@@ -284,7 +284,6 @@ tracker-infos-custom_name = crwdns7500:0crwdne7500:0
 tracker-infos-url = crwdns7502:0crwdne7502:0
 tracker-infos-hardware_identifier = crwdns7504:0crwdne7504:0
 tracker-infos-mac_address = crwdns9956:0crwdne9956:0
-tracker-infos-data_type = crwdns7506:0crwdne7506:0
 tracker-infos-imu = crwdns7508:0crwdne7508:0
 tracker-infos-board_type = crwdns7510:0crwdne7510:0
 tracker-infos-network_version = crwdns7512:0crwdne7512:0
