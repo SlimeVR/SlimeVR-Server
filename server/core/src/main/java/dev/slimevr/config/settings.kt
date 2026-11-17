@@ -66,9 +66,9 @@ data class TapDetectionConfig(
 	var fullResetTaps: Int = 3,
 	var mountingResetTaps: Int = 3,
 	var numberTrackersOverThreshold: Int = 1,
-	var yawResetMethod: TapDetectionMethod = TapDetectionMethod.Both,
-	var fullResetMethod: TapDetectionMethod = TapDetectionMethod.Both,
-	var mountingResetMethod: TapDetectionMethod = TapDetectionMethod.Both,
+	var yawResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
+	var fullResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
+	var mountingResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
 
 )
 

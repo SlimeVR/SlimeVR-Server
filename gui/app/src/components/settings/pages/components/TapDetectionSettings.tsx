@@ -78,10 +78,12 @@ function toForm(settings: TapDetectionSettingsResponseT): TapDetectionForm {
       settings.mountingResetTracker ?? BodyPart.NONE
     ),
     numberTrackersOverThreshold: settings.numberTrackersOverThreshold ?? 0,
-    yawResetMethod: String(settings.yawResetMethod ?? TapDetectionMethod.Tap),
-    fullResetMethod: String(settings.fullResetMethod ?? TapDetectionMethod.Tap),
+    yawResetMethod: String(settings.yawResetMethod ?? TapDetectionMethod.BOTH),
+    fullResetMethod: String(
+      settings.fullResetMethod ?? TapDetectionMethod.BOTH
+    ),
     mountingResetMethod: String(
-      settings.mountingResetMethod ?? TapDetectionMethod.Tap
+      settings.mountingResetMethod ?? TapDetectionMethod.BOTH
     ),
   };
 }
@@ -152,10 +154,7 @@ export function TapDetectionSettings({
   const TapDetectionMethods: { value: string; label: string }[] = Object.values(
     TapDetectionMethod
   )
-    .filter(
-      (v): v is TapDetectionMethod =>
-        typeof v === 'number' && v !== TapDetectionMethod.None
-    )
+    .filter((v): v is TapDetectionMethod => typeof v === 'number')
     .map((value) => ({
       value: String(value),
       label: l10n.getString(

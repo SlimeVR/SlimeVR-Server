@@ -10,7 +10,7 @@ class HIDButtonV3Behaviour(private val appContext: AppContextProvider) : HIDRece
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.on<HIDButton> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
-			appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id, "HIDButtonV3", TapDetectionMethod.Button)
+			appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id, "HIDButtonV3", TapDetectionMethod.BUTTON)
 		}.launchIn(receiver.context.scope)
 	}
 }

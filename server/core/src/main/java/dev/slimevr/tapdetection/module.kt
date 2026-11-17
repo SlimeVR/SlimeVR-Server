@@ -31,7 +31,7 @@ typealias TapDetectionBehaviour = Behaviour<TapDetectionManager>
 class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
 
-	suspend fun actionTriggered(trackerId: Int, sourceName: String = "TapDetection", sourceMethod: TapDetectionMethod = TapDetectionMethod.Tap) {
+	suspend fun actionTriggered(trackerId: Int, sourceName: String = "TapDetection", sourceMethod: TapDetectionMethod = TapDetectionMethod.TAP) {
 		val tracker = server.getTracker(trackerId) ?: return
 		val state = context.state.value
 
@@ -60,7 +60,7 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 			ResetType.MOUNTING -> tapDetectionConfig.mountingResetMethod
 		}
 
-		if (method == sourceMethod || method == TapDetectionMethod.Both) {
+		if (method == sourceMethod || method == TapDetectionMethod.BOTH) {
 			resetsManager.scheduleReset(
 				sourceName,
 				resetType,

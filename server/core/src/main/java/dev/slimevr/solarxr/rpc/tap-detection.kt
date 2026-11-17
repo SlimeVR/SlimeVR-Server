@@ -74,9 +74,9 @@ class TapDetectionBehaviour(
 							fullResetBodyPart = req.fullResetTracker,
 							mountingResetBodyPart = req.mountingResetTracker,
 							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: 1,
-							yawResetMethod = req.yawResetMethod ?: TapDetectionMethod.None,
-							fullResetMethod = req.fullResetMethod ?: TapDetectionMethod.None,
-							mountingResetMethod = req.mountingResetMethod ?: TapDetectionMethod.None,
+							yawResetMethod = req.yawResetMethod ?: TapDetectionMethod.TAP,
+							fullResetMethod = req.fullResetMethod ?: TapDetectionMethod.TAP,
+							mountingResetMethod = req.mountingResetMethod ?: TapDetectionMethod.TAP,
 						),
 					)
 				},
