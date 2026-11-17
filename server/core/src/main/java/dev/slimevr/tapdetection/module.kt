@@ -5,9 +5,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
-import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TapDetectionMethod
@@ -46,9 +44,6 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 			)
 			return
 		}
-		AppLogger.resets.info(state.yawResetBodyPart)
-		AppLogger.resets.info(state.fullResetBodyPart)
-		AppLogger.resets.info(state.mountingResetBodyPart)
 
 		val bodyPart = tracker.context.state.value.bodyPart ?: return
 		val tapDetectionConfig = settings.context.state.value.data.tapDetectionConfig
@@ -59,10 +54,24 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 			else -> return
 		}
 
-		resetsManager.scheduleReset(
-			sourceName,
-			resetType,
-			actionDelay)
+		val method = when (resetType) {
+			ResetType.YAW -> tapDetectionConfig.yawResetMethod
+			ResetType.FULL -> tapDetectionConfig.fullResetMethod
+			ResetType.MOUNTING -> tapDetectionConfig.mountingResetMethod
+		}
+
+		val sourceMethod = if (sourceName == "HIDButtonV3" || sourceName == "HIDButtonLegacy") {
+			TapDetectionMethod.Button
+		} else {
+			TapDetectionMethod.Tap
+		}
+
+		if (method == sourceMethod || method == TapDetectionMethod.Both) {
+			resetsManager.scheduleReset(
+				sourceName,
+				resetType,
+				actionDelay)
+		}
 	}
 	companion object {
 		fun create(ctx: Phase1ContextProvider, resetsManager: ResetsManager, scope: CoroutineScope): TapDetectionManager {
