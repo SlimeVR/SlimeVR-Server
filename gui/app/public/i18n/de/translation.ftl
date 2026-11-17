@@ -245,7 +245,6 @@ tracker-infos-display_name = Anzeigename
 tracker-infos-custom_name = Benutzerdefinierter Name
 tracker-infos-url = Tracker-Adresse
 tracker-infos-hardware_identifier = Hardware-ID
-tracker-infos-data_type = Datentyp
 tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Platine
 tracker-infos-network_version = Protokoll Version
