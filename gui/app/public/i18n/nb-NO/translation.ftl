@@ -259,9 +259,6 @@ settings-general-gesture_control-taps =
         [one] 1 trykk
        *[other] { $amount } trykk
     }
-settings-general-gesture_control-mountingResetEnabled = Aktiver monterings-nullstilling ved trykking
-settings-general-gesture_control-mountingResetDelay = Monterings-nullstilling utsettelse
-settings-general-gesture_control-mountingResetTaps = Trykking for monterings-nullstilling
 
 ## Appearance settings
 
