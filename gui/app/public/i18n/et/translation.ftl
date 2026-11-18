@@ -269,17 +269,6 @@ settings-general-gesture_control-trackers =
         [one] 1 jälgija
        *[other] { $amount } jälgijat
     }
-settings-general-gesture_control-yawResetEnabled = Luba puudutamine lengerduse lähtestamiseks
-settings-general-gesture_control-yawResetDelay = Lengerduse lähtestamise viivitus
-settings-general-gesture_control-yawResetTaps = Puudutust lengerduse lähtestamiseks
-settings-general-gesture_control-fullResetEnabled = Luba puudutus täielikuks lähtestamiseks
-settings-general-gesture_control-fullResetDelay = Tavalise lähtestamise viivitus
-settings-general-gesture_control-fullResetTaps = Puudutust tavaliseks lähtestamiseks
-settings-general-gesture_control-mountingResetEnabled = Luba, et vajutus lähtestab paigalduseasendi
-settings-general-gesture_control-mountingResetDelay = Paigaldusasendi lähtestamise viivitus
-settings-general-gesture_control-mountingResetTaps = Paigaldusasendi lähtestamise vajutus
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Jälgijad üle läve
 
 ## Appearance settings
 
