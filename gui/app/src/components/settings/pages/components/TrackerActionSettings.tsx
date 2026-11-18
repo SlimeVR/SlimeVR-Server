@@ -392,10 +392,14 @@ export function TrackerActionSettings({
                 </td>
                 <td className="col-start-2 col-span-2 row-start-3 smol:col-start-2 smol:col-span-1 min-w-0 block lg:table-cell lg:py-3 lg:px-2 align-middle">
                   <fieldset
-                    disabled={!enabled || Number(method) == TrackerActionMethod.BUTTON}
+                    disabled={
+                      !enabled || Number(method) == TrackerActionMethod.BUTTON
+                    }
                     className={classNames(
                       'flex flex-col gap-1.5',
-                      (!enabled || Number(method) == TrackerActionMethod.BUTTON) && 'opacity-50'
+                      (!enabled ||
+                        Number(method) == TrackerActionMethod.BUTTON) &&
+                        'opacity-50'
                     )}
                   >
                     {mobileCaption('taps')}
@@ -403,10 +407,10 @@ export function TrackerActionSettings({
                       control={control}
                       name={`${id}Taps` as keyof TrackerActionForm}
                       valueLabelFormat={(value) =>
-                          l10n.getString(
-                              'settings-general-gesture_control-taps',
-                              { amount: Math.round(value) }
-                          )
+                        l10n.getString(
+                          'settings-general-gesture_control-taps',
+                          { amount: Math.round(value) }
+                        )
                       }
                       min={2}
                       max={10}
