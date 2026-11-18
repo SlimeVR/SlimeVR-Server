@@ -387,17 +387,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } trackery
        *[other] { $amount } trackery
     }
-settings-general-gesture_control-yawResetEnabled = Włącz stuknięcie, aby zresetować odchylanie
-settings-general-gesture_control-yawResetDelay = Opóźnienie resetowania odchylenia
-settings-general-gesture_control-yawResetTaps = Stuknięć do zresetowania odchylenia
-settings-general-gesture_control-fullResetEnabled = Włącz stuknięcie, aby całkowicie zresetować
-settings-general-gesture_control-fullResetDelay = Pełne opóźnienie resetu
-settings-general-gesture_control-fullResetTaps = Stuknięć do pełnego resetu
-settings-general-gesture_control-mountingResetEnabled = Włącz stuknięcie, aby zresetować położenie
-settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania położenia
-settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackery ponad progiem
 
 ## Appearance settings
 
