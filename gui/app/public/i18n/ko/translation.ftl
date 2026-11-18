@@ -305,17 +305,6 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } 트래커
-settings-general-gesture_control-yawResetEnabled = 탭해서 Yaw 정렬 활성화
-settings-general-gesture_control-yawResetDelay = Yaw 정렬 딜레이
-settings-general-gesture_control-yawResetTaps = Yaw 정렬 탭 횟수
-settings-general-gesture_control-fullResetEnabled = 탭해서 전체 정렬 활성화
-settings-general-gesture_control-fullResetDelay = 전체 정렬 딜레이
-settings-general-gesture_control-fullResetTaps = 탭해서 전체 정렬
-settings-general-gesture_control-mountingResetEnabled = 탭해서 착용 방향 정렬 활성화
-settings-general-gesture_control-mountingResetDelay = 착용 방향 정렬 딜레이
-settings-general-gesture_control-mountingResetTaps = 탭해서 착용 방향 정렬
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = 트래커 감지 한계
 
 ## Appearance settings
 
