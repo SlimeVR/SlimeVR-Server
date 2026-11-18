@@ -380,17 +380,6 @@ settings-general-gesture_control-trackers =
         [many] trackers
        *[other] trackers
     }
-settings-general-gesture_control-yawResetEnabled = Activa toque para restablecimiento horizontal
-settings-general-gesture_control-yawResetDelay = Retraso de restablecimiento horizontal
-settings-general-gesture_control-yawResetTaps = Toques para restablecimiento horizontal
-settings-general-gesture_control-fullResetEnabled = Activa toque para reinicio completo
-settings-general-gesture_control-fullResetDelay = Retraso de reinicio completo
-settings-general-gesture_control-fullResetTaps = Da toquecitos para reinicio completo
-settings-general-gesture_control-mountingResetEnabled = Activa toquecitos para reiniciar montaje
-settings-general-gesture_control-mountingResetDelay = Reinicio de montaje retrasado
-settings-general-gesture_control-mountingResetTaps = Da toquecitos para reinicio de montaje
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackers por encima del limite
 
 ## Appearance settings
 
