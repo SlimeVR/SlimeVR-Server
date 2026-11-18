@@ -63,8 +63,6 @@ class TrackerStayAlignedBehaviour(
 	 */
 	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun observeRun(receiver: Tracker) {
-		var lastRotationTime = timeSource.markNow()
-
 		val serverFlow = receiver.appContext.server.context.state
 
 		val enabledFlow = settings.context.state.map { it.data.stayAlignedConfig.enabled }.distinctUntilChanged()
@@ -76,6 +74,7 @@ class TrackerStayAlignedBehaviour(
 
 				// Ignore every other emission for performance (50FPS instead of 100FPS when at 100TPS)
 				var index = 0
+				var lastRotationTime = timeSource.markNow()
 				receiver.context.state
 					.distinctUntilChangedBy { it.rawRotation }
 					.filter { index++ % 2 == 0 }
