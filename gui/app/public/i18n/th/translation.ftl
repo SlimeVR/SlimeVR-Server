@@ -382,17 +382,6 @@ settings-general-gesture_control-taps = { $amount } ครั้ง
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } ตัว
-settings-general-gesture_control-yawResetEnabled = ใช้การแตะเพื่อรีเซ็ตแกนตั้ง
-settings-general-gesture_control-yawResetDelay = เวลาหน่วงก่อนรีเซ็ตแกนตั้ง
-settings-general-gesture_control-yawResetTaps = แตะเพื่อรีเซ็ตแกนตั้ง
-settings-general-gesture_control-fullResetEnabled = ใช้การแตะเพื่อรีเซ็ตทั้งหมด
-settings-general-gesture_control-fullResetDelay = เวลาหน่วงก่อนรีเซ็ตทั้งหมด
-settings-general-gesture_control-fullResetTaps = แตะเพื่อรีเซ็ตทั้งหมด
-settings-general-gesture_control-mountingResetEnabled = ใช้การแตะเพื่อรีเซ็ตการตั้งศูนย์การติดตั้ง
-settings-general-gesture_control-mountingResetDelay = เวลาหน่วงก่อนทำการรีเซ็ตการติดตั้ง
-settings-general-gesture_control-mountingResetTaps = แตะเพื่อรีเซ็ตการติดตั้ง
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = จำนวนแทร็กเกอร์ที่เกินเกณฑ์
 
 ## Appearance settings
 
