@@ -46,6 +46,9 @@ import kotlin.collections.listOf
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 
+// Feet go slightly inwards on pose mounting
+private const val FEET_POSE_DEG_INWARDS = 15
+
 data class ResetsState(
 	val canDoYawReset: Boolean,
 	val canDoMountingReset: Boolean,
@@ -233,6 +236,11 @@ class ResetsManager(
 	}
 
 	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsMountingResetMode) = when (bodyPart) {
+		// Feet go back but a little inwards
+		BodyPart.LEFT_FOOT -> FastMath.PI - FEET_POSE_DEG_INWARDS * FastMath.DEG_TO_RAD
+
+		BodyPart.RIGHT_FOOT -> FastMath.PI + FEET_POSE_DEG_INWARDS * FastMath.DEG_TO_RAD
+
 		// Going forward
 		in ResetBodyParts.UPPER_LEGS -> 0f
 
