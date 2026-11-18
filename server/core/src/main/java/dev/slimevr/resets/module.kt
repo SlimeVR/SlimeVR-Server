@@ -46,7 +46,8 @@ import kotlin.collections.listOf
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 
-private const val FEET_POSE_DEG_INWARDS = 18
+// Feet go slightly inwards on pose mounting
+private const val FEET_POSE_DEG_INWARDS = 15
 
 data class ResetsState(
 	val canDoYawReset: Boolean,
