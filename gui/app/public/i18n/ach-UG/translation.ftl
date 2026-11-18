@@ -728,8 +728,12 @@ settings-general-gesture_control-taps = crwdns8036:0$amountcrwdnd8036:0$amountcr
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = crwdns8038:0$amountcrwdnd8038:0$amountcrwdne8038:0
+settings-general-gesture_control-BUTTON = crwdns10244:0crwdne10244:0
+settings-general-gesture_control-TAP = crwdns10246:0crwdne10246:0
+settings-general-gesture_control-BOTH = crwdns10248:0crwdne10248:0
 settings-general-gesture_control-column-reset = crwdns9712:0crwdne9712:0
 settings-general-gesture_control-column-tracker = crwdns9714:0crwdne9714:0
+settings-general-gesture_control-column-method = crwdns10250:0crwdne10250:0
 settings-general-gesture_control-column-taps = crwdns9716:0crwdne9716:0
 settings-general-gesture_control-column-delay = crwdns9718:0crwdne9718:0
 settings-general-gesture_control-yawReset-name = crwdns9720:0crwdne9720:0
