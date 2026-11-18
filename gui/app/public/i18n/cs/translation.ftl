@@ -355,17 +355,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } trackerů
        *[other] { $amount } trackerů
     }
-settings-general-gesture_control-yawResetEnabled = Povolit klepnutí pro reset odklonu
-settings-general-gesture_control-yawResetDelay = Zpoždění resetu vybočení
-settings-general-gesture_control-yawResetTaps = Klepnutí pro resetování rotace
-settings-general-gesture_control-fullResetEnabled = Povolit klepnutí pro úplné restartování
-settings-general-gesture_control-fullResetDelay = Zpoždění úplného obnovení
-settings-general-gesture_control-fullResetTaps = Klepnutí pro úplný reset
-settings-general-gesture_control-mountingResetEnabled = Povolit klepnutí pro resetování montáže
-settings-general-gesture_control-mountingResetDelay = Zpoždění resetování montáže
-settings-general-gesture_control-mountingResetTaps = Klepnutí pro resetování montáže
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackery překročily práh
 
 ## Appearance settings
 
