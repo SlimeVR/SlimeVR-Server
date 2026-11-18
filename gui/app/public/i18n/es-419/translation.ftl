@@ -365,17 +365,6 @@ settings-general-gesture_control-taps =
         [one] 1 toque
        *[other] { $amount } toques
     }
-settings-general-gesture_control-yawResetEnabled = Activar toques para reinicio horizontal
-settings-general-gesture_control-yawResetDelay = Retraso del reinicio horizontal
-settings-general-gesture_control-yawResetTaps = Toques para reinicio horizontal
-settings-general-gesture_control-fullResetEnabled = Activar toques para reinicio completo
-settings-general-gesture_control-fullResetDelay = Retraso del reinicio completo
-settings-general-gesture_control-fullResetTaps = Toques para reinicio completo
-settings-general-gesture_control-mountingResetEnabled = Activar toques para reinicio de montura
-settings-general-gesture_control-mountingResetDelay = Retraso del reinicio de montura
-settings-general-gesture_control-mountingResetTaps = Toques para reinicio de montura
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackers sobre el límite
 
 ## Appearance settings
 
