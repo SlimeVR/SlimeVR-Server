@@ -374,17 +374,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } трекеров
        *[other] { $amount } трекеров
     }
-settings-general-gesture_control-yawResetEnabled = Включить нажатие для сброса
-settings-general-gesture_control-yawResetDelay = Задержка сброса по рысканью
-settings-general-gesture_control-yawResetTaps = Нажатия для сброса
-settings-general-gesture_control-fullResetEnabled = Включить нажатия для полного сброса
-settings-general-gesture_control-fullResetDelay = Задержка полного сброса
-settings-general-gesture_control-fullResetTaps = Нажатия для полного сброса
-settings-general-gesture_control-mountingResetEnabled = Включить нажатия для сброса крепления
-settings-general-gesture_control-mountingResetDelay = Задержка сброса крепления
-settings-general-gesture_control-mountingResetTaps = Нажатия для сброса крепления
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Трекеры, превышающие порог
 
 ## Appearance settings
 
