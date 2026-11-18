@@ -392,17 +392,6 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } 个追踪器
-settings-general-gesture_control-yawResetEnabled = 开启敲击重置航向轴
-settings-general-gesture_control-yawResetDelay = 敲击重置航向轴延迟
-settings-general-gesture_control-yawResetTaps = 重置航向轴敲击次数
-settings-general-gesture_control-fullResetEnabled = 开启敲击完整重置
-settings-general-gesture_control-fullResetDelay = 敲击完整重置延迟
-settings-general-gesture_control-fullResetTaps = 完整重置敲击次数
-settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
-settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
-settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = 可触发敲击重置的追踪器数量
 
 ## Appearance settings
 
