@@ -279,17 +279,6 @@ settings-general-gesture_control-taps =
         [many] { $amount } дотиків
        *[other] { $amount } дотиків
     }
-settings-general-gesture_control-yawResetEnabled = Увімкнути дотик, щоб скинути нахил
-settings-general-gesture_control-yawResetDelay = Затримка скидання нахилу
-settings-general-gesture_control-yawResetTaps = Дотики для скидання нахилу
-settings-general-gesture_control-fullResetEnabled = Увімкнути дотик для повного скидання
-settings-general-gesture_control-fullResetDelay = Затримка повного скидання
-settings-general-gesture_control-fullResetTaps = Дотики для повного скидання
-settings-general-gesture_control-mountingResetEnabled = Увімкнути дотик для скидання положення
-settings-general-gesture_control-mountingResetDelay = Затримка скидання положення
-settings-general-gesture_control-mountingResetTaps = Дотики для скидання положення
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Трекери перевищують поріг
 
 ## Appearance settings
 
