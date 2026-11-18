@@ -364,17 +364,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } tracker
        *[other] { $amount } tracker
     }
-settings-general-gesture_control-yawResetEnabled = Abilita tocco per il ripristino dell'orientamento
-settings-general-gesture_control-yawResetDelay = Ritardo per il ripristino dell'orientamento
-settings-general-gesture_control-yawResetTaps = Numero di tocchi per il ripristino dell'orientamento
-settings-general-gesture_control-fullResetEnabled = Abilita tocco per il ripristino completo
-settings-general-gesture_control-fullResetDelay = Ritardo per il ripristino completo
-settings-general-gesture_control-fullResetTaps = Numero di tocchi per il ripristino completo
-settings-general-gesture_control-mountingResetEnabled = Abilita tocco per ripristino del posizionamento
-settings-general-gesture_control-mountingResetDelay = Ritardo per il ripristino del posizionamento
-settings-general-gesture_control-mountingResetTaps = Numero di tocchi per il ripristino del posizionamento
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Tracker sopra il limite
 
 ## Appearance settings
 
