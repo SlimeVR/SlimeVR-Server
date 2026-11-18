@@ -731,7 +731,7 @@ settings-general-gesture_control-trackers = crwdns8038:0$amountcrwdnd8038:0$amou
 settings-general-gesture_control-BUTTON = crwdns10244:0crwdne10244:0
 settings-general-gesture_control-TAP = crwdns10246:0crwdne10246:0
 settings-general-gesture_control-BOTH = crwdns10248:0crwdne10248:0
-settings-general-gesture_control-column-reset = crwdns9712:0crwdne9712:0
+settings-general-gesture_control-column-action = crwdns10252:0crwdne10252:0
 settings-general-gesture_control-column-tracker = crwdns9714:0crwdne9714:0
 settings-general-gesture_control-column-method = crwdns10250:0crwdne10250:0
 settings-general-gesture_control-column-taps = crwdns9716:0crwdne9716:0
@@ -739,20 +739,8 @@ settings-general-gesture_control-column-delay = crwdns9718:0crwdne9718:0
 settings-general-gesture_control-yawReset-name = crwdns9720:0crwdne9720:0
 settings-general-gesture_control-fullReset-name = crwdns9722:0crwdne9722:0
 settings-general-gesture_control-mountingReset-name = crwdns9724:0crwdne9724:0
-settings-general-gesture_control-yawResetEnabled = crwdns8040:0crwdne8040:0
-settings-general-gesture_control-yawResetDelay = crwdns8042:0crwdne8042:0
-settings-general-gesture_control-yawResetTaps = crwdns8044:0crwdne8044:0
-settings-general-gesture_control-yawResetTracker = crwdns8046:0crwdne8046:0
-settings-general-gesture_control-fullResetEnabled = crwdns8048:0crwdne8048:0
-settings-general-gesture_control-fullResetDelay = crwdns8050:0crwdne8050:0
-settings-general-gesture_control-fullResetTaps = crwdns8052:0crwdne8052:0
-settings-general-gesture_control-fullResetTracker = crwdns8054:0crwdne8054:0
-settings-general-gesture_control-mountingResetEnabled = crwdns8056:0crwdne8056:0
-settings-general-gesture_control-mountingResetDelay = crwdns8058:0crwdne8058:0
-settings-general-gesture_control-mountingResetTaps = crwdns8060:0crwdne8060:0
-settings-general-gesture_control-mountingResetTracker = crwdns8062:0crwdne8062:0
 # The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = crwdns8064:0crwdne8064:0
+settings-general-gesture_control-tapsTrackersOverThreshold = crwdns10254:0crwdne10254:0
 settings-general-gesture_control-numberTrackersOverThreshold-description = crwdns8066:0crwdne8066:0
 
 ## Appearance settings
