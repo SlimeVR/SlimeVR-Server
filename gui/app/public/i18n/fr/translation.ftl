@@ -385,17 +385,6 @@ settings-general-gesture_control-trackers =
         [one] 1 capteur
        *[other] { $amount } capteurs
     }
-settings-general-gesture_control-yawResetEnabled = Tapoter pour réinitialisation horizontale
-settings-general-gesture_control-yawResetDelay = Délai de réinitialisation horizontale
-settings-general-gesture_control-yawResetTaps = Nombre de tapes pour réinitialisation horizontale
-settings-general-gesture_control-fullResetEnabled = Tapoter pour réinitialisation complète
-settings-general-gesture_control-fullResetDelay = Délai de réinitialisation complète
-settings-general-gesture_control-fullResetTaps = Nombre de tapes pour réinitialisation complète
-settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
 
 ## Appearance settings
 
