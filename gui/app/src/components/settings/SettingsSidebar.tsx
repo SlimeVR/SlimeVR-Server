@@ -84,7 +84,6 @@ export function SettingsSidebar() {
       <div className="flex flex-col gap-2">
         <Typography variant="section-title" id="settings-sidebar-utils" />
         <div className="flex flex-col gap-1">
-          <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
           <SettingsLink to="/settings/serial" id="settings-sidebar-serial" />
           <SettingsLink to="/settings/logs" id="settings-sidebar-logs" />
           <SettingsLink
@@ -101,6 +100,7 @@ export function SettingsSidebar() {
             to="/settings/advanced"
             id="settings-sidebar-advanced"
           />
+          <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
         </div>
       </div>
     </div>
