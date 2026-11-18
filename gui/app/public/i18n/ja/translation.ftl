@@ -298,15 +298,6 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } トラッカー
-settings-general-gesture_control-yawResetEnabled = タップによるヨーリセットを有効にします
-settings-general-gesture_control-yawResetDelay = ヨーリセット遅延
-settings-general-gesture_control-yawResetTaps = ヨーリセット用のタップ
-settings-general-gesture_control-fullResetEnabled = タップによるフルリセットを有効にします
-settings-general-gesture_control-fullResetDelay = フルリセット遅延
-settings-general-gesture_control-fullResetTaps = フルリセット用のタップ
-settings-general-gesture_control-mountingResetEnabled = タップによるマウントリセットを有効にする
-settings-general-gesture_control-mountingResetDelay = マウントリセットディレイ
-settings-general-gesture_control-mountingResetTaps = タップによるマウントリセット
 
 ## Appearance settings
 
