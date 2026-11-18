@@ -358,17 +358,6 @@ settings-general-gesture_control-trackers =
         [many] { "" }
        *[other] { $amount } أجهزة تعقب
     }
-settings-general-gesture_control-yawResetEnabled = تمكين النقر لإعادة التعيين الانعراج
-settings-general-gesture_control-yawResetDelay = إعادة تعيين التأخير الانعراج
-settings-general-gesture_control-yawResetTaps = عدد النقرات لإعادة تعيين الانعراج
-settings-general-gesture_control-fullResetEnabled = تمكين النقر لإعادة التعيين الكامل
-settings-general-gesture_control-fullResetDelay = تأخير إعادة التعيين الكامل
-settings-general-gesture_control-fullResetTaps = عدد النقرات لإعادة التعيين الكامل
-settings-general-gesture_control-mountingResetEnabled = تمكين النقر لإعادة تعيين التركيب
-settings-general-gesture_control-mountingResetDelay = تأخير إعادة تعيين التركيب
-settings-general-gesture_control-mountingResetTaps = نقرات لإعادة تعيين التركيب
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = أجهزة تعقب فوق قيمة القطع
 
 ## Appearance settings
 
