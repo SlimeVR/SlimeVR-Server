@@ -46,7 +46,6 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 							val pendingResets = trackerState.pendingSkeletonResets
 							val bonePoseActions = SkeletonActions.SetBonePose(
 								bodyPart,
-								trackerState.boneOffsets[bodyPart],
 								trackerState.rotation,
 								trackerState.acceleration,
 								trackerState.position,

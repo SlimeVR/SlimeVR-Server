@@ -10,7 +10,6 @@ import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
 import dev.slimevr.skeleton.inputprocessors.ArmsInputProcessor
-import dev.slimevr.skeleton.inputprocessors.BoneOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.DirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FallbackInputProcessor
@@ -48,7 +47,6 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
-	val boneOffset: Vector3,
 	val poseTime: ComparableTimeMark?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
@@ -64,7 +62,6 @@ data class BoneState(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
-	val boneOffset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val headPosition: Vector3,
@@ -114,7 +111,6 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
-	boneOffset = Vector3.ZERO,
 	poseTime = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
@@ -155,7 +151,6 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
 		bodyPart = bone.bodyPart,
 		headOffset = bone.headOffset,
 		offset = bone.offset,
-		boneOffset = bone.boneOffset,
 		rotation = bone.rotation,
 		acceleration = bone.acceleration,
 		headPosition = headPosition,
@@ -181,7 +176,6 @@ fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, 
 sealed interface SkeletonActions {
 	data class SetBonePose(
 		val bodyPart: BodyPart,
-		val boneOffset: Vector3?,
 		val rotation: Quaternion?,
 		val acceleration: Vector3?,
 		val position: Vector3?,
@@ -275,7 +269,6 @@ class Skeleton(
 					// Run before FK on the inputs
 					inputProcessors = listOf(
 						FilteringInputProcessor(settings),
-						BoneOffsetInputProcessor(),
 						HeadPositionFallbackInputProcessor(),
 						FallbackInputProcessor(),
 						SpineInputProcessor(settings),
