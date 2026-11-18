@@ -579,27 +579,12 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } 個追蹤器
-settings-general-gesture_control-column-reset = 重置
 settings-general-gesture_control-column-tracker = 追蹤器
 settings-general-gesture_control-column-taps = 敲擊次數
 settings-general-gesture_control-column-delay = 延遲
 settings-general-gesture_control-yawReset-name = 左右偏擺重置
 settings-general-gesture_control-fullReset-name = 完整重置
 settings-general-gesture_control-mountingReset-name = 配戴校正
-settings-general-gesture_control-yawResetEnabled = 敲擊以左右偏擺重置
-settings-general-gesture_control-yawResetDelay = 左右偏擺重置延遲
-settings-general-gesture_control-yawResetTaps = 左右偏擺重置敲擊次數
-settings-general-gesture_control-yawResetTracker = 左右偏擺重置的追蹤器
-settings-general-gesture_control-fullResetEnabled = 敲擊以完整重置
-settings-general-gesture_control-fullResetDelay = 完整重置延遲
-settings-general-gesture_control-fullResetTaps = 完整重置敲擊次數
-settings-general-gesture_control-fullResetTracker = 完整重置的追蹤器
-settings-general-gesture_control-mountingResetEnabled = 敲擊以配戴重置
-settings-general-gesture_control-mountingResetDelay = 重置配戴延遲
-settings-general-gesture_control-mountingResetTaps = 重置配戴敲擊次數
-settings-general-gesture_control-mountingResetTracker = 配戴重置的追蹤器
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = 觸發敲擊判定的最多追蹤器數量
 
 ## Appearance settings
 
