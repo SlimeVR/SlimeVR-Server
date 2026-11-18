@@ -339,17 +339,6 @@ settings-general-gesture_control-trackers =
         [one] 1 twackew
        *[other] { $amount } twackews
     }
-settings-general-gesture_control-yawResetEnabled = enabwe bap to yaw weset
-settings-general-gesture_control-yawResetDelay = yaw weset deway
-settings-general-gesture_control-yawResetTaps = baps fow yaw weset
-settings-general-gesture_control-fullResetEnabled = enabwe bap to fuww weset
-settings-general-gesture_control-fullResetDelay = fuww weset deway
-settings-general-gesture_control-fullResetTaps = baps fow fuww weset
-settings-general-gesture_control-mountingResetEnabled = enable wap to weset mountwing
-settings-general-gesture_control-mountingResetDelay = mountwing weset deway
-settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = twackews over thweshowd
 
 ## Appearance settings
 
