@@ -346,17 +346,6 @@ settings-general-fk_settings-self_localization-title = Mocap-läge
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
-settings-general-gesture_control-yawResetDelay = Fördröjning av återställning av yaw
-settings-general-gesture_control-yawResetTaps = Tryck för återställning av yaw
-settings-general-gesture_control-fullResetEnabled = Aktivera tryck för fullständig återställning
-settings-general-gesture_control-fullResetDelay = Fördröjning vid fullständig återställning
-settings-general-gesture_control-fullResetTaps = Kranar för fullständig återställning
-settings-general-gesture_control-mountingResetEnabled = Aktivera tryck för att återställa montering
-settings-general-gesture_control-mountingResetDelay = Fördröjning av återställning av montering
-settings-general-gesture_control-mountingResetTaps = Gängtappar för montering av återställning
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackers över tröskelvärdet
 
 ## Appearance settings
 
