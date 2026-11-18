@@ -777,8 +777,8 @@ settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without any positional tracker.
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control-subtitle = Tap/button based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker or pressing its button. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
+settings-general-gesture_control-subtitle = Tracker actions
+settings-general-gesture_control-description = Allows resets to be triggered by tapping a tracker repetitively or pressing its button.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -794,28 +794,16 @@ settings-general-gesture_control-trackers = { $amount ->
 settings-general-gesture_control-BUTTON = Button
 settings-general-gesture_control-TAP = Tap
 settings-general-gesture_control-BOTH = Both
-settings-general-gesture_control-column-reset = Reset
+settings-general-gesture_control-column-action = Action
 settings-general-gesture_control-column-tracker = Tracker
-settings-general-gesture_control-column-method = Tap/Button
+settings-general-gesture_control-column-method = Method
 settings-general-gesture_control-column-taps = Taps
 settings-general-gesture_control-column-delay = Delay
 settings-general-gesture_control-yawReset-name = Yaw reset
 settings-general-gesture_control-fullReset-name = Full reset
 settings-general-gesture_control-mountingReset-name = Mounting calibration
-settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
-settings-general-gesture_control-yawResetDelay = Yaw reset delay
-settings-general-gesture_control-yawResetTaps = Taps for yaw reset
-settings-general-gesture_control-yawResetTracker = Yaw reset tracker
-settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
-settings-general-gesture_control-fullResetDelay = Full reset delay
-settings-general-gesture_control-fullResetTaps = Taps for full reset
-settings-general-gesture_control-fullResetTracker = Full reset tracker
-settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
-settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
-settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
+settings-general-gesture_control-tapsTrackersOverThreshold = Taps trackers over threshold
 settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make it work in order to prevent false positives.
 
 ## Appearance settings

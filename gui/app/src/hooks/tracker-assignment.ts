@@ -5,8 +5,8 @@ import {
   QuatT,
   ResetTrackerAssignmentsT,
   RpcMessage,
-  TapDetectionSetupModeRequestT,
-  TapDetectionSetupNotificationT,
+  TrackerActionSetupModeRequestT,
+  TrackerActionSetupNotificationT,
 } from 'solarxr-protocol';
 import { useChokerWarning } from './choker-warning';
 import { useWebsocketAPI } from './websocket-api';
@@ -59,14 +59,14 @@ export function useTrackerAssignment(mode: AssignmentMode) {
 
   useConnectedEffect(() => {
     sendRPCPacket(
-      RpcMessage.TapDetectionSetupModeRequest,
-      new TapDetectionSetupModeRequestT(true)
+      RpcMessage.TrackerActionSetupModeRequest,
+      new TrackerActionSetupModeRequestT(true)
     );
 
     return () => {
       sendRPCPacket(
-        RpcMessage.TapDetectionSetupModeRequest,
-        new TapDetectionSetupModeRequestT(false)
+        RpcMessage.TrackerActionSetupModeRequest,
+        new TrackerActionSetupModeRequestT(false)
       );
     };
   }, []);
@@ -150,8 +150,8 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   };
 
   useRPCPacket(
-    RpcMessage.TapDetectionSetupNotification,
-    (tapSetup: TapDetectionSetupNotificationT) => {
+    RpcMessage.TrackerActionSetupNotification,
+    (tapSetup: TrackerActionSetupNotificationT) => {
       if (armedPart === BodyPart.NONE || !tapSetup.trackerId) return;
       handleDropTracker(tapSetup.trackerId, armedPart);
       playTapSetupSound(config?.feedbackSoundVolume);

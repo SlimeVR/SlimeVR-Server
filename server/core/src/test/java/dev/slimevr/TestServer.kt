@@ -39,7 +39,7 @@ import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.stepmounting.StepMountingState
-import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.trackeraction.TrackerActionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
@@ -315,7 +315,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val vmcManager: VMCManager get() = error("not used in test")
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override val resetsManager: ResetsManager get() = error("not used in test")
-	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
+	override val trackerActionManager: TrackerActionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
 	override val stepMountingManager: StepMountingManager get() = error("not used in test")
 	override val logSources: List<LogSourceProvider> = emptyList()

@@ -21,7 +21,7 @@ private fun buildSettingsDefaultsResponse(): SettingsDefaultsResponse {
 		skeleton = buildSkeletonSettingsResponse(settings.skeletonConfig),
 		resets = buildResetsSettingsResponse(settings.resetsConfig),
 		stayAligned = buildStayAlignedSettingsResponse(settings.stayAlignedConfig, user),
-		tapDetection = buildTapDetectionSettingsResponse(settings.tapDetectionConfig),
+		trackerAction = buildTrackerActionSettingsResponse(settings.trackerActionConfig),
 		timeout = buildTimeoutSettingsResponse(settings.trackersConfig),
 		hid = buildHidSettingsResponse(settings.hidConfig),
 		driver = buildDriverSettingsResponse(settings.driverConfig),

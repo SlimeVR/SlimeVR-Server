@@ -36,7 +36,7 @@ import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
 import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
-import dev.slimevr.solarxr.rpc.TapDetectionBehaviour
+import dev.slimevr.solarxr.rpc.TrackerActionBehaviour
 import dev.slimevr.solarxr.rpc.TelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
 import dev.slimevr.solarxr.rpc.TrackerImuTelemetryBehaviour
@@ -190,7 +190,7 @@ class SolarXRBridge(
 				)
 			}
 			add(ResetsBehaviour(appContext.config.settings))
-			add(TapDetectionBehaviour(appContext.config.settings, appContext.tapDetectionManager))
+			add(TrackerActionBehaviour(appContext.config.settings, appContext.trackerActionManager))
 			add(VrcOscBehaviour(appContext.config.settings, appContext.vrcOscManager))
 			add(VmcBehaviour(appContext.config.settings, appContext.vmcManager))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))

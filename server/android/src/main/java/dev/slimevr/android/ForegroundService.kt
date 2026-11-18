@@ -47,7 +47,7 @@ import dev.slimevr.sentry.registerErrorReportSnapshots
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
-import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.trackeraction.TrackerActionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.appCoroutineExceptionHandler
@@ -191,7 +191,7 @@ class ForegroundService : Service() {
 		)
 		val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = scope)
 		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, vrcOscManager = vrcOscManager, stepMountingManager = stepMountingManager, scope = scope)
-		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
+		val trackerActionManager = TrackerActionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
 		val serverInfos = ServerInfos(::resolveAndroidLocalIpAddress)
 
@@ -221,7 +221,7 @@ class ForegroundService : Service() {
 			vmcManager = vmcManager,
 			vrcOscManager = vrcOscManager,
 			resetsManager = resetsManager,
-			tapDetectionManager = tapDetectionManager,
+			trackerActionManager = trackerActionManager,
 			stepMountingManager = stepMountingManager,
 			logSources = listOf(serverLogSource),
 		)

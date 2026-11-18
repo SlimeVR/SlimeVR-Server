@@ -2,81 +2,95 @@ package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.config.TrackerActionConfig
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
-import dev.slimevr.tapdetection.TapDetectionActions
-import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.trackeraction.TrackerActionActions
+import dev.slimevr.trackeraction.TrackerActionManager
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import solarxr_protocol.datatypes.TapDetectionMethod
-import solarxr_protocol.rpc.ChangeTapDetectionSettingsRequest
-import solarxr_protocol.rpc.TapDetectionSettingsRequest
-import solarxr_protocol.rpc.TapDetectionSettingsResponse
-import solarxr_protocol.rpc.TapDetectionSetupModeRequest
+import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerActionMethod
+import solarxr_protocol.rpc.ChangeTrackerActionSettingsRequest
+import solarxr_protocol.rpc.TrackerActionSettings
+import solarxr_protocol.rpc.TrackerActionSettingsRequest
+import solarxr_protocol.rpc.TrackerActionSettingsResponse
+import solarxr_protocol.rpc.TrackerActionSetupModeRequest
 
-internal fun buildTapDetectionSettingsResponse(config: TapDetectionConfig) = TapDetectionSettingsResponse(
-	yawResetDelay = config.yawResetDelay,
-	fullResetDelay = config.fullResetDelay,
-	mountingResetDelay = config.mountingResetDelay,
-	yawResetEnabled = config.yawResetEnabled,
-	fullResetEnabled = config.fullResetEnabled,
-	mountingResetEnabled = config.mountingResetEnabled,
-	yawResetTaps = config.yawResetTaps.toUByte(),
-	fullResetTaps = config.fullResetTaps.toUByte(),
-	mountingResetTaps = config.mountingResetTaps.toUByte(),
-	yawResetTracker = config.yawResetBodyPart,
-	fullResetTracker = config.fullResetBodyPart,
-	mountingResetTracker = config.mountingResetBodyPart,
-	numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
-	yawResetMethod = config.yawResetMethod,
-	fullResetMethod = config.fullResetMethod,
-	mountingResetMethod = config.mountingResetMethod,
+internal fun buildTrackerActionSettingsResponse(config: TrackerActionConfig) = TrackerActionSettingsResponse(
+	yawResetAction = TrackerActionSettings(
+		enabled = config.yawResetAction.enabled,
+		delay = config.yawResetAction.delay,
+		bodyPart = config.yawResetAction.bodyPart ?: BodyPart.NONE,
+		method = config.yawResetAction.method,
+		taps = config.yawResetAction.taps.toUByte(),
+	),
+	fullResetAction = TrackerActionSettings(
+		enabled = config.fullResetAction.enabled,
+		delay = config.fullResetAction.delay,
+		bodyPart = config.fullResetAction.bodyPart ?: BodyPart.NONE,
+		method = config.fullResetAction.method,
+		taps = config.fullResetAction.taps.toUByte(),
+	),
+	mountingResetAction = TrackerActionSettings(
+		enabled = config.mountingResetAction.enabled,
+		delay = config.mountingResetAction.delay,
+		bodyPart = config.mountingResetAction.bodyPart ?: BodyPart.NONE,
+		method = config.mountingResetAction.method,
+		taps = config.mountingResetAction.taps.toUByte(),
+	),
+	tapsTrackersOverThreshold = config.tapsTrackersOverThreshold.toUByte(),
 )
 
-class TapDetectionBehaviour(
+class TrackerActionBehaviour(
 	private val settings: Settings,
-	private val tapDetectionManager: TapDetectionManager,
+	private val trackerActionManager: TrackerActionManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
-		receiver.onRpc<TapDetectionSettingsRequest> { _, txId ->
-			receiver.sendRpc(buildTapDetectionSettingsResponse(settings.context.state.value.data.tapDetectionConfig), txId)
+		receiver.onRpc<TrackerActionSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildTrackerActionSettingsResponse(settings.context.state.value.data.trackerActionConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches
 		settings.context.state
-			.map { buildTapDetectionSettingsResponse(it.data.tapDetectionConfig) }
+			.map { buildTrackerActionSettingsResponse(it.data.trackerActionConfig) }
 			.distinctUntilChanged()
 			.drop(1)
 			.onEach(receiver::sendRpc)
 			.launchIn(receiver.context.scope)
 
 		// Receive config
-		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->
+		receiver.rpcDispatcher.on<ChangeTrackerActionSettingsRequest> { req ->
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						tapDetectionConfig = TapDetectionConfig(
-							yawResetDelay = req.yawResetDelay ?: 0f,
-							fullResetDelay = req.fullResetDelay ?: 0f,
-							mountingResetDelay = req.mountingResetDelay ?: 0f,
-							yawResetEnabled = req.yawResetEnabled == true,
-							fullResetEnabled = req.fullResetEnabled == true,
-							mountingResetEnabled = req.mountingResetEnabled == true,
-							yawResetTaps = req.yawResetTaps?.toInt() ?: 2,
-							fullResetTaps = req.fullResetTaps?.toInt() ?: 2,
-							mountingResetTaps = req.mountingResetTaps?.toInt() ?: 2,
-							yawResetBodyPart = req.yawResetTracker,
-							fullResetBodyPart = req.fullResetTracker,
-							mountingResetBodyPart = req.mountingResetTracker,
-							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: 1,
-							yawResetMethod = req.yawResetMethod ?: TapDetectionMethod.TAP,
-							fullResetMethod = req.fullResetMethod ?: TapDetectionMethod.TAP,
-							mountingResetMethod = req.mountingResetMethod ?: TapDetectionMethod.TAP,
+						trackerActionConfig = TrackerActionConfig(
+							yawResetAction = dev.slimevr.config.TrackerActionSettings(
+								enabled = req.yawResetAction?.enabled == true,
+								delay = req.yawResetAction?.delay ?: 0f,
+								bodyPart = req.yawResetAction?.bodyPart,
+								method = req.yawResetAction?.method ?: TrackerActionMethod.TAP,
+								taps = req.yawResetAction?.taps?.toInt() ?: 2,
+							),
+							fullResetAction = dev.slimevr.config.TrackerActionSettings(
+								enabled = req.fullResetAction?.enabled == true,
+								delay = req.fullResetAction?.delay ?: 0f,
+								bodyPart = req.fullResetAction?.bodyPart,
+								method = req.fullResetAction?.method ?: TrackerActionMethod.TAP,
+								taps = req.fullResetAction?.taps?.toInt() ?: 2,
+							),
+							mountingResetAction = dev.slimevr.config.TrackerActionSettings(
+								enabled = req.mountingResetAction?.enabled == true,
+								delay = req.mountingResetAction?.delay ?: 0f,
+								bodyPart = req.mountingResetAction?.bodyPart,
+								method = req.mountingResetAction?.method ?: TrackerActionMethod.TAP,
+								taps = req.mountingResetAction?.taps?.toInt() ?: 2,
+							),
+							tapsTrackersOverThreshold = req.tapsTrackersOverThreshold.toInt(),
 						),
 					)
 				},
@@ -84,8 +98,8 @@ class TapDetectionBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		// Setup Mode (tap/button press to assign)
-		receiver.rpcDispatcher.on<TapDetectionSetupModeRequest> { req ->
-			tapDetectionManager.context.dispatch(TapDetectionActions.SetSetupMode(req.setupMode == true))
+		receiver.rpcDispatcher.on<TrackerActionSetupModeRequest> { req ->
+			trackerActionManager.context.dispatch(TrackerActionActions.SetSetupMode(req.setupMode))
 		}.launchIn(receiver.context.scope)
 	}
 }

@@ -166,17 +166,17 @@ class LegacyConfigTest {
 		assertTrue(resets.saveMountingReset)
 		assertTrue(resets.resetHmdAttitude)
 
-		val tap = settings.tapDetectionConfig
-		assertEquals(0.4f, tap.yawResetDelay)
-		assertEquals(2.0f, tap.fullResetDelay)
-		assertEquals(1.0f, tap.mountingResetDelay)
-		assertFalse(tap.yawResetEnabled)
-		assertEquals(BodyPart.UPPER_CHEST, tap.yawResetBodyPart)
-		assertEquals(BodyPart.LOWER_WAIST, tap.mountingResetBodyPart)
-		assertEquals(BodyPart.LEFT_UPPER_LEG, tap.fullResetBodyPart)
-		assertEquals(4, tap.yawResetTaps)
-		assertEquals(5, tap.mountingResetTaps)
-		assertEquals(2, tap.numberTrackersOverThreshold)
+		val tap = settings.trackerActionConfig
+		assertEquals(0.4f, tap.yawResetAction.delay)
+		assertEquals(2.0f, tap.fullResetAction.delay)
+		assertEquals(1.0f, tap.mountingResetAction.delay)
+		assertFalse(tap.yawResetAction.enabled)
+		assertEquals(BodyPart.UPPER_CHEST, tap.yawResetAction.bodyPart)
+		assertEquals(BodyPart.LOWER_WAIST, tap.mountingResetAction.bodyPart)
+		assertEquals(BodyPart.LEFT_UPPER_LEG, tap.fullResetAction.bodyPart)
+		assertEquals(4, tap.yawResetAction.taps)
+		assertEquals(5, tap.mountingResetAction.taps)
+		assertEquals(2, tap.tapsTrackersOverThreshold)
 
 		val vmc = settings.vmcConfig
 		assertTrue(vmc.enabled)

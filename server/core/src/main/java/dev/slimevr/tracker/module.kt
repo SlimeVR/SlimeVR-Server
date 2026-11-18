@@ -30,7 +30,7 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration
 
-// A tracker is initialized as ROTATING to prevent TapDetection and Stay Aligned from running immediately.
+// A tracker is initialized as ROTATING to prevent Stay Aligned from running immediately.
 enum class Motion {
 	ROTATING,
 	RESTING,

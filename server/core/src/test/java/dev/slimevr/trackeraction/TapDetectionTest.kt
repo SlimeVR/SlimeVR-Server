@@ -1,4 +1,4 @@
-package dev.slimevr.tapdetection
+package dev.slimevr.trackeraction
 
 import io.github.axisangles.ktmath.Vector3
 import kotlin.test.Test
@@ -14,19 +14,19 @@ class TapDetectionTest {
 	)
 
 	// Accel high enough to trigger a tap
-	val highAccel = Vector3(0f, 0f, TapDetectionBasicBehaviour.NEEDED_ACCEL_DELTA * 3f)
+	val highAccel = Vector3(0f, 0f, TapDetectionBehaviour.NEEDED_ACCEL_DELTA * 3f)
 
 	// Low accel needed as rest between taps
 	val lowAccel = Vector3.ZERO
 
 	// Accelerations needed for a tap happen with this delay
-	val accelDelay = TapDetectionBasicBehaviour.ACCEL_WINDOW * 0.9
+	val accelDelay = TapDetectionBehaviour.ACCEL_WINDOW * 0.9
 
 	// Delay between several taps
-	val tapDelay = TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP * 0.9
+	val tapDelay = TapDetectionBehaviour.TAP_WINDOW_PER_TAP * 0.9
 
 	// Too long of a delay between several taps
-	val tapTimeoutDelay = TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP * 1.1
+	val tapTimeoutDelay = TapDetectionBehaviour.TAP_WINDOW_PER_TAP * 1.1
 
 	/**
 	 * Runs a sequence of tap events through TapDetection, asserting the results.
@@ -37,11 +37,11 @@ class TapDetectionTest {
 		bodyAccelerating: Boolean = false,
 		thresholdMultiplier: Float = 1f,
 	) {
-		val state = TapDetectionBasicBehaviour.TrackerTapDetectionState(
+		val state = TapDetectionBehaviour.TrackerTapDetectionState(
 			trackerId = 1,
 			tapsNeeded = tapsNeeded,
 		)
-		val behaviour = TapDetectionBasicBehaviour()
+		val behaviour = TapDetectionBehaviour()
 
 		val timeSource = TestTimeSource()
 		events.forEach { event ->

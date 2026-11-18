@@ -22,7 +22,7 @@ import {
 } from '@/components/settings/SettingRow';
 import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
 import { settingReset } from '@/components/settings/SettingReset';
-import { TapDetectionSettings } from './components/TapDetectionSettings';
+import { TrackerActionSettings } from './components/TrackerActionSettings';
 import { defineSettingsPage } from '@/components/settings/settings-definitions';
 
 type ResetsSettingsForm = {
@@ -101,8 +101,8 @@ export const resetsSettingsPage = defineSettingsPage({
     },
     tapThreshold: {
       rows: {
-        numberTrackersOverThreshold: {
-          title: 'settings-general-gesture_control-numberTrackersOverThreshold',
+        tapsTrackersOverThreshold: {
+          title: 'settings-general-gesture_control-tapsTrackersOverThreshold',
           description:
             'settings-general-gesture_control-numberTrackersOverThreshold-description',
         },
@@ -250,7 +250,7 @@ export function ResetsSettings() {
           </SettingRow>
         </SettingsGroup>
 
-        <TapDetectionSettings
+        <TrackerActionSettings
           resets={groups.tapResets}
           threshold={groups.tapThreshold}
         />

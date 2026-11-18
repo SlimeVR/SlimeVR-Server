@@ -16,7 +16,6 @@ import {
   ResetsSettingsResponseT,
   SkeletonSettingsResponseT,
   StayAlignedSettingsResponseT,
-  TapDetectionSettingsResponseT,
   TimeoutSettingsResponseT,
   TrackerDataT,
   TrackerStatus,
@@ -24,6 +23,7 @@ import {
   VMCOSCSettingsResponseT,
   VRCOSCSettingsResponseT,
   VRMSettingsResponseT,
+  TrackerActionSettingsResponseT,
 } from 'solarxr-protocol';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
@@ -48,7 +48,7 @@ export type SettingsDefaults = {
   skeleton: SkeletonSettingsResponseT;
   resets: ResetsSettingsResponseT;
   stayAligned: StayAlignedSettingsResponseT;
-  tapDetection: TapDetectionSettingsResponseT;
+  trackerAction: TrackerActionSettingsResponseT;
   timeout: TimeoutSettingsResponseT;
   hid: HIDSettingsResponseT;
   driver: DriverSettingsResponseT;

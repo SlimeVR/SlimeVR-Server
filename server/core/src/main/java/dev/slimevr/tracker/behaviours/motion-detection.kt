@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 
 /**
  * Detects whether a tracker is at rest or rotating.
- * Used for Stay Aligned and TapDetection.
+ * Used for Stay Aligned.
  */
 class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 
@@ -79,8 +79,6 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 	 */
 	private fun isRotating(lastRotation: RawRotation, rotation: RawRotation) = Angle.absBetween(lastRotation, rotation) > MAX_ROTATION
 
-	// TODO : these values may need fine-tuning for TapDetection
-	//  or maybe need multiple motion detector with an abstract class
 	companion object {
 		val MAX_ROTATION = Angle.ofDeg(2f)
 		val ENTER_REST_TIME = 1.seconds

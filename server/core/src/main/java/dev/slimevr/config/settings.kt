@@ -12,7 +12,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
-import solarxr_protocol.datatypes.TapDetectionMethod
+import solarxr_protocol.datatypes.TrackerActionMethod
 import solarxr_protocol.rpc.ArmsMountingResetMode
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
@@ -48,28 +48,23 @@ data class DriverConfig(
 	val sendVelocity: Boolean = false,
 )
 
+// Used in TrackerActionConfig
 @Serializable
-data class TapDetectionConfig(
-	var yawResetDelay: Float = 0.2f,
-	var fullResetDelay: Float = 1.4f,
-	var mountingResetDelay: Float = 1.4f,
-	var yawResetEnabled: Boolean = true,
-	var fullResetEnabled: Boolean = true,
-	var mountingResetEnabled: Boolean = true,
+data class TrackerActionSettings(
+	val enabled: Boolean = true,
+	val delay: Float,
 	@Serializable(with = BodyPartSerializer::class)
-	var yawResetBodyPart: BodyPart? = BodyPart.UPPER_CHEST,
-	@Serializable(with = BodyPartSerializer::class)
-	var mountingResetBodyPart: BodyPart? = BodyPart.RIGHT_UPPER_LEG,
-	@Serializable(with = BodyPartSerializer::class)
-	var fullResetBodyPart: BodyPart? = BodyPart.LEFT_UPPER_LEG,
-	var yawResetTaps: Int = 2,
-	var fullResetTaps: Int = 3,
-	var mountingResetTaps: Int = 3,
-	var numberTrackersOverThreshold: Int = 1,
-	var yawResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
-	var fullResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
-	var mountingResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
+	val bodyPart: BodyPart?,
+	val method: TrackerActionMethod = TrackerActionMethod.BOTH,
+	val taps: Int,
+)
 
+@Serializable
+data class TrackerActionConfig(
+	val yawResetAction: TrackerActionSettings = TrackerActionSettings(delay = 0.2f, bodyPart = BodyPart.UPPER_CHEST, taps = 2),
+	val fullResetAction: TrackerActionSettings = TrackerActionSettings(delay = 1.4f, bodyPart = BodyPart.LEFT_UPPER_LEG, taps = 3),
+	val mountingResetAction: TrackerActionSettings = TrackerActionSettings(delay = 1.0f, bodyPart = BodyPart.RIGHT_UPPER_LEG, taps = 3),
+	val tapsTrackersOverThreshold: Int = 1,
 )
 
 @Serializable
@@ -175,7 +170,7 @@ data class SettingsConfigState(
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
 	val driverConfig: DriverConfig = DriverConfig(),
-	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
+	val trackerActionConfig: TrackerActionConfig = TrackerActionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),
 	val skeletonConfig: SkeletonConfig = SkeletonConfig(),

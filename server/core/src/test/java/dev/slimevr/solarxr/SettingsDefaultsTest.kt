@@ -29,7 +29,7 @@ class SettingsDefaultsTest {
 		assertNotNull(defaults.skeleton)
 		assertNotNull(defaults.resets)
 		assertNotNull(defaults.stayAligned)
-		assertNotNull(defaults.tapDetection)
+		assertNotNull(defaults.trackerAction)
 		assertNotNull(defaults.timeout)
 		assertNotNull(defaults.hid)
 		assertNotNull(defaults.driver)

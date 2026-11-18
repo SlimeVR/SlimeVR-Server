@@ -1,6 +1,6 @@
-package dev.slimevr.tapdetection
+package dev.slimevr.trackeraction
 
-import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.config.TrackerActionConfig
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
@@ -13,16 +13,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
+import solarxr_protocol.datatypes.TrackerActionMethod
 import solarxr_protocol.datatypes.TrackerStatus
-import solarxr_protocol.rpc.ResetType
-import solarxr_protocol.rpc.TapDetectionSetupNotification
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 
-class TapDetectionBasicBehaviour : TapDetectionBehaviour {
+class TapDetectionBehaviour : TrackerActionBehaviour {
 	data class TrackerTapDetectionState(
 		var trackerId: Int,
 		var performsReset: Boolean = false,
@@ -34,8 +32,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 	// Loads TapDetection config and initializes a tracker's state
 	private fun createTrackerTapDetectionState(
-		tapDetectionConfig: TapDetectionConfig,
-		tapDetectionState: TapDetectionState,
+		tapDetectionConfig: TrackerActionConfig,
+		tapDetectionState: TrackerActionState,
 		trackerState: TrackerState,
 	): TrackerTapDetectionState {
 		// This holds a tracker's config and state for tap detection
@@ -44,19 +42,19 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		// setupMode uses defaults
 		if (!tapDetectionState.setupMode) {
 			when (trackerState.bodyPart) {
-				tapDetectionState.yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
+				tapDetectionState.yawResetBodyPart if tapDetectionConfig.yawResetAction.enabled -> {
 					trackerTapDetectionState.performsReset = true
-					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetTaps
+					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetAction.taps
 				}
 
-				tapDetectionState.fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
+				tapDetectionState.fullResetBodyPart if tapDetectionConfig.fullResetAction.enabled -> {
 					trackerTapDetectionState.performsReset = true
-					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.fullResetTaps
+					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.fullResetAction.taps
 				}
 
-				tapDetectionState.mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
+				tapDetectionState.mountingResetBodyPart if tapDetectionConfig.mountingResetAction.enabled -> {
 					trackerTapDetectionState.performsReset = true
-					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetTaps
+					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.mountingResetAction.taps
 				}
 
 				else -> {}
@@ -82,9 +80,9 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	)
 
 	@OptIn(ExperimentalCoroutinesApi::class)
-	override fun observe(receiver: TapDetectionManager) {
+	override fun observe(receiver: TrackerActionManager) {
 		val tapConfigFlow = receiver.settings.context.state
-			.map { it.data.tapDetectionConfig }
+			.map { it.data.trackerActionConfig }
 			.distinctUntilChanged()
 		val setupModeFlow = receiver.context.state
 			.map { it.setupMode }
@@ -110,19 +108,19 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 		combine(tapConfigFlow, setupModeFlow, okTrackersFlow, ::Triple).onEach { (tapDetectionConfig, setupMode, trackers) ->
 			if (setupMode) {
-				receiver.context.dispatch(TapDetectionActions.UpdateBodyParts(null, null, null))
+				receiver.context.dispatch(TrackerActionActions.UpdateBodyParts(null, null, null))
 				return@onEach
 			}
 
 			val trackersBodyParts = trackers.map { it.context.state.value.bodyPart }.toSet()
-			val yawResetBodyPart = arrayOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST)
+			val yawResetBodyPart = arrayOf(tapDetectionConfig.yawResetAction.bodyPart, BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST)
 				.firstOrNull { it in trackersBodyParts } ?: BodyPart.UPPER_CHEST
-			val fullResetBodyPart = arrayOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
+			val fullResetBodyPart = arrayOf(tapDetectionConfig.fullResetAction.bodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)
 				.firstOrNull { it in trackersBodyParts } ?: BodyPart.LEFT_UPPER_LEG
-			val mountingResetBodyPart = arrayOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
+			val mountingResetBodyPart = arrayOf(tapDetectionConfig.mountingResetAction.bodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
 				.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
 
-			receiver.context.dispatch(TapDetectionActions.UpdateBodyParts(yawResetBodyPart, fullResetBodyPart, mountingResetBodyPart))
+			receiver.context.dispatch(TrackerActionActions.UpdateBodyParts(yawResetBodyPart, fullResetBodyPart, mountingResetBodyPart))
 		}.launchIn(receiver.context.scope)
 
 		// Outer flow is refreshed whenever TapDetection config, setupMode, or a tracker's bodyPart or status changes
@@ -134,7 +132,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		)
 			.flatMapLatest { (tapDetectionConfig, tapDetectionState, trackers) ->
 				// To keep track of which trackers are moving
-				val numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
+				val tapsTrackersOverThreshold = tapDetectionConfig.tapsTrackersOverThreshold
 				val bodyPartsToCheck = falsePositiveBodyParts + tapDetectionState.yawResetBodyPart + tapDetectionState.fullResetBodyPart + tapDetectionState.mountingResetBodyPart
 				val trackersOverThreshold = mutableSetOf<Int>()
 
@@ -169,14 +167,14 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 								val othersOverThreshold = trackersOverThreshold.count() - if (isOverThreshold) 1 else 0
 								val tapTriggered = runTapDetection(
 									timeSource.markNow(),
-									othersOverThreshold >= numberTrackersOverThreshold,
+									othersOverThreshold >= tapsTrackersOverThreshold,
 									trackerTapDetectionState,
 									rawAcceleration,
 									thresholdMultiplier,
 								)
 
 								if (tapTriggered) {
-									receiver.actionTriggered(trackerTapDetectionState.trackerId)
+									receiver.actionTriggered(trackerTapDetectionState.trackerId, "TapDetection", TrackerActionMethod.TAP)
 								}
 							}
 						}

@@ -44,7 +44,7 @@ import dev.slimevr.sentry.registerErrorReportSnapshots
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
-import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.trackeraction.TrackerActionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.userLogDirectory
@@ -164,7 +164,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	)
 	val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = this)
 	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, vrcOscManager = vrcOscManager, stepMountingManager = stepMountingManager, scope = this)
-	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
+	val trackerActionManager = TrackerActionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
 	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)
 
@@ -189,7 +189,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,
 		resetsManager = resetsManager,
-		tapDetectionManager = tapDetectionManager,
+		trackerActionManager = trackerActionManager,
 		stepMountingManager = stepMountingManager,
 		logSources = listOf(serverLogSource) +
 			userLogDirectory()?.let { dir ->

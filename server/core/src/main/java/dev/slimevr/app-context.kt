@@ -15,7 +15,7 @@ import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
-import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.trackeraction.TrackerActionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
@@ -53,7 +53,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
 	val resetsManager: ResetsManager
-	val tapDetectionManager: TapDetectionManager
+	val trackerActionManager: TrackerActionManager
 	val stepMountingManager: StepMountingManager
 	val logSources: List<LogSourceProvider>
 	fun startObserving()
@@ -81,7 +81,7 @@ class AppContext(
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
 	override val resetsManager: ResetsManager,
-	override val tapDetectionManager: TapDetectionManager,
+	override val trackerActionManager: TrackerActionManager,
 	override val stepMountingManager: StepMountingManager,
 	override val logSources: List<LogSourceProvider>,
 ) : AppContextProvider {
@@ -99,7 +99,7 @@ class AppContext(
 		vmcManager.startObserving(this)
 		vrcOscManager.startObserving(this)
 		resetsManager.startObserving()
-		tapDetectionManager.startObserving()
+		trackerActionManager.startObserving()
 		stepMountingManager.startObserving()
 	}
 
