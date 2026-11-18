@@ -267,7 +267,7 @@ export function ResetsSettings() {
                   name="yawResetSmoothTime"
                   valueLabelFormat={(value) => secondsFormat.format(value)}
                   min={0.0}
-                  max={0.5}
+                  max={1.0}
                   step={0.05}
                 />
               }
