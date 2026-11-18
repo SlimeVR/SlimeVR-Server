@@ -310,10 +310,8 @@ class SkatingCorrectionTargetProcessor(val settings: Settings, val skeleton: Ske
 	}
 
 	override fun reset(resetType: ResetType) {
-		if (resetType == ResetType.FULL) {
-			lastProcessTime = timeSource.markNow()
-			lockState.clear()
-			releaseSmoothing.clear()
-		}
+		lastProcessTime = timeSource.markNow()
+		lockState.clear()
+		releaseSmoothing.clear()
 	}
 }

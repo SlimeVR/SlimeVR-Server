@@ -265,6 +265,7 @@ fun reduce(
 			state.copy(
 				sessionCalibration = state.sessionCalibration.copy(headingCorrection = action.heading),
 				yawResetSmoothing = if (action.done) null else state.yawResetSmoothing,
+				pendingSkeletonResets = if (action.done) state.pendingSkeletonResets + ResetType.YAW else state.pendingSkeletonResets,
 				rotationDirty = true,
 			)
 		}
