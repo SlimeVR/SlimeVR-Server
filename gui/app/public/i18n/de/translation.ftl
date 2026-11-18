@@ -458,17 +458,6 @@ settings-general-gesture_control-trackers =
         [one] 1 Tracker
        *[other] { $amount } Tracker
     }
-settings-general-gesture_control-yawResetEnabled = Horizontaler Reset durch Antippen
-settings-general-gesture_control-yawResetDelay = Verzögerung für einen horizontalen Reset
-settings-general-gesture_control-yawResetTaps = Antipp-Anzahl für einen horizontalen Reset
-settings-general-gesture_control-fullResetEnabled = Vollständiger Reset durch Antippen
-settings-general-gesture_control-fullResetDelay = Verzögerung für einen vollständigen Reset
-settings-general-gesture_control-fullResetTaps = Antipp-Anzahl für einen vollständigen Reset
-settings-general-gesture_control-mountingResetEnabled = Aktivieren von Antippen für Reset der Tracker-Ausrichtung
-settings-general-gesture_control-mountingResetDelay = Verzögerung von Reset der Tracker-Ausrichtung
-settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
 
 ## Appearance settings
 
