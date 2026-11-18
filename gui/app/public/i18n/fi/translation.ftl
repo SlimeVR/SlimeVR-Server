@@ -265,17 +265,6 @@ settings-general-gesture_control-trackers =
         [one] 1 jäljitin
        *[other] { $amount } jäljitintä
     }
-settings-general-gesture_control-yawResetEnabled = Ota käyttöön kallistumanollaus napautus
-settings-general-gesture_control-yawResetDelay = Kallistumanollaus viive
-settings-general-gesture_control-yawResetTaps = Napautuksia kallistumanollaukseen.
-settings-general-gesture_control-fullResetEnabled = Ota käyttöön täysinollaus napautus
-settings-general-gesture_control-fullResetDelay = Täysinollaus viive
-settings-general-gesture_control-fullResetTaps = Napautuksia täysinollaukseen
-settings-general-gesture_control-mountingResetEnabled = Ota käyttöön asennusnollaus napautus
-settings-general-gesture_control-mountingResetDelay = Asennusnollaus viive
-settings-general-gesture_control-mountingResetTaps = Napautuksia asennusnollaukseen
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Jäljittimet yli kynnysarvon
 
 ## Appearance settings
 
