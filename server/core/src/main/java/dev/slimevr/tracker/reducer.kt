@@ -38,7 +38,7 @@ fun reduce(
 		// Other inputs
 		val rawAcceleration: RawAcceleration? = action.acceleration ?: state.rawAcceleration
 		val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
-		val position = action.position ?: state.position
+		val rawPosition = action.position ?: state.rawPosition
 
 		// Rotation calibration: going from raw rotation to rotation since reset
 		val rotation: CalibratedRotation =
@@ -67,12 +67,25 @@ fun reduce(
 				state.acceleration
 			}
 
+		val position =
+			if (action.position != null) {
+				val boneOffset = state.boneOffsets[state.bodyPart]
+				if (boneOffset != null) {
+					action.position + rotation.sandwich(boneOffset)
+				} else {
+					action.position
+				}
+			} else {
+				state.position
+			}
+
 		state.copy(
 			rawRotation = rawRotation,
 			rotation = rotation,
 			rawAcceleration = rawAcceleration,
 			acceleration = acceleration,
 			rawMagnetometer = rawMagnetometer,
+			rawPosition = rawPosition,
 			position = position,
 			accumulatedTicks = accumulatedTicks,
 			rotationDirty = false,

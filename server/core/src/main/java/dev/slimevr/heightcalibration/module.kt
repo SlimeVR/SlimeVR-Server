@@ -83,8 +83,8 @@ class HeightCalibrationManager(
 			combine(
 				controllers.map { controller ->
 					controller.context.state.map { s ->
-						val position = s.position ?: error("hands (or Controller) will always have a position in this case")
-						TrackerSnapshot(position = position, rotation = s.rawRotation)
+						val rawPosition = s.rawPosition ?: error("hands (or Controller) will always have a rawPosition in this case")
+						TrackerSnapshot(position = rawPosition, rotation = s.rawRotation)
 					}
 				},
 			) { snapshots -> snapshots.minByOrNull { it.position.y } ?: error("snapshots is empty; controllers check above should have prevented this") }

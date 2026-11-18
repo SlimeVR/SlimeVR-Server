@@ -54,7 +54,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	trackerId = tracker.id.toUShort(),
 	status = if (trackerMask.status) tracker.status else TrackerStatus.NONE,
 	rotation = if (trackerMask.rotation) tracker.rawRotation.toQuat() else null,
-	position = if (trackerMask.position && tracker.position != null) tracker.position.toVec3f() else null,
+	position = if (trackerMask.position && tracker.rawPosition != null) tracker.rawPosition.toVec3f() else null,
 	info = if (trackerMask.info) {
 		TrackerInfo(
 			isImu = tracker.imuType != null,
