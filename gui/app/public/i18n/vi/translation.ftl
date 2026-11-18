@@ -289,17 +289,6 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } trackers
-settings-general-gesture_control-yawResetEnabled = Bật chạm để đặt lại chiều quay
-settings-general-gesture_control-yawResetDelay = Thời gian delay trước khi đặt lại
-settings-general-gesture_control-yawResetTaps = Số lần chạm để đặt lại chiều quay
-settings-general-gesture_control-fullResetEnabled = Bật chạm để đặt lại chiều quay
-settings-general-gesture_control-fullResetDelay = Thời gian delay trước khi đặt lại full
-settings-general-gesture_control-fullResetTaps = Số lần chạm để đặt lại full
-settings-general-gesture_control-mountingResetEnabled = Chạm để đặt lại hướng gắn tracker
-settings-general-gesture_control-mountingResetDelay = Thời gian delay trước khi đặt lại hướng gắn tracker
-settings-general-gesture_control-mountingResetTaps = Số lần chạm cho đặt lại hướng gắn tracker
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Số thiết bị có thể vượt phát hiện
 
 ## Appearance settings
 
