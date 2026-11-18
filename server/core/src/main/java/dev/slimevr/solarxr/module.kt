@@ -36,9 +36,9 @@ import dev.slimevr.solarxr.rpc.SettingsResetBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
 import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
 import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
-import dev.slimevr.solarxr.rpc.TrackerActionBehaviour
 import dev.slimevr.solarxr.rpc.TelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
+import dev.slimevr.solarxr.rpc.TrackerActionBehaviour
 import dev.slimevr.solarxr.rpc.TrackerImuTelemetryBehaviour
 import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
 import dev.slimevr.solarxr.rpc.UpdateTrackerBehaviour

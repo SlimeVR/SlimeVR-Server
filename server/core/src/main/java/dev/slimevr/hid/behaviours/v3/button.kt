@@ -13,7 +13,7 @@ class HIDButtonV3Behaviour(private val appContext: AppContextProvider) : HIDRece
 			appContext.trackerActionManager.actionTriggered(
 				tracker.context.state.value.id,
 				"HIDButtonV3",
-				TrackerActionMethod.BUTTON
+				TrackerActionMethod.BUTTON,
 			)
 		}.launchIn(receiver.context.scope)
 	}

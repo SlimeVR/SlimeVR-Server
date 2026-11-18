@@ -39,7 +39,6 @@ import dev.slimevr.skeleton.buildBones
 import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.stepmounting.StepMountingManager
 import dev.slimevr.stepmounting.StepMountingState
-import dev.slimevr.trackeraction.TrackerActionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
@@ -48,6 +47,7 @@ import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRotationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStaleCalibrationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
+import dev.slimevr.trackeraction.TrackerActionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpPeer
 import dev.slimevr.udp.UdpServer

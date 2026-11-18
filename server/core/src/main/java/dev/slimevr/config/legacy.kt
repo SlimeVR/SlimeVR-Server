@@ -124,25 +124,25 @@ private fun settingsOf(root: Map<*, *>): SettingsConfigState {
 			resetHmdAttitude = boolOf(resets["resetHmdPitch"]) ?: defaultResets.resetHmdAttitude,
 		),
 		trackerActionConfig = defaultTap.copy(
-            yawResetAction = defaultTap.yawResetAction.copy(
-                enabled = boolOf(tap["yawResetEnabled"]) ?: defaultTap.yawResetAction.enabled,
-                delay = floatOf(tap["yawResetDelay"]) ?: defaultTap.yawResetAction.delay,
-                bodyPart = stringOf(tap["yawResetTracker"])?.let(::bodyPartOf) ?: defaultTap.yawResetAction.bodyPart,
-                taps = intOf(tap["yawResetTaps"]) ?: defaultTap.yawResetAction.taps,
-            ),
-            fullResetAction = defaultTap.fullResetAction.copy(
-                enabled = boolOf(tap["fullResetEnabled"]) ?: defaultTap.fullResetAction.enabled,
-                delay = floatOf(tap["fullResetDelay"]) ?: defaultTap.fullResetAction.delay,
-                bodyPart = stringOf(tap["fullResetTracker"])?.let(::bodyPartOf) ?: defaultTap.fullResetAction.bodyPart,
-                taps = intOf(tap["fullResetTaps"]) ?: defaultTap.fullResetAction.taps,
-            ),
-            mountingResetAction = defaultTap.mountingResetAction.copy(
-                enabled = boolOf(tap["mountingResetEnabled"]) ?: defaultTap.mountingResetAction.enabled,
-                delay = floatOf(tap["mountingResetDelay"]) ?: defaultTap.mountingResetAction.delay,
-                bodyPart = stringOf(tap["mountingResetTracker"])?.let(::bodyPartOf) ?: defaultTap.mountingResetAction.bodyPart,
-                taps = intOf(tap["mountingResetTaps"]) ?: defaultTap.mountingResetAction.taps,
-            ),
-            tapsTrackersOverThreshold = intOf(tap["numberTrackersOverThreshold"]) ?: defaultTap.tapsTrackersOverThreshold,
+			yawResetAction = defaultTap.yawResetAction.copy(
+				enabled = boolOf(tap["yawResetEnabled"]) ?: defaultTap.yawResetAction.enabled,
+				delay = floatOf(tap["yawResetDelay"]) ?: defaultTap.yawResetAction.delay,
+				bodyPart = stringOf(tap["yawResetTracker"])?.let(::bodyPartOf) ?: defaultTap.yawResetAction.bodyPart,
+				taps = intOf(tap["yawResetTaps"]) ?: defaultTap.yawResetAction.taps,
+			),
+			fullResetAction = defaultTap.fullResetAction.copy(
+				enabled = boolOf(tap["fullResetEnabled"]) ?: defaultTap.fullResetAction.enabled,
+				delay = floatOf(tap["fullResetDelay"]) ?: defaultTap.fullResetAction.delay,
+				bodyPart = stringOf(tap["fullResetTracker"])?.let(::bodyPartOf) ?: defaultTap.fullResetAction.bodyPart,
+				taps = intOf(tap["fullResetTaps"]) ?: defaultTap.fullResetAction.taps,
+			),
+			mountingResetAction = defaultTap.mountingResetAction.copy(
+				enabled = boolOf(tap["mountingResetEnabled"]) ?: defaultTap.mountingResetAction.enabled,
+				delay = floatOf(tap["mountingResetDelay"]) ?: defaultTap.mountingResetAction.delay,
+				bodyPart = stringOf(tap["mountingResetTracker"])?.let(::bodyPartOf) ?: defaultTap.mountingResetAction.bodyPart,
+				taps = intOf(tap["mountingResetTaps"]) ?: defaultTap.mountingResetAction.taps,
+			),
+			tapsTrackersOverThreshold = intOf(tap["numberTrackersOverThreshold"]) ?: defaultTap.tapsTrackersOverThreshold,
 		),
 		vmcConfig = defaultVmc.copy(
 			enabled = boolOf(vmc["enabled"]) ?: defaultVmc.enabled,

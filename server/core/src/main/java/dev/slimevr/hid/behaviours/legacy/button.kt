@@ -28,7 +28,7 @@ class HIDButtonLegacyBehaviour(private val appContext: AppContextProvider) : HID
 		appContext.trackerActionManager.actionTriggered(
 			tracker.context.state.value.id,
 			"HIDButtonLegacy",
-			TrackerActionMethod.BUTTON
+			TrackerActionMethod.BUTTON,
 		)
 	}
 
