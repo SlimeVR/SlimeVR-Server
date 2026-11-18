@@ -4,27 +4,25 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonComputedProcessor
-import dev.slimevr.skeleton.SkeletonInputProcessor
 import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
 /**
- * Rotates the first Quaternion to match its roll to the rotation of
+ * Rotates the first Quaternion to match its twist to the rotation of
  * the second Quaternion
  *
  * @param from the first Quaternion
  * @param to the second Quaternion
  * @return the rotated Quaternion
  */
-private fun alignRoll(from: Quaternion, to: Quaternion): Quaternion {
+private fun alignTwist(from: Quaternion, to: Quaternion): Quaternion {
 	val local = to.localAbout(from)
-	val roll = local.project(Vector3.POS_Y).unit()
-	return roll.globalAbout(from)
+	val twist = local.eulerHeading()
+	return twist.globalAbout(from)
 }
 
 /**
- * Handles rotating the upper legs' roll to match the lower legs' roll to make VRChat's knee IK work better.
+ * Handles rotating the upper legs' twist to match the lower legs' twist to make VRChat's knee IK work better.
  *
  * This is a computed processor running after IK because we want to use the real upper leg's twist for IK and constraints.
  */
@@ -43,12 +41,12 @@ class UpperLegsTwistComputedProcessor(val settings: Settings) : SkeletonComputed
 		if (ratio == 0f) return
 
 		// Upper legs are written, lower legs are read, so the two never overlap
-		for (bodyPartToSource in bodyPartToSources) {
-			val bone = mutableComputedSkeleton[bodyPartToSource.first] ?: continue
-			val sourceRotation = mutableComputedSkeleton[bodyPartToSource.second]?.rotation ?: continue
+		for ((part, source) in bodyPartToSources) {
+			val bone = mutableComputedSkeleton[part] ?: continue
+			val sourceRotation = mutableComputedSkeleton[source]?.rotation ?: continue
 
-			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
-			mutableComputedSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
+			val alignedRotation = alignTwist(bone.rotation, sourceRotation)
+			mutableComputedSkeleton[part] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
 		}
 	}
 }
