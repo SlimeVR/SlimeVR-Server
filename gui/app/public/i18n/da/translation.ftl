@@ -240,7 +240,6 @@ settings-general-gesture_control-taps =
         [one] tryk
        *[other] tryk
     }
-settings-general-gesture_control-yawResetEnabled = Aktivér tryk for at yaw resette
 
 ## Appearance settings
 
