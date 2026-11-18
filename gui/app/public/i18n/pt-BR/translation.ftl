@@ -388,17 +388,6 @@ settings-general-gesture_control-trackers =
         [many] trackers
        *[other] trackers
     }
-settings-general-gesture_control-yawResetEnabled = Ativar toque para executar "Redefinir Rápido (Guinada)"
-settings-general-gesture_control-yawResetDelay = Atraso para executar "Redefinir Rápido (Guinada)"
-settings-general-gesture_control-yawResetTaps = Toques para executar "Redefinir Rápido (Guinada)"
-settings-general-gesture_control-fullResetEnabled = Ativar toque para executar "Redefinir Tudo"
-settings-general-gesture_control-fullResetDelay = Atraso do "Redefinir Tudo"
-settings-general-gesture_control-fullResetTaps = Toques para executar "Redefinir Tudo"
-settings-general-gesture_control-mountingResetEnabled = Ativar toque para realizar a "Calibração de Montagem"
-settings-general-gesture_control-mountingResetDelay = Atraso da calibração da montagem
-settings-general-gesture_control-mountingResetTaps = Toques para calibração de montagem
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackers acima do limite
 
 ## Appearance settings
 
