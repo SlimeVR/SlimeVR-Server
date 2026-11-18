@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.TapDetectionMethod
 import solarxr_protocol.rpc.ChangeTapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsResponse
@@ -31,6 +32,9 @@ internal fun buildTapDetectionSettingsResponse(config: TapDetectionConfig) = Tap
 	fullResetTracker = config.fullResetBodyPart,
 	mountingResetTracker = config.mountingResetBodyPart,
 	numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
+	yawResetMethod = config.yawResetMethod,
+	fullResetMethod = config.fullResetMethod,
+	mountingResetMethod = config.mountingResetMethod,
 )
 
 class TapDetectionBehaviour(
@@ -70,6 +74,9 @@ class TapDetectionBehaviour(
 							fullResetBodyPart = req.fullResetTracker,
 							mountingResetBodyPart = req.mountingResetTracker,
 							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: 1,
+							yawResetMethod = req.yawResetMethod ?: TapDetectionMethod.TAP,
+							fullResetMethod = req.fullResetMethod ?: TapDetectionMethod.TAP,
+							mountingResetMethod = req.mountingResetMethod ?: TapDetectionMethod.TAP,
 						),
 					)
 				},

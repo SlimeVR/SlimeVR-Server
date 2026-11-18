@@ -12,6 +12,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
+import solarxr_protocol.datatypes.TapDetectionMethod
 import solarxr_protocol.rpc.ArmsMountingResetMode
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
@@ -65,6 +66,10 @@ data class TapDetectionConfig(
 	var fullResetTaps: Int = 3,
 	var mountingResetTaps: Int = 3,
 	var numberTrackersOverThreshold: Int = 1,
+	var yawResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
+	var fullResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
+	var mountingResetMethod: TapDetectionMethod = TapDetectionMethod.BOTH,
+
 )
 
 @Serializable

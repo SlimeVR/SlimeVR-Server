@@ -4,12 +4,13 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.hid.HIDButton
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.HIDReceiverBehaviour
+import solarxr_protocol.datatypes.TapDetectionMethod
 
 class HIDButtonV3Behaviour(private val appContext: AppContextProvider) : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.on<HIDButton> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
-			appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id, "HIDButtonV3")
+			appContext.tapDetectionManager.actionTriggered(tracker.context.state.value.id, "HIDButtonV3", TapDetectionMethod.BUTTON)
 		}.launchIn(receiver.context.scope)
 	}
 }

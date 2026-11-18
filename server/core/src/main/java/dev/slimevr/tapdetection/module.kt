@@ -6,9 +6,9 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.resets.ResetsManager
-import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TapDetectionMethod
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TapDetectionSetupNotification
 import kotlin.collections.listOf
@@ -31,7 +31,7 @@ typealias TapDetectionBehaviour = Behaviour<TapDetectionManager>
 class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
 
-	suspend fun actionTriggered(trackerId: Int, sourceName: String = "TapDetection") {
+	suspend fun actionTriggered(trackerId: Int, sourceName: String = "TapDetection", sourceMethod: TapDetectionMethod = TapDetectionMethod.TAP) {
 		val tracker = server.getTracker(trackerId) ?: return
 		val state = context.state.value
 
@@ -54,13 +54,20 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 			else -> return
 		}
 
-		resetsManager.scheduleReset(
-			sourceName,
-			resetType,
-			actionDelay,
-		)
-	}
+		val method = when (resetType) {
+			ResetType.YAW -> tapDetectionConfig.yawResetMethod
+			ResetType.FULL -> tapDetectionConfig.fullResetMethod
+			ResetType.MOUNTING -> tapDetectionConfig.mountingResetMethod
+		}
 
+		if (method == sourceMethod || method == TapDetectionMethod.BOTH) {
+			resetsManager.scheduleReset(
+				sourceName,
+				resetType,
+				actionDelay,
+			)
+		}
+	}
 	companion object {
 		fun create(ctx: Phase1ContextProvider, resetsManager: ResetsManager, scope: CoroutineScope): TapDetectionManager {
 			val context = Context.create(

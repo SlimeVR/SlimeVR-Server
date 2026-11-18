@@ -2,6 +2,7 @@ import { useLocalization } from '@fluent/react';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
+  TapDetectionMethod,
   BodyPart,
   ChangeTapDetectionSettingsRequestT,
   RpcMessage,
@@ -54,6 +55,9 @@ type TapDetectionForm = {
   fullResetTracker: string;
   mountingResetTracker: string;
   numberTrackersOverThreshold: number;
+  yawResetMethod: string;
+  fullResetMethod: string;
+  mountingResetMethod: string;
 };
 
 // The server always sends every field, the fallbacks only satisfy the optional types
@@ -74,6 +78,13 @@ function toForm(settings: TapDetectionSettingsResponseT): TapDetectionForm {
       settings.mountingResetTracker ?? BodyPart.NONE
     ),
     numberTrackersOverThreshold: settings.numberTrackersOverThreshold ?? 0,
+    yawResetMethod: String(settings.yawResetMethod ?? TapDetectionMethod.BOTH),
+    fullResetMethod: String(
+      settings.fullResetMethod ?? TapDetectionMethod.BOTH
+    ),
+    mountingResetMethod: String(
+      settings.mountingResetMethod ?? TapDetectionMethod.BOTH
+    ),
   };
 }
 
@@ -140,6 +151,17 @@ export function TapDetectionSettings({
       label: l10n.getString(`body_part-${BodyPart[value]}`),
     }));
 
+  const TapDetectionMethods: { value: string; label: string }[] = Object.values(
+    TapDetectionMethod
+  )
+    .filter((v): v is TapDetectionMethod => typeof v === 'number')
+    .map((value) => ({
+      value: String(value),
+      label: l10n.getString(
+        `settings-general-gesture_control-${TapDetectionMethod[value]}`
+      ),
+    }));
+
   const { control, watch, handleSubmit, reset, setValue } =
     useForm<TapDetectionForm>({
       defaultValues: toForm(defaults),
@@ -163,6 +185,9 @@ export function TapDetectionSettings({
     settingsReq.mountingResetTaps = values.mountingResetTaps;
     settingsReq.numberTrackersOverThreshold =
       values.numberTrackersOverThreshold;
+    settingsReq.yawResetMethod = Number(values.yawResetMethod);
+    settingsReq.fullResetMethod = Number(values.fullResetMethod);
+    settingsReq.mountingResetMethod = Number(values.mountingResetMethod);
 
     sendRPCPacket(RpcMessage.ChangeTapDetectionSettingsRequest, settingsReq);
   };
@@ -267,6 +292,7 @@ export function TapDetectionSettings({
                 {column('reset')}
               </th>
               <th className="py-3 px-4">{column('tracker')}</th>
+              <th className="py-3 px-4">{column('method')}</th>
               <th className="py-3 px-4 w-56">{column('taps')}</th>
               <th className="py-3 pl-4 pr-4 w-56">{column('delay')}</th>
             </tr>
@@ -308,7 +334,7 @@ export function TapDetectionSettings({
                     />
                   </label>
                 </td>
-                <td className="col-start-2 col-span-2 row-start-2 block md:table-cell md:py-3 md:px-4 align-middle">
+                <td className="col-start-2 col-span-2 row-start-2 smol:col-start-2 smol:col-span-1 min-w-0 block md:table-cell md:py-3 md:px-4 align-middle">
                   <fieldset
                     disabled={!enabled}
                     className={classNames(
@@ -323,6 +349,24 @@ export function TapDetectionSettings({
                       placeholder={''}
                       name={`${id}Tracker` as keyof TapDetectionForm}
                       items={bodyParts}
+                    />
+                  </fieldset>
+                </td>
+                <td className="col-start-2 col-span-2 row-start-2 smol:col-start-3 smol:col-span-1 smol:row-start-2 min-w-0 block md:table-cell md:py-3 md:px-4 align-middle">
+                  <fieldset
+                    disabled={!enabled}
+                    className={classNames(
+                      'flex flex-col gap-1.5',
+                      !enabled && 'opacity-50'
+                    )}
+                  >
+                    {mobileCaption('method')}
+                    <Dropdown
+                      display="block"
+                      control={control}
+                      placeholder={''}
+                      name={`${id}Method` as keyof TapDetectionForm}
+                      items={TapDetectionMethods}
                     />
                   </fieldset>
                 </td>
@@ -350,7 +394,7 @@ export function TapDetectionSettings({
                     />
                   </fieldset>
                 </td>
-                <td className="col-start-2 col-span-2 row-start-4 smol:col-start-3 smol:col-span-1 smol:row-start-3 min-w-0 block md:table-cell md:py-3 md:px-4 align-middle">
+                <td className="col-start-2 col-span-2 row-start-3 smol:col-start-3 smol:col-span-1 smol:row-start-3 min-w-0 block md:table-cell md:py-3 md:px-4 align-middle">
                   <fieldset
                     disabled={!enabled}
                     className={classNames(
