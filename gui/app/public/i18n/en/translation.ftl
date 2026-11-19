@@ -1188,6 +1188,7 @@ onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
 onboarding-quiz-slimeset-answer-wifi = Wi-Fi-based Slime
 onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+onboarding-quiz-slimeset-answer-middleware = External software
 
 onboarding-quiz-usage-title = What are you using your trackers for?
 onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.

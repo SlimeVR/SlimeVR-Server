@@ -5,17 +5,21 @@ import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
 import { USBIcon } from '@/components/commons/icon/UsbIcon';
 import { useNavigate } from 'react-router-dom';
+import { LinkIcon } from '@/components/commons/icon/LinkIcon';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function QuizButton({
   name,
   active,
   icon,
   onClick,
+  textVariant = 'section-title',
 }: {
   active?: boolean;
   name: string;
   icon: ReactNode;
   onClick: () => void;
+  textVariant?: 'section-title' | 'standard';
 }) {
   return (
     <Clickable
@@ -23,7 +27,7 @@ export function QuizButton({
       pressed={active}
       className={classNames(
         'flex rounded-lg bg-background-60 hover:bg-background-50 cursor-pointer',
-        'p-4 outline outline-2 flex-col gap-4 items-center justify-between fill-background-20',
+        'p-4 outline outline-2 flex-col gap-4 items-center justify-between fill-background-20 text-center',
         {
           'outline-accent-background-30': active,
           'outline-transparent': !active,
@@ -31,12 +35,13 @@ export function QuizButton({
       )}
     >
       {icon}
-      <Typography id={name} variant="section-title" />
+      <Typography id={name} variant={textVariant} bold />
     </Clickable>
   );
 }
 
 export function QuizSlimeSetQuestion() {
+  const { isMobile } = useBreakpoint('mobile');
   const { applyProgress, setSlimeSet, slimeSet } = useOnboarding();
   const nav = useNavigate();
 
@@ -49,6 +54,7 @@ export function QuizSlimeSetQuestion() {
       case 'dongle-slime':
         nav('/onboarding/dongle');
         break;
+      case 'middleware':
       case 'slime-v1':
       case 'wifi-slime':
         nav('/onboarding/connect-trackers');
@@ -103,7 +109,7 @@ export function QuizSlimeSetQuestion() {
               variant="section-title"
               id="onboarding-quiz-slimeset-thirdparty-sets"
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.45fr)] mobile:grid-cols-3 gap-4">
               <QuizButton
                 onClick={() => next('wifi-slime')}
                 icon={
@@ -128,6 +134,16 @@ export function QuizSlimeSetQuestion() {
                   </div>
                 }
                 name="onboarding-quiz-slimeset-answer-dongle"
+              />
+              <QuizButton
+                onClick={() => next('middleware')}
+                textVariant={isMobile ? 'section-title' : 'standard'}
+                icon={
+                  <div className="fill-background-20">
+                    <LinkIcon size={isMobile ? 50 : 40} />
+                  </div>
+                }
+                name="onboarding-quiz-slimeset-answer-middleware"
               />
             </div>
           </div>
