@@ -55,6 +55,8 @@ export function QuizSlimeSetQuestion() {
         nav('/onboarding/dongle');
         break;
       case 'middleware':
+        nav('/onboarding/connect-middleware');
+        break;
       case 'slime-v1':
       case 'wifi-slime':
         nav('/onboarding/connect-trackers');

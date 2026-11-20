@@ -1263,14 +1263,20 @@ onboarding-home-start = Let's get set up!
 ## Tracker connection setup
 onboarding-connect_tracker-title = Let's connect your trackers
 onboarding-connect_tracker-description = Enter your Wi-Fi network below and submit once. Every tracker you connect via USB, now or later, will automatically use those credentials.
+onboarding-connect_tracker-description-middleware =
+    Follow the instructions of the external software you are using to connect your trackers.
+
+    This page is for connecting non-SlimeVR trackers via external software, which interprets devices to act like SlimeVR trackers.
 onboarding-connect_tracker-learn_more = Learn more
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
+onboarding-connect_tracker-issue-middleware = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-tracker_mac_name = SlimeVR Tracker ({ $suffix })
 onboarding-connect_tracker-tracker_port_name = USB Tracker ({ $port })
 onboarding-connect_tracker-network_profile-ignore = I configured my firewall and know what I'm doing
 onboarding-connect_tracker-waiting_first_title = Waiting for your first tracker
 onboarding-connect_tracker-waiting_first_desc = Plug one in over USB to get started.
+onboarding-connect_tracker-waiting_first_desc-middleware = Follow the instructions of the external software you are using to connect your trackers.
 onboarding-connect_tracker-scan_results_title = Select network & enter password
 onboarding-connect_tracker-scan_results_desc = Enter your Wi-Fi credentials on the left to connect your trackers.
 onboarding-connect_tracker-all_caught_up = All caught up. Plug in more any time
@@ -1302,7 +1308,6 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 } connected
 onboarding-connect_tracker-setting_up = Setting up ({ $amount })
 onboarding-connect_tracker-next = I connected all my trackers
-
 ## Tracker assignment setup
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker.

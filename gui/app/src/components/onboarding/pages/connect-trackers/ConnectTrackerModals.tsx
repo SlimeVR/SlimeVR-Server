@@ -3,9 +3,7 @@ import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
-
-export const DOCS_TROUBLESHOOTING_URL =
-  'https://docs.slimevr.dev/common-issues.html';
+import { DOCS_TROUBLESHOOTING_URL } from './TrackerList';
 
 export function ErrorDetailModal({
   isOpen,

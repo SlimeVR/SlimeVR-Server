@@ -24,6 +24,9 @@ import { TrackerWifi } from '@/components/tracker/TrackerWifi';
 
 export const DOCS_TROUBLESHOOTING_URL =
   'https://docs.slimevr.dev/common-issues.html';
+export const MIDDLEWARE_DOCS_URL = 'https://docs.slimevr.dev/tools/index.html';
+
+export type TrackerType = 'slimevr' | 'middleware';
 
 export const trackerStatusLabelMap: Record<TrackerProvisioningStatus, string> =
   {
@@ -443,20 +446,23 @@ function EmptyTrackerListIllustration({
   scanStatus,
   hasNetworks = false,
   onOpenNoSerialLogsModal,
+  isMiddleware = false,
 }: {
   scanStatus: WifiScanStatus;
   hasNetworks?: boolean;
   onOpenNoSerialLogsModal?: () => void;
+  isMiddleware?: boolean;
 }) {
   const isError =
-    scanStatus === WifiScanStatus.CONNECTION_ERROR ||
-    scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR ||
-    scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND ||
-    scanStatus === WifiScanStatus.UNSUPPORTED;
+    !isMiddleware &&
+    (scanStatus === WifiScanStatus.CONNECTION_ERROR ||
+      scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR ||
+      scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND ||
+      scanStatus === WifiScanStatus.UNSUPPORTED);
 
   const hasScanResults = scanStatus === WifiScanStatus.RESULTS || hasNetworks;
 
-  const titleId =
+  const slimevrTitleId =
     scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND
       ? 'onboarding-connect_tracker-connection_status-no_serial_device_found'
       : scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR
@@ -468,8 +474,7 @@ function EmptyTrackerListIllustration({
             : hasScanResults
               ? 'onboarding-connect_tracker-scan_results_title'
               : 'onboarding-connect_tracker-waiting_first_title';
-
-  const descId =
+  const slimevrDescId =
     scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND
       ? 'onboarding-wifi_creds-scan_error_no_device'
       : scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR
@@ -482,13 +487,17 @@ function EmptyTrackerListIllustration({
               ? 'onboarding-connect_tracker-scan_results_desc'
               : 'onboarding-connect_tracker-waiting_first_desc';
 
+  const middlewareTitleId = 'onboarding-connect_tracker-waiting_first_title';
+  const middlewareDescId =
+    'onboarding-connect_tracker-waiting_first_desc-middleware';
+
   return (
     <EmptyState
       className="flex-1 h-full min-h-[220px] !gap-3 my-auto"
       slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY}
       titleColor={isError ? 'text-status-critical' : undefined}
-      titleId={titleId}
-      descriptionId={descId}
+      titleId={isMiddleware ? middlewareTitleId : slimevrTitleId}
+      descriptionId={isMiddleware ? middlewareDescId : slimevrDescId}
       action={
         isError && (
           <button
@@ -568,16 +577,18 @@ export function mergeTrackerList(
 
 export function TrackerList({
   rows,
-  scanStatus,
-  networks,
+  scanStatus = WifiScanStatus.NONE,
+  networks = [],
   onOpenNoSerialLogsModal,
   children,
+  isMiddleware = false,
 }: {
   rows: TrackerRow[];
-  scanStatus: WifiScanStatus;
-  networks: WifiNetworkT[];
-  onOpenNoSerialLogsModal: () => void;
-  children: ReactNode;
+  scanStatus?: WifiScanStatus;
+  networks?: WifiNetworkT[];
+  onOpenNoSerialLogsModal?: () => void;
+  children?: ReactNode;
+  isMiddleware?: boolean;
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const connectedCount = useMemo(
@@ -628,6 +639,7 @@ export function TrackerList({
             scanStatus={scanStatus}
             hasNetworks={networks.length > 0}
             onOpenNoSerialLogsModal={onOpenNoSerialLogsModal}
+            isMiddleware={isMiddleware}
           />
         )}
         {children}

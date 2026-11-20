@@ -32,10 +32,12 @@ import {
 } from '@/components/commons/icon/ArrowIcons';
 import { MoreSetsConfirm } from '@/components/onboarding/pages/quiz/MoreSetsConfirm';
 import {
-  DOCS_TROUBLESHOOTING_URL,
+  MIDDLEWARE_DOCS_URL,
   mergeTrackerList,
   NoSerialLogsModal,
   TrackerList,
+  DOCS_TROUBLESHOOTING_URL,
+  TrackerType,
 } from './TrackerList';
 
 export function FloatingWifiForm({
@@ -326,6 +328,16 @@ function WifiFormFields({
   );
 }
 
+function MiddlewareLinks() {
+  return (
+    <div className="flex flex-col gap-2">
+      <ArrowLink to={MIDDLEWARE_DOCS_URL} direction="right" variant="boxed-2">
+        <Typography id="onboarding-connect_tracker-issue-middleware" />
+      </ArrowLink>
+    </div>
+  );
+}
+
 function TroubleshootingLinks({
   networkProfileBanner,
 }: {
@@ -348,13 +360,93 @@ function TroubleshootingLinks({
   );
 }
 
-export function ConnectTrackersPage() {
+export function ConnectTrackersPage({ type }: { type: TrackerType }) {
+  return type === 'middleware' ? (
+    <MiddlewareConnectTrackersPage />
+  ) : (
+    <SlimeVRConnectTrackersPage />
+  );
+}
+
+function MiddlewareConnectTrackersPage() {
+  const { applyProgress, state } = useOnboarding();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
+  const { isMobile } = useBreakpoint('mobile');
+  const rows = useMemo(
+    () => mergeTrackerList([], connectedIMUTrackers),
+    [connectedIMUTrackers]
+  );
+
+  applyProgress(0.4);
+
+  return (
+    <div className="w-full h-full flex flex-col xs:flex-row overflow-hidden min-h-0">
+      <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 mobile:pt-0 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
+        <div className="flex flex-col gap-1">
+          <Typography
+            variant="mobile-title"
+            id="onboarding-connect_tracker-title"
+          />
+          <Typography
+            variant="standard"
+            whitespace="whitespace-pre-wrap"
+            id="onboarding-connect_tracker-description-middleware"
+          />
+        </div>
+        {!isMobile && (
+          <div className="flex flex-col gap-2">
+            <TipBox>
+              <Typography
+                variant="standard"
+                color="text-accent-background-10"
+                id="onboarding-connect_tracker-shake_tip"
+              />
+            </TipBox>
+            <MiddlewareLinks />
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between">
+        <TrackerList rows={rows} isMiddleware>
+          {isMobile && (
+            <div className="pt-2 shrink-0">
+              <MiddlewareLinks />
+            </div>
+          )}
+        </TrackerList>
+        <div className="flex flex-row justify-between items-center shrink-0 py-4 border-t border-background-60">
+          <Button
+            variant="secondary"
+            state={{ alonePage: state.alonePage }}
+            to={
+              state.alonePage
+                ? '/onboarding/add-trackers'
+                : '/onboarding/quiz/slime-set'
+            }
+            id="onboarding-wifi_creds-back-v2"
+          />
+          {state.alonePage ? (
+            <Button
+              variant="primary"
+              to="/"
+              id="onboarding-connect_tracker-next"
+            />
+          ) : (
+            <MoreSetsConfirm />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SlimeVRConnectTrackersPage() {
   const { l10n } = useLocalization();
   const { visibleSteps, toggleSession } = useTrackingChecklist();
   const { applyProgress, state } = useOnboarding();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { isMobile } = useBreakpoint('mobile');
-
   const credsForm = useWifiCredsForm();
   const scan = useWifiScan();
   const session = useWifiProvisioningSession(credsForm.control);
@@ -430,7 +522,9 @@ export function ConnectTrackersPage() {
           id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
           elems={{
             PublicFixLink: (
-              <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
+              <A
+                href={`${DOCS_TROUBLESHOOTING_URL}#network-profile-is-currently-set-to-public`}
+              />
             ),
           }}
           vars={{
@@ -467,7 +561,7 @@ export function ConnectTrackersPage() {
   return (
     <>
       <div className="w-full h-full flex flex-col xs:flex-row overflow-hidden min-h-0">
-        <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
+        <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 mobile:pt-0 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-1">
               <Typography
@@ -499,7 +593,7 @@ export function ConnectTrackersPage() {
           )}
         </div>
 
-        <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between mobile:pb-14">
+        <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between mobile:pb-[76px]">
           <div className="flex flex-col gap-4 min-h-0 flex-1">
             <TrackerList
               rows={rows}

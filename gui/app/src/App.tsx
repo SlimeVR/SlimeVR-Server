@@ -192,7 +192,14 @@ function AppRoutes() {
             <Route path="dongle" element={<DonglePage />} />
             <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="add-trackers" element={<AddTrackersPage />} />
-            <Route path="connect-trackers" element={<ConnectTrackersPage />} />
+            <Route
+              path="connect-trackers"
+              element={<ConnectTrackersPage type="slimevr" />}
+            />
+            <Route
+              path="connect-middleware"
+              element={<ConnectTrackersPage type="middleware" />}
+            />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
