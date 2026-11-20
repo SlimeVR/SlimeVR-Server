@@ -2,7 +2,7 @@ package io.github.axisangles.ktmath
 
 data class Transform(
 	var rotation: Quaternion = Quaternion.IDENTITY,
-	var translation: Vector3 = Vector3.NULL,
+	var translation: Vector3 = Vector3.ZERO,
 	var scale: Vector3 = Vector3(1f, 1f, 1f),
 ) {
 	companion object {

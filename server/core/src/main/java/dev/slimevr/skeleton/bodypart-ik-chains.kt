@@ -1,0 +1,35 @@
+package dev.slimevr.skeleton
+
+import solarxr_protocol.datatypes.BodyPart
+
+// TODO Should this be generated from the BodyPart structure using start and end points?
+val BODY_PART_IK_CHAIN_MAP: BodyPartMap<IKChain> = BodyPartMap(
+	mapOf(
+		BodyPart.HEAD to listOf(
+			BodyPart.NECK,
+			BodyPart.HEAD,
+		),
+		BodyPart.LEFT_LOWER_ARM to listOf(
+			BodyPart.LEFT_UPPER_ARM,
+			BodyPart.LEFT_LOWER_ARM,
+		),
+		BodyPart.RIGHT_LOWER_ARM to listOf(
+			BodyPart.RIGHT_UPPER_ARM,
+			BodyPart.RIGHT_LOWER_ARM,
+		),
+		BodyPart.LOWER_WAIST to listOf(
+			BodyPart.UPPER_CHEST,
+			BodyPart.LOWER_CHEST,
+			BodyPart.UPPER_WAIST,
+			BodyPart.LOWER_WAIST,
+		),
+		BodyPart.LEFT_LOWER_LEG to listOf(
+			BodyPart.LEFT_UPPER_LEG,
+			BodyPart.LEFT_LOWER_LEG,
+		),
+		BodyPart.RIGHT_LOWER_LEG to listOf(
+			BodyPart.RIGHT_UPPER_LEG,
+			BodyPart.RIGHT_LOWER_LEG,
+		),
+	),
+)
