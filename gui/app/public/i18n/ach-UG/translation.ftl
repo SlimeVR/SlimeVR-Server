@@ -1056,6 +1056,7 @@ settings-home-table_columns-desc = crwdns8460:0crwdne8460:0
 settings-home-display_group = crwdns9762:0crwdne9762:0
 settings-home-tracker_display = crwdns8462:0crwdne8462:0
 settings-home-tracker_display-desc = crwdns8464:0crwdne8464:0
+settings-home-tracker_display-battery_runtime_estimate = crwdns10256:0crwdne10256:0
 settings-home-tracker_display-battery_voltage = crwdns8466:0crwdne8466:0
 settings-home-tracker_display-numeric_signal = crwdns8468:0crwdne8468:0
 
