@@ -333,12 +333,6 @@ settings-driver-status-badge-disabled = Désactivé
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrage
-settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
-settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
-settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
-settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
-settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Temps de fluidification de la réinitialisation horizontale (0s désactive la fluidification)
 settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -384,7 +378,6 @@ settings-general-fk_settings-self_localization-title = Mode Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers =
@@ -392,17 +385,6 @@ settings-general-gesture_control-trackers =
         [one] 1 capteur
        *[other] { $amount } capteurs
     }
-settings-general-gesture_control-yawResetEnabled = Tapoter pour réinitialisation horizontale
-settings-general-gesture_control-yawResetDelay = Délai de réinitialisation horizontale
-settings-general-gesture_control-yawResetTaps = Nombre de tapes pour réinitialisation horizontale
-settings-general-gesture_control-fullResetEnabled = Tapoter pour réinitialisation complète
-settings-general-gesture_control-fullResetDelay = Délai de réinitialisation complète
-settings-general-gesture_control-fullResetTaps = Nombre de tapes pour réinitialisation complète
-settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
 
 ## Appearance settings
 
@@ -1017,7 +999,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Ouvrir le panneau de configurat
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurer Garder Aligné
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Enregistrez les poses Garder Aligné pour réduire la dérive
 tracking_checklist-ignore = Ignorer
-preview-mocap_mode_soon = Mode Mocap (Bientôt™)
 preview-disable_render = Désactiver le rendu
 preview-disabled_render = Rendu désactivé
 toolbar-mounting_calibration = Calibration de l'alignement

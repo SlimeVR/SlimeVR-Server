@@ -284,7 +284,6 @@ tracker-infos-custom_name = crwdns7500:0crwdne7500:0
 tracker-infos-url = crwdns7502:0crwdne7502:0
 tracker-infos-hardware_identifier = crwdns7504:0crwdne7504:0
 tracker-infos-mac_address = crwdns9956:0crwdne9956:0
-tracker-infos-data_type = crwdns7506:0crwdne7506:0
 tracker-infos-imu = crwdns7508:0crwdne7508:0
 tracker-infos-board_type = crwdns7510:0crwdne7510:0
 tracker-infos-network_version = crwdns7512:0crwdne7512:0
@@ -540,18 +539,10 @@ settings-general-mounting_method = crwdns9568:0crwdne9568:0
 settings-general-mounting_method-pose_only = crwdns9692:0crwdne9692:0
 settings-general-mounting_method-description = crwdns9570:0crwdne9570:0
 settings-general-tracker_mechanics-filtering = crwdns7812:0crwdne7812:0
-settings-general-tracker_mechanics-filtering-type = crwdns9794:0crwdne9794:0
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description = crwdns7814:0{ settings-general-tracker_mechanics-filtering-type-smoothing }crwdnd7814:0{ settings-general-tracker_mechanics-filtering-type-prediction }crwdne7814:0
-settings-general-tracker_mechanics-filtering-type-none = crwdns7818:0crwdne7818:0
-settings-general-tracker_mechanics-filtering-type-none-description = crwdns7820:0crwdne7820:0
-settings-general-tracker_mechanics-filtering-type-smoothing = crwdns7822:0crwdne7822:0
-settings-general-tracker_mechanics-filtering-type-smoothing-description = crwdns7824:0crwdne7824:0
-settings-general-tracker_mechanics-filtering-type-prediction = crwdns7826:0crwdne7826:0
-settings-general-tracker_mechanics-filtering-type-prediction-description = crwdns7828:0crwdne7828:0
-settings-general-tracker_mechanics-filtering-amount = crwdns7830:0crwdne7830:0
-settings-general-tracker_mechanics-filtering-amount-description = crwdns9796:0crwdne9796:0
-settings-general-tracker_mechanics-filtering-amount-no_filtering = crwdns9694:0crwdne9694:0
+settings-general-tracker_mechanics-filtering-smoothing-strength = crwdns10234:0crwdne10234:0
+settings-general-tracker_mechanics-filtering-smoothing-strength-description = crwdns10236:0crwdne10236:0
+settings-general-tracker_mechanics-filtering-prediction-strength = crwdns10238:0crwdne10238:0
+settings-general-tracker_mechanics-filtering-prediction-strength-description = crwdns10240:0crwdne10240:0
 settings-general-fk_settings-reset_behaviour_group = crwdns9696:0crwdne9696:0
 settings-general-tracker_mechanics-yaw-reset-smooth-time = crwdns7832:0crwdne7832:0
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = crwdns7834:0crwdne7834:0
@@ -737,27 +728,19 @@ settings-general-gesture_control-taps = crwdns8036:0$amountcrwdnd8036:0$amountcr
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = crwdns8038:0$amountcrwdnd8038:0$amountcrwdne8038:0
-settings-general-gesture_control-column-reset = crwdns9712:0crwdne9712:0
+settings-general-gesture_control-BUTTON = crwdns10244:0crwdne10244:0
+settings-general-gesture_control-TAP = crwdns10246:0crwdne10246:0
+settings-general-gesture_control-BOTH = crwdns10248:0crwdne10248:0
+settings-general-gesture_control-column-action = crwdns10252:0crwdne10252:0
 settings-general-gesture_control-column-tracker = crwdns9714:0crwdne9714:0
+settings-general-gesture_control-column-method = crwdns10250:0crwdne10250:0
 settings-general-gesture_control-column-taps = crwdns9716:0crwdne9716:0
 settings-general-gesture_control-column-delay = crwdns9718:0crwdne9718:0
 settings-general-gesture_control-yawReset-name = crwdns9720:0crwdne9720:0
 settings-general-gesture_control-fullReset-name = crwdns9722:0crwdne9722:0
 settings-general-gesture_control-mountingReset-name = crwdns9724:0crwdne9724:0
-settings-general-gesture_control-yawResetEnabled = crwdns8040:0crwdne8040:0
-settings-general-gesture_control-yawResetDelay = crwdns8042:0crwdne8042:0
-settings-general-gesture_control-yawResetTaps = crwdns8044:0crwdne8044:0
-settings-general-gesture_control-yawResetTracker = crwdns8046:0crwdne8046:0
-settings-general-gesture_control-fullResetEnabled = crwdns8048:0crwdne8048:0
-settings-general-gesture_control-fullResetDelay = crwdns8050:0crwdne8050:0
-settings-general-gesture_control-fullResetTaps = crwdns8052:0crwdne8052:0
-settings-general-gesture_control-fullResetTracker = crwdns8054:0crwdne8054:0
-settings-general-gesture_control-mountingResetEnabled = crwdns8056:0crwdne8056:0
-settings-general-gesture_control-mountingResetDelay = crwdns8058:0crwdne8058:0
-settings-general-gesture_control-mountingResetTaps = crwdns8060:0crwdne8060:0
-settings-general-gesture_control-mountingResetTracker = crwdns8062:0crwdne8062:0
 # The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = crwdns8064:0crwdne8064:0
+settings-general-gesture_control-tapsTrackersOverThreshold = crwdns10254:0crwdne10254:0
 settings-general-gesture_control-numberTrackersOverThreshold-description = crwdns8066:0crwdne8066:0
 
 ## Appearance settings
@@ -862,6 +845,10 @@ settings-serial-send_command-placeholder = crwdns8198:0crwdne8198:0
 settings-serial-send_command-warning = crwdns8200:0crwdne8200:0
 settings-serial-send_command-warning-ok = crwdns8202:0crwdne8202:0
 settings-serial-send_command-warning-cancel = crwdns8204:0crwdne8204:0
+settings-serial-search = crwdns10226:0crwdne10226:0
+settings-serial-commands = crwdns10228:0crwdne10228:0
+settings-serial-module = crwdns10230:0crwdne10230:0
+settings-serial-module-all = crwdns10232:0crwdne10232:0
 
 ## Logs settings
 
@@ -957,6 +944,7 @@ settings-osc-vrchat-status-source-auto = crwdns8274:0crwdne8274:0
 settings-osc-vrchat-status-oscquery-disabled = crwdns8276:0crwdne8276:0
 settings-osc-vrchat-status-oscquery-advertising = crwdns8278:0$portcrwdne8278:0
 settings-osc-vrchat-status-oscquery-searching = crwdns8280:0crwdne8280:0
+settings-osc-vrchat-status-oscquery-manual = crwdns10220:0crwdne10220:0
 settings-osc-vrchat-status-oscquery-discovered-title = crwdns8282:0crwdne8282:0
 settings-osc-vrchat-status-oscquery-switch = crwdns8284:0crwdne8284:0
 settings-osc-vrchat-status-network-mode = crwdns8286:0crwdne8286:0
@@ -1437,6 +1425,8 @@ home-settings = crwdns9042:0crwdne9042:0
 home-settings-close = crwdns9044:0crwdne9044:0
 home-connection_group-wifi = crwdns9046:0crwdne9046:0
 home-connection_group-driver = crwdns9048:0crwdne9048:0
+home-connection_group-vmc = crwdns10222:0crwdne10222:0
+home-connection_group-vrc = crwdns10224:0crwdne10224:0
 home-new_trackers-count = crwdns9964:0$countcrwdnd9964:0$countcrwdnd9964:0$countcrwdne9964:0
 home-new_trackers-pill = crwdns9966:0$countcrwdne9966:0
 home-new_trackers-add = crwdns9968:0crwdne9968:0
@@ -1467,6 +1457,7 @@ firmware_tool-next_step = crwdns9074:0crwdne9074:0
 firmware_tool-previous_step = crwdns9076:0crwdne9076:0
 firmware_tool-ok = crwdns9078:0crwdne9078:0
 firmware_tool-retry = crwdns9080:0crwdne9080:0
+firmware_tool-select_all = crwdns10218:0crwdne10218:0
 firmware_tool-loading = crwdns9082:0crwdne9082:0
 
 ## Firmware tool Steps
@@ -1700,7 +1691,7 @@ tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-desc = crwdns9448:0crwdne9448:0
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-settings_desc = crwdns9866:0crwdne9866:0
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = crwdns9450:0crwdne9450:0
 tracking_checklist-ignore = crwdns9452:0crwdne9452:0
-preview-mocap_mode_soon = crwdns9454:0crwdne9454:0
+preview-recenter_mocap = crwdns10242:0crwdne10242:0
 preview-disable_render = crwdns9456:0crwdne9456:0
 preview-disabled_render = crwdns9458:0crwdne9458:0
 preview-render_mode = crwdns9460:0crwdne9460:0

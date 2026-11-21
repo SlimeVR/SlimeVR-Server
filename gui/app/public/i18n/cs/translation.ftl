@@ -295,12 +295,6 @@ settings-driver-status-badge-disabled = Vypnuto
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrování
-settings-general-tracker_mechanics-filtering-type-none = Žádné filtrování
-settings-general-tracker_mechanics-filtering-type-none-description = Použít rotace tak, jak jsou. Nebude provedeno žádné filtrování.
-settings-general-tracker_mechanics-filtering-type-smoothing = Vyhlazování
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Vyhlazuje pohyby, ale přidává mírné zpoždění.
-settings-general-tracker_mechanics-filtering-type-prediction = Predikce
-settings-general-tracker_mechanics-filtering-amount = Množství
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Čas vyhlazení resetu svislé osy (0s pro vypnutí vyhlazení)
 settings-general-tracker_mechanics-save_mounting_reset = Uložit automatickou kalibraci obnovení připevnění
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -344,7 +338,6 @@ settings-general-fk_settings-self_localization-title = Režim Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Umožňuje spouštět resetování klepnutím na tracker. Sledovací zařízení umístěné nejvýše na vašem hrudníku slouží k Rychlému-Resetování, tracker umístěný nejvýše na levé noze se používá pro Resetování, a tracker umístěný nejvýše na pravé noze se používá pro Resetování Montáže. Je třeba zmínit, že aby bylo klepnutí zaregistrováno, klepnutí musí být provedena do 0.6 vteřin.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -362,17 +355,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } trackerů
        *[other] { $amount } trackerů
     }
-settings-general-gesture_control-yawResetEnabled = Povolit klepnutí pro reset odklonu
-settings-general-gesture_control-yawResetDelay = Zpoždění resetu vybočení
-settings-general-gesture_control-yawResetTaps = Klepnutí pro resetování rotace
-settings-general-gesture_control-fullResetEnabled = Povolit klepnutí pro úplné restartování
-settings-general-gesture_control-fullResetDelay = Zpoždění úplného obnovení
-settings-general-gesture_control-fullResetTaps = Klepnutí pro úplný reset
-settings-general-gesture_control-mountingResetEnabled = Povolit klepnutí pro resetování montáže
-settings-general-gesture_control-mountingResetDelay = Zpoždění resetování montáže
-settings-general-gesture_control-mountingResetTaps = Klepnutí pro resetování montáže
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackery překročily práh
 
 ## Appearance settings
 
@@ -942,7 +924,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
 tracking_checklist-ignore = Ignorovat
-preview-mocap_mode_soon = Režim Mocap (brzy™)
 preview-disable_render = Vypnout vykreslování
 preview-disabled_render = Vykreslování vypnuto
 toolbar-mounting_calibration = Kalibrace nasazení

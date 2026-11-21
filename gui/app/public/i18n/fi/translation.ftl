@@ -234,12 +234,6 @@ settings-driver-enable = Käytä
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Suodatus
-settings-general-tracker_mechanics-filtering-type-none = Ei suodatusta
-settings-general-tracker_mechanics-filtering-type-none-description = Käytä kiertoja sellaisenaan. Ei tee mitään suodatusta.
-settings-general-tracker_mechanics-filtering-type-smoothing = Tasoitus
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoittaa liikettä, mutta lisää hieman viivettä.
-settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
-settings-general-tracker_mechanics-filtering-amount = Määrä
 
 ## Stay Aligned pose recorder
 
@@ -257,7 +251,6 @@ settings-general-fk_settings-self_localization-title = Mocap-tila
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Mahdollistaa nollauksen napauttamalla jäljitintä. Ylävartalon korkeinta jäljitintä käytetään Pikanollaukseen. Vasemman jalan korkeinta jäljitintä käytetään Nollaukseen, vastaavaisesti oikean jalan korkeinta jäljitintä käytetään Asennusnollaukseen. On syytä mainita, että napautusten on tapahduttava 0.6 sekunnin sisällä, jotta ne rekisteröityvät.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -272,17 +265,6 @@ settings-general-gesture_control-trackers =
         [one] 1 jäljitin
        *[other] { $amount } jäljitintä
     }
-settings-general-gesture_control-yawResetEnabled = Ota käyttöön kallistumanollaus napautus
-settings-general-gesture_control-yawResetDelay = Kallistumanollaus viive
-settings-general-gesture_control-yawResetTaps = Napautuksia kallistumanollaukseen.
-settings-general-gesture_control-fullResetEnabled = Ota käyttöön täysinollaus napautus
-settings-general-gesture_control-fullResetDelay = Täysinollaus viive
-settings-general-gesture_control-fullResetTaps = Napautuksia täysinollaukseen
-settings-general-gesture_control-mountingResetEnabled = Ota käyttöön asennusnollaus napautus
-settings-general-gesture_control-mountingResetDelay = Asennusnollaus viive
-settings-general-gesture_control-mountingResetTaps = Napautuksia asennusnollaukseen
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Jäljittimet yli kynnysarvon
 
 ## Appearance settings
 

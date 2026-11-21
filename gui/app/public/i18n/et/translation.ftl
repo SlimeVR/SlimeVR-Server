@@ -227,12 +227,6 @@ settings-driver-enable = Luba
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtreerimine
-settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
-settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
-settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
-settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
-settings-general-tracker_mechanics-filtering-amount = Amount
 
 ## Stay Aligned pose recorder
 
@@ -261,7 +255,6 @@ settings-general-fk_settings-self_localization-title = Mocapi režiim
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.3 sekundi jooksul, et need registreeritaks.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -276,17 +269,6 @@ settings-general-gesture_control-trackers =
         [one] 1 jälgija
        *[other] { $amount } jälgijat
     }
-settings-general-gesture_control-yawResetEnabled = Luba puudutamine lengerduse lähtestamiseks
-settings-general-gesture_control-yawResetDelay = Lengerduse lähtestamise viivitus
-settings-general-gesture_control-yawResetTaps = Puudutust lengerduse lähtestamiseks
-settings-general-gesture_control-fullResetEnabled = Luba puudutus täielikuks lähtestamiseks
-settings-general-gesture_control-fullResetDelay = Tavalise lähtestamise viivitus
-settings-general-gesture_control-fullResetTaps = Puudutust tavaliseks lähtestamiseks
-settings-general-gesture_control-mountingResetEnabled = Luba, et vajutus lähtestab paigalduseasendi
-settings-general-gesture_control-mountingResetDelay = Paigaldusasendi lähtestamise viivitus
-settings-general-gesture_control-mountingResetTaps = Paigaldusasendi lähtestamise vajutus
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Jälgijad üle läve
 
 ## Appearance settings
 
