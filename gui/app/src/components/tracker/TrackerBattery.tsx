@@ -33,14 +33,14 @@ export function TrackerBattery({
   });
 
   const charging = (voltage || 0) > 4.3;
-  const debug = config?.debug;
+  const showRuntime = config?.trackerDisplay?.showBatteryRuntimeEstimate;
   const showVoltage = voltage && config?.trackerDisplay?.showBatteryVoltage;
 
   const pct = value > 2 ? 0 : Math.min(Math.max(value, 0), 1);
 
   return (
     <Tooltip
-      disabled={charging || !runtime || debug}
+      disabled={charging || !runtime || !showRuntime}
       preferedDirection="left"
       content={<Typography>{percentFormatter.format(pct)}</Typography>}
     >
@@ -50,7 +50,7 @@ export function TrackerBattery({
         </div>
         {((!charging || showVoltage) && (
           <div className="w-15">
-            {!charging && runtime != null && runtime > 0 && (
+            {!charging && runtime != null && runtime > 0 && showRuntime && (
               <Typography color={textColor}>
                 {(runtime / BigInt(3600000000)).toString() +
                   'h ' +
@@ -61,7 +61,7 @@ export function TrackerBattery({
                   'min'}
               </Typography>
             )}
-            {!charging && (!runtime || debug) && (
+            {!charging && (!runtime || !showRuntime) && (
               <Typography color={textColor}>
                 {percentFormatter.format(pct)}
               </Typography>

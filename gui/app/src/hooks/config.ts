@@ -69,11 +69,13 @@ export const trackersTableColumnOrder = [
 export type TrackersTableOptionalColumn = (typeof trackersTableColumnOrder)[number];
 
 export interface TrackerDisplayConfig {
+  showBatteryRuntimeEstimate: boolean;
   showBatteryVoltage: boolean;
   showNumericSignal: boolean;
 }
 
 export const defaultTrackerDisplay: TrackerDisplayConfig = {
+  showBatteryRuntimeEstimate: true,
   showBatteryVoltage: false,
   showNumericSignal: false,
 };

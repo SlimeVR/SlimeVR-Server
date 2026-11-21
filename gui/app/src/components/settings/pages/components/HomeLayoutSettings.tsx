@@ -123,11 +123,14 @@ export function TrackersTableColumnsSettings({
 }
 
 const trackerDisplayToggleOrder: (keyof TrackerDisplayConfig)[] = [
+  'showBatteryRuntimeEstimate',
   'showBatteryVoltage',
   'showNumericSignal',
 ];
 
 const trackerDisplayToggleLabel: Record<keyof TrackerDisplayConfig, string> = {
+  showBatteryRuntimeEstimate:
+    'settings-home-tracker_display-battery_runtime_estimate',
   showBatteryVoltage: 'settings-home-tracker_display-battery_voltage',
   showNumericSignal: 'settings-home-tracker_display-numeric_signal',
 };
