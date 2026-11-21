@@ -277,26 +277,8 @@ export function HeightSelectionInput({
   };
 
   const handleUnitChange = (newUnit: 'meter' | 'foot') => {
-    if (!headHeight || newUnit === unit) return;
+    if (newUnit === unit) return;
 
-    const fullHeight = headHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
-    let snappedHeight;
-
-    if (newUnit === 'foot') {
-      // Snap to nearest inch
-      const totalInches = Math.round(convert(fullHeight, 'meter').to('inch'));
-      snappedHeight = convert(totalInches, 'inch').to('meter');
-    } else {
-      // Snap to nearest centimeter
-      const totalCm = Math.round(convert(fullHeight, 'meter').to('cm'));
-      snappedHeight = convert(totalCm, 'cm').to('meter');
-    }
-
-    const newEyeHeight = round4Digit(
-      snappedHeight * EYE_HEIGHT_TO_HEIGHT_RATIO
-    );
-
-    setHeadHeight(newEyeHeight);
     onUnitChange(newUnit);
   };
 
