@@ -1280,6 +1280,7 @@ onboarding-connect_tracker-waiting_first_desc-middleware = Follow the instructio
 onboarding-connect_tracker-scan_results_title = Select network & enter password
 onboarding-connect_tracker-scan_results_desc = Enter your Wi-Fi credentials on the left to connect your trackers.
 onboarding-connect_tracker-all_caught_up = All caught up. Plug in more any time
+onboarding-connect_tracker-all_caught_up-middleware = All caught up. Connect more from the external software any time.
 onboarding-connect_tracker-shake_tip = Not sure which tracker is which? Shake a tracker to see it light up in the list.
 onboarding-connect_tracker-close = Close
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device

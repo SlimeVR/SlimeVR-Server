@@ -404,9 +404,11 @@ export function NoSerialLogsModal({
 export function StatusBar({
   connectedCount,
   connectingCount,
+  isMiddleware,
 }: {
   connectedCount: number;
   connectingCount: number;
+  isMiddleware?: boolean;
 }) {
   return (
     <div className="hidden sm:flex rounded-lg bg-background-60 p-4 items-center gap-3 shrink-0">
@@ -433,7 +435,7 @@ export function StatusBar({
           id={
             connectingCount > 0
               ? 'onboarding-connect_tracker-setting_up'
-              : 'onboarding-connect_tracker-all_caught_up'
+              : `onboarding-connect_tracker-all_caught_up${isMiddleware ? '-middleware' : ''}`
           }
           vars={{ amount: connectingCount }}
         />
@@ -567,8 +569,7 @@ export function mergeTrackerList(
 
   for (const ct of connectedIMUTrackers) {
     if (claimedConnected.has(ct)) continue;
-    const mac = normalizeMac(ct.device?.hardwareInfo?.hardwareIdentifier);
-    const key = mac || `connected-${ct.device?.id}`;
+    const key = `connected-${ct.tracker.trackerId}`;
     rows.push({ kind: 'connected', key, tracker: ct });
   }
 
@@ -582,6 +583,7 @@ export function TrackerList({
   onOpenNoSerialLogsModal,
   children,
   isMiddleware = false,
+  hideEmptyState = false,
 }: {
   rows: TrackerRow[];
   scanStatus?: WifiScanStatus;
@@ -589,6 +591,7 @@ export function TrackerList({
   onOpenNoSerialLogsModal?: () => void;
   children?: ReactNode;
   isMiddleware?: boolean;
+  hideEmptyState?: boolean;
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const connectedCount = useMemo(
@@ -608,6 +611,7 @@ export function TrackerList({
         <StatusBar
           connectedCount={connectedCount}
           connectingCount={connectingCount}
+          isMiddleware={isMiddleware}
         />
       )}
 
@@ -634,14 +638,14 @@ export function TrackerList({
               />
             )
           )
-        ) : (
+        ) : !hideEmptyState ? (
           <EmptyTrackerListIllustration
             scanStatus={scanStatus}
             hasNetworks={networks.length > 0}
             onOpenNoSerialLogsModal={onOpenNoSerialLogsModal}
             isMiddleware={isMiddleware}
           />
-        )}
+        ) : null}
         {children}
       </div>
     </div>

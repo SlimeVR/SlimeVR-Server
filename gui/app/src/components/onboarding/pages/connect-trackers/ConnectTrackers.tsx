@@ -16,7 +16,10 @@ import {
 } from '@/hooks/wifi-form';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { connectedIMUTrackersAtom } from '@/store/app-store';
+import {
+  connectedIMUTrackersAtom,
+  unknownDevicesAtom,
+} from '@/store/app-store';
 import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
 import { Dropdown } from '@/components/commons/Dropdown';
@@ -35,10 +38,15 @@ import {
   MIDDLEWARE_DOCS_URL,
   mergeTrackerList,
   NoSerialLogsModal,
+  normalizeMac,
   TrackerList,
   DOCS_TROUBLESHOOTING_URL,
   TrackerType,
 } from './TrackerList';
+import {
+  PendingTrackerCard,
+  PendingTrackersDivider,
+} from '@/components/tracker/PendingTrackers';
 
 export function FloatingWifiForm({
   summary,
@@ -371,11 +379,26 @@ export function ConnectTrackersPage({ type }: { type: TrackerType }) {
 function MiddlewareConnectTrackersPage() {
   const { applyProgress, state } = useOnboarding();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
+  const unknownDevices = useAtomValue(unknownDevicesAtom);
   const { isMobile } = useBreakpoint('mobile');
   const rows = useMemo(
     () => mergeTrackerList([], connectedIMUTrackers),
     [connectedIMUTrackers]
   );
+  const pendingDevices = useMemo(() => {
+    const liveHardwareIds = new Set(
+      connectedIMUTrackers
+        .map(({ device }) =>
+          normalizeMac(device?.hardwareInfo?.hardwareIdentifier)
+        )
+        .filter((hardwareId): hardwareId is string => !!hardwareId)
+    );
+
+    return unknownDevices.filter((device) => {
+      const hardwareId = normalizeMac(device.hardwareId);
+      return hardwareId && !liveHardwareIds.has(hardwareId);
+    });
+  }, [connectedIMUTrackers, unknownDevices]);
 
   applyProgress(0.4);
 
@@ -393,6 +416,7 @@ function MiddlewareConnectTrackersPage() {
             id="onboarding-connect_tracker-description-middleware"
           />
         </div>
+
         {!isMobile && (
           <div className="flex flex-col gap-2">
             <TipBox>
@@ -408,7 +432,24 @@ function MiddlewareConnectTrackersPage() {
       </div>
 
       <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between">
-        <TrackerList rows={rows} isMiddleware>
+        <TrackerList
+          rows={rows}
+          isMiddleware
+          hideEmptyState={pendingDevices.length > 0}
+        >
+          {pendingDevices.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <PendingTrackersDivider devices={pendingDevices} />
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingDevices.map((device) => (
+                  <PendingTrackerCard
+                    key={device.hardwareId as string}
+                    device={device}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           {isMobile && (
             <div className="pt-2 shrink-0">
               <MiddlewareLinks />
