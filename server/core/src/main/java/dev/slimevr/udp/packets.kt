@@ -14,6 +14,7 @@ import kotlinx.io.readString
 import kotlinx.io.readUByte
 import kotlinx.io.readUShort
 import kotlinx.io.writeUByte
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
@@ -302,7 +303,7 @@ data class SensorInfo(
 	val imuType: ImuType = ImuType.UNKNOWN,
 	val sensorConfig: SensorConfig? = null,
 	val hasCompletedRestCalibration: Boolean? = null,
-	val trackerPosition: Int? = null,
+	val trackerPosition: BodyPart? = null,
 	val trackerDataType: Int? = null,
 ) : SensorSpecificPacket {
 	data class SensorConfig(
@@ -337,13 +338,69 @@ data class SensorInfo(
 			else -> TrackerStatus.DISCONNECTED
 		}
 
+		/** Maps from firmware's `SensorPosition` to SolarXR's `BodyPart` **/
+		private fun bodyPartFromUDP(sensorPositionId: Int): BodyPart? = when (sensorPositionId) {
+			0 -> null
+			1 -> BodyPart.HEAD
+			2 -> BodyPart.NECK
+			3 -> BodyPart.UPPER_CHEST
+			4 -> BodyPart.LOWER_CHEST
+			5 -> BodyPart.LOWER_WAIST
+			6 -> BodyPart.HIP
+			7 -> BodyPart.LEFT_UPPER_LEG
+			8 -> BodyPart.RIGHT_UPPER_LEG
+			9 -> BodyPart.LEFT_LOWER_LEG
+			10 -> BodyPart.RIGHT_LOWER_LEG
+			11 -> BodyPart.LEFT_FOOT
+			12 -> BodyPart.RIGHT_FOOT
+			13 -> BodyPart.LEFT_LOWER_ARM
+			14 -> BodyPart.RIGHT_LOWER_ARM
+			15 -> BodyPart.LEFT_UPPER_ARM
+			16 -> BodyPart.RIGHT_UPPER_ARM
+			17 -> BodyPart.LEFT_HAND
+			18 -> BodyPart.RIGHT_HAND
+			19 -> BodyPart.LEFT_SHOULDER
+			20 -> BodyPart.RIGHT_SHOULDER
+			21 -> BodyPart.LEFT_THUMB_METACARPAL
+			22 -> BodyPart.LEFT_THUMB_PROXIMAL
+			23 -> BodyPart.LEFT_THUMB_DISTAL
+			24 -> BodyPart.LEFT_INDEX_PROXIMAL
+			25 -> BodyPart.LEFT_INDEX_INTERMEDIATE
+			26 -> BodyPart.LEFT_INDEX_DISTAL
+			27 -> BodyPart.LEFT_MIDDLE_PROXIMAL
+			28 -> BodyPart.LEFT_MIDDLE_INTERMEDIATE
+			29 -> BodyPart.LEFT_MIDDLE_DISTAL
+			30 -> BodyPart.LEFT_RING_PROXIMAL
+			31 -> BodyPart.LEFT_RING_INTERMEDIATE
+			32 -> BodyPart.LEFT_RING_DISTAL
+			33 -> BodyPart.LEFT_LITTLE_PROXIMAL
+			34 -> BodyPart.LEFT_LITTLE_INTERMEDIATE
+			35 -> BodyPart.LEFT_LITTLE_DISTAL
+			36 -> BodyPart.RIGHT_THUMB_METACARPAL
+			37 -> BodyPart.RIGHT_THUMB_PROXIMAL
+			38 -> BodyPart.RIGHT_THUMB_DISTAL
+			39 -> BodyPart.RIGHT_INDEX_PROXIMAL
+			40 -> BodyPart.RIGHT_INDEX_INTERMEDIATE
+			41 -> BodyPart.RIGHT_INDEX_DISTAL
+			42 -> BodyPart.RIGHT_MIDDLE_PROXIMAL
+			43 -> BodyPart.RIGHT_MIDDLE_INTERMEDIATE
+			44 -> BodyPart.RIGHT_MIDDLE_DISTAL
+			45 -> BodyPart.RIGHT_RING_PROXIMAL
+			46 -> BodyPart.RIGHT_RING_INTERMEDIATE
+			47 -> BodyPart.RIGHT_RING_DISTAL
+			48 -> BodyPart.RIGHT_LITTLE_PROXIMAL
+			49 -> BodyPart.RIGHT_LITTLE_INTERMEDIATE
+			50 -> BodyPart.RIGHT_LITTLE_DISTAL
+			else -> null
+		}
+
 		fun read(src: Source) = with(src) {
 			val id = readU8()
 			val stat = statusFromUDP(readUByte())
 			val imu = if (remaining > 0) ImuType.fromValue(readUByte().toUShort()) ?: ImuType.UNKNOWN else ImuType.UNKNOWN
 			val conf = if (remaining >= 2) SensorConfig.fromUDP(readShort().toUShort()) else null
 			val calib = if (remaining > 0) readU8() != 0 else null
-			val pos = if (remaining > 0) readU8() else null
+			val pos = if (remaining > 0) bodyPartFromUDP(readU8()) else null
 			val dt = if (remaining > 0) readU8() else null
 			SensorInfo(id, stat, imu, conf, calib, pos, dt)
 		}
