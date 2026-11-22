@@ -29,6 +29,7 @@
     "@tweenjs/tween.js": "^25.0.0",
     "@twemoji/svg": "^15.0.0",
     "ajv": "^8.17.1",
+    "ansi-sequence-parser": "1.1.3",
     "browser-fs-access": "^0.35.0",
     "classnames": "^2.5.1",
     "convert": "^5.12.0",

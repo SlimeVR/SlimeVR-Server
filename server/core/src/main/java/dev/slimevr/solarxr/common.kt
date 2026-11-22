@@ -17,7 +17,6 @@ fun createBone(bone: BoneState, mask: BoneMask): solarxr_protocol.datatypes.Bone
 	tailPosition = if (mask.tailPosition) bone.tailPosition.toVec3f() else null,
 	linearVelocity = if (mask.linearVelocity) bone.velocity.linear.toVec3f() else null,
 	angularVelocity = if (mask.angularVelocity) bone.velocity.angular.toVec3f() else null,
-	trackerOffset = if (mask.trackerOffset) bone.trackerOffset.toVec3f() else null,
 )
 
 fun Quat.toQuaternion() = Quaternion(w, x, y, z)

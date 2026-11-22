@@ -27,7 +27,7 @@ const val OFFSET_LIMIT_MAX = 0.2f
 // Higher makes it harder to unlock after being locked
 const val LOCKED_UNLOCK_MULTIPLIER = 1.12f
 const val FLOOR_DISTANCE_THRESHOLD = 0.065f
-const val COM_DISTANCE_THRESHOLD = 0.3f
+const val COM_DISTANCE_THRESHOLD = 0.5f // TODO
 const val ACCELERATION_THRESHOLD_MIN = 0.4f
 const val ACCELERATION_THRESHOLD_MAX = 1.3f
 

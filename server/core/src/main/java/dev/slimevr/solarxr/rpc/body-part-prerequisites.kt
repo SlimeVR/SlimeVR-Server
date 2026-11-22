@@ -128,8 +128,8 @@ class BodyPartPrerequisitesBehaviour(
 			::ikSolvedParts,
 		).distinctUntilChanged().map(::buildResponse)
 
-		receiver.rpcDispatcher.on<BodyPartPrerequisitesRequest> {
-			receiver.sendRpc(responses.first())
+		receiver.onRpc<BodyPartPrerequisitesRequest> { _, txId ->
+			receiver.sendRpc(responses.first(), txId)
 		}.launchIn(receiver.context.scope)
 
 		responses

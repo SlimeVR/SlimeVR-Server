@@ -47,7 +47,7 @@ class MagBehaviour(
 			.onEach { enable -> receiver.sendRpc(MagToggleResponse(trackerId = 0u, enable = enable)) }
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<ChangeMagToggleRequest> { req ->
+		receiver.onRpc<ChangeMagToggleRequest> { req, txId ->
 			val trackerId = req.trackerId.toInt()
 			val enable = req.enable
 
@@ -65,24 +65,24 @@ class MagBehaviour(
 						else -> Unit
 					}
 				}
-				receiver.sendRpc(MagToggleResponse(trackerId = 0u, enable = enable))
-				return@on
+				receiver.sendRpc(MagToggleResponse(trackerId = 0u, enable = enable), txId)
+				return@onRpc
 			}
 
-			val tracker = appContext.server.getTracker(trackerId) ?: return@on
+			val tracker = appContext.server.getTracker(trackerId) ?: return@onRpc
 			val trackerState = tracker.context.state.value
-			if (trackerState.magStatus == MagnetometerStatus.NOT_SUPPORTED) return@on
+			if (trackerState.magStatus == MagnetometerStatus.NOT_SUPPORTED) return@onRpc
 
 			when (trackerState.origin) {
 				DeviceOrigin.UDP -> {
-					if (!setUDPTrackerMag(trackerState.id, trackerState.deviceId, enable)) return@on
+					if (!setUDPTrackerMag(trackerState.id, trackerState.deviceId, enable)) return@onRpc
 					tracker.context.scope.launch {
 						try {
 							withTimeout(10.seconds) {
 								tracker.context.state
 									.distinctUntilChangedBy { it.magStatus }
 									.first { it.magStatus == if (enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED }
-								receiver.sendRpc(MagToggleResponse(trackerId = trackerId.toUShort(), enable = enable))
+								receiver.sendRpc(MagToggleResponse(trackerId = trackerId.toUShort(), enable = enable), txId)
 							}
 						} catch (_: TimeoutCancellationException) {
 							AppLogger.solarxr.warn("Timeout waiting for mag toggle response from tracker")
@@ -94,11 +94,11 @@ class MagBehaviour(
 					// TODO: implement HID mag toggle
 				}
 
-				else -> return@on
+				else -> return@onRpc
 			}
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<MagToggleRequest> { req ->
+		receiver.onRpc<MagToggleRequest> { req, txId ->
 			val trackerId = req.trackerId.toInt()
 
 			if (trackerId == 0) {
@@ -107,16 +107,18 @@ class MagBehaviour(
 						trackerId = 0u,
 						enable = receiver.appContext.config.settings.context.state.value.data.trackersConfig.globalMagEnabled,
 					),
+					txId,
 				)
-				return@on
+				return@onRpc
 			}
 
-			val trackerState = appContext.server.getTracker(trackerId)?.context?.state?.value ?: return@on
+			val trackerState = appContext.server.getTracker(trackerId)?.context?.state?.value ?: return@onRpc
 			receiver.sendRpc(
 				MagToggleResponse(
 					trackerId = trackerId.toUShort(),
 					enable = trackerState.magStatus == MagnetometerStatus.ENABLED,
 				),
+				txId,
 			)
 		}.launchIn(receiver.context.scope)
 	}

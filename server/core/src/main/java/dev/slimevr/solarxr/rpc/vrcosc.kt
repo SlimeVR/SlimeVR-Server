@@ -48,8 +48,8 @@ internal class VrcOscBehaviour(
 			.onEach { status -> receiver.sendRpc(buildStatusResponse(status)) }
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
-			receiver.sendRpc(buildVrcOscSettingsResponse(settings.context.state.value.data.vrcOscConfig))
+		receiver.onRpc<VRCOSCSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildVrcOscSettingsResponse(settings.context.state.value.data.vrcOscConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		// Push config changes, including profile switches
@@ -60,8 +60,8 @@ internal class VrcOscBehaviour(
 			.onEach(receiver::sendRpc)
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
-			receiver.sendRpc(buildStatusResponse(vrcOscManager.context.state.value.status))
+		receiver.onRpc<VRCOSCStatusRequest> { _, txId ->
+			receiver.sendRpc(buildStatusResponse(vrcOscManager.context.state.value.status), txId)
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->

@@ -29,7 +29,7 @@ private fun TestScope.testConn(): Pair<SolarXRBridge, Skeleton> {
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 		scope = backgroundScope,
 		reducer = ::reduce,
-		behaviours = listOf(SkeletonSettingsBehaviour(settings)),
+		behaviours = listOf(SkeletonSettingsBehaviour(skeleton, settings)),
 		name = "SolarXRSkeletonSettingsTest",
 	)
 	val bridge = SolarXRBridge(

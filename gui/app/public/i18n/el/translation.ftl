@@ -56,9 +56,6 @@ body_part-LEFT_UPPER_LEG = Αριστερός μηρός
 body_part-LEFT_LOWER_LEG = Αριστερός αστράγαλος
 body_part-LEFT_FOOT = Αριστερό πόδι
 
-## BoardType
-
-
 ## Proportions
 
 skeleton_bone-NONE = Τίποτα
@@ -155,8 +152,6 @@ tracker-settings-assignment_section-edit = Επεξεργασία ανάθεση
 tracker-settings-mounting_section = Θέση τοποθέτησης
 tracker-settings-mounting_section-description = Πού είναι τοποθετημένος ο ανιχνευτής;
 tracker-settings-mounting_section-edit = Επεξεργασία τοποθέτησης
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Όνομα ανιχνευτή
 tracker-settings-name_section-description = Δώστε του ένα χαριτωμένο ψευδώνυμο :)
 tracker-settings-name_section-placeholder = Το αριστερό πόδι του NightyBeast
@@ -187,7 +182,6 @@ mounting_selection_menu-close = Κλείσιμο
 
 ## Sidebar settings
 
-settings-sidebar-title = Ρυθμίσεις
 
 ## Bone routing settings
 
@@ -197,34 +191,33 @@ settings-sidebar-title = Ρυθμίσεις
 
 ## Tracker mechanics
 
-settings-stay_aligned-relaxed_poses-close = Κλείσιμο
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Επαναφορά
 
 ## FK/Tracking settings
 
-settings-general-fk_settings-arm_fk-back = Πίσω
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Λειτουργία προγραμματιστή
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Λειτουργία προγραμματιστή
 
 ## Notification settings
 
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Λειτουργία προγραμματιστή
-settings-general-interface-dev_mode-label = Λειτουργία προγραμματιστή
 
 ## Serial settings
+
+
+## Logs settings
 
 
 ## OSC VRChat settings
@@ -284,6 +277,15 @@ onboarding-assign_trackers-side-left = Αριστερά
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
@@ -292,7 +294,7 @@ onboarding-assign_trackers-side-left = Αριστερά
 onboarding-automatic_mounting-title = Βαθμονόμηση τοποθέτησης
 onboarding-automatic_mounting-mounting_reset-title = Βαθμονόμηση τοποθέτησης
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -300,10 +302,6 @@ onboarding-automatic_mounting-mounting_reset-title = Βαθμονόμηση το
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-verify_mounting-title = Βαθμονόμηση τοποθέτησης
 
 ## Home
 
@@ -338,6 +336,9 @@ firmware_tool-loading = Σύνδεση με τον διακομιστή
 
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

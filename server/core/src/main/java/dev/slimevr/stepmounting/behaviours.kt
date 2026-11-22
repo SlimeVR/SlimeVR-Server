@@ -60,7 +60,7 @@ val COEFFICIENTS = ButterworthCoefficients(
 const val START_THRESHOLD = 0.4f // in m/s^2
 const val END_THRESHOLD = 0.3f // in m/s^2
 const val MIN_MOVEMENT_DURATION_MS = 3000L
-const val ERROR_THRESHOLD = 0.3f
+const val ERROR_THRESHOLD = 0.4f // TODO increased temporarily. Used to be 0.3m
 
 fun movementDetector(updates: Flow<TrackerSnapshot>) = flow {
 	val lowpass = Vector3Butterworth(COEFFICIENTS)

@@ -11,7 +11,6 @@ import dev.slimevr.solarxr.toQuaternion
 import dev.slimevr.solarxr.toVector3
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -24,6 +23,7 @@ import solarxr_protocol.driver_protocol.AddTrackerStatus
 import solarxr_protocol.driver_protocol.UpdateTrackerBattery
 import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
+import kotlin.time.ComparableTimeMark
 import kotlin.to
 
 // These are all only defaults and the user can edit any and they will save.
@@ -89,7 +89,7 @@ class DriverIncomingTrackersBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
 	private val rotationOffsets: MutableMap<Int, Quaternion> = mutableMapOf()
-	private val lastVelocities: MutableMap<Int, Pair<MonotonicValueTimeMark, Vector3>> = mutableMapOf()
+	private val lastVelocities: MutableMap<Int, Pair<ComparableTimeMark, Vector3>> = mutableMapOf()
 
 	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server

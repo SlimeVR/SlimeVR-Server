@@ -80,7 +80,6 @@ data class TrackerState(
 	val position: Vector3?,
 	val imuTemp: Float?,
 	val accumulatedTicks: UShort,
-	val expectedTps: UShort?,
 	val tps: UShort,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
@@ -92,9 +91,9 @@ data class TrackerState(
 	val needsFullReset: Boolean = false,
 	val needsMountingReset: Boolean = false,
 ) {
-	private val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
-	private val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
-	private val isVmc = origin == DeviceOrigin.VMC
+	val isHmd = origin == DeviceOrigin.DRIVER && intendedBodyPart == BodyPart.HEAD
+	val isController = origin == DeviceOrigin.DRIVER && (intendedBodyPart == BodyPart.LEFT_HAND || intendedBodyPart == BodyPart.RIGHT_HAND)
+	val isVmc = origin == DeviceOrigin.VMC
 
 	/** Indicates if the tracker is a reliable reference for aligning other trackers. */
 	val isReliableReference = isHmd || isController || isVmc
@@ -112,7 +111,7 @@ sealed interface TrackerActions {
 	data class SetDriverName(val driverName: String?) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val increaseTps: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion?, val resetReliableReferenceAttitude: Boolean = false) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion?, val resetHmdAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion?, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion?, val yawOffset: Float) : TrackerActions
@@ -148,7 +147,6 @@ class Tracker(
 			hardwareId: String,
 			origin: DeviceOrigin,
 			driverName: String? = null,
-			expectedTps: UShort? = null,
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
@@ -167,7 +165,6 @@ class Tracker(
 				intendedBodyPart = intendedBodyPart,
 				boneOffsets = intendedBodyPart?.let { part -> intendedBoneOffset?.let { offset -> mapOf(part to offset) } } ?: emptyMap(),
 				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
-				expectedTps = expectedTps,
 			)
 			val trackerState = if (savedConfig != null) {
 				TrackerConfigBehaviour.restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -185,7 +182,7 @@ class Tracker(
 				TrackerConfigBehaviour(devices, hardwareId),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
-				TrackerStayAlignedBehaviour(settings),
+				TrackerStayAlignedBehaviour(settings, appContext.config.userConfig),
 			)
 			val context = Context.create(
 				initialState = trackerState,
@@ -226,7 +223,6 @@ class Tracker(
 			position = null,
 			imuTemp = null,
 			accumulatedTicks = 0u,
-			expectedTps = null,
 			tps = 0u,
 			status = TrackerStatus.DISCONNECTED,
 			completedRestCalibration = null,

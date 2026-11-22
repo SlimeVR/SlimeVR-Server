@@ -2,8 +2,6 @@
 
 package dev.slimevr.desktop
 
-import com.appstractive.dnssd.createNetService
-import com.appstractive.dnssd.discoverServices
 import dev.slimevr.AppContext
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.FeatureFlags
@@ -16,24 +14,26 @@ import dev.slimevr.context.debug.contextDebugEnabled
 import dev.slimevr.customosc.CustomOscOutputManager
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
-import dev.slimevr.desktop.install.executeShellCommand
-import dev.slimevr.desktop.install.runInstaller
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.keybind.createDesktopKeybindManager
 import dev.slimevr.desktop.keybind.isGnome
+import dev.slimevr.desktop.multicast.bindDesktopMulticast
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.timing.createDesktopWaiter
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
-import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
+import dev.slimevr.desktop.udp.bindDesktopUdp
+import dev.slimevr.desktop.utils.executeShellCommand
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
+import dev.slimevr.desktop.vrchat.observeDesktopLocalIpAddress
 import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.mdns.createMdns
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -90,16 +90,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	for (arg in args) {
 		when (arg) {
 			"--steam", "-s" -> featureFlags.steam = true
-
-			"--install", "-i" -> {
-				runInstaller()
-				return@runBlocking
-			}
-
 			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
-
 			"--skeleton-ticks", "-st" -> AppLogger.ShouldDebug.skeletonTicks = true
-
 			"--event-dispatcher", "-ed" -> AppLogger.ShouldDebug.eventDispatcher = true
 		}
 	}
@@ -119,16 +111,13 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		else -> KeybindSupport.UNSUPPORTED
 	}
 
-	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toIntOrNull()
-	if (featureFlags.steam && isInstallDisabled != 1) runInstaller()
-
 	if (!featureFlags.skipCheckUdev) {
 		val command = if (featureFlags.steam) {
 			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "udevadm", "cat")
 		} else {
 			arrayOf("udevadm", "cat")
 		}
-		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.second?.contains("slime")
+		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.second?.contains("69-slimevr-devices.rules")
 	}
 
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
@@ -162,15 +151,17 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 			add(SteamVRCheckBehaviour(appContext.server, appContext.config.settings))
 		}
 	})
-	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
+	val udpServer = UdpServer.create(scope = this, bind = ::bindDesktopUdp)
 	val boneRouting = BoneRoutingManager.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(scope = this)
+	val localIpAddress = observeDesktopLocalIpAddress(scope = this)
+	val mdns = createMdns(scope = this, localAddress = localIpAddress, bind = ::bindDesktopMulticast)
 	val vrcOscManager = VRCOSCManager.create(
 		scope = this,
-		oscQueryAddress = resolveDesktopLocalIpAddress(),
-		discoverServicesFlow = ::discoverServices,
-		serviceFactory = ::createNetService,
+		oscQueryAddress = localIpAddress,
+		browse = mdns.browse,
+		advertise = mdns.advertise,
 	)
 	val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = this)
 	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, stepMountingManager = stepMountingManager, scope = this)

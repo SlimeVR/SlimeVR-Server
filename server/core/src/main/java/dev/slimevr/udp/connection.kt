@@ -5,15 +5,15 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
-import io.ktor.network.sockets.BoundDatagramSocket
-import io.ktor.network.sockets.Datagram
-import io.ktor.network.sockets.InetSocketAddress
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
+import kotlinx.io.readByteArray
 import solarxr_protocol.datatypes.MagnetometerStatus
 
 data class LastPing(
@@ -28,9 +28,6 @@ data class SensorConfigFlags(
 data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
 
 data class UDPConnectionState(
-	// Pre-resolved IP string. InetSocketAddress.hostname triggers a reverse DNS lookup so we
-	// can't derive this on demand; it must be resolved once by the platform (see UdpServer.addressResolver)
-	// and cached here. remoteAddress is kept separately on UDPConnection only for sending datagrams.
 	val address: String,
 	val lastPacket: Long,
 	val lastPacketNum: Long,
@@ -61,15 +58,21 @@ class UDPConnection(
 	val appContext: AppContextProvider,
 	val packetEvents: UDPPacketDispatcher,
 	val packetChannel: Channel<PacketEvent<UDPPacket>>,
-	private val socket: BoundDatagramSocket,
-	private val remoteAddress: InetSocketAddress,
+	private val socket: UdpSocket,
+	private val peer: UdpPeer,
 	private val scope: CoroutineScope,
 ) {
 	fun send(packet: UDPPacket) {
 		scope.launch {
 			val buf = Buffer()
 			writePacket(buf, packet)
-			socket.send(Datagram(buf, remoteAddress))
+			try {
+				socket.send(peer, buf.readByteArray())
+			} catch (e: CancellationException) {
+				throw e
+			} catch (e: Exception) {
+				AppLogger.udp.warn(e, "Failed to send ${packet::class.simpleName}")
+			}
 		}
 	}
 
@@ -88,12 +91,12 @@ class UDPConnection(
 
 	companion object {
 		fun create(
-			address: String,
-			socket: BoundDatagramSocket,
-			remoteAddress: InetSocketAddress,
+			peer: UdpPeer,
+			socket: UdpSocket,
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): UDPConnection {
+			val address = peer.address
 			val behaviours = listOf(
 				PacketBehaviour(),
 				PacketLossBehaviour(),
@@ -112,7 +115,7 @@ class UDPConnection(
 			)
 
 			val connJob = kotlinx.coroutines.SupervisorJob(scope.coroutineContext[kotlinx.coroutines.Job])
-			val connScope = CoroutineScope(scope.coroutineContext + connJob + kotlinx.coroutines.Dispatchers.Default)
+			val connScope = CoroutineScope(scope.coroutineContext + connJob)
 
 			val context = Context.create(
 				initialState = UDPConnectionState(
@@ -147,7 +150,7 @@ class UDPConnection(
 				packetEvents = dispatcher,
 				packetChannel = packetChannel,
 				socket = socket,
-				remoteAddress = remoteAddress,
+				peer = peer,
 				scope = connScope,
 			)
 			conn.startObserving()

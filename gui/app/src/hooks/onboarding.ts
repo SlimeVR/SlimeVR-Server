@@ -117,11 +117,10 @@ export function useProvideOnboarding() {
     const skeletonReq = new ChangeSkeletonSettingsRequestT();
     skeletonReq.toggles = toggles;
     skeletonReq.ratios = skeletonSettings.ratios;
-    skeletonReq.filtering = skeletonSettings.filtering;
     sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
     setResetsSettings({
-      resetReliableReferenceAttitude: mocapPos === 'forehead',
+      resetHmdAttitude: mocapPos === 'forehead',
       // Mocap has no controllers to hold, so the arms rest forward
       armsMountingResetMode: mocap
         ? ArmsMountingResetMode.FORWARD

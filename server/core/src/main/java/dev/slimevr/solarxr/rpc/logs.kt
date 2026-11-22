@@ -62,7 +62,7 @@ class LogsBehaviour(private val sources: List<LogSourceProvider>) : SolarXRBridg
 	override fun observe(receiver: SolarXRBridge) {
 		var streamJob: Job? = null
 
-		receiver.rpcDispatcher.on<LogsRequest> {
+		receiver.onRpc<LogsRequest> { _, txId ->
 			val infos = sources.map { LogSourceInfo(source = it.source, live = it.events != null) }
 			val files = withContext(Dispatchers.IO) {
 				sources.flatMap { provider ->
@@ -77,10 +77,10 @@ class LogsBehaviour(private val sources: List<LogSourceProvider>) : SolarXRBridg
 					}
 				}
 			}
-			receiver.sendRpc(LogsResponse(sources = infos, files = files))
+			receiver.sendRpc(LogsResponse(sources = infos, files = files), txId)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<LogStreamRequest> { req ->
+		receiver.onRpc<LogStreamRequest> { req, txId ->
 			streamJob?.cancelAndJoin()
 			val requested = req.sources.orEmpty().toSet()
 			val flows = sources.filter { it.source in requested }.mapNotNull { it.events }
@@ -89,13 +89,13 @@ class LogsBehaviour(private val sources: List<LogSourceProvider>) : SolarXRBridg
 			} else {
 				receiver.context.scope.launch {
 					batchByTime(flows.merge(), BATCH_WINDOW).collect { batch ->
-						receiver.sendRpc(LogStreamResponse(events = batch))
+						receiver.sendRpc(LogStreamResponse(events = batch), txId)
 					}
 				}
 			}
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<LogFileChunkRequest> { req ->
+		receiver.onRpc<LogFileChunkRequest> { req, txId ->
 			val entry = withContext(Dispatchers.IO) {
 				sources.firstOrNull { it.source == req.source }?.files()?.firstOrNull { it.name == req.name }
 			}
@@ -108,6 +108,7 @@ class LogsBehaviour(private val sources: List<LogSourceProvider>) : SolarXRBridg
 					data = data?.asList()?.map { it.toUByte() },
 					eof = data == null || data.size < CHUNK_SIZE,
 				),
+				txId,
 			)
 		}.launchIn(receiver.context.scope)
 	}

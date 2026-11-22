@@ -7,11 +7,13 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
+import dev.slimevr.firmware.behaviours.OtaCallbackBehaviour
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.FirmwareDeviceIdTable
 import solarxr_protocol.rpc.FirmwarePart
@@ -53,6 +55,8 @@ class FirmwareManager(
 	fun startObserving() = context.observeAll(this)
 
 	private val runningJobs = mutableMapOf<String, Job>()
+
+	val otaConnections = MutableSharedFlow<OtaConnection>()
 
 	suspend fun flash(
 		portLocation: String,
@@ -109,6 +113,7 @@ class FirmwareManager(
 				deviceId = (firmwareDeviceId as? FirmwareDeviceIdTable)?.id ?: error("device id should exist"),
 				part = part,
 				server = server,
+				otaConnections = otaConnections,
 				onStatus = { status, progress ->
 					AppLogger.firmware.debug("OTA status changed to $status, progress=$progress")
 					context.dispatch(
@@ -139,6 +144,7 @@ class FirmwareManager(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,
 				reducer = ::reduce,
+				behaviours = listOf(OtaCallbackBehaviour()),
 				debugMiddleware = LoggingMiddleware(
 					diffStyle = DiffStyle.INLINE,
 					logNoOps = true,

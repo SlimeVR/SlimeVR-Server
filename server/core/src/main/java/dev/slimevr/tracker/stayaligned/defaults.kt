@@ -1,7 +1,6 @@
 package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
 /**
@@ -9,14 +8,9 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
  * algorithm from a single place.
  */
 object StayAlignedDefaults {
-	// Relaxed pose for kneeling. This isn't that common, so we don't want to ask
-	// players to provide this relaxed pose during setup.
-	val RELAXED_POSE_KNEELING =
-		RelaxedPose(
-			upperLeg = Angle.ofDeg(0.0f),
-			lowerLeg = Angle.ofDeg(0.0f),
-			foot = Angle.ofDeg(0.0f),
-		)
+	// Recording a relaxed pose: time to get into the pose, then the time every tracker has to settle
+	const val POSE_RECORDING_COUNTDOWN_SECONDS = 3
+	const val POSE_RECORDING_TIMEOUT_SECONDS = 10
 
 	// Weights to calculate the average yaw of the skeleton
 	const val CENTRE_ERROR_HEAD_WEIGHT = 0.5f

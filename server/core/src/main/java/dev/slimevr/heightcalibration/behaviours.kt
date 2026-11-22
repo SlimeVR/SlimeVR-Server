@@ -33,9 +33,9 @@ private const val HEAD_STABILITY_THRESHOLD = 0.003f
 internal const val HEAD_STABILITY_DURATION = 600_000_000L
 
 internal const val MAX_FLOOR_Y = 0.10f
-internal const val HEAD_RISE_THRESHOLD = 1.2f
-internal const val HEIGHT_MIN = 1.4f
-internal const val HEIGHT_MAX = 1.936f
+internal const val HEAD_RISE_THRESHOLD = 1.18f
+internal const val HEIGHT_MIN = 1.3f
+internal const val HEIGHT_MAX = 2f
 
 private val HEAD_ANGLE_THRESHOLD = cos(FastMath.DEG_TO_RAD * 15.0)
 private val CONTROLLER_ANGLE_THRESHOLD = cos(FastMath.DEG_TO_RAD * 60.0)

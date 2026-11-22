@@ -11,14 +11,32 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import solarxr_protocol.rpc.StayAlignedRelaxedPose
 
 private const val USER_CONFIG_VERSION = 1
 private const val DEFAULT_USER_HEIGHT = 1.6f
+
+/** A relaxed pose of the user, used by Stay Aligned to correct moving trackers. */
+@Serializable
+data class StayAlignedPoseConfig(
+	/** The user recorded this pose. */
+	val recorded: Boolean = false,
+	/** Whether Stay Aligned corrects moving trackers with this pose. */
+	val enabled: Boolean = false,
+	/** Angle between the upper leg yaw and the centre yaw. */
+	val upperLegAngleInDeg: Float = 0.0f,
+	/** Angle between the lower leg yaw and the centre yaw. */
+	val lowerLegAngleInDeg: Float = 0.0f,
+	/** Angle between the foot yaw and the centre yaw. */
+	val footAngleInDeg: Float = 0.0f,
+)
 
 @Serializable
 data class UserConfigData(
 	val userHeight: Float = DEFAULT_USER_HEIGHT,
 	val proportions: Map<String, Float> = computeAllDefaultProportionsByBone(DEFAULT_USER_HEIGHT),
+	/** Only the poses that differ from their default are stored. */
+	val stayAlignedPoses: Map<StayAlignedRelaxedPose, StayAlignedPoseConfig> = emptyMap(),
 	val version: Int = USER_CONFIG_VERSION,
 )
 

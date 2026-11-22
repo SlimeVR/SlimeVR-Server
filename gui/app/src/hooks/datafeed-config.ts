@@ -74,7 +74,6 @@ export function useBonesDataFeedConfig() {
   boneMask.tailPosition = false;
   boneMask.angularVelocity = false;
   boneMask.linearVelocity = false;
-  boneMask.trackerOffset = false;
   dataFeedConfig.boneMask = boneMask;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   return dataFeedConfig;

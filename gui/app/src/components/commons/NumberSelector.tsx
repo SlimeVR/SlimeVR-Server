@@ -60,16 +60,17 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field: { onChange, value } }) => {
+        const num = Number(value);
         const hasLabel = label !== undefined && label.length !== 0;
-        const shown = valueLabelFormat ? valueLabelFormat(value) : value;
+        const shown = valueLabelFormat ? valueLabelFormat(num) : num;
 
         const clamp = (v: number) => Math.min(max, Math.max(min, v));
         const bump = (add: boolean, big = false) =>
           !disabled &&
-          onChange(clamp(big ? doubleStepFn(value, add) : stepFn(value, add)));
+          onChange(clamp(big ? doubleStepFn(num, add) : stepFn(num, add)));
 
         const onKeyDown = stepKeys({
-          value: Number(value),
+          value: num,
           min,
           max,
           step: stepFn,
@@ -90,7 +91,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
               tabIndex={disabled ? -1 : 0}
               aria-label={label}
               aria-disabled={disabled || undefined}
-              aria-valuenow={typeof value === 'number' ? value : undefined}
+              aria-valuenow={num}
               aria-valuemin={min}
               aria-valuemax={max}
               aria-valuetext={typeof shown === 'string' ? shown : undefined}
@@ -102,7 +103,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
                   tabIndex={-1}
                   className={segment}
                   onClick={() => bump(false, true)}
-                  disabled={doubleStepFn(value, false) < min || disabled}
+                  disabled={doubleStepFn(num, false) < min || disabled}
                 >
                   {showButtonWithNumber
                     ? decimalFormat.format(-doubleStep)
@@ -113,7 +114,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
                 tabIndex={-1}
                 className={segment}
                 onClick={() => bump(false)}
-                disabled={stepFn(value, false) < min || disabled}
+                disabled={stepFn(num, false) < min || disabled}
               >
                 −
               </Clickable>
@@ -124,7 +125,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
                 tabIndex={-1}
                 className={segment}
                 onClick={() => bump(true)}
-                disabled={stepFn(value, true) > max || disabled}
+                disabled={stepFn(num, true) > max || disabled}
               >
                 +
               </Clickable>
@@ -133,7 +134,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
                   tabIndex={-1}
                   className={segment}
                   onClick={() => bump(true, true)}
-                  disabled={doubleStepFn(value, true) > max || disabled}
+                  disabled={doubleStepFn(num, true) > max || disabled}
                 >
                   {showButtonWithNumber
                     ? decimalFormat.format(doubleStep)

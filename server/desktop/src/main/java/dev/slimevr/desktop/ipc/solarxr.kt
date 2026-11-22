@@ -37,9 +37,7 @@ class EnableSteamVRDriverBehaviour : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<EnableSteamVRDriverRequest> {
 			receiver.context.scope.launch {
-				val client = HttpClient(CIO)
-				unblockSteamVRDriver(client, "slimevr")
-				client.close()
+				HttpClient(CIO).use { client -> unblockSteamVRDriver(client, "slimevr") }
 			}
 		}.launchIn(receiver.context.scope)
 	}

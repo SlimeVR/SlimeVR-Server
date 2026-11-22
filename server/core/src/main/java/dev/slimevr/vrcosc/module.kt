@@ -1,14 +1,14 @@
 package dev.slimevr.vrcosc
 
-import com.appstractive.dnssd.DiscoveryEvent
 import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.oscquery.OscQueryServiceFactory
+import dev.slimevr.mdns.MdnsAdvertise
+import dev.slimevr.mdns.MdnsBrowse
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.VRCOSCInputState
 import solarxr_protocol.rpc.VRCOSCOscQueryState
@@ -99,9 +99,9 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCManager>
 
 class VRCOSCManager(
 	val context: VRCOSCContext,
-	val oscQueryAddress: String,
-	private val discoverServicesFlow: (String) -> Flow<DiscoveryEvent>,
-	private val serviceFactory: OscQueryServiceFactory,
+	private val oscQueryAddress: StateFlow<String>,
+	private val browse: MdnsBrowse,
+	private val advertise: MdnsAdvertise,
 ) {
 	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher("VRCOSC", context.scope, capacity = 32)
 
@@ -113,8 +113,8 @@ class VRCOSCManager(
 			VRCOSCOscQueryBehaviour(
 				settings,
 				localIp = oscQueryAddress,
-				discoverServicesFlow = discoverServicesFlow,
-				serviceFactory = serviceFactory,
+				browse = browse,
+				advertise = advertise,
 			),
 			VRCOSCTrackingDataBehaviour(settings),
 		)
@@ -132,9 +132,9 @@ class VRCOSCManager(
 	companion object {
 		fun create(
 			scope: CoroutineScope,
-			oscQueryAddress: String,
-			discoverServicesFlow: (String) -> Flow<DiscoveryEvent>,
-			serviceFactory: OscQueryServiceFactory,
+			oscQueryAddress: StateFlow<String>,
+			browse: MdnsBrowse,
+			advertise: MdnsAdvertise,
 		): VRCOSCManager {
 			val context = Context.create(
 				initialState = VRCOSCState(),
@@ -143,7 +143,7 @@ class VRCOSCManager(
 				behaviours = emptyList<VRCOSCBehaviour>(),
 				name = "VRCOSC",
 			)
-			return VRCOSCManager(context, oscQueryAddress, discoverServicesFlow, serviceFactory)
+			return VRCOSCManager(context, oscQueryAddress, browse, advertise)
 		}
 	}
 }

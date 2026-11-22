@@ -27,6 +27,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private fun awaitReset(scope: TestScope, config: AppConfig) {
 	val deadline = System.nanoTime() + 5_000_000_000L
 	while (config.globalConfig.context.state.value.errorReporting.consent != ErrorReportingConsent.UNDECIDED && System.nanoTime() < deadline) {

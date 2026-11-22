@@ -29,6 +29,7 @@ private class Harness(val bridge: SolarXRBridge, val config: AppConfig, val sent
 	fun statuses() = sent.filterIsInstance<ProfileOperationResponse>().map { it.status }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun buildHarness(scope: TestScope): Harness {
 	val config = AppConfig.create(scope.backgroundScope, MemoryStorage())
 	val sent = mutableListOf<RpcMessage>()
@@ -54,6 +55,7 @@ private suspend fun buildHarness(scope: TestScope): Harness {
 	return Harness(bridge, config, sent)
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private fun awaitStatuses(scope: TestScope, h: Harness, count: Int) {
 	val deadline = System.nanoTime() + 5_000_000_000L
 	while (h.statuses().size < count && System.nanoTime() < deadline) {

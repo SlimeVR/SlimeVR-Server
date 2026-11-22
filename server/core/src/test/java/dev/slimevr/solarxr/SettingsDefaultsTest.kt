@@ -42,6 +42,7 @@ class SettingsDefaultsTest {
 	}
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private fun buildBridge(scope: TestScope, responses: MutableList<SettingsDefaultsResponse>): SolarXRBridge {
 	val context = Context.create(
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),

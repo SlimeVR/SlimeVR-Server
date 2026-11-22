@@ -151,7 +151,7 @@ export function TopBar({
               {!isMobile && (
                 <NavLink
                   to="/"
-                  className="flex justify-around flex-col select-all"
+                  className="flex justify-around flex-col select-all text-status-special"
                   // Leaving the setup from here skips it
                   onClick={() => {
                     if (config && !config.doneOnboarding)

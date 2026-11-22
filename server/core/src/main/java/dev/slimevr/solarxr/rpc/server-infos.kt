@@ -13,8 +13,8 @@ class ServerInfosBehaviour(
 	private val serverInfos: ServerInfos,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<ServerInfosRequest> {
-			receiver.sendRpc(ServerInfosResponse(localIp = serverInfos.localIp))
+		receiver.onRpc<ServerInfosRequest> { _, txId ->
+			receiver.sendRpc(ServerInfosResponse(localIp = serverInfos.localIp), txId)
 		}.launchIn(receiver.context.scope)
 	}
 }

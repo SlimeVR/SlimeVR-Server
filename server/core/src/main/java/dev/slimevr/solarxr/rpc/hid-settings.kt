@@ -20,8 +20,8 @@ class HIDSettingsBehaviour(
 	private val settings: Settings,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<HIDSettingsRequest> {
-			receiver.sendRpc(buildHidSettingsResponse(settings.context.state.value.data.hidConfig))
+		receiver.onRpc<HIDSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildHidSettingsResponse(settings.context.state.value.data.hidConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		settings.context.state

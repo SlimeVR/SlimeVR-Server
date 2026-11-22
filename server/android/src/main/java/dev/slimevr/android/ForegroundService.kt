@@ -13,8 +13,6 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
-import com.appstractive.dnssd.createNetService
-import com.appstractive.dnssd.discoverServices
 import dev.slimevr.AppContext
 import dev.slimevr.FeatureFlags
 import dev.slimevr.Phase1Context
@@ -25,10 +23,12 @@ import dev.slimevr.android.buildinfo.SENTRY_RELEASE
 import dev.slimevr.android.config.AndroidConfigStorage
 import dev.slimevr.android.hid.createAndroidHIDManager
 import dev.slimevr.android.ipc.createAndroidSolarXRWebsocketServer
+import dev.slimevr.android.multicast.bindAndroidMulticast
 import dev.slimevr.android.serial.AndroidFirmwareFlasher
 import dev.slimevr.android.serial.createAndroidSerialServer
 import dev.slimevr.android.timing.createAndroidWaiter
-import dev.slimevr.android.udp.resolveAndroidUdpAddress
+import dev.slimevr.android.udp.bindAndroidUdp
+import dev.slimevr.android.vrchat.observeAndroidLocalIpAddress
 import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
@@ -37,6 +37,7 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.logging.ServerLogSource
+import dev.slimevr.mdns.createMdns
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -177,15 +178,17 @@ class ForegroundService : Service() {
 		val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = scope)
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
 		val trackingChecklist = TrackingChecklist.create(scope = scope)
-		val udpServer = UdpServer.create(scope = scope, addressResolver = ::resolveAndroidUdpAddress)
+		val udpServer = UdpServer.create(scope = scope, bind = ::bindAndroidUdp)
 		val boneRouting = BoneRoutingManager.create(scope = scope)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
 		val vmcManager = VMCManager.create(scope = scope)
+		val localIpAddress = observeAndroidLocalIpAddress(context = this@ForegroundService, scope = scope)
+		val mdns = createMdns(scope = scope, localAddress = localIpAddress, bind = ::bindAndroidMulticast)
 		val vrcOscManager = VRCOSCManager.create(
 			scope = scope,
-			oscQueryAddress = resolveAndroidLocalIpAddress(),
-			discoverServicesFlow = ::discoverServices,
-			serviceFactory = ::createNetService,
+			oscQueryAddress = localIpAddress,
+			browse = mdns.browse,
+			advertise = mdns.advertise,
 		)
 		val stepMountingManager = StepMountingManager.create(ctx = phase1, scope = scope)
 		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, stepMountingManager = stepMountingManager, scope = scope)

@@ -18,7 +18,6 @@ class PendingReplies<T : Any> {
 	}
 
 	fun record(message: T, txId: UInt) {
-		if (txId == 0u) return
 		if (message::class !in consumerTypes) return
 		pending[message] = txId
 	}

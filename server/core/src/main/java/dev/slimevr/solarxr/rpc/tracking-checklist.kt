@@ -26,7 +26,7 @@ private val CHECKLIST_STEP_ORDER: List<TrackingChecklistStepId> = listOf(
 	TrackingChecklistStepId.MOUNTING_METHOD,
 	TrackingChecklistStepId.MOUNTING_CALIBRATION,
 	TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION,
-	TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE,
+	TrackingChecklistStepId.UNASSIGNED_HMD,
 	TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED,
 	TrackingChecklistStepId.VRCHAT_OSC_TRACKING_DISABLED,
 	TrackingChecklistStepId.VRCHAT_SETTINGS,
@@ -66,8 +66,8 @@ class TrackingChecklistBehaviour(
 			.onEach { response -> receiver.sendRpc(response) }
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<TrackingChecklistRequest> {
-			receiver.sendRpc(buildResponse())
+		receiver.onRpc<TrackingChecklistRequest> { _, txId ->
+			receiver.sendRpc(buildResponse(), txId)
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<IgnoreTrackingChecklistStepRequest> { req ->

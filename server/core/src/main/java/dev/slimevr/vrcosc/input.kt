@@ -124,8 +124,8 @@ class VRCOSCInputBehaviour(
 				}
 
 				val bindPort = if (useManualNetwork) configPortIn else 0
-				val newReceiver = try {
-					OscReceiver(bindPort)
+				val (newReceiver, portIn) = try {
+					bindReceiver(bindPort)
 				} catch (e: Exception) {
 					dispatchInputError(
 						receiver = receiver,
@@ -135,7 +135,6 @@ class VRCOSCInputBehaviour(
 					)
 					return@onEach
 				}
-				val portIn = newReceiver.getSocketPort()
 				oscReceiver = newReceiver
 				receiver.context.dispatch(
 					VRCOSCActions.SetInput(state = VRCOSCInputState.LISTENING, port = portIn),
@@ -157,6 +156,16 @@ class VRCOSCInputBehaviour(
 					}
 				}
 			}.launchIn(receiver.context.scope)
+	}
+
+	private suspend fun bindReceiver(port: Int): Pair<OscReceiver, Int> {
+		val oscReceiver = OscReceiver(port)
+		try {
+			return oscReceiver to oscReceiver.getSocketPort()
+		} catch (e: Exception) {
+			oscReceiver.close()
+			throw e
+		}
 	}
 
 	private suspend fun dispatchInputError(

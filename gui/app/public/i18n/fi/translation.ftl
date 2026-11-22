@@ -62,26 +62,19 @@ body_part-LEFT_UPPER_LEG = Vasen reisi
 body_part-LEFT_LOWER_LEG = Vasen nilkka
 body_part-LEFT_FOOT = Vasen jalkaterä
 
-## BoardType
-
-board_type-UNKNOWN = Tuntematon
-
 ## Proportions
 
 skeleton_bone-NONE = Ei mikään
 skeleton_bone-NECK = Kaulan pituus
-skeleton_bone-torso_group = Vartalon pituus
 skeleton_bone-UPPER_CHEST = Ylärinnan pituus
 skeleton_bone-HIP = Lonkan pituus
 skeleton_bone-HIPS_WIDTH = Lonkan leveys
-skeleton_bone-leg_group = Jalan pituus
 skeleton_bone-UPPER_LEG = Yläjalan pituus
 skeleton_bone-LOWER_LEG = Säären pituus
 skeleton_bone-FOOT_LENGTH = Jalkaterän pituus
 skeleton_bone-FOOT_SHIFT = Jalkaterän säätö
 skeleton_bone-SHOULDERS_DISTANCE = Olkapäiden etäisyys
 skeleton_bone-SHOULDERS_WIDTH = Olkapäiden leveys
-skeleton_bone-arm_group = Käsivarren pituus
 skeleton_bone-UPPER_ARM = Olkavarren pituus
 skeleton_bone-LOWER_ARM = Kyynärvarren pituus
 
@@ -179,8 +172,6 @@ tracker-settings-assignment_section-edit = Muokkaa määritystä
 tracker-settings-mounting_section = Asennusasento
 tracker-settings-mounting_section-description = Mihin jäljitin on asennettu?
 tracker-settings-mounting_section-edit = Muokkaa asennusta
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jäljittimen nimi
 tracker-settings-name_section-description = Anna sille söpö lempinimi :)
 tracker-settings-name_section-placeholder = NightyBeast vasen jalka
@@ -225,14 +216,12 @@ mounting_selection_menu-close = Sulje
 
 ## Sidebar settings
 
-settings-sidebar-title = Asetukset
 settings-sidebar-general = Yleistä
 settings-sidebar-trackers = Jäljittimet
 settings-sidebar-interface = Käyttöliittymä
 settings-sidebar-utils = Lisäohjelmat
 settings-sidebar-serial = Sarjakonsoli
 settings-sidebar-appearance = Ulkonäkö
-settings-sidebar-notifications = Ilmoitukset
 
 ## Bone routing settings
 
@@ -245,49 +234,29 @@ settings-driver-enable = Käytä
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Suodatus
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Valitse suodatustyyppi jäljittimillesi.
-    Ennustus ennustaa liikettä, kun taas tasoitus tasoittaa liikettä.
-settings-general-tracker_mechanics-filtering-type = Suodatustyyppi
 settings-general-tracker_mechanics-filtering-type-none = Ei suodatusta
 settings-general-tracker_mechanics-filtering-type-none-description = Käytä kiertoja sellaisenaan. Ei tee mitään suodatusta.
 settings-general-tracker_mechanics-filtering-type-smoothing = Tasoitus
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Tasoittaa liikettä, mutta lisää hieman viivettä.
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustus
-settings-general-tracker_mechanics-filtering-type-prediction-description = Vähentää viivettä ja tekee liikeistä näppärämpiä, mutta voi lisätä värinää.
 settings-general-tracker_mechanics-filtering-amount = Määrä
-settings-stay_aligned-general-label = Yleistä
-settings-stay_aligned-relaxed_poses-close = Sulje
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Täysinollaus
-settings-keybinds_yaw-reset = Nollaa Kallistuma
 settings-keybinds-recorder-modal-cancel-button = Peruuta
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Jäljityksen asetukset
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction vahvuus
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating correction helpottaa jalkojen luistelua, mutta voi heikentää tarkkuutta tietyissä liikekuvioissa. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi vähentää tai korjata jalan kulun lattian läpi. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
 settings-general-fk_settings-leg_fk = Jalkojen jäljitys
-settings-general-fk_settings-arm_fk-reset_mode-description = Muuta, mikä käsivarren asentoa odotetaan asennuksen nollaukselle.
-settings-general-fk_settings-arm_fk-back = Takaisin
-settings-general-fk_settings-arm_fk-tpose_up = T-asento (ylös)
-settings-general-fk_settings-arm_fk-tpose_down = T-asento (alas)
-settings-general-fk_settings-arm_fk-forward = Eteenpäin
 settings-general-fk_settings-skeleton_settings-ratios = Luurankosuhteet
-settings-general-fk_settings-skeleton_settings-ratios-description = Muuta luurankoasetusten arvoja. Saatat joutua säätämään mittasuhteitasi muutosten jälkeen.
 settings-general-fk_settings-self_localization-title = Mocap-tila
-settings-general-fk_settings-self_localization-description = Mocap-tila sallii luurangon karkeasti seurata omaa sijaintiaan ilman laseja tai muita jäljittimiä. Huomioi, että tämä vaatii jalka- ja pääjäljittimien toimimista ja on vielä kokeellinen.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = Napautuspohjaiset nollaukset
 settings-general-gesture_control-description = Mahdollistaa nollauksen napauttamalla jäljitintä. Ylävartalon korkeinta jäljitintä käytetään Pikanollaukseen. Vasemman jalan korkeinta jäljitintä käytetään Nollaukseen, vastaavaisesti oikean jalan korkeinta jäljitintä käytetään Asennusnollaukseen. On syytä mainita, että napautusten on tapahduttava 0.6 sekunnin sisällä, jotta ne rekisteröityvät.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -314,14 +283,11 @@ settings-general-gesture_control-mountingResetDelay = Asennusnollaus viive
 settings-general-gesture_control-mountingResetTaps = Napautuksia asennusnollaukseen
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Jäljittimet yli kynnysarvon
-settings-general-gesture_control-numberTrackersOverThreshold-description = Suurenna tätä arvoa jos napautustunnistus ei toimi. Älä suurenna yli sen, mikä on tarpeellista, koska se voi aiheuttaa enemmän virheitä.
 
 ## Appearance settings
 
 settings-interface-appearance = Ulkonäkö
-settings-general-interface-dev_mode = Kehittäjätila
 settings-general-interface-dev_mode-description = Tämä tila voi olla hyödyllinen, jos tarvitset perusteellisia tietoja tai haluat olla tekemisissä yhdistettyjen jäljittimien kanssa edistyneemmällä tasolla.
-settings-general-interface-dev_mode-label = Kehittäjätila
 settings-general-interface-theme = Väri teema
 settings-general-interface-lang = Valitse kieli
 settings-general-interface-lang-description = Vaihda oletuskieli, jota haluat käyttää.
@@ -337,24 +303,18 @@ settings-interface-appearance-font_size-description = Tämä vaikuttaa koko käy
 
 ## Notification settings
 
-settings-interface-notifications = Ilmoitukset
 settings-general-interface-feedback_sound = Palaute ääni
 settings-general-interface-feedback_sound-description = Tämä asetus toistaa äänen nollauksen tapahtuessa.
-settings-general-interface-feedback_sound-label = Palaute ääni
 settings-general-interface-feedback_sound-volume = Palaute äänen voimakkuus
 settings-general-interface-connected_trackers_warning = Yhdistettyjen jäljittimien varoitus
 settings-general-interface-connected_trackers_warning-description = Tämä vaihtoehto näyttää ponnahdusikkunan aina, kun yrität poistua SlimeVR:stä, kun sinulla on yksi tai useampi yhdistetty jäljitin. Se muistuttaa sinua sammuttamaan jäljittimet, kun olet valmis, akun käyttöiän säästämiseksi.
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Kehittäjätila
-settings-general-interface-dev_mode-label = Kehittäjätila
 settings-general-interface-use_tray = Pienennä ilmaisinalueelle
 settings-general-interface-use_tray-description = Voit sulkea ikkunan sulkematta SlimeVR-palvelinta, jotta voit jatkaa sen käyttöä ilman, että graafinen käyttöliittymä häiritsee sinua.
-settings-general-interface-use_tray-label = Pienennä ilmaisinalueelle
 settings-general-interface-discord_presence = Jaa toiminta Discordissa
 settings-general-interface-discord_presence-description = Kertoo Discordille, että käytät SlimeVR:ää, sekä käyttämiesi IMU-seurantalaitteiden määrän.
-settings-general-interface-discord_presence-label = Jaa toiminta Discordissa
 
 ## Serial settings
 
@@ -363,7 +323,6 @@ settings-serial = Sarjakonsoli
 settings-serial-description =
     Tämä on reaaliaikainen tietosyöte sarjaviestintää varten.
     Voi olla hyödyllistä, jos sinun on tiedettävä, että laiteohjelmisto toimii.
-settings-serial-connection_lost = Yhteys sarjaan kadonnut, yhdistetään uudelleen...
 settings-serial-reboot = Käynnistä uudelleen
 settings-serial-factory_reset = Tehdasasetusten palautus
 # This cares about multilines
@@ -378,12 +337,13 @@ settings-serial-save_logs = Tallenna tiedostoon
 settings-serial-send_command-warning-ok = Tiedän mitä teen
 settings-serial-send_command-warning-cancel = Peruuta
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC -jäljittimet
 settings-osc-vrchat-enable = Käytä
 settings-osc-vrchat-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
-settings-osc-vrchat-enable-label = Käytä
 settings-osc-vrchat-network = Verkkoportit
 settings-osc-vrchat-network-port_in =
     .label = Portti sisään
@@ -393,7 +353,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Portti ulos (oletus: 9000)
 settings-osc-vrchat-network-address = Verkon osoite
 settings-osc-vrchat-network-address-description-v1 = Valitse, mihin osoitteeseen tiedot lähetetään. Voidaan jättää koskematta VRChatille.
-settings-osc-vrchat-network-address-placeholder = VRChat IP-osoite
 
 ## VRChat OSC status
 
@@ -409,7 +368,6 @@ settings-osc-vmc-description =
         lähettääksesi ja vastaanottaaksesi SlimeVR:n luutietoja muihin sovelluksiin.
 settings-osc-vmc-enable = Käytä
 settings-osc-vmc-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
-settings-osc-vmc-enable-label = Käytä
 settings-osc-vmc-network = Verkkoportit
 settings-osc-vmc-network-description = Aseta portit tietojen kuunteluun ja lähettämiseen VMC:n kautta
 settings-osc-vmc-network-port_in =
@@ -420,13 +378,11 @@ settings-osc-vmc-network-port_out =
     .placeholder = Portti ulos (oletus: 39539)
 settings-osc-vmc-network-address = Verkon osoite
 settings-osc-vmc-network-address-description = Määritä osoite, johon tietoja lähetetään VMC:n kautta
-settings-osc-vmc-network-address-placeholder = IPV4-osoite
 settings-osc-vmc-vrm = VRM-malli
 settings-osc-vmc-vrm-description = Lataa VRM-malli salliaksesi pääankkurin ja mahdollistaaksesi paremman yhteensopivuuden muiden sovellusten kanssa
 settings-osc-vmc-vrm-file_select = Vedä ja pudota mallia käytettäväksi tai <u>selaa</u>
 settings-osc-vmc-anchor_hip = Ankkuri lantiolla
 settings-osc-vmc-anchor_hip-description = Ankkuroi jäljitin lonkalle, hyödyllinen istuvaan VTubing. Jos poistat käytöstä, lataa VRM-malli.
-settings-osc-vmc-anchor_hip-label = Ankkuroi lonkalle
 settings-osc-vmc-status-badge-error = Virhe
 
 ## Common OSC settings
@@ -468,7 +424,7 @@ onboarding-wifi_creds-ssid =
     .placeholder = Syötä Wi-Fi nimi
 onboarding-wifi_creds-password =
     .label = Salasana
-    .placeholder = Syötä salasana
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -508,7 +464,6 @@ onboarding-connect_tracker-next = Yhdistin kaikki jäljittimeni
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = Määritä jäljittimet
-onboarding-assign_trackers-description = Valitaan, mikä jäljitin menee minne. Napsauta paikkaa, johon haluat sijoittaa jäljittimen
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -523,87 +478,26 @@ onboarding-assign_trackers-side-left = Vasen
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [6] Vasen jalkaterä on määritetty, mutta myös vasen nilkka on määritettävä!
-        [5] Vasen jalkaterä on määritetty, mutta myös vasen reisi on määritettävä!
-        [4] Vasen jalkaterä on määritetty, mutta myös vasen nilkka ja vasen reisi on määritettävä!
-        [3] Vasen jalkaterä on määritetty, mutta joko rinta, lantio tai vyötärö on myös määritettävä!
-        [2] Vasen jalkaterä on määritetty, mutta myös vasen nilkka ja joko rinta, lantio tai vyötärö on määritettävä!
-        [1] Vasen jalkaterä on määritetty, mutta myös vasen reisi ja joko rinta, lantio tai vyötärö on määritettävä!
-        [0] Vasen jalkaterä on määritetty, mutta myös vasen nilkka, vasen reisi ja joko rinta, lantio tai vyötärö on määritettävä!
-       *[other] Vasen jalkaterä on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [6] Oikea jalkaterä on määritetty, mutta myös oikea nilkka on määritettävä!
-        [5] Oikea jalkaterä on määritetty, mutta myös oikea reisi on määritettävä!
-        [4] Oikea jalkaterä on määritetty, mutta myös oikea nilkka ja oikea reisi on määritettävä!
-        [3] Oikea jalkaterä on määritetty, mutta joko rinta, lantio tai vyötärö on myös määritettävä!
-        [2] Oikea jalkaterä on määritetty, mutta myös oikea nilkka ja joko rinta, lantio tai vyötärö on määritettävä!
-        [1] Oikea jalkaterä on määritetty, mutta myös oikea reisi ja joko rinta, lantio tai vyötärö on määritettävä!
-        [0] Oikea jalkaterä on määritetty, mutta myös oikea nilkka, oikea reisi ja joko rinta, lantio tai vyötärö on määritettävä!
-       *[other] Oikea jalkaterä on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] Vasen nilkka on määritetty, mutta myös vasen reisi ja joko rinta, lantio tai vyötärö on määritettävä!
-        [1] Vasen nilkka on määritetty, mutta joko rinta, lantio tai vyötärö on myös määritettävä!
-        [2] Vasen nilkka on määritetty, mutta myös vasen reisi on määritettävä!
-       *[other] Vasen nilkka on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] Oikea nilkka on määritetty, mutta myös oikea reisi ja joko rinta, lantio tai vyötärö on määritettävä!
-        [1] Oikea nilkka on määritetty, mutta joko rinta, lantio tai vyötärö on myös määritettävä!
-        [2] Oikea nilkka on määritetty, mutta myös oikea reisi on määritettävä!
-       *[other] Oikea nilkka on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] Vasen reisi on määritetty, mutta myös rinta, lantio tai vyötärö on määritettävä!
-       *[other] Vasen reisi on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] Oikea reisi on määritetty, mutta myös rinta, lantio tai vyötärö on määritettävä!
-       *[other] Oikea reisi on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] Lonkka on määritetty, mutta myös rinta on määritettävä!
-       *[other] Lonkka on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] Vyötärö on määritetty, mutta myös rinta on määritettävä!
-       *[other] Vyötärö on määritetty, mutta myös tuntematon määrittelemätön osa on määritettävä!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Mitä asennuskalibrointimenetelmää käytetään?
 # Multiline text
 onboarding-choose_mounting-description = Asennussuuntaus korjaa jäljittimien sijoittelun kehossasi.
-onboarding-choose_mounting-auto_mounting = Automaattinen asennus
-onboarding-choose_mounting-auto_mounting-description = Tämä tunnistaa automaattisesti kaikkien jäljittimiesi asennussuunnat 2 asennosta
-onboarding-choose_mounting-manual_mounting = Manuaalinen asennus
-onboarding-choose_mounting-manual_mounting-description = Näin voit valita asennussuunnan manuaalisesti kullekin jäljittimelle
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuaalinen Asennus
 onboarding-manual_mounting-description = Napsauta jokaista jäljitintä ja valitse, mihin suuntaan ne on asennettu
-onboarding-manual_mounting-auto_mounting = Automaattinen asennus
 onboarding-manual_mounting-next = Seuraava vaihe
 
 ## Tracker automatic mounting setup
@@ -617,14 +511,10 @@ onboarding-automatic_mounting-done-title = Asennuskierrokset kalibroitu.
 onboarding-automatic_mounting-done-description = Asennuskalibrointi on valmis!
 onboarding-automatic_mounting-done-restart = Yritä uudelleen
 onboarding-automatic_mounting-mounting_reset-title = Asennuksen Nollaus
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kyykisty "hiihtoasentoon" siten, että jalat ovat koukussa, ylävartalo kallistettuna eteenpäin ja kädet koukussa.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Paina "Nollaa Asennus" -painiketta ja odota 3 sekuntia, ennen kuin jäljittimien asennuskierrot nollautuvat.
 onboarding-automatic_mounting-preparation-title = Valmistelu
-onboarding-automatic_mounting-put_trackers_on-title = Laita jäljittimet päällesi
-onboarding-automatic_mounting-put_trackers_on-description = Kalibroidaksemme asennuskierrokset käytämme juuri määrittämiäsi jäljittimiä. Laita kaikki jäljittimet päällesi, näet mitkä ovat mitäkin oikealla olevassa kuvassa.
-onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
@@ -659,13 +549,6 @@ onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
 ## User height calibration
 
-
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = Laita jäljittimet päällesi
-onboarding-stay_aligned-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
-onboarding-stay_aligned-verify_mounting-title = Asennuksen Nollaus
-onboarding-stay_aligned-preparation-title = Valmistelu
 
 ## Home
 
@@ -709,11 +592,13 @@ tray_or_exit_modal-cancel = Peruuta
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Tuntematon
 vrc_config-tracker_model-UNKNOWN = Tuntematon
 vrc_config-avatar_measurement_type-UNKNOWN = Tuntematon
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

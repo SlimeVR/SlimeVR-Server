@@ -21,7 +21,7 @@ val appCoroutineExceptionHandler = CoroutineExceptionHandler { context, throwabl
 private val CoroutineContext.scopeName: String
 	get() = this[CoroutineName]?.name ?: "unnamed"
 
-/** Reports failures on threads coroutines don't own (JNA callbacks, JmDNS, serial readers) */
+/** Reports failures on threads coroutines don't own (JNA callbacks, serial readers) */
 fun installUncaughtExceptionReporting() {
 	val previous = Thread.getDefaultUncaughtExceptionHandler()
 	Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->

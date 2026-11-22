@@ -3,7 +3,6 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.findFirstParent
-import dev.slimevr.skeleton.forEachBone
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.collections.set
 
@@ -61,8 +60,8 @@ val CHILD_FALLBACKS = mapOf(
  */
 class FallbackInputProcessor : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		mutableInputSkeleton.forEach { (bodyPart, bone) ->
-			if (bone.isRotationActive && bone.isAccelerationActive) return@forEach
+		for ((bodyPart, bone) in mutableInputSkeleton) {
+			if (bone.isRotationActive && bone.isAccelerationActive) continue
 			val newRotation = if (!bone.isRotationActive) {
 				val fallbackPart = bodyPart.findFirstParent { mutableInputSkeleton[it]?.isRotationActive == true }
 					?: CHILD_FALLBACKS[bodyPart]?.firstOrNull { mutableInputSkeleton[it]?.isRotationActive == true }

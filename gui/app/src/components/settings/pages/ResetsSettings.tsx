@@ -30,7 +30,7 @@ type ResetsSettingsForm = {
   armsMountingResetMode: ArmsMountingResetMode;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
-  resetReliableReferenceAttitude: boolean;
+  resetHmdAttitude: boolean;
 };
 
 function toForm(settings: ResetsSettingsResponseT): ResetsSettingsForm {
@@ -39,7 +39,7 @@ function toForm(settings: ResetsSettingsResponseT): ResetsSettingsForm {
     armsMountingResetMode: settings.armsMountingResetMode,
     yawResetSmoothTime: settings.yawResetSmoothTime,
     saveMountingReset: settings.saveMountingReset,
-    resetReliableReferenceAttitude: settings.resetReliableReferenceAttitude,
+    resetHmdAttitude: settings.resetHmdAttitude,
   };
 }
 
@@ -73,7 +73,7 @@ export const resetsSettingsPage = defineSettingsPage({
           description:
             'settings-general-tracker_mechanics-yaw-reset-smooth-time-description',
         },
-        resetReliableReferenceAttitude: {
+        resetHmdAttitude: {
           title:
             'settings-general-fk_settings-reset_settings-reset_reliable_reference_attitude',
           description:
@@ -140,7 +140,7 @@ export function ResetsSettings() {
       armsMountingResetMode: values.armsMountingResetMode,
       yawResetSmoothTime: values.yawResetSmoothTime,
       saveMountingReset: values.saveMountingReset,
-      resetReliableReferenceAttitude: values.resetReliableReferenceAttitude,
+      resetHmdAttitude: values.resetHmdAttitude,
     });
   };
 
@@ -273,19 +273,14 @@ export function ResetsSettings() {
               }
             />
             <SettingRow
-              setting={
-                groups.resetBehaviour.rows.resetReliableReferenceAttitude
-              }
+              setting={groups.resetBehaviour.rows.resetHmdAttitude}
               controlId="resets-hmd-attitude"
-              {...resetTo(
-                'resetReliableReferenceAttitude',
-                defaults.resetReliableReferenceAttitude
-              )}
+              {...resetTo('resetHmdAttitude', defaults.resetHmdAttitude)}
               control={
                 <CheckBox
                   variant="toggle"
                   control={control}
-                  name="resetReliableReferenceAttitude"
+                  name="resetHmdAttitude"
                   id="resets-hmd-attitude"
                 />
               }

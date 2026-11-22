@@ -20,9 +20,9 @@ class HIDSleepV3Behaviour : HIDReceiverBehaviour {
 		receiver.packetEvents.on<HIDTimeout> { packet ->
 			timers.onPacket(packet.hidId)
 			if (packet.secondsUntilTimeout == HID_TIME_UNKNOWN) {
-				timers.cancelSleep(packet.hidId)
+				timers.clearSleepDeadline(packet.hidId)
 			} else {
-				timers.scheduleSleep(packet.hidId, packet.secondsUntilTimeout * 1000)
+				timers.setSleepDeadline(packet.hidId, packet.secondsUntilTimeout * 1000)
 			}
 		}.launchIn(receiver.context.scope)
 

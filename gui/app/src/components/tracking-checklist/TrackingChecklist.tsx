@@ -324,7 +324,7 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.TRACKER_ERROR]: () => {
     return <Typography id="tracking_checklist-TRACKER_ERROR-desc" />;
   },
-  [TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE]: () => {
+  [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
     return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (
@@ -454,8 +454,7 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-STAY_ALIGNED_CONFIGURED-open"
               variant="primary"
-              to="/onboarding/stay-aligned"
-              state={{ alonePage: true }}
+              to="/settings/stay-aligned"
             />
             {step.ignorable && (
               <Button

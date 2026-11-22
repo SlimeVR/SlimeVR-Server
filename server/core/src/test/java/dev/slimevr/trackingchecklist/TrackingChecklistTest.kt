@@ -12,6 +12,7 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
+import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.tracker.Tracker
@@ -29,6 +30,7 @@ import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
@@ -62,10 +64,10 @@ class TrackingChecklistTest {
 			checklist.context.behaviours.addAll(
 				listOf(
 					MountingMethodCheckBehaviour(settings),
-					ReliableReferenceCheckBehaviour(trackerStates),
+					HMDCheckBehaviour(trackerStates),
 					TrackerRestCheckBehaviour(trackerStates),
 					TrackerErrorCheckBehaviour(trackerStates),
-					FullResetCheckBehaviour(trackerStates),
+					FullResetCheckBehaviour(trackerStates, resetsManager),
 					MountingCalibrationCheckBehaviour(trackerStates, settings),
 					FeetMountingCalibrationCheckBehaviour(trackerStates, settings),
 					NetworkProfileCheckBehaviour(networkProfileManager),
@@ -104,7 +106,12 @@ class TrackingChecklistTest {
 			return tracker
 		}
 
-		fun fullReset() = trackers.forEach { it.context.dispatch(TrackerActions.FullReset(null)) }
+		fun fullReset() {
+			trackers.forEach { it.context.dispatch(TrackerActions.FullReset(null)) }
+			resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
+		}
+
+		fun mountingReset() = resetsManager.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.MOUNTING)))
 
 		fun setMountingMethod(method: MountingMethod) = settings.context.dispatch(
 			SettingsActions.Update { copy(resetsConfig = resetsConfig.copy(mountingMethod = method)) },
@@ -179,6 +186,25 @@ class TrackingChecklistTest {
 		assertEquals(false, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 		val pending = (h.step(TrackingChecklistStepId.FULL_RESET).extraData as TrackingChecklistTrackerReset).trackersId
 		assertEquals(listOf(added.context.state.value.id.toUShort()), pending)
+	}
+
+	@Test
+	fun `FULL_RESET is due again when the mounting window closes with a mounting calibration still to do`() = runTest {
+		val h = Harness(this)
+		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
+		runCurrent()
+		h.fullReset()
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
+		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
+
+		h.mountingReset()
+		runCurrent()
+		assertEquals(false, h.step(TrackingChecklistStepId.FULL_RESET).valid)
+
+		h.fullReset()
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 	}
 
 	@Test
@@ -292,26 +318,27 @@ class TrackingChecklistTest {
 	}
 
 	@Test
-	fun `UNASSIGNED_RELIABLE_REFERENCE is invalid until the reliable reference is assigned its intended body part`() = runTest {
+	fun `UNASSIGNED_HMD is invalid until the HMD is assigned to the head`() = runTest {
 		val h = Harness(this)
-		val reliableReference = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.ZERO)
+		// An HMD is a DRIVER-origin tracker with a computed position
+		val hmd = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.ZERO)
 		runCurrent()
 
-		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).enabled)
-		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).valid)
+		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).valid)
 
-		reliableReference.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HEAD) })
+		hmd.context.dispatch(TrackerActions.Update { copy(bodyPart = BodyPart.HEAD) })
 		runCurrent()
-		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).valid)
+		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).valid)
 	}
 
 	@Test
-	fun `UNASSIGNED_RELIABLE_REFERENCE is disabled without a driver tracker`() = runTest {
+	fun `UNASSIGNED_HMD is disabled without a driver tracker`() = runTest {
 		val h = Harness(this)
 		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
-		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_RELIABLE_REFERENCE).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
 	}
 
 	@Test

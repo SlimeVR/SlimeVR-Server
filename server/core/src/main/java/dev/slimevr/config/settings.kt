@@ -13,7 +13,6 @@ import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsMountingResetMode
-import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
 import solarxr_protocol.rpc.RoutingOutput
 
@@ -78,8 +77,8 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset a reliable reference's (HMD) attitude on full reset */
-	val resetReliableReferenceAttitude: Boolean = false,
+	/** Reset a VR headset's pitch and roll on full reset */
+	val resetHmdAttitude: Boolean = false,
 	/** How a mounting reset calibrates the trackers, UNKNOWN until the user has picked one */
 	val mountingMethod: MountingMethod = MountingMethod.UNKNOWN,
 )
@@ -117,24 +116,18 @@ data class SkeletonTogglesConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonRatiosConfig(
+	val smoothingStrength: Float = 0.1f,
+	val predictionStrength: Float = 0.3f,
 	val spineCurvature: Float = 0.75f,
 	val imputeSpineFromUpperToLower: Float = DEFAULT_SPINE_UPPER_LOWER,
 	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.5f,
 )
 
-// Used in SkeletonConfig
-@Serializable
-data class SkeletonFilteringConfig(
-	val type: FilteringType = FilteringType.NONE,
-	val amount: Float = 0.25f,
-)
-
 @Serializable
 data class SkeletonConfig(
 	val toggles: SkeletonTogglesConfig = SkeletonTogglesConfig(),
 	val ratios: SkeletonRatiosConfig = SkeletonRatiosConfig(),
-	val filtering: SkeletonFilteringConfig = SkeletonFilteringConfig(),
 )
 
 const val DEFAULT_VRC_OSC_PORT_OUT: Int = 9000
@@ -162,31 +155,10 @@ data class VMCConfig(
 	val vrmJson: String? = null,
 )
 
-// Used in StayAlignedConfig
-@Serializable
-data class StayAlignedRelaxedPoseConfig(
-	/** Whether Stay Aligned should adjust the tracker yaws when the player is in this pose. */
-	var enabled: Boolean = false,
-	/** Angle between the upper leg yaw and the centre yaw. */
-	var upperLegAngleInDeg: Float = 0.0f,
-	/** Angle between the lower leg yaw and the centre yaw. */
-	var lowerLegAngleInDeg: Float = 0.0f,
-	/** Angle between the foot and the centre yaw. */
-	var footAngleInDeg: Float = 0.0f,
-)
-
 @Serializable
 data class StayAlignedConfig(
-	/** Global enable toggle for all poses */
-	var enabled: Boolean = false,
-	/** Standing relaxed pose */
-	val standingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Sitting relaxed pose */
-	val sittingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Flat relaxed pose */
-	val flatRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
-	/** Whether setup has been completed */
-	var setupComplete: Boolean = false,
+	/** Whether Stay Aligned runs. The relaxed poses it uses are in the user config. */
+	val enabled: Boolean = false,
 )
 
 @Serializable

@@ -1,7 +1,7 @@
 package dev.slimevr.desktop.keybind
 
 import dev.slimevr.config.KeybindConfig
-import dev.slimevr.desktop.install.executeShellCommand
+import dev.slimevr.desktop.utils.executeShellCommand
 import dev.slimevr.keybind.canonicalKeybind
 import dev.slimevr.logging.AppLogger
 import solarxr_protocol.rpc.KeybindId

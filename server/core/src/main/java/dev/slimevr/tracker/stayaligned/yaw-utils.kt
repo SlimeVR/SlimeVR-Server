@@ -3,7 +3,6 @@ package dev.slimevr.tracker.stayaligned
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleAverage
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.getAllActiveFor
 import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
@@ -73,12 +72,12 @@ object YawUtils {
 		trackerStates: List<TrackerState>,
 	): Angle? {
 		val head = trackerStates.getFirstActiveFor(StayAlignedBodyParts.head) // Optional
-		val upperBody = trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup)
-		if (upperBody.isEmpty()) return null
-		val leftUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg) ?: return null
-		val rightUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg) ?: return null
-		val leftLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftLowerLeg) ?: return null
-		val rightLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightLowerLeg) ?: return null
+		val required = requiredTrackers(trackerStates) ?: return null
+		val upperBody = required.upperBody
+		val leftUpperLeg = required.leftUpperLeg
+		val rightUpperLeg = required.rightUpperLeg
+		val leftLowerLeg = required.leftLowerLeg
+		val rightLowerLeg = required.rightLowerLeg
 
 		// Need a minimum set of trackers, and the trackers need to be oriented in a
 		// way where we can actually calculate its yaw.

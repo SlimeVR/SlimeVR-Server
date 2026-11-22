@@ -13,7 +13,6 @@ websocket-connection_lost-desc = SlimeVR sunucusu çöktü. Kayıtları kontrol 
 websocket-timedout = Sunucuya bağlanılamadı
 websocket-timedout-desc = SlimeVR sunucusu çöktü veya zaman aşımına uğradı. Kayıtları kontrol et ve programı yeniden başlat.
 websocket-error-close = SlimeVR'ı kapat
-websocket-error-logs = Kayıtlar klasörünü aç
 
 ## Update notification
 
@@ -100,13 +99,6 @@ body_part-RIGHT_LITTLE_PROXIMAL = Sağ küçük parmağın proksimal falanks kem
 body_part-RIGHT_LITTLE_INTERMEDIATE = Sağ küçük parmağın orta falanks kemiği
 body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
-## BoardType
-
-board_type-UNKNOWN = Bilinmeyen
-board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
-board_type-GESTURES = Hareketler
-board_type-GENERIC_NRF = Jenerik nRF
-
 ## Proportions
 
 skeleton_bone-NONE = Yok
@@ -115,57 +107,25 @@ skeleton_bone-NECK-desc =
     Bu, başının ortasından boynunun başlangıcına kadar olan mesafedir.
     Ayarlamak için başını 'evet' der gibi yukarı-aşağı hareket ettir veya başını hafifçe öne eğip, başını sola ve sağa kaydır,
     diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
-skeleton_bone-torso_group = Gövde Uzunluğu
 skeleton_bone-torso_group-desc =
     Bu, boynunun başlangıcından kalçalarına kadar olan mesafedir.
     Ayarlamak için dik dur ve sanal kalçaların, gerçek kalçalarınla hizalanana kadar değeri değiştir.
 skeleton_bone-UPPER_CHEST = Üst Göğüs Uzunluğu
-skeleton_bone-UPPER_CHEST-desc =
-    Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-LOWER_CHEST-desc =
-    Bu, göğsünün ortasından omurganın ortasına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-HIP = Kalça Uzunluğu
-skeleton_bone-HIP-desc =
-    Bu, göbek deliğinden kalçalarına kadar olan mesafedir.
-    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
-    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-HIPS_WIDTH = Kalça Genişliği
 skeleton_bone-HIPS_WIDTH-desc =
     Bu, bacaklarının başladığı noktalar arasındaki mesafedir.
     Ayarlamak için bacaklarını düz tutarak tam bir sıfırlama yap ve,
     sanal bacaklarının aralığı, gerçek bacaklarının aralığıyla hizalanana kadar bu değeri değiştir.
-skeleton_bone-leg_group = Bacak uzunluğu
-skeleton_bone-leg_group-desc =
-    Bu, kalçandan ayaklarına olan mesafedir.
-    Ayarlamak için Gövde uzunluğunu doğru şekilde ayarla ve,
-    sanal ayakların gerçek ayaklarınla aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-UPPER_LEG = Üst Bacak Uzunluğu
-skeleton_bone-UPPER_LEG-desc =
-    Bu, kalçandan dizlerine olan mesafedir.
-    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
-    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-LOWER_LEG = Alt Bacak Uzunluğu
-skeleton_bone-LOWER_LEG-desc =
-    Bu, dizlerinden ayak bileklerine olan mesafedir.
-    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
-    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-FOOT_LENGTH = Ayak Uzunluğu
 skeleton_bone-FOOT_LENGTH-desc =
     Bu, ayak bileklerinden ayak parmaklarına olan mesafedir.
     Ayarlamak için parmak uçlarına çık ve sanal ayakların sabit kalana kadar bu değeri değiştir.
 skeleton_bone-FOOT_SHIFT = Ayak hizası
-skeleton_bone-FOOT_SHIFT-desc =
-    Bu değer, dizinden ayak bileğine olan yatay mesafedir.
-    Bu, dik dururken alt bacaklarının geriye doğru konumlanmasını telafi eder.
-    Ayarlamak için Ayak uzunluğunu 0 olarak ayarla, tam sıfırlama yap ve,
-    sanal ayakların ayak bileklerinin ortasıyla hizalanana kadar bu değeri değiştir.
 skeleton_bone-SHOULDERS_DISTANCE = Omuz Mesafesi
 skeleton_bone-SHOULDERS_WIDTH = Omuz Genişliği
-skeleton_bone-arm_group = Kol uzunluğu
 skeleton_bone-UPPER_ARM = Üst Kol Uzunluğu
 skeleton_bone-LOWER_ARM = Alt Kol Uzunluğu
 
@@ -246,8 +206,6 @@ tracker-infos-board_type = Ana kart
 tracker-settings-back = Takipçi listesine geri dön
 tracker-settings-title = Takipçi ayarları
 tracker-settings-assignment_section-description = Tracker'in vücudun hangi kısmına atandığı.
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = Takipçi adı
 tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
 tracker-settings-name_section-label = Takipçi adı
@@ -279,7 +237,6 @@ mounting_selection_menu-close = Kapat
 
 ## Sidebar settings
 
-settings-sidebar-title = Ayarlar
 settings-sidebar-general = Genel
 settings-sidebar-interface = Arayüz
 settings-sidebar-serial = Seri konsol
@@ -295,35 +252,30 @@ settings-driver-enable = Etkinleştir
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering-amount = Miktar
-settings-stay_aligned-general-label = Genel
-settings-stay_aligned-relaxed_poses-close = Kapat
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = Sıfırlama
 settings-keybinds-recorder-modal-cancel-button = İptal
 
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_fk = Bacak takibi
-settings-general-fk_settings-arm_fk-back = Arka
 
 ## Gesture control settings (tracker tapping)
 
 
 ## Appearance settings
 
-settings-general-interface-dev_mode = Geliştirici Modu
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Notification settings
 
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Geliştirici Modu
-settings-general-interface-dev_mode-label = Geliştirici Modu
 
 ## Serial settings
 
@@ -333,10 +285,12 @@ settings-serial-factory_reset-warning-cancel = İptal et
 settings-serial-send_command-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-send_command-warning-cancel = İptal
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Etkinleştir
-settings-osc-vrchat-enable-label = Etkinleştir
 settings-osc-vrchat-network-address = Ağ adresi
 
 ## VRChat OSC status
@@ -348,7 +302,6 @@ settings-osc-vrchat-status-badge-unknown = Bilinmeyen
 ## VMC OSC settings
 
 settings-osc-vmc-enable = Etkinleştir
-settings-osc-vmc-enable-label = Etkinleştir
 settings-osc-vmc-network-address = Ağ adresi
 settings-osc-vmc-status-badge-error = Hata
 
@@ -399,22 +352,28 @@ onboarding-assign_trackers-side-left = Sol
 ## Tracker mounting method choose
 
 
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
 
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
 
 
 ## User height calibration
-
-
-## Stay Aligned setup
 
 
 ## Home
@@ -452,11 +411,13 @@ tray_or_exit_modal-cancel = İptal
 
 ## Unknown device modal
 
-vrc_config-spine_mode-UNKNOWN = Bilinmeyen
 vrc_config-tracker_model-UNKNOWN = Bilinmeyen
 vrc_config-avatar_measurement_type-UNKNOWN = Bilinmeyen
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

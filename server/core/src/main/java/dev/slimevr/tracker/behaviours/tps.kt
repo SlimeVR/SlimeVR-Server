@@ -21,14 +21,14 @@ class TrackerTpsBehaviour : TrackerBehaviour {
 				val trackerState = receiver.context.state.value
 				val tps = (trackerState.accumulatedTicks * 1000u).toLong() / elapsed.inWholeMilliseconds
 
-				// Tracker is at rest if it hasn't been updated in the last second
-				val updateMotionAction = if (tps == 0L && trackerState.motion != Motion.RESTING) TrackerActions.SetMotion(Motion.RESTING) else null
-				receiver.context.dispatchAll(
-					listOfNotNull(
-						TrackerActions.Update { copy(tps = tps.toUShort(), accumulatedTicks = 0u) },
-						updateMotionAction,
-					),
+				// Update TPS
+				receiver.context.dispatch(
+					TrackerActions.Update { copy(tps = tps.toUShort(), accumulatedTicks = 0u) },
 				)
+				// Tracker is at rest if it has 0 TPS
+				if (tps == 0L && trackerState.motion != Motion.RESTING) {
+					receiver.context.dispatch(TrackerActions.SetMotion(Motion.RESTING))
+				}
 
 				mark = timeSource.markNow()
 			}

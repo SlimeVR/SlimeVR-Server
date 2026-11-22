@@ -8,6 +8,7 @@ import kotlin.math.*
 @Serializable
 class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
+		val ZERO = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)
@@ -439,6 +440,20 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		2.0f * (y * z - w * x),
 		w * w - x * x - y * y + z * z,
 	)
+
+	/**
+	 * Aligns this global quaternion to be local within the [parent]'s space.
+	 * @param parent The global quaternion to become relative to.
+	 * @return This quaternion aligned to [parent]'s local space.
+	 */
+	fun localAbout(parent: Quaternion): Quaternion = parent.inv() * this
+
+	/**
+	 * Aligns this local quaternion to be global from within the parent's space.
+	 * @param parent The global quaternion which this quaternion is relative to.
+	 * @return This quaternion aligned to a global space.
+	 */
+	fun globalAbout(parent: Quaternion): Quaternion = parent * this
 
 	/**
 	 * computes this quaternion's unit length rotation axis

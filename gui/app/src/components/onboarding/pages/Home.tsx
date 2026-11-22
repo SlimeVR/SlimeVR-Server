@@ -21,7 +21,7 @@ export function HomePage() {
   return (
     <>
       <div className="flex relative flex-col gap-5 h-full items-center w-full justify-center px-4 overflow-clip">
-        <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
+        <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20 text-status-special">
           <SlimeVRIcon />
           <Typography variant="mobile-title">
             {l10n.getString('onboarding-home')}

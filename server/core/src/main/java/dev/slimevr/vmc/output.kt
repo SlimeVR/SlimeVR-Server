@@ -7,7 +7,6 @@ import dev.slimevr.osc.OscSender
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.formatExceptionMessage
 import dev.slimevr.util.timeSource
 import kotlinx.coroutines.flow.combine
@@ -19,6 +18,7 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.VMCOSCOutputState
+import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration.Companion.seconds
 
 private val FRAME_RETRY_DELAY = 2.seconds
@@ -33,10 +33,10 @@ class VMCOutputBehaviour(
 	private class OutputRuntime {
 		var sender: OscSender? = null
 		var sendFailing = false
-		var nextFrameRetryAt: MonotonicValueTimeMark? = null
+		var nextFrameRetryAt: ComparableTimeMark? = null
 
 		/** Start of the current unbroken run of successful sends, null while sends are failing. */
-		var healthySince: MonotonicValueTimeMark? = null
+		var healthySince: ComparableTimeMark? = null
 	}
 
 	override fun observe(receiver: VMCManager) {
@@ -149,7 +149,7 @@ class VMCOutputBehaviour(
 		config: VMCConfig,
 		skeletonHeight: Float,
 		floorLevel: Float,
-		startedAt: MonotonicValueTimeMark,
+		startedAt: ComparableTimeMark,
 	) {
 		val sender = runtime.sender ?: return
 		val status = receiver.context.state.value.status

@@ -8,23 +8,21 @@ import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.inputprocessors.BoneOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.DirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FallbackInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FilteringInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingersInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PosteriorDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.PosteriorInputProcessor
 import dev.slimevr.skeleton.inputprocessors.NeckInputProcessor
-import dev.slimevr.skeleton.inputprocessors.RotationPredictionInputProcessor
-import dev.slimevr.skeleton.inputprocessors.RotationSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineInputProcessor
 import dev.slimevr.skeleton.inputprocessors.TailChainInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToesInputProcessor
-import dev.slimevr.skeleton.inputprocessors.TrackerOffsetInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
-import dev.slimevr.skeleton.inputprocessors.UpsamplingInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.PositionalTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
@@ -37,6 +35,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.SkeletonBone
+import kotlin.time.ComparableTimeMark
 
 data class Velocity(
 	/** In meters/s */
@@ -52,8 +51,8 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
-	val trackerOffset: Vector3,
-	val expectedTps: UShort?,
+	val boneOffset: Vector3,
+	val poseTime: ComparableTimeMark?,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val position: Vector3?,
@@ -68,7 +67,7 @@ data class BoneState(
 	val bodyPart: BodyPart,
 	val headOffset: Vector3,
 	val offset: Vector3,
-	val trackerOffset: Vector3,
+	val boneOffset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val headPosition: Vector3,
@@ -87,7 +86,7 @@ data class BoneState(
 		get() = rotation * orientationOffset
 
 	val localRotation: Quaternion
-		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
+		get() = parentBone?.let { rotation.localAbout(it.rotation) } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
 	val localTailPosition: Vector3
@@ -118,8 +117,8 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
 	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
-	trackerOffset = Vector3.ZERO,
-	expectedTps = null,
+	boneOffset = Vector3.ZERO,
+	poseTime = null,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
 	position = null,
@@ -160,7 +159,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO
 		bodyPart = bone.bodyPart,
 		headOffset = bone.headOffset,
 		offset = bone.offset,
-		trackerOffset = bone.trackerOffset,
+		boneOffset = bone.boneOffset,
 		rotation = bone.rotation,
 		acceleration = bone.acceleration,
 		headPosition = headPosition,
@@ -186,8 +185,7 @@ fun buildBones(mutableBones: BodyPartMap<BoneState>, boneInputs: InputSkeleton, 
 sealed interface SkeletonActions {
 	data class SetBonePose(
 		val bodyPart: BodyPart,
-		val trackerOffset: Vector3?,
-		val expectedTps: UShort?,
+		val boneOffset: Vector3?,
 		val rotation: Quaternion?,
 		val acceleration: Vector3?,
 		val position: Vector3?,
@@ -273,21 +271,19 @@ class Skeleton(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				LocalizerResetBehaviour(settings),
-// 				YouSpinMeRightRoundBehaviour(inputHz = 50),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 100, speed = 1f, randomPacketLoss = 0.9f, constantPacketLoss = 0f, sendPosition = false),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
 					// Run before FK on the inputs
 					inputProcessors = listOf(
-						UpsamplingInputProcessor(),
-						RotationPredictionInputProcessor(settings),
-						RotationSmoothingInputProcessor(settings),
-						TrackerOffsetInputProcessor(),
+						FilteringInputProcessor(settings),
+						BoneOffsetInputProcessor(),
 						HeadPositionFallbackInputProcessor(),
 						FallbackInputProcessor(),
-						UpperLegsRollAlignInputProcessor(settings),
 						SpineInputProcessor(settings),
 						NeckInputProcessor(),
+						UpperLegsRollAlignInputProcessor(settings),
 						DirectLinkInputProcessor(),
 						FingersInputProcessor(),
 						ToesInputProcessor(),
@@ -299,7 +295,7 @@ class Skeleton(
 					),
 					// Run on the result of FK and persist
 					fkComputedProcessors = listOf(
-						VelocityComputedProcessor(false),
+						VelocityComputedProcessor(),
 					),
 					// Run on the inputs with the result of FK and run FK
 					fkProcessors = listOf(
@@ -315,7 +311,7 @@ class Skeleton(
 					),
 					// Run on the result of IK and persist.
 					ikComputedProcessors = listOf(
-						VelocityComputedProcessor(true),
+						VelocityComputedProcessor(),
 					),
 				),
 			)

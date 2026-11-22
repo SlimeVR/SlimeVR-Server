@@ -3,12 +3,34 @@ package dev.slimevr.desktop.config
 import dev.slimevr.config.ConfigStorage
 import dev.slimevr.config.TextFileHandle
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.RandomAccessFile
+import java.nio.file.AccessDeniedException
+import java.nio.file.CopyOption
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val MOVE_ATTEMPTS = 5
+private val MOVE_RETRY_BASE_DELAY_MS = 10.milliseconds
+
+// Windows denies a rename while another process (antivirus, sync, indexer) holds either file open
+// mimicking a simple fix ive seen in some node lib a long time ago
+private suspend fun moveWithRetry(source: Path, target: Path, vararg options: CopyOption) = withContext(Dispatchers.IO) {
+	repeat(MOVE_ATTEMPTS) { attempt ->
+		try {
+			Files.move(source, target, *options)
+			return@withContext
+		} catch (e: AccessDeniedException) {
+			if (attempt == MOVE_ATTEMPTS - 1) throw e
+			delay(MOVE_RETRY_BASE_DELAY_MS * (attempt + 1))
+		}
+	}
+}
 
 class DesktopConfigStorage(
 	private val root: File,
@@ -24,11 +46,11 @@ class DesktopConfigStorage(
 		val tmp = File(file.parent, "${file.name}.tmp")
 		tmp.writeText(content)
 		if (overwrite) {
-			Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+			moveWithRetry(tmp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
 			return@withContext true
 		}
 		try {
-			Files.move(tmp.toPath(), file.toPath())
+			moveWithRetry(tmp.toPath(), file.toPath())
 			true
 		} catch (_: FileAlreadyExistsException) {
 			tmp.delete()
@@ -41,7 +63,7 @@ class DesktopConfigStorage(
 		if (!file.exists()) return@withContext
 		val bakTmp = File(file.parent, "${file.name}.bak.tmp")
 		file.copyTo(bakTmp, overwrite = true)
-		Files.move(
+		moveWithRetry(
 			bakTmp.toPath(),
 			File(file.parent, "${file.name}.bak").toPath(),
 			StandardCopyOption.ATOMIC_MOVE,

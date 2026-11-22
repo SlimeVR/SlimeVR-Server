@@ -8,8 +8,6 @@ import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.ZERO_VELOCITY
 import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.findFirstParent
-import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.millisecondsInSecond
 import dev.slimevr.util.timeSource
@@ -31,7 +29,6 @@ private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData:
 	)
 }
 
-// Optional smoothing of velocity, to make it smoother for the output (SteamVR/Monado prediction).
 private const val SMOOTHING_MS = 25f
 private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
 	val t = (deltaTime * (millisecondsInSecond / SMOOTHING_MS)).coerceAtMost(1f)
@@ -44,12 +41,10 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 /**
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
-class VelocityComputedProcessor(
-	private val smooth: Boolean = false,
-) : SkeletonComputedProcessor,
+class VelocityComputedProcessor :
+	SkeletonComputedProcessor,
 	ResettableSkeletonProcessor {
-	private val lastVelocities: BodyPartMap<Velocity> = bodyPartMap()
-	private val lastVelocityData: BodyPartMap<VelocityData> = bodyPartMap()
+	private val lastVelocities: BodyPartMap<Pair<Velocity, VelocityData>> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	override fun process(mutableComputedSkeleton: ComputedSkeleton, inputSkeleton: InputSkeleton) {
@@ -58,31 +53,20 @@ class VelocityComputedProcessor(
 		val deltaTime = (now - lastProcessTime).inFloatingSeconds
 		lastProcessTime = now
 
-		mutableComputedSkeleton.forEachBone { part, bone ->
-			// The expected TPS for the bone is its input's or its first parent that has one.
-			// If there's no available expected TPS, that means there's no movement to derive velocity from anyways.
-			val expectedTps = inputSkeleton[part]?.expectedTps
-				?: inputSkeleton[part.findFirstParent { inputSkeleton[it]?.expectedTps != null }]?.expectedTps
-				?: return@forEachBone
-
+		for ((bodyPart, bone) in mutableComputedSkeleton) {
 			// Compute current velocity
 			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
-			val currentVelocity = lastVelocityData[part]?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
+			val currentVelocity = lastVelocities[bodyPart]?.second?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
 
-			val newVelocity = if (smooth) {
-				smoothVelocity(currentVelocity, lastVelocities[part] ?: ZERO_VELOCITY, deltaTime)
-			} else {
-				currentVelocity
-			}
-			mutableComputedSkeleton[part] = bone.copy(velocity = newVelocity)
+			val smoothedVelocity = smoothVelocity(currentVelocity, lastVelocities[bodyPart]?.first ?: ZERO_VELOCITY, deltaTime)
+			mutableComputedSkeleton[bodyPart] = bone.copy(velocity = smoothedVelocity)
 
-			lastVelocityData[part] = currentVelocityData
-			lastVelocities[part] = newVelocity
+			lastVelocities[bodyPart] = smoothedVelocity to currentVelocityData
 		}
 	}
 
 	override fun reset(resetType: ResetType) {
 		lastVelocities.clear()
-		lastVelocityData.clear()
+		lastProcessTime = timeSource.markNow()
 	}
 }

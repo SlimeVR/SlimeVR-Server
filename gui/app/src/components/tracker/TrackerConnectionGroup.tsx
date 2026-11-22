@@ -15,6 +15,8 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { MetricsIcon } from '@/components/commons/icon/MetricsIcon';
 import { DongleStatus } from 'solarxr-protocol';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
+import { VMCIcon } from '@/components/commons/icon/VMCIcon';
+import { VRCIcon } from '@/components/commons/icon/VRCIcon';
 
 function isGroupDisconnected(group: TrackerConnectionGroupData) {
   return group.kind === 'dongle' && group.status === DongleStatus.DISCONNECTED;
@@ -55,6 +57,16 @@ export function ConnectionGroupIcon({
         <WifiIcon variant="navbar" value={100} size={iconSize} />
       )}
       {kind === 'driver' && <HeadsetIcon width={iconSize} />}
+      {kind === 'vmc' && (
+        <div style={{ width: iconSize }}>
+          <VMCIcon />
+        </div>
+      )}
+      {kind === 'vrc' && (
+        <div style={{ width: Math.round(size * 0.95) }}>
+          <VRCIcon />
+        </div>
+      )}
     </div>
   );
 }
@@ -175,14 +187,17 @@ export function TrackerConnectionGroupDefaultToolbox({
 
   return (
     <TrackerConnectionGroupToolboxContainer>
-      {group.kind !== 'driver' && onOpenMetrics && (
-        <TrackerConnectionGroupToolboxButton
-          labelId="tracker-connection-metrics"
-          onClick={() => onOpenMetrics(group)}
-        >
-          <MetricsIcon size={16} />
-        </TrackerConnectionGroupToolboxButton>
-      )}
+      {group.kind !== 'driver' &&
+        group.kind !== 'vmc' &&
+        group.kind !== 'vrc' &&
+        onOpenMetrics && (
+          <TrackerConnectionGroupToolboxButton
+            labelId="tracker-connection-metrics"
+            onClick={() => onOpenMetrics(group)}
+          >
+            <MetricsIcon size={16} />
+          </TrackerConnectionGroupToolboxButton>
+        )}
       {group.kind === 'dongle' && (
         <TrackerConnectionGroupToolboxButton
           labelId="tracker-connection-dongle_settings"

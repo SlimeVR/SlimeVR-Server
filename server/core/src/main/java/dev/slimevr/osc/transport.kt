@@ -23,13 +23,22 @@ class OscSender(private val address: String, private val port: Int) {
 	suspend fun send(message: OscMessage) {
 		val buf = Buffer()
 		writeMessage(buf, message)
-		socket().send(Datagram(buf, InetSocketAddress(address, port)))
+		send(buf)
 	}
 
 	suspend fun send(bundle: OscBundle) {
 		val buf = Buffer()
 		writeBundle(buf, bundle)
-		socket().send(Datagram(buf, InetSocketAddress(address, port)))
+		send(buf)
+	}
+
+	private suspend fun send(buf: Buffer) {
+		try {
+			socket().send(Datagram(buf, InetSocketAddress(address, port)))
+		} catch (e: Exception) {
+			close()
+			throw e
+		}
 	}
 
 	fun close() {

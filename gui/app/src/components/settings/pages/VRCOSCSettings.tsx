@@ -278,7 +278,17 @@ function StatusCard({
 
       <StatusRow
         label={<Typography variant="section-title">OSCQuery</Typography>}
-        badge={<VrcBadge badge={OSCQUERY_BADGES[oscQueryState]} />}
+        badge={
+          <VrcBadge
+            badge={
+              // In manual mode we only advertise, there is nothing to search for
+              targetSource === VRCOSCTargetSource.MANUAL &&
+              oscQueryState === VRCOSCOscQueryState.SEARCHING
+                ? 'ready'
+                : OSCQUERY_BADGES[oscQueryState]
+            }
+          />
+        }
       >
         {oscQueryState === VRCOSCOscQueryState.DISABLED ? (
           <Typography id="settings-osc-vrchat-status-oscquery-disabled" />
@@ -320,6 +330,8 @@ function StatusCard({
                   ))}
                 </ul>
               </>
+            ) : targetSource === VRCOSCTargetSource.MANUAL ? (
+              <Typography id="settings-osc-vrchat-status-oscquery-manual" />
             ) : (
               <Typography id="settings-osc-vrchat-status-oscquery-searching" />
             )}

@@ -177,9 +177,10 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 			.onEach { ports -> receiver.sendRpc(SerialDevicesResponse(devices = ports.map { it.toSerialDevice() })) }
 			.launchIn(scope)
 
-		receiver.rpcDispatcher.on<SerialDevicesRequest> {
+		receiver.onRpc<SerialDevicesRequest> { _, txId ->
 			receiver.sendRpc(
 				SerialDevicesResponse(devices = sortPorts(serialServer.context.state.value.ports.values).map { it.toSerialDevice() }),
+				txId,
 			)
 		}.launchIn(scope)
 

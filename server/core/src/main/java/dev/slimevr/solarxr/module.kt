@@ -87,22 +87,22 @@ suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
 	message.rpcMsgs?.forEach {
 		val msg = it.message ?: return
 		val replyTo = it.replyTo
-		if (replyTo != 0u) {
+		if (replyTo != null) {
 			context.rpcRequests.tryResolve(replyTo, msg)
 			return@forEach
 		}
-		context.rpcReplies.record(msg, it.txId)
+		it.txId?.let { txId -> context.rpcReplies.record(msg, txId) }
 		context.rpcDispatcher.emit(msg)
 	}
 
 	message.driverMsgs?.forEach {
 		val msg = it.message ?: return
 		val replyTo = it.replyTo
-		if (replyTo != 0u) {
+		if (replyTo != null) {
 			context.driverRequests.tryResolve(replyTo, msg)
 			return@forEach
 		}
-		context.driverReplies.record(msg, it.txId)
+		it.txId?.let { txId -> context.driverReplies.record(msg, txId) }
 		context.driverDispatcher.emit(msg)
 	}
 }
@@ -141,8 +141,8 @@ class SolarXRBridge(
 		return driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
 	}
 
-	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
-	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
+	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId, replyTo = replyTo, message = message))))
+	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId, replyTo = replyTo, message = message))))
 
 	suspend inline fun <reified R : RpcMessage> requestRpc(message: RpcMessage, timeout: Duration = 10.seconds): R = rpcRequests.request(timeout, message) { msg, newTxId -> sendRpc(msg, txId = newTxId) }
 	suspend inline fun <reified R : DriverMessage> requestDriverMessage(message: DriverMessage, timeout: Duration = 10.seconds): R = driverRequests.request(timeout, message) { msg, newTxId -> sendDriverMessage(msg, txId = newTxId) }
@@ -205,7 +205,7 @@ class SolarXRBridge(
 			add(ProfilesBehaviour(appContext.config))
 			add(SettingsResetBehaviour(appContext))
 			add(SettingsDefaultsBehaviour())
-			add(SkeletonSettingsBehaviour(appContext.config.settings))
+			add(SkeletonSettingsBehaviour(appContext.skeleton, appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton, appContext.errorReporting))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings, appContext.errorReporting))
 			add(UpdateTrackerBehaviour(appContext.server, appContext.errorReporting))
@@ -224,7 +224,7 @@ class SolarXRBridge(
 			add(ServerInfosBehaviour(appContext.serverInfos))
 			add(KeybindsBehaviour(appContext.config.settings, appContext.keybindManager))
 			add(SessionCalibrationBehaviour(appContext.resetsManager))
-			add(StayAlignedBehaviour(appContext.config.settings, appContext.server))
+			add(StayAlignedBehaviour(appContext.config.settings, appContext.config.userConfig, appContext.server, appContext.trackingChecklist))
 		}
 
 		fun create(

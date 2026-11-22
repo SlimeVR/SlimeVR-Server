@@ -27,8 +27,8 @@ class ErrorReportingSettingsBehaviour(
 	private val errorReporting: ErrorReportingManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<ErrorReportingSettingsRequest> {
-			receiver.sendRpc(buildResponse(errorReporting.context.state.value))
+		receiver.onRpc<ErrorReportingSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildResponse(errorReporting.context.state.value), txId)
 		}.launchIn(receiver.context.scope)
 
 		errorReporting.context.state

@@ -12,8 +12,8 @@ import {
   useLogFileReader,
   useLogsInfo,
   zipLogFiles,
-  LogRow,
 } from '@/hooks/logs';
+import { usePausableLines } from '@/components/commons/log-view/LogFooter';
 import { saveFile } from '@/utils/save-file';
 import { error } from '@/utils/logging';
 import { ExportMenu } from './ExportMenu';
@@ -29,13 +29,12 @@ export const logsSettingsPage = defineSettingsPage({
 export function LogsSettings() {
   const { sources, files, refresh } = useLogsInfo();
   const [tab, setTab] = useState<'live' | 'files'>('live');
-  // Rows shown while paused; the live list keeps growing underneath
-  const [frozen, setFrozen] = useState<LogRow[] | null>(null);
   const [viewing, setViewing] = useState<Viewing | null>(null);
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const live = useLiveLogs(sources.filter((o) => o.live).map((o) => o.source));
+  const pausable = usePausableLines(live.rows);
   const readFile = useLogFileReader();
 
   useEffect(() => {
@@ -121,7 +120,7 @@ export function LogsSettings() {
 
       {tab === 'live' ? (
         <LiveLogsTab
-          rows={viewing?.rows ?? frozen ?? live.rows}
+          rows={viewing?.rows ?? pausable.lines}
           sources={
             viewing ? [viewing.file.source] : sources.map((o) => o.source)
           }
@@ -130,11 +129,11 @@ export function LogsSettings() {
             setViewing(null);
             setTab('files');
           }}
-          paused={frozen !== null}
-          onTogglePause={() => setFrozen((rows) => (rows ? null : live.rows))}
+          paused={pausable.paused}
+          onTogglePause={pausable.togglePause}
           onClear={() => {
             live.clear();
-            if (frozen) setFrozen([]);
+            pausable.clearFrozen();
           }}
         />
       ) : (

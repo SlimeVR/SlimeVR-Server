@@ -32,8 +32,8 @@ class DriverSettingsBehaviour(
 	private val settings: Settings get() = appContext.config.settings
 
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<DriverSettingsRequest> {
-			receiver.sendRpc(buildDriverSettingsResponse(settings.context.state.value.data.driverConfig))
+		receiver.onRpc<DriverSettingsRequest> { _, txId ->
+			receiver.sendRpc(buildDriverSettingsResponse(settings.context.state.value.data.driverConfig), txId)
 		}.launchIn(receiver.context.scope)
 
 		settings.context.state

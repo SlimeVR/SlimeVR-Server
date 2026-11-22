@@ -75,7 +75,7 @@ export async function fetchCurrentFirmwareRelease(
   );
   if (!releases) return null;
 
-  const processedReleses = [];
+  const processedReleases: FirmwareRelease[] = [];
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
     const fw12Asset = firstAsset(release.assets, 'BOARD_SLIMEVR_V1_2-firmware.bin');
@@ -98,7 +98,7 @@ export async function fetchCurrentFirmwareRelease(
       deployAsset.browser_download_url,
       version
     );
-    processedReleses.push({
+    processedReleases.push({
       name: release.name,
       version,
       changelog: release.body,
@@ -118,7 +118,7 @@ export async function fetchCurrentFirmwareRelease(
     if (userCanUpdate) break; // Stop early if we found one valid update. No need to download more
   }
   return (
-    processedReleses.find(({ userCanUpdate }) => userCanUpdate) ?? processedReleses[0]
+    processedReleases.find(({ userCanUpdate }) => userCanUpdate) ?? processedReleases[0]
   );
 }
 

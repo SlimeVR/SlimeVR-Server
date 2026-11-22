@@ -29,6 +29,7 @@ object AppLogger {
 	val bvh = logger("BVH")
 	val vmc = logger("VMC")
 	val oscQuery = logger("OSCQuery")
+	val mdns = logger("mDNS")
 	val install = logger("Install")
 	val resets = logger("Resets")
 	val keybind = logger("Keybind")
@@ -42,6 +43,11 @@ object AppLogger {
 
 	val coroutines = noCoLogger("Coroutines")
 	val console = noCoLogger("Console")
+
+	// For the UDP receive thread, which blocks on the socket and handles each datagram inline. A
+	// suspend logger would need a coroutine there, and resuming one per packet costs more than the
+	// packet's own work. Same name as udp logger, so its lines read as the rest of the UDP logs
+	val udpReceive = noCoLogger("UDPConnection")
 
 	object ShouldDebug {
 		var skeletonTicks = false

@@ -24,9 +24,12 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ResetType
 import java.util.EnumMap
 import java.util.concurrent.Executors
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -66,21 +69,28 @@ class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 	}
 }
 
-class YouSpinMeRightRoundBehaviour(val inputHz: Int = 1) : SkeletonBehaviour {
+/**
+ * randomPacketLoss and constantPacketLoss are from 0 to 1
+ * sendPosition is for the head data.
+ */
+class YouSpinMeRightRoundBehaviour(val inputHz: Int = 100, val speed: Float = 1f, val randomPacketLoss: Float = 0f, val constantPacketLoss: Float = 0f, val sendPosition: Boolean = false) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
-			val intervalMs = (millisecondsInSecond / inputHz.toFloat()).toLong()
+			val interval = (millisecondsInSecond / inputHz.toFloat()).toLong().milliseconds
 			val startTime = timeSource.markNow()
 			while (true) {
-				delay(intervalMs)
-				val elapsed = startTime.elapsedNow().inWholeMilliseconds / millisecondsInSecond
+				delay(interval / abs(constantPacketLoss - 1f).toDouble())
+
+				// Simulate packet loss
+				if (Random.nextFloat() < randomPacketLoss) continue
+
+				val elapsed = startTime.elapsedNow().inWholeMilliseconds / millisecondsInSecond * speed
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
 					SkeletonActions.SetBonePose(
 						BodyPart.LOWER_CHEST,
 						Vector3.ZERO,
-						inputHz.toUShort(),
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
 						Vector3.ZERO,
 						null,
@@ -90,27 +100,27 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Int = 1) : SkeletonBehaviour {
 					SkeletonActions.SetBonePose(
 						BodyPart.LEFT_LOWER_LEG,
 						Vector3.ZERO,
-						inputHz.toUShort(),
 						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
 						Vector3.ZERO,
 						null,
 					),
 				)
 
-				val circleRadius = 0.5f
-				val circleX = cos(elapsed * 2f) * circleRadius
-				val circleZ = sin(elapsed * 2f) * circleRadius
-				val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
-				receiver.context.dispatch(
-					SkeletonActions.SetBonePose(
-						BodyPart.HEAD,
-						Vector3.ZERO,
-						inputHz.toUShort(),
-						Quaternion.IDENTITY,
-						Vector3.ZERO,
-						Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
-					),
-				)
+				if (sendPosition) {
+					val circleRadius = 0.5f
+					val circleX = cos(elapsed * 2f) * circleRadius
+					val circleZ = sin(elapsed * 2f) * circleRadius
+					val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
+					receiver.context.dispatch(
+						SkeletonActions.SetBonePose(
+							BodyPart.HEAD,
+							Vector3.ZERO,
+							Quaternion.IDENTITY,
+							Vector3.ZERO,
+							Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
+						),
+					)
+				}
 			}
 		}
 	}
@@ -173,7 +183,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 	companion object {
 		private val OVERRUN_WINDOW = 2.minutes
-		private const val MINIMUM_OVERRUNS_TO_LOG = 100
+		private const val MINIMUM_OVERRUNS_TO_LOG = 600 // 1% of skeleton ticks
 	}
 }
 
@@ -186,11 +196,19 @@ class ComputedSkeletonBehaviour(
 	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
+	// BodyParts that are active even when tracking is paused
 	private val ALWAYS_ACTIVE_PARTS = arrayOf(BodyPart.HEAD, BodyPart.NECK)
-	private val IK_THRESHOLD = 0.005f // 0.002 would be ideal for accuracy, but we want performance
+
+	private val IK_THRESHOLD = 0.002f
 	private val IK_MAX_ITERATIONS = 100
 
 	private val intervalDuration = (1.0 / hz).seconds
+
+	/**
+	 * Interval while no bone has an active input. The pose is static then, so running at [hz] only
+	 * burns CPU.
+	 */
+	private val idleIntervalDuration = 100.milliseconds
 
 	/** Shortest gap between two tick starts before the later one is pushed to the next slot */
 	private val minimumGap = intervalDuration * 0.75
@@ -209,17 +227,7 @@ class ComputedSkeletonBehaviour(
 		return next
 	}
 
-	/**
-	 * Runs [processors] over a copy of [boneInputs].
-	 *
-	 * The processors share one buffer and write into it, so the copy here is what keeps the caller's
-	 * map, and the state it came from, untouched.
-	 */
-	private fun runInputProcessors(processors: List<SkeletonInputProcessor>, boneInputs: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-		val bones = EnumMap(boneInputs)
-		for (processor in processors) processor.process(bones, skeletonHeight)
-		return bones
-	}
+	private fun hasActiveInput(boneInputs: InputSkeleton): Boolean = boneInputs.values.any { it.isRotationActive || it.isAccelerationActive || it.isPositionActive }
 
 	override fun observe(receiver: Skeleton) {
 		// The loop parks its thread to hit its interval, so it gets one to itself. Sharing would
@@ -238,11 +246,15 @@ class ComputedSkeletonBehaviour(
 		val fkChangedParts = mutableSetOf<BodyPart>()
 		val timings = TickTimings(hz, 10.seconds, intervalDuration)
 
+		// Build a single empty map of BoneStates (FK/IK result) for output that we'll mutate for performance
+		val mutableComputedSkeleton: ComputedSkeleton = bodyPartMap()
+
 		receiver.context.scope.launch(dispatcher) {
 			while (true) {
 				try {
 					val tickStart = timeSource.markNow()
 					timings.started(tickStart)
+					val interval = if (hasActiveInput(receiver.context.state.value.boneInputs)) intervalDuration else idleIntervalDuration
 
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
@@ -255,81 +267,89 @@ class ComputedSkeletonBehaviour(
 							receiver.context.dispatch(SkeletonActions.ProcessorResetsApplied(pendingResets.size))
 						}
 
-						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
-							// Use already-processed paused tracking data except for certain bones (head + neck)
-							val alwaysActiveInputs = BodyPartMap(targetState.boneInputs.filter { it.key in ALWAYS_ACTIVE_PARTS })
-							val processedAlwaysActiveInputs = runInputProcessors(inputProcessors, alwaysActiveInputs, targetState.skeletonHeight)
-							targetState.pausedProcessedBoneInputs.mutateCopy {
-								for (bodyPart in ALWAYS_ACTIVE_PARTS) {
-									it[bodyPart] = processedAlwaysActiveInputs[bodyPart]
-								}
-							}
-						} else {
-							// Run pre-FK processors
-							val processedInputs = runInputProcessors(inputProcessors, targetState.boneInputs, targetState.skeletonHeight)
-							if (targetState.paused) {
-								// We just paused tracking and this is the last frame before we rely on paused bone inputs
-								// The buffer keeps being written after this, so state gets a copy
-								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(EnumMap(processedInputs)))
-							}
-							processedInputs
-						}
+						// Use single map for the inputs that we'll mutate for performance
+						val mutableBoneInputs: InputSkeleton = BodyPartMap(targetState.boneInputs)
+
+						// Run pre-FK processors (input processors)
+						for (processor in inputProcessors) processor.process(mutableBoneInputs, targetState.skeletonHeight)
+
+						// mutableComputedSkeleton is reused across frames
+						mutableComputedSkeleton.clear()
 
 						// Run initial FK
-						val fk: ComputedSkeleton = bodyPartMap()
-						buildBones(fk, boneInputs)
+						buildBones(mutableComputedSkeleton, mutableBoneInputs)
 
 						// These write into fk, not the inputs, and the rebuilds below carry their values forward
-						for (processor in fkComputedProcessors) processor.process(fk, boneInputs)
+						for (processor in fkComputedProcessors) processor.process(mutableComputedSkeleton, mutableBoneInputs)
 
-						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
-						// which bones changed.
-						val beforeFk = BodyPartMap(boneInputs)
+						// Run FK processors. They write into boneInputs.
+						// beforeFk allows figuring out which bones changed to re-run FK on.
+						val beforeFk = BodyPartMap(mutableBoneInputs)
 						for (processor in fkProcessors) {
-							processor.process(boneInputs, fk, targetState.floorLevel)
+							processor.process(mutableBoneInputs, mutableComputedSkeleton, targetState.floorLevel)
 
 							// Comparing and filtering the maps allocates an entry per bone each time, so
 							// the changed set is collected in one walk instead
 							fkChangedParts.clear()
-							boneInputs.forEachBone { bodyPart, boneInput ->
+							for ((bodyPart, boneInput) in mutableBoneInputs) {
 								val previous = beforeFk[bodyPart]
-								if (boneInput == previous) return@forEachBone
+								if (boneInput == previous) continue
 								fkChangedParts.add(bodyPart)
 								beforeFk[bodyPart] = boneInput
 
-								// For head changed position, set the new position in state (for Localizer).
+								// If head changed position, set the new position in state (for Localizer).
 								if (bodyPart == BodyPart.HEAD && !boneInput.isPositionActive && boneInput.position != previous?.position) {
-									receiver.context.dispatch(SkeletonActions.SetBonePose(BodyPart.HEAD, Vector3.ZERO, null, null, null, boneInput.position, false))
+									receiver.context.dispatch(SkeletonActions.SetBonePose(BodyPart.HEAD, Vector3.ZERO, null, null, boneInput.position, false))
 								}
 							}
 							// Inputs changed; re-run FK
-							if (fkChangedParts.isNotEmpty()) buildBones(fk, boneInputs, fkChangedParts)
+							if (fkChangedParts.isNotEmpty()) buildBones(mutableComputedSkeleton, mutableBoneInputs, fkChangedParts)
 						}
 
 						// Run IK processors
 						val ikTargets = bodyPartMap<Vector3>()
-						for (processor in targetProcessors) processor.process(ikTargets, boneInputs, fk, targetState.floorLevel)
+						for (processor in targetProcessors) processor.process(ikTargets, mutableBoneInputs, mutableComputedSkeleton, targetState.floorLevel)
 
 						// Run IK
-						val ikOutput = ccdIk(
-							boneInputs,
-							fk,
+						val ikSuccess = ccdIk(
+							mutableBoneInputs,
+							mutableComputedSkeleton,
 							ikTargets.map { (bodyPart, target) ->
 								IKChainGoal(
 									BODY_PART_IK_CHAIN_MAP[bodyPart] ?: listOf(bodyPart),
 									target,
 								)
 							},
+							BODY_PART_OFFSET_CONSTRAINT_MAP,
 							BODY_PART_CONSTRAINT_MAP,
 							IK_THRESHOLD,
 							IK_MAX_ITERATIONS,
 						)
+						// TODO Make this not spam logs on repeated failures
+// 						if (!ikSuccess) {
+// 							AppLogger.skeleton.warn("IK step did not meet all requested targets within $IK_THRESHOLD meters")
+// 						}
+
+						// Save or restore paused tracking
+						if (targetState.pausedProcessedBoneInputs != null) {
+							// Merge paused inputs from state into our current inputs
+							for ((bodyPart, bone) in targetState.pausedProcessedBoneInputs) {
+								if (bodyPart !in ALWAYS_ACTIVE_PARTS) {
+									mutableBoneInputs[bodyPart] = bone
+								}
+							}
+							buildBones(mutableComputedSkeleton, mutableBoneInputs)
+						} else if (targetState.paused) {
+							// We are paused but don't have a copy of the inputs in state, so we make one.
+							// This is our last loop processing all inputs.
+							receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(EnumMap(mutableBoneInputs)))
+						}
 
 						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
-						for (processor in ikComputedProcessors) processor.process(ikOutput.bones, boneInputs)
+						for (processor in ikComputedProcessors) processor.process(mutableComputedSkeleton, mutableBoneInputs)
 
-						// Updated the computed skeleton with the result
-						receiver.computed.tryEmit(ikOutput.bones)
+						// Updated the computed skeleton with a copy of the result
+						receiver.computed.tryEmit(BodyPartMap(mutableComputedSkeleton))
 					}
 
 					timings.finished(processTime)
@@ -337,7 +357,7 @@ class ComputedSkeletonBehaviour(
 
 					// Sleep to an absolute deadline, so timer granularity and dispatch latency come out
 					// of the interval rather than being added on top of it
-					nextTick += intervalDuration
+					nextTick += interval
 					// Skeleton took to long to compute this frame
 					if (nextTick.elapsedNow() >= Duration.ZERO) {
 						timings.missedDeadline()?.let { AppLogger.skeleton.warn(it) }

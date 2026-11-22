@@ -158,36 +158,6 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 	),
 )
 
-fun constrainOffset(
-	constraint: Constraint,
-	parent: Quaternion,
-	bone: Quaternion,
-	offset: Quaternion,
-): Quaternion {
-	// TODO: Ensure the quaternion multiplication order is correct here
-	return constraint.apply(parent, offset * bone) / bone
-}
-
-fun constrainOffsetWithSkeleton(
-	bodyPart: BodyPart,
-	offset: Quaternion,
-	bones: ComputedSkeleton,
-	constraints: BodyPartMap<Constraint>,
-): Quaternion {
-	val constraint = constraints[bodyPart] ?: return offset
-	val boneRot = bones[bodyPart]?.rotation ?: return offset
-	val parentRot = parentOf(bodyPart)?.let { parent ->
-		bones[parent]?.rotation
-	} ?: Quaternion.IDENTITY
-
-	return constrainOffset(
-		constraint,
-		parentRot,
-		boneRot,
-		offset,
-	)
-}
-
 fun constrainSkeleton(
 	bones: InputSkeleton,
 	constraints: BodyPartMap<Constraint>,
@@ -206,3 +176,41 @@ fun constrainSkeleton(
 	}
 	return bones
 }
+
+// Constraints to apply to a local offset to best fit a bone's natural movement
+// Basically the max angle change per IK iteration within local axes
+// TODO May need to decay constraint over iterations
+val BODY_PART_OFFSET_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
+	mapOf(
+		// TODO Figure out arms
+		// BodyPart.LEFT_UPPER_ARM to AxisConstraint(),
+		// BodyPart.RIGHT_UPPER_ARM to AxisConstraint(),
+
+		BodyPart.UPPER_CHEST to LooseAxisConstraint(
+			10f * FastMath.DEG_TO_RAD,
+		),
+		BodyPart.LOWER_CHEST to LooseAxisConstraint(
+			10f * FastMath.DEG_TO_RAD,
+		),
+		BodyPart.UPPER_WAIST to LooseAxisConstraint(
+			10f * FastMath.DEG_TO_RAD,
+		),
+		BodyPart.LOWER_WAIST to LooseAxisConstraint(
+			10f * FastMath.DEG_TO_RAD,
+		),
+
+		BodyPart.LEFT_UPPER_LEG to LooseAxisConstraint(
+			5f * FastMath.DEG_TO_RAD,
+		),
+		BodyPart.LEFT_LOWER_LEG to LooseAxisConstraint(
+			0.1f * FastMath.DEG_TO_RAD,
+		),
+
+		BodyPart.RIGHT_UPPER_LEG to LooseAxisConstraint(
+			5f * FastMath.DEG_TO_RAD,
+		),
+		BodyPart.RIGHT_LOWER_LEG to LooseAxisConstraint(
+			0.1f * FastMath.DEG_TO_RAD,
+		),
+	),
+)

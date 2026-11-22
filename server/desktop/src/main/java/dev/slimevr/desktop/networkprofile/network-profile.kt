@@ -37,6 +37,14 @@ interface Iphlpapi : Library {
 		notificationHandle: PointerByReference,
 	): Int
 
+	fun NotifyUnicastIpAddressChange(
+		family: Int,
+		callback: Callback,
+		context: Pointer?,
+		initialNotification: Int,
+		notificationHandle: PointerByReference,
+	): Int
+
 	fun CancelMibChangeNotify2(handle: Pointer): Int
 
 	companion object {

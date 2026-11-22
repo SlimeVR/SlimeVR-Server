@@ -13,7 +13,6 @@ websocket-connection_lost-desc = uh ohs! it look like da swimevr serber cwashed.
 websocket-timedout = could nawt connec to da serwer
 websocket-timedout-desc = it look like da swimevr serwer cwashed ow time out, omg!! check da log and westawt da pwogwam.
 websocket-error-close = Exit SwimeVR
-websocket-error-logs = open da logs fowder
 
 ## Update notification
 
@@ -97,44 +96,19 @@ body_part-RIGHT_LITTLE_PROXIMAL = wight widdle pwoximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = wight widdle imternediate
 body_part-RIGHT_LITTLE_DISTAL = wight widdle distol
 
-## BoardType
-
-board_type-UNKNOWN = unnown
-board_type-NODEMCU = nowdemcu
-board_type-CUSTOM = cusom boawd
-board_type-WROOM32 = wroom32
-board_type-WEMOSD1MINI = wemo d1 meenee
-board_type-TTGO_TBASE = ttgo tbase
-board_type-ESP01 = esp01
-board_type-SLIMEVR = swimevr
-board_type-LOLIN_C3_MINI = lol c3 meenee
-board_type-BEETLE32C3 = 🪲 (beetle) esp32-c3
-board_type-ESP32C3DEVKITM1 = expressive esp32-c3 devkitm1
-board_type-OWOTRACK = owo!!Track
-board_type-WRANGLER = wrangle joycons (yeehaw)
-board_type-MOCOPI = soni mocopi
-board_type-WEMOSWROOM02 = memos vroom-02 d1 meenee
-board_type-XIAO_ESP32C3 = seeeed studio xiao esp32c3
-board_type-HARITORA = hawitowa
-board_type-ESP32C6DEVKITC1 = espresso esp32-c6 devkitc1
-board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
-
 ## Proportions
 
 skeleton_bone-NONE = none
 skeleton_bone-NECK = nyeck wength
-skeleton_bone-torso_group = towso wength
 skeleton_bone-UPPER_CHEST = uppew chest wength
 skeleton_bone-HIP = hip wength
 skeleton_bone-HIPS_WIDTH = hyips wiwdth
-skeleton_bone-leg_group = weg wength
 skeleton_bone-UPPER_LEG = uppew weg wength
 skeleton_bone-LOWER_LEG = wowwe weg wength
 skeleton_bone-FOOT_LENGTH = pawsies wength
 skeleton_bone-FOOT_SHIFT = pawsies shyft
 skeleton_bone-SHOULDERS_DISTANCE = shouwdews disyance
 skeleton_bone-SHOULDERS_WIDTH = shouwdews wiwdth
-skeleton_bone-arm_group = awm wength
 skeleton_bone-UPPER_ARM = uppew awm wength
 skeleton_bone-LOWER_ARM = wowwer awm wength
 
@@ -249,14 +223,11 @@ tracker-settings-mounting_section-description = whewe is the twackaw mownted?
 tracker-settings-mounting_section-edit = edit meownting
 tracker-settings-use_mag = awwow magentometer on dis twackew
 tracker-settings-use_mag-label = awwow magnetomemer
-# The .<name> means it's an attribute and it's related to the top key.
-# In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
 tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
 tracker-settings-name_section-label = twackaw name
 tracker-settings-forget = *forgors the tracker*
-tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
 tracker-settings-update-up_to_date = up to dayte!! ^w^
 tracker-settings-update = uwupdate meow!
@@ -301,14 +272,12 @@ mounting_selection_menu-close = cwose
 
 ## Sidebar settings
 
-settings-sidebar-title = settyings~
 settings-sidebar-general = genyawaw
 settings-sidebar-trackers = trayckawws
 settings-sidebar-interface = intyawface~
 settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 settings-sidebar-appearance = appeawance
-settings-sidebar-notifications = notificashuns
 settings-sidebar-behavior = behavur
 
 ## Bone routing settings
@@ -322,75 +291,46 @@ settings-driver-enable = enaybwe
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = fiwtewing~
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    chooce teh fiwwtewing type fow youw twackaws.
-    pwediction pwedicts movment while smowthing smowthens movment.
-settings-general-tracker_mechanics-filtering-type = fiwtewing type~
 settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
 settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
 settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
 settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
-settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
 settings-general-tracker_mechanics-filtering-amount = amownt
 settings-general-tracker_mechanics-yaw-reset-smooth-time = nyaw weset smootse taim (0s disaeblez smooting)
 settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
 settings-general-tracker_mechanics-save_mounting_reset-description =
     saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
     wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
-settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
-    can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = use mangenmometer on twackews
-settings-stay_aligned-general-label = genyawaw
-settings-stay_aligned-relaxed_poses-close = cwose
+
+## Stay Aligned pose recorder
+
 
 ## Keybinds Page
 
-settings-keybinds_full-reset = fuww weset~
-settings-keybinds_yaw-reset = yaw weset
 settings-keybinds-recorder-modal-cancel-button = cancew
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = twacking sewttings
 # Floor clip:
-# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
-# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+# Why the name: came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# Definition: prevents the foot trackers from going lower than they were when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
 # Skating correction:
-# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
-# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
-# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+# Why the name: without this enabled the feet will often slide across the ground as if you're skating across the ground.
+#  Since this largely prevents this, it corrects for it hence skating correction.
+# Definition: Guesses when each foot is in contact with the ground and uses that information to lock them in place.
 settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
 settings-general-fk_settings-leg_tweak-toe_snap = toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = pawb pwant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
-settings-general-fk_settings-leg_tweak-skating_correction-description = skating-cowwection cowwects fow ice skating but can decwease accuwacy in cewtain movement pattewns. When enabwing this make suwe to fuww weset and wecawibwate in game.
-settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can reduce ow even ewiminates cwipping thwough the fwoow. When enabwing this, make suwe to fuww weset and wecawibwate in game.
-settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
-settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
 settings-general-fk_settings-leg_fk = leg twacking
-settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
-settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = enfourse constwaints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
-settings-general-fk_settings-arm_fk-reset_mode-description = Change which awm pose is expected fow meownting weset.
-settings-general-fk_settings-arm_fk-back = bak
-settings-general-fk_settings-arm_fk-back-description = The defauwt mode, wit da uppew awms going back and wowew awms going fowwawd.
-settings-general-fk_settings-arm_fk-tpose_up-description = Expects youw awms to be down on the sides duwing Fuww Weset, and 90 degwees up to the sides duwing Meownting Weset.
-settings-general-fk_settings-arm_fk-tpose_down-description = Expects youw awms to be 90 degwees up to the sides duwing Fuww Weset, and down on the sides duwing Meownting Weset.
-settings-general-fk_settings-arm_fk-forward = Fowwawd
-settings-general-fk_settings-arm_fk-forward-description = Expects youw awms to be up 90 degwees fowwawd. Usefuw fow VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
-settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
 settings-general-fk_settings-self_localization-title = mocap mowd
-settings-general-fk_settings-self_localization-description = mocap mowd awwows da skeweton to wuffly twack is own posishun without a hedset or other twackews. note dat dis wequiwes feet and hed twackews to wowk and is stiwll expewimentaw.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-subtitle = bap bwased wesets
 settings-general-gesture_control-description = awwows fow wesets to be twiggewed by bapping a twackew. teh twackew hyest up on youw towso is used fow yaw weset, the twackew hyest up on youw weft weg is use fow fuww reset, and da twackew hiest up on youw wight weg is used fow mounting weset. it shouwd be menshuned dat baps must bappen wifin 0.6 second to be wegistewed.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
@@ -417,14 +357,11 @@ settings-general-gesture_control-mountingResetDelay = mountwing weset deway
 settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = twackews over thweshowd
-settings-general-gesture_control-numberTrackersOverThreshold-description = incwease dis vawue if da bap detecshun is nawt wowking. dont incwease it above what is need to make bap detecshun wowk as it wowd cauwse mowe fawse pawsitives.
 
 ## Appearance settings
 
 settings-interface-appearance = appeawance
-settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
-settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-theme = cowor theem
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
@@ -440,26 +377,19 @@ settings-interface-appearance-font_size-description = dis affects da fawnt size 
 
 ## Notification settings
 
-settings-interface-notifications = notificashuns
 settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
-settings-general-interface-feedback_sound-label = feeback sownd
 settings-general-interface-feedback_sound-volume = feedback sownd volyume
 settings-general-interface-connected_trackers_warning = Connected twackews wawning
 settings-general-interface-connected_trackers_warning-description = This option wiww show a pop-up evewy time you twy exiting SwimeVR whiwe having one ow mowe connected twackews. It weminds you to tuwn off youw twackews when you awe done to pwesewve battewy wife.
-settings-general-interface-connected_trackers_warning-label = Connected twackews wawning on exit
 
 ## Behavior settings
 
 settings-interface-behavior = behavur
-settings-general-interface-dev_mode = devwowwewow mode
-settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-use_tray = minimaize to systewm tway
 settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
-settings-general-interface-use_tray-label = minimaize to systewm tway
 settings-general-interface-discord_presence = shaer activitey on discowd
 settings-general-interface-discord_presence-description = tewws ur discoard cwient dat ur using SlyimeVR awong wif teh nuhmbew of IMU twackewrz u r using.
-settings-general-interface-discord_presence-label = shaer activitey on discowd
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] slimin awaound :3
@@ -474,7 +404,6 @@ settings-serial = shewyaw console
 settings-serial-description =
     this is a wiwve infowmation feed fow shewyaw comyunicaytion
     may be usefuw if yuw need to know teh fiwmwawe is acting up
-settings-serial-connection_lost = connyection to shewyaw wost, weconnyecting... >~<
 settings-serial-reboot = weboot
 settings-serial-factory_reset = fawctowy reset
 # This cares about multilines
@@ -490,12 +419,13 @@ settings-serial-save_logs = saeve to file
 settings-serial-send_command-warning-ok = i know what I'm doing :3
 settings-serial-send_command-warning-cancel = cancew
 
+## Logs settings
+
+
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChawt OSC Twayckaws
 settings-osc-vrchat-enable = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
-settings-osc-vrchat-enable-label = enaybwe
 settings-osc-vrchat-network = newtwowk pawts
 settings-osc-vrchat-network-port_in =
     .label = pawt in
@@ -504,7 +434,6 @@ settings-osc-vrchat-network-port_out =
     .label = pawt out
     .placeholder = pawt out (defawwt: 9000)
 settings-osc-vrchat-network-address = network addwess
-settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 
 ## VRChat OSC status
 
@@ -514,14 +443,12 @@ settings-osc-vrchat-status-badge-unknown = unnown
 
 ## VMC OSC settings
 
-settings-osc-vmc = viwtuaw motion captuwe
 # This cares about multilines
 settings-osc-vmc-description =
     change settings specific to the vmc (viwtuaw motion captuwe) pwotocow
             to send SwimeVR's twacking data and weceive twacking data fwom othew apps.
 settings-osc-vmc-enable = enaybwe
 settings-osc-vmc-enable-description = toggle teh sending awnd wweceiving of data
-settings-osc-vmc-enable-label = enaybwe
 settings-osc-vmc-network = newtwowk pawts
 settings-osc-vmc-network-description = set the pawts fow wistening awnd sending data via vmc
 settings-osc-vmc-network-port_in =
@@ -532,16 +459,13 @@ settings-osc-vmc-network-port_out =
     .placeholder = pawt out (defawwt: 39539)
 settings-osc-vmc-network-address = network addwess
 settings-osc-vmc-network-address-description = choose which addwess to send out data at via vmc
-settings-osc-vmc-network-address-placeholder = IPV4 addwess
 settings-osc-vmc-vrm = VRM modew
 settings-osc-vmc-vrm-description = woad a VRM modew to awwow head anchow and enabwe a highew compatibiwity with othew appwications
 settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse</u>
 settings-osc-vmc-anchor_hip = anchow at hips
 settings-osc-vmc-anchor_hip-description = anchow the twacking at the hips, usefuw fow seated vtubing
-settings-osc-vmc-anchor_hip-label = anchow at hips
 settings-osc-vmc-mirror_tracking = miwwow twacking
 settings-osc-vmc-mirror_tracking-description = miwwow da twacking howizawntawwy.
-settings-osc-vmc-mirror_tracking-label = miwwow twacking
 settings-osc-vmc-status-badge-error = ewwow
 
 ## Common OSC settings
@@ -549,18 +473,6 @@ settings-osc-vmc-status-badge-error = ewwow
 
 ## Advanced settings
 
-settings-utils-advanced-reset_warning =
-    { $type ->
-        [gui]
-            <b>wawning!!</b> this wiww weset youw gui settings to defawts :(
-            aw you supew dupew sure?
-        [server]
-            <b>wawning!!</b> this wiww weset youw twacking settings to defawts :(
-            aw you supew dupew sure?
-       *[all]
-            <b>wawning!!</b> this wiww make aww youw settings go bye-bye!!
-            aw you supew dupew sure??
-    }
 settings-utils-advanced-reset_warning-reset = weset setings
 settings-utils-advanced-reset_warning-cancel = cancew :o
 settings-utils-advanced-open_data-v1 = config fowdew
@@ -605,7 +517,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-ssid-required = wifi name is wequiwed!!
 onboarding-wifi_creds-password =
     .label = passwowod
-    .placeholder = entew passwowod
+    .placeholder = Enter your Wi-Fi password
 
 ## Install info
 
@@ -623,7 +535,6 @@ onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twackew
 onboarding-connect_tracker-close = cwose
 onboarding-connect_tracker-connection_status-serial_init = conectin too da sewiaw dewise
-onboarding-connect_tracker-connection_status-obtaining_mac_address = obtainin teh twacker mac addwess
 onboarding-connect_tracker-connection_status-provisioning = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-connecting = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-looking_for_server = wookin fow da sewvew
@@ -646,7 +557,6 @@ onboarding-connect_tracker-next = i cownyected awe my twackaws
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = assign twackaws
-onboarding-assign_trackers-description = wets choyse which twackaw goes whewe. cwick on a wocation whewe yowo want to payce a twackaw
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -663,89 +573,26 @@ onboarding-assign_trackers-mirror = miwwow vyew
 
 ## Tracker assignment warnings
 
-# Note for devs, number is used for representing boolean states per bit.
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_FOOT =
-    { $unassigned ->
-        [0] weft foot ish assignyed but c-chu nyeed the weft ankwe, weft thigh and eithew da chest, hip o-ow waist to awso be assignyed!
-        [1] weft foot ish assignyed but chu nyeed da weft thigh a-and eithew da chest, hip ow waist to a-awso be assignyed!
-        [2] weft foot ish assignyed but chu nyeed da weft ankwe and eithew da chest, hip ow waist t-to awso be a-assignyed!
-        [3] weft foot ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
-        [4] weft foot i-ish assignyed but chu nyeed da weft a-ankwe a-and weft thigh to awso be assignyed!
-        [5] weft foot ish assignyed but chu nyeed da weft thigh to a-awso be assignyed!
-        [6] wefwft foot ish assignyed but chu nyeed da weft ankwe to awso be assignyed!
-       *[unknown] weft foot is assignyed b-but chu n-nyeed unknyown unyassignyed body pawt to a-awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_FOOT =
-    { $unassigned ->
-        [0] w-wight foot ish assignyed but yuu nyeed da wight ankwe, wight thigh and eithew da chest, h-h-hip ow waist to awso be assignyed!
-        [1] wight foot ish assignyed b-but chu nyeed da wight thigh and eithew da c-chest, hip ow w-waist to awso be assignyed!
-        [2] wight foot ish assignyed but chu nyeed da w-wight a-ankwe and eithew da chest, hip ow waist to awso be assignyed!
-        [3] wight foot ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
-        [4] wight foot ish assignyed but chu nyeed da wight ankwe and wight thigh to awso be assignyed!
-        [5] wight foot i-i-ish assignyed but chu nyeed da wight thigh to awso be assignyed!
-        [6] wight foot ish assignyed but chu nyeed da wight ankwe to awso be a-assignyed!
-       *[unknown] wight foot ish assignyed but chu nyeed unknyown u-unyassignyed body pawt t-to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
-    { $unassigned ->
-        [0] wight ankwe i-ish assignyed but chu nyeed da wight thigh and eithew da chest, h-hip ow waist to awso be assignyed!
-        [1] wight a-a-ankwe ish assignyed but chu nyeed eithew da chest, hip ow w-waist to awso be assignyed!
-        [2] wight ankwe ish assignyed but chu nyeed da wight thigh to awso be assignyed!
-       *[unknown] wight ankwe i-ish assignyed but chu n-nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
-    { $unassigned ->
-        [0] wight ankwe ish a-assignyed but chu nyeed da w-wight thigh and eithew da chest, hip ow waist to awso b-be assignyed!
-        [1] wight ankwe ish assignyed but chu nyeed eithew da c-chest, hip ow waist to awso be assignyed!
-        [2] wight ankwe i-ish assignyed but chu nyeed da wight thigh to awso be assignyed!
-       *[unknown] wight ankwe ish assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
-    { $unassigned ->
-        [0] weft thigh is assignyed b-but chu nyeed eithew da chest, hip o-ow waist to awso b-be assignyed!
-       *[unknown] weft t-thigh is assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
-    { $unassigned ->
-        [0] wight thigh ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
-       *[unknown] wight thigh ish assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-HIP =
-    { $unassigned ->
-        [0] hip is assignyed but yuw nyeed the chest to awso b-be assignyed!
-       *[unknown] hip is assignyed but yuw nyeed unknyown unyassignyed body pawt to awso be assignyed!
-    }
-# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
-onboarding-assign_trackers-warning-WAIST =
-    { $unassigned ->
-        [0] waiwst is assignyed b-but you nyeed teh chest to awso b-be assignyed!
-       *[unknown] waiwst is assignyed but you nyeed unknyoun unyassignyed body pawt to awso be assignyed!
-    }
 
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = wut meownting cawibwation mefod to use?
 # Multiline text
 onboarding-choose_mounting-description = meownting owientation correct fow da pwacement of twackews on u body.
-onboarding-choose_mounting-auto_mounting = awtomawic meownting
-# Italicized text
-onboarding-choose_mounting-auto_mounting-label-v2 = wecommended
-onboarding-choose_mounting-auto_mounting-description = dis will automaticawwy detec da meownting diwecshuns fow aww of ya twackews fwom 2 poses
-onboarding-choose_mounting-manual_mounting = manyul meownting
-onboarding-choose_mounting-manual_mounting-description = dis will let u chose da meownting diwecshun manuwawwy fow eech twackew
+
+## Mounting method
+
+
+## Tracker step mounting setup
+
+
+## Step mounting calibration
+
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = manual meownting
 onboarding-manual_mounting-description = cwick on evewy twackaw and sewect which way they awe mownted
-onboarding-manual_mounting-auto_mounting = awtomawic meownting
 onboarding-manual_mounting-next = newt stewp
 
 ## Tracker automatic mounting setup
@@ -759,14 +606,10 @@ onboarding-automatic_mounting-done-title = mounting wowations cawibwated.
 onboarding-automatic_mounting-done-description = yowo meownting cawibwation is compwete!
 onboarding-automatic_mounting-done-restart = wetuwn to stawt
 onboarding-automatic_mounting-mounting_reset-title = meownting weset
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. squawt in a "skiing" pose with yowo wegs bent, yowo upper body tilted fowwawds, and yowo awems bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. pwess the "weset meownting" button and wait fow 3 seconds befowe the twackaws' meownting wowations will weset.
 onboarding-automatic_mounting-preparation-title = pwepaiwation
-onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
-onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
-onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
-## Tracker manual proportions setupa
+## Tracker manual proportions setup
 
 onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
@@ -831,13 +674,6 @@ onboarding-automatic_proportions-smol_warning-cancel = go bak
 ## User height calibration
 
 
-## Stay Aligned setup
-
-onboarding-stay_aligned-put_trackers_on-title = put on yowuw twackaws
-onboarding-stay_aligned-put_trackers_on-next = i have awl my twackaws on
-onboarding-stay_aligned-verify_mounting-title = meownting weset
-onboarding-stay_aligned-preparation-title = pwepaiwation
-
 ## Home
 
 home-settings-close = cwose
@@ -901,16 +737,13 @@ firmware_tool-build-ERROR = unabwe to bild da fiwmwawe...
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = downwoadin da fiwmwawe
-firmware_update-status-AUTHENTICATING = awthenticatin wit da mcu
 firmware_update-status-UPLOADING = upwoadin da fiwmwawe
-firmware_update-status-SYNCING_WITH_MCU = syncin wit da mcu
 firmware_update-status-REBOOTING = appwyin da uwupdate
 firmware_update-status-PROVISIONING = settin da wifi cwedenshuls
 firmware_update-status-DONE = uwupdate compwete!!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = culd nawt find da dewice
 firmware_update-status-ERROR_TIMEOUT = da uwupdate pwocess timed owt
 firmware_update-status-ERROR_DOWNLOAD_FAILED = culd nawt downwoad da fiwmwawe
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = culd nawt awthenticate wit da mcu
 firmware_update-status-ERROR_UPLOAD_FAILED = culd nawt upwoad da fiwmwawe
 firmware_update-status-ERROR_PROVISIONING_FAILED = culd nawt set da wifi cwedenshuls
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = da uwupdate mefod is nawt suppowted
@@ -949,17 +782,13 @@ tray_or_exit_modal-cancel = cancew :o
 
 ## Unknown device modal
 
-unknown_device-modal-title = da twackew was find owo
-unknown_device-modal-description =
-    therwe is a nyew twackew wif MAC addwess <b>{ $deviceId }</b>..
-    d-do u wanna conect it to SwimeVR?
-unknown_device-modal-confirm = sure!!
-unknown_device-modal-forget = ignowe it
-vrc_config-spine_mode-UNKNOWN = unnown
 vrc_config-tracker_model-UNKNOWN = unnown
 vrc_config-avatar_measurement_type-UNKNOWN = unnown
 
 ## Error collection consent modal
+
+
+## Crash screen
 
 
 ## Tracking checklist section

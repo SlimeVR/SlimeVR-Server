@@ -39,21 +39,21 @@ class ProfilesBehaviour(
 			.onEach(receiver::sendRpc)
 			.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<SwitchProfileRequest> { req ->
-			receiver.sendRpc(ProfileOperationResponse(config.switchProfile(req.kind, req.name.orEmpty())))
+		receiver.onRpc<SwitchProfileRequest> { req, txId ->
+			receiver.sendRpc(ProfileOperationResponse(config.switchProfile(req.kind, req.name.orEmpty())), txId)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<CreateProfileRequest> { req ->
+		receiver.onRpc<CreateProfileRequest> { req, txId ->
 			val copyFrom = req.copyFrom?.takeIf { it.isNotEmpty() }
-			receiver.sendRpc(ProfileOperationResponse(config.createProfile(req.kind, req.name.orEmpty(), copyFrom)))
+			receiver.sendRpc(ProfileOperationResponse(config.createProfile(req.kind, req.name.orEmpty(), copyFrom)), txId)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<RenameProfileRequest> { req ->
-			receiver.sendRpc(ProfileOperationResponse(config.renameProfile(req.kind, req.name.orEmpty(), req.newName.orEmpty())))
+		receiver.onRpc<RenameProfileRequest> { req, txId ->
+			receiver.sendRpc(ProfileOperationResponse(config.renameProfile(req.kind, req.name.orEmpty(), req.newName.orEmpty())), txId)
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<DeleteProfileRequest> { req ->
-			receiver.sendRpc(ProfileOperationResponse(config.deleteProfile(req.kind, req.name.orEmpty())))
+		receiver.onRpc<DeleteProfileRequest> { req, txId ->
+			receiver.sendRpc(ProfileOperationResponse(config.deleteProfile(req.kind, req.name.orEmpty())), txId)
 		}.launchIn(receiver.context.scope)
 	}
 }

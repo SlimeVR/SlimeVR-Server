@@ -39,8 +39,8 @@ class VrcBehaviour(
 			receiver.sendRpc(buildCurrentResponse())
 		}.launchIn(receiver.context.scope)
 
-		receiver.rpcDispatcher.on<VRCConfigStateRequest> {
-			receiver.sendRpc(buildCurrentResponse())
+		receiver.onRpc<VRCConfigStateRequest> { _, txId ->
+			receiver.sendRpc(buildCurrentResponse(), txId)
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCConfigSettingToggleMute> { req ->

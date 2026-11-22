@@ -53,7 +53,6 @@ fun reduce(
 		val acceleration: CalibratedAcceleration? =
 			if (action.acceleration != null) {
 				if (state.imuType != null) {
-					// TODO: double check calibration; doesn't seem right - Erimel
 					applyCalibration(
 						action.acceleration,
 						correctedRawRotation,
@@ -94,7 +93,7 @@ fun reduce(
 	}
 
 	is TrackerActions.FullReset -> {
-		val alignAttitude = !state.isAssignedReliableReference || (action.resetReliableReferenceAttitude && action.referenceRotation == null)
+		val alignAttitude = !state.isAssignedReliableReference || (action.resetHmdAttitude && action.referenceRotation == null && state.isHmd)
 		val correctHeading = action.referenceRotation != null && !state.isAssignedReliableReference
 		val alignHeading = state.position != null && action.referenceRotation != null && !state.isAssignedReliableReference
 
