@@ -178,7 +178,8 @@ export function captureServerExit(
   const eventId = Sentry.captureMessage('server_exit_nonzero', {
     ...serverScope,
     level: 'error',
-    extra: { code, signal, outputTail },
+    tags: { code, signal },
+    extra: { outputTail },
   });
   lastServerFailure = { eventId, code, signal, outputTail };
 }
@@ -192,10 +193,16 @@ export function sendCrashReport(kind: CrashReportKind) {
       event_id: failure?.eventId,
       message: failure ? 'server_exit_nonzero' : `server_${kind}`,
       level: 'error',
-      tags: serverScope.tags,
-      extra: failure
-        ? { code: failure.code, signal: failure.signal, outputTail: failure.outputTail }
-        : { outputTail: serverOutputTail() },
+      tags: failure
+        ? {
+            ...serverScope.tags,
+            code: failure.code,
+            signal: failure.signal,
+          }
+        : serverScope.tags,
+      extra: {
+        outputTail: failure?.outputTail ?? serverOutputTail(),
+      },
     });
   });
   return true;
