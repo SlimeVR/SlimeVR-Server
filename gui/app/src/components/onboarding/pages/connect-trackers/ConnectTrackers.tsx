@@ -3,6 +3,9 @@ import classNames from 'classnames';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import {
+  BoardType,
+  DeviceOrigin,
+  TrackerStatus,
   TrackerProvisioningStatus,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistStepId,
@@ -18,9 +21,14 @@ import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import {
   connectedIMUTrackersAtom,
+  connectedTrackersAtom,
   unknownDevicesAtom,
 } from '@/store/app-store';
 import { A } from '@/components/commons/A';
+import {
+  BUTTERFLY_BOARDS,
+  SLIME_BOARDS,
+} from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { Input } from '@/components/commons/Input';
@@ -376,18 +384,41 @@ export function ConnectTrackersPage({ type }: { type: TrackerType }) {
   );
 }
 
+function isMiddlewareBoard(boardType?: BoardType | null) {
+  return (
+    boardType == null ||
+    (!SLIME_BOARDS.has(boardType) && !BUTTERFLY_BOARDS.has(boardType))
+  );
+}
+
 function MiddlewareConnectTrackersPage() {
   const { applyProgress, state } = useOnboarding();
-  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
-  const unknownDevices = useAtomValue(unknownDevicesAtom);
   const { isMobile } = useBreakpoint('mobile');
+  const connectedTrackers = useAtomValue(connectedTrackersAtom);
+  const activeTrackers = useMemo(
+    () =>
+      connectedTrackers.filter(
+        ({ tracker }) => tracker.status !== TrackerStatus.TIMED_OUT
+      ),
+    [connectedTrackers]
+  );
+  const unknownDevices = useAtomValue(unknownDevicesAtom);
   const rows = useMemo(
-    () => mergeTrackerList([], connectedIMUTrackers),
-    [connectedIMUTrackers]
+    () =>
+      mergeTrackerList(
+        [],
+        activeTrackers.filter(
+          ({ tracker, device }) =>
+            tracker.origin === DeviceOrigin.DRIVER ||
+            (tracker.origin === DeviceOrigin.UDP &&
+              isMiddlewareBoard(device?.hardwareInfo?.officialBoardType))
+        )
+      ),
+    [activeTrackers]
   );
   const pendingDevices = useMemo(() => {
     const liveHardwareIds = new Set(
-      connectedIMUTrackers
+      activeTrackers
         .map(({ device }) =>
           normalizeMac(device?.hardwareInfo?.hardwareIdentifier)
         )
@@ -396,9 +427,13 @@ function MiddlewareConnectTrackersPage() {
 
     return unknownDevices.filter((device) => {
       const hardwareId = normalizeMac(device.hardwareId);
-      return hardwareId && !liveHardwareIds.has(hardwareId);
+      return (
+        isMiddlewareBoard(device.boardType) &&
+        hardwareId &&
+        !liveHardwareIds.has(hardwareId)
+      );
     });
-  }, [connectedIMUTrackers, unknownDevices]);
+  }, [activeTrackers, unknownDevices]);
 
   applyProgress(0.4);
 
