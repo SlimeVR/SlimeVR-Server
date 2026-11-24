@@ -192,7 +192,7 @@ class DriverIncomingTrackersBehaviour(
 			if (trackerId == 0) return@on
 
 			// Map velocity to accel
-			val acceleration = event.linearVelocity?.let { velocity ->
+			val velocityAcceleration = event.linearVelocity?.let { velocity ->
 				val now = timeSource.markNow()
 				val velocity = velocity.toVector3()
 				val lastVelocity = lastVelocities[trackerId]
@@ -204,6 +204,8 @@ class DriverIncomingTrackersBehaviour(
 					remapVelocity(deltaVelocity / deltaTime)
 				}
 			}
+			// use linear acceleration if available, otherwise use calculated acceleration from velocity
+			val acceleration = event.linearAcceleration?.toVector3() ?: velocityAcceleration
 			// Rotation offset done here before rotation gets to the tracker
 			val rotationOffset = rotationOffsets[trackerId] ?: Quaternion.IDENTITY
 			// Update tracker with new data
