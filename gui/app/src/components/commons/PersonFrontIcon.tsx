@@ -74,14 +74,14 @@ export function PersonFrontIcon({
       <circle
         className="body-part-circle"
         cx="82"
-        cy="140"
+        cy="155"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.UPPER_WAIST]}
       />
       <circle
         className="body-part-circle"
         cx="82"
-        cy="155"
+        cy="169"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.LOWER_WAIST]}
       />

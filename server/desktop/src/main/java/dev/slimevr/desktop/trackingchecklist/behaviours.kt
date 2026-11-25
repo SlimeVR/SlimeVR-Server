@@ -45,8 +45,15 @@ private val STEAMVR_WEB_SERVER_STARTUP = 1.seconds
 // Retry delay doubles from 1s up to 2^step seconds (16s)
 private const val DRIVERS_RETRY_MAX_BACKOFF_STEP = 4L
 
-private fun isProcessRunning(name: String): Boolean = ProcessHandle.allProcesses().anyMatch { proc ->
-	proc.info().command().orElse(null)?.substringAfterLast(File.separatorChar) == name
+private fun isProcessRunning(name: String): Boolean = try {
+	ProcessHandle.allProcesses().anyMatch { proc ->
+		proc.info().command().orElse(null)?.substringAfterLast(File.separatorChar) == name
+	}
+} catch (_: Exception) {
+	// Implementation of ProcessHandle.allProcesses may throw
+	// RuntimeException("snapshot not available") on Windows if
+	// CreateToolhelp32Snapshot or Process32First fails, ignore it
+	false
 }
 
 // No OS event for process start/exit, so this polls

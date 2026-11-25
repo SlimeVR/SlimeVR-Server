@@ -75,7 +75,7 @@ const ASSIGNABLE_PARTS = new Set(ALL_ASSIGNABLE_PARTS);
 
 type SetupRegionName =
   | 'legs'
-  | 'chest'
+  | 'upperChest'
   | 'hip'
   | 'feet'
   | 'upperArms'
@@ -96,12 +96,12 @@ const SETUP_REGIONS: {
   needs: SetupRegionName[];
 }[] = [
   { id: 'legs', parts: [...LEGS_PARTS], needs: [] },
-  { id: 'chest', parts: [BodyPart.UPPER_CHEST], needs: [] },
-  { id: 'hip', parts: [BodyPart.HIP], needs: ['chest'] },
+  { id: 'upperChest', parts: [BodyPart.UPPER_CHEST], needs: [] },
+  { id: 'hip', parts: [BodyPart.HIP], needs: ['upperChest'] },
   // one spine point at a time, each halving the largest remaining gap
-  { id: 'lowerWaist', parts: [BodyPart.LOWER_WAIST], needs: ['hip'] },
-  { id: 'lowerChest', parts: [BodyPart.LOWER_CHEST], needs: ['lowerWaist'] },
-  { id: 'upperWaist', parts: [BodyPart.UPPER_WAIST], needs: ['lowerChest'] },
+  { id: 'upperWaist', parts: [BodyPart.UPPER_WAIST], needs: ['hip'] },
+  { id: 'lowerChest', parts: [BodyPart.LOWER_CHEST], needs: ['upperWaist'] },
+  { id: 'lowerWaist', parts: [BodyPart.LOWER_WAIST], needs: ['lowerChest'] },
   {
     id: 'feet',
     parts: [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT],
@@ -110,7 +110,7 @@ const SETUP_REGIONS: {
   {
     id: 'upperArms',
     parts: [BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM],
-    needs: ['legs', 'chest'],
+    needs: ['legs', 'upperChest'],
   },
   {
     id: 'lowerArms',

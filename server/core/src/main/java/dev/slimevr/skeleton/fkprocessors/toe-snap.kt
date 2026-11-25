@@ -10,10 +10,10 @@ import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.abs
 
-const val TOE_SNAP_RANGE_MULTIPLIER = 2f
-const val MAX_TOE_SNAP_RATIO = 0.8f
-const val ANKLE_DOWN_MIN = 0.65f
-const val ANKLE_DOWN_MAX = 0.85f
+private const val TOE_SNAP_RANGE_MULTIPLIER = 1.64f
+private const val MAX_TOE_SNAP_RATIO = 0.8f
+private const val ANKLE_DOWN_MIN = 0.75f
+private const val ANKLE_DOWN_MAX = 0.94f
 
 fun computeToeSnapRatio(
 	ankleHeight: Float,
@@ -65,6 +65,7 @@ class ToeSnapFkProcessor(val skeleton: Skeleton) : SkeletonFkProcessor {
 			if (input.isRotationActive) continue
 			val length = input.offset.len()
 			if (length <= 0f) continue
+
 			val ankle = fk[anklePart] ?: continue
 			val foot = fk[footPart] ?: continue
 			mutableInputSkeleton[footPart] = input.copy(

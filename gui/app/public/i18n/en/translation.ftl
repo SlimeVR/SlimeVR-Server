@@ -1154,6 +1154,7 @@ settings-home-table_columns-desc = Choose which columns are shown in the tracker
 settings-home-display_group = Display
 settings-home-tracker_display = Tracker info
 settings-home-tracker_display-desc = Choose which extra details are shown on trackers
+settings-home-tracker_display-battery_runtime_estimate = Battery runtime estimate
 settings-home-tracker_display-battery_voltage = Battery voltage
 settings-home-tracker_display-numeric_signal = Numeric signal strength
 
