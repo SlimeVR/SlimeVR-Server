@@ -24,6 +24,9 @@ import { TrackerWifi } from '@/components/tracker/TrackerWifi';
 
 export const DOCS_TROUBLESHOOTING_URL =
   'https://docs.slimevr.dev/common-issues.html';
+export const MIDDLEWARE_DOCS_URL = 'https://docs.slimevr.dev/tools/index.html';
+
+export type TrackerType = 'slimevr' | 'middleware';
 
 export const trackerStatusLabelMap: Record<TrackerProvisioningStatus, string> =
   {
@@ -401,9 +404,11 @@ export function NoSerialLogsModal({
 export function StatusBar({
   connectedCount,
   connectingCount,
+  isMiddleware,
 }: {
   connectedCount: number;
   connectingCount: number;
+  isMiddleware?: boolean;
 }) {
   return (
     <div className="hidden sm:flex rounded-lg bg-background-60 p-4 items-center gap-3 shrink-0">
@@ -430,7 +435,7 @@ export function StatusBar({
           id={
             connectingCount > 0
               ? 'onboarding-connect_tracker-setting_up'
-              : 'onboarding-connect_tracker-all_caught_up'
+              : `onboarding-connect_tracker-all_caught_up${isMiddleware ? '-middleware' : ''}`
           }
           vars={{ amount: connectingCount }}
         />
@@ -443,20 +448,23 @@ function EmptyTrackerListIllustration({
   scanStatus,
   hasNetworks = false,
   onOpenNoSerialLogsModal,
+  isMiddleware = false,
 }: {
   scanStatus: WifiScanStatus;
   hasNetworks?: boolean;
   onOpenNoSerialLogsModal?: () => void;
+  isMiddleware?: boolean;
 }) {
   const isError =
-    scanStatus === WifiScanStatus.CONNECTION_ERROR ||
-    scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR ||
-    scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND ||
-    scanStatus === WifiScanStatus.UNSUPPORTED;
+    !isMiddleware &&
+    (scanStatus === WifiScanStatus.CONNECTION_ERROR ||
+      scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR ||
+      scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND ||
+      scanStatus === WifiScanStatus.UNSUPPORTED);
 
   const hasScanResults = scanStatus === WifiScanStatus.RESULTS || hasNetworks;
 
-  const titleId =
+  const slimevrTitleId =
     scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND
       ? 'onboarding-connect_tracker-connection_status-no_serial_device_found'
       : scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR
@@ -468,8 +476,7 @@ function EmptyTrackerListIllustration({
             : hasScanResults
               ? 'onboarding-connect_tracker-scan_results_title'
               : 'onboarding-connect_tracker-waiting_first_title';
-
-  const descId =
+  const slimevrDescId =
     scanStatus === WifiScanStatus.NO_SERIAL_DEVICE_FOUND
       ? 'onboarding-wifi_creds-scan_error_no_device'
       : scanStatus === WifiScanStatus.NO_SERIAL_LOGS_ERROR
@@ -482,13 +489,17 @@ function EmptyTrackerListIllustration({
               ? 'onboarding-connect_tracker-scan_results_desc'
               : 'onboarding-connect_tracker-waiting_first_desc';
 
+  const middlewareTitleId = 'onboarding-connect_tracker-waiting_first_title';
+  const middlewareDescId =
+    'onboarding-connect_tracker-waiting_first_desc-middleware';
+
   return (
     <EmptyState
       className="flex-1 h-full min-h-[220px] !gap-3 my-auto"
       slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY}
       titleColor={isError ? 'text-status-critical' : undefined}
-      titleId={titleId}
-      descriptionId={descId}
+      titleId={isMiddleware ? middlewareTitleId : slimevrTitleId}
+      descriptionId={isMiddleware ? middlewareDescId : slimevrDescId}
       action={
         isError && (
           <button
@@ -558,8 +569,7 @@ export function mergeTrackerList(
 
   for (const ct of connectedIMUTrackers) {
     if (claimedConnected.has(ct)) continue;
-    const mac = normalizeMac(ct.device?.hardwareInfo?.hardwareIdentifier);
-    const key = mac || `connected-${ct.device?.id}`;
+    const key = `connected-${ct.tracker.trackerId}`;
     rows.push({ kind: 'connected', key, tracker: ct });
   }
 
@@ -568,16 +578,20 @@ export function mergeTrackerList(
 
 export function TrackerList({
   rows,
-  scanStatus,
-  networks,
+  scanStatus = WifiScanStatus.NONE,
+  networks = [],
   onOpenNoSerialLogsModal,
   children,
+  isMiddleware = false,
+  hideEmptyState = false,
 }: {
   rows: TrackerRow[];
-  scanStatus: WifiScanStatus;
-  networks: WifiNetworkT[];
-  onOpenNoSerialLogsModal: () => void;
-  children: ReactNode;
+  scanStatus?: WifiScanStatus;
+  networks?: WifiNetworkT[];
+  onOpenNoSerialLogsModal?: () => void;
+  children?: ReactNode;
+  isMiddleware?: boolean;
+  hideEmptyState?: boolean;
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const connectedCount = useMemo(
@@ -597,6 +611,7 @@ export function TrackerList({
         <StatusBar
           connectedCount={connectedCount}
           connectingCount={connectingCount}
+          isMiddleware={isMiddleware}
         />
       )}
 
@@ -623,13 +638,14 @@ export function TrackerList({
               />
             )
           )
-        ) : (
+        ) : !hideEmptyState ? (
           <EmptyTrackerListIllustration
             scanStatus={scanStatus}
             hasNetworks={networks.length > 0}
             onOpenNoSerialLogsModal={onOpenNoSerialLogsModal}
+            isMiddleware={isMiddleware}
           />
-        )}
+        ) : null}
         {children}
       </div>
     </div>

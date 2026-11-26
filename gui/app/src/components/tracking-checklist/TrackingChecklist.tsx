@@ -48,6 +48,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { openUrl } from '@/hooks/crossplatform';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { DOCS_TROUBLESHOOTING_URL } from '@/components/onboarding/pages/connect-trackers/TrackerList';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -345,7 +346,7 @@ const stepContentLookup: Record<
               PublicFixLink: (
                 <A
                   className="text-background-20"
-                  href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"
+                  href={`${DOCS_TROUBLESHOOTING_URL}#network-profile-is-currently-set-to-public`}
                 />
               ),
             }}

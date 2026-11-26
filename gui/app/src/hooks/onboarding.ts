@@ -59,7 +59,7 @@ export type OnboardingContext = ReturnType<typeof useProvideOnboarding>;
 export function useProvideOnboarding() {
   const { setConfig } = useConfig();
   const [slimeSet, setSlimeSet] = useState<
-    'butterfly' | 'slime-v1' | 'dongle-slime' | 'wifi-slime'
+    'butterfly' | 'slime-v1' | 'dongle-slime' | 'wifi-slime' | 'middleware'
   >();
   const [usage, setUsage] = useState<'vr-gaming' | 'mocap' | 'vtubing'>();
   const [vrcOsc, setVrcOSC] = useState<boolean>();

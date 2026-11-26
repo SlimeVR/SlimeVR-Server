@@ -3,6 +3,9 @@ import classNames from 'classnames';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import {
+  BoardType,
+  DeviceOrigin,
+  TrackerStatus,
   TrackerProvisioningStatus,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistStepId,
@@ -16,8 +19,16 @@ import {
 } from '@/hooks/wifi-form';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { connectedIMUTrackersAtom } from '@/store/app-store';
+import {
+  connectedIMUTrackersAtom,
+  connectedTrackersAtom,
+  unknownDevicesAtom,
+} from '@/store/app-store';
 import { A } from '@/components/commons/A';
+import {
+  BUTTERFLY_BOARDS,
+  SLIME_BOARDS,
+} from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { Input } from '@/components/commons/Input';
@@ -32,11 +43,18 @@ import {
 } from '@/components/commons/icon/ArrowIcons';
 import { MoreSetsConfirm } from '@/components/onboarding/pages/quiz/MoreSetsConfirm';
 import {
-  DOCS_TROUBLESHOOTING_URL,
+  MIDDLEWARE_DOCS_URL,
   mergeTrackerList,
   NoSerialLogsModal,
+  normalizeMac,
   TrackerList,
+  DOCS_TROUBLESHOOTING_URL,
+  TrackerType,
 } from './TrackerList';
+import {
+  PendingTrackerCard,
+  PendingTrackersDivider,
+} from '@/components/tracker/PendingTrackers';
 
 export function FloatingWifiForm({
   summary,
@@ -326,6 +344,16 @@ function WifiFormFields({
   );
 }
 
+function MiddlewareLinks() {
+  return (
+    <div className="flex flex-col gap-2">
+      <ArrowLink to={MIDDLEWARE_DOCS_URL} direction="right" variant="boxed-2">
+        <Typography id="onboarding-connect_tracker-issue-middleware" />
+      </ArrowLink>
+    </div>
+  );
+}
+
 function TroubleshootingLinks({
   networkProfileBanner,
 }: {
@@ -348,13 +376,153 @@ function TroubleshootingLinks({
   );
 }
 
-export function ConnectTrackersPage() {
+export function ConnectTrackersPage({ type }: { type: TrackerType }) {
+  return type === 'middleware' ? (
+    <MiddlewareConnectTrackersPage />
+  ) : (
+    <SlimeVRConnectTrackersPage />
+  );
+}
+
+function isMiddlewareBoard(boardType?: BoardType | null) {
+  return (
+    boardType == null ||
+    (!SLIME_BOARDS.has(boardType) && !BUTTERFLY_BOARDS.has(boardType))
+  );
+}
+
+function MiddlewareConnectTrackersPage() {
+  const { applyProgress, state } = useOnboarding();
+  const { isMobile } = useBreakpoint('mobile');
+  const connectedTrackers = useAtomValue(connectedTrackersAtom);
+  const activeTrackers = useMemo(
+    () =>
+      connectedTrackers.filter(
+        ({ tracker }) => tracker.status !== TrackerStatus.TIMED_OUT
+      ),
+    [connectedTrackers]
+  );
+  const unknownDevices = useAtomValue(unknownDevicesAtom);
+  const rows = useMemo(
+    () =>
+      mergeTrackerList(
+        [],
+        activeTrackers.filter(
+          ({ tracker, device }) =>
+            tracker.origin === DeviceOrigin.DRIVER ||
+            (tracker.origin === DeviceOrigin.UDP &&
+              isMiddlewareBoard(device?.hardwareInfo?.officialBoardType))
+        )
+      ),
+    [activeTrackers]
+  );
+  const pendingDevices = useMemo(() => {
+    const liveHardwareIds = new Set(
+      activeTrackers
+        .map(({ device }) =>
+          normalizeMac(device?.hardwareInfo?.hardwareIdentifier)
+        )
+        .filter((hardwareId): hardwareId is string => !!hardwareId)
+    );
+
+    return unknownDevices.filter((device) => {
+      const hardwareId = normalizeMac(device.hardwareId);
+      return (
+        isMiddlewareBoard(device.boardType) &&
+        hardwareId &&
+        !liveHardwareIds.has(hardwareId)
+      );
+    });
+  }, [activeTrackers, unknownDevices]);
+
+  applyProgress(0.4);
+
+  return (
+    <div className="w-full h-full flex flex-col xs:flex-row overflow-hidden min-h-0">
+      <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 mobile:pt-0 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
+        <div className="flex flex-col gap-1">
+          <Typography
+            variant="mobile-title"
+            id="onboarding-connect_tracker-title"
+          />
+          <Typography
+            variant="standard"
+            whitespace="whitespace-pre-wrap"
+            id="onboarding-connect_tracker-description-middleware"
+          />
+        </div>
+
+        {!isMobile && (
+          <div className="flex flex-col gap-2">
+            <TipBox>
+              <Typography
+                variant="standard"
+                color="text-accent-background-10"
+                id="onboarding-connect_tracker-shake_tip"
+              />
+            </TipBox>
+            <MiddlewareLinks />
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between">
+        <TrackerList
+          rows={rows}
+          isMiddleware
+          hideEmptyState={pendingDevices.length > 0}
+        >
+          {pendingDevices.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <PendingTrackersDivider devices={pendingDevices} />
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingDevices.map((device) => (
+                  <PendingTrackerCard
+                    key={device.hardwareId as string}
+                    device={device}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {isMobile && (
+            <div className="pt-2 shrink-0">
+              <MiddlewareLinks />
+            </div>
+          )}
+        </TrackerList>
+        <div className="flex flex-row justify-between items-center shrink-0 py-4 border-t border-background-60">
+          <Button
+            variant="secondary"
+            state={{ alonePage: state.alonePage }}
+            to={
+              state.alonePage
+                ? '/onboarding/add-trackers'
+                : '/onboarding/quiz/slime-set'
+            }
+            id="onboarding-wifi_creds-back-v2"
+          />
+          {state.alonePage ? (
+            <Button
+              variant="primary"
+              to="/"
+              id="onboarding-connect_tracker-next"
+            />
+          ) : (
+            <MoreSetsConfirm />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SlimeVRConnectTrackersPage() {
   const { l10n } = useLocalization();
   const { visibleSteps, toggleSession } = useTrackingChecklist();
   const { applyProgress, state } = useOnboarding();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { isMobile } = useBreakpoint('mobile');
-
   const credsForm = useWifiCredsForm();
   const scan = useWifiScan();
   const session = useWifiProvisioningSession(credsForm.control);
@@ -430,7 +598,9 @@ export function ConnectTrackersPage() {
           id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
           elems={{
             PublicFixLink: (
-              <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
+              <A
+                href={`${DOCS_TROUBLESHOOTING_URL}#network-profile-is-currently-set-to-public`}
+              />
             ),
           }}
           vars={{
@@ -467,7 +637,7 @@ export function ConnectTrackersPage() {
   return (
     <>
       <div className="w-full h-full flex flex-col xs:flex-row overflow-hidden min-h-0">
-        <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
+        <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 mobile:pt-0 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-1">
               <Typography
@@ -499,7 +669,7 @@ export function ConnectTrackersPage() {
           )}
         </div>
 
-        <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between mobile:pb-14">
+        <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between mobile:pb-[76px]">
           <div className="flex flex-col gap-4 min-h-0 flex-1">
             <TrackerList
               rows={rows}

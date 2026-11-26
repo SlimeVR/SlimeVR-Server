@@ -174,7 +174,9 @@ export function AssignmentNavFooter({
     ? '/onboarding/connect-trackers'
     : slimeSet && ['butterfly', 'dongle-slime'].includes(slimeSet)
       ? '/onboarding/dongle'
-      : '/onboarding/connect-trackers';
+      : slimeSet === 'middleware'
+        ? '/onboarding/connect-middleware'
+        : '/onboarding/connect-trackers';
 
   return (
     <div className="flex flex-row justify-between items-center">
