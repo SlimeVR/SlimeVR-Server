@@ -47,7 +47,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 
 // Feet go slightly inwards on pose mounting
-private const val FEET_POSE_DEG_INWARDS = 12 * FastMath.DEG_TO_RAD
+private const val FEET_POSE_DEG_INWARDS = 15 * FastMath.DEG_TO_RAD
 
 data class ResetsState(
 	val canDoYawReset: Boolean,
