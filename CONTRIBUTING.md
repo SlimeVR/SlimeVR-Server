@@ -7,8 +7,9 @@ This document describes essential knowledge required to contribute to the SlimeV
 ### Prerequisites
 
 - [Git](https://git-scm.com/downloads)
-- [Java v17+](https://adoptium.net/temurin/releases/)
-- [Node.js v16.9+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
+- [Java v25](https://adoptium.net/temurin/releases/)
+- [Node.js v24+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
+- [pnpm](https://pnpm.io/installation)
 
 ## Cloning the code
 First, clone the codebase using git in a terminal in the folder you want.
@@ -36,13 +37,13 @@ be at `server/desktop/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
 ### Electron (gui)
 
-- Activate corepack (included with Node.js) via `corepack enable` 
+- Activate corepack (included with Node.js) via `corepack enable`
 (might require launching Git Bash as administrator on Windows)
 - Make sure you're at the root of the repository.
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
 - If you get an "Electron uninstall" error, run `node .\gui\electron\node_modules\electron\install.js`.
-- Finally, to compile for production, run `pnpm package:build` under `gui/electron`. 
+- Finally, to compile for production, run `pnpm package:build` under `gui/electron`.
 The result will be in `gui/dist/artifacts/`. Content will change depending on the platform.
 
 ## Code style
