@@ -22,6 +22,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.MagnetometerStatus
+import kotlin.time.Duration.Companion.seconds
+
+// When a tracker comes back from sleep, prevents a disproportionate correction
+private val MAX_DELTA_TIME = 0.5.seconds
 
 class TrackerStayAlignedBehaviour(
 	private val settings: Settings,
@@ -72,20 +76,17 @@ class TrackerStayAlignedBehaviour(
 			.flatMapLatest { (enabled, imuType, magStatus) ->
 				if (magStatus == MagnetometerStatus.ENABLED || imuType == null || !enabled) return@flatMapLatest emptyFlow()
 
-				// Ignore every other emission for performance (50FPS instead of 100FPS when at 100TPS)
-				var index = 0
 				var lastRotationTime = timeSource.markNow()
 				receiver.context.state
 					.distinctUntilChangedBy { it.rawRotation }
-					.filter { index++ % 2 == 0 }
 					.onEach { state ->
 						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(imuType, YAW_CORRECTION_DEFAULT)
 						if (yawCorrectionPerSec == Angle.ZERO) return@onEach
 
-						val lastFrameTimeSeconds = lastRotationTime.elapsedNow().inFloatingSeconds
+						val deltaTime = lastRotationTime.elapsedNow().coerceAtMost(MAX_DELTA_TIME).inFloatingSeconds
 						lastRotationTime = timeSource.markNow()
 
-						val applyYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
+						val applyYawCorrection = yawCorrectionPerSec * deltaTime
 
 						val yawCorrectionResult = TrackerYawCorrection.computeYawCorrection(
 							state,
