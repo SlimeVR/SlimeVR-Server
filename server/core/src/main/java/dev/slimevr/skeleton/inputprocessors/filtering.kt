@@ -36,7 +36,8 @@ private const val SMOOTHING_MS_MAX = 50.0
 
 // Prediction
 private const val PREDICTION_MS_MAX = 30.0
-private const val PREVIOUS_PREDICTION_CARRYOVER = 0.2f
+private val PREDICTION_CARRYOVER_TIME = 20.milliseconds // TODO might need to be tuned
+private const val MAX_PREDICTION_CARRYOVER_RATIO = 0.5
 
 // Used to minimize latency even more for arm tracking where it is more noticeable
 private val PART_MULTIPLIER = BodyPartMap(
@@ -100,7 +101,8 @@ private fun computePredictedRotation(
 	if (previousRotation == null) return targetRotation
 
 	// Use some of the previous prediction
-	val previousPredictionDelta = previousPredictedRotation?.localAbout(previousRotation)?.pow(PREVIOUS_PREDICTION_CARRYOVER)
+	val carryoverRatio = (PREDICTION_CARRYOVER_TIME / poseTimeDelta).coerceAtMost(MAX_PREDICTION_CARRYOVER_RATIO).toFloat()
+	val previousPredictionDelta = previousPredictedRotation?.localAbout(previousRotation)?.pow(carryoverRatio)
 		?: Quaternion.IDENTITY
 
 	val currentDelta = if (poseTimeDelta > Duration.ZERO) {
