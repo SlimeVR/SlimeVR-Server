@@ -8,6 +8,7 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.udpTrackerHardwareId
+import dev.slimevr.util.isPresent
 import dev.slimevr.util.udpHardwareId
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -58,6 +59,16 @@ internal fun assignTracker(receiver: UDPConnection, device: Device, info: Sensor
 		return existingTracker
 	}
 
+	val receivedBodyPart = info.trackerPosition
+	val isBodyPartOccupied = if (receivedBodyPart == null) {
+		false
+	} else {
+		receiver.appContext.server.context.state.value.trackers.values.any { other ->
+			val otherState = other.context.state.value
+			otherState.bodyPart == receivedBodyPart && isPresent(otherState.status)
+		}
+	}
+
 	val trackerId = receiver.appContext.server.nextHandle()
 	val newTracker = Tracker.create(
 		id = trackerId,
@@ -67,6 +78,8 @@ internal fun assignTracker(receiver: UDPConnection, device: Device, info: Sensor
 		origin = DeviceOrigin.UDP,
 		scope = receiver.appContext.server.context.scope,
 		appContext = receiver.appContext,
+		intendedBodyPart = receivedBodyPart,
+		bodyPart = if (isBodyPartOccupied) null else receivedBodyPart,
 	)
 	receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
 	receiver.context.dispatch(
