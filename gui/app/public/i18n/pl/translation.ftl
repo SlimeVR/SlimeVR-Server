@@ -326,12 +326,6 @@ settings-driver-status-badge-disabled = Od
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrowanie
-settings-general-tracker_mechanics-filtering-type-none = Brak Filtrów
-settings-general-tracker_mechanics-filtering-type-none-description = Używa rotacji w niezmienionej formie. Wszystkie filtry są wyłączone.
-settings-general-tracker_mechanics-filtering-type-smoothing = Wygładzanie
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
-settings-general-tracker_mechanics-filtering-type-prediction = Przewidywanie
-settings-general-tracker_mechanics-filtering-amount = Ilość
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Czas wygładzania resetu odchylenia (0s wyłącza wygładzanie)
 settings-general-tracker_mechanics-save_mounting_reset = Zapisz pozycję trackerów na ciele
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -375,7 +369,6 @@ settings-general-fk_settings-self_localization-title = Tryb Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Umożliwia wyzwalanie resetów przez stuknięcie modułu śledzącego. Układ śledzący znajdujący się najwyżej na tułowiu służy do resetowania odchylenia, układ śledzący znajdujący się najwyżej na lewej nodze służy do pełnego resetu, a układ śledzący znajdujący się najwyżej na prawej nodze służy do resetowania montażu. Należy wspomnieć, że stuknięcia muszą nastąpić w ciągu 0,6 sekundy, aby zostały zarejestrowane.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -394,17 +387,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } trackery
        *[other] { $amount } trackery
     }
-settings-general-gesture_control-yawResetEnabled = Włącz stuknięcie, aby zresetować odchylanie
-settings-general-gesture_control-yawResetDelay = Opóźnienie resetowania odchylenia
-settings-general-gesture_control-yawResetTaps = Stuknięć do zresetowania odchylenia
-settings-general-gesture_control-fullResetEnabled = Włącz stuknięcie, aby całkowicie zresetować
-settings-general-gesture_control-fullResetDelay = Pełne opóźnienie resetu
-settings-general-gesture_control-fullResetTaps = Stuknięć do pełnego resetu
-settings-general-gesture_control-mountingResetEnabled = Włącz stuknięcie, aby zresetować położenie
-settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania położenia
-settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Trackery ponad progiem
 
 ## Appearance settings
 
@@ -1027,7 +1009,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otwórz panel sterowania
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfiguruj Opcje Wyrównywania
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zapisz pozycje wyrównywania, aby zmniejszyć poślizg
 tracking_checklist-ignore = Ignoruj
-preview-mocap_mode_soon = Tryb mocap (wkrótce™)
 preview-disable_render = Wyłącz renderowanie
 preview-disabled_render = Renderowanie wyłączone
 toolbar-mounting_calibration = Kalibracja Pozycji

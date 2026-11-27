@@ -251,7 +251,6 @@ settings-driver-enable = Etkinleştir
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics-filtering-amount = Miktar
 
 ## Stay Aligned pose recorder
 

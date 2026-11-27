@@ -300,12 +300,6 @@ settings-driver-enable = تمكين
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = تصفية
-settings-general-tracker_mechanics-filtering-type-none = بدون تصفية
-settings-general-tracker_mechanics-filtering-type-none-description = استخدم التدوير كما هو. لن تفعل أي تصفية
-settings-general-tracker_mechanics-filtering-type-smoothing = التنعيم
-settings-general-tracker_mechanics-filtering-type-smoothing-description = ينعم الحركات لكنه يزيد من وقت الاستجابة.
-settings-general-tracker_mechanics-filtering-type-prediction = التنبؤ
-settings-general-tracker_mechanics-filtering-amount = المبلغ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = إعادة ضبط الانعراج على نحو سلس (يتعطل التنعيم 0 ثوان)
 settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إعادة ضبط التركيب التلقائي
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -342,7 +336,6 @@ settings-general-fk_settings-self_localization-title = وضع Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = يسمح بتشغيل عملية إعادة التعيين من خلال النقر على جهاز التعقب. يتم استخدام جهاز التعقب الأعلى على جذعك لإعادة ضبط سريع ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليسرى لإعادة ضبط ، ويتم استخدام جهاز التعقب الأعلى على ساقك اليمنى إعادة ضبط التركيب . تجدر الإشارة إلى أن النقرات يجب أن تتم خلال 0.6 ثانية لكي يتم تسجيلها.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -365,17 +358,6 @@ settings-general-gesture_control-trackers =
         [many] { "" }
        *[other] { $amount } أجهزة تعقب
     }
-settings-general-gesture_control-yawResetEnabled = تمكين النقر لإعادة التعيين الانعراج
-settings-general-gesture_control-yawResetDelay = إعادة تعيين التأخير الانعراج
-settings-general-gesture_control-yawResetTaps = عدد النقرات لإعادة تعيين الانعراج
-settings-general-gesture_control-fullResetEnabled = تمكين النقر لإعادة التعيين الكامل
-settings-general-gesture_control-fullResetDelay = تأخير إعادة التعيين الكامل
-settings-general-gesture_control-fullResetTaps = عدد النقرات لإعادة التعيين الكامل
-settings-general-gesture_control-mountingResetEnabled = تمكين النقر لإعادة تعيين التركيب
-settings-general-gesture_control-mountingResetDelay = تأخير إعادة تعيين التركيب
-settings-general-gesture_control-mountingResetTaps = نقرات لإعادة تعيين التركيب
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = أجهزة تعقب فوق قيمة القطع
 
 ## Appearance settings
 

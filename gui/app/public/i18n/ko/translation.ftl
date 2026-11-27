@@ -260,10 +260,6 @@ settings-driver-enable = 활성화
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = 필터링
-settings-general-tracker_mechanics-filtering-type-none = 필터링 없음
-settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
-settings-general-tracker_mechanics-filtering-amount = 강도
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw 정렬할 때 부드럽게 움직이는 시간 (비활성화: 0초)
 settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 정렬 보정값 저장
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -300,7 +296,6 @@ settings-general-fk_settings-self_localization-title = Mocap 모드
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = 트래커를 탭하면 쉽게 트래커를 정렬할 수 있어요. 몸통에서 가장 높은 트래커는 Yaw 정렬에 사용되고 왼쪽 다리에서 가장 높은 트래커는 전체 정렬에 사용되며, 오른쪽 다리에서 가장 높은 트래커는 착용 방향 정렬에 사용돼요. 탭할 때의 간격은 0.6초 이내여야 해요.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -310,17 +305,6 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } 트래커
-settings-general-gesture_control-yawResetEnabled = 탭해서 Yaw 정렬 활성화
-settings-general-gesture_control-yawResetDelay = Yaw 정렬 딜레이
-settings-general-gesture_control-yawResetTaps = Yaw 정렬 탭 횟수
-settings-general-gesture_control-fullResetEnabled = 탭해서 전체 정렬 활성화
-settings-general-gesture_control-fullResetDelay = 전체 정렬 딜레이
-settings-general-gesture_control-fullResetTaps = 탭해서 전체 정렬
-settings-general-gesture_control-mountingResetEnabled = 탭해서 착용 방향 정렬 활성화
-settings-general-gesture_control-mountingResetDelay = 착용 방향 정렬 딜레이
-settings-general-gesture_control-mountingResetTaps = 탭해서 착용 방향 정렬
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = 트래커 감지 한계
 
 ## Appearance settings
 

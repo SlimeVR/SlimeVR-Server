@@ -309,12 +309,6 @@ settings-driver-status-badge-disabled = Spento
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtro movimenti
-settings-general-tracker_mechanics-filtering-type-none = Non usare alcun filtro
-settings-general-tracker_mechanics-filtering-type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
-settings-general-tracker_mechanics-filtering-type-smoothing = Attenuazione
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
-settings-general-tracker_mechanics-filtering-type-prediction = Predizione
-settings-general-tracker_mechanics-filtering-amount = Quantità
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo di attenuazione del ripristino dell'orientamento (0 secondi disabilita l'attenuazione)
 settings-general-tracker_mechanics-save_mounting_reset = Salva automaticamente la calibrazione del ripristino del posizionamento
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -355,7 +349,6 @@ settings-general-fk_settings-self_localization-title = Modalità Mocap
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Abilita o disabilita il ripristino toccando un tracker. Il tracker più in alto sul torso viene utilizzato per il ripristino dell'orientamento, il tracker più in alto sulla gamba sinistra viene utilizzato per il ripristino completo e il tracker più in alto sulla gamba destra viene utilizzato per il ripristino del posizionamento. Si deve tener presente che i tocchi devono avvenire entro 0,6 secondi per essere registrati.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -371,17 +364,6 @@ settings-general-gesture_control-trackers =
         [many] { $amount } tracker
        *[other] { $amount } tracker
     }
-settings-general-gesture_control-yawResetEnabled = Abilita tocco per il ripristino dell'orientamento
-settings-general-gesture_control-yawResetDelay = Ritardo per il ripristino dell'orientamento
-settings-general-gesture_control-yawResetTaps = Numero di tocchi per il ripristino dell'orientamento
-settings-general-gesture_control-fullResetEnabled = Abilita tocco per il ripristino completo
-settings-general-gesture_control-fullResetDelay = Ritardo per il ripristino completo
-settings-general-gesture_control-fullResetTaps = Numero di tocchi per il ripristino completo
-settings-general-gesture_control-mountingResetEnabled = Abilita tocco per ripristino del posizionamento
-settings-general-gesture_control-mountingResetDelay = Ritardo per il ripristino del posizionamento
-settings-general-gesture_control-mountingResetTaps = Numero di tocchi per il ripristino del posizionamento
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Tracker sopra il limite
 
 ## Appearance settings
 

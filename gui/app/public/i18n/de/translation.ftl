@@ -245,7 +245,6 @@ tracker-infos-display_name = Anzeigename
 tracker-infos-custom_name = Benutzerdefinierter Name
 tracker-infos-url = Tracker-Adresse
 tracker-infos-hardware_identifier = Hardware-ID
-tracker-infos-data_type = Datentyp
 tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Platine
 tracker-infos-network_version = Protokoll Version
@@ -392,18 +391,6 @@ settings-driver-status-connection-waiting = Warte auf die Verbindung von SteamVR
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtern
-settings-general-tracker_mechanics-filtering-type = Filter-Typ
-# This also cares about multilines
-settings-general-tracker_mechanics-filtering-description =
-    Wählen Sie den Filter-Typ für Ihre Tracker aus.
-    "{ settings-general-tracker_mechanics-filtering-type-smoothing }" glättet die Bewegung, während "{ settings-general-tracker_mechanics-filtering-type-prediction }" die Latenz minimiert.
-settings-general-tracker_mechanics-filtering-type-none = Kein Filter
-settings-general-tracker_mechanics-filtering-type-none-description = Verwendet die unveränderten Rotationsdaten der Tracker.
-settings-general-tracker_mechanics-filtering-type-smoothing = Glättung
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Glättet Bewegungen, fügt aber etwas Verzögerung hinzu.
-settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
-settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen direkter, erhöht jedoch das Zittern.
-settings-general-tracker_mechanics-filtering-amount = Stärke
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontaler Reset Glättungszeit (0s deaktiviert die Glättung)
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Glättet die Rotation der Tracker nach einem Gier-Reset. 0s deaktiviert das Glätten.
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Ausrichtung speichern
@@ -457,7 +444,6 @@ settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = Erlaubt Reset durch das Antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Reset der Tracker-Ausrichtung genutzt. Das Antippen muss innerhalb von 0.5 Sekunden erfolgen, um erkannt zu werden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -472,17 +458,6 @@ settings-general-gesture_control-trackers =
         [one] 1 Tracker
        *[other] { $amount } Tracker
     }
-settings-general-gesture_control-yawResetEnabled = Horizontaler Reset durch Antippen
-settings-general-gesture_control-yawResetDelay = Verzögerung für einen horizontalen Reset
-settings-general-gesture_control-yawResetTaps = Antipp-Anzahl für einen horizontalen Reset
-settings-general-gesture_control-fullResetEnabled = Vollständiger Reset durch Antippen
-settings-general-gesture_control-fullResetDelay = Verzögerung für einen vollständigen Reset
-settings-general-gesture_control-fullResetTaps = Antipp-Anzahl für einen vollständigen Reset
-settings-general-gesture_control-mountingResetEnabled = Aktivieren von Antippen für Reset der Tracker-Ausrichtung
-settings-general-gesture_control-mountingResetDelay = Verzögerung von Reset der Tracker-Ausrichtung
-settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
 
 ## Appearance settings
 
@@ -1128,7 +1103,6 @@ tracking_checklist-STAY_ALIGNED_CONFIGURED = Stay Aligned konfigurieren
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zeichne die Stay Aligned-Posen auf, um Drift zu reduzieren
 tracking_checklist-VRCHAT_OSC_TRACKING_DISABLED-open = Gehe zu VRChat OSC Einstellungen
 tracking_checklist-ignore = Ignorieren
-preview-mocap_mode_soon = Mocap-Modus (Bald™)
 preview-disable_render = Vorschau deaktivieren
 preview-disabled_render = Vorschau deaktiviert
 preview-render_mode = Rendering-Modus ändern

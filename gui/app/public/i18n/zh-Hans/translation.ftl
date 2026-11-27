@@ -338,12 +338,6 @@ settings-driver-status-badge-disabled = 关
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = 滤波
-settings-general-tracker_mechanics-filtering-type-none = 无滤波
-settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不进行滤波。
-settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
-settings-general-tracker_mechanics-filtering-type-smoothing-description = 让运动更加平滑，但会增加一些延迟。
-settings-general-tracker_mechanics-filtering-type-prediction = 预测型
-settings-general-tracker_mechanics-filtering-amount = 滤波强度
 settings-general-tracker_mechanics-yaw-reset-smooth-time = 重置航向轴平滑过渡时长（0s时关闭平滑瞬移到位）
 settings-general-tracker_mechanics-save_mounting_reset = 保存佩戴重置结果
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -389,7 +383,6 @@ settings-general-fk_settings-self_localization-title = 动作捕捉模式
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control-description = 启用敲击追踪器触发重置。敲击躯干配戴最高的追踪器会触发重置航向轴，敲击左腿配戴最高的追踪器会触发完整重置，敲击右腿配戴最高的追踪器会触发重置佩戴。请注意，需要在 0.6 秒内满足敲击次数才会触发。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -399,17 +392,6 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } 个追踪器
-settings-general-gesture_control-yawResetEnabled = 开启敲击重置航向轴
-settings-general-gesture_control-yawResetDelay = 敲击重置航向轴延迟
-settings-general-gesture_control-yawResetTaps = 重置航向轴敲击次数
-settings-general-gesture_control-fullResetEnabled = 开启敲击完整重置
-settings-general-gesture_control-fullResetDelay = 敲击完整重置延迟
-settings-general-gesture_control-fullResetTaps = 完整重置敲击次数
-settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
-settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
-settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
-# The number of trackers that can have higher acceleration before a tap is rejected
-settings-general-gesture_control-numberTrackersOverThreshold = 可触发敲击重置的追踪器数量
 
 ## Appearance settings
 
@@ -1022,7 +1004,6 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
 tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 记录持续校准所使用的姿势以减缓漂移现象
 tracking_checklist-ignore = 忽略
-preview-mocap_mode_soon = 动作捕捉模式（即将推出™）
 preview-disable_render = 禁用预览
 preview-disabled_render = 预览已禁用
 toolbar-mounting_calibration = 佩戴校准
